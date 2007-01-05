@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<chapter id="kapitel-datenbank" lang="de" revision="$Revision: 1.11 $">
+  <!--% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <chapterinfo>
+    <date></date>
+
+    <revhistory>
+      <revision>
+        <revnumber>Rechtsschreiblektorat</revnumber>
+
+        <date>23.12.2006</date>
+      </revision>
+    </revhistory>
+  </chapterinfo>
+
+  <title>Asterisk-Datenbank (AstDB)</title>
+
+  <section id="datenbank-einleitung">
+    <title>Einleitung</title>
+
+    <para>Das Problem bei der Benutzung von Variablen im Dialplan ist, dass
+    der Wert dieser und überhaupt aller zur Laufzeit definierten Variablen bei
+    einem Systemabsturz oder einem Neustart von Asterisk gelöscht bzw. auf
+    ihre Anfangswerte zurückgesetzt werden. Dadurch sind bestimmte
+    Einsatzszenarien gar nicht denkbar. Wenn man beispielweise eine
+    Call-Forwarding-Funktion<footnote>
+        <para>CallForwarding-Funktionalität: Jeder Teilnehmer kann durch Wahl
+        einer bestimmten Nummer alle Gespräche an einen anderen Apparat
+        weiterleiten lassen. Durch Wahl einer anderen Nummer wird diese
+        Funktion wieder deaktiviert.</para>
+      </footnote> oder ein Calling-Card-System implementieren möchte, dann
+    sollten diese natürlich z.B. das Restguthaben in einer Datenbank
+    speichern, damit diese Daten bei einem Neustart des Systems wieder korrekt
+    zur Verfügung stehen.</para>
+
+    <section id="datenbank-performance">
+      <title>Performance</title>
+
+      <para>Bezüglich der Asterisk-Datenbank wird immer wieder die Frage nach
+      der Performance derselben gestellt. Das lässt sich nicht so pauschal
+      beantworten. Falls Sie nur kleine Datenbestände (wie unser
+      Wahlwiederholungsbeispiel) benötigen, so ist die Asterisk-Datenbank
+      sicherlich eine sinnvolle Wahl. Bei größeren und komplexen
+      Datenbeständen sollten Sie aber überlegen, ob das Verwenden einer
+      externen SQL-Datenbank geeigneter ist. Allerdings ist diese Diskussion
+      bei dem überwiegenden Teil aller Anwendungen rein theoretischer Natur,
+      da es sich bei der Asterisk-Datenbank um eine Berkley DB handelt und
+      diese ausreichend performant ist. Tatsächlich ist die Berkley DB, wenn
+      es sich um reine "Key =&gt; Value"-Datenpaare handelt, mit die
+      schnellste ihrer Zunft. Sie sollten sich daher diese Frage erst stellen,
+      wenn die Geschwindigkeit der Datenbank nachweislich zu Problemen führt
+      oder Sie eine größere Installation mit umfangreicher Funktionalität
+      aufsetzen wollen.</para>
+    </section>
+  </section>
+
+  <section id="asterisk-datenbank">
+    <title>Asterisk-Datenbank</title>
+
+    <para>Asterisk bringt standardmäßig eine Datenbank mit, die die Berkeley
+    DB (BDB)<footnote>
+        <para>Die Berkeley-Datenbank (Berkeley DB) ist eine hochperformante,
+        eingebettete Datenbank-Bibliothek mit Programmierschnittstellen zu C,
+        C++, Java, Perl, Python, Tcl und vielen weiteren Programmiersprachen.
+        Die DB speichert beliebige Schlüssel- oder Datenpaare und unterstützt
+        mehrere Datenelemente für einen einzelnen Schlüssel. Die DB ermöglicht
+        tausende von simultanen Threads zum Manipulieren der Datenbanken, die
+        bis zu 256 Terabyte groß sein können, und läuft auf einer großen
+        Anzahl von Systemen, unter anderem auf den meisten UNIX-artigen und
+        Windows-Systemen und auch auf Echtzeitbetriebssystemen. [Zitiert aus
+        <ulink
+        url="http://de.wikipedia.org/wiki/Berkeley_DB"><citetitle>http://de.wikipedia.org/wiki/Berkeley_DB</citetitle></ulink>]</para>
+      </footnote> als Datenbank-Engine einsetzt. In dieser Datenbank-Engine
+    wird immer einem Schlüssel (key) ein Wert (value) zugeordnet, wobei
+    Schlüssel in Familien (family) zusammengefasst werden. <warning>
+        <para>Bis einschließlich Asterisk Version 1.2 wurden die folgenden
+        Befehle eingesetzt:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><code>DBput(family/key=value)</code></para>
+
+            <para>zum Speichern eines Werts in der Datenbank.</para>
+          </listitem>
+
+          <listitem>
+            <para><code>DBget(var=family/key)</code></para>
+
+            <para>um einen Wert aus der Datenbank auszulesen. Wird der
+            aufgerufene Key in der Datenbank nicht gefunden, erhöht sich die
+            Priorität um 101.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Diese Befehle werden ab der Version 1.4 nicht mehr unterstützt.
+        Aus diesem Grund wird hier nur die neue Variante über die Funktion
+        <code>DB()</code> besprochen. Diese Variante funktioniert auch in der
+        Version 1.2.</para>
+      </warning>Auf diese Datenbank kann mit der Funktion <code>DB()</code>
+    zugegriffen werden (siehe <xref linkend="funktionen-db" />).</para>
+
+    <section id="datenbank-schreiben">
+      <title>Werte in die Datenbank schreiben</title>
+
+      <para>Die Funktion <code>DB()</code> kann innerhalb der Applikation
+      <code>Set()</code> aufgerufen werden. Soll in der Family
+      <code>obst</code> der Eintrag <code>apfel</code> den Wert
+      <code>20</code> bekommen, so geschieht das mit folgendem
+      Aufruf:<programlisting>exten =&gt; 1234,1,Set(DB(obst/apfel)=20)</programlisting></para>
+    </section>
+
+    <section id="datenbank-lesen">
+      <title>Werte aus der Datenbank lesen</title>
+
+      <para>Die Werte in der Datenbank können mit der Funktion
+      <code>DB()</code> in der Form <code>${DB(family/key)}</code> abgerufen
+      werden. Um den Inhalt des Eintrags <code>apfel</code> in der Family
+      <code>obst</code> auf dem Command Line Interface auszugeben, kann man
+      folgenden Aufruf ausführen:<programlisting>exten =&gt; 1234,1,NoOp(obst/apfel hat den Wert ${DB(obst/apfel)})</programlisting></para>
+
+      <para>Soll der Inhalt dieses Datenbankfeldes in der Variablen
+      <code>apfelmenge</code> gespeichert werden, so kann dies mit
+      <code>Set()</code> erfolgen:<programlisting>exten =&gt; 1234,1,Set(apfelmenge=${DB(obst/apfel)})</programlisting></para>
+    </section>
+
+    <section id="datenbank-loeschen">
+      <title>Werte aus der Datenbank löschen</title>
+
+      <para>Die beiden Applikationen <code>DBdel()</code> und
+      <code>DBdeltree()</code> können zum Löschen von Datenbankeinträgen
+      genutzt werden.</para>
+
+      <section id="datenbank-dbdel">
+        <title>DBdel()</title>
+
+        <para><code>DBdel()</code> löscht einen einzelnen Eintrag in der
+        Datenbank. Soll der Key <code>apfel</code> in der Family
+        <code>obst</code> gelöscht werden, so geschieht das wie
+        folgt:<programlisting>exten =&gt; 1234,1,DBdel(obst/apfel)</programlisting>Siehe
+        auch: <xref linkend="applikationen-dbdel" /></para>
+      </section>
+
+      <section id="datenbank-dbdeltree">
+        <title>DBdeltree()</title>
+
+        <para>Soll eine ganze Family gelöscht werden, so verwendet man
+        <code>DBdeltree()</code>. Die Family <code>obst</code> kann mit
+        <programlisting>exten =&gt; 1234,1,DBdeltree(obst)</programlisting></para>
+
+        <para>gelöscht werden.</para>
+
+        <para>Siehe auch: <xref linkend="applikationen-dbdeltree" /></para>
+      </section>
+    </section>
+  </section>
+
+  <section id="datenbank-via-cli">
+    <title>Datenbankzugriff vom CLI</title>
+
+    <para>Vom Command Line Interface (CLI) kann der Administrator ebenfalls
+    auf die Datenbank zugreifen.<tip>
+        <para>Sollte man den entsprechenden Befehl oder die genaue Syntax
+        vergessen haben, so kann man jederzeit <code>help database</code> im
+        CLI eingeben:<screen>big-island*CLI&gt; help database
+             database del  Removes database key/value
+         database deltree  Removes database keytree/values
+             database get  Gets database value
+             database put  Adds/updates database value
+            database show  Shows database contents
+         database showkey  Shows database contents</screen></para>
+      </tip></para>
+
+    <important>
+      <para>Denken Sie bei den folgenden Beschreibungen daran, dass Sie, wenn
+      die Family, der Schlüssel oder der Wert Leerzeichen enthält,
+      Anführungszeichen (<code>"</code>) um den String schreiben müssen! Also
+      z.B. <code>database put test eintrag "Hallo Welt"</code>.</para>
+    </important>
+
+    <section id="datenbank-cli-schreiben">
+      <title>Werte in die Datenbank schreiben</title>
+
+      <para>Mit <code>database put <replaceable>family</replaceable>
+      <replaceable>key</replaceable> <replaceable>value</replaceable></code>
+      können Werte in die Datenbank geschrieben werden:<screen>big-island*CLI&gt; database put obst apfel 20
+Updated database successfully</screen></para>
+    </section>
+
+    <section id="datenbank-cli-lesen">
+      <title>Werte aus der Datenbank lesen</title>
+
+      <para>Mit <code>database get <replaceable>family</replaceable>
+      <replaceable>key</replaceable></code> lesen Sie Werte aus der Datenbank
+      aus:<screen>big-island*CLI&gt; database get obst apfel
+Value: 20d*CLI&gt;</screen></para>
+    </section>
+
+    <section id="datenbank-cli-loeschen">
+      <title>Werte aus der Datenbank löschen</title>
+
+      <para><code>database del <replaceable>family</replaceable>
+      <replaceable>key</replaceable></code> und <code>database deltree
+      <replaceable>family</replaceable></code> löschen Werte aus der
+      Datenbank.</para>
+
+      <section id="datenbank-cli-del">
+        <title>database del</title>
+
+        <para>Um den Key <code>apfel</code> aus der Family <code>obst</code>
+        zu löschen, kann man <code>database del</code> aufrufen:<screen>big-island*CLI&gt; database del obst apfel
+Database entry removed.</screen></para>
+      </section>
+
+      <section id="datenbank-cli-deltree">
+        <title>database deltree</title>
+
+        <para>Mit <code>database deltree</code> kann eine ganze Family aus der
+        Datenbank gelöscht werden:<screen>big-island*CLI&gt; database deltree obst
+Database entries removed.</screen></para>
+      </section>
+    </section>
+
+    <section id="datenbank-cli-anzeigen">
+      <title>Datenbankinhalt anzeigen</title>
+
+      <para>Mit den Befehlen <code>database show</code> und <code>database
+      showkey</code> kann der Administrator den Inhalt der Datenbank auf dem
+      CLI ausgeben lassen. Ein Beispiel:<screen>big-island*CLI&gt; database put einkaufsliste eier 2
+Updated database successfully
+big-island*CLI&gt; database put einkaufsliste butter 250
+Updated database successfully
+big-island*CLI&gt; database put einkaufsliste zucker 500
+Updated database successfully
+big-island*CLI&gt; database show
+/einkaufsliste/butter                             : 250                      
+/einkaufsliste/eier                               : 2                        
+/einkaufsliste/zucker                             : 500  
+big-island*CLI&gt; database showkey butter
+/einkaufsliste/butter                             : 250
+big-island*CLI&gt; database deltree einkaufsliste
+Database entries removed.</screen></para>
+    </section>
+  </section>
+
+  <section id="datenbank-von-shell">
+    <title>Datenbankzugriff von der Shell</title>
+
+    <para>Über den Befehl <command>asterisk -rx
+    '<replaceable>command</replaceable>'</command> können natürlich alle
+    CLI-Kommandos auch von einem Shell-Skript ausgeführt werden. Das folgende
+    Beispiel zeigt, wie man von der Shell aus die Datenbank erst mit Werten
+    füllt, diese dann ausliest und zum Schluss wieder löscht:<screen>big-island:~# asterisk -rx 'database put test var1 23'
+Updated database successfully
+big-island:~# asterisk -rx 'database put test var2 42'
+Updated database successfully
+big-island:~# asterisk -rx 'database show test'
+/test/var1                                        : 23                       
+/test/var2                                        : 42                       
+big-island:~# asterisk -rx 'database get test var2'
+Value: 42
+big-island:~# asterisk -rx 'database deltree test'
+Database entries removed.</screen><important>
+        <para>Denken Sie wieder daran, dass Sie, wenn die Family, der
+        Schlüssel oder der Wert Leerzeichen enthält, Anführungszeichen
+        (<code>"</code>) um den String schreiben müssen! Also z.B.<screen>big-island:~# asterisk -rx 'database put test eintrag "Hallo Welt"'</screen></para>
+      </important></para>
+  </section>
+
+  <section id="datenbank-backup">
+    <title>Backup der Datenbank</title>
+
+    <para>Die Asterisk-Datenbank wird standardmäßig im Verzeichnis
+    <filename>/var/lib/asterisk/astdb/</filename> gespeichert. Sobald Asterisk
+    gestoppt ist ist, kann man das Verzeichnis sichern.</para>
+
+    <para>Ein Backup im laufenden Betrieb kann auch von der Shell durch
+    folgenden Befehl<programlisting>asterisk -rx "database show" &gt; /tmp/backup-asterisk-database.txt</programlisting>
+    durchgeführt werden. Allerdings ist das Restore dann etwas
+    aufwendiger.</para>
+  </section>
+
+  <section id="section-callforwarding">
+    <title>Anwendungsbeispiel CallForwarding</title>
+
+    <para>Wer bei Abwesenheit alle Gespräche an seine Durchwahl z.B. an sein
+    Handy weiterleiten will, benötigt eine CallForwarding-Funktionalität.
+    Diese kann entweder vom Endgerät (also dem SIP-Telefon) oder zentral von
+    der Telefonanlage realisiert werden. Letztere Variante ist in der Praxis
+    vorzuziehen, da man dadurch unabhängig von den Endgeräten ist (diese also
+    im Zweifelsfall auch austauschen kann) und zusätzlich die gesamte
+    Kontrolle auf dem Server behält. Außerdem ist im Falle eines Stromausfalls
+    die Konfiguration nicht verloren und wird beim nächsten Start der
+    Telefonanlage automatisch wiederhergestellt.</para>
+
+    <section id="einfaches-callforwarding">
+      <title>Einfaches CallForwarding</title>
+
+      <para>Bei der Apfelmus GmbH soll jeder Mitarbeiter die Möglichkeit
+      bekommen, Gespräche zu seinem Telefon an eine beliebige andere Nummer
+      weiterzuleiten. Um diese Weiterleitung zu aktivieren, muss die interne
+      Rufnummer 44 gefolgt von der Zielrufnummer angerufen werden. Zum
+      Deaktivieren der Weiterleitung muss wieder die 44 (aber diesmal ohne
+      eine weitere Nummer) angerufen werden. Dies wird mit folgendem Wählplan
+      realisiert:</para>
+
+      <programlisting>[from-intern]
+; Call Forwarding für einen einzelnen Anschluss
+;
+; aktivieren
+exten =&gt; _44X.,1,Answer()
+exten =&gt; _44X.,2,Set(DB(CF/${CALLERID(number)})=${EXTEN:2})
+exten =&gt; _44X.,3,SayDigits(${EXTEN:2})
+exten =&gt; _44X.,4,NoOp(Weiterleitung fuer ${CALLERID(number)} auf ${EXTEN:2} aktiviert.) 
+exten =&gt; _44X.,5,Hangup()
+
+; deaktivieren
+exten =&gt; 44,1,Answer()
+exten =&gt; 44,2,DBdel(CF/${CALLERID(number)})
+exten =&gt; 44,3,Playback(auth-thankyou)
+exten =&gt; 44,4,NoOp(Weiterleitung fuer ${CALLERID(number)} deaktiviert.) 
+exten =&gt; 44,5,Hangup()
+
+[from-extern]
+exten =&gt; _X.,1,NoOp(Anruf von ${CALLERID(number)} fuer ${EXTEN})
+exten =&gt; _X.,2,GotoIf($[foo${DB(CF/${EXTEN})} != foo]?100:20)
+exten =&gt; _X.,20,Dial(SIP/${EXTEN})
+exten =&gt; _X.,100,NoOp(Anruf fuer ${EXTEN} wird verbunden zu ${DB(CF/${EXTEN})})
+exten =&gt; _X.,101,Dial(local/${DB(CF/${EXTEN})})</programlisting>
+    </section>
+
+    <section id="komplexes-callforwarding">
+      <title>Komplexes CallForwarding</title>
+
+      <para>Diesmal soll in der Apfelmus GmbH jeder Mitarbeiter ein
+      CallForwarding aktivieren können, allerdings soll es ein weiteres
+      CallForwarding für die gesamte Firma geben, damit bei einem
+      Betriebsausflug alle Gespräche an eine andere Niederlassung geleitet
+      werden können. Diese Weiterleitung wird über die Funktionsnummer 55
+      aktiviert (gefolgt von der Zielrufnummer). Die große Weiterleitung für
+      die gesamte Anlage hat dabei eine höhere Priorität als die einzelnen
+      Regeln. Eine Realisierung kann wie folgt aussehen:<programlisting>[from-intern]
+; CallForwarding für einen einzelnen Anschluss
+;
+; aktivieren
+exten =&gt; _44X.,1,Answer()
+exten =&gt; _44X.,2,Set(DB(CF/${CALLERID(number)})=${EXTEN:2})
+exten =&gt; _44X.,3,SayDigits(${EXTEN:2})
+exten =&gt; _44X.,4,NoOp(Weiterleitung fuer ${CALLERID(number)} auf ${EXTEN:2} aktiviert.) 
+exten =&gt; _44X.,5,Hangup()
+
+; deaktivieren
+exten =&gt; 44,1,Answer()
+exten =&gt; 44,2,DBdel(CF/${CALLERID(number)})
+exten =&gt; 44,3,Playback(auth-thankyou)
+exten =&gt; 44,4,NoOp(Weiterleitung fuer ${CALLERID(number)} deaktiviert.) 
+exten =&gt; 44,5,Hangup()
+
+; CallForwarding für die gesamte Telefonanlage
+;
+; aktivieren
+exten =&gt; _55X.,1,Answer()
+exten =&gt; _55X.,2,Set(DB(CF/anlage)=${EXTEN:2})
+exten =&gt; _55X.,3,SayDigits(${EXTEN:2})
+exten =&gt; _55X.,4,NoOp(Weiterleitung der Anlage auf ${EXTEN:2} aktiviert.) 
+exten =&gt; _55X.,5,Hangup()
+
+; deaktivieren
+exten =&gt; 55,1,Answer()
+exten =&gt; 55,2,DBdel(CF/anlage)
+exten =&gt; 55,3,Playback(auth-thankyou)
+exten =&gt; 55,4,NoOp(Weiterleitung der Anlage deaktiviert.) 
+exten =&gt; 55,5,Hangup()
+
+[from-extern]
+exten =&gt; _X.,1,NoOp(Anruf von ${CALLERID(number)} fuer ${EXTEN})
+exten =&gt; _X.,4,GotoIf($[foo${DB(CF/anlage)} != foo]?200:5)
+exten =&gt; _X.,5,GotoIf($[foo${DB(CF/${EXTEN})} != foo]?100:6)
+exten =&gt; _X.,6,Dial(SIP/${EXTEN})
+exten =&gt; _X.,100,NoOp(Anruf fuer ${EXTEN} wird verbunden zu ${DB(CF/${EXTEN})})
+exten =&gt; _X.,101,Dial(local/${DB(CF/${EXTEN})})
+exten =&gt; _X.,200,NoOp(Anruf fuer ${EXTEN} wird verbunden zu ${DB(CF/anlage)})
+exten =&gt; _X.,201,Dial(local/${DB(CF/anlage)})
+</programlisting></para>
+    </section>
+  </section>
+
+  <section id="beispiel-callingcard">
+    <title>Anwendungsbeispiel CallingCard</title>
+
+    <para>In der Apfelmus GmbH sollen private Gespräche über eine CallingCard
+    abgerechnet werden. Diese wird vom Hausmeister über sein Telefon virtuell
+    aufgeladen (durch Anwahl der internen Servicenummer 88 gefolgt von der
+    3-stelligen Durchwahl und vom gewünschten Geldbetrag in Euro).<footnote>
+        <para>Um das Beispiel möglichst einfach zu halten, wird der Fall, dass
+        auf ein bereits bestehendes CallingCard-Konto ein weiterer Betrag
+        eingezahlt wird (also eine Addition vollzogen werden muss) nicht
+        besprochen. Ebenfalls nicht behandelt wird die Möglichkeit, dass ein
+        Mitarbeiter von einem anderen Telefon ein privates Gespräch führen
+        könnte.</para>
+      </footnote> Die Gespräche werden zu einem Pauschalpreis von 1 Euro pro
+    Gespräch abgerechnet. Diese privaten Gespräche werden über die interne
+    Servicenummer 99 gefolgt von der Zielrufnummer geführt. Dabei ist zu
+    beachten, dass bei einem Besetzt (busy) kein Geldbetrag vom Konto
+    abgebucht wird. Die interne Rufnummer 98 kann dazu benutzt werden, den
+    aktuellen Betrag auf dem CallingCard-Konto abzurufen.<programlisting>[from-hausmeister]
+; Aufladen der virtuellen CallingCard
+;
+exten =&gt; _88XXX.,1,Answer()
+exten =&gt; _88XXX.,2,Set(DB(CallingCard/${EXTEN:2:3})=${EXTEN:5})
+exten =&gt; _88XXX.,3,SayNumber(${EXTEN:5})
+exten =&gt; _88XXX.,4,NoOp(CallingCard fuer ${EXTEN:2:3} mit ${EXTEN:5} aufgeladen.)
+exten =&gt; _88XXX.,5,Hangup()
+
+[from-intern]
+; private Gespraeche
+;
+exten =&gt; _99.,1,GotoIf($[${DB(CallingCard/${CALLERID(number)} &gt; 0]?2:200)
+exten =&gt; _99.,2,Set(DB(CallingCard/${CALLERID(number)})=$[DB(CallingCard/${CALLERID(number)}) - 1])
+exten =&gt; _99.,3,Dial(local/${EXTEN:2})
+exten =&gt; _99.,104,Set(DB(CallingCard/${CALLERID(number)})=$[DB(CallingCard/${CALLERID(number)}) + 1])
+
+exten =&gt; _99.,200,NoOp(CallingCard Konto ${CALLERID(number) ist leer.)
+exten =&gt; _99.,201,Answer()
+exten =&gt; _99.,202,SayNumber(0)
+exten =&gt; _99.,203,Hangup()
+
+; Mit der 98 kann der aktuelle Kontostand abgefragt werden.
+;
+exten =&gt; 98,1,Answer()
+exten =&gt; 98,2,SayNumber(${DB(CallingCard/${CALLERID(number)})})
+exten =&gt; 98,3,Hangup()</programlisting></para>
+  </section>
+</chapter>

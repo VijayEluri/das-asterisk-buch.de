@@ -1,0 +1,2925 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<chapter id="kapitel-voicemail" lang="de" revision="$Revision: 1.14 $">
+  <!--% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <chapterinfo>
+    <date></date>
+
+    <revhistory>
+      <revision>
+        <revnumber>Rechtsschreiblektorat</revnumber>
+
+        <date>23.12.2006</date>
+      </revision>
+    </revhistory>
+  </chapterinfo>
+
+  <title id="voicemail.title">Voicemailsystem</title>
+
+  <section id="voicemail-einleitung">
+    <title id="voicemail-einleitung.title">Einleitung</title>
+
+    <simpara>In diesem Kapitel beschäftigen wir uns mit den
+    Möglichkeiten des eingebauten Voicemailsystems von Asterisk. Dies
+    ist nicht zu verwechseln mit einem Interactive Voice Response System
+    (IVR), dem Thema von <xref linkend="kapitel-ivr" />.</simpara>
+
+    <simpara>Da jede Telefonanlage einen Anrufbeantworter oder
+    Neudeutsch ein Voicemailsystem<footnote>
+        <simpara>In diesem Buch wird das Wort Voicemailsystem oder kurz
+        Voicemail benutzt anstelle von Anrufbeantworter. Ein
+        <quote>Anrufbeantworter</quote> ist nach allgemeinem Verständnis
+        eher ein schwarzer Kasten mit einem Kassettenrekorder neben dem
+        Telefon. Ein Voicemailsystem bietet viel mehr Möglichkeiten als
+        ein Anrufbeantworter im herkömmlichen Sinne.</simpara>
+      </footnote> benötigt, haben die Asterisk-Entwickler ein solches
+    System als Grundausstattung eingebaut.<footnote>
+        <simpara>Das Voicemailsystem wurde übrigens von den
+        Asterisk-Entwicklern scherzhaft <emphasis>Comedian
+        Voicemail</emphasis> genannt und meldet sich im englischen
+        Original auch so.</simpara>
+      </footnote>.</simpara>
+  </section>
+
+  <section id="voicemail-beispiele">
+    <title id="voicemail-beispiele.title">Beispielanwendungen</title>
+
+    <simpara>Die folgenden Beispiele geben einen schnellen Überblick
+    über typische Konstellationen. Anschließend (in <xref
+    linkend="voicemail-applikationen" />) wird auf die Besonderheiten
+    und Möglichkeiten von Voicemailsystemen unter Asterisk
+    eingegangen.</simpara>
+
+    <section id="voicemail-beispiele-meier">
+      <title id="voicemail-beispiele-meier.title">Voicemailbox der
+      Familie Meier</title>
+
+      <simpara>Die Familie Meier stellt im Zuge der Modernisierung des
+      Haushaltes auf eine Asterisk-Telefonanlage um. Dies beinhaltet
+      eine moderne Voicemailbox für alle Familienmitglieder.</simpara>
+
+      <section id="voicemail-beispiele-meier-aufgabe">
+        <title
+        id="voicemail-beispiele-meier-aufgabe.title">Aufgabenstellung</title>
+
+        <simpara>Folgende Personen müssen mit einer Voicemailbox
+        ausgerüstet werden:</simpara>
+
+        <informaltable colsep="0" frame="none" rowsep="0">
+          <tgroup cols="3">
+            <colspec colnum="1" colwidth="1.5*" />
+
+            <colspec colnum="2" colwidth="1*" />
+
+            <colspec colnum="3" colwidth="6*" />
+
+            <thead>
+              <row>
+                <entry>Name</entry>
+
+                <entry>Extension</entry>
+
+                <entry>Bemerkung</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>Horst Meier</entry>
+
+                <entry>200</entry>
+
+                <entry>Normale Voicemailbox</entry>
+              </row>
+
+              <row>
+                <entry>Eva Meier</entry>
+
+                <entry>201</entry>
+
+                <entry>Normale Voicemailbox</entry>
+              </row>
+
+              <row>
+                <entry>Peter Meier</entry>
+
+                <entry>202</entry>
+
+                <entry>Normale Voicemailbox und Benachrichtigung per
+                E-Mail, die Sprachnachricht wird der E-Mail
+                beigefügt</entry>
+              </row>
+
+              <row>
+                <entry>Lisa Meier</entry>
+
+                <entry>203</entry>
+
+                <entry>Normale Voicemailbox, Benachrichtung per E-Mail
+                (Sprachnachricht wird der E-Mail beigefügt) und danach
+                automatische Löschung der Voicemail im System</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+      </section>
+
+      <section id="voicemail-beispiele-meier-loesung">
+        <title
+        id="voicemail-beispiele-meier-loesung.title">Lösung</title>
+
+        <simpara>Die <filename>voicemail.conf</filename> sieht in diesem
+        Fall wie folgt aus:</simpara>
+
+        <programlisting>[general]
+; Die Sprachnachrichten werden im GSM Format gespeichert, 
+; um Platz zu sparen.
+format = gsm
+attach = yes
+
+[default]
+; Die Syntax fuer die Eintraege lautet:
+; MailboxNr =&gt; Passwort,Name,E-Mail,Pager,Optionen
+; (wobei die MailboxNr oft der Extension entspricht)
+200 =&gt; 1234,Horst Meier
+201 =&gt; 1234,Eva Meier
+202 =&gt; 1234,Peter Meier,peter@die-familie-meier.de
+203 =&gt; 1234,Lisa Meier,lisa@die-familie-meier.de,,delete=yes</programlisting>
+
+        <simpara>Und in der <filename>extensions.conf</filename> wird
+        auf die Voicemailbox wie folgt verwiesen:</simpara>
+
+        <programlisting>[familie-meier]
+; Wenn nach 80 Sekunden niemand abnimmt, geht das Gespraech 
+; auf die Voicemailbox, das gleiche bei "besetzt".
+exten =&gt; 20[0-3],1,Dial(SIP/${EXTEN},80,j)
+exten =&gt; 20[0-3],2,VoiceMail(u${EXTEN})
+exten =&gt; 20[0-3],102,VoiceMail(b${EXTEN})
+
+; auf der Extension 250 kann jeder Teilnehmer mit seinem 
+; Telefon seine persoenliche Voicemailbox abrufen.
+exten =&gt; 250,1,VoiceMailMain(${CALLERID(num)})</programlisting>
+      </section>
+    </section>
+
+    <section id="voicemail-beispiele-firma">
+      <title id="voicemail-beispiele-firma.title">Die Apfelmus
+      GmbH</title>
+
+      <simpara>Die in <xref linkend="eine_grosse_telefonanlage" />
+      vorgestellte Apfelmus GmbH benötigt ein umfangreicheres
+      Voicemailsystem. Wir bedienen uns dieses Szenarios, um die
+      Möglichkeiten des Voicemailsystems näher zu erläutern.</simpara>
+
+      <section id="voicemail-beispiele-firma-aufgabe">
+        <title
+        id="voicemail-beispiele-firma-aufgabe.title">Aufgabenstellung</title>
+
+        <simpara>Folgende Einstellungen sollen für jede Voicemailbox als
+        Grundeinstellung vorgegeben werden:</simpara>
+
+        <itemizedlist spacing="compact">
+          <listitem>
+            <simpara>Sprachnachrichten werden im WAV-Format
+            abgespeichert.</simpara>
+          </listitem>
+
+          <listitem>
+            <simpara>Jede Voicemailbox kann maximal 200 Nachrichten
+            abspeichern.</simpara>
+          </listitem>
+
+          <listitem>
+            <simpara>Eine Sprachnachricht darf maximal 5 Minuten lang
+            sein.</simpara>
+          </listitem>
+
+          <listitem>
+            <simpara>Sprachnachrichten werden auf dem System gespeichert
+            und dem Nutzer als Attachment per E-Mail
+            zugestellt.</simpara>
+          </listitem>
+        </itemizedlist>
+
+        <simpara>Einzelne Abteilungen haben darüber hinaus noch
+        zusätzliche Wünsche und Bedürfnisse für ihre
+        Voicemailboxen:</simpara>
+
+        <informaltable colsep="0" frame="none" rowsep="0">
+          <tgroup cols="3">
+            <colspec colnum="1" colwidth="1*" />
+
+            <colspec colnum="2" colwidth="1.2*" />
+
+            <colspec colnum="3" colwidth="3*" />
+
+            <thead>
+              <row>
+                <entry>Voicemailbox</entry>
+
+                <entry>Funktion</entry>
+
+                <entry>Bemerkung</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>150</entry>
+
+                <entry>Hausmeister</entry>
+
+                <entry><itemizedlist spacing="compact">
+                    <listitem>
+                      <simpara>Eine Benachrichtigung wird nur per Pager
+                      zugestellt und nicht per E-Mail.</simpara>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>Anrufer dürfen die Sprachnachricht vor
+                      dem Abspeichern noch einmal anhören und ggfs.
+                      ändern.</simpara>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>Nach dem Abhören der Nachricht kann der
+                      Anrufer aus dem Menü zurückgerufen
+                      werden.</simpara>
+                    </listitem>
+                  </itemizedlist></entry>
+              </row>
+
+              <row>
+                <entry>160 - 169</entry>
+
+                <entry>IT</entry>
+
+                <entry><itemizedlist spacing="compact">
+                    <listitem>
+                      <simpara>In der IT-Abteilung bekommt jeder
+                      Mitarbeiter eine eigene Voicemailbox.</simpara>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>Es wird nur dann auf die Voicemailboxen
+                      umgeleitet, wenn kein Mitarbeiter ans Telefon
+                      geht. Bei besetztem Anschluss kann hingegen keine
+                      Nachricht hinterlassen werden.<footnote>
+                          <simpara>Dies ist eine Vorsichtsmaßnahme, die
+                          einen Denial-Of-Service im Falle eines großen
+                          IT-Problems verhindern soll. Wenn alle
+                          Mitarbeiter eine Nachricht auf dem
+                          Voicemailsystem hinterlassen würden, dann käme
+                          die IT-Abteilung mit dem Abhören dieser
+                          Nachrichten nicht mehr nach.</simpara>
+                        </footnote></simpara>
+                    </listitem>
+                  </itemizedlist></entry>
+              </row>
+
+              <row>
+                <entry>802</entry>
+
+                <entry>Verkauf Inland</entry>
+
+                <entry><itemizedlist spacing="compact">
+                    <listitem>
+                      <simpara>Es wird keine E-Mail verschickt.<footnote>
+                          <simpara>In der Verkäufergruppe sind mehrere
+                          Personen, es soll daher nicht eine E-Mail an
+                          eine bestimmte Einzelperson geschickt werden.
+                          Man könnte aber die Funktion vieler SIP-Telefone
+                          nutzen, mit einem Blinklicht anzuzeigen, ob eine
+                          Nachricht in der Voicemailbox vorhanden
+                          ist.</simpara>
+                        </footnote></simpara>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>Bei der Abfrage der Voicemailbox muss
+                      kein Passwort eingegeben werden.</simpara>
+                    </listitem>
+                  </itemizedlist></entry>
+              </row>
+
+              <row>
+                <entry>803</entry>
+
+                <entry>Verkauf Ausland</entry>
+
+                <entry><itemizedlist spacing="compact">
+                    <listitem>
+                      <simpara>Es wird keine E-Mail
+                      verschickt.</simpara>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>Bei der Abfrage der Voicemailbox muss
+                      kein Passwort eingegeben werden.</simpara>
+                    </listitem>
+                  </itemizedlist></entry>
+              </row>
+
+              <row>
+                <entry>201</entry>
+
+                <entry>Geschäftsführer 1</entry>
+
+                <entry><itemizedlist spacing="compact">
+                    <listitem>
+                      <simpara>Anrufer dürfen die Sprachnachricht vor
+                      dem Abspeichern noch einmal anhören und ggfs.
+                      ändern.</simpara>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>Nach dem Abhören der Nachricht kann der
+                      Anrufer aus dem Menü zurückgerufen
+                      werden.</simpara>
+                    </listitem>
+                  </itemizedlist></entry>
+              </row>
+
+              <row>
+                <entry>202</entry>
+
+                <entry>Geschäftsführer 2</entry>
+
+                <entry><itemizedlist spacing="compact">
+                    <listitem>
+                      <simpara>Anrufer dürfen die Sprachnachricht vor
+                      dem Abspeichern noch einmal anhören und ggfs.
+                      ändern.</simpara>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>Nach dem Abhören der Nachricht kann der
+                      Anrufer aus dem Menü zurückgerufen
+                      werden.</simpara>
+                    </listitem>
+                  </itemizedlist></entry>
+              </row>
+
+              <row>
+                <entry>804</entry>
+
+                <entry>Sekretariat</entry>
+
+                <entry><itemizedlist spacing="compact">
+                    <listitem>
+                      <simpara>Anrufer dürfen die Sprachnachricht vor
+                      dem Abspeichern noch einmal anhören und ggfs.
+                      ändern.</simpara>
+                    </listitem>
+                  </itemizedlist></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+      </section>
+
+      <section id="voicemail-beispiele-firma-loesung">
+        <title
+        id="voicemail-beispiele-firma-loesung.title">Lösung</title>
+
+        <simpara>Die <filename>voicemail.conf</filename> der Apfelmus
+        GmbH sieht wie folgt aus:</simpara>
+
+        <programlisting>[general]
+; Die Sprachnachrichten werden im qualitativ hochwertigen 
+; WAV Format gespeichert.
+format = wav
+
+; Die E-Mails mit den Sprachnachrichten fuer die Nutzer erhalten 
+; als Absender: voicemailsystem@apfelmus-gmbh.de
+serveremail = voicemailsystem@apfelmus-gmbh.de
+
+; Es duerfen maximal 200 Nachrichten pro Mailbox 
+; gespeichert werden.
+maxmsg = 200
+
+; Die maximale Laenge einer Sprachnachricht ist 5 Minuten
+maxmessage = 300
+
+; Text fuer die Benachrichtigungs-E-Mail.
+; Muss in einer Zeile stehen!
+emailbody = Guten Tag ${VM_NAME},\n\nSie haben eine neue Nachricht von ${VM_CALLERID} in Ihrer Voicemailbox ${VM_MAILBOX}. Bitte rufen Sie die 800 an, um die Nachricht abzuhoeren.\n\n-- Asterisk Voicemail System\n
+
+; Text fuer die Benachrichtigung per Pager.
+; Muss in einer Zeile stehen!
+pagerbody = Neue Voicemail von ${VM_CALLERID} um ${VM_DATE}.
+
+; Voice-Nachrichten anhaengen:
+attach = yes
+
+[default]
+; Die Syntax fuer die Konfigurationszeilen ist:
+; MailboxNr =&gt; Passwort,Name,E-Mail,Pager,Optionen
+150 =&gt; 1234,Hans Hausmeister,,pager.hausmeister@apfelmus-gmbh.de,review=yes|callback=interne-gespraeche
+802 =&gt; 1234,Verkauf Inland
+803 =&gt; 1234,Verkauf Ausland
+201 =&gt; 1234,Hans Wichtig,geschaeftsfuehrer1@apfelmus-gmbh.de,,review=yes|callback=interne-gespraeche
+202 =&gt; 1234,Uwe Wichtig,geschaeftsfuehrer2@apfelmus-gmbh.de,,review=yes|callback=interne-gespraeche
+804 =&gt; 1234,Sekretariat,sekr@apfelmus-gmbh.de,,,review=yes</programlisting>
+
+        <simpara>Und in der <filename>extensions.conf</filename> wird
+        auf die Voicemailbox wie folgt verwiesen:</simpara>
+
+        <programlisting>[hausmeister]
+include =&gt; interne-gespraeche
+include =&gt; voicemailsystem-hausmeister
+
+[it]
+include =&gt; interne-gespraeche
+include =&gt; voicemailsystem-komfort
+include =&gt; voicemailsystem-normal
+
+[geschaeftsfuehrer]
+include =&gt; interne-gespraeche
+include =&gt; voicemailsystem-komfort
+
+[sekretariat]
+include =&gt; interne-gespraeche
+include =&gt; voicemailsystem-komfort
+
+[verkauf-national]
+include =&gt; interne-gespraeche
+include =&gt; voicemailsystem-verkauf-national
+
+[verkauf-ausland]
+include =&gt; interne-gespraeche
+include =&gt; voicemailsystem-verkauf-ausland
+
+[versand]
+include =&gt; interne-gespraeche
+include =&gt; voicemailsystem-komfort
+
+[produktion]
+include =&gt; interne-gespraeche
+include =&gt; voicemailsystem-komfort
+
+[sonstige]
+
+[interne-gespraeche]
+; Wenn der Hausmeister nach 60 Sekunden nicht 
+; ans Telefon geht, wird das Telefonat auf die 
+; Voicemailbox 150 geleitet. 
+exten =&gt; _15X,1,Dial(SIP/${EXTEN},60)
+exten =&gt; _15X,2,VoiceMail(u150)
+exten =&gt; _15X,102,VoiceMail(b150)
+
+; Die IT hat normale Voicemailboxen.
+exten =&gt; _16X,1,Dial(SIP/${EXTEN},60)
+exten =&gt; _16X,2,VoiceMail(u${EXTEN})
+
+; Die beiden Geschaeftsfuehrer haben eine 
+; eigene Voicemailbox.
+exten =&gt; _20[1-2],1,Dial(SIP/${EXTEN},120)
+exten =&gt; _20[1-2],2,VoiceMail(u${EXTEN})
+exten =&gt; _20[1-2],102,VoiceMail(b${EXTEN})
+
+; Das Sekretariat hat eine Gruppenmailbox.
+exten =&gt; _2[3-6]X,1,Dial(SIP/${EXTEN},120)
+exten =&gt; _2[3-6]X,2,VoiceMail(u804)
+exten =&gt; _2[3-6]X,102,VoiceMail(b804)
+
+; Der Verkauf National hat eine Gruppenmailbox
+exten =&gt; _3[0-4]X,1,Dial(SIP/${EXTEN},80)
+exten =&gt; _3[0-4]X,2,VoiceMail(u802)
+exten =&gt; _3[0-4]X,102,VoiceMail(b802)
+
+; Der Verkauf Ausland hat eine Gruppenmailbox
+exten =&gt; _3[5-9]X,1,Dial(SIP/${EXTEN},80)
+exten =&gt; _3[5-9]X,2,VoiceMail(u803)
+exten =&gt; _3[5-9]X,102,VoiceMail(b803)
+
+; Alle anderen erhalten keine Voicemailbox.
+exten =&gt; _[4-5]XX,1,Dial(SIP/${EXTEN},120)
+
+
+[voicemailsystem-komfort]
+exten =&gt; 800,1,VoiceMailMain(${CALLERID(num)})
+
+[voicemailsystem-normal]
+exten =&gt; 801,1,VoiceMailMain()
+
+[voicemailsystem-hausmeister]
+exten =&gt; 800,1,VoiceMailMain(150)
+
+[voicemailsystem-verkauf-national]
+exten =&gt; 800,1,VoiceMailMain(s802)
+
+[voicemailsystem-verkauf-ausland]
+exten =&gt; 800,1,VoiceMailMain(s803)</programlisting>
+      </section>
+
+      <section id="voicemail-beispiele-firma-besonderheiten">
+        <title
+        id="voicemail-beispiele-firma-besonderheiten.title">Besonderheiten</title>
+
+        <simpara>Die <filename>extensions.conf</filename> der Apfelmus
+        GmbH sieht jetzt schon etwas aufwendiger aus. Das liegt daran,
+        dass wir verschiedene Voicemailboxarten verwenden. Es gibt
+        einmal die normale Voicemailbox und dann noch die
+        Gruppen-Voicemailboxen für den Verkauf und das Sekretariat.
+        Weiterhin sollen die Mitarbeiter des Verkaufs ihre
+        Voicemailboxen ohne Passwort-Eingabe abrufen können. Das Ganze
+        soll natürlich für den einzelnen Mitarbeiter möglichst
+        komfortabel abgebildet werden. Aus diesem Grund bleibt für alle
+        User des Systems die <code>800</code> die Rufnummer der
+        Voicemailbox, unter der sie dieselbige abrufen können.</simpara>
+      </section>
+    </section>
+  </section>
+
+  <section id="voicemail-applikationen">
+    <title id="voicemail-applikationen.title">Applikationen</title>
+
+    <simpara>Es gibt zwei Voicemail-Applikationen, die in der
+    <filename>extensions.conf</filename> aufgerufen werden
+    können:</simpara>
+
+    <variablelist>
+      <varlistentry>
+        <term><code>VoiceMail()</code></term>
+
+        <listitem>
+          <simpara>Dieses Programm leitet einen Anrufer an das
+          Voicemailsystem weiter, und dort wird er aufgefordert, eine
+          Nachricht zu hinterlassen.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>VoiceMailMain()</code></term>
+
+        <listitem>
+          <simpara>VoiceMailMain ist das Abfrageprogramm für die Nutzer
+          der Telefonanlage. Mit diesem Programm können Nutzer selbst
+          Ansagen aufnehmen und Nachrichten abhören.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <section id="voicemail-applikationen-voicemail">
+      <title
+      id="voicemail-applikationen-voicemail.title"><code>VoiceMail()</code><indexterm
+          significance="preferred">
+          <primary><filename>extensions.conf</filename></primary>
+
+          <secondary><code>VoiceMail()</code></secondary>
+        </indexterm><indexterm significance="preferred">
+          <primary><code>VoiceMail()</code></primary>
+
+          <see><filename>extensions.conf</filename>:
+          <code>VoiceMail()</code></see>
+        </indexterm></title>
+
+      <simpara>Funktion: Der Anrufer kann eine Nachricht auf dem
+      Voicemailsystem hinterlassen.</simpara>
+
+      <simpara>Die Applikation <code>VoiceMail()</code> wird immer aus
+      der Datei <filename>extensions.conf</filename> aufgerufen.
+      Beispiel:</simpara>
+
+      <programlisting>exten =&gt; 2000,2,VoiceMail(u2000)</programlisting>
+
+      <section id="voicemail-applikationen-voicemail-syntax">
+        <title
+        id="voicemail-applikationen-voicemail-syntax.title">Syntax</title>
+
+        <synopsis>VoiceMail([u|b|s]mailbox[@context])</synopsis>
+
+        <variablelist termlength="10">
+          <varlistentry>
+            <term><code>[u|b|s]</code></term>
+
+            <listitem>
+              <variablelist termlength="2">
+                <varlistentry>
+                  <term><code>u</code></term>
+
+                  <listitem>
+                    <simpara>veranlasst, dass die
+                    <quote>unavailable</quote> (nicht verfügbar)
+                    Nachricht abgespielt wird. Der Dateiname im
+                    Filesystem ist
+                    <filename>/var/lib/asterisk/sounds/vm-isunavail.gsm</filename><footnote>
+                        <simpara>Falls Sie ein fertiges Asterisk-Paket
+                        verwenden, kann der Pfad z.B. auch
+                        <filename>/usr/share/asterisk/sounds/</filename>
+                        sein.</simpara>
+                      </footnote></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>b</code></term>
+
+                  <listitem>
+                    <simpara>veranlasst, dass die <quote>busy</quote>
+                    (besetzt) Nachricht abgespielt wird. Der Dateiname
+                    im Filesystem ist
+                    <filename>/var/lib/asterisk/sounds/vm-rec-busy.gsm.</filename></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>s</code></term>
+
+                  <listitem>
+                    <simpara>unterdrückt das Abspielen einer Nachricht
+                    (Sounddatei) und startet unmittelbar die
+                    Aufnahme.</simpara>
+                  </listitem>
+                </varlistentry>
+              </variablelist>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>mailbox</code></term>
+
+            <listitem>
+              <simpara>Das ist der Name der Mailbox (Ziffern). Er muss
+              nicht identisch mit der entsprechenden Extension sein.
+              Dies ist aber aus praktischen Gründen sinnvoll, da die
+              Konfiguration dadurch übersichtlicher wird.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>@context</code></term>
+
+            <listitem>
+              <simpara>Eine Mailbox kann in einem bestimmten Context
+              ausgeführt werden. Ist kein Context angegeben, so wird der
+              <code>[default]</code>-Context verwendet.</simpara>
+
+              <simplelist>
+                <member>Wenn der Anrufer während der Ansage die
+                <code>0</code> (Null) drückt, dann springt die
+                Applikation zu der Extension <code>o</code> (Buchstabe o
+                kleingeschrieben) in diesem Context.</member>
+
+                <member>Wenn der Anrufer während der Ansage den
+                <code>*</code> (Stern) drückt, dann springt die
+                Applikation zu der Extension <code>a</code> (Buchstabe a
+                kleingeschrieben) in diesem Context.</member>
+              </simplelist>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <simpara>Falls keine Mailbox in der Datei
+        <filename>voicemail.conf</filename> definiert ist, aber ein
+        Eintrag mit der Priorität n+101 existiert, dann wird dieser
+        angesprungen und ausgeführt.</simpara>
+      </section>
+    </section>
+
+    <section id="voicemail-applikationen-voicemailmain">
+      <title
+      id="voicemail-applikationen-voicemailmain.title"><code>VoiceMailMain()</code><indexterm
+          significance="preferred">
+          <primary><filename>extensions.conf</filename></primary>
+
+          <secondary><code>VoiceMailMain()</code></secondary>
+        </indexterm><indexterm significance="preferred">
+          <primary><code>VoiceMailMain()</code></primary>
+
+          <see><filename>extensions.conf</filename>:
+          <code>VoiceMailMain()</code></see>
+        </indexterm></title>
+
+      <simpara>Funktion: Stellt Nutzern den Zugang zum Voicemailsystem
+      her.</simpara>
+
+      <simpara>Die Funktion <code>VoiceMailMain()</code> wird immer aus
+      der Datei <filename>extensions.conf</filename> aufgerufen.
+      Beispiel:</simpara>
+
+      <programlisting>exten =&gt; 300,1,VoiceMailMain()</programlisting>
+
+      <section id="voicemail-applikationen-voicemailmain-syntax">
+        <title
+        id="voicemail-applikationen-voicemailmain-syntax.title">Syntax</title>
+
+        <synopsis>VoiceMailMain([s|p]mailbox[@context])</synopsis>
+
+        <variablelist termlength="10">
+          <varlistentry>
+            <term><code>[s|p]</code></term>
+
+            <listitem>
+              <variablelist termlength="1">
+                <varlistentry>
+                  <term><code>s</code></term>
+
+                  <listitem>
+                    <simpara>Wird ein <code>s</code> vor den
+                    Mailboxnamen gestellt, dann entfällt die
+                    Passwortabfrage.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>p</code></term>
+
+                  <listitem>
+                    <simpara>Wird ein <code>p</code> vor den
+                    Mailboxnamen gestellt, dann wird der User gebeten,
+                    eine Mailbox anzugeben. Aus dem Inhalt von
+                    <code><replaceable>mailbox</replaceable></code> und
+                    dieser Eingabe wird dann der neue Mailboxname. Damit
+                    lässt sich eine mandantenfähige Mailboxstruktur
+                    realisieren.</simpara>
+                  </listitem>
+                </varlistentry>
+              </variablelist>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>mailbox</code></term>
+
+            <listitem>
+              <simpara>Der Name (also Nummer) der Mailbox. Wenn kein
+              Name vorgegeben wurde, fragt das System danach.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>@context</code></term>
+
+            <listitem>
+              <simpara>Definiert den Context, der innerhalb der
+              <filename>voicemail.conf</filename> angesprochen
+              wird.</simpara>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </section>
+
+      <section id="voicemail-applikationen-voicemailmain-menue">
+        <title
+        id="voicemail-applikationen-voicemailmain-menue.title">Menü<indexterm
+            significance="preferred">
+            <primary>VoiceMailBox</primary>
+
+            <secondary>Sprachmenü</secondary>
+          </indexterm><indexterm significance="preferred">
+            <primary>Anrufbeantworter</primary>
+
+            <secondary>Sprachmenü</secondary>
+
+            <see>VoiceMailBox: Sprachmenü</see>
+          </indexterm><indexterm>
+            <primary>Sprachmenü</primary>
+
+            <see>VoiceMailBox: Sprachmenü</see>
+          </indexterm></title>
+
+        <simpara>Eine Beschreibung des Sprachmenüs von
+        <code>VoiceMailMain()</code> ist schwierig, da es von den
+        eingesetzten Prompts (Sprachbausteinen) abhängt. Die
+        prinzipiellen Funktionen sind hier aufgelistet. In Klammern
+        finden sich die englischen Beschreibungen.</simpara>
+
+        <informaltable colsep="0" frame="none" rowsep="0">
+          <tgroup cols="2">
+            <colspec colnum="1" colwidth="20pt" />
+
+            <tbody>
+              <row>
+                <entry><emphasis
+                role="bold"><code>1</code></emphasis></entry>
+
+                <entry>Nachrichten abspielen <foreignphrase
+                lang="en">(Read voicemail
+                messages)</foreignphrase></entry>
+              </row>
+
+              <row>
+                <entry>&nbsp;</entry>
+
+                <entrytbl cols="2" colsep="0" rowsep="0">
+                  <colspec colnum="1" colwidth="20pt" />
+
+                  <tbody>
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>3</code></emphasis></entry>
+
+                      <entry>Erweiterte Optionen <foreignphrase
+                      lang="en">(Advanced
+                      options)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry>&nbsp;</entry>
+
+                      <entrytbl cols="2" colsep="0" rowsep="0">
+                        <colspec colnum="1" colwidth="20pt" />
+
+                        <tbody>
+                          <row>
+                            <entry><emphasis
+                            role="bold"><code>1</code></emphasis></entry>
+
+                            <entry>Antwort <foreignphrase
+                            lang="en">(Reply)</foreignphrase></entry>
+                          </row>
+
+                          <row>
+                            <entry><emphasis
+                            role="bold"><code>2</code></emphasis></entry>
+
+                            <entry>Rückruf <foreignphrase lang="en">(Call
+                            back)</foreignphrase></entry>
+                          </row>
+
+                          <row>
+                            <entry><emphasis
+                            role="bold"><code>3</code></emphasis></entry>
+
+                            <entry>Zusatzinformationen <foreignphrase
+                            lang="en">(Envelope)</foreignphrase></entry>
+                          </row>
+
+                          <row>
+                            <entry><emphasis
+                            role="bold"><code>4</code></emphasis></entry>
+
+                            <entry>Anruf tätigen <foreignphrase
+                            lang="en">(Outgoing
+                            call)</foreignphrase></entry>
+                          </row>
+                        </tbody>
+                      </entrytbl>
+                    </row>
+
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>4</code></emphasis></entry>
+
+                      <entry>Vorherige Nachricht <foreignphrase
+                      lang="en">(Play previous
+                      message)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>5</code></emphasis></entry>
+
+                      <entry>Wiederholung der aktuellen Nachricht
+                      <foreignphrase lang="en">(Repeat current
+                      message)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>6</code></emphasis></entry>
+
+                      <entry>Nächste Nachricht <foreignphrase
+                      lang="en">(Play next
+                      message)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>7</code></emphasis></entry>
+
+                      <entry>Lösche aktuelle Nachricht <foreignphrase
+                      lang="en">(Delete current
+                      message)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>8</code></emphasis></entry>
+
+                      <entry>Nachricht an eine andere Mailbox
+                      weiterleiten <foreignphrase lang="en">(Forward
+                      message to another
+                      mailbox)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>9</code></emphasis></entry>
+
+                      <entry>Nachricht in einem Ordner speichern
+                      <foreignphrase lang="en">(Save message in a
+                      folder)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>*</code></emphasis></entry>
+
+                      <entry>Hilfe; während des Abspielens einer
+                      Nachricht: Zurückspulen <foreignphrase
+                      lang="en">(Help; during msg playback:
+                      Rewind)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>#</code></emphasis></entry>
+
+                      <entry>Beenden; während des Abspielens einer
+                      Nachricht: Weiter <foreignphrase lang="en">(Exit;
+                      during msg playback: Skip
+                      forward)</foreignphrase></entry>
+                    </row>
+                  </tbody>
+                </entrytbl>
+              </row>
+
+              <row>
+                <entry><emphasis
+                role="bold"><code>2</code></emphasis></entry>
+
+                <entry>Ordner wechseln <foreignphrase lang="en">(Change
+                folders)</foreignphrase></entry>
+              </row>
+
+              <row>
+                <entry><emphasis
+                role="bold"><code>0</code></emphasis></entry>
+
+                <entry>Mailbox-Optionen <foreignphrase
+                lang="en">(Mailbox options)</foreignphrase></entry>
+              </row>
+
+              <row>
+                <entry>&nbsp;</entry>
+
+                <entrytbl cols="2" colsep="0" rowsep="0">
+                  <colspec colnum="1" colwidth="20pt" />
+
+                  <tbody>
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>1</code></emphasis></entry>
+
+                      <entry>Aufnahme der <quote>nicht
+                      erreichbar</quote>-Ansage <foreignphrase
+                      lang="en">(Record your unavailable
+                      message)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>2</code></emphasis></entry>
+
+                      <entry>Aufnahme der <quote>im
+                      Gespräch</quote>-Ansage <foreignphrase
+                      lang="en">(Record your busy
+                      message)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>3</code></emphasis></entry>
+
+                      <entry>Aufnahme des Namens <foreignphrase
+                      lang="en">(Record your
+                      name)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry><emphasis
+                      role="bold"><code>4</code></emphasis></entry>
+
+                      <entry>Aufnahme einer temporären Ansage
+                      <foreignphrase lang="en">(Record your temporary
+                      message)</foreignphrase></entry>
+                    </row>
+
+                    <row>
+                      <entry>&nbsp;</entry>
+
+                      <entry>Jeweils nach der Aufnahme:</entry>
+                    </row>
+
+                    <row>
+                      <entry>&nbsp;</entry>
+
+                      <entrytbl cols="2" colsep="0" rowsep="0">
+                        <colspec colnum="1" colwidth="20pt" />
+
+                        <tbody>
+                          <row>
+                            <entry><emphasis
+                            role="bold"><code>1</code></emphasis></entry>
+
+                            <entry>Akzeptieren <foreignphrase
+                            lang="en">(Accept)</foreignphrase></entry>
+                          </row>
+
+                          <row>
+                            <entry><emphasis
+                            role="bold"><code>2</code></emphasis></entry>
+
+                            <entry>Nochmals abspielen <foreignphrase
+                            lang="en">(Review)</foreignphrase></entry>
+                          </row>
+
+                          <row>
+                            <entry><emphasis
+                            role="bold"><code>3</code></emphasis></entry>
+
+                            <entry>Nochmals aufnehmen
+                            <foreignphrase>(Re-record)</foreignphrase></entry>
+                          </row>
+                        </tbody>
+                      </entrytbl>
+                    </row>
+                  </tbody>
+                </entrytbl>
+              </row>
+
+              <row>
+                <entry><emphasis
+                role="bold"><code>*</code></emphasis></entry>
+
+                <entry>Hilfe <foreignphrase
+                lang="en">(Help)</foreignphrase></entry>
+              </row>
+
+              <row>
+                <entry><emphasis
+                role="bold"><code>#</code></emphasis></entry>
+
+                <entry>Beenden <foreignphrase
+                lang="en">(Exit)</foreignphrase></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+      </section>
+    </section>
+  </section>
+
+  <section id="voicemail-voicemail.conf">
+    <title
+    id="voicemail-voicemail.conf.title"><filename>voicemail.conf</filename><indexterm
+        significance="preferred">
+        <primary><filename>voicemail.conf</filename></primary>
+      </indexterm></title>
+
+    <simpara>In der Datei <filename>voicemail.conf</filename> wird das
+    Voicemailsystem von Asterisk konfiguriert. Es besteht aus 3
+    Bereichen:</simpara>
+
+    <itemizedlist spacing="compact">
+      <listitem>
+        <simpara><code>[general]</code></simpara>
+      </listitem>
+
+      <listitem>
+        <simpara><code>[zonemessages]</code></simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Freie Contexte</simpara>
+      </listitem>
+    </itemizedlist>
+
+    <section id="voicemail-voicemail.conf-general">
+      <title
+      id="voicemail-voicemail.conf-general.title"><code>[general]</code><indexterm
+          significance="preferred">
+          <primary><filename>voicemail.conf</filename></primary>
+
+          <secondary sortas="general"><code>[general]</code></secondary>
+        </indexterm><indexterm>
+          <primary sortas="general"><code>[general]</code></primary>
+
+          <see><filename>voicemail.conf</filename>:
+          <code>[general]</code></see>
+        </indexterm></title>
+
+      <simpara>Im Bereich <code>[general]</code> werden allgemeine
+      Konfigurationen des Voicemailsystems vorgenommen. Es stehen
+      folgende Optionen zur Verfügung:</simpara>
+
+      <variablelist>
+        <?dbfo list-presentation="blocks"?>
+
+        <?dbhtml list-presentation="list"?>
+
+        <varlistentry>
+          <term><synopsis>attach = <replaceable>[yes|no]</replaceable></synopsis><indexterm
+              significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>attach</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>attach</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Legt fest, ob an die Benachrichtigungs-E-Mails an
+            die Nutzer auch die Sprachnachricht als Sounddatei angehängt
+            wird. Default: <code>yes</code>. Normalerweise wird das
+            erste unter <code>format</code> eingestellte Format
+            verwendet.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>attach = no</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>callback = <replaceable>[Context]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>callback</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>callback</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Legt einen Context fest, der für Rückrufe aus dem
+            System benutzt wird. Ist dieser Wert nicht gesetzt, was per
+            Default der Fall ist, dann kann der User keine Rückrufe aus
+            dem Voicemailsystem machen.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>callback = intern</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>charset = <replaceable>[Zeichensatz]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>charset</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>charset</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Gibt den Zeichensatz (Charset) vor, in dem die
+            E-Mails vom Voicemailsystem kodiert werden.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>charset = ISO-8859-1</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>delete = <replaceable>[yes|no]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>delete</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>delete</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert, ob eine Sprachnachricht nach dem
+            Versenden per E-Mail automatisch gelöscht werden soll. Dies
+            spart Festplattenplatz auf dem Server, falls man
+            Sprachnachrichten nur per E-Mail empfangen will.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>delete = yes</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>directoryintro = <replaceable>[Dateiname]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>directoryintro</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>directoryintro</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert eine Sprachdatei innerhalb des
+            Default-Verzeichnisses
+            <filename>/var/lib/asterisk/sounds/</filename>, die anstatt
+            der normalen Datei für das Dial-by-Name-System abgespielt
+            wird (siehe <xref
+            linkend="dial-by-name-directory" />).</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>directoryintro =
+            intro-telefonbuch</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>emailsubject = <replaceable>[Text der Betreffzeile]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>emailsubject</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>emailsubject</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert den Betreff (Subject) einer
+            Benachrichtigungs-E-Mail. Für Informationen über Variablen
+            siehe <code>emailbody</code>.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>emailsubject = Neue Sprachnachricht von
+            ${VM_CALLERID}</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>pbxskip = <replaceable>[yes|no]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>pbxskip</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>pbxskip</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Standardmäßig schreibt Asterisk am Anfang der
+            Betreffzeile der E-Mail-Benachrichtigung über eine
+            Sprachnachricht den Text <code>[PBX]:</code> Dies kann mit
+            <code>yes</code> unterdrückt werden.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>pbxskip = yes</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>emailbody = <replaceable>[Text der Email]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>emailbody</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>emailbody</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert den E-Mail-Body<footnote>
+                <simpara>Textteil einer E-Mail</simpara>
+              </footnote> einer Benachrichtigungs-E-Mail (maximal 512
+            Zeichen).</simpara>
+
+            <simpara>Im Betreff und im Body einer solchen E-Mail kann
+            auf folgende Variablen zugegriffen werden:</simpara>
+
+            <informaltable colsep="0" frame="none" rowsep="0">
+              <tgroup cols="2">
+                <colspec colnum="1" colwidth="1*" />
+
+                <colspec colnum="2" colwidth="2*" />
+
+                <tbody>
+                  <row>
+                    <entry><code>${VM_NAME}</code> <indexterm>
+                        <primary>VM_NAME</primary>
+                      </indexterm></entry>
+
+                    <entry><simpara>Name des
+                    Mailboxinhabers</simpara></entry>
+                  </row>
+
+                  <row>
+                    <entry><code>${VM_DUR}</code> <indexterm>
+                        <primary>VM_DUR</primary>
+                      </indexterm></entry>
+
+                    <entry><simpara>Länge der
+                    Nachricht</simpara></entry>
+                  </row>
+
+                  <row>
+                    <entry><code>${VM_MSGNUM}</code> <indexterm>
+                        <primary>VM_MSGNUM</primary>
+                      </indexterm></entry>
+
+                    <entry><simpara>Nummer der
+                    Nachricht</simpara></entry>
+                  </row>
+
+                  <row>
+                    <entry><code>${VM_MAILBOX}</code> <indexterm>
+                        <primary>VM_MAILBOX</primary>
+                      </indexterm></entry>
+
+                    <entry><simpara>Name der Mailbox</simpara></entry>
+                  </row>
+
+                  <row>
+                    <entry><code>${VM_CALLERID}</code> <indexterm>
+                        <primary>VM_CALLERID</primary>
+                      </indexterm></entry>
+
+                    <entry><simpara>Telefonnummer und Name des
+                    Anrufers</simpara></entry>
+                  </row>
+
+                  <row>
+                    <entry><code>${VM_CIDNUM}</code> <indexterm>
+                        <primary>VM_CIDNUM</primary>
+                      </indexterm></entry>
+
+                    <entry><simpara>Telefonnummer des
+                    Anrufers</simpara></entry>
+                  </row>
+
+                  <row>
+                    <entry><code>${VM_CIDNAME}</code> <indexterm>
+                        <primary>VM_CIDNAME</primary>
+                      </indexterm></entry>
+
+                    <entry><simpara>Name des Anrufers</simpara></entry>
+                  </row>
+
+                  <row>
+                    <entry><code>${VM_DATE}</code> <indexterm>
+                        <primary>VM_DATE</primary>
+                      </indexterm></entry>
+
+                    <entry><simpara>Datum und Uhrzeit des
+                    Anrufes</simpara></entry>
+                  </row>
+
+                  <row>
+                    <entry><code>${VM_MESSAGEFILE}</code> <indexterm>
+                        <primary>VM_MESSAGEFILE</primary>
+                      </indexterm></entry>
+
+                    <entry><simpara>Name der Sounddatei, in der die
+                    Nachricht abgespeichert ist</simpara></entry>
+                  </row>
+                </tbody>
+              </tgroup>
+            </informaltable>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>emailbody = Hallo ${VM_NAME},\n\nSie haben
+            eine neue Nachricht von ${VM_CALLERID} in Mailbox
+            ${VM_MAILBOX}.</code><footnote>
+                <simpara>Es muss alles in eine Zeile geschrieben werden.
+                Durch <code>\n</code> wird in der E-Mail ein
+                Zeilenumbruch eingefügt.</simpara>
+              </footnote></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>serveremail = <replaceable>[Absenderadresse]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>serveremail</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>serveremail</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>E-Mail-Adresse, die als Absender der E-Mail vom
+            Voicemailsystem an den User eingestellt wird.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>serveremail =
+            voicemail@apfelmus-gmbh.de</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>fromstring = <replaceable>[Absendername]</replaceable></synopsis><indexterm
+              significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>fromstring</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>fromstring</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert den Absender (<code>From</code>-Header)
+            in E-Mails vom Voicemailsystem.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>fromstring = AB</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>mailcmd = <replaceable>[Shell-Befehl]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>mailcmd</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>mailcmd</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert das Programm (mit absolutem Pfad und ggf.
+            Parametern), das zum Versenden von E-Mails benutzt werden
+            soll. Default: <code>/usr/sbin/sendmail -t</code></simpara>
+
+            <simpara>Beispiele:</simpara>
+
+            <simpara><code>mailcmd = /usr/sbin/sendmail
+            -t</code></simpara>
+
+            <simpara><code>mailcmd = /usr/exim/bin/exim
+            -t</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>externnotify = <replaceable>[Shell-Befehl]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>externnotify</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>externnotify</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert ein Programm (mit absolutem Pfad), das
+            von Asterisk aufgerufen wird, wenn eine neue Sprachnachricht
+            für einen User vorliegt.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>externnotify =
+            /usr/bin/local/mach-was.sh</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>externpass = <replaceable>[Shell-Befehl]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>externpass</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>externpass</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert ein Programm (mit absolutem Pfad), das
+            von Asterisk aufgerufen wird, wenn ein User sein Passwort
+            geändert hat.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>externpass =
+            /usr/bin/local/mach-was.sh</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>forcegreetings = <replaceable>[yes|no]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>forcegreetings</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>forcegreetings</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert, ob ein User vom System dazu gezwungen
+            wird, beim ersten Benutzen des Systems eine
+            Begrüßungsnachricht aufzunehmen. Default:
+            <code>no</code></simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>forcegreetings = no</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>forcename = <replaceable>[yes|no]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>forcename</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>forcename</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert, ob der User vom System dazu gezwungen
+            wird, bei der ersten Nutzung seinen Namen aufzunehmen.
+            Default: <code>no</code></simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>forcename = yes</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>format = <replaceable>[gsm|wav|wav49]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>format</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>format</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Listet die Codecs auf, mit denen eine
+            Sprachnachricht abgespeichert werden soll. Werden mehrere
+            Codecs aufgeführt, werden auch mehrere Dateien gespeichert.
+            Das kann im Extremfall zu Platzproblemen auf der Festplatte
+            führen. Der Vorteil liegt darin, dass bei einer Abfrage die
+            Nachricht nicht noch einmal neu kodiert werden muss, falls
+            der Abfragende mit einem anderen Codec abfragt, als mit dem,
+            in dem die Nachricht bereits gespeichert wurde.</simpara>
+
+            <simpara>Bei aktiviertem <code>attach</code> wird das erste
+            Format dieser Liste für E-Mail-Anhänge verwendet.</simpara>
+
+            <simpara>Beispiele:</simpara>
+
+            <simpara><code>format = gsm|wav</code></simpara>
+
+            <simpara>Jede Sprachnachricht wird im GSM- und im WAV-Format
+            abgespeichert.</simpara>
+
+            <simpara><code>format = wav</code></simpara>
+
+            <simpara>Jede Sprachnachricht wird nur im WAV-Format
+            abgespeichert.</simpara>
+
+            <caution>
+              <simpara>Wird diese Einstellung im laufenden Betrieb
+              verändert, müssen vorher vom System angelegte Sounddateien
+              manuell gelöscht werden.</simpara>
+            </caution>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>searchcontexts = <replaceable>[yes|no]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>searchcontexts</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>searchcontexts</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Standardmäßig werden Voicemailboxen nur im
+            angegebenen Context gesucht. Mit diesem Schalter kann man
+            das Suchverhalten auf alle Contexte erweitern. Default:
+            <code>no</code></simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>searchcontexts = no</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>maxmsg = <replaceable>[Anzahl Nachrichten]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>maxmsg</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>maxmsg</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert die maximale Anzahl an Sprachnachrichten
+            in einer Voicemailbox. Default: <code>100</code>. Danach
+            können keine neuen Nachrichten mehr aufgenommen werden, und
+            der Anrufer hört die Nachricht
+            <filename>/var/lib/asterisk/sounds/vm-mailboxfull.gsm</filename><footnote>
+                <simpara>Pfad abhängig von der Installation, z.B. auch
+                <filename>/usr/share/asterisk/sounds/</filename></simpara>
+              </footnote>.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>maxmsg = 50</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>maxmessage = <replaceable>[Länge in Sekunden]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>maxmessage</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>maxmessage</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert die maximale Länge einer Sprachnachricht
+            in Sekunden. Default: unendlich</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>maxmessage = 120</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>minmessage = <replaceable>[Länge in Sekunden]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>minmessage</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>minmessage</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert die minimale Länge einer Sprachnachricht
+            in Sekunden. Default: <code>0</code></simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>minmessage = 5</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>maxgreet = <replaceable>[Länge in Sekunden]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>maxgreet</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>maxgreet</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert die maximale Länge einer
+            Begrüßungsnachricht in Sekunden. Default:
+            unendlich</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>maxgreet=240</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>maxsilence = <replaceable>[Länge in Sekunden]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>maxsilence</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>maxsilence</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert die Anzahl der Sekunden an Stille, die
+            das System wartet, bevor es davon ausgeht, dass die
+            Nachricht zu Ende gesprochen wurde.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>maxsilence=10</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>silencethreshold = <replaceable>[Schwellenwert]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>silencethreshold</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>silencethreshold</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert, was für Asterisk bei der Einstellung
+            <code>maxsilence</code> Stille (also Silence) ist. Je
+            niedriger dieser Wert ist, desto höher ist die
+            Empfindlichkeit. Default: <code>128</code><footnote>
+                <simpara>Es lässt sich selbst im Source-Code von
+                Asterisk keine Information finden, in welchem Rahmen
+                sich dieser Wert sinnvoll bewegen kann (es handelt sich
+                um einen Int). Ggf. ist also Ausprobieren
+                erforderlich.</simpara>
+              </footnote></simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>silencethreshold = 50</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>maxlogins = <replaceable>[Anzahl]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>maxlogins</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>maxlogins</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert die maximale Anzahl von fehlerhaften
+            Einlogversuchen (falsches Passwort durch den User), bevor
+            Asterisk auflegt. Default: <code>3</code></simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>maxlogins = 3</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>skipms = <replaceable>[Millisekunden]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>skipms</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>skipms</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Setzt die Anzahl an Millisekunden, um die während
+            des Abhörens einer Sprachnachricht mit den Tasten für weiter
+            und zurück in der Nachricht gesprungen wird. Default:
+            <code>3000</code></simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>skipms = 6000</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>usedirectory = <replaceable>[yes|no]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>usedirectory</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>usedirectory</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Erlaubt es dem User von Voicemailboxen, die
+            Einträge eines Dial-by-Name-Systems zur Weiterleitung von
+            Nachrichten zu benutzen. Default: <code>no</code></simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>usedirectory = yes</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>saycid = <replaceable>[yes|no]</replaceable></synopsis><indexterm
+              significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>saycid</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>saycid</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Definiert, ob die Telefonnummer des Anrufers beim
+            Abrufen der Nachrichten angesagt werden soll. Default:
+            <code>no</code></simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>saycid = yes</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>cidinternalcontexts = <replaceable>[context,context,...]</replaceable></synopsis><indexterm
+              significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>cidinternalcontexts</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>cidinternalcontexts</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Legt die Contexte fest (durch Kommata getrennt),
+            die beim Abrufen einer Voicemail-Nachricht als intern
+            gelten, für die also z.B. nur die Durchwahl (Extension) als
+            Caller-ID angesagt wird. Default: keine</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>pagerfromstring = <replaceable>[Absendername]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>pagerfromstring</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>pagerfromstring</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Analog zu <code>fromstring</code> für Nachrichten
+            an Pager.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>pagerfromstring = Apfelmus
+            GmbH</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>pagersubject = <replaceable>[Betreff]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>pagersubject</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>pagersubject</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Analog zu <code>emailsubject</code> für Nachrichten
+            an Pager.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>pagersubject = Neue
+            Voicemail</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><synopsis>pagerbody = <replaceable>[Absendername]</replaceable></synopsis>
+          <indexterm significance="preferred">
+              <primary><filename>voicemail.conf</filename></primary>
+
+              <secondary>Parameter</secondary>
+
+              <tertiary><code>pagerbody</code></tertiary>
+            </indexterm> <indexterm>
+              <primary><code>pagerbody</code></primary>
+
+              <see><code>voicemail.conf</code>: Parameter</see>
+            </indexterm></term>
+
+          <listitem>
+            <simpara>Analog zu <code>emailbody</code> für Nachrichten an
+            Pager.</simpara>
+
+            <simpara>Beispiel:</simpara>
+
+            <simpara><code>pagerbody = Neue Voicemail in Mailbox
+            ${VM_MAILBOX} von ${VM_CALLERID}.</code></simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <simpara>Neben den hier aufgeführten Parametern gibt es noch
+      weitere, die genannten sind jedoch die wichtigsten für gängige
+      Konfigurationen. Eine Auflistung aller verfügbaren Parameter
+      findet sich in der Datei <filename>voicemail.conf</filename>. In
+      der Grundinstallation sind dort alle Parameter mit einer kurzen
+      Beschreibung enthalten.</simpara>
+    </section>
+
+    <section id="voicemail-voicemail.conf-zonemessages">
+      <title
+      id="voicemail-voicemail.conf-zonemessages.title"><code>[zonemessages]</code><indexterm
+          significance="preferred">
+          <primary><filename>voicemail.conf</filename></primary>
+
+          <secondary
+          sortas="zonemessages"><code>[zonemessages]</code></secondary>
+        </indexterm><indexterm significance="preferred">
+          <primary
+          sortas="zonemessages"><code>[zonemessages]</code></primary>
+        </indexterm><indexterm>
+          <primary>Zeitzonen</primary>
+        </indexterm><indexterm>
+          <primary>tz</primary>
+        </indexterm></title>
+
+      <simpara>Da es vorkommt, dass sich die User eines Voicemailsystems
+      in unterschiedlichen Zeitzonen befinden, kann im Bereich
+      <code>[zonemessages]</code> für jede Zeitzone ein
+      unterschiedliches Format definiert werden, mit dem dem User die
+      Uhrzeit angesagt wird.<footnote>
+          <simpara>Beachten Sie, dass Sie eine wie hier beschrieben
+          definierte Zeitzone noch für die User aktivieren müssen. Siehe
+          <xref linkend="voicemail-voicemail.conf-mailbox" /></simpara>
+        </footnote></simpara>
+
+      <section id="voicemail-voicemail.conf-zonemessages-syntax">
+        <title
+        id="voicemail-voicemail.conf-zonemessages-syntax.title">Syntax</title>
+
+        <synopsis>zonenname = timezone | format</synopsis>
+
+        <variablelist termlength="40">
+          <varlistentry>
+            <term><code>zonenname</code></term>
+
+            <listitem>
+              <simpara>Unter diesem Namen kann man später auf das
+              entsprechende Format zugreifen. Verwenden Sie nur
+              Kleinbuchstaben, Ziffern, Bindestrich (<code>-</code>) und
+              Unterstrich (<code>_</code>).</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>timezone</code></term>
+
+            <listitem>
+              <simpara>In einem normalen Debian-Linux-System finden Sie
+              im Verzeichnis <filename>/usr/share/zoneinfo/</filename>
+              eine Auflistung von verschiedenen Regionen. Jede Region
+              wird mit einem Unterverzeichnis dargestellt. In diesem
+              Unterverzeichnis stehen Städtenamen. Ein
+              <code>timezone</code>-Eintrag besteht aus der Region und
+              dem Städtenamen (getrennt durch ein
+              <code>/</code>).</simpara>
+
+              <simpara>Beispiele:</simpara>
+
+              <simpara><code>Europe/Berlin</code></simpara>
+
+              <simpara><code>Australia/Sydney</code></simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>format</code></term>
+
+            <listitem>
+              <simpara>Definiert das Format, in dem die Zeit angesagt
+              wird. Es stehen folgende Variablen zur
+              Verfügung:</simpara>
+
+              <informaltable colsep="0" frame="none" rowsep="0">
+                <tgroup cols="2">
+                  <colspec colnum="1" colwidth="20pt" />
+
+                  <tbody>
+                    <row>
+                      <entry><code>A</code></entry>
+
+                      <entry>Wochentag (Montag bis Sonntag)</entry>
+                    </row>
+
+                    <row>
+                      <entry><code>a</code></entry>
+
+                      <entry>siehe <code>A</code></entry>
+                    </row>
+
+                    <row>
+                      <entry><code>B</code></entry>
+
+                      <entry>Monat (Januar bis Dezember)</entry>
+                    </row>
+
+                    <row>
+                      <entry><code>b</code></entry>
+
+                      <entry>siehe <code>B</code></entry>
+                    </row>
+
+                    <row>
+                      <entry><code>h</code></entry>
+
+                      <entry>siehe <code>B</code></entry>
+                    </row>
+
+                    <row>
+                      <entry><code>d</code></entry>
+
+                      <entry>Tag des Monats (1. bis 31.)</entry>
+                    </row>
+
+                    <row>
+                      <entry><code>e</code></entry>
+
+                      <entry>siehe <code>d</code></entry>
+                    </row>
+
+                    <row>
+                      <entry><code>Y</code></entry>
+
+                      <entry>Jahr (z.B. 2006)</entry>
+                    </row>
+
+                    <row>
+                      <entry><code>I</code></entry>
+
+                      <entry>Stunde im amerikanischen
+                      12-Stunden-Format</entry>
+                    </row>
+
+                    <row>
+                      <entry><code>l</code></entry>
+
+                      <entry>siehe <code>I</code></entry>
+                    </row>
+
+                    <row>
+                      <entry><code>H</code></entry>
+
+                      <entry>Stunde im europäischen 24-Stunden-Format.
+                      Dabei wird beim englischen Sprachmenü einstelligen
+                      Uhrzeiten eine 0 (englische Aussprache
+                      <quote>oh</quote>) vorangestellt.</entry>
+                    </row>
+
+                    <row>
+                      <entry><code>k</code></entry>
+
+                      <entry>Stunde im europäischen
+                      24-Stunden-Format</entry>
+                    </row>
+
+                    <row>
+                      <entry><code>M</code></entry>
+
+                      <entry>Minute</entry>
+                    </row>
+
+                    <row>
+                      <entry><code>P</code></entry>
+
+                      <entry>AM oder PM</entry>
+                    </row>
+
+                    <row>
+                      <entry><code>p</code></entry>
+
+                      <entry>siehe <code>P</code></entry>
+                    </row>
+
+                    <row>
+                      <entry><code>Q</code></entry>
+
+                      <entry><quote>heute</quote>,
+                      <quote>gestern</quote> oder <code>ABdY</code>
+                      (Wochentag, Monat, Tag, Jahr)</entry>
+                    </row>
+
+                    <row>
+                      <entry><code>q</code></entry>
+
+                      <entry><quote> </quote> (also nichts, wenn es
+                      heute ist), <quote>gestern</quote> oder
+                      <code>ABdY</code> (Wochentag, Monat, Tag,
+                      Jahr)</entry>
+                    </row>
+
+                    <row>
+                      <entry><code>R</code></entry>
+
+                      <entry>Stunde:Minute:Sekunde</entry>
+                    </row>
+                  </tbody>
+                </tgroup>
+              </informaltable>
+
+              <simpara>Daneben gibt es noch die Sonderfälle
+              <code>${<replaceable>VAR</replaceable>}</code> (Inhalt
+              dieser Variablen wird eingefügt) <code>und
+              '<replaceable>sprachdatei</replaceable>'</code>. Dabei ist
+              zu beachten, dass '<replaceable>sprachdatei</replaceable>'
+              ohne <quote><filename>.gsm</filename></quote> ist. Dieser
+              Sprachbaustein aus dem Verzeichnis
+              <filename>sounds/</filename> wird dann abgespielt. Die
+              einfachen Anführungszeichen sind zwingend.</simpara>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <simpara>Beispiel:</simpara>
+
+        <programlisting>[zonemessages]
+deutschland = Europe/Berlin | 'vm-received' Q 'digits/at' kM
+england = Europe/London | 'vm-received' Q 'digits/at' R
+military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</programlisting>
+      </section>
+    </section>
+
+    <section id="voicemail-voicemail.conf-contexte">
+      <title id="voicemail-voicemail.conf-contexte.title">Freie
+      Contexte<indexterm>
+          <primary><filename>voicemail.conf</filename></primary>
+
+          <secondary>Kontexte</secondary>
+        </indexterm><indexterm>
+          <primary>Contexte</primary>
+        </indexterm><indexterm>
+          <primary>Kontexte</primary>
+        </indexterm></title>
+
+      <simpara>Genau wie in der <filename>extensions.conf</filename>
+      gibt es auch in der <filename>voicemail.conf</filename> die
+      Möglichkeit, einen Context zu definieren. Das ist praktisch, um
+      zum Beispiel verschiedene Firmenabteilungen separat zu behandeln.
+      Dadurch können auch unterschiedliche Adress- oder Telefonbücher
+      definiert werden (siehe <xref
+      linkend="dial-by-name-directory" />).</simpara>
+
+      <section id="voicemail-voicemail.conf-contexte-default">
+        <title id="voicemail-voicemail.conf-contexte-default.title">Der
+        Default-Context<indexterm significance="preferred">
+            <primary><filename>voicemail.conf</filename></primary>
+
+            <secondary
+            sortas="default"><code>[default]</code></secondary>
+          </indexterm><indexterm>
+            <primary sortas="default"><code>[default]</code></primary>
+          </indexterm></title>
+
+        <simpara>Wenn kein anderer Context eingerichtet wurde, muss
+        zumindestens der <code>[default]</code>-Context existieren. Für
+        die meisten aller Installationen reicht dieser aus.</simpara>
+      </section>
+    </section>
+
+    <section id="voicemail-voicemail.conf-mailbox">
+      <title
+      id="voicemail-voicemail.conf-mailbox.title">Mailbox-Definition<indexterm
+          significance="preferred">
+          <primary><filename>voicemail.conf</filename></primary>
+
+          <secondary>VoiceMailBoxen</secondary>
+        </indexterm><indexterm significance="preferred">
+          <primary>VoiceMailBoxen</primary>
+
+          <secondary>einrichten</secondary>
+        </indexterm><indexterm significance="preferred">
+          <primary>Mailbox-Einrichtung</primary>
+        </indexterm></title>
+
+      <simpara>In einem Context können beliebig viele Mailboxen
+      definiert werden.</simpara>
+
+      <section id="voicemail-voicemail.conf-mailbox-syntax">
+        <title
+        id="voicemail-voicemail.conf-mailbox-syntax.title">Syntax</title>
+
+        <synopsis>mailbox =&gt; passwort,name[,e-mail[,pager-e-mail[,optionen]]]</synopsis>
+
+        <simpara>Beispiel:</simpara>
+
+        <programlisting>202 =&gt; 1234,Peter Meier,peter@familie-meier.de,,attachfmt=wav|delete=yes</programlisting>
+
+        <variablelist termlength="40">
+          <?dbfo list-presentation="blocks"?>
+
+          <?dbhtml list-presentation="list"?>
+
+          <varlistentry>
+            <term><code>mailbox</code></term>
+
+            <listitem>
+              <simpara>Name der Mailbox (Ziffern)</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>passwort</code></term>
+
+            <listitem>
+              <simpara>Passwort für die Mailbox (Ziffern oder
+              Buchstaben). Ziffern sind in der Regel praktischer, da sie
+              auch auf normalen Telefonen vom User eingegeben werden
+              können.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>e-mail</code></term>
+
+            <listitem>
+              <simpara>E-Mail-Adresse, an die Sprachnachrichten gesendet
+              werden sollen</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>pager-e-mail</code></term>
+
+            <listitem>
+              <simpara>E-Mail Adresse des Pagers, an die
+              Benachrichtigungen (eine Textzeile) geschickt werden
+              sollen<footnote>
+                  <simpara>Bitte beachten Sie, dass diese Nachrichten
+                  ebenfalls E-Mails sind. Sollten Sie SMS-Nachrichten
+                  verschicken wollen, suchen Sie im Internet nach
+                  <quote>sms gateway</quote> oder <quote>asterisk sms
+                  gateway</quote>.</simpara>
+                </footnote></simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>optionen</code></term>
+
+            <listitem>
+              <simpara>Unterschiedliche Optionen, die durch ein
+              Pipe-Zeichen (<code>|</code>) voneinander getrennt
+              aneinandergereiht werden. Sie können hier die unter
+              <code>[general]</code> (siehe <xref
+              linkend="voicemail-voicemail.conf-general" />) global
+              festgelegten Einstellungen pro Mailbox verändern. Bitte
+              beachten Sie, dass zwischen Parametername, dem
+              Gleich-Zeichen (<code>=</code>) und dem Wert keine
+              Leerzeichen sein dürfen. Dasselbe gilt für das
+              Pipe-Zeichen (<code>|</code>).</simpara>
+
+              <simpara>Die wichtigsten Optionen in diesem Zusammenhang
+              sind:</simpara>
+
+              <variablelist termlength="50">
+                <?dbfo list-presentation="blocks"?>
+
+                <?dbhtml list-presentation="list"?>
+
+                <varlistentry>
+                  <term><synopsis>tz=<replaceable>[Zeitzone]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>tz</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>tz</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Setzt die gewünschte Zeitzone aus dem
+                    vorher definierten <code>[zonemessages]</code>
+                    Context (siehe <xref
+                    linkend="voicemail-voicemail.conf-zonemessages" />).</simpara>
+
+                    <simpara>Beispiel:</simpara>
+
+                    <simpara><code>tz=deutschland</code></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>attach=<replaceable>[yes|no]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>attach</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>attach</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Legt fest, ob die Sounddatei der
+                    Sprachnachricht der E-Mail beigefügt werden
+                    soll.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>attachfmt=<replaceable>[gsm|wav|wav49]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>attachfmt</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>attachfmt</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Legt ggf. ein anderes als das unter
+                    <code>[general]</code> mittels <code>format</code>
+                    eingestellte Format fest, das für E-Mail-Anhänge
+                    verwendet wird.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>saycid=<replaceable>[yes|no]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>saycid</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>saycid</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Definiert, ob die Telefonnummer des
+                    Anrufers angesagt werden soll.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>sayduration=<replaceable>[yes|no]</replaceable><indexterm>
+                        <primary><filename>voicemail.conf</filename></primary>
+
+                        <secondary>Parameter</secondary>
+
+                        <tertiary><code>sayduration</code></tertiary>
+                      </indexterm>
+<indexterm>
+                        <primary><code>sayduration</code></primary>
+
+                        <see><code>voicemail.conf</code>: Parameter</see>
+                      </indexterm></synopsis></term>
+
+                  <listitem>
+                    <simpara>Definiert, ob die Länge der Nachricht
+                    angesagt werden soll. Default:
+                    <code>yes</code></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>saydurationm=<replaceable>[ab Dauer in Minuten]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>saydurationm</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>saydurationm</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Legt die Mindestlänge einer Nachricht in
+                    Minuten fest, ab der die Länge angesagt wird.
+                    Default: <code>0</code></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>dialout=<replaceable>[context]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>dialout</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>dialout</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Definiert den Context, der zum Rauswählen
+                    benutzt werden soll. Ohne diese Angabe kann man aus
+                    dem Voicemailsystem heraus keine Telefonate
+                    führen.</simpara>
+
+                    <simpara>Beispiel:</simpara>
+
+                    <simpara><code>dialout=intern</code></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>sendvoicemail=<replaceable>[yes|no]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>sendvoicemail</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>sendvoicemail</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Bestimmt, ob Teilnehmer Sprachnachrichten
+                    an andere Teilnehmer des Voicemailsystems schicken
+                    können.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>callback=<replaceable>[context]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>callback</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>callback</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Definiert den Context, der für Rückrufe
+                    benutzt wird. Ist er festgelegt, kann man den
+                    Anrufer, der eine Sprachnachricht hinterlassen hat,
+                    einfach aus dem Voicemailboxsystem
+                    zurückrufen.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>review=<replaceable>[yes|no]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>review</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>review</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Legt fest, ob der Anrufer die von ihm
+                    hinterlassene Sprachnachricht vor dem Speichern
+                    erneut anhören kann. Default:
+                    <code>no</code></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>operator=<replaceable>[yes|no]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>operator</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>operator</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Definiert, ob der Anrufer vor, während oder
+                    nach der Aufnahme seiner Sprachnachricht mit der
+                    Eingabe von <code>0</code> (also Null auf dem
+                    Telefon drücken) zum Operator durchgestellt wird.
+                    Operator ist immer die Extension <code>o</code>
+                    (kleiner Buchstabe o) im aktuellen Context. Default:
+                    <code>no</code></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>envelope=<replaceable>[yes|no]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>envelope</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>envelope</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Legt fest, ob allgemeine Informationen vor
+                    der Sprachnachricht angesagt werden sollen. Wenn
+                    dieser Parameter auf <code>no</code> gesetzt ist,
+                    dann werden dadurch bestimmte andere Einstellungen
+                    (wie zum Beispiel <code>tz</code>) überstimmt.
+                    Default: <code>yes</code></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>delete=<replaceable>[yes|no]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>delete</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>delete</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Definiert, ob Sprachnachrichten nach dem
+                    Versenden per E-Mail automatisch gelöscht werden
+                    sollen. Default: <code>no</code></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>nextaftercmd=<replaceable>[yes|no]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>nextaftercmd</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>nextaftercmd</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Definiert, ob das System nach dem Löschen
+                    oder Abspeichern einer Sprachnachricht automatisch
+                    zur nächsten Nachricht springt. Default:
+                    <code>no</code></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>forcename=<replaceable>[yes|no]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code></code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>forcename</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Bestimmt, ob das System den User beim
+                    ersten Abruf des Systems dazu zwingt, seinen Namen
+                    aufnehmen zu lassen. Default:
+                    <code>no</code></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>forcegreetings=<replaceable>[yes|no]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>forcegreetings</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>forcegreetings</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Definiert, ob das System den User bei der
+                    ersten Nutzung des Voicemailsystems dazu zwingt,
+                    eine persönliche Ansage für seine Voicemailbox
+                    aufzunehmen. Default: <code>no</code></simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><synopsis>hidefromdir=<replaceable>[yes|no]</replaceable></synopsis><indexterm>
+                      <primary><filename>voicemail.conf</filename></primary>
+
+                      <secondary>Parameter</secondary>
+
+                      <tertiary><code>hidefromdir</code></tertiary>
+                    </indexterm> <indexterm>
+                      <primary><code>hidefromdir</code></primary>
+
+                      <see><code>voicemail.conf</code>: Parameter</see>
+                    </indexterm></term>
+
+                  <listitem>
+                    <simpara>Definiert, ob dieser Eintrag aus dem
+                    Dial-by-Name-Verzeichnis herausgenommen (versteckt)
+                    werden soll. Default: <code>no</code></simpara>
+                  </listitem>
+                </varlistentry>
+              </variablelist>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </section>
+    </section>
+  </section>
+
+  <section id="voicemail-telefonbuch">
+    <title id="voicemail-telefonbuch.title">Telefonbuch
+    (Dial-by-Name)<indexterm significance="preferred">
+        <primary>Dial-by-Name</primary>
+      </indexterm><indexterm>
+        <primary>Telefonbuch</primary>
+      </indexterm><indexterm>
+        <primary>directory</primary>
+      </indexterm></title>
+
+    <simpara>Auch wenn es eigentlich nicht unmittelbar mit der
+    VoiceMail-Funktion von Asterisk zu tun hat, gehört das
+    Dial-by-Name-Directory<footnote>
+        <para>Anstelle des deutschen Wortes Verzeichnis verwenden wir
+        der Einfachheit halber das englische Wort Directory.</para>
+      </footnote> sinngemäß in dieses Kapitel. Es wurde von den
+    Asterisk-Entwicklern als Teil des Voicemailsystems programmiert und
+    greift auf Daten der Datei <filename>voicemail.conf</filename>
+    zu.</simpara>
+
+    <simpara>Wenn wir für das Beispiel in <xref
+    linkend="voicemail-beispiele-meier" /> die folgende Konfiguration zu
+    Grunde legen:</simpara>
+
+    <programlisting>[general]
+format = gsm
+
+[default]
+; Ext. =&gt; Passw.,Vorname Nachname,E-Mail,P.,Optionen
+;                ^^^^^^^^^^^^^^^^
+200 =&gt; 1234,Horst Meier
+201 =&gt; 1234,Eva Meier
+202 =&gt; 1234,Peter Meier,peter@die-familie-meier.de
+203 =&gt; 1234,Lisa Meier,lisa@die-familie-meier.de,,delete=yes</programlisting>
+
+    <simpara>Dann können wir daraus recht einfach ein
+    Dial-by-Name-Directory generieren. Dies geschieht durch Aufruf des
+    Programmes <code>Directory()</code> in der
+    <filename>extensions.conf</filename>:</simpara>
+
+    <programlisting>exten =&gt; 800,1,Directory(default,from-intern)</programlisting>
+
+    <section id="voicemail-telefonbuch-syntax">
+      <title id="voicemail-telefonbuch-syntax.title">Syntax</title>
+
+      <synopsis>Directory(vm-context[,dial-context[,options]])</synopsis>
+
+      <variablelist termlength="20">
+        <varlistentry>
+          <term><code>vm-context</code></term>
+
+          <listitem>
+            <simpara>Das Directory wird immer aus einem bestimmten
+            Context generiert (alle Einträge aus diesem und nur diesem
+            Context werden zur Auswahl gestellt). In den meisten Fällen
+            kann man den <code>default</code>-Context nehmen. In großen
+            Firmen kann man für bestimmte Abteilungen eigene Contexte
+            definieren und somit Unter-Directories erstellen.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>dial-context</code></term>
+
+          <listitem>
+            <simpara>Das Directory wird benutzt, um eine bestimmte
+            Person anzurufen, entsprechend muss auch ein Context
+            definiert werden, aus dem (in der
+            <filename>extensions.conf</filename>) der Anruf geführt
+            werden soll. Ist
+            <code><replaceable>dial-context</replaceable></code> nicht
+            definiert, wird automatisch der Context von
+            <code><replaceable>vm-context</replaceable></code>
+            benutzt.</simpara>
+
+            <simpara>Drückt der User des Systems die Taste
+            <code>0</code> (Null), so wird er in diesem Context auf die
+            Extension <code>o</code> (kleiner Buchstabe o) geleitet. Bei
+            Eingabe des <code>*</code> (Stern) wird er zur Extension
+            <code>a</code> (kleiner Buchstabe a) geleitet.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>options</code></term>
+
+          <listitem>
+            <simpara>Mit der Option <code>f</code> kann man das
+            Directory so einstellen, dass nach Vornamen und nicht nach
+            Nachnamen gesucht wird.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <simpara>Siehe auch <xref
+      linkend="applikationen-directory" /></simpara>
+    </section>
+
+    <section id="voicemail-telefonbuch-funktion">
+      <title
+      id="voicemail-telefonbuch-funktion.title">Funktionsweise</title>
+
+      <simpara>Der Anrufer wird vom Directory aufgefordert, die ersten 3
+      Buchstaben des Nachnamens (beim Aufruf mit der Option
+      <code>f</code>, des Vornamens) mit dem Tastenfeld des Telefons
+      einzugeben. Das Programm sucht dann den entsprechenden Eintrag aus
+      dem Directory und verbindet den Anrufer auf Wunsch.</simpara>
+    </section>
+  </section>
+
+  <section id="voicemail-passwortspeicher">
+    <title><filename>voicemail.conf</filename> als
+    Passwortspeicher<indexterm>
+        <primary>Passwortspeicher</primary>
+      </indexterm></title>
+
+    <simpara>Ebenso nützlich wie als internes Rufnummernverzeichnis kann
+    die <filename>voicemail.conf</filename> auch als Speicherort für
+    Passwörter sein. Sie werden vielleicht eine Situation haben, in der
+    sich Ihre internen Benutzer aus welchem Grund auch immer am System
+    authentifizieren sollen - ein konkreter Fall wären
+    Call-Center-Agenten, die sich anmelden.</simpara>
+
+    <simpara>Es bietet sich in solchen Fällen manchmal an, für die
+    betreffenden User einen Eintrag in der
+    <filename>voicemail.conf</filename> anzulegen, obwohl diese
+    vielleicht gar keine Mailbox brauchen. Und keine Angst: auf den so
+    angelegten Mailboxen wird niemand versehentlich eine Nachricht
+    hinterlassen können, solange Sie nicht im Dialplan mit
+    <code>VoiceMail()</code> (oder <code>VoiceMailMain()</code>) darauf
+    verweisen.</simpara>
+
+    <para>Sie könnten beispielsweise die VM-Boxen<programlisting>1001 =&gt; 1234,Hans Glueck,,,hidefromdir=yes
+1002 =&gt; 1234,Peter Pech,,,hidefromdir=yes</programlisting>im
+    Abschnitt <code>[call-center-agenten]</code> anlegen und die User an
+    geeigneter Stelle im Dialplan mit VMAuthenticate (<xref
+    linkend="applikationen-vmauthenticate" />)
+    authentifizieren:<programlisting>exten =&gt; 988,n,Read(agentennr,agent-user,10,,3)
+exten =&gt; 988,n,VMAuthenticate(${agentennr}@call-center-agenten)</programlisting></para>
+
+    <simpara>Betrachten Sie das aber nur als Denkanstoß bzw.
+    Beschreibung einer von vielen Möglichkeiten zur Authentifizierung.
+    Speicherung der Passwörter in der AstDB oder einer anderen Datenbank
+    wäre diesem Ansatz sicher vorzuziehen.</simpara>
+  </section>
+</chapter>
