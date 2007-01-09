@@ -726,13 +726,16 @@ exten =&gt; h,1,Hangup()
       <title>Faxe versenden</title>
 
       <para>Der nächste Schritt ist Fax senden. Auch hierfür brauchen wir
-      einen Context in der <filename>extension.conf</filename>. Diesen haben
-      wir bereits weiter oben bei der Konfiguration des IAXmodems für Asterisk
-      mit <parameter>fax-out</parameter> angegeben:</para>
+      Context <code>[fax-out]</code> in der
+      <filename>extension.conf</filename>. Wenn das virtuelle IAX-Modem ein
+      Fax versenden will, kommt es automatisch in diesen Context. Sollen die
+      Faxe dann über unsere Beispiel SIP-Verbindung 123456 gefaxt werden, so
+      sieht der Eintrag in der <filename>extensions.conf</filename> wie folgt
+      aus:</para>
 
       <screen>[fax-out]
 exten =&gt; _X.,1,Answer()
-exten =&gt; _X.,2,Dial(SIP/5556300/${EXTEN})
+exten =&gt; _X.,2,Dial(SIP/123456/${EXTEN})
 exten =&gt; h,1,Hangup()
 </screen>
 
