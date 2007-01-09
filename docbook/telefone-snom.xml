@@ -50,8 +50,7 @@ type=friend
 context=meine-telefone
 secret=1234
 host=dynamic
-mailbox=2001
-</programlisting>
+mailbox=2001</programlisting>
 
     <para>Der Eintrag <code>mailbox=...</code> sorgt dafür, dass die
     "Message"-Anzeige des snom Endgerätes angesprochen wird. Sobald eine
@@ -87,17 +86,19 @@ exten =&gt; 2999,1,VoiceMailMain(s${CALLERID(num)})
 
 exten =&gt; asterisk,1,VoicemailMain(s${CALLERID(num)})</programlisting>
 
-    <para>Um die für die Voicemail anzuwählende Extension zu ändern, muss in
-    der Datei <filename>sip.conf</filename> der Parameter
-    <code>vmexten=...</code> hinzugefügt werden.</para>
+    <tip>
+      <para>Um die für die Voicemail anzuwählende Extension zu ändern, muss in
+      der Datei <filename>sip.conf</filename> der Parameter
+      <code>vmexten=...</code> hinzugefügt werden.</para>
 
-    <programlisting>[2001]
+      <programlisting>[2001]
 type=friend
 context=meine-telefone
 secret=1234
 host=dynamic
 mailbox=2001
 vmexten=obelisk</programlisting>
+    </tip>
 
     <para>Snom Telefone zeigen eingegangene Nachrichten auch im Display im
     Klartext an, daher sollten für diesen Fall durchaus "sprechende" Namen
@@ -287,7 +288,7 @@ alert_group_ring_text: alert-group</programlisting>
       Skriptdatei und letztendlich der Settings-Datei des Telefons. Anbei die
       spezielle Konfiguration eines solchen Telefons:</para>
 
-      <screen># After each setting (before the colon) you can set a flag, which means respectively:
+      <programlisting># After each setting (before the colon) you can set a flag, which means respectively:
 # ! means writeable by the user, but will not overwrite existing
 # $ means writeable by the user, but will overwrite existing (available since version 4.2)
 # &amp; (or no flag) means read only, but will overwrite existing
@@ -306,7 +307,7 @@ active_line$: 1
 
 # in order to perform automated updates, define the firmware setting file URL
 # where you specify the final firmware image URL
-firmware_status: http://pbx.apfelmus-gmbh.de/snom/firmware360.htm</screen>
+firmware_status: http://pbx.apfelmus-gmbh.de/snom/firmware360.htm</programlisting>
 
       <para>Man erkennt in der Konfiguration exakt die Settings wieder, die
       auch oben in der manuellen Einstellung konfiguriert wurden. Wichtig sind
@@ -406,8 +407,8 @@ firmware_status: http://pbx.apfelmus-gmbh.de/snom/firmware360.htm</screen>
     entsprechender Auszug aus der <filename>extensions.conf</filename>
     Datei.</para>
 
-    <screen>exten =&gt; _2XXX,1,SIPAddHeader("Alert-Info: &lt;http://pbx.apfelmus-gmbh.de&gt;\;info=alert-internal\;x-line-id=0")
-exten =&gt; _2XXX,2,Dial(SIP/${EXTEN})</screen>
+    <programlisting>exten =&gt; _2XXX,1,SIPAddHeader("Alert-Info: &lt;http://pbx.apfelmus-gmbh.de&gt;\;info=alert-internal\;x-line-id=0")
+exten =&gt; _2XXX,2,Dial(SIP/${EXTEN})</programlisting>
 
     <para>Das Format des SIP-Headers ist vorgegeben, wichtig ist in diesem
     Fall eigentlich nur der zweite Parameter <code>info=alert-internal</code>
@@ -432,8 +433,8 @@ exten =&gt; _2XXX,2,Dial(SIP/${EXTEN})</screen>
     vorzugeben, indem man eine entsprechende URL angibt, die auf eine
     Sound-Datei verweist.</para>
 
-    <screen>exten =&gt; _2XXX,1,SIPAddHeader(Alert-Info: &lt;http://pbx.apfelmus-gmbh.de/snom/sounds/snom_trumpet.wav&gt;)
-exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</screen>
+    <programlisting>exten =&gt; _2XXX,1,SIPAddHeader(Alert-Info: &lt;http://pbx.apfelmus-gmbh.de/snom/sounds/snom_trumpet.wav&gt;)
+exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</programlisting>
 
     <para>Es bietet sich an, einfach mit den verschiedenen Möglichkeiten zu
     experimentieren. Eine Unterscheidung zwischen internen, externen und
@@ -459,7 +460,7 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</screen>
     <para>Die Datei <filename>mainmenu.xml</filename> hat folgenden
     Aufbau:</para>
 
-    <screen>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;SnomIPPhoneMenu&gt;
 &lt;Title&gt;Menu&lt;/Title&gt;
 &lt;MenuItem&gt;
@@ -470,7 +471,7 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</screen>
 &lt;Name&gt;Sondernummern&lt;/Name&gt;
 &lt;URL&gt;http://pbx.apfelmus-gmbh.de/snom/webapps/specialnums.xml&lt;/URL&gt;
 &lt;/MenuItem&gt;
-&lt;/SnomIPPhoneMenu&gt;</screen>
+&lt;/SnomIPPhoneMenu&gt;</programlisting>
 
     <para>Ein Druck auf die snom-Taste führt zu einem Menü mit den beiden
     Einträgen "Globales Adressbuch" und "Sondernummern". Wie von der
@@ -495,7 +496,7 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</screen>
     spezielles XML-Menü anwählen lassen. Das Beispiel
     <filename>specialnums.xml</filename> zeigt genau dies:</para>
 
-    <screen>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;SnomIPPhoneDirectory&gt;
 &lt;Title&gt;Spezialnummern&lt;/Title&gt;
 &lt;Prompt&gt;Prompt&lt;/Prompt&gt;
@@ -503,7 +504,7 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</screen>
 &lt;Name&gt;Mailbox&lt;/Name&gt;
 &lt;Telephone&gt;2999&lt;/Telephone&gt;
 &lt;/DirectoryEntry&gt;
-&lt;/SnomIPPhoneDirectory&gt;</screen>
+&lt;/SnomIPPhoneDirectory&gt;</programlisting>
 
     <para>Der Anwender bekommt nach Auswahl den Menüs "Sondernummern" nun
     einen Eintrag "Mailbox" angezeigt, den er wie gehabt auswählen kann. Durch
@@ -540,9 +541,9 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</screen>
       <code>[general]</code>-Sektion erweitert werden:</para>
 
       <programlisting>[general]
-allowsubscribe=yes              ; Enable support for subscriptions.
-notifyringing=yes               ; Notify subscriptions on RINGING state (default: no)
-notifyhold=yes                  ; Notify subscriptions on HOLD state (default: no)
+allowsubscribe=yes
+notifyringing=yes
+notifyhold=yes
 useclientcode=yes</programlisting>
 
       <para>Des Weiteren muss in der Sektion des Telefons, welches die
@@ -633,6 +634,14 @@ exten =&gt; asterisk,1,VoicemailMain(s${CALLERID(num)})</programlisting>
           </imageobject>
         </mediaobject>
       </screenshot>
+
+      <important>
+        <para>Die Bezeichnung "Ziel" wurde in den snom Hardphones in einer der
+        neueren Releases in "Nebenstelle" umbenannt und gilt daher nur noch
+        für die Softphones und ältere Firmware-Stände in den Hardphones. Es
+        ist nur eine Umbenennung, die weitere hier beschriebene Funktionalität
+        bleibt unverändert erhalten.</para>
+      </important>
 
       <para>Nun sind alle Einstellungen getätigt. Zunächst muss Asterisk neu
       gestartet werden und anschließend die Telefone. Der Telefon-Neustart
@@ -726,9 +735,10 @@ exten =&gt; 2001,hint,SIP/2001
 exten =&gt; _*8.,1,PickUpChan(SIP/${EXTEN:2})</programlisting>
 
       <para><note>
-          <para>Die Gesprächsübernahme durch "<parameter>*8</parameter>" kann
-          bei Bedarf in der Konfigurationsdatei
-          <filename>features.conf</filename> umkonfiguriert werden.</para>
+          <para>Die Gesprächsübernahme durch die Zeichenfolge
+          "<parameter>*8</parameter>" kann bei Bedarf in der
+          Konfigurationsdatei <filename>features.conf</filename>
+          umkonfiguriert werden.</para>
         </note>Jetzt können am überwachten Telefon eingehende Anrufe einfach
       am überwachenden Telefon angenommen werden, indem die zur blinkenden LED
       passende Taste gedrückt wird. Das Gespräch wird dann sofort übernommen,
@@ -808,8 +818,8 @@ Generate a device state change event given the input parameters
         </mediaobject>
       </screenshot>
 
-      <para>In der Datei extensions.conf muss nun ein weiterer Hint gesetzt
-      werden, diesmal vom Typ DS statt SIP:</para>
+      <para>In der Datei <filename>extensions.conf</filename> muss nun ein
+      weiterer Hint gesetzt werden, diesmal vom Typ DS statt SIP:</para>
 
       <programlisting>[meine-telefone]
 exten =&gt; 2001,hint,SIP/2001
@@ -855,6 +865,70 @@ exten =&gt; _*9X,n,Hangup()</programlisting>
       dauerhaft leuchten lassen sowie mit *91 wieder deaktivieren. Ist die
       Funktionsweise einmal sichergestellt, sind der sinnvollen Anwendung
       dieses Features natürlich keine Grenzen gesetzt.</para>
+    </section>
+
+    <section id="snom-leds-pickup">
+      <title>Telefone per Fernwartung neu starten</title>
+
+      <para>Um zu gewährleisten, dass die oben beschriebenen Features auch
+      wirklich funktionieren, müssen die Telefone nach jedem Neustart von
+      Asterisk ebenfalls neu gestartet werden, damit sie die Subscriptions
+      sauber im System platzieren können. Für eine zentrale Wartung ist es
+      natürlich nicht akzeptabel, die Anwender nach jedem Update der
+      Telefonanlage darüber zu informieren, dass sie ihre Telefone neu starten
+      sollen. Für die snom Telefone gibt es daher einen einfachen Mechanismus,
+      diese auch aus der Ferne zurückzusetzen. Dazu fügen Sie folgende Zeilen
+      in die Datei <filename>/etc/asterisk/sip_notify.conf</filename>
+      ein:</para>
+
+      <programlisting>[reboot-snom]
+Event=&gt;reboot
+Content-Length=&gt;0</programlisting>
+
+      <para>Werden die Konfigurationsdaten in Asterisk neu geladen, können Sie
+      ein beliebiges snom Endgerät mittels des Kommandos <command>sip notify
+      reboot-snom &lt;extension&gt;</command> neu starten, also zum
+      Beispiel</para>
+
+      <screen>*CLI&gt; sip notify reboot-snom 2001
+Sending NOTIFY of type 'reboot-snom' to '2001'
+    -- Unregistered SIP '2001'
+*CLI&gt;</screen>
+
+      <para>Das Ganze kann man natürlich auch mittels eines Skriptes von außen
+      initiieren, vor allem um mehrere Telefone gleichzeitig zurückzusetzen
+      und wer es wagen möchte, auch über eine spezielle Extension eines
+      Administrator-Telefons. Ein notwendiges Skript könnte wie folgt
+      ausehen:</para>
+
+      <programlisting>#!/bin/bash
+ASTERISK=/usr/sbin/asterisk
+$ASTERISK -r -x "sip notify reboot-snom 1000 2000 2001"</programlisting>
+
+      <para>Den Aufruf aus dem Wählplan könnte man wie folgt
+      realisieren:</para>
+
+      <programlisting>[globals]
+; Kommando zum Zurücksetzen der snom Telefone
+CMD_RESET_SNOM=/usr/local/sbin/resetAllSnoms.sh
+
+[admin]
+exten =&gt; 666,1,NoOp(Bastard Operator from Hell Snom Reset)
+exten =&gt; 666,n,System(${CMD_RESET_SNOM}) ; Externes Kommando ausfuehren</programlisting>
+
+      <important>
+        <para>Bitte geben Sie so eine Funktion auf gar keinen Fall für
+        unberechtigte Nutzer frei. Setzen Sie die entsprechenden berechtigten
+        Telefone in einen eigenen Kontext und bauen Sie vielleicht auch noch
+        eine PIN-Abfrage in den Wählpan.</para>
+      </important>
+
+      <para>Die Telefone sind einer solchen "Attacke" natürlich nicht ganz
+      ungeschützt ausgesetzt. Wird in den erweiterten Einstellungen des
+      Telefons "Authentifikation für SIP Reboot" auf "An" geschaltet, lässt
+      sich ein Telefon auf diese einfache Art und Weise nicht mehr
+      zurücksetzen. Der dazugehörige Parameter für eine automatische
+      Konfiguration lautet "<code>challenge_reboot: on</code>".</para>
     </section>
   </section>
 
