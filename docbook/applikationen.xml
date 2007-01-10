@@ -691,9 +691,11 @@ exten =&gt; 123,1,AgentLogin(33,s)</programlisting>
     vergleicht. Daher wird dringend empfohlen, diese Anwendung nur in
     Verbindung mit der <code>AgentCallbackLogin()</code>-Anwendung (und zwar
     nach dieser!) zu verwenden. Um die Anrufe aufzuzeichnen, werden anstelle
-    der <code>Monitor()</code>-Anwendung die Überwachungsfunktionen des
-    <code>chan_agent</code>-Moduls benutzt. Deshalb muss das Aufzeichnen der
-    Anrufe in der <filename>agents.conf</filename>-Datei korrekt konfiguriert
+    der <code><link
+    linkend="applikationen-monitor">Monitor()</link></code>-Anwendung die
+    Überwachungsfunktionen des <code>chan_agent</code>-Moduls benutzt. Deshalb
+    muss das Aufzeichnen der Anrufe in der
+    <filename>agents.conf</filename>-Datei korrekt konfiguriert
     sein.</simpara>
 
     <simpara>Standardmäßig werden aufgezeichnete Anrufe im Verzeichnis
@@ -1341,9 +1343,9 @@ exten =&gt; 124,2,Dial(Zap/g1/1234568)</programlisting>
     <synopsis>ChangeMonitor(<replaceable>Basis-Dateiname</replaceable>)</synopsis>
 
     <simpara>Ändert den Namen der bei der Überwachung eines Kanals mit
-    <code>Monitor()</code> aufgezeichneten Datei. Diese Anwendungen hat
-    keinerlei Auswirkungen, wenn der fragliche Kanal nicht überwacht
-    wird.</simpara>
+    <code><link linkend="applikationen-monitor">Monitor()</link></code>
+    aufgezeichneten Datei. Diese Anwendungen hat keinerlei Auswirkungen, wenn
+    der fragliche Kanal nicht überwacht wird.</simpara>
 
     <programlisting>; Kanal mitschneiden mit Datei-Basisname 'mitschnitt'
 exten =&gt; 123,1,Monitor(mitschnitt)
@@ -2015,10 +2017,11 @@ host=meier.tld</programlisting></para>
             Eintippen der <code>automon</code>-Sequenz (wie in
             <filename>features.conf</filename> konfiguriert) aufzunehmen
             (Audio to disk). Falls die Variable <code>TOUCH_MONITOR</code>
-            gesetzt ist, wird ihr Wert als Parameter der
-            <code>Monitor()</code>-Anwendung weitergeleitet, wenn die Aufnahme
-            startet. Ist sie nicht gesetzt, wird <code>Monitor()</code> die
-            Vorgabe <code>WAV,,m</code> übergeben.</simpara>
+            gesetzt ist, wird ihr Wert als Parameter der <code><link
+            linkend="applikationen-monitor">Monitor()</link></code>-Anwendung
+            weitergeleitet, wenn die Aufnahme startet. Ist sie nicht gesetzt,
+            wird <code>Monitor()</code> die Vorgabe <code>WAV,,m</code>
+            übergeben.</simpara>
           </listitem>
         </varlistentry>
 
@@ -4074,12 +4077,71 @@ exten =&gt; 123,1,Milliwatt()</programlisting>
       <secondary><code>MixMonitor()</code></secondary>
     </indexterm>
 
-    <synopsis>MixMonitor(<replaceable>Basisname</replaceable>.<replaceable>Format</replaceable>[|<replaceable>Optionen</replaceable>[|<replaceable>Befehl</replaceable>]])</synopsis>
+    <synopsis>MixMonitor(&lt;Dateiname&gt;.&lt;Format&gt;[,&lt;Optionen&gt;[,&lt;Command&gt;]])</synopsis>
 
-    <simpara>...</simpara>
+    <simpara>Startet die Audio-Aufzeichnung des aktuellen Kanals. Dabei werden
+    im im Gegensatz zu <link linkend="applikationen-monitor">Monitor()</link>
+    direkt beide Kanäle zu einer Datei gemischt.</simpara>
 
-    <simpara>Beachten Sie auch die Hinweise bei
-    <code>Monitor()</code>.</simpara>
+    <simpara>Optionen:</simpara>
+
+    <variablelist termlength="3">
+      <varlistentry>
+        <term><code>a</code></term>
+
+        <listitem>
+          <simpara>Fügt den Audio-Stream an eine bestehende Datei
+          an.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>b</code></term>
+
+        <listitem>
+          <simpara>Startet die Aufnahme erst, nachdem ein Anruf zu einem
+          anderen Kanal verbunden wurde, also nachdem z.B. durch
+          <code>Dial()</code> tatsächlich ein Gespräch zustande
+          kommt.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>v(&lt;x&gt;)</code></term>
+
+        <listitem>
+          <simpara>Passt die gehörte Lautstärke um Faktor x an (x kann -4 bis
+          4 betragen).</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>V(&lt;x&gt;)</code></term>
+
+        <listitem>
+          <simpara>Passt die gesprochene Lautstärke um Faktor x an (x kann -4
+          bis 4 betragen).</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>W(&lt;x&gt;)</code></term>
+
+        <listitem>
+          <simpara>Passt die gehörte und gesprochene Lautstärke um Faktor x an
+          (x kann -4 bis 4 betragen).</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <simpara><parameter>&lt;command&gt;</parameter> wird (falls angegeben)
+    nach dem Aufnehmen ausgeführt.</simpara>
+
+    <simpara>Die Variable <code>${MIXMONITOR_FILENAME}</code> enthält den
+    Namen der aufgezeichneten Datei.</simpara>
+
+    <simpara>Beachten Sie auch die Hinweise bei <link
+    linkend="applikationen-monitor"><code>Monitor()</code></link>.</simpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -4102,7 +4164,7 @@ exten =&gt; 123,1,Milliwatt()</programlisting>
     <synopsis>Monitor([<replaceable>Format</replaceable>[,<replaceable>Basisname</replaceable>[,<replaceable>Optionen</replaceable>]]])</synopsis>
 
     <simpara>Startet die Audio-Aufzeichnung des aktuellen Kanals. Die auf dem
-    Kanal eingehenden und ausgehenden Sprachpakete werden in Dateien
+    Kanal eingehenden und ausgehenden Sprachpakete werden in seperaten Dateien
     aufgezeichnet, bis der Kanal aufgelegt oder die Überwachung durch die
     <code>StopMonitor()</code>-Anwendung beendet wird.</simpara>
 
@@ -4186,7 +4248,7 @@ exten =&gt; 123,1,Milliwatt()</programlisting>
 
     <simpara>Gibt 0 bei Erfolg zurück oder -1 bei einem Fehler
     (Überwachungsdateien konnten nicht geöffnet werden, Kanal wir bereits
-    aufgezeichnet, ...)</simpara>
+    aufgezeichnet, etc.)</simpara>
 
     <programlisting>; das Gespräch aufzeichnen und hinterher die Audio-Kanäle mixen:
 exten =&gt; 123,1,Answer()
@@ -5136,6 +5198,15 @@ exten =&gt; 123,1,RealTimeUpdate(sipfriends,name,John,port,5061)</programlisting
                     <code>#</code>-Taste.</simpara>
                   </listitem>
                 </varlistentry>
+
+                <varlistentry>
+                  <term><code>q</code></term>
+
+                  <listitem>
+                    <simpara>Spielt vor der Aufnahme keinen Ton ab (q =
+                    quit).</simpara>
+                  </listitem>
+                </varlistentry>
               </variablelist></para>
           </listitem>
         </varlistentry>
@@ -5152,7 +5223,7 @@ exten =&gt; 123,1,RealTimeUpdate(sipfriends,name,John,port,5061)</programlisting
 
     <programlisting>; record the caller's name
 exten =&gt; 123,1,Playback(pls-rcrd-name-at-tone)
-exten =&gt; 123,2,Record(/tmp/name:gsm,3,30)
+exten =&gt; 123,2,Record(/tmp/name.gsm,3,30)
 exten =&gt; 123,3,Playback(/tmp/name)</programlisting>
 
     <simpara>Beachten Sie auch die Hinweise bei
@@ -6656,7 +6727,7 @@ exten =&gt; 123,4,Hangup                   ; auflegen</programlisting>
 
     <simpara>Mit VoiceMailMain kann eine VoiceMailBox vom Benutzer über das
     Telefon abgefragt werden. Werden keine Parameter übergeben, fragt ein
-    Sprachmenü den User nach der Mailboxnummer und dem Passwort. </simpara>
+    Sprachmenü den User nach der Mailboxnummer und dem Passwort.</simpara>
 
     <simpara>Die Übergabe des <code>mailbox</code>-Parameters hält das
     Voicemail-System von der Abfrage des Teilnehmers nach der Mailbox-Nummer
