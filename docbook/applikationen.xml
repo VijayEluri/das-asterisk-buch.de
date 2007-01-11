@@ -56,11 +56,15 @@
   dass der Parameter leer ist (also der Default-Wert verwendet wird), z.B.
   so:<programlisting>exten =&gt; s,1,Dial(IAX2/User:Passwort@example.com/123,,flags)</programlisting></para>
 
-  <simpara>Im Allgemeinen kann gesagt werden, dass Fehler beim Ausführen einer
-  Applikation durch Rückgabe des Wertes -1 ausgedrückt werden. Bitte beachten
-  Sie, dass, abhängig von der eingesetzten Asterisk-Version die Parameter
-  durch <code>,</code> (Komma) oder <code>|</code> (Pipe) getrennt
-  werden.</simpara>
+  <para>Im Allgemeinen kann gesagt werden, dass Fehler beim Ausführen einer
+  Applikation durch Rückgabe des Wertes -1 ausgedrückt werden. </para>
+
+  <important>
+    <para>Bitte beachten Sie, dass, abhängig von der eingesetzten
+    Asterisk-Version die Parameter durch <code>,</code> (Komma) oder
+    <code>|</code> (Pipe) getrennt werden. In diesem Buch wird hauptsächlich
+    das <code>,</code> (Komma) benutzt.</para>
+  </important>
 
   <simpara>Wer Asterisk schon länger kennt, wird sich vielleicht wundern,
   warum hier die eine oder andere Applikation nicht aufgeführt ist. Das hat
@@ -87,13 +91,13 @@
       signalisieren</member>
 
       <member><xref linkend="applikationen-chanisavail" /> - Prüfen, ob ein
-      Kanal verfügbar ist</member>
+      Chanel verfügbar ist</member>
 
       <member><xref linkend="applikationen-congestion" /> - Stau
       signalisieren</member>
 
       <member><xref linkend="applikationen-dial" /> - Einen Anruf durchstellen
-      / mit einem Kanal verbinden</member>
+      / mit einem Chanel verbinden</member>
 
       <member><xref linkend="applikationen-disa" /> - DISA (Direct Inward
       System Access)</member>
@@ -163,7 +167,7 @@
       Telefonnummer verlangen (falls ohne Caller-ID)</member>
 
       <member><xref linkend="applikationen-setcallerpres" /> - Caller-ID
-      setzen, unanhängig vom Kanal</member>
+      setzen, unanhängig vom Chanel</member>
 
       <member><xref linkend="applikationen-softhangup" /> - Auflegen
       verlangen</member>
@@ -227,12 +231,12 @@
   <para><emphasis role="bold">Variablen verändern</emphasis><simplelist
       type="vert">
       <member><xref linkend="applikationen-importvar" /> - Variable von einem
-      Kanal importieren</member>
+      Chanel importieren</member>
 
       <member><xref linkend="applikationen-read" /> - Eine Variable (Ziffern)
       vom User einlesen</member>
 
-      <member><xref linkend="applikationen-set" /> - Eine Kanal-Variable
+      <member><xref linkend="applikationen-set" /> - Eine Chanel-Variable
       setzen</member>
     </simplelist></para>
 
@@ -325,7 +329,7 @@
       <member><xref linkend="applikationen-stopmonitor" /> -
       <code>Monitor()</code> beenden</member>
 
-      <member><xref linkend="applikationen-zapbarge" /> - Einen ZAP-Kanal
+      <member><xref linkend="applikationen-zapbarge" /> - Einen ZAP-Chanel
       belauschen</member>
 
       <member><xref linkend="applikationen-zapscan" /> - Zwecks Mithören durch
@@ -387,7 +391,7 @@
       ausführen</member>
 
       <member><xref linkend="applikationen-deadagi" /> - <code>AGI()</code>
-      auf einem aufgelegten Kanal</member>
+      auf einem aufgelegten Chanel</member>
 
       <member><xref linkend="applikationen-eagi" /> - Siehe
       <code>AGI()</code></member>
@@ -438,17 +442,17 @@
       <member><xref linkend="applikationen-flash" /> - Einen Switchhook-Flash
       (auch <quote>Link</quote>) auf einem ZAP-Trunk senden</member>
 
-      <member><xref linkend="applikationen-zapbarge" /> - Einen ZAP-Kanal
+      <member><xref linkend="applikationen-zapbarge" /> - Einen ZAP-Chanel
       belauschen</member>
 
       <member><xref linkend="applikationen-zapras" /> - RAS (Remote Access
-      Server) auf einem ZAP-ISDN-Kanal bereitstellen</member>
+      Server) auf einem ZAP-ISDN-Chanel bereitstellen</member>
 
       <member><xref linkend="applikationen-zapscan" /> - Zwecks Mithören durch
       ZAP-Kanäle schalten</member>
 
       <member><xref linkend="applikationen-zapsendkeypadfacility" /> - Ziffern
-      <quote>out of band</quote> auf einem ZAP-PRI-Kanal senden</member>
+      <quote>out of band</quote> auf einem ZAP-PRI-Chanel senden</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Warteschlangen,
@@ -535,7 +539,7 @@
     <simpara>In manchen Asterisk-Versionen kann man statt der Pipe-Zeichen
     (<code>|</code>) auch Kommas verwenden.</simpara>
 
-    <simpara>Die Applikation setzt auch die Kanal-Variable
+    <simpara>Die Applikation setzt auch die Chanel-Variable
     <code>${AQMSTATUS}</code> auf <code>ADDED</code> (hinzugefügt),
     <code>MEMBERALREADY</code> (ist bereits Mitglied) oder
     <code>NOSUCHQUEUE</code> (Warteschlange nicht vorhanden).</simpara>
@@ -545,6 +549,34 @@ exten =&gt; 123,1,AddQueueMember(supportschlange,SIP/3000)
 
 ; das aktuelle Interface mit Malus 2 hinzufügen:
 exten =&gt; 123,1,AddQueueMember(supportschlange,,2)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>  -= Info about application 'AddQueueMember' =- 
+
+[Synopsis]
+Dynamically adds queue members
+
+[Description]
+   AddQueueMember(queuename[|interface[|penalty[|options]]]):
+Dynamically adds interface to an existing queue.
+If the interface is already in the queue and there exists an n+101 priority
+then it will then jump to this priority.  Otherwise it will return an error
+The option string may contain zero or more of the following characters:
+       'j' -- jump to +101 priority when appropriate.
+  This application sets the following channel variable upon completion:
+     AQMSTATUS    The status of the attempt to add a queue member as a 
+                     text string, one of
+           ADDED | MEMBERALREADY | NOSUCHQUEUE 
+Example: AddQueueMember(techsupport|SIP/3000)</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine -</screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -730,7 +762,7 @@ exten =&gt; 123,1,AgentLogin(33,s)</programlisting>
         <listitem>
           <simpara>Ändert den Call Detail Record dahingehend, dass
           <code><replaceable>Agent</replaceable>/<replaceable>AgentenNr</replaceable></code>
-          als Kanal, von dem der Anruf ausgeht, gespeichert wird, damit
+          als Chanel, von dem der Anruf ausgeht, gespeichert wird, damit
           festgestellt werden kann, von welchem Agenten der Anruf
           ausging.</simpara>
         </listitem>
@@ -779,7 +811,7 @@ exten =&gt; 123,1,AgentMonitorOutgoing(c)</programlisting>
     <code>DeadAGI()</code>)</simpara>
 
     <simpara>Führt ein Astersik-Gateway-Interface-kompatibles Programm
-    <code>Programm</code> auf dem aktuellen Kanal aus. Solche externen
+    <code>Programm</code> auf dem aktuellen Chanel aus. Solche externen
     Programme (die in fast jeder beliebigen Sprache vorliegen können - z.B.
     Perl, PHP, ...), können den Telefonkanal steuern, Audiodateien abspielen,
     DTMF-Ziffern auslesen und so weiter. Asterisk kommuniziert dabei mit dem
@@ -792,7 +824,7 @@ exten =&gt; 123,1,AgentMonitorOutgoing(c)</programlisting>
     relativ zum Asterisk-AGI-Verzeichnis, standardmäßig
     <filename>/var/lib/asterisk/agi-bin/</filename>.</simpara>
 
-    <simpara>Soll ein AGI-Programm laufen, ohne dass ein Kanal offen ist (wie
+    <simpara>Soll ein AGI-Programm laufen, ohne dass ein Chanel offen ist (wie
     in einer <code>h</code>-Extension, aufgelegt), muss statt dieser die
     <code>DeadAGI()</code>-Anwendung verwendet werden. Falls AGI über ein
     Netzwerk laufen soll, benutzen Sie <code>FastAGI()</code>.</simpara>
@@ -877,20 +909,20 @@ exten =&gt; s,1,AlarmReceiver()</programlisting>
       <secondary><code>Answer()</code></secondary>
     </indexterm>
 
-    <simpara>Antwortet auf einen klingelnden Kanal</simpara>
+    <simpara>Antwortet auf einen klingelnden Chanel</simpara>
 
     <synopsis>Answer([<replaceable>Verzögerung</replaceable>])</synopsis>
 
-    <simpara>Veranlasst Asterisk zum Beantworten eines Kanals, wenn er gerade
-    klingelt. Falls der aktuelle Kanal nicht klingelt, tut diese Anwendung
+    <simpara>Veranlasst Asterisk zum Beantworten eines Chanels, wenn er gerade
+    klingelt. Falls der aktuelle Chanel nicht klingelt, tut diese Anwendung
     nichts.</simpara>
 
     <simpara>Es ist generell empfehlenswert, <code>Answer()</code> vor dem
-    Aufrufen irgendwelcher anderen Anwendungen auf dem Kanal aufzurufen, außer
-    es besteht ein guter Grund, das nicht zu tun. Die meisten Anwendungen
-    verlangen, dass der Kanal beantwortet wird, bevor sie aufgerufen werden,
-    und werden andernfalls eventuell nicht in der Lage sein, korrekt ihre
-    Arbeit zu verrichten.</simpara>
+    Aufrufen irgendwelcher anderen Anwendungen auf dem Chanel aufzurufen,
+    außer es besteht ein guter Grund, das nicht zu tun. Die meisten
+    Anwendungen verlangen, dass der Chanel beantwortet wird, bevor sie
+    aufgerufen werden, und werden andernfalls eventuell nicht in der Lage
+    sein, korrekt ihre Arbeit zu verrichten.</simpara>
 
     <simpara>Die optionale <code>Verzögerung</code> weist Asterisk an, soviele
     Millisekunden vor dem Antworten zu warten.</simpara>
@@ -942,7 +974,7 @@ exten =&gt; 123,3,Playback(hallo)</programlisting>
 
         <listitem>
           <simpara>(accountcode) Setzt den Namen des CDR-Felds
-          <code>accountcode</code> und die Variable für den Kanal,
+          <code>accountcode</code> und die Variable für den Chanel,
           <code>ACCOUNTCODE</code>, auf das eingegebene Passwort.</simpara>
         </listitem>
       </varlistentry>
@@ -1035,10 +1067,10 @@ exten =&gt; 123,4,SayDigits(${ACCOUNTCODE})</programlisting>
 
         <listitem>
           <simpara>Die Wiedergabe der Nachricht wird übersprungen, falls sich
-          der Kanal gegenwärtig nicht im <code>up</code>-Status befindet
+          der Chanel gegenwärtig nicht im <code>up</code>-Status befindet
           (z.B., weil er bisher nicht beantwortet wurde). Ist
           <code>skip</code> angegeben, wird die Anwendung unverzüglich
-          beendet, falls der Kanal aufgelegt ist.</simpara>
+          beendet, falls der Chanel aufgelegt ist.</simpara>
         </listitem>
       </varlistentry>
 
@@ -1046,9 +1078,9 @@ exten =&gt; 123,4,SayDigits(${ACCOUNTCODE})</programlisting>
         <term><code>noanswer</code></term>
 
         <listitem>
-          <simpara>Der Kanal kann erst beantwortet werden, nachdem die
+          <simpara>Der Chanel kann erst beantwortet werden, nachdem die
           angegebene Audiodatei abgespielt wurde. Ist diese Option nicht
-          angegeben, wird der Kanal automatisch beantwortet, bevor die
+          angegeben, wird der Chanel automatisch beantwortet, bevor die
           Audiodatei abgespielt wird. Es gilt zu beachten, dass nicht alle
           Kanäle erlauben, vor ihrer Beantwortung eine Nachricht
           abzuspielen.</simpara>
@@ -1058,7 +1090,7 @@ exten =&gt; 123,4,SayDigits(${ACCOUNTCODE})</programlisting>
 
     <simpara>Der Parameter <code>Sprache</code> kann verwendet werden, um eine
     bestimmte Sprache zu definieren, in der Nachrichten abgespielt werden
-    sollen, falls diese nicht der für diesen Kanal aktuell eingestellten
+    sollen, falls diese nicht der für diesen Chanel aktuell eingestellten
     Sprache entspricht.</simpara>
 
     <simpara>Liefert -1 zurück wenn aufgelegt wurde, oder falls der angegebene
@@ -1130,17 +1162,17 @@ exten =&gt; talk,1,Playback(ja-bitte)</programlisting>
       <secondary><code>Busy()</code></secondary>
     </indexterm>
 
-    <simpara>Zeigt dem Kanal besetzt an</simpara>
+    <simpara>Zeigt dem Chanel besetzt an</simpara>
 
     <synopsis>Busy([<replaceable>Timeout</replaceable>])</synopsis>
 
-    <simpara>Fordert den Kanal auf, ein Besetzt-Zeichen zu signalisieren und
+    <simpara>Fordert den Chanel auf, ein Besetzt-Zeichen zu signalisieren und
     wartet dann, bis der Benutzer auflegt oder auf den Ablauf der optional
     anzugebenden zeitlichen Frist (<code>Timeout</code>, in
     Sekunden).</simpara>
 
     <simpara>Diese Anwendung signalisiert einen Besetzt-Zustand nur dem
-    überbrückten Kanal (bridged channel). Jeder spezielle Kanaltyp hat seine
+    überbrückten Chanel (bridged channel). Jeder spezielle Chaneltyp hat seine
     eigene Art, dem Anrufer besetzt mitzuteilen. Sie können
     <code>Playtones(busy)</code> verwenden, um dem Anrufer ein Besetztzeichen
     vorzuspielen.</simpara>
@@ -1338,16 +1370,16 @@ exten =&gt; 124,2,Dial(Zap/g1/1234568)</programlisting>
     </indexterm>
 
     <simpara>Ändert den Dateinamen der Protokolldatei für einen
-    Kanal</simpara>
+    Chanel</simpara>
 
     <synopsis>ChangeMonitor(<replaceable>Basis-Dateiname</replaceable>)</synopsis>
 
-    <simpara>Ändert den Namen der bei der Überwachung eines Kanals mit
+    <simpara>Ändert den Namen der bei der Überwachung eines Chanels mit
     <code><link linkend="applikationen-monitor">Monitor()</link></code>
     aufgezeichneten Datei. Diese Anwendungen hat keinerlei Auswirkungen, wenn
-    der fragliche Kanal nicht überwacht wird.</simpara>
+    der fragliche Chanel nicht überwacht wird.</simpara>
 
-    <programlisting>; Kanal mitschneiden mit Datei-Basisname 'mitschnitt'
+    <programlisting>; Chanel mitschneiden mit Datei-Basisname 'mitschnitt'
 exten =&gt; 123,1,Monitor(mitschnitt)
 ; Datei-Basisnamen auf 'mitschnitt2' ändern
 exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
@@ -1369,7 +1401,7 @@ exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
       <secondary><code>ChanIsAvail()</code></secondary>
     </indexterm>
 
-    <simpara>Ermittelt, ob ein bestimmter Kanal momentan verfügbar
+    <simpara>Ermittelt, ob ein bestimmter Chanel momentan verfügbar
     ist</simpara>
 
     <synopsis>ChanIsAvail(<replaceable>Technology1</replaceable>/<replaceable>Resource1</replaceable>[&amp;<replaceable>Technology2</replaceable>/<replaceable>Resource2</replaceable>...][,<replaceable>Optionen</replaceable>])</synopsis>
@@ -1385,13 +1417,13 @@ exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
     Priorität auf <code>n+1</code> gesetzt, und <code>ChanIsAvail()</code>
     liefert den Wert 0 zurück.</simpara>
 
-    <para><code>ChanIsAvail()</code> setzt die folgenden Kanalvariablen:
+    <para><code>ChanIsAvail()</code> setzt die folgenden Chanelvariablen:
     <variablelist termlength="18">
         <varlistentry>
           <term><code>${AVAILCHAN}</code></term>
 
           <listitem>
-            <simpara>Der Name des verfügbaren Kanals, inklusive der
+            <simpara>Der Name des verfügbaren Chanels, inklusive der
             Session-Nummer des Testanrufs.</simpara>
           </listitem>
         </varlistentry>
@@ -1400,8 +1432,8 @@ exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
           <term><code>${AVAILORIGCHAN}</code></term>
 
           <listitem>
-            <simpara>Der kanonische Kanalname, der benutzt wurde um den Kanal
-            zu erstellen, d.h. der Kanalname ohne eine
+            <simpara>Der kanonische Chanelname, der benutzt wurde um den
+            Chanel zu erstellen, d.h. der Chanelname ohne eine
             Session-Nummer.</simpara>
           </listitem>
         </varlistentry>
@@ -1410,13 +1442,13 @@ exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
           <term><code>${AVAILSTATUS}</code></term>
 
           <listitem>
-            <para>Der Status-Code des Kanals:<variablelist spacing="compact"
+            <para>Der Status-Code des Chanels:<variablelist spacing="compact"
                 termlength="24">
                 <varlistentry>
                   <term><code>AST_DEVICE_UNKNOWN</code> (0)</term>
 
                   <listitem>
-                    <simpara>Unbekannt. Der Kanal ist gültig, aber in
+                    <simpara>Unbekannt. Der Chanel ist gültig, aber in
                     unbekanntem Zustand.</simpara>
                   </listitem>
                 </varlistentry>
@@ -1425,7 +1457,7 @@ exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
                   <term><code>AST_DEVICE_NOT_INUSE</code> (1)</term>
 
                   <listitem>
-                    <simpara>Kanal wird nicht verwendet.</simpara>
+                    <simpara>Chanel wird nicht verwendet.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -1433,7 +1465,7 @@ exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
                   <term><code>AST_DEVICE_IN_USE</code> (2)</term>
 
                   <listitem>
-                    <simpara>Der Kanal ist in Gebrauch.</simpara>
+                    <simpara>Der Chanel ist in Gebrauch.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -1449,7 +1481,7 @@ exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
                   <term><code>AST_DEVICE_INVALID</code> (4)</term>
 
                   <listitem>
-                    <simpara>Ungültig. Unbekannter Kanal.</simpara>
+                    <simpara>Ungültig. Unbekannter Chanel.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -1457,7 +1489,7 @@ exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
                   <term><code>AST_DEVICE_UNAVAILABLE</code> (5)</term>
 
                   <listitem>
-                    <simpara>Nicht verfügbar. Kanal ist nicht
+                    <simpara>Nicht verfügbar. Chanel ist nicht
                     registriert.</simpara>
                   </listitem>
                 </varlistentry>
@@ -1466,7 +1498,7 @@ exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
                   <term><code>AST_DEVICE_RINGING</code> (6)</term>
 
                   <listitem>
-                    <simpara>Kanal klingelt.</simpara>
+                    <simpara>Chanel klingelt.</simpara>
                   </listitem>
                 </varlistentry>
               </variablelist></para>
@@ -1475,9 +1507,9 @@ exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
       </variablelist></para>
 
     <simpara>Ist die Option <code>s</code> (für state) angegeben, wird
-    Asterisk den Kanal als nicht verfügbar betrachten, wann immer er in
+    Asterisk den Chanel als nicht verfügbar betrachten, wann immer er in
     Gebrauch ist, sogar falls er weiteren anderen Anruf aufnehmen kann. Mit
-    der Option <code>j</code> wird, falls der Kanal nicht verfügbar ist, zur
+    der Option <code>j</code> wird, falls der Chanel nicht verfügbar ist, zur
     Priorität n+101 gesprungen.</simpara>
 
     <simpara>Diese Anwendung arbeitet auf MGCP-Kanälen nicht
@@ -1486,7 +1518,7 @@ exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
     <programlisting>; Zap/1 und Zap/2 auf Verfügbarkeit prüfen:
 exten =&gt; 123,1,ChanIsAvail(Zap/1&amp;Zap/2)
 ; wenn mindestens einer verfügbar ist, geht's bei Priorität 2 weiter:
-; In Priorität 2 wählen wir eine Nummer auf dem freien Kanal:
+; In Priorität 2 wählen wir eine Nummer auf dem freien Chanel:
 exten =&gt; 123,2,NoOp(${AVAILORIGCHAN})
 exten =&gt; 123,3,Dial(${AVAILORIGCHAN}/123456)
 ; Wenn wir bei Prio. 102 landen ist weder Zap/1 noch Zap/2 verfügbar
@@ -1502,19 +1534,19 @@ exten =&gt; 123,102,Playback(alle-kanaele-belegt)</programlisting>
       <secondary><code>ChanSpy()</code></secondary>
     </indexterm>
 
-    <simpara>Einen Kanal belauschen</simpara>
+    <simpara>Einen Chanel belauschen</simpara>
 
-    <synopsis>ChanSpy([<replaceable>Kanalpräfix</replaceable>[,<replaceable>Optionen</replaceable>]])</synopsis>
+    <synopsis>ChanSpy([<replaceable>Chanelpräfix</replaceable>[,<replaceable>Optionen</replaceable>]])</synopsis>
 
     <simpara>Erlaubt es, das Gespräch auf beliebigen Kanälen mitzuhören. (Ist
     also nicht wie <code>ZapBarge()</code>/<code>ZapScan()</code> an
     Zap-Kanäle gebunden.) Für das Verständnis einiger Optionen ist zu
     beachten, dass diese Applikation einzelne Kanäle abhört, aber nicht
     Gespräche im eigentlichen Sinn (min. 2 Teilnehmer), obwohl Sie natürlich
-    das ein- und ausgehende Audio auf dem abgehörten Kanal hören
+    das ein- und ausgehende Audio auf dem abgehörten Chanel hören
     können.</simpara>
 
-    <simpara>Wenn <code>Kanalpräfix</code> angegeben ist, stehen nur Kanäle,
+    <simpara>Wenn <code>Chanelpräfix</code> angegeben ist, stehen nur Kanäle,
     die mit diesem String beginnen, zur Auswahl.</simpara>
 
     <para><code>Optionen</code> (auch in Kombination):<variablelist
@@ -1534,7 +1566,7 @@ exten =&gt; 123,102,Playback(alle-kanaele-belegt)</programlisting>
           <listitem>
             <simpara>(group) Auswahl auf Kanäle beschränken, auf denen
             <code>grp</code> in der durch Doppelpunkt (<code>:</code>)
-            getrennten Liste <code>${SPYGROUP}</code> (Kanalvariable)
+            getrennten Liste <code>${SPYGROUP}</code> (Chanelvariable)
             enthalten ist.</simpara>
           </listitem>
         </varlistentry>
@@ -1544,7 +1576,7 @@ exten =&gt; 123,102,Playback(alle-kanaele-belegt)</programlisting>
 
           <listitem>
             <simpara>(quiet) Keine Piep-Töne beim Umschalten von Kanälen
-            spielen und Kanalname nicht ankündigen.</simpara>
+            spielen und Chanelname nicht ankündigen.</simpara>
           </listitem>
         </varlistentry>
 
@@ -1574,8 +1606,8 @@ exten =&gt; 123,102,Playback(alle-kanaele-belegt)</programlisting>
 
           <listitem>
             <simpara>(whisper) Flüster-Modus aktivieren. Damit kann der
-            lauschende Kanal mit dem belauschten sprechen, wobei dies nur der
-            belauschte Kanal hört, nicht dessen Gesprächspartner. (Diese
+            lauschende Chanel mit dem belauschten sprechen, wobei dies nur der
+            belauschte Chanel hört, nicht dessen Gesprächspartner. (Diese
             Option ist seit Asterisk 1.4 verfügbar.)</simpara>
           </listitem>
         </varlistentry>
@@ -1585,7 +1617,7 @@ exten =&gt; 123,102,Playback(alle-kanaele-belegt)</programlisting>
 
           <listitem>
             <simpara>(private whisper) Privater Flüster-Modus. Wie
-            <code>w</code>, aber der lauschende Kanal kann den belauschten
+            <code>w</code>, aber der lauschende Chanel kann den belauschten
             nicht hören. (sinnvoll?)</simpara>
           </listitem>
         </varlistentry>
@@ -1606,7 +1638,7 @@ exten =&gt; 123,102,Playback(alle-kanaele-belegt)</programlisting>
           <term><code>*</code></term>
 
           <listitem>
-            <simpara>Schaltet zu einem anderen Kanal</simpara>
+            <simpara>Schaltet zu einem anderen Chanel</simpara>
           </listitem>
         </varlistentry>
 
@@ -1615,9 +1647,9 @@ exten =&gt; 123,102,Playback(alle-kanaele-belegt)</programlisting>
 
           <listitem>
             <simpara>Eine Reihe von Ziffern, abgeschlossen durch
-            <code>#</code>, wird an <code>Kanalpräfix</code> angehängt. Wenn
+            <code>#</code>, wird an <code>Chanelpräfix</code> angehängt. Wenn
             Sie z.B. <code>ChanSpy(Agent)</code> ausführen und
-            <code>1234#</code> eingeben, werden Sie auf dem Kanal
+            <code>1234#</code> eingeben, werden Sie auf dem Chanel
             <code>Agent/1234</code> lauschen.</simpara>
           </listitem>
         </varlistentry>
@@ -1653,11 +1685,11 @@ exten =&gt; 123,n,Hangup()</programlisting>
       <secondary><code>Congestion()</code></secondary>
     </indexterm>
 
-    <simpara>Zeigt Stau (Überlastung) auf dem Kanal an</simpara>
+    <simpara>Zeigt Stau (Überlastung) auf dem Chanel an</simpara>
 
     <synopsis>Congestion([<replaceable>Timeout</replaceable>])</synopsis>
 
-    <simpara>Zeigt auf dem Kanal Stau an und wartet dann, bis der Teilnehmer
+    <simpara>Zeigt auf dem Chanel Stau an und wartet dann, bis der Teilnehmer
     auflegt, oder bis die optional spezifizierbare Frist
     (<code>Timeout</code>, in Sekunden) abgelaufen ist.</simpara>
 
@@ -1716,7 +1748,7 @@ exten =&gt; 123,10,Dial(Zap/1)</programlisting>
     (Pause). Erneutes Drücken von <code>pausechar</code> setzt die Wiedergabe
     der Datei dann fort.</simpara>
 
-    <simpara>Gibt -1 zurück, falls der Kanal während der Wiedergabe aufgelegt
+    <simpara>Gibt -1 zurück, falls der Chanel während der Wiedergabe aufgelegt
     wurde.</simpara>
 
     <programlisting>; dem Anrufer "sinfonie" vorspielen mit Steuerungsmöglichkeit:
@@ -1802,12 +1834,12 @@ exten =&gt; 123,n,DBdeltree(farben)</programlisting>
     </indexterm>
 
     <simpara>Führt ein AGI-konformes Skript auf einem toten (aufgelegten)
-    Kanal aus</simpara>
+    Chanel aus</simpara>
 
     <synopsis>DeadAGI(<replaceable>Programm</replaceable>,<replaceable>Argumente</replaceable>)</synopsis>
 
     <simpara>Führt ein AGI-konformes Skript auf einem toten (aufgelegten)
-    Kanal aus. Mit Hilfe von AGI kann Asterisk externe Programme in nahezu
+    Chanel aus. Mit Hilfe von AGI kann Asterisk externe Programme in nahezu
     jeder beliebigen Sprache ausführen (starten), um einen Telefonkanal zu
     steuern, Audio abzuspielen, DTMF-Ziffern auszulesen usw., indem es nach
     dem AGI-Protokoll auf <code>STDIN</code> und <code>STDOUT</code> mit
@@ -1815,9 +1847,9 @@ exten =&gt; 123,n,DBdeltree(farben)</programlisting>
     AGI-Programm durchgereicht.</simpara>
 
     <simpara>Diese Anwendung wurde speziell für tote Kanäle entwickelt, weil
-    das Standard AGI-Interface nicht funktioniert, nachdem der Kanal aufgelegt
-    wurde. Dass der Kanal <quote>tot</quote> ist, ist allerdings keine
-    Voraussetzung für den Start eines DeadAGI-Skripts!</simpara>
+    das Standard AGI-Interface nicht funktioniert, nachdem der Chanel
+    aufgelegt wurde. Dass der Chanel <quote>tot</quote> ist, ist allerdings
+    keine Voraussetzung für den Start eines DeadAGI-Skripts!</simpara>
 
     <simpara>Benutzten sie den Befehl <code>show agi</code> auf der
     Kommandozeilen-Schnittstelle, um eine Liste aller verfügbaren AGI-Befehle
@@ -1829,11 +1861,12 @@ exten =&gt; 123,n,DBdeltree(farben)</programlisting>
     <programlisting>exten =&gt; h,1,DeadAGI(agi-test)</programlisting>
 
     <important>
-      <simpara>Der Kanal wird solange als aktiv angesehen wird, bis das Skript
-      beendet wird, was z.B. für CDRs von Bedeutung sein kann.</simpara>
+      <simpara>Der Chanel wird solange als aktiv angesehen wird, bis das
+      Skript beendet wird, was z.B. für CDRs von Bedeutung sein
+      kann.</simpara>
 
       <para>Beachten Sie auch, dass auch DeadAGI-Skripte beim Auflegen des
-      Kanals ein <code>SIGHUP</code>-Signal erhalten, was ggf. ignoriert
+      Chanels ein <code>SIGHUP</code>-Signal erhalten, was ggf. ignoriert
       werden muss:<informaltable colsep="none" rowsep="none">
           <tgroup cols="2">
             <colspec colnum="1" colwidth="50pt" />
@@ -1900,28 +1933,29 @@ exten =&gt; 123,n,DBdeltree(farben)</programlisting>
     Asterisk, lesen Sie diesen Ausschnitt deshalb bitte aufmerksam und
     eventuell mehrmals durch.</simpara>
 
-    <simpara>Jeder gültige Kanaltyp (wie z.B. SIP, IAX2, H.323, MGCP, Local
+    <simpara>Jeder gültige Chaneltyp (wie z.B. SIP, IAX2, H.323, MGCP, Local
     oder Zap) wird von <code>Dial()</code> akzeptiert, aber die Parameter, die
-    jedem Kanal übergeben werden müssen, hängen von denjenigen Informationen
-    ab, die der entsprechende Kanaltyp benötigt, um seine Arbeit zu
-    verrichten. So wird zum Beispiel ein SIP-Kanal eine Netzwerkadresse und
+    jedem Chanel übergeben werden müssen, hängen von denjenigen Informationen
+    ab, die der entsprechende Chaneltyp benötigt, um seine Arbeit zu
+    verrichten. So wird zum Beispiel ein SIP-Chanel eine Netzwerkadresse und
     einen Benutzer benötigen, zu dem die Verbindung hergestellt werden soll,
-    während ein ZAP-Kanal irgendeine Art von Telefonnummer verlangt.</simpara>
+    während ein ZAP-Chanel irgendeine Art von Telefonnummer
+    verlangt.</simpara>
 
-    <simpara>Wenn ein Netzwerk-basierter Kanaltyp spezifiziert wird, können
+    <simpara>Wenn ein Netzwerk-basierter Chaneltyp spezifiziert wird, können
     Zielhost (Name oder IP-Adresse), Benutzername, Passwort und
     Fernsteuerungs-Extension als Teil der Optionen an <code>Dial()</code>
-    übergeben werden, oder man kann auf den Namen eines Kanaleintrags in der
+    übergeben werden, oder man kann auf den Namen eines Chaneleintrags in der
     entsprechenden Konfigurationsdatei (<filename>.conf</filename>-Datei)
     verweisen - alle notwendigen Informationen müssen dann in dieser Datei
     vorhanden sein. Benutzername und Passwort können durch den Namen der
-    Kanalkonfigurationsdatei, umgeben von eckigen Klammern (<code>[]</code>)
+    Chanelkonfigurationsdatei, umgeben von eckigen Klammern (<code>[]</code>)
     ersetzt werden. Die Angabe des Hostnamens ist optional.</simpara>
 
     <para>Ein Beispiel für einen gültigen Aufruf: <programlisting>exten =&gt; s,1,Dial(SIP/peter:geheim@meier.tld)</programlisting>
     Das gleiche würde auch der folgende Aufruf bewirken: <programlisting>exten =&gt; s,1,Dial(SIP/ein_SIP_friend)</programlisting>
     Letzteres funktioniert nur, wenn in <filename>sip.conf</filename> ein
-    entsprechender Kanal definiert ist: <programlisting>[ein_SIP_friend]
+    entsprechender Chanel definiert ist: <programlisting>[ein_SIP_friend]
 fromuser=peter
 password=geheim
 host=meier.tld</programlisting></para>
@@ -1929,9 +1963,9 @@ host=meier.tld</programlisting></para>
     <para>Oft ist eine Extension wie folgt an die Adressinformation angehängt:
     <programlisting>exten =&gt; s,1,Dial(IAX2/benutzer:passwort@host.tld/500)</programlisting>
     Dadurch wird das entfernte Ende aufgefordert, den Anruf mit Extension 500
-    zu verbinden, und zwar in dem Kontext, in der der Kanal eingegangen ist.
+    zu verbinden, und zwar in dem Kontext, in der der Chanel eingegangen ist.
     Diese Extension wird von <code>Dial()</code> nicht benötigt, weil die in
-    der Kanalkonfiguration des entfernten Endes vorliegenden Daten verwendet
+    der Chanelkonfiguration des entfernten Endes vorliegenden Daten verwendet
     werden oder der Remoteserver den Anruf zur <code>s</code>-Extension in dem
     Kontext, in dem der Anruf eingegangen ist, weiterleitet.</para>
 
@@ -1939,7 +1973,7 @@ host=meier.tld</programlisting></para>
     geschehen soll - Sie können lediglich eine spezielle Behandlung
     anfragen.</simpara>
 
-    <para>Wenn kein <code>Timeout</code> spezifiziert ist, wird der Kanal
+    <para>Wenn kein <code>Timeout</code> spezifiziert ist, wird der Chanel
     unendlich klingeln. Dieses Verhalten muss nicht immer schlecht sein, es
     besteht keine Veranlassung, ihn immer zu setzen - man muss sich nur
     vergegenwärtigen, dass unendlich evtl. eine sehr lange Zeit bedeuten
@@ -2072,7 +2106,7 @@ host=meier.tld</programlisting></para>
             <simpara>Signalisiert dem Anrufer Klingeln, ohne dass Audio
             weitergeleitet wird, bevor der Anruf beantwortet wird. Dieses Flag
             wird für gewöhnlich nicht benötigt um Klingeln zu signalisiern, da
-            Asterisk Klingeln signalisiert, wenn ein Kanal angerufen
+            Asterisk Klingeln signalisiert, wenn ein Chanel angerufen
             wird.</simpara>
           </listitem>
         </varlistentry>
@@ -2094,7 +2128,7 @@ host=meier.tld</programlisting></para>
             <para>Führt auf die Verbindung eines Anrufs hin das Makro
             <code>x</code> aus, und leitet dabei optional Parameter, getrennt
             durch <code>^</code>, weiter. Das Makro kann auch die
-            <code>MACRO_RESULT</code> Kanalvariable auf einen der folgenden
+            <code>MACRO_RESULT</code> Chanelvariable auf einen der folgenden
             Werte setzen:<variablelist termlength="12">
                 <varlistentry>
                   <term><code>ABORT</code></term>
@@ -2335,7 +2369,7 @@ host=meier.tld</programlisting></para>
                           <term><code>CHANUNAVAIL</code></term>
 
                           <listitem>
-                            <simpara>Der Kanal ist nicht verfügbar.</simpara>
+                            <simpara>Der Chanel ist nicht verfügbar.</simpara>
                           </listitem>
                         </varlistentry>
 
@@ -2343,7 +2377,7 @@ host=meier.tld</programlisting></para>
                           <term><code>CONGESTION</code></term>
 
                           <listitem>
-                            <simpara>Der Kanal hat ein Stau-Signal
+                            <simpara>Der Chanel hat ein Stau-Signal
                             zurückgeliefert, was gewöhnlich die Unfähigkeit der
                             Fertigstellung der Verbindung
                             kennzeichnet.</simpara>
@@ -2354,7 +2388,7 @@ host=meier.tld</programlisting></para>
                           <term><code>NOANSWER</code></term>
 
                           <listitem>
-                            <simpara>Der Kanal hat in der durch die
+                            <simpara>Der Chanel hat in der durch die
                             Klingel-Timeout Option gesetzten Frist nicht
                             geantwortet.</simpara>
                           </listitem>
@@ -2364,7 +2398,7 @@ host=meier.tld</programlisting></para>
                           <term><code>BUSY</code></term>
 
                           <listitem>
-                            <simpara>Der angerufene Kanal ist momentan
+                            <simpara>Der angerufene Chanel ist momentan
                             belegt.</simpara>
                           </listitem>
                         </varlistentry>
@@ -2373,7 +2407,7 @@ host=meier.tld</programlisting></para>
                           <term><code>ANSWER</code></term>
 
                           <listitem>
-                            <simpara>Der Kanal hat den Anruf
+                            <simpara>Der Chanel hat den Anruf
                             beantwortet.</simpara>
                           </listitem>
                         </varlistentry>
@@ -2393,7 +2427,7 @@ host=meier.tld</programlisting></para>
         </varlistentry>
       </variablelist></para>
 
-    <programlisting>; eine Nummer auf Zap-Kanal 2 wählen, max. 10 Sekunden klingeln:
+    <programlisting>; eine Nummer auf Zap-Chanel 2 wählen, max. 10 Sekunden klingeln:
 exten =&gt; 123,1,Dial(Zap/2/1234567,10,tTm)
 ; sonst weiter im Dialplan:
 exten =&gt; 123,n,Playback(tut-uns-leid)
@@ -2638,13 +2672,13 @@ exten =&gt; _0800XXXXXXXX,1,Dial(Zap/4/${EXTEN})</programlisting>
       <secondary><code>DumpChan()</code></secondary>
     </indexterm>
 
-    <simpara>Gibt Informationen über den anrufenden Kanal auf der Konsole
+    <simpara>Gibt Informationen über den anrufenden Chanel auf der Konsole
     aus</simpara>
 
     <synopsis>DumpChan([<replaceable>min_verbose_level</replaceable>])</synopsis>
 
-    <simpara>Zeigt Informationen über den anrufen Kanal an, als auch eine
-    Auflistung aller Kanalvariablen. Falls <code>min_verbose_level</code>
+    <simpara>Zeigt Informationen über den anrufen Chanel an, als auch eine
+    Auflistung aller Chanelvariablen. Falls <code>min_verbose_level</code>
     angegeben ist, werden Ausgaben nur im Falle eines aktuell gleich hoch oder
     höher gesetzten Verbosity-Levels angezeigt.</simpara>
 
@@ -2684,8 +2718,8 @@ exten =&gt; s,3,Background(enter-ext-of-person)</programlisting>
 
     <synopsis>Echo()</synopsis>
 
-    <simpara>Wiederholt vom Kanal gelesenes Audio wieder auf diesem Kanal aus.
-    Diese Anwendung findet häufig zum Testen der Verzögerung und
+    <simpara>Wiederholt vom Chanel gelesenes Audio wieder auf diesem Chanel
+    aus. Diese Anwendung findet häufig zum Testen der Verzögerung und
     Sprachqualität einer VoIP-Verbindung Verwendung. Der Anrufer kann zum
     beenden die <code>#</code>-Taste drücken.</simpara>
 
@@ -2880,8 +2914,8 @@ exten =&gt; 124,n,FastAGI(agi://testbox:9000/test,123)</programlisting>
     weitergeleitet).</simpara>
 
     <simpara>Sie müssen den Festival-Server <emphasis>vor</emphasis> Asterisk
-    starten und die <code>Answer()</code>-Anwendung zum Beantworten des Kanals
-    verwenden, bevor sie <code>Festival()</code> aufrufen.</simpara>
+    starten und die <code>Answer()</code>-Anwendung zum Beantworten des
+    Chanels verwenden, bevor sie <code>Festival()</code> aufrufen.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Festival('Hallo Welt',#)</programlisting>
@@ -2910,11 +2944,11 @@ exten =&gt; 123,n,Background(sound)</programlisting></para>
       <secondary><code>Flash()</code></secondary>
     </indexterm>
 
-    <simpara>Flasht einen Zap-Kanal</simpara>
+    <simpara>Flasht einen Zap-Chanel</simpara>
 
     <synopsis>Flash()</synopsis>
 
-    <simpara>Sendet ein Flash auf einen Zap-Kanal. Dies ist nichts weiter als
+    <simpara>Sendet ein Flash auf einen Zap-Chanel. Dies ist nichts weiter als
     ein Hack für Leute, die Übermittlungen und andere Aktionen, die einen
     Flash durch ein AGI-Skript benötigen, durchführen möchten.</simpara>
 
@@ -2926,8 +2960,8 @@ exten =&gt; 123,n,Background(sound)</programlisting></para>
       den aktuellen Anruf aufzulegen.</simpara>
     </sidebar>
 
-    <simpara>Liefert bei Erfolg 0 zurück, oder -1, falls der Kanal kein
-    Zap-Kanal ist.</simpara>
+    <simpara>Liefert bei Erfolg 0 zurück, oder -1, falls der Chanel kein
+    Zap-Chanel ist.</simpara>
 
     <programlisting>exten =&gt; 123,1,Flash()</programlisting>
 
@@ -3104,7 +3138,7 @@ exten =&gt; _0.,n,Dial(${TRUNK}/${EXTEN:1},,T)</programlisting>
 
     <synopsis>Goto(<replaceable>benannte_Priorität</replaceable>)</synopsis>
 
-    <simpara>Übergibt die Kontrolle des aktuellen Kanals ohne Möglichkeit der
+    <simpara>Übergibt die Kontrolle des aktuellen Chanels ohne Möglichkeit der
     Rückkehr an die spezifizierte Priorität, und setzt optional Extension und
     Kontext des Ziels.</simpara>
 
@@ -3282,11 +3316,11 @@ exten =&gt; s,n,Goto(incoming-geschlossen,s,1)</programlisting>
       <secondary><code>Hangup()</code></secondary>
     </indexterm>
 
-    <simpara>Legt den aktuellen Kanal auf.</simpara>
+    <simpara>Legt den aktuellen Chanel auf.</simpara>
 
     <synopsis>Hangup()</synopsis>
 
-    <simpara>Legt den aktuellen Kanal bedingungslos auf.</simpara>
+    <simpara>Legt den aktuellen Chanel bedingungslos auf.</simpara>
 
     <simpara>Liefert stets -1 zurück.</simpara>
 
@@ -3333,19 +3367,19 @@ exten =&gt; 123,n,Hangup()</programlisting>
       <secondary><code>ImportVar()</code></secondary>
     </indexterm>
 
-    <simpara>Setzt eine Variable basierend auf einer Kanalvariable eines
-    anderen Kanals</simpara>
+    <simpara>Setzt eine Variable basierend auf einer Chanelvariable eines
+    anderen Chanels</simpara>
 
-    <synopsis>ImportVar(<replaceable>NeueVariable</replaceable>=<replaceable>Kanal</replaceable>,<replaceable>Variable</replaceable>)</synopsis>
+    <synopsis>ImportVar(<replaceable>NeueVariable</replaceable>=<replaceable>Chanel</replaceable>,<replaceable>Variable</replaceable>)</synopsis>
 
     <simpara>Setzt die Variable <code>NeueVariable</code> auf den Wert von
-    <code>Variable</code> des anegegebenen Kanals. Falls
+    <code>Variable</code> des anegegebenen Chanels. Falls
     <code>NeueVariable</code> mit dem Zeichen <code>_</code> beginnt, wird
     einfache Vererbung angenommen. Falls es <code>newvar</code> mit
     <code>__</code> beginnt, wird unbeschränkte Vererbung
     angenommen.</simpara>
 
-    <programlisting>; Caller-ID vom Kanal Zap/1 importieren:
+    <programlisting>; Caller-ID vom Chanel Zap/1 importieren:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,ImportVar(cid=Zap/1,CALLERID)</programlisting>
 
@@ -3370,13 +3404,13 @@ exten =&gt; 123,n,ImportVar(cid=Zap/1,CALLERID)</programlisting>
 
     <synopsis>LookupBlacklist([<replaceable>Optionen</replaceable>])</synopsis>
 
-    <simpara>Sucht die CallerID-Nummer (/-Name) des aktiven Kanals in der
+    <simpara>Sucht die CallerID-Nummer (/-Name) des aktiven Chanels in der
     AstDB (Familie <code>blacklist</code>). Wenn die Option j (jump) angegeben
     ist, die Nummer gefunden wird und eine Priorität n+101 existiert, geht die
-    Ausführung bei dieser Priorität weiter. Wird auf dem Kanal keine CallerID
+    Ausführung bei dieser Priorität weiter. Wird auf dem Chanel keine CallerID
     empfangen, tut die Anwendung nichts.</simpara>
 
-    <simpara>Die Applikation setzt auch die Kanal-Variable
+    <simpara>Die Applikation setzt auch die Chanel-Variable
     <code>LOOKUPBLSTATUS</code> auf <code>FOUND</code> (gefunden) oder
     <code>NOTFOUND</code> (nicht gefunden).</simpara>
 
@@ -3421,10 +3455,10 @@ exten =&gt; s,n,Hangup()</programlisting></para>
 
     <synopsis>LookupCIDName()</synopsis>
 
-    <simpara>Schlägt die CallerID-Nummer des aktiven Kanals in der AstDB
+    <simpara>Schlägt die CallerID-Nummer des aktiven Chanels in der AstDB
     (Familie <code>cidname</code>) nach und setzt den CallerID-Namen - wenn
     vorhanden - auf den gespeicherten Wert. Diese Anwendung tut nichts, wenn
-    auf dem Kanal keine CallerID empfangen wird. <code>LookupCIDName()</code>
+    auf dem Chanel keine CallerID empfangen wird. <code>LookupCIDName()</code>
     kann nützlich sein, wenn Sie nur eine CallerID-Nummer aber keinen -Namen
     empfangen, oder wenn Sie den CallerID-Namen für einige eingehende Anrufe
     ändern möchten.</simpara>
@@ -3514,7 +3548,7 @@ exten =&gt; 124,1,Macro(countdown,5)</programlisting>
     <code>Kontext</code> übergeben, wenn die Mailbox nicht zum
     Standard-Voicemail-Kontext gehört.</simpara>
 
-    <simpara>Setzt die Kanal-Variable <code>VMBOXEXISTSSTATUS</code> auf
+    <simpara>Setzt die Chanel-Variable <code>VMBOXEXISTSSTATUS</code> auf
     <code>SUCCESS</code> (Erfolg, Mailbox vorhanden) oder <code>FAILED</code>
     (fehlgeschlagen, Mailbox nicht vorhanden).</simpara>
 
@@ -3547,7 +3581,7 @@ exten =&gt; 123,20(box-FAILED),Playback(tut-uns-leid)</programlisting>
 
     <synopsis>MeetMe([<replaceable>KonferenzNr</replaceable>][,<replaceable>Optionen</replaceable>[,<replaceable>PIN</replaceable>]])</synopsis>
 
-    <simpara>Verbindet den Anrufer auf dem aktuellen Kanal zu einer
+    <simpara>Verbindet den Anrufer auf dem aktuellen Chanel zu einer
     MeetMe-Konferenz, angegeben durch den Parameter <code>KonferenzNr</code>.
     Ohne Angabe der Konferenznummer wird der Teilnehmer zur Eingabe derselben
     aufgefordert.</simpara>
@@ -4055,7 +4089,7 @@ exten =&gt; 333,1,MeetMeCount(123,anzahl)</programlisting>
 
     <simpara>Erzeugt einen konstanten 1000-Hz-Ton bei 0 dbm (u-law). Diese
     Anwendung wird häufig verwendet, um die Audioeigenschaften eines
-    bestimmten Kanals zu testen. Allerdings ist die Bezeichnung etwas
+    bestimmten Chanels zu testen. Allerdings ist die Bezeichnung etwas
     irreführend, sinnvoller schiene <quote>Kilohertz()</quote>.</simpara>
 
     <programlisting>; einen 1000-Hz-Ton erzeugen:
@@ -4079,9 +4113,10 @@ exten =&gt; 123,1,Milliwatt()</programlisting>
 
     <synopsis>MixMonitor(&lt;Dateiname&gt;.&lt;Format&gt;[,&lt;Optionen&gt;[,&lt;Command&gt;]])</synopsis>
 
-    <simpara>Startet die Audio-Aufzeichnung des aktuellen Kanals. Dabei werden
-    im im Gegensatz zu <link linkend="applikationen-monitor">Monitor()</link>
-    direkt beide Kanäle zu einer Datei gemischt.</simpara>
+    <simpara>Startet die Audio-Aufzeichnung des aktuellen Chanels. Dabei
+    werden im im Gegensatz zu <link
+    linkend="applikationen-monitor">Monitor()</link> direkt beide Kanäle zu
+    einer Datei gemischt.</simpara>
 
     <simpara>Optionen:</simpara>
 
@@ -4100,7 +4135,7 @@ exten =&gt; 123,1,Milliwatt()</programlisting>
 
         <listitem>
           <simpara>Startet die Aufnahme erst, nachdem ein Anruf zu einem
-          anderen Kanal verbunden wurde, also nachdem z.B. durch
+          anderen Chanel verbunden wurde, also nachdem z.B. durch
           <code>Dial()</code> tatsächlich ein Gespräch zustande
           kommt.</simpara>
         </listitem>
@@ -4159,20 +4194,20 @@ exten =&gt; 123,1,Milliwatt()</programlisting>
       <secondary><code>Monitor()</code></secondary>
     </indexterm>
 
-    <simpara>Schneidet das Gespräch auf dem aktuellen Kanal mit</simpara>
+    <simpara>Schneidet das Gespräch auf dem aktuellen Chanel mit</simpara>
 
     <synopsis>Monitor([<replaceable>Format</replaceable>[,<replaceable>Basisname</replaceable>[,<replaceable>Optionen</replaceable>]]])</synopsis>
 
-    <simpara>Startet die Audio-Aufzeichnung des aktuellen Kanals. Die auf dem
-    Kanal eingehenden und ausgehenden Sprachpakete werden in seperaten Dateien
-    aufgezeichnet, bis der Kanal aufgelegt oder die Überwachung durch die
-    <code>StopMonitor()</code>-Anwendung beendet wird.</simpara>
+    <simpara>Startet die Audio-Aufzeichnung des aktuellen Chanels. Die auf dem
+    Chanel eingehenden und ausgehenden Sprachpakete werden in seperaten
+    Dateien aufgezeichnet, bis der Chanel aufgelegt oder die Überwachung durch
+    die <code>StopMonitor()</code>-Anwendung beendet wird.</simpara>
 
     <simpara><code>Format</code> gibt das Dateiformat (= Dateiendung) an. Ohne
     Angabe wird <code>wav</code> verwendet.</simpara>
 
     <simpara><code>Basisname</code> gibt den Basis-Dateinamen an (also ohne
-    Dateiendung). Ohne Angabe wird der Name aus dem Kanalnamen und einer
+    Dateiendung). Ohne Angabe wird der Name aus dem Chanelnamen und einer
     Nummer zusammengesetzt, z.B. <code>IAX2[foo@bar]-3</code>. Das eingehende
     Audio wird in
     <filename><replaceable>Basisname</replaceable>-in.<replaceable>Format</replaceable></filename>,
@@ -4239,7 +4274,7 @@ exten =&gt; 123,1,Milliwatt()</programlisting>
 
           <listitem>
             <simpara>Startet die Aufnahme erst, nachdem ein Anruf zu einem
-            anderen Kanal verbunden wurde, also nachdem z.B. durch
+            anderen Chanel verbunden wurde, also nachdem z.B. durch
             <code>Dial()</code> tatsächlich ein Gespräch zustande
             kommt.</simpara>
           </listitem>
@@ -4247,7 +4282,7 @@ exten =&gt; 123,1,Milliwatt()</programlisting>
       </variablelist></para>
 
     <simpara>Gibt 0 bei Erfolg zurück oder -1 bei einem Fehler
-    (Überwachungsdateien konnten nicht geöffnet werden, Kanal wir bereits
+    (Überwachungsdateien konnten nicht geöffnet werden, Chanel wir bereits
     aufgezeichnet, etc.)</simpara>
 
     <programlisting>; das Gespräch aufzeichnen und hinterher die Audio-Kanäle mixen:
@@ -4349,7 +4384,7 @@ exten =&gt; 123,2,MP3Player(http://server.tld/test.mp3)</programlisting>
     <simpara>Spielt die durch class spezifizierte Wartemusik, wie in
     <filename>musiconhold.conf</filename> konfiguriert. Wird
     <code>class</code> nicht angegeben, wird die Standardmusik-Klasse für
-    dieses Kanal verwendet. Um die Standardmusik-Klasse für einen Kanal
+    dieses Chanel verwendet. Um die Standardmusik-Klasse für einen Chanel
     einzustellen, können Sie die Funktion <code>MUSICCLASS()</code>
     verwenden.</simpara>
 
@@ -4494,18 +4529,18 @@ exten =&gt; 123,2,Park(701)</programlisting>
     </indexterm>
 
     <simpara>Parkt den aktuellen Anruf und macht ihn über den spezifizierten
-    Kanal bekannt</simpara>
+    Chanel bekannt</simpara>
 
     <synopsis>ParkAndAnnounce(<replaceable>template</replaceable>,<replaceable>timeout</replaceable>,<replaceable>channel</replaceable>[,<replaceable>return_context</replaceable>])</synopsis>
 
     <simpara>Parkt den aktuellen Anruf in dem dafür vorgesehenen Bereich (auf
-    dem Parkplatz) und meldet ihn über den spezifizierten Kanal.
+    dem Parkplatz) und meldet ihn über den spezifizierten Chanel.
     <code>template</code> bezeichnet eine Liste von durch Kommas voneinander
     getrennten Dateien, die anzukündigen sind; das Wort <code>PARKED</code>
     wird durch die Parkplatznummer des Anrufs ersetzt. Der Parameter
     <code>timeout</code> bestimmt die Zeit, in Sekunden, nach deren Ablauf der
     Anruf zum <code>return_context</code> zurückkehrt. Der Parameter
-    <code>channel</code> bezeichnet den Kanal, der anzurufen ist und die
+    <code>channel</code> bezeichnet den Chanel, der anzurufen ist und die
     Ankündigung zu machen. <code>Console/dsp</code> ruft die Konsole auf. Der
     <code>return_context</code>-Parameter ist ein Label im
     <code>GoTo()</code>-Stil, um den Anruf nach der Beendigung
@@ -4621,14 +4656,14 @@ exten =&gt; 124,1,UnpauseQueueMember(,SIP/300)</programlisting>
     keine Dateiendung, damit Asterisk automatisch die Audiodatei mit dem
     niedrigsten Konvertierungsaufwand auswählen kann. Keine, eine oder mehr
     Optionen können hinzugefügt werden. Die Option <code>skip</code> bewirkt,
-    dass die Wiedergabe der Nachricht übersprungen wird, wenn sich der Kanal
+    dass die Wiedergabe der Nachricht übersprungen wird, wenn sich der Chanel
     nicht im Up-Status befindet (z.B., falls er noch nicht beantwortet wurde).
     Ist <code>skip</code> angegeben, wird die Anwendung augenblicklich
-    beendet, wenn mit dem Kanal nicht alles in Ordnung ist. Ansonsten wird der
-    Kanal beantwortet, bevor die Audiodatei wiedergegeben wird, es sei denn,
-    <code>noanswer</code> ist angegeben. (Nicht alle Kanäle unterstützen die
-    Wiedergabe von Nachrichten, wenn sie noch aufgelegt sind.) Liefert -1
-    zurück, wenn der Kanal aufgelegt wurde. Wenn die Datei nicht existiert,
+    beendet, wenn mit dem Chanel nicht alles in Ordnung ist. Ansonsten wird
+    der Chanel beantwortet, bevor die Audiodatei wiedergegeben wird, es sei
+    denn, <code>noanswer</code> ist angegeben. (Nicht alle Kanäle unterstützen
+    die Wiedergabe von Nachrichten, wenn sie noch aufgelegt sind.) Liefert -1
+    zurück, wenn der Chanel aufgelegt wurde. Wenn die Datei nicht existiert,
     wird zur Priorität n+101 übergegangen (mit <code>n</code>: aktuelle
     Priorität), falls sie existiert.</simpara>
 
@@ -4738,14 +4773,14 @@ exten =&gt; 5551212,2,SayDigits(${EXTEN})</programlisting>
 
     <synopsis>PrivacyManager()</synopsis>
 
-    <simpara>Wird keine Caller ID empfangen, wird der Kanal beantwortet und
+    <simpara>Wird keine Caller ID empfangen, wird der Chanel beantwortet und
     der Anrufer oder die Anruferin aufgefordert, seine bzw. ihre Telefonnummer
     einzugeben. Standardmäßig werden dem Anrufer dabei drei Versuche gewährt.
     Wenn er nach diesen drei Versuchen nicht mindestens eine zehnstellige
     Telefonnummer eingegeben hat und es eine Priorität n+101 gibt (wobei
-    <code>n</code> die aktuelle Priorität bezeichnet), wird der Kanal so
+    <code>n</code> die aktuelle Priorität bezeichnet), wird der Chanel so
     eingestellt, dass er mit diesem Prioritätslevel fortfährt. Andernfalls
-    wird 0 zurückgeliefert. Wird auf dem Kanal eine Caller ID empfangen, tut
+    wird 0 zurückgeliefert. Wird auf dem Chanel eine Caller ID empfangen, tut
     PrivacyManager() nichts.</simpara>
 
     <para>Die Konfigurationsdatei <filename>privacy.conf</filename> bestimmt
@@ -4908,13 +4943,13 @@ exten =&gt; 123,1,Progress()</programlisting>
     den angegebenen Anruf beantworten.</simpara>
 
     <simpara>Der optinale <code>URL</code> wird dem angerufenen Teilnehmer
-    übersendet, falls dies vom Kanal unterstützt wird.</simpara>
+    übersendet, falls dies vom Chanel unterstützt wird.</simpara>
 
     <simpara>Nach einer angegebenen Zahl von Sekunden, überprüft zwischen
     jedem <filename>queues.conf</filename> Timeout und Retry-Kreislauf, wird
     <code>timeout</code> die Warteschlange zu einem Ausfall zwingen.</simpara>
 
-    <simpara>Liefert -1 zurück, falls der ursprüngliche Kanal aufgelegt wird,
+    <simpara>Liefert -1 zurück, falls der ursprüngliche Chanel aufgelegt wird,
     oder falls der Anruf überbückt wird und einer der Teilnehmer in der Brücke
     den Anruf beendet. Ist die Warteschlange voll, existiert sie nicht oder
     hat sie keine Mitglieder, wird 0 zurückgeliefert.</simpara>
@@ -5057,8 +5092,8 @@ exten =&gt; 123,3,Goto(1)</programlisting>
     <synopsis>RealTime(<replaceable>family</replaceable>,<replaceable>colmatch</replaceable>,<replaceable>value</replaceable>[,<replaceable>prefix</replaceable>])</synopsis>
 
     <simpara>Benutzt das RealTime Konfigurationssteuerprogramm, um Daten in
-    Kanalvariablen einzulesen. Alle eindeutigen Spaltennamen (aus der
-    spezifizierten Familie <code>family</code>) werden als Kanalvariablen
+    Chanelvariablen einzulesen. Alle eindeutigen Spaltennamen (aus der
+    spezifizierten Familie <code>family</code>) werden als Chanelvariablen
     gesetzt. Dabei kann ihr Name ein optionales Namenspräfix
     <code>prefix</code> erhalten (zum Beispiel würde ein Präfix
     <code>var_</code> den Spaltennamen <code>name</code> in die Variable
@@ -5117,11 +5152,11 @@ exten =&gt; 123,1,RealTimeUpdate(sipfriends,name,John,port,5061)</programlisting
       <secondary><code>Record()</code></secondary>
     </indexterm>
 
-    <simpara>Aufnahme von Audio auf einem Kanal in eine Datei</simpara>
+    <simpara>Aufnahme von Audio auf einem Chanel in eine Datei</simpara>
 
     <para>ab Asterisk 1.2: <synopsis>Record(<replaceable>filename.format</replaceable>,<replaceable>silence</replaceable>[,<replaceable>maxduration</replaceable>][,<replaceable>options</replaceable>])</synopsis></para>
 
-    <simpara>Nimmt Audio auf dem Kanal auf und speichert es in der Datei
+    <simpara>Nimmt Audio auf dem Chanel auf und speichert es in der Datei
     <code>filename</code>. Existiert diese Datei bereits, wird sie
     überschrieben.</simpara>
 
@@ -5324,7 +5359,7 @@ exten =&gt; 123,4,Playback(tt-monkeys)</programlisting>
     <synopsis>ResponseTimeout()</synopsis>
 
     <simpara>Setzt die maximal erlaubte Zeitdauer, nachdem eine Reihe von
-    Prioritäten für einen Kanal nicht zu Stande gekommen sind, während dessen
+    Prioritäten für einen Chanel nicht zu Stande gekommen sind, während dessen
     ein Anrufer damit begonnen haben könnte, einen Extension einzugeben. Gibt
     der Anrufer in dieser Zeitdauer keine Extension ein, fällt die Kontrolle
     an die <code>t</code>-Extension, falls sie existiert; falls nicht, wird
@@ -5363,7 +5398,7 @@ exten =&gt; t,1,Playback(goodbye)</programlisting>
 
     <synopsis>RetryDial(<replaceable>announce</replaceable>,<replaceable>sleep</replaceable>,<replaceable>loops</replaceable>,<replaceable>technology</replaceable>/<replaceable>resource</replaceable>[&amp;<replaceable>technology2</replaceable>/<replaceable>resource2</replaceable>...][,<replaceable>timeout</replaceable>][,<replaceable>options</replaceable>][,<replaceable>URL</replaceable>])</synopsis>
 
-    <simpara>Versucht, einen Anruf zu tätigen. Kann kein Kanal erreicht
+    <simpara>Versucht, einen Anruf zu tätigen. Kann kein Chanel erreicht
     werden, wird die durch announce definierte Datei abgespielt und
     <code>sleep</code> Sekunden gewartet, bis der Versuch wiederholt wird.
     Wenn die angegebene Zahl Versuche <code>loops</code> entspricht, wird der
@@ -5438,8 +5473,8 @@ exten =&gt; s,n,Return()</programlisting>
 
     <synopsis>Ringing()</synopsis>
 
-    <simpara>Verlangt, dass dem Teilnehmer Klingelton vom Kanal signalisiert
-    wird. Wie genau diese Signalisierung erfolgt, hängt vom Kanaltreiber
+    <simpara>Verlangt, dass dem Teilnehmer Klingelton vom Chanel signalisiert
+    wird. Wie genau diese Signalisierung erfolgt, hängt vom Chaneltreiber
     ab.</simpara>
 
     <simpara>Beachten Sie, dass diese Anwendung den Anrufer nicht mit
@@ -5478,7 +5513,7 @@ exten =&gt; 123,3,Playback(tt-somethingwrong)</programlisting>
     <synopsis>SayAlpha(<replaceable>string</replaceable>)</synopsis>
 
     <simpara>Buchstabiert die übergebene Zeichenkette <code>string</code>
-    unter Verwendung der aktuellen Spracheinstellung für den Kanal. Die
+    unter Verwendung der aktuellen Spracheinstellung für den Chanel. Die
     <code>SetLanguage()</code>-Anwendung wird verwendet, um die aktuell
     eingestellte Sprache zu ändern.</simpara>
 
@@ -5508,7 +5543,7 @@ exten =&gt; 123,3,Playback(tt-somethingwrong)</programlisting>
     <synopsis>SayDigits(<replaceable>digits</replaceable>)</synopsis>
 
     <simpara>Spricht die übergebenen Ziffern unter Verwendung der aktuellen
-    Spracheinstellung für den Kanal. Die <code>SetLanguage()</code>-Anwendung
+    Spracheinstellung für den Chanel. Die <code>SetLanguage()</code>-Anwendung
     wird verwendet, um die aktuell eingestellte Sprache zu ändern.</simpara>
 
     <programlisting>exten =&gt; 123,1,SayDigits(1234)</programlisting>
@@ -5537,7 +5572,7 @@ exten =&gt; 123,3,Playback(tt-somethingwrong)</programlisting>
     <synopsis>SayNumber(<replaceable>digits</replaceable>[,<replaceable>gender</replaceable>])</synopsis>
 
     <simpara>Spricht die angegebene Zahl unter Verwendung der aktuellen
-    Spracheinstellung für den Kanal. Die <code>SetLanguage()</code>-Anwendung
+    Spracheinstellung für den Chanel. Die <code>SetLanguage()</code>-Anwendung
     wird verwendet, um die aktuell eingestellte Sprache zu ändern.</simpara>
 
     <para>Momentan werden folgenden Sprachen syntaktisch unterstützt:
@@ -5763,11 +5798,11 @@ exten =&gt; 123,2,SayNumber(1234)</programlisting>
       <secondary><code>SendDTMF()</code></secondary>
     </indexterm>
 
-    <simpara>Sendet beliebige DTMF-Ziffern zu dem Kanal</simpara>
+    <simpara>Sendet beliebige DTMF-Ziffern zu dem Chanel</simpara>
 
     <synopsis>SendDTMF(<replaceable>digits</replaceable>[,<replaceable>timeout_ms</replaceable>])</synopsis>
 
-    <simpara>Sendet die angegebenen DTMF-Ziffern auf einem Kanal. Gültige
+    <simpara>Sendet die angegebenen DTMF-Ziffern auf einem Chanel. Gültige
     DTMF-Symbole sind 0-9, *, # und A-D. Sie können auch den Buchstaben w als
     eine Ziffer verwendet, er steht für eine Wartezeit von 500 Millisekunden.
     Der Parameter <code>timeout_ms</code> bezeichnet die Zeitdauer in
@@ -5799,15 +5834,15 @@ exten =&gt; 123,2,SayNumber(1234)</programlisting>
 
     <synopsis>SendImage(<replaceable>filename</replaceable>)</synopsis>
 
-    <simpara>Sendet ein Bild auf einem Kanal, falls die Übermittlung von
-    Bildern unterstützt wird. Unterstützt der Kanal keine Bildübertragung, und
-    es existiert eine Priorität n+101 (wobei <code>n</code> die aktuelle
+    <simpara>Sendet ein Bild auf einem Chanel, falls die Übermittlung von
+    Bildern unterstützt wird. Unterstützt der Chanel keine Bildübertragung,
+    und es existiert eine Priorität n+101 (wobei <code>n</code> die aktuelle
     Priorität bezeichnet), wird die Ausführung mit diesem Schritt fortgesetzt.
     Andernfalls wird die Ausführung auf dem nächsten Prioritätslevel
     fortgesetzt.</simpara>
 
     <simpara>Liefert 0 zurück, wenn das Bild fehlerfrei übertragen wurde oder
-    der Kanal eine Bildübertragung nicht unterstützt, sonst -1.</simpara>
+    der Chanel eine Bildübertragung nicht unterstützt, sonst -1.</simpara>
 
     <programlisting>exten =&gt; 123,1,SendImage(logo.jpg)</programlisting>
 
@@ -5828,19 +5863,19 @@ exten =&gt; 123,2,SayNumber(1234)</programlisting>
       <secondary><code>SendText()</code></secondary>
     </indexterm>
 
-    <simpara>Sendet Text zu dem Kanal</simpara>
+    <simpara>Sendet Text zu dem Chanel</simpara>
 
     <synopsis>SendText(<replaceable>text</replaceable>)</synopsis>
 
-    <simpara>Überträgt den Text text auf einem Kanal, falls die Übertragung
-    von Text unterstützt wird. Unterstützt der Kanal keine Textübertragung,
+    <simpara>Überträgt den Text text auf einem Chanel, falls die Übertragung
+    von Text unterstützt wird. Unterstützt der Chanel keine Textübertragung,
     und es existiert eine Priorität n+101 (wobei <code>n</code> die aktuelle
     Priorität bezeichnet), wird die Ausführung mit diesem Schritt fortgesetzt.
     Andernfalls wird die Ausführung auf dem nächsten Prioritätslevel
     fortgesetzt.</simpara>
 
     <simpara>Liefert 0 zurück, wenn der Text fehlerfrei übertragen wurde oder
-    der Kanal eine Textübertragung nicht unterstützt, sonst -1.</simpara>
+    der Chanel eine Textübertragung nicht unterstützt, sonst -1.</simpara>
 
     <programlisting>exten =&gt; 123,1,SendText(Welcome to Asterisk)</programlisting>
 
@@ -5861,7 +5896,7 @@ exten =&gt; 123,2,SayNumber(1234)</programlisting>
       <secondary><code>SendURL()</code></secondary>
     </indexterm>
 
-    <simpara>Sendet dem Kanal eine URL</simpara>
+    <simpara>Sendet dem Chanel eine URL</simpara>
 
     <synopsis>SendURL(<replaceable>URL</replaceable>[,<replaceable>option</replaceable>])</synopsis>
 
@@ -5872,7 +5907,7 @@ exten =&gt; 123,2,SayNumber(1234)</programlisting>
     Ausführung auf dem nächsten Prioritätslevel fortgesetzt.</simpara>
 
     <simpara>Liefert 0 zurück, wenn der URL fehlerfrei übertragen wurde oder
-    der Kanal eine HTML-Übertragung nicht unterstützt, sonst -1.</simpara>
+    der Chanel eine HTML-Übertragung nicht unterstützt, sonst -1.</simpara>
 
     <simpara>Ist die Option wait angegeben, wird die Ausführung erst
     fortgesetzt, wenn eine Bestätigung für den komplettierten Ladevorgang der
@@ -5906,7 +5941,7 @@ exten =&gt; 123,2,SayNumber(1234)</programlisting>
     <code>Wert</code>. Beginnt der Name der Variablen mit dem Zeichen
     <code>_</code>, wird einfache Vererbung angenommen, beginnt er mit
     <code>__</code>, wird Endlosvererbung angenommen. Variablen sind
-    normalerweise nur innerhalb eines Kanals gültig und werden beim Auflegen
+    normalerweise nur innerhalb eines Chanels gültig und werden beim Auflegen
     gelöscht. Mit der Option <code>g</code> setzt man in Asterisk 1.2 eine
     Variable global; in 1.4 macht man das mit Hilfe der Funktion
     <code>GLOBAL()</code>.</simpara>
@@ -5959,7 +5994,7 @@ exten =&gt; 123,n,Set(var=${DB(mein/test)})     ; aus AstDB lesen</programlistin
 
     <simpara>Setzt, zu Abrechnungszwecken, die AMA-Flags im Anrufprotokoll
     (Call Detail Record), wobei die AMA-Einstellungen in den
-    Kanalkonfigurationsdateien überschrieben werden. Gültige Werte sind
+    Chanelkonfigurationsdateien überschrieben werden. Gültige Werte sind
     <code>default</code>, <code>omit</code>, <code>billing</code> und
     <code>documentation</code>.</simpara>
 
@@ -6129,8 +6164,8 @@ exten =&gt; 123,2,Dial(SIP/123)</programlisting>
 
     <synopsis>SIPdtmfMode(Methode)</synopsis>
 
-    <simpara>Ändert den DTMF-Modus für einen Anruf, der von einem SIP-Kanal
-    ausgeht (nicht für einen Anruf auf einen SIP-Kanal). <code>Methode</code>
+    <simpara>Ändert den DTMF-Modus für einen Anruf, der von einem SIP-Chanel
+    ausgeht (nicht für einen Anruf auf einen SIP-Chanel). <code>Methode</code>
     kann die Werte <code>inband</code> (RTP), <code>info</code> oder
     <code>rfc2833</code> annehmen.</simpara>
 
@@ -6158,11 +6193,11 @@ exten =&gt; 123,2,Dial(SIP/123)</programlisting>
       <secondary><code>SoftHangup()</code></secondary>
     </indexterm>
 
-    <simpara>Legt den angegebenen Kanal auf.</simpara>
+    <simpara>Legt den angegebenen Chanel auf.</simpara>
 
     <synopsis>SoftHangup(<replaceable>Technologie</replaceable>/<replaceable>Ressource</replaceable>,[<replaceable>Optionen</replaceable>])</synopsis>
 
-    <simpara>Legt den angegebenen Kanal auf. Liefert stets 0 zurück. Der
+    <simpara>Legt den angegebenen Chanel auf. Liefert stets 0 zurück. Der
     <code>Optionen</code>-Parameter kann den Buchstaben <code>a</code>
     enthalten, was bewirkt, dass alle Kanäle auf dem angegebenen Gerät (statt
     nur der Resource) aufgelegt werden.</simpara>
@@ -6188,12 +6223,12 @@ exten =&gt; 123,3,Dial(Zap/4/1234567)</programlisting>
       <secondary><code>StopMonitor()</code></secondary>
     </indexterm>
 
-    <simpara>Beendet die Überwachung eines Kanals</simpara>
+    <simpara>Beendet die Überwachung eines Chanels</simpara>
 
     <synopsis>StopMonitor()</synopsis>
 
-    <simpara>Beendet die Überwachung (Aufnahme) eines Kanals. Diese Anwendung
-    hat keinerlei Auswirkungen, wenn der Kanal momentan nicht überwacht
+    <simpara>Beendet die Überwachung (Aufnahme) eines Chanels. Diese Anwendung
+    hat keinerlei Auswirkungen, wenn der Chanel momentan nicht überwacht
     wird.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
@@ -6254,7 +6289,7 @@ exten =&gt; 123,7,Goto(1)</programlisting>
     <synopsis>StripLSD(<replaceable>count</replaceable>)</synopsis>
 
     <simpara>Entfernt die <code>count</code> niederwertigsten Ziffern (die
-    letzen <code>count</code> Ziffern) von der dem Kanal zugeordneten
+    letzen <code>count</code> Ziffern) von der dem Chanel zugeordneten
     Extension und setzt die Ausführung bei der nächsten Priorität für die
     resultieren Extension fort. Ist zum Beispiel Priorität 1 der Extension
     5551212 <code>StripLSD(4)</code>, werden die letzten vier Ziffern von
@@ -6298,7 +6333,7 @@ exten =&gt; 5551234,1,SayDigits(${EXTEN::3})</programlisting>
 
     <synopsis>StripMSD(<replaceable>count</replaceable>)</synopsis>
 
-    <simpara>Entfernt die ersten <code>count</code> Ziffern von der dem Kanal
+    <simpara>Entfernt die ersten <code>count</code> Ziffern von der dem Chanel
     zugeordneten Extension und setzt die Ausführung bei der nächsten Priorität
     für die resultieren Extension fort. Ist zum Beispiel Priorität 1 der
     Extension 5551212 <code>StripMSD(3)</code>, werden die ersten drei Ziffern
@@ -6385,14 +6420,14 @@ exten =&gt; 8885551212,1,Set(TEST=${EXTEN:6}</programlisting>
     <synopsis>Suffix(<replaceable>digits</replaceable>)</synopsis>
 
     <simpara>Hängt die durch digits spezifizierte Ziffernkette an die mit dem
-    Kanal verknüpfte Extension an und fährt mit der Ausführung an der nächsten
-    Priorität dieser neuen Extension fort. Sei etwa <code>Suffix(1212)</code>
-    die Priorität 1 von Extension 555, dann wird 1212 an 555 angehangen und
-    der nächste Schritt, der ausgeführt wird, ist Priorität 2 von Extension
-    5551212. Falls zu einer Extension gewechselt wird, die keine Priorität
-    n+101 besitzt (wobei <code>n</code> die aktuelle Priorität bezeichne),
-    wird sich PBX so verhalten, als ob der Teilnehmer eine ungültige Extension
-    angewählt hat.</simpara>
+    Chanel verknüpfte Extension an und fährt mit der Ausführung an der
+    nächsten Priorität dieser neuen Extension fort. Sei etwa
+    <code>Suffix(1212)</code> die Priorität 1 von Extension 555, dann wird
+    1212 an 555 angehangen und der nächste Schritt, der ausgeführt wird, ist
+    Priorität 2 von Extension 5551212. Falls zu einer Extension gewechselt
+    wird, die keine Priorität n+101 besitzt (wobei <code>n</code> die aktuelle
+    Priorität bezeichne), wird sich PBX so verhalten, als ob der Teilnehmer
+    eine ungültige Extension angewählt hat.</simpara>
 
     <simpara>Liefert stets 0 zurück.</simpara>
 
@@ -6571,7 +6606,7 @@ Uniqueid: &lt;call uniqueid&gt;
 [body]</programlisting></para>
 
     <simpara>Ist der Körper (<code>body</code>) nicht spezifiziert, können nur
-    Event, Kanal und Uniqueid-Felder berücksichtigt werden.</simpara>
+    Event, Chanel und Uniqueid-Felder berücksichtigt werden.</simpara>
 
     <simpara>Liefert stets 0 zurück.</simpara>
 
@@ -6632,7 +6667,7 @@ exten =&gt; 123,3,SayDigits(${EXTEN})</programlisting>
 
     <simpara>Ist eine Mailbox <code>mailbox</code> stezifiziert, wird nur das
     Passwort dieser Mailbox als gültig betrachtet. Wird <code>mailbox</code>
-    nicht angegeben, wird die Kanalvariable <code>${AUTH_MAILBOX}</code> mit
+    nicht angegeben, wird die Chanelvariable <code>${AUTH_MAILBOX}</code> mit
     der authentifizierten Mailbox belegt.</simpara>
 
     <programlisting>; authenticate off of any mailbox password, and tell us the matching
@@ -6978,22 +7013,22 @@ exten =&gt; s,1,Zapateller(answer|nocallerid)</programlisting>
       <secondary><code>ZapBarge()</code></secondary>
     </indexterm>
 
-    <simpara>Tritt in einen Zap-Kanal ein und überwacht ihn</simpara>
+    <simpara>Tritt in einen Zap-Chanel ein und überwacht ihn</simpara>
 
     <synopsis>ZapBarge([<replaceable>channel</replaceable>])</synopsis>
 
-    <simpara>Tritt in den angegebenen Zap-Kanal <code>channel</code> ein, oder
-    fragt zunächst per Eingabeaufforderung einen ab, falls keiner angegeben
-    wurde. Die anderen Teilnehmer auf dem Kanal können Sie dabei nicht hören
-    werden und werden auch sonst keine Anzeichen wahrnehmen, dass ihr Anruf
-    überwacht wird.</simpara>
+    <simpara>Tritt in den angegebenen Zap-Chanel <code>channel</code> ein,
+    oder fragt zunächst per Eingabeaufforderung einen ab, falls keiner
+    angegeben wurde. Die anderen Teilnehmer auf dem Chanel können Sie dabei
+    nicht hören werden und werden auch sonst keine Anzeichen wahrnehmen, dass
+    ihr Anruf überwacht wird.</simpara>
 
-    <simpara>Ist der Kanal (<code>channel</code>) nicht angegeben, werden Sie
-    zunächst zur Eingabe einer Kanalnummer aufgefordert. Geben Sie z.B.
+    <simpara>Ist der Chanel (<code>channel</code>) nicht angegeben, werden Sie
+    zunächst zur Eingabe einer Chanelnummer aufgefordert. Geben Sie z.B.
     <code>4#</code> für Zap/4 ein.</simpara>
 
     <simpara>Liefert -1, wenn der Anrufer auflegt. Ist unabhängig von dem
-    Zustand, dass der Kanal überwacht wird.</simpara>
+    Zustand, dass der Chanel überwacht wird.</simpara>
 
     <programlisting>exten =&gt; 123,1,ZapBarge(Zap/2)
 exten =&gt; 123,2,Hangup()</programlisting>
@@ -7021,8 +7056,8 @@ exten =&gt; 123,2,Hangup()</programlisting>
     <synopsis>ZapRAS(<replaceable>args</replaceable>)</synopsis>
 
     <simpara>Startet über <filename>pppd</filename> einen ISDN RAS Server auf
-    dem aktuellen Kanal. Der Kanal muss ein freier Kanal sein (z.B. PRI
-    Source), und ein Zaptel-Kanal sein, um diese Funktion durchführen zu
+    dem aktuellen Chanel. Der Chanel muss ein freier Chanel sein (z.B. PRI
+    Source), und ein Zaptel-Chanel sein, um diese Funktion durchführen zu
     können. (Eine Modem-Emulation ist nicht enthalten.)</simpara>
 
     <simpara>Um Zaptel zu kennen, muss <filename>pppd</filename> entsprechend
@@ -7055,10 +7090,10 @@ exten =&gt; 123,1,ZapRas(debug|64000|noauth|netmask|255.255.255.0|10.0.0.1:10.0.
     <synopsis>ZapScan([<replaceable>group</replaceable>])</synopsis>
 
     <simpara>Erlaubt einem Call Center Manager, Zap Kanäle auf bequeme Art zu
-    überwachen. Benutzen Sie <code>#</code> um den nächsten Kanal auszuwählen,
-    oder <code>*</code> zum beenden. Sie können die Abfrage auf eine bestimmte
-    Kanalgruppe begrenzen, indem Sie den <code>group</code>-Parameter
-    verwenden.</simpara>
+    überwachen. Benutzen Sie <code>#</code> um den nächsten Chanel
+    auszuwählen, oder <code>*</code> zum beenden. Sie können die Abfrage auf
+    eine bestimmte Chanelgruppe begrenzen, indem Sie den
+    <code>group</code>-Parameter verwenden.</simpara>
 
     <programlisting>exten =&gt; 123,1,ZapScan()</programlisting>
 
