@@ -263,8 +263,8 @@ debian:/etc/asterisk# </screen>
           installieren. Danach öffnen Sie mit <command>nano
           dateiname</command> die Datei. In Nano selbst sehen Sie im unteren
           Bereich des Bildschirms die wichtigsten Befehle.</para>
-        </footnote> die Datei /etc/asterisk/sip.conf mit folgendem Inhalt
-      an:<footnote>
+        </footnote> die Datei <filename>/etc/asterisk/sip.conf</filename> mit
+      folgendem Inhalt an:<footnote>
           <para>Diese einfachen Passwörter sind natürlich nur für den
           Testbetrieb gedacht, für den produktiven Einsatz sollten Sie
           entsprechend bessere Passwörter vergeben.</para>
@@ -342,8 +342,8 @@ debian:/etc/asterisk#</screen>
       erneut, diesmal jedoch in einem ''gesprächigeren'' Modus, um mehr
       Informationen über die laufenden Aktionen zu erhalten. Dies erreichen
       wir, indem wir Asterisk mit dem Parameter -vvvvvc starten (die 5 v
-      stehen für ''verbose''). Dann können wir verfolgen, wie sich das
-      SIP-Telefon an der Anlage anmeldet:</para>
+      stehen für den Verbose-Level 5'). Dann können wir verfolgen, wie sich
+      das SIP-Telefon an der Anlage anmeldet:</para>
 
       <screen>debian:/etc/asterisk# asterisk -vvvvvc
 [...]
@@ -411,13 +411,11 @@ format = wav
       <programlisting>[sonstige]
 
 [meine-telefone]
-exten =&gt; 2000,1,Dial(SIP/2000,20,j)
-exten =&gt; 2000,2,VoiceMail(2000,u)
-exten =&gt; 2000,102,VoiceMail(2000,b)
+exten =&gt; 2000,1,Dial(SIP/2000,20)
+exten =&gt; 2000,2,VoiceMail(2000)
 
-exten =&gt; 2001,1,Dial(SIP/2001,20,j)
-exten =&gt; 2001,2,VoiceMail(2001,u)
-exten =&gt; 2001,102,VoiceMail(2001,b)
+exten =&gt; 2001,1,Dial(SIP/2001,20)
+exten =&gt; 2001,2,VoiceMail(2001)
 
 exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)</programlisting>
 
@@ -523,14 +521,14 @@ host=dynamic</programlisting>
         der Konfiguration ist für den Context <code>sonstige</code> bestimmt.
         Da wir dieses in diesem Beispiel nicht benötigen, ist sie
         leer.<programlisting>[meine-telefone]
-exten =&gt; 2000,1,Dial(SIP/2000,20,j)
-exten =&gt; 2000,2,VoiceMail(2000,u)
-exten =&gt; 2000,102,VoiceMail(2000,b)</programlisting>Der Context wird von
-        Asterisk immer benutzt, wenn ein Telefon die Nummer eines anderen
-        Telefons wählt. Der Name ist dabei beliebig. Wichtig ist, dass in der
-        Datei <filename>/etc/asterisk/sip.conf</filename> bei der Definition
-        eines SIP-Gerätes eine entsprechende Bezeichnung für den Context
-        definiert wurde und dieselbe Bezeichnung in der Datei
+exten =&gt; 2000,1,Dial(SIP/2000,20)
+exten =&gt; 2000,2,VoiceMail(2000)
+</programlisting>Der Context wird von Asterisk immer benutzt, wenn ein Telefon
+        die Nummer eines anderen Telefons wählt. Der Name ist dabei beliebig.
+        Wichtig ist, dass in der Datei
+        <filename>/etc/asterisk/sip.conf</filename> bei der Definition eines
+        SIP-Gerätes eine entsprechende Bezeichnung für den Context definiert
+        wurde und dieselbe Bezeichnung in der Datei
         <filename>/etc/asterisk/extensions.conf</filename> wieder als
         <code>context</code>-Bezeichnung verwendet wird (dann könnte er auch
         <code>Apfelmuss</code> heißen). Dieser Context ist von entscheidender
@@ -575,7 +573,7 @@ exten =&gt; 2000,102,VoiceMail(2000,b)</programlisting>Der Context wird von
           </listitem>
 
           <listitem>
-            <para>Da die Regel mit dem Befehl <code>Dial(SIP/2000,20,j)</code>
+            <para>Da die Regel mit dem Befehl <code>Dial(SIP/2000,20)</code>
             die Priorität 1 besitzt, kommt diese zur Ausführung. Dadurch wird
             das Programm <application>Dial</application> gestartet, welches
             wiederum in der Datei <filename>/etc/asterisk/sip.conf</filename>
@@ -585,66 +583,41 @@ exten =&gt; 2000,102,VoiceMail(2000,b)</programlisting>Der Context wird von
           </listitem>
 
           <listitem>
-            <para>Wenn nach 20 Sekunden niemand den Anruf annimmt und die
-            Option j für Priorityjumping gesetzt ist, wird automatisch die
-            Priorität um 101<footnote>
-                <para>Der Wert 101 wurde vom Asterisk-Entwicklerteam so
-                gewählt. Er macht genauso viel oder wenig Sinn wie jede andere
-                Zahl. Warum man einen solchen Sprung benötigt, werden Sie in
-                späteren Kapiteln noch lernen.</para>
-              </footnote> auf dann 102 hochgesetzt und es wird wieder nach
-            einem entsprechenden Eintrag (jetzt mit der Priorität 102)
-            gesucht. Falls dieser nicht existiert, wird keine weitere Aktion
-            durchgeführt.</para>
+            <para>Wenn nach 20 Sekunden niemand den Anruf annimmt wird die
+            Dial() Applikation abgebrochen und die Priorität um 1
+            hochgezählt.</para>
           </listitem>
 
           <listitem>
-            <para>Die Zeile <code>exten =&gt;
-            2000,102,VoiceMail(2000,b)</code> ist also an der Reihe und
-            startet das Programm <application>Voicemail</application> mit den
-            Parametern <parameter>2000</parameter> und
-            <parameter>b</parameter>. Das <parameter>b</parameter> steht dabei
-            für busy (also besetzt) und die <parameter>2000</parameter> für
-            die Nummer der Voicemailbox. Wie Sie sich sicherlich schon denken
-            können, ist auch hier die <parameter>2000</parameter> nur der
-            Einfachheit halber genommen worden. Die Voicemailbox könnte auch
-            <parameter>5555</parameter> oder <parameter>Apfelmus</parameter>
-            heißen.</para>
-          </listitem>
-
-          <listitem>
-            <para>Warum ist nun aber noch eine Zeile mit der Priorität 2
-            vorhanden? Diese Zeile fängt den Fall ab, dass kein SIP-Telefon
-            mit dieser Nummer angemeldet ist oder das entsprechende Telefon
-            gerade keine Netzwerkverbindung hat. Dann ist nämlich der
-            Teilnehmer ''unavailable'' und deshalb steht als zweiter Parameter
-            ein <parameter>u</parameter> hinter der
-            <parameter>2000</parameter>. Kann der Befehl
-            <application>Dial</application> nicht durchgeführt werden, weil
-            kein entsprechendes Telefon aktuell am System angemeldet ist,
-            bricht Asterisk diesen Vorgang ab und führt die nächste Regel (um
-            1 erhöhte Priorität) aus.</para>
+            <para>Die Zeile <code>exten =&gt; 2000,2,VoiceMail(2000)</code>
+            ist also an der Reihe und startet das Programm
+            <application>Voicemail</application> mit dem Parameter
+            <parameter>2000</parameter>. Die <parameter>2000</parameter> steht
+            für die Nummer der Voicemailbox. Wie Sie sich sicherlich schon
+            denken können, ist auch hier die <parameter>2000</parameter> nur
+            der Einfachheit halber genommen worden. Die Voicemailbox könnte
+            auch <parameter>5555</parameter> oder
+            <parameter>Apfelmus</parameter> heißen.</para>
           </listitem>
         </itemizedlist>
 
-        <para>Eigentlich müssten wir die Programmierschritte noch mit einem
-        <application>Hangup</application>-Befehl beenden, damit Asterisk auch
-        wieder auflegt. Dies übernimmt aber in diesem Fall der Befehl
-        Voicemail schon für uns. Damit wir später auch an unsere
+        <para>Damit wir später vom jeweiligen Telefon auch an unsere
         Sprachnachrichten kommen, wird in der letzten Zeile die Nummer 2999
         für das Aufrufen der Voicemailbox definiert.<programlisting>exten =&gt; 2999,1,VoicemailMain(${CALLERID(num)},s)</programlisting></para>
 
         <para>Hierbei kommen wir zum ersten Mal mit der Benutzung von
         Variablen in der <filename>/etc/asterisk/extensions.conf</filename> in
         Berührung. Das aufgerufene Programm heißt
-        <application>VoicemailMain</application> und ihm wird als Parameter
-        die Funktion <parameter>${CALLERID(num)}</parameter> übergeben.
+        <application>VoiceMailMain</application> und ihm wird als erster
+        Parameter die Ausgabe der Funktion
+        <parameter>${CALLERID(num)}</parameter> übergeben.
         <parameter>${CALLERID(num)}</parameter> gibt die Nummer des Anrufers
         aus. Deshalb weiß das Programm
-        <application>VoicemailMain</application>, welche Voicemailbox gerade
+        <application>VoiceMailMain</application>, welche Voicemailbox gerade
         abgefragt wird. Wird dieser Parameter nicht angegeben, fragt
-        <application>VoicemailMain</application> als Erstes den Anrufer nach
-        dem Namen der Voicemailbox.</para>
+        <application>VoiceMailMain</application> als Erstes den Anrufer nach
+        dem Namen der VoiceMailbox. Der Parameter <parameter>s</parameter>
+        sorgt dafür, das der Benutzer kein Passwort eingeben muss.</para>
       </section>
 
       <section id="min-anlage-voicemail.conf">
@@ -738,8 +711,13 @@ nat=yes</programlisting>
       <programlisting>[sonstige]
 
 [meine-telefone]
-exten =&gt; 2000,1,Dial(SIP/2000,20,j)
-exten =&gt; 2001,1,Dial(SIP/2001,20,j)
+exten =&gt; 2000,1,Dial(SIP/2000,20)
+exten =&gt; 2000,2,VoiceMail(2000)
+
+exten =&gt; 2001,1,Dial(SIP/2001,20)
+exten =&gt; 2001,2,VoiceMail(2001)
+
+exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)
 
 exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)</programlisting>
 
@@ -766,7 +744,20 @@ exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)</programlisting>
       <parameter>2000</parameter> angerufen werden können. Dazu müssen wir nur
       noch einen weiteren Context in die Konfigurationsdatei
       <filename>/etc/asterisk/extensions.conf</filename>
-      hinzufügen:<programlisting>[von-voip-provider]
+      hinzufügen:<programlisting>[sonstige]
+
+[meine-telefone]
+exten =&gt; 2000,1,Dial(SIP/2000,20)
+exten =&gt; 2000,2,VoiceMail(2000)
+
+exten =&gt; 2001,1,Dial(SIP/2001,20)
+exten =&gt; 2001,2,VoiceMail(2001)
+
+exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)
+
+exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)
+
+[von-voip-provider]
 exten =&gt; 5587572,1,Dial(SIP/2000)</programlisting></para>
 
       <para>Fertig! :-)</para>
@@ -776,10 +767,29 @@ exten =&gt; 5587572,1,Dial(SIP/2000)</programlisting></para>
       Ihren Kundendaten diese Nummer nach. Dass die Rufnummer hier dieselbe
       ist wie der Username, ist prinzipiell Zufall.</para>
 
+      <para>Wer will kann natürlich ganz einfach mit der folgenden Variante
+      noch eine Voicemailbox für Gespräche die vom SIP-Provider kommen
+      aktivieren:<programlisting>[sonstige]
+
+[meine-telefone]
+exten =&gt; 2000,1,Dial(SIP/2000,20)
+exten =&gt; 2000,2,VoiceMail(2000)
+
+exten =&gt; 2001,1,Dial(SIP/2001,20)
+exten =&gt; 2001,2,VoiceMail(2001)
+
+exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)
+
+exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)
+
+[von-voip-provider]
+exten =&gt; 5587572,1,Dial(SIP/2000,20)
+exten =&gt; 5587572,2,VoiceMail(2000)</programlisting></para>
+
       <para>In diesem Einführungs-Kapitel wollte ich Ihnen zeigen, wie schnell
       und einfach man mit Asterisk eine funktionierende Telefonanlage aufbauen
-      kann. Im verbleibenden Teil des Buches gehe ich nun tiefer in die
-      Details und zeige Ihnen, was man mit Asterisk alles machen kann.</para>
+      kann. Im verbleibenden Teil des Buches gehen wir tiefer in die Details
+      und ich zeige Ihnen, was man mit Asterisk alles machen kann.</para>
     </section>
   </section>
 </chapter>
