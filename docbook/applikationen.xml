@@ -57,7 +57,7 @@
   so:<programlisting>exten =&gt; s,1,Dial(IAX2/User:Passwort@example.com/123,,flags)</programlisting></para>
 
   <para>Im Allgemeinen kann gesagt werden, dass Fehler beim Ausführen einer
-  Applikation durch Rückgabe des Wertes -1 ausgedrückt werden. </para>
+  Applikation durch Rückgabe des Wertes -1 ausgedrückt werden.</para>
 
   <important>
     <para>Bitte beachten Sie, dass, abhängig von der eingesetzten
@@ -616,6 +616,28 @@ Example: AddQueueMember(techsupport|SIP/3000)</screen></para>
 exten =&gt; 123,1,ADSIProg(telcordia-1.adsi)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'ADSIProg' =- 
+
+[Synopsis]
+Load Asterisk ADSI Scripts into phone
+
+[Description]
+  ADSIProg(script): This application programs an ADSI Phone with the given
+script. If nothing is specified, the default script (asterisk.adsi) is used.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-getcpeid" />,
@@ -661,6 +683,32 @@ exten =&gt; 123,1,AgentCallbackLogin(${CALLERID(num)},s,${CALLERID(num)})</progr
     sind viele Beispiele zu finden.</simpara>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'AgentCallbackLogin' =- 
+
+[Synopsis]
+Call agent callback login
+
+[Description]
+  AgentCallbackLogin([AgentNo][|[options][|[exten]@context]]):
+Asks the agent to login to the system with callback.
+The agent's callback extension is called (optionally with the specified
+context).
+The option string may contain zero or more of the following characters:
+      's' -- silent login - do not announce the login ok segment agent logged in/off
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-agentlogin" /></para>
@@ -693,6 +741,33 @@ exten =&gt; 123,1,AgentCallbackLogin(${CALLERID(num)},s,${CALLERID(num)})</progr
 
     <programlisting>; still als Agent 33 (wie in agents.conf definiert) einloggen
 exten =&gt; 123,1,AgentLogin(33,s)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'AgentLogin' =- 
+
+[Synopsis]
+Call agent login
+
+[Description]
+  AgentLogin([AgentNo][|options]):
+Asks the agent to login to the system.  Always returns -1.  While
+logged in, the agent can receive calls and will hear a 'beep'
+when a new call comes in. The agent can dump the call by pressing
+the star key.
+The option string may contain zero or more of the following characters:
+      's' -- silent login - do not announce the login ok segment after agent logged in/off
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -785,6 +860,44 @@ exten =&gt; 123,1,AgentLogin(33,s)</programlisting>
 exten =&gt; 123,1,AgentMonitorOutgoing(c)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'AgentMonitorOutgoing' =- 
+
+[Synopsis]
+Record agent's outgoing call
+
+[Description]
+  AgentMonitorOutgoing([options]):
+Tries to figure out the id of the agent who is placing outgoing call based on
+comparison of the callerid of the current interface and the global variable 
+placed by the AgentCallbackLogin application. That's why it should be used only
+with the AgentCallbackLogin app. Uses the monitoring functions in chan_agent 
+instead of Monitor application. That have to be configured in the agents.conf file.
+
+Return value:
+Normally the app returns 0 unless the options are passed. Also if the callerid or
+the agentid are not specified it'll look for n+101 priority.
+
+Options:
+	'd' - make the app return -1 if there is an error condition and there is
+	      no extension n+101
+	'c' - change the CDR so that the source of the call is 'Agent/agent_id'
+	'n' - don't generate the warnings when there is no callerid or the
+	      agentid is not known.
+             It's handy if you want to have one context for agent and non-agent calls.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-agentcallbacklogin" />,
@@ -846,6 +959,63 @@ exten =&gt; 123,1,AGI(agi-skript)
 exten =&gt; 123,2,EAGI(eagi-skript)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'AGI' =- 
+
+[Synopsis]
+Executes an AGI compliant application
+
+[Description]
+  [E|Dead]AGI(command|args): Executes an Asterisk Gateway Interface compliant
+program on a channel. AGI allows Asterisk to launch external programs
+written in any language to control a telephony channel, play audio,
+read DTMF digits, etc. by communicating with the AGI protocol on stdin
+and stdout.
+  This channel will stop dialplan execution on hangup inside of this
+application, except when using DeadAGI.  Otherwise, dialplan execution
+will continue normally.
+  A locally executed AGI script will receive SIGHUP on hangup from the channel
+except when using DeadAGI. This can be disabled by setting the AGISIGHUP channel
+variable to "no" before executing the AGI application.
+  Using 'EAGI' provides enhanced AGI, with incoming audio available out of band
+on file descriptor 3
+
+  Use the CLI command 'agi show' to list available agi commands
+  This application sets the following channel variable upon completion:
+     AGISTATUS      The status of the attempt to the run the AGI script
+                    text string, one of SUCCESS | FAILED | HANGUP
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>13,19c13,15
+&lt;   This channel will stop dialplan execution on hangup inside of this
+&lt; application, except when using DeadAGI.  Otherwise, dialplan execution
+&lt; will continue normally.
+&lt;   A locally executed AGI script will receive SIGHUP on hangup from the channel
+&lt; except when using DeadAGI. This can be disabled by setting the AGISIGHUP channel
+&lt; variable to "no" before executing the AGI application.
+&lt;   Using 'EAGI' provides enhanced AGI, with incoming audio available out of band
+---
+&gt; Returns -1 on hangup (except for DeadAGI) or if application requested
+&gt;  hangup, or 0 on non-hangup exit. 
+&gt; Using 'EAGI' provides enhanced AGI, with incoming audio available out of band
+22,25c18
+&lt;   Use the CLI command 'agi show' to list available agi commands
+&lt;   This application sets the following channel variable upon completion:
+&lt;      AGISTATUS      The status of the attempt to the run the AGI script
+&lt;                     text string, one of SUCCESS | FAILED | HANGUP
+---
+&gt; Use the CLI command 'show agi' to list available agi commands
+</screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-deadagi" />, <xref
@@ -892,6 +1062,40 @@ exten =&gt; 123,2,EAGI(eagi-skript)</programlisting>
 
     <programlisting>; Asterisk soll Meldungen eines Feueralarm-Knopfes empfangen:
 exten =&gt; s,1,AlarmReceiver()</programlisting>
+
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'AlarmReceiver' =- 
+
+[Synopsis]
+Provide support for receiving alarm reports from a burglar or fire alarm panel
+
+[Description]
+  AlarmReceiver(): Only 1 signalling format is supported at this time: Ademco
+Contact ID. This application should be called whenever there is an alarm
+panel calling in to dump its events. The application will handshake with the
+alarm panel, and receive events, validate them, handshake them, and store them
+until the panel hangs up. Once the panel hangs up, the application will run the
+system command specified by the eventcmd setting in alarmreceiver.conf and pipe
+the events to the standard input of the application. The configuration file also
+contains settings for DTMF timing, and for the loudness of the acknowledgement
+tones.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>5c5
+&lt; Provide support for receiving alarm reports from a burglar or fire alarm panel
+---
+&gt; Provide support for receving alarm reports from a burglar or fire alarm panel
+</screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
