@@ -12,60 +12,63 @@
 
   <title>Features</title>
 
-  <para>Auch wenn Asterisk extrem mächtig ist, gibt es ein paar im normalen
-  Büroalltag notwendige Funktionen, die per Default nicht aktiviert oder aber
-  sehr gut versteckt sind. Diese Kapitel geht auf diese Features ein.</para>
+  <para>Auch wenn Asterisk extrem mächtig ist, gibt es ein paar im
+  normalen Büroalltag notwendige Funktionen, die per Default nicht
+  aktiviert oder aber sehr gut versteckt sind. Diese Kapitel geht auf
+  diese Features ein.</para>
 
   <section id="transfer">
     <title>Transfer von Gesprächen</title>
 
-    <para>Wer die standard <command>Dial()</command> Applikation ohne weitere
-    Optionen (bzw. Flags) benutzt, kann bestehende Gespräche nicht zu einem
-    anderen Telefon transferieren. Dieses Feature muss expliziet bei der
-    <command>Dial()</command> Applikation mit der Option <code>t</code>,
-    <code>T</code> oder <code>tT</code> aktiviert werden. Wie das genau geht,
-    wird in <xref linkend="applikationen-dial" /> beschrieben. Wer sowohl dem
-    Anrufer wie auch dem Angerufenen das Transferieren von Gesprächen erlauben
-    will, muss die Option <code>tT</code> benutzen.</para>
+    <para>Wer die Applikation <command>Dial()</command> ohne weitere
+    Optionen (bzw. Flags) benutzt, kann bestehende Gespräche nicht zu
+    einem anderen Telefon transferieren. Dieses Feature muss explizit
+    bei der <command>Dial()</command> Applikation mit der Option
+    <code>t</code>, <code>T</code> oder <code>tT</code> aktiviert
+    werden. Wie das genau geht, wird in <xref
+    linkend="applikationen-dial" /> beschrieben. Wer sowohl dem Anrufer
+    wie auch dem Angerufenen das Transferieren von Gesprächen erlauben
+    will, muss die Optionen <code>tT</code> benutzen.</para>
 
     <para>Beispiel:<programlisting>exten =&gt; _2XXX,1,Dial(SIP/${EXTEN},tT)</programlisting></para>
-
-    <para></para>
 
     <section id="blind-transfer">
       <title>Blind Transfer</title>
 
-      <para>Der Begriff "Blind Transfer" wird für Transfers benutzt, die von
-      einem Teilnehmer ohne Rückfrage zu einem anderen Teilnehmer gemacht
-      werden. Diese werden per Default vom Telefonbenutzer durch die Eingabe
-      von <code>#1</code> und der Zielrufnummer eingeleitet. Wer also das
-      aktuelle Gespräch zum Telefon mit der Nummer 2323 weiterleiten will,
-      kann dies durch die Eingabe von <code>#12323</code> erreichen.</para>
+      <para>Der Begriff <quote>Blind Transfer</quote> wird für Transfers
+      benutzt, die von einem Teilnehmer ohne Rückfrage zu einem anderen
+      Teilnehmer gemacht werden. Diese werden per Default vom
+      Telefonbenutzer durch die Eingabe von <code>#1</code> und der
+      Zielrufnummer eingeleitet. Wer also das aktuelle Gespräch zum
+      Telefon mit der Nummer 2323 weiterleiten will, kann dies durch die
+      Eingabe von <code>#12323</code> erreichen.</para>
 
-      <para>In der Datei <filename>/etc/asterisk/features.conf</filename> kann
-      man im Context <code>[featuremap]</code> die Ziffernkombination für das
+      <para>In der Datei
+      <filename>/etc/asterisk/features.conf</filename> kann man im
+      Context <code>[featuremap]</code> die Ziffernkombination für das
       Einleiten eines Blind Transfers anpassen:<programlisting>[featuremap]
-blindxfer =&gt; #1         ; Blind transfer
-</programlisting></para>
-
-      <para></para>
+blindxfer =&gt; #1         ; Blind transfer</programlisting></para>
     </section>
 
     <section id="attended-transfer">
       <title>Attended Transfer</title>
 
-      <para>Im Gegensatz zum "Blind Transfer" kann der eine Teilnehmer beim
-      "Attended Transfer" mit der Gegenstelle vor dem Transfer erst noch
-      sprechen und erst nach dem Auflegen wird das Gespräch weitergeleitet.
-      Ein Attended Transfer wird per Default durch die Eingabe von
-      <code>*2</code> und danach der gewünschten Zielrufnummer
-      eingeleitet.</para>
+      <para>Im Gegensatz zum <quote>Blind Transfer</quote> kann der eine
+      Teilnehmer beim <quote>Attended Transfer</quote> mit der
+      Gegenstelle vor dem Transfer erst noch sprechen und erst nach dem
+      Auflegen wird das Gespräch weitergeleitet. Ein Attended Transfer
+      wird per Default durch die Eingabe von <code>*2</code>
+      eingeleitet, gefolgt von der gewünschten Zielrufnummer.</para>
 
-      <para>In der Datei <filename>/etc/asterisk/features.conf</filename> kann
-      man im Context <code>[featuremap]</code> die Ziffernkombination für das
+      <para>In der Datei
+      <filename>/etc/asterisk/features.conf</filename> kann man im
+      Context <code>[featuremap]</code> die Ziffernkombination für das
       Einleiten eines Attended Transfers anpassen:<programlisting>[featuremap]
-atxfer =&gt; *2                    ; Attended transfer
-</programlisting></para>
+atxfer =&gt; *2                    ; Attended transfer</programlisting></para>
+
+      <simpara>Sollten Sie für Ihre Geräte Call-Limits verwenden (Anzahl
+      gleichzeitig erlaubter Gespräche), beachten Sie, dass ein Attended
+      Transfer vorübergehend 2 Leitungen benötigt.</simpara>
     </section>
   </section>
 
@@ -74,28 +77,29 @@ atxfer =&gt; *2                    ; Attended transfer
 
     <para>Um ein laufendes Gespräch auf einer virtuellen Parkposition zu
     parken muss im aktuellen Context der von Asterisk generierte Context
-    <code>parkedcalls</code> included werden. Beispiel:<programlisting>[hausmeister]
+    <code>parkedcalls</code> <quote>include</quote>d werden.
+    Beispiel:<programlisting>[hausmeister]
 exten =&gt; _2XXX,1,Dial(SIP/${EXTEN})
-include =&gt; parkedcalls</programlisting>Nur wenn dieser Context included
-    wurde kann per Default durch wählen der Tastenkombination
-    <code>#700</code> ein Gespräch geparkt werden. Asterisk liesst dem
-    Teilnehmer dann die Parkposition vor (die man sich merken sollte). Durch
-    wählen dieser Parkposition (z.B. <code>701</code>) kann man das Gespräch
-    dann von einem anderen Telefon über das Parksystem wieder
-    aufnehmen.<warning>
+include =&gt; parkedcalls</programlisting>Nur wenn dieser Context
+    included wurde kann per Default durch Wählen der Tastenkombination
+    <code>#700</code> ein Gespräch geparkt werden. Asterisk liest dem
+    Teilnehmer dann die Parkposition vor (die man sich merken sollte).
+    Durch Wählen dieser Parkposition (z.B. <code>701</code>) kann man
+    das Gespräch dann von einem anderen Telefon über das Parksystem
+    wieder aufnehmen.<warning>
         <para>Es gibt kein einbautes Sicherheitssystem beim Parken von
-        Gesprächen. Sollte Person A ein Gespräch auf Position 705 parken und
-        Person B zufällig die Nummer 705 anrufen, so bekommt er das geparkte
-        Gespräch.</para>
+        Gesprächen. Sollte Person A ein Gespräch auf Position 705 parken
+        und Person B zufällig die Nummer 705 anrufen, so bekommt er das
+        geparkte Gespräch.</para>
       </warning></para>
 
-    <para>In der Datei <filename>/etc/asterisk/features.conf</filename> kann
-    man im Context <code>[general]</code> die Ziffernkombination für das
-    Einleiten eines Parkens, die Anzahl der virtuellen Parkpositionen und den
-    Namen des zu includenen Contextes anpassen:<programlisting>[general]
-parkext =&gt; 700         ; What ext. to dial to park
-parkpos =&gt; 701-720     ; What extensions to park calls on
-context =&gt; parkedcalls ; Which context parked calls are in
-</programlisting></para>
+    <para>In der Datei <filename>/etc/asterisk/features.conf</filename>
+    kann man im Context <code>[general]</code> die Ziffernkombination
+    für das Einleiten eines Parkens, die Anzahl der virtuellen
+    Parkpositionen und den Namen des zu includenen Contextes
+    anpassen:<programlisting>[general]
+parkext =&gt; 700          ; die zum Parken gewählte Extension
+parkpos =&gt; 701-720      ; auf welchen Extensions geparkt werden soll
+context =&gt; parkedcalls  ; der Kontext der geparkten Anrufe</programlisting></para>
   </section>
 </chapter>
