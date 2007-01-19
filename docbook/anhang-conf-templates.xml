@@ -7,8 +7,8 @@
     </indexterm></title>
 
   <simpara>Konfigurationsdateien wie die <filename>sip.conf</filename>,
-  <filename>iax.conf</filename> etc. haben oft viele ähnliche Einträge
-  und sind dadurch schlecht wartbar.</simpara>
+  <filename>iax.conf</filename> etc. haben oft viele ähnliche Einträge und
+  sind dadurch schlecht wartbar.</simpara>
 
   <para>Das könnte in einer normalen <filename>sip.conf</filename>
   stehen:<programlisting>[201]
@@ -38,9 +38,9 @@ qualify=yes
 host=dynamic
 canreinvite=no</programlisting></para>
 
-  <para>Asterisk bietet aber die kaum bekannte Möglichkeit, hierfür
-  Templates zu verwenden. Mit einem Template für unsere Telefone sähe
-  das so aus:<programlisting>[meine-telefone](!)       ; dieser Abschnitt ist das Template
+  <para>Asterisk bietet aber die kaum bekannte Möglichkeit, hierfür Templates
+  zu verwenden. Mit einem Template für unsere Telefone sähe das so
+  aus:<programlisting>[meine-telefone](!)       ; dieser Abschnitt ist das Template
 context=default
 type=friend
 qualify=yes
@@ -59,43 +59,47 @@ secret=2222
 username=203
 secret=3333</programlisting></para>
 
-  <simpara>Das ist besonders interssant, wenn man verschiedene Gruppen
-  oder Klassen von sehr ähnlichen Einträgen hat, also nicht die
-  Möglichkeit besteht, einfach alle Gemeinsamkeiten in den Abschnitt
-  <code>[general]</code> zu schreiben. Schon in diesem einfachen
-  Beispiel haben wir und ein paar Zeilen gespart und können vor allem
-  Veränderungen für alle Telefone der <quote>Klasse</quote>
-  <code>meine-telefone</code> an zentraler Stelle vornehmen.</simpara>
+  <simpara>Das ist besonders interssant, wenn man verschiedene Gruppen oder
+  Klassen von sehr ähnlichen Einträgen hat, also nicht die Möglichkeit
+  besteht, einfach alle Gemeinsamkeiten in den Abschnitt
+  <code>[general]</code> zu schreiben. Schon in diesem einfachen Beispiel
+  haben wir und ein paar Zeilen gespart und können vor allem Veränderungen für
+  alle Telefone der <quote>Klasse</quote> <code>meine-telefone</code> an
+  zentraler Stelle vornehmen.</simpara>
 
-  <formalpara>
+  <section id="conf-templates-anlegen">
     <title>Templates anlegen</title>
 
-    <para>Prinzipiell kann jeder Abschnitt als Template für andere
-    dienen, aber mit der Markierung <code>(!)</code> zeigt man dem
-    Parser an, dass dieser Abschnitt <emphasis>ausschließlich</emphasis>
-    als Template dient und selbst nicht benutzt wird. Wichtig ist, dass
-    zwischen den eckigen und runden Klammern keine Leerzeichen stehen.
-    Templates können auch selbst wieder auf Templates basieren.</para>
-  </formalpara>
+    <para>Prinzipiell kann jeder Abschnitt als Template für andere dienen,
+    aber mit der Markierung <code>(!)</code> zeigt man dem Parser an, dass
+    dieser Abschnitt <emphasis>ausschließlich</emphasis> als Template dient
+    und selbst nicht benutzt wird. Wichtig ist, dass zwischen den eckigen und
+    runden Klammern keine Leerzeichen stehen. Templates können auch selbst
+    wieder auf Templates basieren.<programlisting>[meine-beispiel-template](!)
+context=default
+type=friend
+qualify=yes
+host=dynamic
+canreinvite=no</programlisting></para>
+  </section>
 
-  <formalpara>
+  <section id="conf-templates-verwenden">
     <title>Templates verwenden</title>
 
     <para>Templates verwendet man durch Angabe von
     <code>(<replaceable>Templatename</replaceable>)</code> direkt - ohne
     Leerzeichen! - hinter dem Abschnittsbeginn. Dadurch wird zuerst das
-    angegebene Template eingebunden und dann die weiteren Parameter in
-    dem Abschnitt ausgewertet. Abschnitte können sogar von mehreren
-    Templates erben, z.B. so:<programlisting>[201](meine-telefone,cisco)   ; erbt von "meine-telefone" und von "cisco"
+    angegebene Template eingebunden und dann die weiteren Parameter in dem
+    Abschnitt ausgewertet. Abschnitte können sogar von mehreren Templates
+    erben, z.B. so:<programlisting>[201](meine-telefone,verkauf)   ; erbt von "meine-telefone" und von "verkauf"
 username=201
 secret=1111</programlisting>Bei Bedarf kann man pro Abschnitt die
     Einstellungen aus dem Template überschreiben.</para>
-  </formalpara>
 
-  <formalpara>
-    <title>Beispiel</title>
+    <section id="conf-templates-beispiel">
+      <title>Beispiel</title>
 
-    <para><programlisting>[telefone](!)               ; Template "telefone"
+      <para><programlisting>[telefone](!)               ; Template "telefone"
 type=friend
 qualify=yes
 dtmfmode=rfc2833
@@ -119,8 +123,9 @@ secret=123
 [linksys1](linksys)         ; Abschnitt "linksys1", erbt von "linksys"
 username=103
 secret=123</programlisting></para>
-  </formalpara>
 
-  <para>Weitere Beispiele: <ulink
-  url="http://www.voip-info.org/wiki/index.php?page=Asterisk+config+template">http://www.voip-info.org/wiki/index.php?page=Asterisk+config+template</ulink></para>
+      <para>Weitere Beispiele: <ulink
+      url="http://www.voip-info.org/wiki/index.php?page=Asterisk+config+template">http://www.voip-info.org/wiki/index.php?page=Asterisk+config+template</ulink></para>
+    </section>
+  </section>
 </appendix>
