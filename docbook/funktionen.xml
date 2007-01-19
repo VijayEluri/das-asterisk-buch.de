@@ -61,7 +61,7 @@
         <secondary><code>AGENT()</code></secondary>
       </indexterm></title>
 
-    <synopsis>AGENT(<replaceable>AgentenNr</replaceable>:<replaceable>Feld</replaceable>)</synopsis>
+    <synopsis>AGENT(<replaceable>AgentenNr</replaceable>[:<replaceable>Feld</replaceable>])</synopsis>
 
     <para>Gibt Informationen über einen Agenten, identifiziert duch die
     <code>AgentenNr</code> zurück. Die folgenden Felder können abgefragt
@@ -70,7 +70,7 @@
           <term><code>status</code></term>
 
           <listitem>
-            <simpara>Der Einlog-Status des Agenten, entweder
+            <simpara>(default) Der Einlog-Status des Agenten, entweder
             <code>LOGGEDIN</code> oder <code>LOGGEDOUT</code></simpara>
           </listitem>
         </varlistentry>
@@ -119,7 +119,7 @@
           </listitem>
         </varlistentry>
       </variablelist><programlisting>; die Variable foo auf den Namen des Agenten Nr. 42 setzen:
-exten =&gt; s,1,Set(foo=${AGENT(42:name)})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${AGENT(42:name)})</programlisting></para>
   </section>
 
   <section id="funktionen-array">
@@ -140,7 +140,7 @@ exten =&gt; s,1,Set(foo=${AGENT(42:name)})</programlisting></para>
     Komma zu trennen und dieses Komma durch Backslash (<code>\</code>)
     zu escapen, da sonst von einem zweiten Parameter für
     <code>Set()</code> ausgegangen würde!<programlisting>; var1 auf 1 und var2 auf 2 setzen:
-exten =&gt; s,1,Set(ARRAY(var1,var2)=1\,2)</programlisting></para>
+exten =&gt; 123,1,Set(ARRAY(var1,var2)=1\,2)</programlisting></para>
   </section>
 
   <section id="funktionen-base64_decode">
@@ -155,7 +155,7 @@ exten =&gt; s,1,Set(ARRAY(var1,var2)=1\,2)</programlisting></para>
 
     <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
 
-    <para>Dekodiert einen Base64-kodierten String.<programlisting>exten =&gt; s,1,Set(foo=${BASE64_DECODE("SGFsbG8gV2VsdA==")})</programlisting></para>
+    <para>Dekodiert einen Base64-kodierten String.<programlisting>exten =&gt; 123,1,Set(foo=${BASE64_DECODE("SGFsbG8gV2VsdA==")})</programlisting></para>
   </section>
 
   <section id="funktionen-base64_encode">
@@ -170,7 +170,7 @@ exten =&gt; s,1,Set(ARRAY(var1,var2)=1\,2)</programlisting></para>
 
     <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
 
-    <para>Kodiert einen String mit Base64.<programlisting>exten =&gt; s,1,Set(foo=${BASE64_ENCODE("Hallo Welt")})</programlisting></para>
+    <para>Kodiert einen String mit Base64.<programlisting>exten =&gt; 123,1,Set(foo=${BASE64_ENCODE("Hallo Welt")})</programlisting></para>
   </section>
 
   <section id="funktionen-callerid">
@@ -259,10 +259,10 @@ exten =&gt; s,1,Set(ARRAY(var1,var2)=1\,2)</programlisting></para>
     <code>Set(CALLERID(all)=<replaceable>Name</replaceable>
     &lt;<replaceable>Nummer</replaceable>&gt;)</code>
     etc.<programlisting>; die Variable foo auf die Anruferkennung setzen:
-exten =&gt; s,1,Set(foo=${CALLERID(all)})
+exten =&gt; 123,1,Set(foo=${CALLERID(all)})
 
 ; den Anrufernamen auf "Peter Meier" setzen:
-exten =&gt; s,1,Set(CALLERID(name)="Peter Meier") </programlisting></para>
+exten =&gt; 123,1,Set(CALLERID(name)="Peter Meier") </programlisting></para>
   </section>
 
   <section id="funktionen-cdr">
@@ -442,10 +442,10 @@ exten =&gt; s,1,Set(CALLERID(name)="Peter Meier") </programlisting></para>
           </listitem>
         </varlistentry>
       </variablelist><programlisting>; foo auf die Dauer des Anrufs setzen:
-exten =&gt; s,1,Set(foo=${CDR(duration)})
+exten =&gt; 123,1,Set(foo=${CDR(duration)})
 
 ; das User-Feld auf "meine Infos" setzen:
-exten =&gt; s,1,Set(CDR(userfield)=meine Infos)</programlisting></para>
+exten =&gt; 123,1,Set(CDR(userfield)=meine Infos)</programlisting></para>
   </section>
 
   <section id="funktionen-channel">
@@ -579,10 +579,10 @@ exten =&gt; s,1,Set(CDR(userfield)=meine Infos)</programlisting></para>
     Dokumentation nachschlagen kann. Felder, die auf dem aktuellen Kanal
     nicht zur Verfügung stehen, geben einen leeren String
     zurück.<programlisting>; Typ des Kanals abfragen:
-exten =&gt; s,1,Set(foo=${CHANNEL(channeltype)})
+exten =&gt; 123,1,Set(foo=${CHANNEL(channeltype)})
 
 ; Sprache auf Englisch setzen:
-exten =&gt; s,1,Set(CHANNEL(language)=en)</programlisting></para>
+exten =&gt; 123,1,Set(CHANNEL(language)=en)</programlisting></para>
   </section>
 
   <section id="funktionen-checksipdomain">
@@ -598,7 +598,7 @@ exten =&gt; s,1,Set(CHANNEL(language)=en)</programlisting></para>
     <para>Prüft, ob die angegebene Domain (kann auch eine IP-Adresse
     sein) eine SIP-Domain ist, die Asterisk als lokal behandelt (siehe
     Datei <filename>sip.conf</filename>). Gibt den Domain-Namen oder
-    einen leeren String zurück.<programlisting>exten =&gt; s,1,Set(foo=${CHECKSIPDOMAIN(123.45.67.89)})</programlisting></para>
+    einen leeren String zurück.<programlisting>exten =&gt; 123,1,Set(foo=${CHECKSIPDOMAIN(123.45.67.89)})</programlisting></para>
   </section>
 
   <section id="funktionen-curl">
@@ -614,7 +614,7 @@ exten =&gt; s,1,Set(CHANNEL(language)=en)</programlisting></para>
     <code>GET</code>. Wenn <code>POST-Daten</code> angegeben sind,
     werden diese Daten mit <code>POST</code> gesendet. Gibt die Seite
     als String zurück.<programlisting>; Die Seite unter der URL http://beispiel.de/seite.php?id=1&amp;action=view abrufen:
-exten =&gt; s,1,Set(foo=${CURL(http://beispiel.de/seite.php?id=1&amp;action=view)})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${CURL(http://beispiel.de/seite.php?id=1&amp;action=view)})</programlisting></para>
   </section>
 
   <section id="funktionen-cut">
@@ -643,8 +643,8 @@ exten =&gt; s,1,Set(foo=${CURL(http://beispiel.de/seite.php?id=1&amp;action=view
     <para>Ein Komma als Trennzeichen muss durch Backslash escaped
     werden, z.B. <code>CUT(var,\,,2)</code>.</para>
 
-    <para><programlisting>exten =&gt; s,1,Set(var=1-2-3-4-5)            ; var ist "1-2-3-4-5"
-exten =&gt; s,2,Set(var=${CUT(var,,1-3&amp;5)})   ; var ist "1-2-3-5"</programlisting></para>
+    <para><programlisting>exten =&gt; 123,1,Set(var=1-2-3-4-5)            ; var ist "1-2-3-4-5"
+exten =&gt; 123,n,Set(var=${CUT(var,,1-3&amp;5)})   ; var ist "1-2-3-5"</programlisting></para>
 
     <important>
       <para>Der Parameter <code>Variablenname</code> muss der
@@ -673,9 +673,9 @@ exten =&gt; s,2,Set(var=${CUT(var,,1-3&amp;5)})   ; var ist "1-2-3-5"</programli
     zurückgegeben oder ein leerer String, wenn der Wert nicht existiert.
     Das Ergebnis ist in der Variable <code>DB_RESULT</code>
     verfügbar.<programlisting>; Eintrag open/source setzen und abfragen:
-exten =&gt; s,1,Set(DB(open/source)=${ja})
-exten =&gt; s,2,Set(var=${DB(open/source)})
-exten =&gt; s,3,GotoIf($[[${DB(open/source)} = 1]?opensource:closedsource)</programlisting></para>
+exten =&gt; 123,1,Set(DB(open/source)=${ja})
+exten =&gt; 123,n,Set(var=${DB(open/source)})
+exten =&gt; 123,n,GotoIf($[[${DB(open/source)} = 1]?opensource:closedsource)</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -698,7 +698,7 @@ exten =&gt; s,3,GotoIf($[[${DB(open/source)} = 1]?opensource:closedsource)</prog
     <para>Löscht einen Wert aus der AstDB. Dabei wird auch die Variable
     <code>DB_RESULT</code> auf den entsprechenden Wert gesetzt, falls
     vorhanden.<programlisting>; den Eintrag cidnums/0123456789 löschen:
-exten =&gt; s,1,Set(ignored=${DB_DELETE(cidnums/0123456789)})</programlisting></para>
+exten =&gt; 123,1,Set(ignored=${DB_DELETE(cidnums/0123456789)})</programlisting></para>
 
     <note>
       <simpara>Vor Asterisk 1.4 muss statt der Funktion
@@ -728,17 +728,17 @@ exten =&gt; s,1,Set(ignored=${DB_DELETE(cidnums/0123456789)})</programlisting></
     <para>Prüft, ob ein Schlüssel in der AstDB vorhanden ist. Gibt 1
     oder 0 zurück. Setzt auch die Variable <code>DB_RESULT</code> auf
     den unter dem Schlüssel gespeicherten Wert.<programlisting>; abfragen, ob der Eintrag cidnums/0123456789 existiert:
-exten =&gt; s,1,Set(foo=${DB_EXISTS(cidnums/0123456789)})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${DB_EXISTS(cidnums/0123456789)})</programlisting></para>
 
     <para>So kann z.B. die Applikation <code>LookupBlacklist()</code>
     ersetzt werden. Springt, falls die Anrufernummer in der Blacklist
     ist, zum Kontext <code>blacklisted</code>, Extension <code>s</code>,
-    Priorität <code>1</code>:<programlisting>exten =&gt; s,1,GotoIf(${DB_EXISTS(blacklist/${CALLERID(num)})}?blacklisted,s,1)
-exten =&gt; s,2,Dial(IAX2/benutzer:passwort@beispiel.de/500)
+    Priorität <code>1</code>:<programlisting>exten =&gt; 123,1,GotoIf(${DB_EXISTS(blacklist/${CALLERID(num)})}?blacklisted,s,1)
+exten =&gt; 123,n,Dial(IAX2/benutzer:passwort@beispiel.de/500)
 
 [blacklisted]
 exten =&gt; s,1,NoOp(${CALLERID(num)} ist auf der Blacklist)
-exten =&gt; s,2,Hangup()</programlisting></para>
+exten =&gt; s,n,Hangup()</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -765,7 +765,7 @@ exten =&gt; s,2,Hangup()</programlisting></para>
     DUNDi-Cache umgangen. Gibt die gefundene Verbindung in der Form
     <code>Technologie/Ressource</code> oder einen leeren String
     zurück.<programlisting>; die Nummer 0123456789 nachschlagen:
-exten =&gt; s,1,Set(foo=${DUNDILOOKUP(0123456789)})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${DUNDILOOKUP(0123456789)})</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -795,10 +795,10 @@ exten =&gt; s,1,Set(foo=${DUNDILOOKUP(0123456789)})</programlisting></para>
     Ausführliche Beschreibung und Beispiele in
     <filename>doc/README.enum</filename> (1.2) /
     <filename>doc/enum.txt</filename> (1.4).<programlisting>; in Asterisk 1.2:
-exten =&gt; s,1,Set(foo=${ENUMLOOKUP(+${CALLERID(num)},sip,1,freenum.org)})
+exten =&gt; 123,1,Set(foo=${ENUMLOOKUP(+${CALLERID(num)},sip,1,freenum.org)})
 
 ; in Astarisk 1.4:
-exten =&gt; s,1,Set(foo=${ENUMLOOKUP(+${CALLERID(num)},sip,,1,freenum.org)})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${ENUMLOOKUP(+${CALLERID(num)},sip,,1,freenum.org)})</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -822,10 +822,10 @@ exten =&gt; s,1,Set(foo=${ENUMLOOKUP(+${CALLERID(num)},sip,,1,freenum.org)})</pr
     $<replaceable>Variablenname</replaceable></code> ausgegeben werden.
     Umgebungsvariablen unterscheiden zwischen Groß- unf Kleinschreibung
     und werden fast immer großgeschrieben.<programlisting>; HOME lesen:
-exten =&gt; s,1,Set(foo=${ENV(HOME)})
+exten =&gt; 123,1,Set(foo=${ENV(HOME)})
 
 ; HOME setzen:
-exten =&gt; s,1,Set(ENV(HOME)=/myAst)</programlisting></para>
+exten =&gt; 123,1,Set(ENV(HOME)=/myAst)</programlisting></para>
   </section>
 
   <section id="funktionen-eval">
@@ -843,7 +843,7 @@ exten =&gt; s,1,Set(ENV(HOME)=/myAst)</programlisting></para>
     <code>Eval()</code> zu diesem String ausgewertet. Mit
     <code>Eval()</code> wird auch <code>${VAR2}</code> nochmal zu ihrem
     Inhalt ausgewertet.<programlisting>; wenn VAR den String "${VAR2}" enthält und VAR2 den String "Hallo Welt":
-exten =&gt; s,1,Set(foo=${EVAL(${VAR})})
+exten =&gt; 123,1,Set(foo=${EVAL(${VAR})})
 ; dann ist foo jetzt "Hallo Welt"</programlisting></para>
   </section>
 
@@ -857,10 +857,10 @@ exten =&gt; s,1,Set(foo=${EVAL(${VAR})})
     <synopsis>EXISTS(<replaceable>Variable</replaceable>)</synopsis>
 
     <para>Prüft, ob eine Variable definiert ist. Gibt 1 oder 0
-    zurück.<programlisting>exten =&gt; s,1,Set(Var1=test)
-exten =&gt; s,2,Set(Var2=)
-exten =&gt; s,3,Set(foo=${EXISTS(${Var1})})   ; foo ist 1
-exten =&gt; s,4,Set(foo=${EXISTS(${Var2})})   ; foo ist 0</programlisting></para>
+    zurück.<programlisting>exten =&gt; 123,1,Set(Var1=test)
+exten =&gt; 123,n,Set(Var2=)
+exten =&gt; 123,n,Set(foo=${EXISTS(${Var1})})   ; foo ist 1
+exten =&gt; 123,n,Set(foo=${EXISTS(${Var2})})   ; foo ist 0</programlisting></para>
   </section>
 
   <section id="funktionen-fieldqty">
@@ -874,8 +874,8 @@ exten =&gt; s,4,Set(foo=${EXISTS(${Var2})})   ; foo ist 0</programlisting></para
 
     <para>Gibt zurück, wie viele Teilstrings entstehen würden, wenn man
     den Inhalt der Variablen anhand des Trennzeichens
-    aufteilt.<programlisting>exten =&gt; s,1,Set(Var=hallo#du#da#am#telefon)
-exten =&gt; s,1,Set(Anzahl=${FIELDQTY(Var,#)})    ; Anzahl ist 5</programlisting></para>
+    aufteilt.<programlisting>exten =&gt; 123,1,Set(Var=hallo#du#da#am#telefon)
+exten =&gt; 123,n,Set(Anzahl=${FIELDQTY(Var,#)})    ; Anzahl ist 5</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -897,7 +897,7 @@ exten =&gt; s,1,Set(Anzahl=${FIELDQTY(Var,#)})    ; Anzahl ist 5</programlisting
 
     <para>Filtert den String, so dass nur noch die erlaubten Zeichen im
     Rückgabewert vorkommen.<programlisting>; nur die Zeichen 0123456789 in ${cdrnum} zulassen:
-exten =&gt; s,1,Set(foo=${FILTER(0123456789,${cdrnum})})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${FILTER(0123456789,${cdrnum})})</programlisting></para>
   </section>
 
   <section id="funktionen-global">
@@ -916,7 +916,7 @@ exten =&gt; s,1,Set(foo=${FILTER(0123456789,${cdrnum})})</programlisting></para>
     1.2 verwendet man stattdessen <code>Set()</code> (<xref
     linkend="applikationen-set" />) mit der Option
     <code>g</code>.<programlisting>; eine globale Variable ${meinevariable} definieren:
-exten =&gt; s,1,Set(GLOBAL(meinevariable)=Test)</programlisting></para>
+exten =&gt; 123,1,Set(GLOBAL(meinevariable)=Test)</programlisting></para>
 
     <note>
       <para>Ob globale Variablen auch nach einem Reload von Asterisk
@@ -936,10 +936,10 @@ exten =&gt; s,1,Set(GLOBAL(meinevariable)=Test)</programlisting></para>
     <synopsis>GROUP([<replaceable>Kategorie</replaceable>])</synopsis>
 
     <para>Liest/setzt die Gruppe des Kanals (Kanäle lassen sich beliebig
-    gruppieren).<programlisting>exten =&gt; s,1,Set(GROUP()=ausgehende)                ; Gruppe setzen
-exten =&gt; s,2,GotoIf($[${GROUP_COUNT()} &gt; 10]?103)   ; zu viele?
-exten =&gt; s,3,Dial(0123456)                          ; wählen
-exten =&gt; s,103,SetVar(DIALSTATUS=CHANUNAVAIL)       ; ablehnen</programlisting></para>
+    gruppieren).<programlisting>exten =&gt; 123,1,Set(GROUP()=ausgehende)                ; Gruppe setzen
+exten =&gt; 123,n,GotoIf($[${GROUP_COUNT()} &gt; 10]?200)   ; zu viele?
+exten =&gt; 123,n,Dial(0123456)                          ; wählen
+exten =&gt; 123,200,SetVar(DIALSTATUS=CHANUNAVAIL)       ; ablehnen</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -962,7 +962,7 @@ exten =&gt; s,103,SetVar(DIALSTATUS=CHANUNAVAIL)       ; ablehnen</programlistin
     <para>Gibt die Anzahl der Kanäle in der angegebenen Gruppe zurück.
     Wird keine Gruppe angegeben, gilt die aktuelle Gruppe des
     Kanals.<programlisting>; Anzahl der Kanäle in Gruppe ausgehende abfragen:
-exten =&gt; s,1,Set(foo=${GROUP_COUNT(ausgehende)})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${GROUP_COUNT(ausgehende)})</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -983,7 +983,7 @@ exten =&gt; s,1,Set(foo=${GROUP_COUNT(ausgehende)})</programlisting></para>
     <synopsis>GROUP_LIST()</synopsis>
 
     <para>Gibt eine durch Leerzeichen getrennte Liste aller Gruppen
-    zurück, die für den aktuellen Kanal gesetzt sind.<programlisting>exten =&gt; s,1,Set(foo=${GROUP_LIST()})</programlisting></para>
+    zurück, die für den aktuellen Kanal gesetzt sind.<programlisting>exten =&gt; 123,1,Set(foo=${GROUP_LIST()})</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -1006,7 +1006,7 @@ exten =&gt; s,1,Set(foo=${GROUP_COUNT(ausgehende)})</programlisting></para>
 
     <para>Gibt die Anzahl der Kanäle zurück, auf die das angegebene
     Suchmuster - ein regulärer Ausdruck - passt.<programlisting>; Anzahl der Kanäle in den Gruppen gruppe[1-4] abfragen:
-exten =&gt; s,1,Set(foo=${GROUP_MATCH_COUNT(gruppe[1-4])})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${GROUP_MATCH_COUNT(gruppe[1-4])})</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -1114,7 +1114,7 @@ exten =&gt; s,1,Set(foo=${GROUP_MATCH_COUNT(gruppe[1-4])})</programlisting></par
           </listitem>
         </varlistentry>
       </variablelist><programlisting>; die IP-Adresse von peer1 abfragen:
-exten =&gt; s,1,Set(foo=${IAXPEER(peer1:ip)})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${IAXPEER(peer1:ip)})</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -1135,7 +1135,7 @@ exten =&gt; s,1,Set(foo=${IAXPEER(peer1:ip)})</programlisting></para>
     <para>Gibt abhängig von der Bedingung den ersten oder zweiten Wert
     zurück. Ist die Bedingung wahr, wird der Wert nach <code>?</code>,
     sonst der Wert nach <code>:</code> zurückgegeben.<programlisting>; wenn ${Var}=123 ist, dann 5 zurückgeben, sonst 9:
-exten =&gt; s,1,Set(foo=${IF($[ ${Var} = 123]?5:9)})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${IF($[ ${Var} = 123]?5:9)})</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -1173,10 +1173,10 @@ exten =&gt; s,1,Set(foo=${IF($[ ${Var} = 123]?5:9)})</programlisting></para>
     <code>jul</code>, <code>aug</code>, <code>sep</code>,
     <code>oct</code>, <code>nov</code>, <code>dec</code>)
     angegeben.<programlisting>; gültig 8-18 Uhr, montags, 1.-15. Dezember:
-exten =&gt; s,1,Set(foo=${IFTIME(08:00-18:00|mon|1-15|dec?5:0)})
+exten =&gt; 123,1,Set(foo=${IFTIME(08:00-18:00|mon|1-15|dec?5:0)})
 
 ; gültig jeden Samstag und Sonntag:
-exten =&gt; s,1,Set(foo=${IFTIME(*|sat-sun|*|*?5:0)})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${IFTIME(*|sat-sun|*|*?5:0)})</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -1198,7 +1198,7 @@ exten =&gt; s,1,Set(foo=${IFTIME(*|sat-sun|*|*?5:0)})</programlisting></para>
     <synopsis>ISNULL(<replaceable>Wert</replaceable>)</synopsis>
 
     <para>Gibt 1 zurück, wenn der Wert NULL (kein Wert) ist, sonst
-    0.<programlisting>exten =&gt; s,1,Set(foo=${ISNULL(${Var1})})</programlisting></para>
+    0.<programlisting>exten =&gt; 123,1,Set(foo=${ISNULL(${Var1})})</programlisting></para>
   </section>
 
   <section id="funktionen-keypadhash">
@@ -1259,7 +1259,7 @@ exten =&gt; s,1,Set(foo=${IFTIME(*|sat-sun|*|*?5:0)})</programlisting></para>
       </tgroup>
     </informaltable>
 
-    <programlisting>exten =&gt; s,1,Set(foo=${KEYPADHASH(AUTOHAUS)})  ; gibt 28864287 zurück</programlisting>
+    <programlisting>exten =&gt; 123,1,Set(foo=${KEYPADHASH(AUTOHAUS)})  ; gibt 28864287 zurück</programlisting>
   </section>
 
   <section id="funktionen-language">
@@ -1277,10 +1277,10 @@ exten =&gt; s,1,Set(foo=${IFTIME(*|sat-sun|*|*?5:0)})</programlisting></para>
     wird ausgeführt, so wird die Datei
     <filename>de/tt-weasels</filename> abgespielt (wenn vorhanden).
     Gleiches gilt für <code>SayDigits()</code> etc.<programlisting>; abfragen:
-exten =&gt; s,1,Set(foo=${LANGUAGE()})
+exten =&gt; 123,1,Set(foo=${LANGUAGE()})
 
 ; Deutsch setzen:
-exten =&gt; s,1,Set(LANGUAGE()=de)</programlisting></para>
+exten =&gt; 123,1,Set(LANGUAGE()=de)</programlisting></para>
   </section>
 
   <section id="funktionen-len">
@@ -1293,8 +1293,8 @@ exten =&gt; s,1,Set(LANGUAGE()=de)</programlisting></para>
     <synopsis>LEN(<replaceable>String</replaceable>)</synopsis>
 
     <para>Gibt die Länge (Anzahl der Zeichen) eines Strings
-    zurück.<programlisting>; wenn ${test} = "Hallo Welt" ist
-exten =&gt; s,1,Set(foo=${LEN(${test})})
+    zurück.<programlisting>; angenommen, ${test} ist "Hallo Welt"
+exten =&gt; 123,1,Set(foo=${LEN(${test})})
 ; dann wird 10 zurückgegeben</programlisting></para>
   </section>
 
@@ -1316,7 +1316,7 @@ exten =&gt; s,1,Set(foo=${LEN(${test})})
     <code>int</code> (Ganzzahl), <code>h</code>, <code>hex</code> (Wert
     im Hexadezimal-System), <code>c</code>, <code>char</code>
     (Byte).<programlisting>; 3*8 als Ganzzahl berechnen:
-exten =&gt; s,1,Set(i=${MATH(3*8,int)})</programlisting></para>
+exten =&gt; 123,1,Set(i=${MATH(3*8,int)})</programlisting></para>
   </section>
 
   <section id="funktionen-md5">
@@ -1329,7 +1329,7 @@ exten =&gt; s,1,Set(i=${MATH(3*8,int)})</programlisting></para>
     <synopsis>MD5(<replaceable>String</replaceable>)</synopsis>
 
     <para>Berechnet den MD5-Hash (Digest, Prüfsumme) eines Strings
-    (hexadezimale Rückgabe).<programlisting>exten =&gt; s,1,Set(foo=${MD5(${string})})</programlisting></para>
+    (hexadezimale Rückgabe).<programlisting>exten =&gt; 123,1,Set(foo=${MD5(${string})})</programlisting></para>
   </section>
 
   <section id="funktionen-musicclass">
@@ -1343,10 +1343,10 @@ exten =&gt; s,1,Set(i=${MATH(3*8,int)})</programlisting></para>
 
     <para>Liest/setzt die Music-on-Hold-Klasse (Klasse der
     Wartemusik).<programlisting>; abfragen:
-exten =&gt; s,1,Set(foo=${MUSICCLASS()})
+exten =&gt; 123,1,Set(foo=${MUSICCLASS()})
 
 ; auf "HeavyMetal" setzen:
-exten =&gt; s,1,Set(MUSICCLASS()=HeavyMetal)</programlisting></para>
+exten =&gt; 123,1,Set(MUSICCLASS()=HeavyMetal)</programlisting></para>
   </section>
 
   <section id="funktionen-odbc_sql">
@@ -1360,10 +1360,10 @@ exten =&gt; s,1,Set(MUSICCLASS()=HeavyMetal)</programlisting></para>
 
     <para>Führt den angegebenen SQL-Query aus und gibt ggf. das Ergebnis
     zurück.<programlisting>; abfragen:
-exten =&gt; s,1,Set(Name=${ODBC_SQL(SELECT name FROM liste WHERE nummer='123')})
+exten =&gt; 123,1,Set(Name=${ODBC_SQL(SELECT name FROM liste WHERE nummer='123')})
 
 ; setzen:
-exten =&gt; s,1,Set(ODBC_SQL(UPDATE liste SET name='Peter' WHERE nummer='123'))</programlisting></para>
+exten =&gt; 123,1,Set(ODBC_SQL(UPDATE liste SET name='Peter' WHERE nummer='123'))</programlisting></para>
   </section>
 
   <section id="funktionen-odbc_user_database">
@@ -1386,10 +1386,10 @@ exten =&gt; s,1,Set(ODBC_SQL(UPDATE liste SET name='Peter' WHERE nummer='123'))<
 dsn=meine_datenbank
 read=SELECT name FROM liste WHERE nummer='${ARG1}'
 write=UPDATE liste SET name=${VAL1} WHERE nummer='${ARG1}'</programlisting><filename>extensions.conf</filename>:<programlisting>; abfragen (read):
-exten =&gt; s,1,Set(Name=${ODBC_USER_DATABASE(${EXTEN})})
+exten =&gt; 123,1,Set(Name=${ODBC_USER_DATABASE(${EXTEN})})
 
 ; setzen (write):
-exten =&gt; s,1,Set(ODBC_USER_DATABASE(${CALLERID(name)})=1000)</programlisting></para>
+exten =&gt; 123,1,Set(ODBC_USER_DATABASE(${CALLERID(name)})=1000)</programlisting></para>
   </section>
 
   <section id="funktionen-queueagentcount">
@@ -1407,7 +1407,7 @@ exten =&gt; s,1,Set(ODBC_USER_DATABASE(${CALLERID(name)})=1000)</programlisting>
 
     <para>Gibt die Anzahl der Agenten (im Gegensatz zu den Anrufern) auf
     der Warteschlange zurück.<programlisting>; Anzahl der Agenten in der "supportSchlange":
-exten =&gt; s,1,Set(foo=${QUEUEAGENTCOUNT(supportSchlange)})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${QUEUEAGENTCOUNT(supportSchlange)})</programlisting></para>
   </section>
 
   <section id="funktionen-queue_member_count">
@@ -1425,7 +1425,7 @@ exten =&gt; s,1,Set(foo=${QUEUEAGENTCOUNT(supportSchlange)})</programlisting></p
 
     <para>Gibt die Anzahl der Agenten (im Gegensatz zu den Anrufern) auf
     der Warteschlange zurück.<programlisting>; Anzahl der Agenten in der "supportSchlange":
-exten =&gt; s,1,Set(foo=${QUEUE_MEMBER_COUNT(supportSchlange)}) </programlisting></para>
+exten =&gt; 123,1,Set(foo=${QUEUE_MEMBER_COUNT(supportSchlange)}) </programlisting></para>
   </section>
 
   <section id="funktionen-queue_member_list">
@@ -1440,7 +1440,7 @@ exten =&gt; s,1,Set(foo=${QUEUE_MEMBER_COUNT(supportSchlange)}) </programlisting
 
     <para>Gibt eine durch Komma getrennte Liste der Agenten auf einer
     Warteschleife zurück.<programlisting>; Agenten in der "supportSchlange":
-exten =&gt; s,1,Set(foo=${QUEUE_MEMBER_LIST(supportSchlange)})
+exten =&gt; 123,1,Set(foo=${QUEUE_MEMBER_LIST(supportSchlange)})
 ; gibt z.B. 5,8,33 zurück</programlisting></para>
   </section>
 
@@ -1455,7 +1455,7 @@ exten =&gt; s,1,Set(foo=${QUEUE_MEMBER_LIST(supportSchlange)})
 
     <para>Escaped Anführungszeichen innerhalb eines
     Strings.<programlisting>; wenn ${var} &gt;&gt;Die "Asterisk"-PBX&lt;&lt; ist
-exten =&gt; s,1,Set(foo=${QUOTE(${var})})
+exten =&gt; 123,1,Set(foo=${QUOTE(${var})})
 ; dann wird &gt;&gt;Die \"Asterisk\"-PBX&lt;&lt; zurückggeben</programlisting></para>
   </section>
 
@@ -1516,13 +1516,13 @@ exten =&gt; verloren,n,Goto(123,1)</programlisting></para>
     und verwendet diese statt des <code>$</code>-Zeichens.</para>
 
     <para><programlisting>; prüfen, ob der Ausdruck "[abc][0-9]" auf den String "b3" passt:
-exten =&gt; s,1,Set(foo=${REGEX("[abc][0-9]" b3)})   ; gibt 1 zurück
+exten =&gt; 123,1,Set(foo=${REGEX("[abc][0-9]" b3)})   ; gibt 1 zurück
 
 ; prüfen, ob ${str} mit 0 endet, Asterisk 1.4:
-exten =&gt; s,1,Set(foo=${REGEX("0$" ${str})})
+exten =&gt; 123,1,Set(foo=${REGEX("0$" ${str})})
 
 ; in Asterisk 1.2 behilft man sich so:
-exten =&gt; s,1,Set(foo=${REGEX("0${dollar}" ${str})})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${REGEX("0${dollar}" ${str})})</programlisting></para>
   </section>
 
   <section id="funktionen-set">
@@ -1537,7 +1537,10 @@ exten =&gt; s,1,Set(foo=${REGEX("0${dollar}" ${str})})</programlisting></para>
     <para>Kann innerhalb von verschachtelten Ausdrücken verwendet
     werden, um Variablen auf einen Wert zu setzen. (Nicht verwechseln
     mit der Applikation <code>Set()</code>!)<programlisting>; ${a}, ${b}, ${c}, und ${d} auf 8 setzen:
-Set(a=${SET(b=${SET(c=${SET(d=8)})})})</programlisting></para>
+exten =&gt; 123,1,Set(a=${SET(b=${SET(c=${SET(d=8)})})})
+
+; es ist aber meist vorteilhafter, zugunsten der Übersichtlichkeit
+; ein oder zwei Zeilen mehr zu schreiben</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -1557,7 +1560,7 @@ Set(a=${SET(b=${SET(c=${SET(d=8)})})})</programlisting></para>
 
     <para>Berechnet den SHA1-Hash (Digest, Prüfsumme) eines Strings
     (hexadezimale Rückgabe).<programlisting>; den SHA1-Hash von "Hallo Welt" berechnen:
-exten =&gt; s,1,Set(sha1hash=${SHA1(Hallo Welt)})</programlisting></para>
+exten =&gt; 123,1,Set(sha1hash=${SHA1(Hallo Welt)})</programlisting></para>
   </section>
 
   <section id="funktionen-sipchaninfo">
@@ -1620,7 +1623,7 @@ exten =&gt; s,1,Set(sha1hash=${SHA1(Hallo Welt)})</programlisting></para>
           </listitem>
         </varlistentry>
       </variablelist><programlisting>; den Namen des Peers abfragen:
-exten =&gt; s,1,Set(foo=${SIPCHANINFO(peername)}) </programlisting></para>
+exten =&gt; 123,1,Set(foo=${SIPCHANINFO(peername)}) </programlisting></para>
   </section>
 
   <section id="funktionen-sippeer">
@@ -1769,9 +1772,9 @@ exten =&gt; s,1,Set(foo=${SIPCHANINFO(peername)}) </programlisting></para>
           </listitem>
         </varlistentry>
       </variablelist><programlisting>; die IP-Adresse des Peers 2001:
-exten =&gt; s,1,Set(sip_ip=${SIPPEER(2001,ip)})
+exten =&gt; 123,1,Set(sip_ip=${SIPPEER(2001,ip)})
 ; der bevorzugte Codec des Peers:
-exten =&gt; s,n,Set(sip_ip=${SIPPEER(2001,codec[0])})</programlisting></para>
+exten =&gt; 123,n,Set(sip_ip=${SIPPEER(2001,codec[0])})</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -1794,8 +1797,8 @@ exten =&gt; s,n,Set(sip_ip=${SIPPEER(2001,codec[0])})</programlisting></para>
     SIP-Protokolls haben. Da manche Header (wie <code>Via</code>)
     mehrfach vorkommen können, kann man mit <code>Nummer</code>
     (1-basiert) angeben, welche Zeile man haben will.<programlisting>; den TO-Header abfragen:
-exten =&gt; s,1,Set(DN=${SIP_HEADER(TO):5})
-exten =&gt; s,2,Set(DN=${CUT(DN,@,1)})</programlisting></para>
+exten =&gt; 123,1,Set(DN=${SIP_HEADER(TO):5})
+exten =&gt; 123,2,Set(DN=${CUT(DN,@,1)})</programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -1816,7 +1819,7 @@ exten =&gt; s,2,Set(DN=${CUT(DN,@,1)})</programlisting></para>
     <para>Sortiert eine Liste von Schlüsseln und Werten anhand der Werte
     (als Fließkommazahlen) und gibt eine durch Komma getrennte Liste der
     Schlüssel zurück.<programlisting>; Liste sortieren:
-exten =&gt; s,1,Set(foo=${SORT(vier:4|haelfte:.5|hundert:100|pi:3.14|e:2.71828|minuseins:-1)})
+exten =&gt; 123,1,Set(foo=${SORT(vier:4|haelfte:.5|hundert:100|pi:3.14|e:2.71828|minuseins:-1)})
 ; foo ist jetzt "minuseins,haelfte,e,pi,vier,hundert"</programlisting></para>
   </section>
 
@@ -1908,7 +1911,7 @@ exten =&gt; s,1,Set(foo=${SORT(vier:4|haelfte:.5|hundert:100|pi:3.14|e:2.71828|m
           </listitem>
         </varlistentry>
       </variablelist><programlisting>; letzte Veränderung der Datei /etc/crontab abfragen:
-exten =&gt; s,1,Set(foo=${STAT(M,/etc/crontab)})</programlisting></para>
+exten =&gt; 123,1,Set(foo=${STAT(M,/etc/crontab)})</programlisting></para>
   </section>
 
   <section id="funktionen-strftime">
@@ -1929,7 +1932,7 @@ exten =&gt; s,1,Set(foo=${STAT(M,/etc/crontab)})</programlisting></para>
     <code>strftime()</code> (siehe <command>man strftime</command>), der
     Default ist <code>%c</code>, also die Lokale-abhängige Darstellung
     von Datum und Zeit.<programlisting>; Datum/Zeit im Format JJJJ-MM-TT HH:MM:SS
-exten =&gt; s,1,set(zeit=${STRFTIME(${EPOCH},Europe/Berlin,"%Y-%m-%d %H:%M:%S")})</programlisting></para>
+exten =&gt; 123,1,Set(zeit=${STRFTIME(${EPOCH},Europe/Berlin,"%Y-%m-%d %H:%M:%S")})</programlisting></para>
   </section>
 
   <section id="funktionen-strptime">
@@ -1945,9 +1948,10 @@ exten =&gt; s,1,set(zeit=${STRFTIME(${EPOCH},Europe/Berlin,"%Y-%m-%d %H:%M:%S")}
 
     <para>Wandelt einen formatierten Datums-/Zeit-String unter
     Berücksichtigung der Zeitzone in einen Unix-Timestamp
-    um.<programlisting>; Datum/Zeit im Format JJJJ-MM-TT HH:MM:SS
-exten =&gt; s,1,set(zeit=${STRFTIME(${EPOCH},Europe/Berlin,"%Y-%m-%d %H:%M:%S")})
-exten =&gt; s,1,Set(timestamp=${STRPTIME(${zeit}|Europe/Berlin|%Y-%m-%d %H:%M:%S)} </programlisting></para>
+    um.<programlisting>; Datum/Zeit im Format JJJJ-MM-TT HH:MM:SS in ${zeit} speichern:
+exten =&gt; 123,1,Set(zeit=${STRFTIME(${EPOCH},Europe/Berlin,"%Y-%m-%d %H:%M:%S")})
+; ${zeit} wieder in einen Timestamp umwandeln:
+exten =&gt; 123,n,Set(timestamp=${STRPTIME(${zeit}|Europe/Berlin|%Y-%m-%d %H:%M:%S)} </programlisting></para>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -2006,14 +2010,14 @@ exten =&gt; s,1,Set(timestamp=${STRPTIME(${zeit}|Europe/Berlin|%Y-%m-%d %H:%M:%S
           </listitem>
         </varlistentry>
       </variablelist><programlisting>; absoluten Timeout abfragen:
-exten =&gt; s,1,Set(foo=${TIMEOUT(absolute)})
+exten =&gt; 123,1,Set(foo=${TIMEOUT(absolute)})
 
 ; Anruf-Dauer auf maximal 60 Sekunden begrenzen:
 exten =&gt; 123,1,Set(TIMEOUT(absolute)=60)
-exten =&gt; 123,2,Dial(SIP/${EXTEN})
+exten =&gt; 123,n,Dial(SIP/${EXTEN})
 exten =&gt; T,1,Playback(tut-uns-leid) 
-exten =&gt; T,2,Playback(auf-wiederhoeren) 
-exten =&gt; T,3,Hangup()</programlisting></para>
+exten =&gt; T,n,Playback(auf-wiederhoeren) 
+exten =&gt; T,n,Hangup()</programlisting></para>
   </section>
 
   <section id="funktionen-txtcidname">
@@ -2026,7 +2030,7 @@ exten =&gt; T,3,Hangup()</programlisting></para>
     <synopsis>TXTCIDNAME(<replaceable>Nummer</replaceable>)</synopsis>
 
     <para>Schlägt den Namen des Anrufers mittels DNS (im TXT-Record)
-    nach.<programlisting>exten =&gt; s,1,Set(foo=${TXTCIDNAME(012345678)})</programlisting></para>
+    nach.<programlisting>exten =&gt; 123,1,Set(foo=${TXTCIDNAME(012345678)})</programlisting></para>
   </section>
 
   <section id="funktionen-uridecode">
@@ -2040,7 +2044,7 @@ exten =&gt; T,3,Hangup()</programlisting></para>
 
     <para>Dekodiert einen URI-kodierten String. Siehe
     <code>URIENCODE()</code>.<programlisting>; "www.beispiel.de/?seite=Hallo%20Welt" dekodieren:
-exten =&gt; s,1,Set(foo=${URIDECODE("Hallo%20Welt")})
+exten =&gt; 123,1,Set(foo=${URIDECODE("Hallo%20Welt")})
 ; ergibt "Hallo Welt"</programlisting></para>
   </section>
 
@@ -2058,7 +2062,7 @@ exten =&gt; s,1,Set(foo=${URIDECODE("Hallo%20Welt")})
     <code>%<replaceable>XX</replaceable></code> ersetzt werden, wobei
     <code>XX</code> der hexadezimale Wert des Zeichens
     ist.<programlisting>; "Hallo Welt" kodieren:
-exten =&gt; s,1,Set(foo=${URIENCODE("Hallo Welt")})
+exten =&gt; 123,1,Set(foo=${URIENCODE("Hallo Welt")})
 ; ergibt "Hallo%20Welt"</programlisting></para>
   </section>
 
