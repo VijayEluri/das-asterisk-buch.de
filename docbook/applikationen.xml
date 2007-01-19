@@ -4145,6 +4145,8 @@ exten =&gt; 123,n,FastAGI(agi://localhost/fastagi-test)
 exten =&gt; 124,1,Answer()
 exten =&gt; 124,n,FastAGI(agi://testbox:9000/test,123)</programlisting>
 
+
+
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4190,6 +4192,29 @@ exten =&gt; 123,n,Festival('Hallo Welt',#)</programlisting>
     (nur als Beispiel, Verzeichnisse beachten!):<programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,System(echo 'Hallo Welt' | text2wave -o sound.wav -otype wav -)
 exten =&gt; 123,n,Background(sound)</programlisting></para>
+
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Festival' =- 
+
+[Synopsis]
+Say text to the user
+
+[Description]
+  Festival(text[|intkeys]):  Connect to Festival, send the argument, get back the waveform,play it to the user, allowing any given interrupt keys to immediately terminate and return
+the value, or 'any' to allow any number back (useful in dialplan)
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -4244,6 +4269,9 @@ exten =&gt; 6001,1,Macro(link-umleitung,0261123456)</programlisting>Es kann
     dazu nötig sein, die Flash-Dauer (Einstellung <code>flash</code>) in der
     <filename>zapata.conf</filename> auf die Vorgabe Ihres Anbieters zu
     setzen, z.B. <code>flash=200</code>.</para>
+
+
+
   </section>
 
   <section id="applikationen-forkcdr">
@@ -4265,6 +4293,28 @@ exten =&gt; 6001,1,Macro(link-umleitung,0261123456)</programlisting>Es kann
 
     <programlisting>exten =&gt; 123,n,ForkCDR()</programlisting>
 
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'ForkCDR' =- 
+
+[Synopsis]
+Forks the Call Data Record
+
+[Description]
+  ForkCDR([options]):  Causes the Call Data Record to fork an additional
+cdr record starting from the time of the fork call
+If the option 'v' is passed all cdr variables will be passed along also.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4297,6 +4347,27 @@ exten =&gt; 6001,1,Macro(link-umleitung,0261123456)</programlisting>Es kann
 
     <programlisting>exten =&gt; 123,1,GetCPEID()</programlisting>
 
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'GetCPEID' =- 
+
+[Synopsis]
+Get ADSI CPE ID
+
+[Description]
+  GetCPEID: Obtains and displays ADSI CPE ID and other information in order
+to properly setup zapata.conf for on-hook operations.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4334,6 +4405,27 @@ exten =&gt; 123,n,Congestion()
 exten =&gt; 123,10(cid-setzen),Set(CALLERID(all)=Apfelmus &lt;012345678&gt;)
 exten =&gt; 123,n,Return()</programlisting>
 
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Gosub' =- 
+
+[Synopsis]
+Jump to label, saving return address
+
+[Description]
+Gosub([[context|]exten|]priority)
+  Jumps to the label specified, saving the return address.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4374,6 +4466,33 @@ exten =&gt; faxcid,n,Return()
 exten =&gt; _0.,1,GosubIf($[${CHANNEL:4:2} = 43]?faxcid,1:telcid,1)
 exten =&gt; _0.,n,Dial(${TRUNK}/${EXTEN:1},,T)</programlisting>
 
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'GosubIf' =- 
+
+[Synopsis]
+Conditionally jump to label, saving return address
+
+[Description]
+GosubIf(condition?labeliftrue[:labeliffalse])
+  If the condition is true, then jump to labeliftrue.  If false, jumps to
+labeliffalse, if specified.  In either case, a jump saves the return point
+in the dialplan, to be returned to with a Return.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>5c5
+&lt; Conditionally jump to label, saving return address
+---
+&gt; Jump to label, saving return address
+</screen></para>
+    </formalpara>
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4426,6 +4545,31 @@ exten =&gt; 124,3(wdh),SayNumber(${COUNT})
 exten =&gt; 124,4,Set(COUNT=$[ ${COUNT} + 1 ])
 exten =&gt; 124,5,Goto(wdh)</programlisting>
 
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Goto' =- 
+
+[Synopsis]
+Jump to a particular priority, extension, or context
+
+[Description]
+  Goto([[context|]extension|]priority): This application will cause the
+calling channel to continue dialplan execution at the specified priority.
+If no specific extension, or extension and context, are specified, then this
+application will jump to the specified priority of the current extension.
+  If the attempt to jump to another location in the dialplan is not successful,
+then the channel will continue at the next priority of the current extension.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4483,6 +4627,32 @@ exten =&gt; 124,5,Goto(wdh)</programlisting>
 exten =&gt; 123,10(ok),Playback(tt-monkeys)
 exten =&gt; 123,20(nein),Playback(tt-weasels)</programlisting>
 
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'GotoIf' =- 
+
+[Synopsis]
+Conditional goto
+
+[Description]
+  GotoIf(condition?[labeliftrue]:[labeliffalse]): This application will cause
+the calling channel to jump to the specified location in the dialplan based on
+the evaluation of the given condition. The channel will continue at
+'labeliftrue' if the condition is true, or 'labeliffalse' if the condition is
+false. The labels are specified with the same syntax as used within the Goto
+application.  If the label chosen by the condition is omitted, no jump is
+performed, but execution continues with the next priority in the dialplan.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4563,6 +4733,36 @@ exten =&gt; s,n,GotoIfTime(09:00-11:59,sat,*,*?incoming-geoeffnet,s,1)
 exten =&gt; s,n,Goto(incoming-geschlossen,s,1)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'GotoIfTime' =- 
+
+[Synopsis]
+Conditional Goto based on the current time
+
+[Description]
+  GotoIfTime(&lt;times&gt;|&lt;weekdays&gt;|&lt;mdays&gt;|&lt;months&gt;?[[context|]exten|]priority):
+This application will have the calling channel jump to the specified location
+in the dialplan if the current time matches the given time specification.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>9,10c9,12
+&lt; This application will have the calling channel jump to the specified location
+&lt; in the dialplan if the current time matches the given time specification.
+---
+&gt; This application will have the calling channel jump to the speicified location
+&gt; int the dialplan if the current time matches the given time specification.
+&gt; Further information on the time specification can be found in examples
+&gt; illustrating how to do time-based context includes in the dialplan.
+</screen></para>
+    </formalpara>
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-gotoif" />, <xref
@@ -4592,6 +4792,34 @@ exten =&gt; 123,n,Playback(vm-goodbye)
 exten =&gt; 123,n,Hangup()</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Hangup' =- 
+
+[Synopsis]
+Hang up the calling channel
+
+[Description]
+  Hangup([causecode]): This application will hang up the calling channel.
+If a causecode is given the channel's hangup cause will be set to the given
+value.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>8,10c8
+&lt;   Hangup([causecode]): This application will hang up the calling channel.
+&lt; If a causecode is given the channel's hangup cause will be set to the given
+&lt; value.
+---
+&gt;   Hangup(): This application will hang up the calling channel.
+</screen></para>
+    </formalpara>
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-answer" /></para>
@@ -4619,6 +4847,31 @@ exten =&gt; 123,n,Hangup()</programlisting>
     <simpara>Liefert 0 bei Erfolg oder -1 bei einem Fehler.</simpara>
 
     <programlisting>exten =&gt; 123,1,IAX2Provision(default)</programlisting>
+
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'IAX2Provision' =- 
+
+[Synopsis]
+Provision a calling IAXy with a given template
+
+[Description]
+  IAX2Provision([template]): Provisions the calling IAXy (assuming
+the calling entity is in fact an IAXy) with the given template or
+default if one is not specified.  Returns -1 on error or 0 on success.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
   </section>
 
   <section id="applikationen-importvar">
@@ -4646,6 +4899,31 @@ exten =&gt; 123,n,Hangup()</programlisting>
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,ImportVar(cid=Zap/1,CALLERID)</programlisting>
 
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'ImportVar' =- 
+
+[Synopsis]
+Import a variable from a channel into a new variable
+
+[Description]
+  ImportVar(newvar=channelname|variable): This application imports a variable
+from the specified channel (as opposed to the current one) and stores it as
+a variable in the current channel (the channel that is calling this
+application). Variables created by this application have the same inheritance
+properties as those created with the Set application. See the documentation for
+Set for more information.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4703,6 +4981,34 @@ exten =&gt; s,1,GotoIf(${DB_EXISTS(blacklist/${ARG1})}?black)
 exten =&gt; s,10(black),NoOp(Nummer ${ARG1} ist auf der Blacklist)
 exten =&gt; s,n,Busy(5)
 exten =&gt; s,n,Hangup()</programlisting></para>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'LookupBlacklist' =- 
+
+[Synopsis]
+Look up Caller*ID name/number from blacklist database
+
+[Description]
+  LookupBlacklist(options): Looks up the Caller*ID number on the active
+channel in the Asterisk database (family 'blacklist').  
+The option string may contain the following character:
+	'j' -- jump to n+101 priority if the number/name is found in the blacklist
+This application sets the following channel variable upon completion:
+	LOOKUPBLSTATUS		The status of the Blacklist lookup as a text string, one of
+		FOUND | NOTFOUND
+Example: exten =&gt; 1234,1,LookupBlacklist()
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-lookupcidname">
@@ -4736,6 +5042,32 @@ exten =&gt; s,n,Hangup()</programlisting></para>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,LookupCIDName()</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'LookupCIDName' =- 
+
+[Synopsis]
+Look up CallerID Name from local database
+
+[Description]
+  LookupCIDName: Looks up the Caller*ID number on the active
+channel in the Asterisk database (family 'cidname') and sets the
+Caller*ID name.  Does nothing if no Caller*ID was received on the
+channel.  This is useful if you do not subscribe to Caller*ID
+name delivery, or if you want to change the names on some incoming
+calls.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-macro">
@@ -4784,6 +5116,47 @@ exten =&gt; s,n,EndWhile()
 exten =&gt; 123,1,Macro(countdown,3)
 exten =&gt; 124,1,Macro(countdown,5)</programlisting>
 
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Macro' =- 
+
+[Synopsis]
+Macro Implementation
+
+[Description]
+  Macro(macroname|arg1|arg2...): Executes a macro using the context
+'macro-&lt;macroname&gt;', jumping to the 's' extension of that context and
+executing each step, then returning when the steps end. 
+The calling extension, context, and priority are stored in ${MACRO_EXTEN}, 
+${MACRO_CONTEXT} and ${MACRO_PRIORITY} respectively.  Arguments become
+${ARG1}, ${ARG2}, etc in the macro context.
+If you Goto out of the Macro context, the Macro will terminate and control
+will be returned at the location of the Goto.
+If ${MACRO_OFFSET} is set at termination, Macro will attempt to continue
+at priority MACRO_OFFSET + N + 1 if such a step exists, and N + 1 otherwise.
+WARNING: Because of the way Macro is implemented (it executes the priorities
+         contained within it via sub-engine), and a fixed per-thread
+         memory stack allowance, macros are limited to 7 levels
+         of nesting (macro calling macro calling macro, etc.); It
+         may be possible that stack-intensive applications in deeply nested macros
+         could cause asterisk to crash earlier than this limit.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>22,23c22,23
+&lt;          may be possible that stack-intensive applications in deeply nested macros
+&lt;          could cause asterisk to crash earlier than this limit.
+---
+&gt;          may be possible that stack-intensive applications in deeply nested
+&gt;          macros could cause asterisk to crash earlier than this limit.
+</screen></para>
+    </formalpara>
     <formalpara>
       <title>Siehe auch</title>
 
