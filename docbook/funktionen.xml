@@ -671,8 +671,8 @@ exten =&gt; s,2,Set(var=${CUT(var,,1-3&amp;5)})   ; var ist "1-2-3-5"</programli
 
     <para>Liest/setzt einen Wert in der AstDB. Beim Lesen wird der Wert
     zurückgegeben oder ein leerer String, wenn der Wert nicht existiert.
-    Dabei wird auch die Variable <code>DB_RESULT</code>
-    gesetzt.<programlisting>; Eintrag open/source setzen und abfragen:
+    Das Ergebnis ist in der Variable <code>DB_RESULT</code>
+    verfügbar.<programlisting>; Eintrag open/source setzen und abfragen:
 exten =&gt; s,1,Set(DB(open/source)=${ja})
 exten =&gt; s,2,Set(var=${DB(open/source)})
 exten =&gt; s,3,GotoIf($[[${DB(open/source)} = 1]?opensource:closedsource)</programlisting></para>
@@ -681,6 +681,35 @@ exten =&gt; s,3,GotoIf($[[${DB(open/source)} = 1]?opensource:closedsource)</prog
       <title>Siehe auch</title>
 
       <para><xref linkend="funktionen-db_exists" />, <xref
+      linkend="funktionen-db_delete" />, <xref
+      linkend="applikationen-dbdeltree" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-db_delete">
+    <title><code>DB_DELETE()</code><indexterm>
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>DB_DELETE()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>DB_DELETE(<replaceable>Familie</replaceable>/<replaceable>Schlüssel</replaceable>)</synopsis>
+
+    <para>Löscht einen Wert aus der AstDB. Dabei wird auch die Variable
+    <code>DB_RESULT</code> auf den entsprechenden Wert gesetzt, falls
+    vorhanden.</para>
+
+    <note>
+      <simpara>Vor Asterisk 1.4 muss statt der Funktion
+      <code>DB_DELETE()</code> die Applikation <code>DBdel()</code>
+      verwendet werden.</simpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-db" />, <xref
+      linkend="funktionen-db_exists" />, <xref
       linkend="applikationen-dbdel" />, <xref
       linkend="applikationen-dbdeltree" /></para>
     </formalpara>
@@ -714,7 +743,7 @@ exten =&gt; s,2,Hangup()</programlisting></para>
       <title>Siehe auch</title>
 
       <para><xref linkend="funktionen-db" />, <xref
-      linkend="applikationen-dbdel" />, <xref
+      linkend="funktionen-db_delete" />, <xref
       linkend="applikationen-dbdeltree" /></para>
     </formalpara>
   </section>
