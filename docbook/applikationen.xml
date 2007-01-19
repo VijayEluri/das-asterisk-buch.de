@@ -4145,8 +4145,6 @@ exten =&gt; 123,n,FastAGI(agi://localhost/fastagi-test)
 exten =&gt; 124,1,Answer()
 exten =&gt; 124,n,FastAGI(agi://testbox:9000/test,123)</programlisting>
 
-
-
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4192,7 +4190,6 @@ exten =&gt; 123,n,Festival('Hallo Welt',#)</programlisting>
     (nur als Beispiel, Verzeichnisse beachten!):<programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,System(echo 'Hallo Welt' | text2wave -o sound.wav -otype wav -)
 exten =&gt; 123,n,Background(sound)</programlisting></para>
-
 
     <formalpara>
       <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
@@ -4269,9 +4266,6 @@ exten =&gt; 6001,1,Macro(link-umleitung,0261123456)</programlisting>Es kann
     dazu nötig sein, die Flash-Dauer (Einstellung <code>flash</code>) in der
     <filename>zapata.conf</filename> auf die Vorgabe Ihres Anbieters zu
     setzen, z.B. <code>flash=200</code>.</para>
-
-
-
   </section>
 
   <section id="applikationen-forkcdr">
@@ -4315,6 +4309,7 @@ If the option 'v' is passed all cdr variables will be passed along also.
 
       <para><screen>- keine - </screen></para>
     </formalpara>
+
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4368,6 +4363,7 @@ to properly setup zapata.conf for on-hook operations.
 
       <para><screen>- keine - </screen></para>
     </formalpara>
+
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4426,6 +4422,7 @@ Gosub([[context|]exten|]priority)
 
       <para><screen>- keine - </screen></para>
     </formalpara>
+
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4493,6 +4490,7 @@ in the dialplan, to be returned to with a Return.
 &gt; Jump to label, saving return address
 </screen></para>
     </formalpara>
+
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4570,6 +4568,7 @@ then the channel will continue at the next priority of the current extension.
 
       <para><screen>- keine - </screen></para>
     </formalpara>
+
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4653,6 +4652,7 @@ performed, but execution continues with the next priority in the dialplan.
 
       <para><screen>- keine - </screen></para>
     </formalpara>
+
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4762,6 +4762,7 @@ in the dialplan if the current time matches the given time specification.
 &gt; illustrating how to do time-based context includes in the dialplan.
 </screen></para>
     </formalpara>
+
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4819,6 +4820,7 @@ value.
 &gt;   Hangup(): This application will hang up the calling channel.
 </screen></para>
     </formalpara>
+
     <formalpara>
       <title>Siehe auch</title>
 
@@ -4848,7 +4850,6 @@ value.
 
     <programlisting>exten =&gt; 123,1,IAX2Provision(default)</programlisting>
 
-
     <formalpara>
       <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
 
@@ -4871,7 +4872,6 @@ default if one is not specified.  Returns -1 on error or 0 on success.
 
       <para><screen>- keine - </screen></para>
     </formalpara>
-
   </section>
 
   <section id="applikationen-importvar">
@@ -4924,6 +4924,7 @@ Set for more information.
 
       <para><screen>- keine - </screen></para>
     </formalpara>
+
     <formalpara>
       <title>Siehe auch</title>
 
@@ -5157,6 +5158,7 @@ WARNING: Because of the way Macro is implemented (it executes the priorities
 &gt;          macros could cause asterisk to crash earlier than this limit.
 </screen></para>
     </formalpara>
+
     <formalpara>
       <title>Siehe auch</title>
 
@@ -5196,6 +5198,36 @@ exten =&gt; 123,n,MailboxExists(123@default)
 exten =&gt; 123,n,Goto(box-${VMBOXEXISTSSTATUS})
 exten =&gt; 123,10(box-SUCCESS),Voicemail(u123)
 exten =&gt; 123,20(box-FAILED),Playback(tut-uns-leid)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'MailboxExists' =- 
+
+[Synopsis]
+Check to see if Voicemail mailbox exists
+
+[Description]
+  MailboxExists(mailbox[@context][|options]): Check to see if the specified
+mailbox exists. If no voicemail context is specified, the 'default' context
+will be used.
+  This application will set the following channel variable upon completion:
+    VMBOXEXISTSSTATUS - This will contain the status of the execution of the
+                        MailboxExists application. Possible values include:
+                        SUCCESS | FAILED
+
+  Options:
+    j - Jump to priority n+101 if the mailbox is found.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -5733,6 +5765,27 @@ exten =&gt; 333,1,MeetMeCount(123,anzahl)</programlisting>
 exten =&gt; 123,1,Milliwatt()</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Milliwatt' =- 
+
+[Synopsis]
+Generate a Constant 1000Hz tone at 0dbm (mu-law)
+
+[Description]
+Milliwatt(): Generate a Constant 1000Hz tone at 0dbm (mu-law)
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-echo" /></para>
@@ -5812,6 +5865,46 @@ exten =&gt; 123,1,Milliwatt()</programlisting>
 
     <simpara>Beachten Sie auch die Hinweise bei
     <code>Monitor()</code>.</simpara>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'MixMonitor' =- 
+
+[Synopsis]
+Record a call and mix the audio during the recording
+
+[Description]
+  MixMonitor(&lt;file&gt;.&lt;ext&gt;[|&lt;options&gt;[|&lt;command&gt;]])
+
+Records the audio on the current channel to the specified file.
+If the filename is an absolute path, uses that path, otherwise
+creates the file in the configured monitoring directory from
+asterisk.conf.
+
+Valid options:
+ a      - Append to the file instead of overwriting it.
+ b      - Only save audio to the file while the channel is bridged.
+          Note: does not include conferences.
+ v(&lt;x&gt;) - Adjust the heard volume by a factor of &lt;x&gt; (range -4 to 4)
+ V(&lt;x&gt;) - Adjust the spoken volume by a factor of &lt;x&gt; (range -4 to 4)
+ W(&lt;x&gt;) - Adjust the both heard and spoken volumes by a factor of &lt;x&gt;
+         (range -4 to 4)
+
+&lt;command&gt; will be executed when the recording is over
+Any strings matching ^{X} will be unescaped to ${X} and 
+all variables will be evaluated at that time.
+The variable MIXMONITOR_FILENAME will contain the filename used to record.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -5952,6 +6045,49 @@ exten =&gt; 123,n,Hangup()</programlisting>
     </note>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Monitor' =- 
+
+[Synopsis]
+Monitor a channel
+
+[Description]
+Monitor([file_format[:urlbase]|[fname_base]|[options]]):
+Used to start monitoring a channel. The channel's input and output
+voice packets are logged to files until the channel hangs up or
+monitoring is stopped by the StopMonitor application.
+  file_format		optional, if not set, defaults to "wav"
+  fname_base		if set, changes the filename used to the one specified.
+  options:
+    m   - when the recording ends mix the two leg files into one and
+          delete the two leg files.  If the variable MONITOR_EXEC is set, the
+          application referenced in it will be executed instead of
+          soxmix and the raw leg files will NOT be deleted automatically.
+          soxmix or MONITOR_EXEC is handed 3 arguments, the two leg files
+          and a target mixed file name which is the same as the leg file names
+          only without the in/out designator.
+          If MONITOR_EXEC_ARGS is set, the contents will be passed on as
+          additional arguements to MONITOR_EXEC
+          Both MONITOR_EXEC and the Mix flag can be set from the
+          administrator interface
+
+    b   - Don't begin recording unless a call is bridged to another channel
+
+Returns -1 if monitor files can't be opened or if the channel is already
+monitored, otherwise 0.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-changemonitor" />, <xref
@@ -6001,6 +6137,28 @@ exten =&gt; 123,2,MP3Player(test.mp3)
 
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,2,MP3Player(http://server.tld/test.mp3)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'MP3Player' =- 
+
+[Synopsis]
+Play an MP3 file or stream
+
+[Description]
+  MP3Player(location) Executes mpg123 to play the given location,
+which typically would be a filename or a URL. User can exit by pressing
+any key on the dialpad, or by hanging up.
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-musiconhold">
@@ -6030,6 +6188,31 @@ exten =&gt; 123,2,MP3Player(http://server.tld/test.mp3)</programlisting>
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,2,Playback(tt-allbusy)
 exten =&gt; 123,3,MusicOnHold(default)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'MusicOnHold' =- 
+
+[Synopsis]
+Play Music On Hold indefinitely
+
+[Description]
+MusicOnHold(class): Plays hold music specified by class.  If omitted, the default
+music source for the channel will be used. Set the default 
+class with the SetMusicOnHold() application.
+Returns -1 on hangup.
+Never returns otherwise.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -6063,6 +6246,28 @@ exten =&gt; 123,3,MusicOnHold(default)</programlisting>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,2,NBScat()</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'NBScat' =- 
+
+[Synopsis]
+Play an NBS local stream
+
+[Description]
+  NBScat: Executes nbscat to listen to the local NBS stream.
+User can exit by pressing any key
+.
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-nocdr">
@@ -6086,6 +6291,28 @@ exten =&gt; 123,2,NBScat()</programlisting>
 exten =&gt; 5551212,1,Answer()
 exten =&gt; 5551212,2,NoCDR()
 exten =&gt; 5551212,3,Dial(Zap/4/012345678)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'NoCDR' =- 
+
+[Synopsis]
+Tell Asterisk to not maintain a CDR for the current call
+
+[Description]
+  NoCDR(): This application will tell Asterisk not to maintain a CDR for the
+current call.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -6118,7 +6345,36 @@ exten =&gt; 5551212,3,Dial(Zap/4/012345678)</programlisting>
     Anführungszeichen innerhalb der Klammern, werden diese auf der Konsole
     ausgegeben.</simpara>
 
+    <warning>
+      <para>Die Ausgabe von NoOp() auf dem CLI erfolgt erst ab dem
+      Verbose-Level 3. Dieser kann im CLI mit <command>set verbose 3</command>
+      gesetzt werden.</para>
+    </warning>
+
     <programlisting>exten =&gt; 123,1,NoOp(Caller-ID: ${CALLERID})</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'NoOp' =- 
+
+[Synopsis]
+Do Nothing
+
+[Description]
+  NoOp(): This applicatiion does nothing. However, it is useful for debugging
+purposes. Any text that is provided as arguments to this application can be
+viewed at the Asterisk CLI. This method can be used to see the evaluations of
+variables or functions without having any effect.
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-park">
