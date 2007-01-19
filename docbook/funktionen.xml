@@ -1466,7 +1466,7 @@ exten =&gt; s,1,Set(foo=${QUOTE(${var})})
         <secondary><code>RAND()</code></secondary>
       </indexterm></title>
 
-    <synopsis>RAND(min,max)</synopsis>
+    <synopsis>RAND(<replaceable>min</replaceable>,<replaceable>max</replaceable>)</synopsis>
 
     <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
 
@@ -1538,6 +1538,12 @@ exten =&gt; s,1,Set(foo=${REGEX("0${dollar}" ${str})})</programlisting></para>
     werden, um Variablen auf einen Wert zu setzen. (Nicht verwechseln
     mit der Applikation <code>Set()</code>!)<programlisting>; ${a}, ${b}, ${c}, und ${d} auf 8 setzen:
 Set(a=${SET(b=${SET(c=${SET(d=8)})})})</programlisting></para>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applikationen-set" /></para>
+    </formalpara>
   </section>
 
   <section id="funktionen-sha1">
@@ -1781,11 +1787,13 @@ exten =&gt; s,n,Set(sip_ip=${SIPPEER(2001,codec[0])})</programlisting></para>
         <secondary><code>SIP_HEADER()</code></secondary>
       </indexterm></title>
 
-    <synopsis>SIP_HEADER(<replaceable>Headername</replaceable>)</synopsis>
+    <synopsis>SIP_HEADER(<replaceable>Headername</replaceable>[,<replaceable>Nummer</replaceable>])</synopsis>
 
     <para>Gibt einen Header aus dem SIP-Protokoll zurück. Diese Funktion
     werden Sie nur benötigen, wenn Sie genaue Kenntnis des
-    SIP-Protokolls haben.<programlisting>; den TO-Header abfragen:
+    SIP-Protokolls haben. Da manche Header (wie <code>Via</code>)
+    mehrfach vorkommen können, kann man mit <code>Nummer</code>
+    (1-basiert) angeben, welche Zeile man haben will.<programlisting>; den TO-Header abfragen:
 exten =&gt; s,1,Set(DN=${SIP_HEADER(TO):5})
 exten =&gt; s,2,Set(DN=${CUT(DN,@,1)})</programlisting></para>
 
