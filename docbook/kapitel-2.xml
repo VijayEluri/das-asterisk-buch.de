@@ -624,6 +624,10 @@ host=dynamic
 ; die weiteren 49 Eintraege fuer die 
 ; Produktion sind hier ausgelassen.</programlisting>
 
+      <para>Wer die sip.conf komfortabler mit Templates gestalten will, findet
+      im <xref linkend="anhang-conf-templates" /> weitere Informationen
+      dazu.</para>
+
       <section id="apfelmus-callerid">
         <title>CallerID</title>
 
@@ -663,19 +667,19 @@ host=dynamic
         Im Prinzip enthält eine Konfigurationszeile einen variablen
         Nummernbereich, der mit Hilfe von ''Pattern Matching'' die definierte
         Regel auf eine Vielzahl von Nummern anwendet. So kann man anstatt der
-        folgenden 10 Zeilen: <programlisting>exten =&gt; 2000,1,Dial(SIP/2000,20,j)
-exten =&gt; 2001,1,Dial(SIP/2000,20,j)
-exten =&gt; 2002,1,Dial(SIP/2000,20,j) 
-exten =&gt; 2003,1,Dial(SIP/2000,20,j)
-exten =&gt; 2004,1,Dial(SIP/2000,20,j)
-exten =&gt; 2005,1,Dial(SIP/2000,20,j)
-exten =&gt; 2006,1,Dial(SIP/2000,20,j)
-exten =&gt; 2007,1,Dial(SIP/2000,20,j)
-exten =&gt; 2008,1,Dial(SIP/2000,20,j)
-exten =&gt; 2009,1,Dial(SIP/2000,20,j)</programlisting>auch nur eine Zeile
+        folgenden 10 Zeilen: <programlisting>exten =&gt; 2000,1,Dial(SIP/2000,20)
+exten =&gt; 2001,1,Dial(SIP/2000,20)
+exten =&gt; 2002,1,Dial(SIP/2000,20) 
+exten =&gt; 2003,1,Dial(SIP/2000,20)
+exten =&gt; 2004,1,Dial(SIP/2000,20)
+exten =&gt; 2005,1,Dial(SIP/2000,20)
+exten =&gt; 2006,1,Dial(SIP/2000,20)
+exten =&gt; 2007,1,Dial(SIP/2000,20)
+exten =&gt; 2008,1,Dial(SIP/2000,20)
+exten =&gt; 2009,1,Dial(SIP/2000,20)</programlisting>auch nur eine Zeile
         schreiben:</para>
 
-        <programlisting>exten =&gt; _200X,1,Dial(SIP/2000,20,j)</programlisting>
+        <programlisting>exten =&gt; _200X,1,Dial(SIP/2000,20)</programlisting>
 
         <para>Das <code>X</code> steht dann für alle Zahlen von 0 bis
         9.<footnote>
@@ -923,9 +927,8 @@ include =&gt; interne-gespraeche
 include =&gt; voicemailsystem-komfort
 
 [interne-gespraeche]
-exten =&gt; _[1-5]XX,1,Dial(SIP/${EXTEN},60,j)
-exten =&gt; _[1-5]XX,2,VoiceMail(${EXTEN},u)
-exten =&gt; _[1-5]XX,102,VoiceMail(${EXTEN},b)
+exten =&gt; _[1-5]XX,1,Dial(SIP/${EXTEN},60)
+exten =&gt; _[1-5]XX,2,VoiceMail(${EXTEN})
 
 [voicemailsystem-komfort]
 ;
@@ -957,27 +960,23 @@ exten =&gt; 801,1,VoicemailMain()</programlisting>Der Context
           werden. Um dies zu vermeiden, müsste man korrekterweise den Context
           <code>[interne-gespraeche]</code> wie folgt
           gestalten:<programlisting>[interne-gespraeche]
-exten =&gt; _1[5-6]X,1,Dial(SIP/${EXTEN},60,j)
-exten =&gt; _1[5-6]X,2,VoiceMail(${EXTEN},u)
-exten =&gt; _1[5-6]X,102,VoiceMail(${EXTEN},b)
+exten =&gt; _1[5-6]X,1,Dial(SIP/${EXTEN},60)
+exten =&gt; _1[5-6]X,2,VoiceMail(${EXTEN})
 
-exten =&gt; _2[0-6]X,1,Dial(SIP/${EXTEN},60,j)
-exten =&gt; _2[0-6]X,2,VoiceMail(${EXTEN},u)
-exten =&gt; _2[0-6]X,102,VoiceMail(${EXTEN},b)
+exten =&gt; _2[0-6]X,1,Dial(SIP/${EXTEN},60)
+exten =&gt; _2[0-6]X,2,VoiceMail(${EXTEN})
 
-exten =&gt; _[358]XX,1,Dial(SIP/${EXTEN},60,j)
-exten =&gt; _[358]XX,2,VoiceMail(${EXTEN},u)
-exten =&gt; _[358]XX,102,VoiceMail(${EXTEN},b)
+exten =&gt; _[358]XX,1,Dial(SIP/${EXTEN},60)
+exten =&gt; _[358]XX,2,VoiceMail(${EXTEN})
 
-exten =&gt; _4[0-4]XX,1,Dial(SIP/${EXTEN},60,j)
-exten =&gt; _4[0-4]XX,2,VoiceMail(${EXTEN},u)
-exten =&gt; _4[0-4]XX,102,VoiceMail(${EXTEN},b)</programlisting>Wir verzichten
-          bei der Apfelmus GmbH der Einfachheit halber auf diese
-          ausführlichere Variante und benutzen nur den folgenden
+exten =&gt; _4[0-4]XX,1,Dial(SIP/${EXTEN},60)
+exten =&gt; _4[0-4]XX,2,VoiceMail(${EXTEN})
+</programlisting>Wir verzichten bei der Apfelmus GmbH der Einfachheit halber
+          auf diese ausführlichere Variante und benutzen nur den folgenden
           Context:<programlisting>[interne-gespraeche]
-exten =&gt; _[1-5]XX,1,Dial(SIP/${EXTEN},60,j)
-exten =&gt; _[1-5]XX,2,VoiceMail(${EXTEN},u)
-exten =&gt; _[1-5]XX,102,VoiceMail(${EXTEN},b)</programlisting></para>
+exten =&gt; _[1-5]XX,1,Dial(SIP/${EXTEN},60)
+exten =&gt; _[1-5]XX,2,VoiceMail(${EXTEN})
+</programlisting></para>
         </section>
       </section>
 
