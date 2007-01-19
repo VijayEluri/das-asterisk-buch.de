@@ -14,52 +14,56 @@
   <section id="isdn-einleitung">
     <title>Einleitung</title>
 
-    <para>ISDN ist in Deutschland die vorherrschende Technik, um Sprachdienste
-    zur Verfügung zu stellen. Nur noch in wenigen Privathaushalten gibt es
-    analoge Telefonanschlüsse. Im geschäftlichen Bereich ist ISDN der de-facto
-    Standard. Die Verfügbarkeit von schnellen und günstigen
-    Internetanschlüssen und damit die Nutzung von Sprachdiensten via
-    TCP/IP-Netzwerken (VoIP) wird ISDN wahrscheinlich mittel- bis langfristig
-    ablösen (mit diesem Buch sägen wir unmittelbar an diesem Ast), aber bis
-    dahin ist noch etwas Zeit.</para>
+    <para>ISDN ist in Deutschland die vorherrschende Technik, um
+    Sprachdienste zur Verfügung zu stellen. Nur noch in wenigen
+    Privathaushalten gibt es analoge Telefonanschlüsse. Im
+    geschäftlichen Bereich ist ISDN der de-facto Standard. Die
+    Verfügbarkeit von schnellen und günstigen Internetanschlüssen und
+    damit die Nutzung von Sprachdiensten via TCP/IP-Netzwerken (VoIP)
+    wird ISDN wahrscheinlich mittel- bis langfristig ablösen (mit diesem
+    Buch sägen wir unmittelbar an diesem Ast), aber bis dahin ist noch
+    etwas Zeit.</para>
 
-    <para>Erwarten Sie an dieser Stelle keine grundlegende Einführung in das
-    Thema ISDN und in die nähere Funktionsweise. Wer sich mit ISDN-Grundlagen
-    beschäftigen will, sei auf <xref linkend="anhang-isdn" /> verwiesen. Das
-    Thema ISDN wird in diesem Kapitel nur soweit besprochen, wie es für die
-    Benutzung mit Asterisk interessant ist.</para>
+    <para>Erwarten Sie an dieser Stelle keine grundlegende Einführung in
+    das Thema ISDN und in die nähere Funktionsweise. ISDN wird in diesem
+    Kapitel nur soweit besprochen, wie es für die Benutzung mit Asterisk
+    interessant ist.</para>
   </section>
 
   <section id="minimalgrundlagen-isdn">
     <title>Minimalgrundlagen ISDN</title>
 
-    <para>Ein ISDN-Anschluss stellt so genannte D- und B-Kanäle zur Verfügung.
-    Ein einzelner B-Kanal ist (vereinfach gesagt) vergleichbar mit einer
-    analogen Telefonleitung: Es kann genau ein Gespräch darüber geführt
-    werden. Im Gegensatz zur analogen Telefonie, können aber pro Leitungspaar
-    zwei B-Kanäle gleichzeitig übertragen werden (also zwei Gespräche). So
-    werden bestehende Resourcen besser genutzt. Außerdem werden die Daten
-    digital und nicht analog übertragen. Dadurch ist die subjektive
-    Sprachqualität viel besser.</para>
+    <para>Ein ISDN-Anschluss stellt so genannte D- und B-Kanäle zur
+    Verfügung. Ein einzelner B-Kanal ist (vereinfach gesagt)
+    vergleichbar mit einer analogen Telefonleitung: Es kann genau ein
+    Gespräch darüber geführt werden. Im Gegensatz zur analogen
+    Telefonie, können aber pro Leitungspaar zwei B-Kanäle gleichzeitig
+    übertragen werden (also zwei Gespräche). So werden bestehende
+    Resourcen besser genutzt. Außerdem werden die Daten digital und
+    nicht analog übertragen. Dadurch ist die subjektive Sprachqualität
+    viel besser.</para>
 
     <para>Unterschiede D- und B-Kanal:</para>
 
     <itemizedlist>
       <listitem>
         <para>Der B-Kanal ist in unserem Fall ein Sprachkanal. Die
-        Datenübertragungsmöglichkeit (64 kbps) ist für uns ohne Belang.</para>
+        Datenübertragungsmöglichkeit (64 kbps) ist für uns ohne
+        Belang.</para>
       </listitem>
 
       <listitem>
-        <para>Der D-Kanal ist ein reiner Datenkanal (16 kbps). Allerdings kann
-        darauf vom Endbenutzer nicht direkt zugriffen werden.<footnote>
-            <para>In den 90er Jahren gab es tatsächlich ein paar Projekte die
-            sich mit der prinzipiel kostenlosen Datenübertragung über den
-            D-Kanal beschäftigt haben. Allerdings hat sich das durch günstige
-            Internetverbindungen ad absurdum geführt.</para>
+        <para>Der D-Kanal ist ein reiner Datenkanal (16 kbps).
+        Allerdings kann darauf vom Endbenutzer nicht direkt zugriffen
+        werden.<footnote>
+            <para>In den 90er Jahren gab es tatsächlich ein paar
+            Projekte die sich mit der prinzipiel kostenlosen
+            Datenübertragung über den D-Kanal beschäftigt haben.
+            Allerdings hat sich das durch günstige Internetverbindungen
+            ad absurdum geführt.</para>
           </footnote> Vereinfacht gesagt benutzen ISDN-Telefone,
-        ISDN-Telefonanlagen oder auch ISDN-Karten den D-Kanal, um sich mit der
-        Vermittlungsstelle zu unterhalten.</para>
+        ISDN-Telefonanlagen oder auch ISDN-Karten den D-Kanal, um sich
+        mit der Vermittlungsstelle zu unterhalten.</para>
       </listitem>
     </itemizedlist>
 
@@ -69,28 +73,31 @@
     <section id="isdn-basis-anschluss">
       <title>ISDN Basis-Anschluss</title>
 
-      <para>Der normale Basis-Anschluss wird im Telefonie-Umfeld häufig als
-      BRI für "Basic Rate ISDN" genannt. Dieser Anschluss genügt für fast alle
-      privaten Haushalte und auch für die meisten mittelständigen Betriebe. Er
-      bietet 2 B-Kanäle und einen D-Kanal. Um es aber etwas komplizierter zu
-      machen, gibt es diesen Anschluss in zwei verschiedenen Varianten:</para>
+      <para>Der normale Basis-Anschluss wird im Telefonie-Umfeld häufig
+      als BRI für "Basic Rate ISDN" genannt. Dieser Anschluss genügt für
+      fast alle privaten Haushalte und auch für die meisten
+      mittelständigen Betriebe. Er bietet 2 B-Kanäle und einen D-Kanal.
+      Um es aber etwas komplizierter zu machen, gibt es diesen Anschluss
+      in zwei verschiedenen Varianten:</para>
 
       <itemizedlist>
         <listitem>
           <para>Mehrgeräte-Anschluss</para>
 
-          <para>An ihm können bis zu 8 ISDN-Endgeräte angeschlossen werden,
-          die dann über eigene MSNs (Telefonnummern) anwählbar sind. Mehrere
-          Endgeräte können auf die gleichen MSDN konfiguriert sein.</para>
+          <para>An ihm können bis zu 8 ISDN-Endgeräte angeschlossen
+          werden, die dann über eigene MSNs (Telefonnummern) anwählbar
+          sind. Mehrere Endgeräte können auf die gleichen MSDN
+          konfiguriert sein.</para>
         </listitem>
 
         <listitem>
           <para>Anlagen-Anschluss</para>
 
-          <para>An diesen kann nur ein ISDN-Endgerät angeschlossen werden (bei
-          uns eine ISDN-Karte die im Asterisk-Server läuft). Wer mehr als zwei
-          B-Kanäle benötigt, kann mehrere Anlagen-Anschlüsse mit der gleichen
-          Rufnummer auf eine oder mehrere ISDN-Karten anschliessen.</para>
+          <para>An diesen kann nur ein ISDN-Endgerät angeschlossen
+          werden (bei uns eine ISDN-Karte die im Asterisk-Server läuft).
+          Wer mehr als zwei B-Kanäle benötigt, kann mehrere
+          Anlagen-Anschlüsse mit der gleichen Rufnummer auf eine oder
+          mehrere ISDN-Karten anschliessen.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -100,48 +107,52 @@
 
       <para>Der Multiplex-Anschluss kann als großer Bruder des
       Anlagenanschlusses bezeichnet werden. Auch er aktzeptiert nur ein
-      ISDN-Endgerät (dies ist auch hier fast immer einer Telefonanlage) und
-      bietet in Europa 30 B-Kanäle und einen D-Kanal (diesmal allerdings mit
-      64 kbps). Er wird entweder S2M oder E1 genannt. In den USA wird er
-      übrigens T1 genannt und bietet nur 24 B-Kanäle (plus einen
-      D-Kanal).</para>
+      ISDN-Endgerät (dies ist auch hier fast immer einer Telefonanlage)
+      und bietet in Europa 30 B-Kanäle und einen D-Kanal (diesmal
+      allerdings mit 64 kbps). Er wird entweder S2M oder E1 genannt. In
+      den USA wird er übrigens T1 genannt und bietet nur 24 B-Kanäle
+      (plus einen D-Kanal).</para>
 
-      <para>Im Telefonie-Umfeld wir über Mulitplex auch häufig als PRI für
-      "Primary Rate ISDN" gesprochen.</para>
+      <para>Im Telefonie-Umfeld wir über Mulitplex auch häufig als PRI
+      für "Primary Rate ISDN" gesprochen.</para>
     </section>
   </section>
 
   <section id="welche-isdn-karte">
     <title>Welche ISDN-Karte soll ich nehmen?</title>
 
-    <para>Der Betrieb einer oder mehrerer ISDN-Karten in einem Asterisk-Server
-    ist sehr einfach. Allerdings ist die Installation und Konfiguration nicht
-    immer ganz trivial. Es gibt verschiedene Möglichkeiten ISDN-Karten mit
-    Asterisk "zum Laufen" zu bringen. Auf die einzelnen Varianten gehen wir in
-    diesem Kapitel in jeweils eigenen Bereichen ein.<important>
+    <para>Der Betrieb einer oder mehrerer ISDN-Karten in einem
+    Asterisk-Server ist sehr einfach. Allerdings ist die Installation
+    und Konfiguration nicht immer ganz trivial. Es gibt verschiedene
+    Möglichkeiten ISDN-Karten mit Asterisk "zum Laufen" zu bringen. Auf
+    die einzelnen Varianten gehen wir in diesem Kapitel in jeweils
+    eigenen Bereichen ein.<important>
         <para>Alle in diesem Kapitel beschriebenen Installationsmethoden
-        werden anhand eines Debian Linux Systems beschrieben. Die jeweilige
-        Installation kann sich auf einem anderen Linux System ganz anders
-        darstellen und auf so manchem BSD-System gar nicht funktionieren. Wir
-        empfehlen Ihnen dringend die hier beschriebenen Wege 1:1 zu übernehmen
-        und deshalb auch ein Debian Linux einzusetzen.</para>
+        werden anhand eines Debian Linux Systems beschrieben. Die
+        jeweilige Installation kann sich auf einem anderen Linux System
+        ganz anders darstellen und auf so manchem BSD-System gar nicht
+        funktionieren. Wir empfehlen Ihnen dringend die hier
+        beschriebenen Wege 1:1 zu übernehmen und deshalb auch ein Debian
+        Linux einzusetzen.</para>
       </important></para>
 
-    <para>Die Frage, welche ISDN-Karte zu empfehlen ist, ist schwer und in
-    einem gedruckten Buch eigentlich gar nicht zu beantworten. Die folgenden
-    Faktoren würden eine entsprechende Empfehlung beeinflussen:</para>
+    <para>Die Frage, welche ISDN-Karte zu empfehlen ist, ist schwer und
+    in einem gedruckten Buch eigentlich gar nicht zu beantworten. Die
+    folgenden Faktoren würden eine entsprechende Empfehlung
+    beeinflussen:</para>
 
     <itemizedlist>
       <listitem>
-        <para>Zur Drucklegung dieses Buches sticht kein einzelnes Produkt aus
-        der Fülle der Anbieter hervor - die ISDN-Karten sind in Funktionsmfang
-        und -güte zueinander weitgehend vergleichbar.</para>
+        <para>Zur Drucklegung dieses Buches sticht kein einzelnes
+        Produkt aus der Fülle der Anbieter hervor - die ISDN-Karten sind
+        in Funktionsmfang und -güte zueinander weitgehend
+        vergleichbar.</para>
       </listitem>
 
       <listitem>
         <para>Die Software, speziell die Treiber, werden kontinuierlich
-        verbessert und was heute zutrifft, kann für einen Leser in einem Jahr
-        vielleicht nicht mehr nachvollziehbar sein.</para>
+        verbessert und was heute zutrifft, kann für einen Leser in einem
+        Jahr vielleicht nicht mehr nachvollziehbar sein.</para>
       </listitem>
 
       <listitem>
@@ -150,26 +161,26 @@
       </listitem>
 
       <listitem>
-        <para>Je nach Einsatzzweck ergeben sich unterschiedliche Anforderungen
-        an die Produkte. Hier trennt eine Unterscheidung in gewerbliche und
-        private Nutzer die Produkte in zwei Lager. Bei einer privaten Nutzung
-        kann eine Anlage auch mal durch einen fehlerhaften Treiber für ein
-        paar Stunden ausfallen. Dies ist im gewerblichen Einsatz völlig
-        undenkbar.</para>
+        <para>Je nach Einsatzzweck ergeben sich unterschiedliche
+        Anforderungen an die Produkte. Hier trennt eine Unterscheidung
+        in gewerbliche und private Nutzer die Produkte in zwei Lager.
+        Bei einer privaten Nutzung kann eine Anlage auch mal durch einen
+        fehlerhaften Treiber für ein paar Stunden ausfallen. Dies ist im
+        gewerblichen Einsatz völlig undenkbar.</para>
       </listitem>
     </itemizedlist>
 
-    <para>Das größte Problem ist aber die Problematik der Schleichwerbung.
-    Natürlich sollten in einem Buch über Asterisk alle gängigen Variante
-    wertfrei beschrieben werden und deshalb kann man nicht eine bestimmte
-    Karte vorziehen.</para>
+    <para>Das größte Problem ist aber die Problematik der
+    Schleichwerbung. Natürlich sollten in einem Buch über Asterisk alle
+    gängigen Variante wertfrei beschrieben werden und deshalb kann man
+    nicht eine bestimmte Karte vorziehen.</para>
   </section>
 
   <section id="isdn-installation-und-konfiguration">
     <title>Installation und Konfiguration</title>
 
-    <para>In diesem Teil des Buches wird die Installation und Konfiguration
-    verschiedener ISDN-Karten beschrieben.</para>
+    <para>In diesem Teil des Buches wird die Installation und
+    Konfiguration verschiedener ISDN-Karten beschrieben.</para>
 
     <xi:include href="isdn-1.2-bristuff.xml"
                 xmlns:xi="http://www.w3.org/2001/XInclude" />
