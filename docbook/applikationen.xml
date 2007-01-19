@@ -6536,6 +6536,15 @@ variables or functions without having any effect.
 
     <synopsis>Park(<replaceable>Extension</replaceable>)</synopsis>
 
+<<<<<<< .mine
+    <simpara>Parkt den aktuellen Anruf (typischerweise in Kombination mit
+    einer beaufsichtigten Übertragung, um die <quote>Parkplatznummer</quote>
+    zu bestimmen). Diese Anwendung ist intern stets registriert und muss nicht
+    explizit im Wählplan eingefügt werden, jedoch müssen Sie den
+    <code>parkedcalls</code>-Kontext mit der Zeile <code>include =&gt;
+    parkedcalls</code> einbinden. Die Parkkonfiguration wird in
+    <filename>features.conf</filename> vorgenommen.</simpara>
+=======
     <simpara>Parkt den aktuellen Anruf (typischerweise in Kombination
     mit einer beaufsichtigten Übertragung, um die
     <quote>Parkplatznummer</quote> zu bestimmen). Diese Anwendung ist
@@ -6543,11 +6552,51 @@ variables or functions without having any effect.
     eingefügt werden, jedoch sollten Sie den
     <code>parkedcalls</code>-Kontext einbinden. Die Parkkonfiguration
     wird in <filename>features.conf</filename> vorgenommen.</simpara>
+>>>>>>> .r60
 
     <programlisting>; den Anruf auf 701 parken:
 include =&gt; parkedcalls
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,2,Park(701)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Park' =- 
+
+[Synopsis]
+Park yourself
+
+[Description]
+Park():Used to park yourself (typically in combination with a supervised
+transfer to know the parking space). This application is always
+registered internally and does not need to be explicitly added
+into the dialplan, although you should include the 'parkedcalls'
+context (or the context specified in features.conf).
+
+If you set the PARKINGEXTEN variable to an extension in your
+parking context, park() will park the call on that extension, unless
+it already exists. In that case, execution will continue at next
+priority.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>12,17c12
+&lt; context (or the context specified in features.conf).
+&lt; 
+&lt; If you set the PARKINGEXTEN variable to an extension in your
+&lt; parking context, park() will park the call on that extension, unless
+&lt; it already exists. In that case, execution will continue at next
+&lt; priority.
+---
+&gt; context.
+- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -6594,6 +6643,65 @@ exten =&gt; 123,4,Playback(vm-goodbye)
 exten =&gt; 123,5,Hangup()</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'ParkAndAnnounce' =- 
+
+[Synopsis]
+Park and Announce
+
+[Description]
+  ParkAndAnnounce(announce:template|timeout|dial|[return_context]):
+Park a call into the parkinglot and announce the call to another channel.
+
+announce template: Colon-separated list of files to announce.  The word PARKED
+                   will be replaced by a say_digits of the extension in which
+                   the call is parked.
+timeout:           Time in seconds before the call returns into the return
+                   context.
+dial:              The app_dial style resource to call to make the
+                   announcement.  Console/dsp calls the console.
+return_context:    The goto-style label to jump the call back into after
+                   timeout.  Default &lt;priority+1&gt;.
+
+The variable ${PARKEDAT} will contain the parking extension into which the
+call was placed.  Use with the Local channel to allow the dialplan to make
+use of this information.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>9,23c9,14
+&lt; Park a call into the parkinglot and announce the call to another channel.
+&lt; 
+&lt; announce template: Colon-separated list of files to announce.  The word PARKED
+&lt;                    will be replaced by a say_digits of the extension in which
+&lt;                    the call is parked.
+&lt; timeout:           Time in seconds before the call returns into the return
+&lt;                    context.
+&lt; dial:              The app_dial style resource to call to make the
+&lt;                    announcement.  Console/dsp calls the console.
+&lt; return_context:    The goto-style label to jump the call back into after
+&lt;                    timeout.  Default &lt;priority+1&gt;.
+&lt; 
+&lt; The variable ${PARKEDAT} will contain the parking extension into which the
+&lt; call was placed.  Use with the Local channel to allow the dialplan to make
+&lt; use of this information.
+---
+&gt; Park a call into the parkinglot and announce the call over the console.
+&gt; announce template: colon separated list of files to announce, the word PARKED
+&gt;                    will be replaced by a say_digits of the ext the call is parked in
+&gt; timeout: time in seconds before the call returns into the return context.
+&gt; dial: The app_dial style resource to call to make the announcement. Console/dsp calls the console.
+&gt; return_context: the goto style label to jump the call back into after timeout. default=prio+1
+</screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-park" />, <xref
@@ -6623,6 +6731,30 @@ exten =&gt; 123,5,Hangup()</programlisting>
     <programlisting>; den Anruf auf "Parkplatz" 701 wiederaufnehmen:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,2,ParkedCall(701)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'ParkedCall' =- 
+
+[Synopsis]
+Answer a parked call
+
+[Description]
+ParkedCall(exten):Used to connect to a parked call.  This application is always
+registered internally and does not need to be explicitly added
+into the dialplan, although you should include the 'parkedcalls'
+context.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -6767,6 +6899,44 @@ exten =&gt; *12ZXXX,1,UnpauseQueueMember(,Agent/${EXTEN:3})</programlisting>
     beschrieben.</simpara>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'PauseQueueMember' =- 
+
+[Synopsis]
+Pauses a queue member
+
+[Description]
+   PauseQueueMember([queuename]|interface[|options]):
+Pauses (blocks calls for) a queue member.
+The given interface will be paused in the given queue.  This prevents
+any calls from being sent from the queue to the interface until it is
+unpaused with UnpauseQueueMember or the manager interface.  If no
+queuename is given, the interface is paused in every queue it is a
+member of.  If the interface is not in the named queue, or if no queue
+is given and the interface is not in any queue, it will jump to
+priority n+101, if it exists and the appropriate options are set.
+The application will fail if the interface is not found and no extension
+to jump to exists.
+The option string may contain zero or more of the following characters:
+       'j' -- jump to +101 priority when appropriate.
+  This application sets the following channel variable upon completion:
+     PQMSTATUS      The status of the attempt to pause a queue member as a
+                     text string, one of
+           PAUSED | NOTFOUND
+Example: PauseQueueMember(|SIP/3000)
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-system" />, <xref
@@ -6811,6 +6981,39 @@ exten =&gt; *12ZXXX,1,UnpauseQueueMember(,Agent/${EXTEN:3})</programlisting>
 exten =&gt; 123,2,Playback(tt-weasels)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Playback' =- 
+
+[Synopsis]
+Play a file
+
+[Description]
+  Playback(filename[&amp;filename2...][|option]):  Plays back given filenames (do not put
+extension). Options may also be included following a pipe symbol. The 'skip'
+option causes the playback of the message to be skipped if the channel
+is not in the 'up' state (i.e. it hasn't been  answered  yet). If 'skip' is 
+specified, the application will return immediately should the channel not be
+off hook.  Otherwise, unless 'noanswer' is specified, the channel will
+be answered before the sound is played. Not all channels support playing
+messages while still on hook. If 'j' is specified, the application
+will jump to priority n+101 if present when a file specified to be played
+does not exist.
+This application sets the following channel variable upon completion:
+ PLAYBACKSTATUS    The status of the playback attempt as a text string, one of
+               SUCCESS | FAILED
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-background" /></para>
@@ -6849,6 +7052,33 @@ exten =&gt; 123,n,Playtones(congestion)
 exten =&gt; 123,n,Wait(2)
 exten =&gt; 123,n,StopPlaytones()
 exten =&gt; 123,n,Goto(1)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'PlayTones' =- 
+
+[Synopsis]
+Play a tone list
+
+[Description]
+PlayTones(arg): Plays a tone list. Execution will continue with the next step immediately,
+while the tones continue to play.
+Arg is either the tone name defined in the indications.conf configuration file, or a directly
+specified list of frequencies and durations.
+See the sample indications.conf for a description of the specification of a tonelist.
+
+Use the StopPlayTones application to stop the tones playing. 
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -6918,6 +7148,44 @@ exten =&gt; 123,103,Playback(tut-uns-leid)
 exten =&gt; 123,104,Playback(vm-goodbye)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'PrivacyManager' =- 
+
+[Synopsis]
+Require phone number to be entered, if no CallerID sent
+
+[Description]
+  PrivacyManager([maxretries[|minlength[|options]]]): If no Caller*ID 
+is sent, PrivacyManager answers the channel and asks the caller to
+enter their phone number. The caller is given 3 attempts to do so.
+The application does nothing if Caller*ID was received on the channel.
+  Configuration file privacy.conf contains two variables:
+   maxretries  default 3  -maximum number of attempts the caller is allowed 
+               to input a callerid.
+   minlength   default 10 -minimum allowable digits in the input callerid number.
+If you don't want to use the config file and have an i/o operation with
+every call, you can also specify maxretries and minlength as application
+parameters. Doing so supercedes any values set in privacy.conf.
+The option string may contain the following character: 
+  'j' -- jump to n+101 priority after &lt;maxretries&gt; failed attempts to collect
+         the minlength number of digits.
+The application sets the following channel variable upon completion: 
+PRIVACYMGRSTATUS  The status of the privacy manager's attempt to collect 
+                  a phone number from the user. A text string that is either:
+          SUCCESS | FAILED 
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-zapateller" /></para>
@@ -6944,6 +7212,28 @@ exten =&gt; 123,104,Playback(vm-goodbye)</programlisting>
 
     <programlisting>; Fortschritt anzeigen:
 exten =&gt; 123,1,Progress()</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Progress' =- 
+
+[Synopsis]
+Indicate progress
+
+[Description]
+  Progress(): This application will request that in-band progress information
+be provided to the calling channel.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -7065,6 +7355,67 @@ exten =&gt; 123,1,Progress()</programlisting>
     <programlisting>; den Anrufer zur "supportschlange" hinzufügen:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Queue(supportschlange,t)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Queue' =- 
+
+[Synopsis]
+Queue a call for a call queue
+
+[Description]
+  Queue(queuename[|options[|URL][|announceoverride][|timeout][|AGI]):
+Queues an incoming call in a particular call queue as defined in queues.conf.
+This application will return to the dialplan if the queue does not exist, or
+any of the join options cause the caller to not enter the queue.
+The option string may contain zero or more of the following characters:
+      'd' -- data-quality (modem) call (minimum delay).
+      'h' -- allow callee to hang up by hitting *.
+      'H' -- allow caller to hang up by hitting *.
+      'n' -- no retries on the timeout; will exit this application and 
+             go to the next step.
+      'i' -- ignore call forward requests from queue members and do nothing
+             when they are requested.
+      'r' -- ring instead of playing MOH
+      't' -- allow the called user transfer the calling user
+      'T' -- to allow the calling user to transfer the call.
+      'w' -- allow the called user to write the conversation to disk via Monitor
+      'W' -- allow the calling user to write the conversation to disk via Monitor
+  In addition to transferring the call, a call may be parked and then picked
+up by another user.
+  The optional URL will be sent to the called party if the channel supports
+it.
+  The optional AGI parameter will setup an AGI script to be executed on the 
+calling party's channel once they are connected to a queue member.
+  The timeout will cause the queue to fail out after a specified number of
+seconds, checked between each queues.conf 'timeout' and 'retry' cycle.
+  This application sets the following channel variable upon completion:
+      QUEUESTATUS    The status of the call as a text string, one of
+             TIMEOUT | FULL | JOINEMPTY | LEAVEEMPTY | JOINUNAVAIL | LEAVEUNAVAIL
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>8c8
+&lt;   Queue(queuename[|options[|URL][|announceoverride][|timeout][|AGI]):
+---
+&gt;   Queue(queuename[|options[|URL][|announceoverride][|timeout]]):
+17,19c17
+&lt;              go to the next step.
+&lt;       'i' -- ignore call forward requests from queue members and do nothing
+&lt;              when they are requested.
+---
+&gt; 	      go to the next step.
+29,30d26
+&lt;   The optional AGI parameter will setup an AGI script to be executed on the 
+&lt; calling party's channel once they are connected to a queue member.
+</screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-random">
@@ -7095,6 +7446,31 @@ exten =&gt; gewonnen,n,Goto(123,1)
 
 exten =&gt; verloren,1,Playback(verloren)
 exten =&gt; verloren,n,Goto(123,1)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Random' =- 
+
+[Synopsis]
+Conditionally branches, based upon a probability
+
+[Description]
+Random([probability]:[[context|]extension|]priority)
+  probability := INTEGER in the range 1 to 100
+DEPRECATED: Use GotoIf($[${RAND(1,100)} &gt; &lt;number&gt;]?&lt;label&gt;)
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>10d9
+&lt; DEPRECATED: Use GotoIf($[${RAND(1,100)} &gt; &lt;number&gt;]?&lt;label&gt;)
+</screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-read">
@@ -7144,6 +7520,63 @@ exten =&gt; 123,n,SayNumber(${NUMMER})
 exten =&gt; 123,n,Goto(1)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Read' =- 
+
+[Synopsis]
+Read a variable
+
+[Description]
+  Read(variable[|filename][|maxdigits][|option][|attempts][|timeout])
+
+Reads a #-terminated string of digits a certain number of times from the
+user in to the given variable.
+  filename   -- file to play before reading digits or tone with option i
+  maxdigits  -- maximum acceptable number of digits. Stops reading after
+                maxdigits have been entered (without requiring the user to
+                press the '#' key).
+                Defaults to 0 - no limit - wait for the user press the '#' key.
+                Any value below 0 means the same. Max accepted value is 255.
+  option     -- options are 's' , 'i', 'n'
+                's' to return immediately if the line is not up,
+                'i' to play  filename as an indication tone from your indications.conf
+                'n' to read digits even if the line is not up.
+  attempts   -- if greater than 1, that many attempts will be made in the 
+                event no data is entered.
+  timeout    -- An integer number of seconds to wait for a digit response. If greater
+                than 0, that value will override the default timeout.
+
+Read should disconnect if the function fails or errors out.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>12c12
+&lt;   filename   -- file to play before reading digits or tone with option i
+---
+&gt;   filename   -- file to play before reading digits.
+18,21c18,19
+&lt;   option     -- options are 's' , 'i', 'n'
+&lt;                 's' to return immediately if the line is not up,
+&lt;                 'i' to play  filename as an indication tone from your indications.conf
+&lt;                 'n' to read digits even if the line is not up.
+---
+&gt;   option     -- may be 'skip' to return immediately if the line is not up,
+&gt;                 or 'noanswer' to read digits even if the line is not up.
+24,25c22
+&lt;   timeout    -- An integer number of seconds to wait for a digit response. If greater
+&lt;                 than 0, that value will override the default timeout.
+---
+&gt;   timeout    -- if greater than 0, that value will override the default timeout.
+</screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-senddtmf" /></para>
@@ -7190,6 +7623,42 @@ sipusers =&gt; mysql,asterisk,sip_users</programlisting>In der
 exten =&gt; 123,n,NoOp(Der Nachname von Ext. 5678: ${var_nachname})</programlisting></para>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'RealTime' =- 
+
+[Synopsis]
+Realtime Data Lookup
+
+[Description]
+Use the RealTime config handler system to read data into channel variables.
+RealTime(&lt;family&gt;|&lt;colmatch&gt;|&lt;value&gt;[|&lt;prefix&gt;])
+
+All unique column names will be set as channel variables with optional prefix
+to the name.  For example, a prefix of 'var_' would make the column 'name'
+become the variable ${var_name}.  REALTIMECOUNT will be set with the number
+of values read.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>11,14c11,13
+&lt; All unique column names will be set as channel variables with optional prefix
+&lt; to the name.  For example, a prefix of 'var_' would make the column 'name'
+&lt; become the variable ${var_name}.  REALTIMECOUNT will be set with the number
+&lt; of values read.
+---
+&gt; All unique column names will be set as channel variables with optional prefix to the name.
+&gt; e.g. prefix of 'var_' would make the column 'name' become the variable ${var_name}
+&gt; 
+</screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-realtimeupdate" /></para>
@@ -7221,6 +7690,38 @@ exten =&gt; 123,n,NoOp(Der Nachname von Ext. 5678: ${var_nachname})</programlist
 exten =&gt; 123,1,RealTimeUpdate(sipusers,ext,5678,vorname,Peter)
 ; resultierender SQL-Befehl:
 UPDATE sip_users SET vorname = 'bob' WHERE ext = '5678'</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'RealTimeUpdate' =- 
+
+[Synopsis]
+Realtime Data Rewrite
+
+[Description]
+Use the RealTime config handler system to update a value
+RealTimeUpdate(&lt;family&gt;|&lt;colmatch&gt;|&lt;value&gt;|&lt;newcol&gt;|&lt;newval&gt;)
+
+The column &lt;newcol&gt; in 'family' matching column &lt;colmatch&gt;=&lt;value&gt; will be
+updated to &lt;newval&gt;.  REALTIMECOUNT will be set with the number of rows
+updated or -1 if an error occurs.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>11,13c11
+&lt; The column &lt;newcol&gt; in 'family' matching column &lt;colmatch&gt;=&lt;value&gt; will be
+&lt; updated to &lt;newval&gt;.  REALTIMECOUNT will be set with the number of rows
+&lt; updated or -1 if an error occurs.
+---
+&gt; The column &lt;newcol&gt; in 'family' matching column &lt;colmatch&gt;=&lt;value&gt; will be updated to &lt;newval&gt;
+</screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -7369,6 +7870,56 @@ exten =&gt; 123,n,Playback(/tmp/name)</programlisting>
     <code>Monitor()</code>.</simpara>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Record' =- 
+
+[Synopsis]
+Record to a file
+
+[Description]
+  Record(filename.format|silence[|maxduration][|options])
+
+Records from the channel into a given filename. If the file exists it will
+be overwritten.
+- 'format' is the format of the file type to be recorded (wav, gsm, etc).
+- 'silence' is the number of seconds of silence to allow before returning.
+- 'maxduration' is the maximum recording duration in seconds. If missing
+or 0 there is no maximum.
+- 'options' may contain any of the following letters:
+     'a' : append to existing recording rather than replacing
+     'n' : do not answer, but record anyway if line not yet answered
+     'q' : quiet (do not play a beep tone)
+     's' : skip recording if the line is not yet answered
+     't' : use alternate '*' terminator key (DTMF) instead of default '#'
+     'x' : ignore all terminator keys (DTMF) and keep recording until hangup
+
+If filename contains '%d', these characters will be replaced with a number
+incremented by one each time the file is recorded. 
+
+Use 'show file formats' to see the available formats on your system
+
+User can press '#' to terminate the recording and continue to the next priority.
+
+If the user should hangup during a recording, all data will be lost and the
+application will teminate. 
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>21,22c21
+&lt;      't' : use alternate '*' terminator key (DTMF) instead of default '#'
+&lt;      'x' : ignore all terminator keys (DTMF) and keep recording until hangup
+---
+&gt;      't' : use alternate '*' terminator key instead of default '#'
+</screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-dictate" />, <xref
@@ -7406,6 +7957,37 @@ exten =&gt; 123,n,Playback(/tmp/name)</programlisting>
 exten =&gt; 123,1,RemoveQueueMember(supportschlange,SIP/3000)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'RemoveQueueMember' =- 
+
+[Synopsis]
+Dynamically removes queue members
+
+[Description]
+   RemoveQueueMember(queuename[|interface[|options]]):
+Dynamically removes interface to an existing queue
+If the interface is NOT in the queue and there exists an n+101 priority
+then it will then jump to this priority.  Otherwise it will return an error
+The option string may contain zero or more of the following characters:
+       'j' -- jump to +101 priority when appropriate.
+  This application sets the following channel variable upon completion:
+     RQMSTATUS      The status of the attempt to remove a queue member as a
+                     text string, one of
+           REMOVED | NOTINQUEUE | NOSUCHQUEUE 
+Example: RemoveQueueMember(techsupport|SIP/3000)
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-addqueuemember" />, <xref
@@ -7440,6 +8022,32 @@ exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Playback(tt-monkeys)
 exten =&gt; 123,n,ResetCDR(w)
 exten =&gt; 123,n,Playback(tt-monkeys)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'ResetCDR' =- 
+
+[Synopsis]
+Resets the Call Data Record
+
+[Description]
+  ResetCDR([options]):  This application causes the Call Data Record to be
+reset.
+  Options:
+    w -- Store the current CDR record before resetting it.
+    a -- Store any stacked records.
+    v -- Save CDR variables.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -7487,6 +8095,37 @@ exten =&gt; 123,1,RetryDial(versuche-zu-verbinden,5,3,IAX2/VOIP/012345678,30)
 exten =&gt; 0,1,RetryDial(versuche-zu-verbinden,5,3,Zap/4/012345678,30)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'RetryDial' =- 
+
+[Synopsis]
+Place a call, retrying on failure allowing optional exit extension.
+
+[Description]
+  RetryDial(announce|sleep|retries|dialargs): This application will attempt to
+place a call using the normal Dial application. If no channel can be reached,
+the 'announce' file will be played. Then, it will wait 'sleep' number of
+seconds before retying the call. After 'retires' number of attempts, the
+calling channel will continue at the next priority in the dialplan. If the
+'retries' setting is set to 0, this application will retry endlessly.
+  While waiting to retry a call, a 1 digit extension may be dialed. If that
+extension exists in either the context defined in ${EXITCONTEXT} or the current
+one, The call will jump to that extension immediately.
+  The 'dialargs' are specified in the same format that arguments are provided
+to the Dial application.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-dial" /></para>
@@ -7518,6 +8157,28 @@ exten =&gt; 123,n,Hangup()
 [mein-unterprogramm]
 exten =&gt; s,1,Playback(tt-weasels)
 exten =&gt; s,n,Return()</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Return' =- 
+
+[Synopsis]
+Return from gosub routine
+
+[Description]
+Return()
+  Jumps to the last label on the stack, removing it.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -7555,6 +8216,28 @@ exten =&gt; 123,n,Wait(5)
 exten =&gt; 123,n,Playback(tt-somethingwrong)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Ringing' =- 
+
+[Synopsis]
+Indicate ringing tone
+
+[Description]
+  Ringing(): This application will request that the channel indicate a ringing
+tone to the user.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-busy" />, <xref
@@ -7585,6 +8268,28 @@ exten =&gt; 123,n,Playback(tt-somethingwrong)</programlisting>
     <programlisting>exten =&gt; 123,1,SayAlpha(ABC123)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SayAlpha' =- 
+
+[Synopsis]
+Say Alpha
+
+[Description]
+  SayAlpha(string): This application will play the sounds that correspond to
+the letters of the given string.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-saydigits" />, <xref
@@ -7611,6 +8316,30 @@ exten =&gt; 123,n,Playback(tt-somethingwrong)</programlisting>
     der Funktion <code>LANGUAGE()</code> geändert werden.</simpara>
 
     <programlisting>exten =&gt; 123,1,SayDigits(1234)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SayDigits' =- 
+
+[Synopsis]
+Say Digits
+
+[Description]
+  SayDigits(digits): This application will play the sounds that correspond
+to the digits of the given number. This will use the language that is currently
+set for the channel. See the LANGUAGE function for more information on setting
+the language for the channel.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -7773,6 +8502,30 @@ exten =&gt; 123,n,SayNumber(1234)
 ; "ein - Tausend - zwei - Hundert - und - vier - und - dreißig"</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SayNumber' =- 
+
+[Synopsis]
+Say Number
+
+[Description]
+  SayNumber(digits[,gender]): This application will play the sounds that
+correspond to the given number. Optionally, a gender may be specified.
+This will use the language that is currently set for the channel. See the
+LANGUAGE function for more information on setting the language for the channel.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-sayalpha" />, <xref
@@ -7807,6 +8560,28 @@ exten =&gt; 123,n,SayPhonetic(asterisk)
 exten =&gt; 123,n,Set(LANGUAGE=de)
 exten =&gt; 123,n,SayPhonetic(asterisk)
 ; Anton Samuel Theodor Emil Richard Ida Samuel Kaufmann</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SayPhonetic' =- 
+
+[Synopsis]
+Say Phonetic
+
+[Description]
+  SayPhonetic(string): This application will play the sounds from the phonetic
+alphabet that correspond to the letters in the given string.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -7868,6 +8643,33 @@ exten =&gt; 123,n,SayPhonetic(asterisk)
     <simpara>Liefert 0 zurück oder -1, wenn aufgelegt wird.</simpara>
 
     <programlisting>exten =&gt; 123,1,SayUnixTime(,,IMp)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SayUnixTime' =- 
+
+[Synopsis]
+Says a specified time in a custom format
+
+[Description]
+SayUnixTime([unixtime][|[timezone][|format]])
+  unixtime: time, in seconds since Jan 1, 1970.  May be negative.
+              defaults to now.
+  timezone: timezone, see /usr/share/zoneinfo for a list.
+              defaults to machine default.
+  format:   a format the time is to be said in.  See voicemail.conf.
+              defaults to "ABdY 'digits/at' IMp"
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-senddtmf">
@@ -7897,6 +8699,30 @@ exten =&gt; 123,n,SayPhonetic(asterisk)
     wird.</simpara>
 
     <programlisting>exten =&gt; 123,1,SendDTMF(123w456w789,200)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SendDTMF' =- 
+
+[Synopsis]
+Sends arbitrary DTMF digits
+
+[Description]
+ SendDTMF(digits[|timeout_ms]): Sends DTMF digits on a channel. 
+ Accepted digits: 0-9, *#abcd, w (.5s pause)
+ The application will either pass the assigned digits or terminate if it
+ encounters an error.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -7932,6 +8758,35 @@ exten =&gt; 123,n,SayPhonetic(asterisk)
     unterstützt).</simpara>
 
     <programlisting>exten =&gt; 123,1,SendImage(logo.jpg)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SendImage' =- 
+
+[Synopsis]
+Send an image file
+
+[Description]
+  SendImage(filename): Sends an image on a channel. 
+If the channel supports image transport but the image send
+fails, the channel will be hung up. Otherwise, the dialplan
+continues execution.
+The option string may contain the following character:
+	'j' -- jump to priority n+101 if the channel doesn't support image transport
+This application sets the following channel variable upon completion:
+	SENDIMAGESTATUS		The status is the result of the attempt as a text string, one of
+		OK | NOSUPPORT 
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -7972,6 +8827,37 @@ exten =&gt; 123,n,SayPhonetic(asterisk)
     <programlisting>exten =&gt; 123,1,SendText(Willkommen zu Asterisk)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SendText' =- 
+
+[Synopsis]
+Send a Text Message
+
+[Description]
+  SendText(text[|options]): Sends text to current channel (callee).
+Result of transmission will be stored in the SENDTEXTSTATUS
+channel variable:
+      SUCCESS      Transmission succeeded
+      FAILURE      Transmission failed
+      UNSUPPORTED  Text transmission not supported by channel
+
+At this moment, text is supposed to be 7 bit ASCII in most channels.
+The option string many contain the following character:
+'j' -- jump to n+101 priority if the channel doesn't support
+       text transport
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-sendimage" />, <xref
@@ -8008,6 +8894,64 @@ exten =&gt; 123,n,SayPhonetic(asterisk)
     <code>wait</code>: Client konnte die URL nicht laden).</simpara>
 
     <programlisting>exten =&gt; 123,1,SendURL(www.asterisk.org,wait)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SendURL' =- 
+
+[Synopsis]
+Send a URL
+
+[Description]
+  SendURL(URL[|option]): Requests client go to URL (IAX2) or sends the 
+URL to the client (other channels).
+Result is returned in the SENDURLSTATUS channel variable:
+    SUCCESS       URL successfully sent to client
+    FAILURE       Failed to send URL
+    NOLOAD        Client failed to load URL (wait enabled)
+    UNSUPPORTED   Channel does not support URL transport
+
+If the option 'wait' is specified, execution will wait for an
+acknowledgement that the URL has been loaded before continuing
+
+If jumping is specified as an option (the 'j' flag), the client does not
+support Asterisk "html" transport, and there exists a step with priority
+n + 101, then execution will continue at that step.
+
+SendURL continues normally if the URL was sent correctly or if the channel
+does not support HTML transport.  Otherwise, the channel is hung up.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>13c13
+&lt;     NOLOAD        Client failed to load URL (wait enabled)
+---
+&gt;     NOLOAD        Clien failed to load URL (wait enabled)
+17a18
+&gt; and will return -1 if the peer is unable to load the URL
+19,24c20,26
+&lt; If jumping is specified as an option (the 'j' flag), the client does not
+&lt; support Asterisk "html" transport, and there exists a step with priority
+&lt; n + 101, then execution will continue at that step.
+&lt; 
+&lt; SendURL continues normally if the URL was sent correctly or if the channel
+&lt; does not support HTML transport.  Otherwise, the channel is hung up.
+---
+&gt; Old behaviour (deprecated): 
+&gt;  If the client does not support Asterisk "html" transport, 
+&gt;  and there exists a step with priority n + 101, then execution will
+&gt;  continue at that step.
+&gt;  Otherwise, execution will continue at the next priority level.
+&gt;  SendURL only returns 0 if the URL was sent correctly  or if
+&gt;  the channel does not support HTML transport, and -1 otherwise.
+</screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -8067,6 +9011,36 @@ exten =&gt; 123,n,Set(DB(mein/test)=ok)         ; in AstDB schreiben
 exten =&gt; 123,n,Set(var=${DB(mein/test)})     ; aus AstDB lesen</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Set' =- 
+
+[Synopsis]
+Set channel variable(s) or function value(s)
+
+[Description]
+  Set(name1=value1|name2=value2|..[|options])
+This function can be used to set the value of channel variables or dialplan
+functions. It will accept up to 24 name/value pairs. When setting variables,
+if the variable name is prefixed with _, the variable will be inherited into
+channels created from the current channel. If the variable name is prefixed
+with __, the variable will be inherited into channels created from the current
+channel and all children channels.
+  Options:
+    g - Set variable globally instead of on the channel
+        (applies only to variables, not functions)
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-importvar" />,
@@ -8098,6 +9072,45 @@ exten =&gt; 123,n,Set(var=${DB(mein/test)})     ; aus AstDB lesen</programlistin
     <simpara>Liefert stets 0 zurück.</simpara>
 
     <programlisting>exten =&gt; 123,1,SetAMAFlags(billing)</programlisting>
+<<<<<<< .mine
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SetAMAFlags' =- 
+
+[Synopsis]
+Set the AMA Flags
+
+[Description]
+  SetAMAFlags([flag]): This application will set the channel's AMA Flags for
+  billing purposes.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>8,9c8,9
+&lt;   SetAMAFlags([flag]): This application will set the channel's AMA Flags for
+&lt;   billing purposes.
+---
+&gt;   SetAMAFlags([flag]): This channel will set the channel's AMA Flags for billing
+&gt; purposes.
+- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applikationen-setaccount" />, <xref
+      linkend="applikationen-setcdruserfield" />, <xref
+      linkend="applikationen-appendcdruserfield" /></para>
+    </formalpara>
+=======
+>>>>>>> .r60
   </section>
 
   <section id="applikationen-setcallerpres">
@@ -8202,6 +9215,48 @@ exten =&gt; 123,2,Dial(Zap/4/1234567)</programlisting>
 
     <simpara>Evtl. müssen Sie <code>usecallingpres=yes</code> in der
     <filename>zapata.conf</filename> setzen.</simpara>
+<<<<<<< .mine
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SetCallerPres' =- 
+
+[Synopsis]
+Set CallerID Presentation
+
+[Description]
+  SetCallerPres(presentation): Set Caller*ID presentation on a call.
+  Valid presentations are:
+
+      allowed_not_screened    : Presentation Allowed, Not Screened
+      allowed_passed_screen   : Presentation Allowed, Passed Screen
+      allowed_failed_screen   : Presentation Allowed, Failed Screen
+      allowed                 : Presentation Allowed, Network Number
+      prohib_not_screened     : Presentation Prohibited, Not Screened
+      prohib_passed_screen    : Presentation Prohibited, Passed Screen
+      prohib_failed_screen    : Presentation Prohibited, Failed Screen
+      prohib                  : Presentation Prohibited, Network Number
+      unavailable             : Number Unavailable
+
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applikationen-setcallerid" /></para>
+    </formalpara>
+=======
+>>>>>>> .r60
   </section>
 
   <section id="applikationen-sipaddheader">
@@ -8232,6 +9287,33 @@ exten =&gt; 123,2,Dial(Zap/4/1234567)</programlisting>
 exten =&gt; 123,2,Dial(SIP/123)</programlisting>
 
     <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SIPAddHeader' =- 
+
+[Synopsis]
+Add a SIP header to the outbound call
+
+[Description]
+  SIPAddHeader(Header: Content)
+Adds a header to a SIP call placed with DIAL.
+Remember to user the X-header if you are adding non-standard SIP
+headers, like "X-Asterisk-Accountcode:". Use this with care.
+Adding the wrong headers may jeopardize the SIP dialog.
+Always returns 0
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>Binary files sipaddheader-1.4.txt and sipaddheader-1.2.txt differ
+- keine - </screen></para>
+    </formalpara>
+
+    <formalpara>
       <title>Siehe auch</title>
 
       <para><xref linkend="funktionen-sip_header" /></para>
@@ -8257,6 +9339,27 @@ exten =&gt; 123,2,Dial(SIP/123)</programlisting>
     <code>info</code> oder <code>rfc2833</code> annehmen.</simpara>
 
     <programlisting>exten =&gt; 123,n,SIPdtmfMode(rfc2833)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SIPDtmfMode' =- 
+
+[Synopsis]
+Change the dtmfmode for a SIP call
+
+[Description]
+SIPDtmfMode(inband|info|rfc2833): Changes the dtmfmode for a SIP call
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
 
     <formalpara>
       <title>Siehe auch</title>
@@ -8385,6 +9488,39 @@ exten =&gt; _X.,n,Hangup()</programlisting></para>
     url="http://www.pi4tel.de/asterisk/sms.shtml">http://www.pi4tel.de/asterisk/sms.shtml</ulink>.
     Man kann jedoch nicht erwarten, dass <code>SMS()</code> <quote>out
     of the box</quote> sofort funktioniert.</simpara>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'SMS' =- 
+
+[Synopsis]
+Communicates with SMS service centres and SMS capable analogue phones
+
+[Description]
+  SMS(name|[a][s]):  SMS handles exchange of SMS data with a call to/from SMS capabale
+phone or SMS PSTN service center. Can send and/or receive SMS messages.
+Works to ETSI ES 201 912 compatible with BT SMS PSTN service in UK
+Typical usage is to use to handle called from the SMS service centre CLI,
+or to set up a call using 'outgoing' or manager interface to connect
+service centre to SMS()
+name is the name of the queue used in /var/spool/asterisk/sms
+Arguments:
+ a: answer, i.e. send initial FSK packet.
+ s: act as service centre talking to a phone.
+Messages are processed as per text file message queues.
+smsq (a separate software) is a command to generate message
+queues and send messages.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-softhangup">
