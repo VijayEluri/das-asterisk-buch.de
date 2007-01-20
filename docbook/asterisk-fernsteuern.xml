@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<chapter id="asterisk-fernsteuern" lang="de" revision="$Revision: 1.9 $">
+  <!--% Copyright (c) 2007
+% - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de -->
+
+  <title>Asterisk fernsteuern</title>
+
+  <para>Es gibt verschiedene Möglichkeiten eine Asterisk Telefonanlage von
+  extern (also z.B. von anderen Programmen) aus zu steuern.</para>
+
+  <section id="park">
+    <title id="parking">asterisk -rx "&lt;command&gt;"</title>
+
+    <para>Die einfachste Möglichkeit mit Asterisk von Aussen zu kommunizieren
+    ist der Aufruf des Programmes <command>asterisk</command> mit den
+    Parametern <parameter>-rx</parameter> und danach dem CLI Befehl. So kann
+    man jeden beliebigen CLI Befehl von der Shell aus ausführen.</para>
+
+    <section>
+      <title>Beispiel</title>
+
+      <para>Wenn man sich den Dialplan für die Extension
+      <parameter>23</parameter> im Context
+      <parameter>[meine-telefone]</parameter> anschauen will, kann man dies
+      mit der Eingabe <command>asterisk -rx "show dialplan
+      23@meine-telefone"</command> erreichen:<screen>root@molokai:~&gt;asterisk -rx "show dialplan 23@meine-telefone"
+[ Context 'meine-telefone' created by 'pbx_config' ]
+  '23' =&gt;           1. Wait(1)                                    [pbx_config]
+                    2. Answer()                                   [pbx_config]
+                    3. Playback(hello-world)                      [pbx_config]
+                    4. Wait(1)                                    [pbx_config]
+                    5. Hangup()                                   [pbx_config]
+
+-= 1 extension (5 priorities) in 1 context. =-
+root@molokai:~&gt;</screen></para>
+    </section>
+  </section>
+
+  <section id="call-file">
+    <title>Call File</title>
+
+    <para>Call Files lassen sich am ehesten mit Batch Dateien vergleichen. Sie
+    werden ins Verzeichnis <filename>/var/spool/asterisk/outgoing/</filename>
+    verschoben<tip>
+        <para>Ein move ist im Dateisystem ein atomarer Vorgang und deshalb für
+        Call Files ideal geeignet. Bei einem cp wird dagegen die Datei Zeile
+        für Zeile kopiert. Es kann also vorkommen, das ein halbfertig
+        kopiertes Call File von Asterisk bereits abgearbeitet wird.</para>
+      </tip> und dort dann von Asterisk abgearbeitet.</para>
+
+    <para>Der ganze Mechanismus lässt sich anhand eines Beispiels besser
+    erklären. Nehmen wir an, das an einer Asterisk Anlage ein SIP Telefon mit
+    der Nummer 2000 angemeldet ist. Weiterhin haben wir im Dialplan die
+    folgende Extension eingetragen:<programlisting>[call-file-test]
+exten =&gt; 10,1,Answer()
+exten =&gt; 10,n,Wait(1)
+exten =&gt; 10,n,Playback(hello-world)
+exten =&gt; 10,n,Wait(1)
+exten =&gt; 10,n,Hangup()</programlisting></para>
+
+    <para>Jetzt generieren wir im Verzeichnis <filename>/tmp/</filename> die
+    Datei <filename>ein-test.call</filename> mit folgendem
+    Inhalt:<programlisting>Channel: SIP/2000
+MaxRetries: 2
+RetryTime: 60
+WaitTime: 30
+Context: call-file-test
+Extension: 10</programlisting></para>
+
+    <para>Danach moven wir diese Datei mit <command>mv /tmp/ein-test.call
+    /var/spool/asterisk/outgoing/</command><screen>root@molokai:~&gt;mv /tmp/ein-test.call /var/spool/asterisk/outgoing/</screen></para>
+
+    <para>Jetzt passiert folgendes:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Asterisk überprüft ständig ob sich im Verzeichnis
+        /var/spool/asterisk/outgoing/ ein Call File befindet und ruft dies
+        auf, sobald es da ist.</para>
+      </listitem>
+
+      <listitem>
+        <para>Asterisk öffnet eine Verbindung zum SIP Telefon 2000. Wenn die
+        2000 besetzt sein oder nicht rangehen sollte, dann versucht es das
+        gleiche noch zwei mal (siehe
+        <parameter>MaxRetries</parameter>).</para>
+      </listitem>
+
+      <listitem>
+        <para>Geht der Benutzer des Telefons 2000 ran, dann startet Asterisk
+        im Context <parameter>[call-file-test]</parameter> die Extension
+        <parameter>10</parameter>. Es wird also der hello-world Sprachbaustein
+        abgespielt.</para>
+      </listitem>
+    </itemizedlist>
+
+    <section id="call-file-parameter">
+      <title>Parameter</title>
+
+      <para>Im Call File können folgende Parameter angegeben
+      werden:<variablelist termlength="2">
+          <varlistentry>
+            <term><code>Channel: &lt;channel&gt; </code></term>
+
+            <listitem>
+              <simpara>Der zu benutzende Channel. Dabei gilt die gleiche
+              Syntax wie beim Dial() Befehl (siehe <xref
+              linkend="applikationen-dial" />).</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>Callerid: &lt;callerid&gt;</code></term>
+
+            <listitem>
+              <simpara>Die zu benutzende Caller-ID.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>WaitTime: &lt;number&gt;</code></term>
+
+            <listitem>
+              <simpara>Die Anzahl der Sekunden, die das System auf die Annahme
+              des Anrufes warten soll. Wird der Wert nicht angegeben, dann ist
+              der Default bei 45 Sekunden.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>Maxretries: &lt;number&gt;</code></term>
+
+            <listitem>
+              <simpara>Die Anzahl der weiteren Wählversuche (falls besetzt
+              oder nicht erreichbar). Wird dieser Parameter nicht angegeben
+              ist der Defaultwert 0 (es wird also nur einmal versucht den
+              Channel aufzubauen).</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>RetryTime: &lt;number&gt;</code></term>
+
+            <listitem>
+              <simpara>Die Anzahl der Sekunden, die bis zum nächsten
+              Wählversuch gewartet werden. Wird dieser Parameter nicht
+              angegeben ist der Defaultwert 300 Sekunden.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>Account: &lt;account&gt;</code></term>
+
+            <listitem>
+              <simpara>Der Abrechnungscode für Ihr CDR System.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>Context: &lt;context&gt;</code></term>
+
+            <listitem>
+              <simpara>Der Zielcontext.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>Extension: &lt;exten&gt;</code></term>
+
+            <listitem>
+              <simpara>Die Zielextension.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>Priority: &lt;priority&gt; </code></term>
+
+            <listitem>
+              <simpara>Die Zielpriorität. Wenn nicht angegeben, dann ist der
+              Defaultwert 1.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>Setvar: &lt;var=value&gt;</code></term>
+
+            <listitem>
+              <simpara>Mit <parameter>Setvar:</parameter> können beliebig
+              viele Channelvariablen definiert werden.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>Archive: &lt;yes|no&gt;</code></term>
+
+            <listitem>
+              <simpara>Normalerweise werden Call Files nach der Abarbeitung
+              direkt gelöscht. Ist <parameter>Archive: yes</parameter>
+              gesetzt, werden die Call Files aber nicht gelöscht, sondern ins
+              Verzeichnis
+              <filename>/var/spool/asterisk/outgoing_done/</filename>
+              verschoben. Dabei wird Asterisk noch eine Zeile zum Call File
+              hinzufügen. Diese Besteht aus dem Eintrag <parameter>Status:
+              &lt;Expired|Completed|Failed&gt;</parameter> und beschreibt das
+              Ergebnis des Call Files.</simpara>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+    </section>
+
+    <section id="call-file-zukunft">
+      <title>Call Files in der Zukunft aufrufen</title>
+
+      <para>Beim Aufruf eines Call Files vergleicht Asterisk dessen "zu letzt
+      verändert" Zeit mit der aktuellen Uhrzeit. Liegt dieser Eintrag in der
+      Zukunft, wird das Call File nicht bearbeitet. So kann man leicht Call
+      Files zeitgesteuert abarbeiten.</para>
+    </section>
+
+    <section id="call-file-weckruf">
+      <title>Beispiel Weckruf</title>
+
+      <para>Nehmen wir an ein Hotel möchte über Asterisk ein einfaches
+      Weckruf-System erstellen. Kunden sollen einen Weckruf über die
+      Servicerufnummer *77* aktivieren können. Nach der *77* soll das genaue
+      Datum und die Weckuhrzeit gewählt werden.<programlisting>[hotel-intern]
+exten =&gt; _*77*XXXXXXXXXXXX,1,Answer()
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Jahr = ${EXTEN:4:4})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Monat = ${EXTEN:8:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Tag = ${EXTEN:10:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Stunden = ${EXTEN:12:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Minuten = ${EXTEN:14:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,NoOp(Weckruf soll fuer die Rufnummer ${CALLERID(num)} soll um ${Stunden}:${Minuten} Uhr am ${Tag}.${Monat}.${Jahr} erfolgen.)
+exten =&gt; _*77*XXXXXXXXXXXX,n,
+exten =&gt; _*77*XXXXXXXXXXXX,n,
+exten =&gt; _*77*XXXXXXXXXXXX,n,
+exten =&gt; _*77*XXXXXXXXXXXX,n,
+exten =&gt; _*77*XXXXXXXXXXXX,n,
+exten =&gt; _*77*XXXXXXXXXXXX,n,
+</programlisting></para>
+    </section>
+  </section>
+
+  <section id="asterisk-manager-api">
+    <title>Asterisk Manager API</title>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>Web Interface</title>
+
+    <para></para>
+  </section>
+</chapter>
