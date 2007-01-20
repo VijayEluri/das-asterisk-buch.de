@@ -1047,7 +1047,7 @@ exten =&gt; s,5,Hangup()</programlisting>
     </section>
   </section>
 
-  <section>
+  <section id="programmierer-howto">
     <title>Kleines Programmierer Howto</title>
 
     <para>Die Schwierigkeit eines solchen Buches liegt unter anderem in dem
@@ -1055,14 +1055,15 @@ exten =&gt; s,5,Hangup()</programlisting>
     Programmierern, Telefonanlagentechnikern und vielen anderen technisch
     interessierten Menschen gelesen. Die Programmierkenntnisse sind dabei sehr
     unterschiedlich. Um die Fähigkeiten von Asterisk auszureißen benötigt man
-    schon ein wenig Programmiertalent und eine handvoll Tools. In diesem Howto
-    möchte die wichtigsten Grundprinzipien und Ideen erläutern. Dabei gehe ich
-    beispielhaft vor und verweise bei Detailfragen auf <xref
-    linkend="applikationen" />. Weiterhin wird es in diesem Howto teilweise zu
-    Wiederholungen von bereits besprochenen Stoff kommen. Dafür gibt es aber
-    über alles auch einen sehr schnellen Überblick.</para>
+    schon ein wenig Programmiertalent und eine gewisses Basiswissen. In diesem
+    Howto möchte ich die wichtigsten Grundprinzipien und Ideen für
+    Programmierer erläutern. Dabei gehe ich beispielhaft vor und verweise bei
+    Detailfragen auf <xref linkend="applikationen" />. Weiterhin wird es in
+    diesem Howto teilweise zu Wiederholungen von bereits besprochenen Stoff
+    kommen. Dafür gibt es aber über alles auch einen sehr schnellen
+    Überblick.</para>
 
-    <section>
+    <section id="programmierer-howto-programmstruktur">
       <title>Programmstruktur</title>
 
       <para>Im Dialplan (also der
@@ -1081,18 +1082,18 @@ exten =&gt; 1001,2,Hangup()</programlisting>Die Funktionsweise der jeweiligen
       später aber leichter einzelne Zeilen löschen oder hinzufügen.</para>
     </section>
 
-    <section>
+    <section id="programmierer-howto-variablen">
       <title>Variablen</title>
 
       <para>Zum Generieren und Verändern von Variablen wird die Applikation
-      <code>Set()</code> benutzt:<programlisting>exten =&gt; 1002,1,Set(LIEBLINGSTIER = "Tiger")
-exten =&gt; 1002,n,Set(LIEBLINGSZAHL = 23)</programlisting></para>
+      <code>Set()</code> benutzt:<programlisting>exten =&gt; 1002,1,Set(Lieblingstier = "Tiger")
+exten =&gt; 1002,n,Set(Lieblingszahl = 23)</programlisting></para>
 
       <para>Zum Lesen und Ausgeben von Variblen wird die Syntax
       <code>${VARIABLENNAME}</code> benutzt. Mit der Applikation
       <code>NoOp()</code> kann man Variablenwerte auf dem CLI ausgeben (ab
-      Verbose-Level 3):<programlisting>exten =&gt; 1003,1,NoOp(${LIEBLINGSTIER})
-exten =&gt; 1003,n,NoOp(${LIEBLINGSZAHL})</programlisting></para>
+      Verbose-Level 3):<programlisting>exten =&gt; 1003,1,NoOp(${Lieblingstier})
+exten =&gt; 1003,n,NoOp(${Lieblingszahl})</programlisting></para>
 
       <para>Es gibt verschiedene Arten von Variablen:<itemizedlist>
           <listitem>
@@ -1122,11 +1123,15 @@ exten =&gt; 1005,n,NoOp(${SOLL-NUR-HIER-LESBAR-SEIN})</programlisting></para>
         </itemizedlist></para>
     </section>
 
-    <section>
+    <section id="programmierer-howto-labels-und-goto">
       <title>Labels und Goto()</title>
 
       <para>Mit <code>Goto()</code> kann man innerhalb des Dialplanes Sprünge
-      zu einem mit (Labelname) definierten Label vollziehen:</para>
+      zu einem mit (Labelname) definierten Label vollziehen:<footnote>
+          <para>Man kann natürlich mit <code>Goto()</code> auch zu einer
+          bestimmten Priorität springen. Aber dann ist der ganze Vorteil der
+          n-Priorität wieder weg.</para>
+        </footnote></para>
 
       <itemizedlist>
         <listitem>
@@ -1150,9 +1155,84 @@ exten =&gt; 1010,n,Goto(1009,Ping)</programlisting></para>
         </listitem>
 
         <listitem>
-          <para>Von Context zu Context:</para>
+          <para>Von Context zu Context:<programlisting>[zentrale]
+exten =&gt; 1011,1,Answer()
+exten =&gt; 1011,n,Playback(hello-world)
+exten =&gt; 1011,n,Goto(verkauf,1012,1)
+
+[verkauf]
+exten =&gt; 1012,1,Playback(hello-world)
+exten =&gt; 1012,n,Hangup()</programlisting></para>
         </listitem>
       </itemizedlist>
+
+      <formalpara>
+        <title>Siehe auch:</title>
+
+        <para><xref linkend="applikationen-goto" /></para>
+      </formalpara>
+    </section>
+
+    <section id="programmierer-howto-while">
+      <title>While() Schleifen</title>
+
+      <para>Mit <code>While()</code> lassen sich Schleifen im Dialplan
+      erzeugen:<programlisting>exten =&gt; 1013,1,Answer()
+exten =&gt; 1013,n,Set(i=1)
+exten =&gt; 1013,n,While($[${i} &lt; 10])
+exten =&gt; 1013,n,SayNumber(${i})
+exten =&gt; 1013,n,Wait(1)
+exten =&gt; 1013,n,Set(i=$[${i} + 1])
+exten =&gt; 1013,n,EndWhile()
+exten =&gt; 1013,n,Hangup()</programlisting></para>
+
+      <formalpara>
+        <title>Siehe auch:</title>
+
+        <para><xref linkend="applikationen-while" /></para>
+      </formalpara>
+    </section>
+
+    <section id="programmierer-howto-gotoif">
+      <title>GotoIf() Bedingung</title>
+
+      <para>Mit GotoIf() lassen sich Sprünge zu anderen Teilen im Dialplan mit
+      einer Bedingung verbinden:<programlisting>exten =&gt; 1014,1,Answer()
+exten =&gt; 1014,n,Set(Lieblingsnebenstelle = 0815)
+exten =&gt; 1014,n,NoOp(Ueberpruefe, ob Anruf von ${Lieblingsnebenstelle} kommt.)
+exten =&gt; 1014,n,GotoIf($[${CALLERID(num) = ${Lieblingsnebenstelle}]?ja,nein)
+
+exten =&gt; 1014,n(ja),Playback(hello-world)
+exten =&gt; 1014,n,Hangup()
+
+exten =&gt; 1014,n(nein),Playback(tt-monkeys)
+exten =&gt; 1014,n,Hangup()</programlisting></para>
+
+      <formalpara>
+        <title>Siehe auch:</title>
+
+        <para><xref linkend="applikationen-gotoif" /></para>
+      </formalpara>
+    </section>
+
+    <section id="programmier-howto-gosub">
+      <title>Gosub() Unterprogramme</title>
+
+      <para>Mit Gosub() kann man in ein Unterprogramm springen und aus diesem
+      mit Return() wieder zurück:<programlisting>exten =&gt; 1015,1,Gosub(cid-setzen)
+exten =&gt; 1015,n,Dial(SIP/${EXTEN})
+
+exten =&gt; 1015,n(cid-setzen),Set(CALLERID(all)=Apfelmus GmbH &lt;012345678&gt;)
+exten =&gt; 1015,n,Return()</programlisting></para>
+
+      <formalpara>
+        <title>Siehe auch:</title>
+
+        <para><xref linkend="applikationen-gosub" />, <xref
+        linkend="applikationen-gosubif" />, <xref
+        linkend="applikationen-return" />, <xref
+        linkend="applikationen-macro" /></para>
+      </formalpara>
     </section>
   </section>
 
