@@ -63,8 +63,9 @@
   verwendet wird), z.B. so:<programlisting>exten =&gt; s,1,Dial(IAX2/User:Passwort@beispiel.de/123,,tT)</programlisting></para>
 
   <para>Im Allgemeinen kann gesagt werden, dass Fehler beim Ausführen
-  einer Applikation durch Rückgabe des Wertes -1 ausgedrückt
-  werden.</para>
+  einer Applikation durch den Rückgabewert -1 ausgedrückt werden, Erfolg
+  durch 0. Ein Rückgabewert von -1 bedeutet, dass Asterisk den Kanal
+  auflegt und nicht weiter den Dialplan abarbeitet.</para>
 
   <important>
     <para>Bitte beachten Sie, dass, abhängig von der eingesetzten
@@ -87,15 +88,16 @@
   der Praxis natürlich nicht immer sinnvoll ist.</simpara>
 
   <simpara><indexterm>
-      <primary>priorityjumping</primary>
+      <primary>priority jumping</primary>
     </indexterm>Viele Applikationen vor Asterisk 1.2 sprangen bei einem
   Fehler zur Priorität n+101, wenn vorhanden (wobei n die aktuelle
-  Priorität bezeichnet). Dieses alte Verhalten lässt sich bei einigen
-  Befehlen durch die Option <code>j</code> (jump) erreichen oder indem
-  man in der <filename>extensions.conf</filename> im Abschnitt
+  Priorität bezeichnet). Dieses alte Verhalten (<quote>priority
+  jumping</quote>) lässt sich bei einigen Befehlen durch die Option
+  <code>j</code> (jump) erreichen oder indem man in der
+  <filename>extensions.conf</filename> im Abschnitt
   <code>[general]</code> den Parameter <code>priorityjumping=yes</code>
-  setzt. Die neuere Methode ist das Abfragen der gesetzten
-  Channelvariablen.</simpara>
+  setzt. Dieses Verhalten ist aber <quote>depreceted</quote>. Die neuere
+  Methode ist das Abfragen der gesetzten Channelvariablen.</simpara>
 
   <simpara>Um leichtere Verwendung als Nachschlagewerk zu ermöglichen,
   sind die Applikationen in alphabetischer Reihenfolge aufgeführt. Da
@@ -970,7 +972,7 @@ Options:
 
     <programlisting>; mein AGI-Skript aufrufen:
 exten =&gt; 123,1,AGI(agi-skript)
-exten =&gt; 123,2,EAGI(eagi-skript)</programlisting>
+exten =&gt; 123,n,EAGI(eagi-skript)</programlisting>
 
     <note>
       <formalpara>
@@ -1147,8 +1149,9 @@ tones.</screen></para>
     <simpara>Gibt bei Erfolg 0 zurück.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,Wait(1)
-exten =&gt; 123,3,Playback(hallo)</programlisting>
+exten =&gt; 123,n,Wait(1)
+exten =&gt; 123,n,Playback(hallo)
+exten =&gt; 123,n,Hangup()</programlisting>
 
     <note>
       <formalpara>
@@ -1274,7 +1277,9 @@ Asterisk will wait this number of milliseconds before answering the call.</scree
 
     <programlisting>; Passwort 1234 verlangen:
 exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,Authenticate(1234,j,4)
+exten =&gt; 123,2,Authenticate(1234,j,4)           ; hier ausnahmsweise mit Priority-Jumping
+                                                ; weil wir dem Anrufer noch sagen wollen
+                                                ; dass sein Passwort falsch ist
 exten =&gt; 123,3,Playback(pin-nummer-akzeptiert)
 exten =&gt; 123,103,Playback(pin-nummer-falsch)</programlisting>
 
@@ -1398,7 +1403,7 @@ dialplan execution will continnue at this location.
     angegebene Dateiname nicht existiert, sonst 0.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,Background(bitte-extension-eingeben);</programlisting>
+exten =&gt; 123,n,Background(bitte-extension-eingeben)</programlisting>
 
     <note>
       <formalpara>
@@ -1504,7 +1509,7 @@ terminated.
     0.</simpara>
 
     <programlisting>exten =&gt; 123,1,BackgroundDetect(sinfonie)
-exten =&gt; 123,2,Playback(vm-sorry)
+exten =&gt; 123,n,Playback(vm-sorry)
 exten =&gt; talk,1,Playback(ja-bitte)</programlisting>
 
     <note>
@@ -1571,8 +1576,8 @@ infinity respectively.</screen></para>
     <simpara>Gibt immer -1 zurück.</simpara>
 
     <programlisting>exten =&gt; 123,1,Playback(vm-sorry)
-exten =&gt; 123,2,Playtones(busy)
-exten =&gt; 123,3,Busy()</programlisting>
+exten =&gt; 123,n,Playtones(busy)
+exten =&gt; 123,n,Busy()</programlisting>
 
     <note>
       <formalpara>
@@ -1801,7 +1806,7 @@ exten =&gt; 124,2,Dial(Zap/g1/1234568)</programlisting>
     <programlisting>; Channel mitschneiden mit Datei-Basisname 'mitschnitt'
 exten =&gt; 123,1,Monitor(mitschnitt)
 ; Datei-Basisnamen auf 'mitschnitt2' ändern
-exten =&gt; 123,2,ChangeMonitor(mitschnitt2)</programlisting>
+exten =&gt; 123,n,ChangeMonitor(mitschnitt2)</programlisting>
 
     <note>
       <formalpara>
@@ -1849,15 +1854,21 @@ The argument is the new filename base to use for monitoring this channel.</scree
     <synopsis>ChanIsAvail(<replaceable>Technology1</replaceable>/<replaceable>Resource1</replaceable>[&amp;<replaceable>Technology2</replaceable>/<replaceable>Resource2</replaceable>...][,<replaceable>Optionen</replaceable>])</synopsis>
 
     <simpara>Prüft, ob irgendeiner der angeforderten Kanäle verfügbar
-    ist. Ist keiner der angeforderten Kanäle verfügbar, wird die neue
-    Priorität auf n+101 gesetzt (wobei <code>n</code> die aktuell
-    gültige Priorität ist), es sei denn, diese Priorität existiert nicht
-    oder ein Fehler tritt auf. In diesem Fall wird
-    <code>ChanIsAvail()</code> den Wert -1 zurückliefern.</simpara>
+    ist (in der angegebenen Reihenfolge). Liefert 0 zurück bei Erfolg
+    oder -1, falls kein Kanal verfügbar ist.</simpara>
 
-    <simpara>Ist einer der angeforderten Kanäle verfügbar, wird die
-    nächste Priorität auf <code>n+1</code> gesetzt, und
-    <code>ChanIsAvail()</code> liefert den Wert 0 zurück.</simpara>
+    <simpara>Ist die Option <code>s</code> (für state) angegeben, wird
+    Asterisk den Channel als nicht verfügbar betrachten, wenn er in
+    Gebrauch ist, sogar falls er einen weiteren anderen Anruf aufnehmen
+    kann. Mit der Option <code>j</code> wird, falls der Channel nicht
+    verfügbar ist, zur Priorität n+101 gesprungen.</simpara>
+
+    <note>
+      <simpara>Dass ein Kanal verfügbar ist, bedeutet aber nicht
+      automatisch, dass er auch frei ist oder dass das Endgerät einen
+      Anruf akzeptieren würde. Das erfährt man durch ein
+      <code>Dial()</code> zum Kanal.</simpara>
+    </note>
 
     <para><code>ChanIsAvail()</code> setzt die folgenden
     Channelvariablen: <variablelist termlength="18">
@@ -1866,7 +1877,7 @@ The argument is the new filename base to use for monitoring this channel.</scree
 
           <listitem>
             <simpara>Der Name des verfügbaren Channels, inklusive der
-            Session-Nummer des Testanrufs.</simpara>
+            Session-Nummer des Anrufs.</simpara>
           </listitem>
         </varlistentry>
 
@@ -1948,25 +1959,21 @@ The argument is the new filename base to use for monitoring this channel.</scree
         </varlistentry>
       </variablelist></para>
 
-    <simpara>Ist die Option <code>s</code> (für state) angegeben, wird
-    Asterisk den Channel als nicht verfügbar betrachten, wann immer er
-    in Gebrauch ist, sogar falls er einen weiteren anderen Anruf
-    aufnehmen kann. Mit der Option <code>j</code> wird, falls der
-    Channel nicht verfügbar ist, zur Priorität n+101
-    gesprungen.</simpara>
-
-    <warning>
+    <note>
       <simpara>Diese Anwendung arbeitet auf MGCP-Kanälen nicht
       ordnungsgemäß.</simpara>
-    </warning>
+    </note>
 
     <programlisting>; Zap/1 und Zap/2 auf Verfügbarkeit prüfen:
-exten =&gt; 123,1,ChanIsAvail(Zap/1&amp;Zap/2)
-; wenn mindestens einer verfügbar ist, geht's bei Priorität 2 weiter:
-; In Priorität 2 wählen wir eine Nummer auf dem freien Channel:
-exten =&gt; 123,2,NoOp(${AVAILORIGCHAN})
+exten =&gt; 123,1,ChanIsAvail(Zap/1&amp;Zap/2,j)
+; hier ausnahmsweise mit Priority jumping, da wir, falls kein Kanal
+; frei ist, noch eine Ansage machen wollen
+
+; mindestens einer der Kanäle verfügbar, auf diesem wählen:
+exten =&gt; 123,2,NoOp(${AVAILORIGCHAN} ist verfuegbar)
 exten =&gt; 123,3,Dial(${AVAILORIGCHAN}/123456)
-; Wenn wir bei Prio. 102 landen, ist weder Zap/1 noch Zap/2 verfügbar
+
+; wenn wir bei Prio. 102 landen, ist weder Zap/1 noch Zap/2 verfügbar
 exten =&gt; 123,102,Playback(alle-kanaele-belegt)</programlisting>
 
     <note>
@@ -2407,8 +2414,8 @@ This application sets the following channel variable upon completion:
     <simpara>Liefert stets 0 zurück.</simpara>
 
     <programlisting>exten =&gt; 123,1,Set(DB(test/name)=Peter)    ; in AstDB speichern
-exten =&gt; 123,2,Set(name=${DB(test/name)})  ; abfragen
-exten =&gt; 123,3,DBdel(test/name)            ; löschen</programlisting>
+exten =&gt; 123,n,Set(name=${DB(test/name)})  ; abfragen
+exten =&gt; 123,n,DBdel(test/name)            ; löschen</programlisting>
 
     <important>
       <simpara>Die Applikation <code>DBdel()</code> ist seit 1.4
@@ -2540,7 +2547,8 @@ from the Asterisk database</screen></para>
     <simpara>Liefert -1 zurück, falls die Anwendung ein Auflegen
     angefordert hat, oder 0 beim Austritt ohne Auflegen.</simpara>
 
-    <programlisting>exten =&gt; h,1,DeadAGI(agi-test)</programlisting>
+    <programlisting>; mit einem bereits aufgelegten (h) Kanal noch ein AGI-Skript ausführen:
+exten =&gt; h,1,DeadAGI(agi-test)</programlisting>
 
     <important>
       <simpara>Der Channel wird solange als aktiv angesehen wird, bis
@@ -2695,9 +2703,9 @@ on file descriptor 3
 
     <para>Ein Beispiel für einen gültigen Aufruf: <programlisting>exten =&gt; s,1,Dial(SIP/peter:geheim@meier.tld)</programlisting>
     Das Gleiche würde auch der folgende Aufruf bewirken:
-    <programlisting>exten =&gt; s,1,Dial(SIP/ein_SIP_friend)</programlisting>
-    Letzteres funktioniert nur, wenn in <filename>sip.conf</filename>
-    ein entsprechender Channel definiert ist: <programlisting>[ein_SIP_friend]
+    <programlisting>exten =&gt; s,1,Dial(SIP/ein_SIP_friend)</programlisting>wenn
+    in <filename>sip.conf</filename> ein entsprechender Channel
+    definiert ist: <programlisting>[ein_SIP_friend]
 fromuser=peter
 password=geheim
 host=meier.tld</programlisting></para>
@@ -3766,9 +3774,9 @@ to 'NOANSWER', the DISA application will not answer initially.</screen></para>
 
     <simpara>Gibt stets 0 zurück.</simpara>
 
-    <programlisting>exten =&gt; s,1,Answer()
-exten =&gt; s,2,DumpChan()
-exten =&gt; s,3,Background(enter-ext-of-person)</programlisting>
+    <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,DumpChan()
+exten =&gt; 123,n,Background(enter-ext-of-person)</programlisting>
 
     <note>
       <formalpara>
@@ -3881,17 +3889,18 @@ on file descriptor 3
 
     <synopsis>Echo()</synopsis>
 
-    <simpara>Wiederholt vom Channel gelesenes Audio wieder auf diesem
-    Channel. Diese Anwendung findet häufig zum Testen der Verzögerung
-    und Sprachqualität einer VoIP-Verbindung Verwendung. Der Anrufer
-    kann zum Beenden die <code>#</code>-Taste drücken.</simpara>
+    <simpara>Gibt auf dem Channel eingehendes Audio direkt wieder auf
+    diesem Channel aus. Diese Anwendung findet häufig zum Testen der
+    Verzögerung (Latenz) und Sprachqualität einer VoIP-Verbindung
+    Verwendung. Der Anrufer kann zum Beenden die <code>#</code>-Taste
+    drücken.</simpara>
 
     <simpara>Gibt 0 zurück, falls der Benutzer durch die
     <code>#</code>-Taste beendet, oder -1, falls der Benutzer
     auflegt.</simpara>
 
     <programlisting>exten =&gt; 123,1,Echo()
-exten =&gt; 123,2,Playback(vm-goodbye)</programlisting>
+exten =&gt; 123,n,Playback(vm-goodbye)</programlisting>
 
     <note>
       <formalpara>
@@ -3953,9 +3962,9 @@ application will exit.</screen></para>
     linkend="applikationen-while" />.</simpara>
 
     <programlisting>exten =&gt; 123,1,Set(COUNT=1)
-exten =&gt; 123,2,While($[ ${COUNT} &lt; 5 ])
-exten =&gt; 123,3,SayNumber(${COUNT})
-exten =&gt; 123,4,EndWhile()</programlisting>
+exten =&gt; 123,n,While($[${COUNT} &lt; 5])
+exten =&gt; 123,n,SayNumber(${COUNT})
+exten =&gt; 123,n,EndWhile()</programlisting>
 
     <note>
       <formalpara>
@@ -4019,6 +4028,12 @@ Return to the previous called While</screen></para>
     <programlisting>exten =&gt; 123,1,Set(app=SayDigits(12345))
 exten =&gt; 123,2,Exec(${app})</programlisting>
 
+    <important>
+      <para>Bei einem negativen Rückgabewert wird die Ausführung des
+      Dialplans beendet. Will man das nicht, verwendet man
+      <code>TryExec()</code>.</para>
+    </important>
+
     <note>
       <formalpara>
         <title>Interner Hilfetext zu dieser Applikation in Asterisk
@@ -4063,6 +4078,7 @@ Exec will terminate the dialplan.
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-execif" />, <xref
+      linkend="applikationen-tryexec" />, <xref
       linkend="applikationen-system" /></para>
     </formalpara>
   </section>
@@ -4092,8 +4108,8 @@ Exec will terminate the dialplan.
     <simpara>Ist der <code>Ausdruck</code> nicht wahr (also false), wird
     die Ausführung mit der nächsten Priorität fortgesetzt.</simpara>
 
-    <programlisting>exten =&gt; 123,1,ExecIf($[ ${CALLERID(num)} = 101],SayDigits,12345)
-exten =&gt; 123,2,SayDigits(6789)</programlisting>
+    <programlisting>exten =&gt; 123,1,ExecIf($[${CALLERID(num)} = 101],SayDigits,123)
+exten =&gt; 123,n,SayDigits(678)</programlisting>
 
     <note>
       <formalpara>
@@ -4580,9 +4596,9 @@ exten =&gt; 123,5,Goto(3)
 ; das gleiche mit einer benannten Priorität:
 exten =&gt; 124,1,Answer()
 exten =&gt; 124,2,Set(COUNT=1)
-exten =&gt; 124,3(wdh),SayNumber(${COUNT})
+exten =&gt; 124,3(ansage),SayNumber(${COUNT})
 exten =&gt; 124,4,Set(COUNT=$[ ${COUNT} + 1 ])
-exten =&gt; 124,5,Goto(wdh)</programlisting>
+exten =&gt; 124,5,Goto(ansage)</programlisting>
 
     <note>
       <formalpara>
@@ -4990,10 +5006,10 @@ Set for more information.</screen></para>
     <synopsis>LookupBlacklist([<replaceable>Optionen</replaceable>])</synopsis>
 
     <simpara>Sucht die Caller-ID-Nummer (/-Name) des aktiven Channels in
-    der AstDB (Familie <code>blacklist</code>). Wenn die Option j (jump)
-    angegeben ist, die Nummer gefunden wird und eine Priorität n+101
-    existiert, geht die Ausführung bei dieser Priorität weiter. Wird auf
-    dem Channel keine Caller-ID empfangen, tut die Anwendung
+    der AstDB in der Familie <code>blacklist</code>. Wenn die Option j
+    (jump) angegeben ist, die Nummer gefunden wird und eine Priorität
+    n+101 existiert, geht die Ausführung bei dieser Priorität weiter.
+    Wird auf dem Channel keine Caller-ID empfangen, tut die Anwendung
     nichts.</simpara>
 
     <simpara>Die Applikation setzt auch die Channelvariable
@@ -5007,18 +5023,18 @@ Set for more information.</screen></para>
     <code>database show blacklist</code> für eine Auflistung
     ein.</simpara>
 
-    <programlisting>; Nummern aus der Schwarzen Liste in eine Endlosschleife schicken,
+    <programlisting>; Nummern aus der Schwarzen Liste nicht zulassen,
 ; andernfalls die Nummer in der Variablen ${PETER} wählen:
 exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,LookupBlacklist(j)
-exten =&gt; 123,3,Dial(${PETER},30)
-exten =&gt; 123,103,Playback(tt-allbusy)
-exten =&gt; 123,104,Wait(10)
-exten =&gt; 123,105,Goto(103)</programlisting>
+exten =&gt; 123,n,LookupBlacklist()
+exten =&gt; 123,n,GotoIf($["${LOOKUPBLSTATUS}" = "FOUND"]?black,1)
+exten =&gt; 123,n,Dial(${PETER},30)
 
-    <para>Die Applikation <code>LookupBlacklist()</code> ist offenbar ab
-    Asterisk 1.4 deprecated und kann folgendermaßen ersetzt
-    werden:<programlisting>exten =&gt; 123,1,Macro(blacklist,${CALLERID(num)})
+exten =&gt; black,1,Playback(tt-allbusy)
+exten =&gt; black,n,Hangup()</programlisting>
+
+    <para>Die Applikation <code>LookupBlacklist()</code> könnte
+    folgendermaßen ersetzt werden:<programlisting>exten =&gt; 123,1,Macro(blacklist,${CALLERID(num)})
 exten =&gt; 123,n,Dial(IAX2/benutzer:passwort@beispiel.de/500)
 
 [macro-blacklist]
@@ -5160,10 +5176,10 @@ exten =&gt; s,n,While($[ ${COUNT} &gt; 0])
 exten =&gt; s,n,SayNumber(${COUNT})
 exten =&gt; s,n,Set(COUNT=$[ ${COUNT} - 1 ])
 exten =&gt; s,n,EndWhile()
-; das Makro aufrufen:
+
 [default]
-exten =&gt; 123,1,Macro(countdown,3)
-exten =&gt; 124,1,Macro(countdown,5)</programlisting>
+exten =&gt; 123,1,Macro(countdown,3)   ; das Makro "countdown" mit ARG1=3 aufrufen
+exten =&gt; 124,1,Macro(countdown,5)   ; das Makro "countdown" mit ARG1=5 aufrufen</programlisting>
 
     <note>
       <formalpara>
@@ -5244,7 +5260,7 @@ WARNING: Because of the way Macro is implemented (it executes the priorities
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,MailboxExists(123@default)
 exten =&gt; 123,n,Goto(box-${VMBOXEXISTSSTATUS})
-exten =&gt; 123,10(box-SUCCESS),Voicemail(u123)
+exten =&gt; 123,10(box-SUCCESS),Voicemail(123,u)
 exten =&gt; 123,20(box-FAILED),Playback(tut-uns-leid)</programlisting>
 
     <note>
@@ -6203,11 +6219,13 @@ monitored, otherwise 0.</screen></para>
 
     <simpara>Liefert -1, falls aufgelegt wird, sonst 0.</simpara>
 
-    <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,MP3Player(test.mp3)
-
+    <programlisting>; lokale Datei spielen:
 exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,MP3Player(http://server.tld/test.mp3)</programlisting>
+exten =&gt; 123,n,MP3Player(test.mp3)
+
+; Datei von einer URL spielen:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,MP3Player(http://server.tld/test.mp3)</programlisting>
 
     <note>
       <formalpara>
@@ -6259,7 +6277,8 @@ any key on the dialpad, or by hanging up.</screen></para>
     <programlisting>; auf diese Extension könnte man Telefonverkäufer schicken:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,2,Playback(tt-allbusy)
-exten =&gt; 123,3,MusicOnHold(default)</programlisting>
+exten =&gt; 123,3,MusicOnHold(default)
+exten =&gt; 123,4,Goto(2)</programlisting>
 
     <note>
       <formalpara>
@@ -6317,7 +6336,7 @@ Never returns otherwise.</screen></para>
     wird sie endlos ausgeführt.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,NBScat()</programlisting>
+exten =&gt; 123,n,NBScat()</programlisting>
 
     <note>
       <formalpara>
@@ -6352,18 +6371,17 @@ User can exit by pressing any key
       <secondary><code>NoCDR()</code></secondary>
     </indexterm>
 
-    <simpara>Unterdrückt Anrufprotokolle (Call Detail Records) für den
-    aktuellen Anruf.</simpara>
+    <simpara>Unterdrückt das CDR.</simpara>
 
     <synopsis>NoCDR()</synopsis>
 
-    <simpara>Für den aktuellen Anruf ist die Erstellung von CDRs nicht
-    möglich.</simpara>
+    <simpara>Unterdrückt die Erstellung eines Anrufprotokolls (Call
+    Detail Record) für den aktuellen Anruf.</simpara>
 
     <programlisting>; für Anrufe an 0123-45678 kein CDR:
 exten =&gt; 5551212,1,Answer()
-exten =&gt; 5551212,2,NoCDR()
-exten =&gt; 5551212,3,Dial(Zap/4/012345678)</programlisting>
+exten =&gt; 5551212,n,NoCDR()
+exten =&gt; 5551212,n,Dial(Zap/4/012345678)</programlisting>
 
     <note>
       <formalpara>
@@ -6407,20 +6425,19 @@ current call.</screen></para>
 
     <synopsis>NoOp(<replaceable>Text</replaceable>)</synopsis>
 
-    <simpara>Diese Anwendung tut nichts - sie ist lediglich als
-    Platzhalter gedacht. Als Nebeneffekt evaluiert diese Anwendung Text
-    und gibt ihn als Ergebnis auf dem Asterisk-Kommandozeileninterface
-    aus - eine zum Debugging sehr nützliche Eigenschaft.</simpara>
+    <simpara>Diese Anwendung tut nichts - dem Namen nach. Mit
+    <code>NoOp()</code> kann man aber Text auf dem Asterisk-CLI ausgeben
+    - eine zum Debugging sehr nützliche Eigenschaft.</simpara>
 
     <simpara>Sie müssen den Text nicht in Anführungszeichen betten.
     Stehen Anführungszeichen innerhalb der Klammern, werden diese auf
     der Konsole ausgegeben.</simpara>
 
-    <warning>
-      <para>Die Ausgabe von NoOp() auf dem CLI erfolgt erst ab dem
-      Verbose-Level 3. Dieser kann im CLI mit <command>set verbose
-      3</command> gesetzt werden.</para>
-    </warning>
+    <important>
+      <para>Die Ausgabe von <code>NoOp()</code> auf dem CLI erfolgt erst
+      ab dem Verbose-Level 3. Dieser kann im CLI mit <command>set
+      verbose 3</command> gesetzt werden.</para>
+    </important>
 
     <programlisting>exten =&gt; 123,1,NoOp(Caller-ID: ${CALLERID})</programlisting>
 
@@ -6474,7 +6491,7 @@ variables or functions without having any effect.</screen></para>
     <programlisting>; den Anruf auf 701 parken:
 include =&gt; parkedcalls
 exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,Park(701)</programlisting>
+exten =&gt; 123,n,Park(701)</programlisting>
 
     <note>
       <formalpara>
@@ -6553,10 +6570,10 @@ priority.</screen></para>
 
     <programlisting>include =&gt; parkedcalls
 exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,ParkAndAnnounce(vm-youhave:a:pbx-transfer:at:vm-extension:PARKED,120,Console/dsp)
-exten =&gt; 123,3,Playback(vm-nobodyavail)
-exten =&gt; 123,4,Playback(vm-goodbye)
-exten =&gt; 123,5,Hangup()</programlisting>
+exten =&gt; 123,n,ParkAndAnnounce(vm-youhave:a:pbx-transfer:at:vm-extension:PARKED,120,Console/dsp)
+exten =&gt; 123,n,Playback(vm-nobodyavail)
+exten =&gt; 123,n,Playback(vm-goodbye)
+exten =&gt; 123,n,Hangup()</programlisting>
 
     <note>
       <formalpara>
@@ -6645,7 +6662,7 @@ use of this information.</screen></para>
 
     <programlisting>; den Anruf auf "Parkplatz" 701 wiederaufnehmen:
 exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,ParkedCall(701)</programlisting>
+exten =&gt; 123,n,ParkedCall(701)</programlisting>
 
     <note>
       <formalpara>
@@ -6893,7 +6910,7 @@ Example: PauseQueueMember(|SIP/3000)</screen></para>
     falls diese existiert.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,Playback(tt-weasels)</programlisting>
+exten =&gt; 123,n,Playback(tt-weasels)</programlisting>
 
     <note>
       <formalpara>
@@ -7019,22 +7036,19 @@ Use the StopPlayTones application to stop the tones playing.</screen></para>
     <simpara>Verlangt die Eingabe der Telefonnummer eines Teilnehmers,
     falls keine Caller-ID-Informationen empfangen werden.</simpara>
 
-    <synopsis>PrivacyManager()</synopsis>
+    <synopsis>PrivacyManager([<replaceable>Versuche</replaceable>[,<replaceable>Länge</replaceable>[,<replaceable>Optionen</replaceable>]]])</synopsis>
 
     <simpara>Wird keine Caller-ID empfangen, wird der Channel
-    beantwortet und der Anrufer oder die Anruferin aufgefordert, seine
-    bzw. ihre Telefonnummer einzugeben. Standardmäßig werden dem Anrufer
-    dabei drei Versuche gewährt. Wenn er nach diesen drei Versuchen
-    nicht mindestens eine zehnstellige Telefonnummer eingegeben hat und
-    es eine Priorität n+101 gibt, wird bei dieser Priorität
-    fortgefahren. Andernfalls wird 0 zurückgeliefert. Wird auf dem
-    Channel eine Caller-ID empfangen, tut <code>PrivacyManager()</code>
-    nichts.</simpara>
+    beantwortet und der Anrufer aufgefordert, seine Telefonnummer
+    einzugeben. Wird auf dem Channel eine Caller-ID empfangen, tut
+    <code>PrivacyManager()</code> nichts.</simpara>
 
-    <para>Die Konfigurationsdatei <filename>privacy.conf</filename>
-    bestimmt die Funktionsweise der
-    <code>PrivacyManager()</code>-Anwendung. Sie enthält die beiden
-    folgenden Zeilen: <variablelist termlength="12">
+    <para>Dem Anrufer werden dabei <code>Versuche</code> Versuche
+    (Default: 3) gewährt eine Telefonnummer mit mindestens
+    <code>Länge</code> Stellen (Default: 10) einzugeben. Diese
+    Default-Werte werden aus der Datei <filename>privacy.conf</filename>
+    gelesen. Sie enthält die beiden folgenden Einträge: <variablelist
+        spacing="compact" termlength="12">
         <varlistentry>
           <term><code>maxretries</code></term>
 
@@ -7054,13 +7068,25 @@ Use the StopPlayTones application to stop the tones playing.</screen></para>
             10).</simpara>
           </listitem>
         </varlistentry>
-      </variablelist></para>
+      </variablelist>Wenn Sie nicht wollen, dass bei jedem Aufruf aus
+    der Datei gelesen werden muss, geben Sie bei
+    <code>PrivacyManager()</code> explizit Werte an.</para>
+
+    <simpara>Mit der Option <code>j</code> wird zur Priorität n+101
+    gesprungen, wenn der Anrufer nicht innerhalb der erlaubten Versuche
+    eine Nummer der erforderlichen Länge eingibt.</simpara>
+
+    <simpara>Die Channel-Variable <code>PRIVACYMGRSTATUS</code> wird
+    entweder auf <code>SUCCESS</code> oder auf <code>FAILED</code>
+    gesetzt.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,PrivacyManager()
-exten =&gt; 123,3,Dial(Zap/1)
-exten =&gt; 123,103,Playback(tut-uns-leid)
-exten =&gt; 123,104,Playback(vm-goodbye)</programlisting>
+exten =&gt; 123,n,PrivacyManager()
+exten =&gt; 123,n,GotoIf($["${PRIVACYMGRSTATUS}" = "FAILED"]?pm-fehler,1)
+exten =&gt; 123,n,Dial(Zap/1)
+
+exten =&gt; pm-fehler,1,Playback(tut-uns-leid)
+exten =&gt; pm-fehler,n,Playback(vm-goodbye)</programlisting>
 
     <note>
       <formalpara>
@@ -8123,10 +8149,9 @@ Return()
     <synopsis>Ringing()</synopsis>
 
     <simpara>Signalisiert dem Teilnehmer Klingeln. Wie diese
-    Signalisierung erfolgt, hängt vom Channeltreiber ab.</simpara>
-
-    <simpara>Beachten Sie, dass diese Anwendung den Anrufer nicht mit
-    tatsächlichem Klingeln versieht. Benutzen Sie hierzu die Anwendung
+    Signalisierung erfolgt, hängt vom Channeltreiber ab. Beachten Sie,
+    dass diese Anwendung den Anrufer nicht mit tatsächlichem Klingeln
+    versieht. Benutzen Sie hierzu die Anwendung
     <code>Playtones()</code>.</simpara>
 
     <simpara>Liefert stets 0 zurück.</simpara>
@@ -8728,7 +8753,7 @@ This application sets the following channel variable upon completion:
 
     <simpara>Sendet Text zu dem Channel.</simpara>
 
-    <synopsis>SendText(<replaceable>Text</replaceable>[,Optionen])</synopsis>
+    <synopsis>SendText(<replaceable>Text</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
 
     <simpara>Überträgt den Text auf einem Channel (z.B. zur Anzeige im
     Display), falls die Übertragung von Text unterstützt wird. Danach
@@ -8811,10 +8836,11 @@ The option string many contain the following character:
     oder der Channel die Übertragung nicht unterstützt, sonst -1. Setzt
     die Channelvariable <code>SENDURLSTATUS</code> auf
     <code>SUCCESS</code> (Erfolg), <code>FAILURE</code> (Sendefehler),
-    <code>UNSUPPORTED</code> (nicht unterstützt) oder NOLOAD (bei
-    <code>wait</code>: Client konnte die URL nicht laden).</simpara>
+    <code>UNSUPPORTED</code> (nicht unterstützt) oder
+    <code>NOLOAD</code> (bei <code>wait</code>: Client konnte die URL
+    nicht laden).</simpara>
 
-    <programlisting>exten =&gt; 123,1,SendURL(www.asterisk.org,wait)</programlisting>
+    <programlisting>exten =&gt; 123,1,SendURL(http://www.asterisk.org/,wait)</programlisting>
 
     <note>
       <formalpara>
@@ -9119,7 +9145,7 @@ Set the AMA Flags
     <simpara>Liefert stets 0 zurück.</simpara>
 
     <programlisting>exten =&gt; 123,1,SetCallerPres(allowed_not_screened)
-exten =&gt; 123,2,Dial(Zap/4/1234567)</programlisting>
+exten =&gt; 123,n,Dial(Zap/4/1234567)</programlisting>
 
     <simpara>Evtl. müssen Sie <code>usecallingpres=yes</code> in der
     <filename>zapata.conf</filename> setzen.</simpara>
@@ -9182,7 +9208,7 @@ Set CallerID Presentation
     <simpara>Liefert stets 0 zurück.</simpara>
 
     <programlisting>exten =&gt; 123,1,SIPAddHeader(X-Asterisk-Account: ${CDR(accountcode)})
-exten =&gt; 123,2,Dial(SIP/123)</programlisting>
+exten =&gt; 123,n,Dial(SIP/123)</programlisting>
 
     <note>
       <formalpara>
@@ -9441,8 +9467,8 @@ queues and send messages.</screen></para>
 
     <programlisting>; alle Kanäle auflegen, die Zap/4 benutzen:
 exten =&gt; 123,1,SoftHangup(Zap/4,a)
-exten =&gt; 123,2,Wait(2)
-exten =&gt; 123,3,Dial(Zap/4/1234567)</programlisting>
+exten =&gt; 123,n,Wait(2)
+exten =&gt; 123,n,Dial(Zap/4/1234567)</programlisting>
 
     <note>
       <formalpara>
@@ -9494,9 +9520,9 @@ the application will report it.
     nicht überwacht wird.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,Monitor(wav,monitor_test,mb)
-exten =&gt; 123,3,SayDigits(12345678901234567890)
-exten =&gt; 123,4,StopMonitor()</programlisting>
+exten =&gt; 123,n,Monitor(wav,monitor_test,mb)
+exten =&gt; 123,n,SayDigits(12345678901234567890)
+exten =&gt; 123,n,StopMonitor()</programlisting>
 
     <note>
       <formalpara>
@@ -9544,12 +9570,12 @@ Stops monitoring a channel. Has no effect if the channel is not monitored</scree
     Tonliste.</simpara>
 
     <programlisting>exten =&gt; 123,1,Playtones(busy)
-exten =&gt; 123,2,Wait(2)
-exten =&gt; 123,3,StopPlaytones()
-exten =&gt; 123,4,Playtones(congestion)
-exten =&gt; 123,5,Wait(2)
-exten =&gt; 123,6,StopPlaytones()
-exten =&gt; 123,7,Goto(1)</programlisting>
+exten =&gt; 123,n,Wait(2)
+exten =&gt; 123,n,StopPlaytones()
+exten =&gt; 123,n,Playtones(congestion)
+exten =&gt; 123,n,Wait(2)
+exten =&gt; 123,n,StopPlaytones()
+exten =&gt; 123,n,Goto(1)</programlisting>
 
     <note>
       <formalpara>
@@ -9603,8 +9629,9 @@ Stop playing a tone list</screen></para>
 
     <simpara>Setzt die Channelvariable <code>SYSTEMSTATUS</code> auf
     <code>SUCCESS</code> (erfolgreich ausgeführt), <code>FAILURE</code>
-    (konnte nicht ausgeführt werden) oder <code>APPERROR</code> (Befehl
-    ausgeführt aber mit Exit-Code ungleich 0).</simpara>
+    (konnte nicht ausgeführt werden) oder (undokumentiert) auf
+    <code>APPERROR</code> (Befehl ausgeführt aber mit Exit-Code ungleich
+    0).</simpara>
 
     <programlisting>exten =&gt; s,1,System(echo '${DATETIME} - ${CALLERID} - ${CHANNEL}' &gt;&gt; /var/log/asterisk/anrufe)</programlisting>
 
@@ -9725,6 +9752,63 @@ The option string many contain the following character:
         <para><screen>- keine - </screen></para>
       </formalpara>
     </note>
+  </section>
+
+  <section id="applikationen-tryexec">
+    <title><code>TryExec()</code></title>
+
+    <indexterm>
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>TryExec()</code></secondary>
+    </indexterm>
+
+    <simpara>Versucht die Ausführung einer
+    Dialplan-Applikation.</simpara>
+
+    <synopsis>TryExec(<replaceable>Applikation</replaceable>(<replaceable>Argumente</replaceable>))</synopsis>
+
+    <para>Versucht, wie <code>Exec()</code>, eine Applikation
+    auszuführen, aber ohne den Anruf abzubrechen, wenn die Applikation
+    nicht gefunden wird oder einen Fehler zurückgibt. Stattdessen wird
+    die Variable <code>TRYSTATUS</code> auf einen der folgenden Werte
+    gesetzt:<variablelist spacing="compact" termlength="9">
+        <varlistentry>
+          <term><code>SUCCESS</code></term>
+
+          <listitem>
+            <simpara>Die Applikation hat 0 zurückgegeben.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>FAILED</code></term>
+
+          <listitem>
+            <simpara>Die Applikation hat einen Fehler zurückgegeben
+            (Wert ungleich 0).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>NOAPP</code></term>
+
+          <listitem>
+            <simpara>Die Applikation wurde nicht gefunden.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <simpara>Für weitere Informationen siehe <xref
+    linkend="applikationen-exec" />.</simpara>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applikationen-exec" />, <xref
+      linkend="applikationen-execif" />, <xref
+      linkend="applikationen-trysystem" /></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-trysystem">
@@ -9880,7 +9964,7 @@ Uniqueid: <replaceable>Anruf-ID</replaceable>
     <simpara>Liefert stets 0 zurück.</simpara>
 
     <programlisting>exten =&gt; 123,1,UserEvent(Test,Hinweis: Ich rufe jetzt ${XY} an.)
-exten =&gt; 123,2,Dial(${XY})</programlisting>
+exten =&gt; 123,n,Dial(${XY})</programlisting>
 
     <note>
       <formalpara>
@@ -10021,7 +10105,7 @@ Verbose([&lt;level&gt;|]&lt;message&gt;)
 
     <programlisting>; als Mailbox die Extension annehmen und authentifizieren:
 exten =&gt; 123,1,VMAuthenticate(${EXTEN}@verkauf)
-exten =&gt; 123,2,SayDigits(${AUTH_MAILBOX})</programlisting>
+exten =&gt; 123,n,SayDigits(${AUTH_MAILBOX})</programlisting>
 
     <note>
       <formalpara>
