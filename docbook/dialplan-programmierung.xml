@@ -1251,6 +1251,56 @@ exten =&gt; 1015,n,Return()</programlisting></para>
     Probleme beim Upgrade bekommen.</para>
   </section>
 
+  <section id="ael">
+    <title>Asterisk Extension Language (AEL)</title>
+
+    <para>Wer einmal ein <command>ls</command> im Verzeichnis
+    <filename>/etc/asterisk/</filename> ausgeführt hat, wird dort nicht nur
+    eine Datei <filename>extensions.conf</filename>, sondern auch eine Datei
+    <filename>extensions.ael</filename> gefunden haben. In dieser Datei ist
+    ein Teil des Dialplanes in der Asterisk Extension Language (kurz AEL)
+    abgespeichert. AEL ist ein Versuch die Programmierung des Dialplanes
+    syntaktisch mehr an andere Programmiersprachen anzulehnen. Wenn ein
+    normaler Dialplan wie folgt aussieht:<programlisting>[meine-telefone]
+exten =&gt; 23,1,Wait(1)
+exten =&gt; 23,2,Answer()
+exten =&gt; 23,3,Playback(hello-world)
+exten =&gt; 23,4,Wait(1)
+exten =&gt; 23,5,Hangup()</programlisting></para>
+
+    <para>Dann sieht die gleiche Extension im gleichen Context in AEL wie
+    folgt aus:<programlisting>context meine-telefone {
+        23 =&gt; {
+                Wait(1);
+                Answer();
+                Playback(hello-world);
+                Wait(1);
+                Hangup();
+        };
+};</programlisting></para>
+
+    <para>Wie spielen die beiden Versionen des Dialplanes zusammen? Asterisk
+    lädt erst die Datei <code>extensions.conf</code> und dann konvertiert es
+    die Datei <code>extensions.ael</code> in das <code>.conf</code> Format, um
+    es dann nach zu laden. Es werden also beide Dateien geladen und als
+    Dialplan ausgeführt! Da die AEL erst noch in das alte Format umkonvertiert
+    werden muss, könnte man sogar mit einem leichten zeitlichen Nachteil
+    argumentieren. Wenn in beiden Dateien die gleiche Extension im gleichen
+    Context definiert ist, dann nimmt Asterisk die
+    <filename>extensions.conf</filename> Variante.</para>
+
+    <para>Ob man den traditionellen oder den AEL Weg wählt, muss jeder selber
+    entscheiden. Vom technischen Standpunkt gibt es keine Unterschiede in der
+    Funktionalität. Wer sich für AEL interessiert, sollte einmal einen Blick
+    in die Datei <filename>/etc/asterisk/extensions.ael</filename> werfen.
+    Dort gibt es einige praktische Beispiele.</para>
+
+    <para>In diesem Buch werden alle Beispiele immer im traditionellen Modus
+    beschrieben. Einer der Gründe dafür ist, das AEL bei der Asterisk Version
+    1.2 noch als experimentell eingestuft wurde. Er mit der Asterisk Version
+    1.4 gilt es als Stable.</para>
+  </section>
+
   <xi:include href="applikationen.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
