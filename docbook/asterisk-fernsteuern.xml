@@ -10,20 +10,24 @@
 % Free Documentation License".
 % Asterisk training and consulting is offered at http://www.amooma.de -->
 
-  <title>Asterisk fernsteuern</title>
+  <title>Asterisk fernsteuern<indexterm>
+      <primary>Fernsteuern</primary>
+    </indexterm></title>
 
-  <para>Es gibt verschiedene Möglichkeiten eine Asterisk Telefonanlage von
+  <para>Es gibt verschiedene Möglichkeiten eine Asterisk-Telefonanlage von
   extern (also z.B. von anderen Programmen) aus zu steuern.</para>
 
   <section id="asterisk-rx">
-    <title>asterisk -rx "&lt;command&gt;"</title>
+    <title>asterisk -rx "<replaceable>Befehl</replaceable>"<indexterm>
+        <primary>asterisk -rx</primary>
+      </indexterm></title>
 
-    <para>Die einfachste Möglichkeit mit Asterisk von Aussen zu kommunizieren
+    <para>Die einfachste Möglichkeit mit Asterisk von außen zu kommunizieren
     ist der Aufruf des Programmes <command>asterisk</command> mit den
-    Parametern <parameter>-rx</parameter> und danach dem CLI Befehl. So kann
-    man jeden beliebigen CLI Befehl von der Shell aus ausführen.</para>
+    Parametern <parameter>-rx</parameter> und danach dem CLI-Befehl. So kann
+    man jeden beliebigen CLI-Befehl von der Shell aus ausführen.</para>
 
-    <section>
+    <section id="asterisk-rx-beispiel">
       <title>Beispiel</title>
 
       <para>Wenn man sich den Dialplan für die Extension
@@ -44,19 +48,22 @@ root@molokai:~&gt;</screen></para>
   </section>
 
   <section id="call-file">
-    <title>Call File</title>
+    <title>Call Files<indexterm>
+        <primary>Call Files</primary>
+      </indexterm></title>
 
-    <para>Call Files lassen sich am ehesten mit Batch Dateien vergleichen. Sie
+    <para>Call Files lassen sich am ehesten mit Batch-Dateien vergleichen. Sie
     werden ins Verzeichnis <filename>/var/spool/asterisk/outgoing/</filename>
-    verschoben<tip>
-        <para>Ein move ist im Dateisystem ein atomarer Vorgang und deshalb für
-        Call Files ideal geeignet. Bei einem cp wird dagegen die Datei Zeile
-        für Zeile kopiert. Es kann also vorkommen, das ein halbfertig
-        kopiertes Call File von Asterisk bereits abgearbeitet wird.</para>
-      </tip> und dort dann von Asterisk abgearbeitet.</para>
+    verschoben und dort dann von Asterisk abgearbeitet.<important>
+        <para>Ein <command>mv</command> (move) ist im Dateisystem ein atomarer
+        Vorgang und deshalb für Call Files ideal geeignet. Bei einem
+        <command>cp</command> (copy) wird dagegen die Datei Zeile für Zeile
+        kopiert. Es kann also vorkommen, das ein halbfertig kopiertes Call
+        File von Asterisk bereits abgearbeitet wird.</para>
+      </important></para>
 
     <para>Der ganze Mechanismus lässt sich anhand eines Beispiels besser
-    erklären. Nehmen wir an, das an einer Asterisk Anlage ein SIP Telefon mit
+    erklären. Nehmen wir an, dass an einer Asterisk-Anlage ein SIP-Telefon mit
     der Nummer 2000 angemeldet ist. Weiterhin haben wir im Dialplan die
     folgende Extension eingetragen:<programlisting>[call-file-test]
 exten =&gt; 10,1,Answer()
@@ -74,30 +81,30 @@ WaitTime: 30
 Context: call-file-test
 Extension: 10</programlisting></para>
 
-    <para>Danach moven wir diese Datei mit <command>mv /tmp/ein-test.call
-    /var/spool/asterisk/outgoing/</command><screen>root@molokai:~&gt;mv /tmp/ein-test.call /var/spool/asterisk/outgoing/</screen></para>
+    <para>Danach verschieben wir diese Datei mit <command>mv
+    /tmp/ein-test.call /var/spool/asterisk/outgoing/</command><screen>root@molokai:~&gt;mv /tmp/ein-test.call /var/spool/asterisk/outgoing/</screen></para>
 
     <para>Jetzt passiert folgendes:</para>
 
     <itemizedlist>
       <listitem>
-        <para>Asterisk überprüft ständig ob sich im Verzeichnis
-        /var/spool/asterisk/outgoing/ ein Call File befindet und ruft dies
-        auf, sobald es da ist.</para>
+        <simpara>Asterisk überprüft ständig, ob sich im Verzeichnis
+        <filename>/var/spool/asterisk/outgoing/</filename> ein Call-File
+        befindet, und arbeitet dieses ab, sobald es da ist.</simpara>
       </listitem>
 
       <listitem>
-        <para>Asterisk öffnet eine Verbindung zum SIP Telefon 2000. Wenn die
-        2000 besetzt sein oder nicht rangehen sollte, dann versucht es das
-        gleiche noch zwei mal (siehe
-        <parameter>MaxRetries</parameter>).</para>
+        <simpara>Asterisk öffnet eine Verbindung zum Telefon
+        <code>SIP/2000</code>. Wenn das Telefon besetzt sein oder nicht
+        rangehen sollte, dann versucht Asterisk das gleiche noch zwei Mal
+        (siehe <parameter>MaxRetries</parameter>).</simpara>
       </listitem>
 
       <listitem>
-        <para>Geht der Benutzer des Telefons 2000 ran, dann startet Asterisk
-        im Context <parameter>[call-file-test]</parameter> die Extension
-        <parameter>10</parameter>. Es wird also der hello-world Sprachbaustein
-        abgespielt.</para>
+        <simpara>Geht der Benutzer des Telefons 2000 ran, dann startet
+        Asterisk im Context <parameter>[call-file-test]</parameter> die
+        Abarbeitung der Extension <code>10</code>. Es wird also der
+        Sprachbaustein <filename>hello-world</filename> abgespielt.</simpara>
       </listitem>
     </itemizedlist>
 
@@ -105,13 +112,13 @@ Extension: 10</programlisting></para>
       <title>Parameter</title>
 
       <para>Im Call File können folgende Parameter angegeben
-      werden:<variablelist termlength="2">
+      werden:<variablelist termlength="23">
           <varlistentry>
             <term><code>Channel: &lt;channel&gt; </code></term>
 
             <listitem>
               <simpara>Der zu benutzende Channel. Dabei gilt die gleiche
-              Syntax wie beim Dial() Befehl (siehe <xref
+              Syntax wie beim <code>Dial()</code> Befehl (siehe <xref
               linkend="applikationen-dial" />).</simpara>
             </listitem>
           </varlistentry>
@@ -130,12 +137,12 @@ Extension: 10</programlisting></para>
             <listitem>
               <simpara>Die Anzahl der Sekunden, die das System auf die Annahme
               des Anrufes warten soll. Wird der Wert nicht angegeben, dann ist
-              der Default bei 45 Sekunden.</simpara>
+              der Default 45 Sekunden.</simpara>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term><code>Maxretries: &lt;number&gt;</code></term>
+            <term><code>MaxRetries: &lt;number&gt;</code></term>
 
             <listitem>
               <simpara>Die Anzahl der weiteren Wählversuche (falls besetzt
@@ -175,7 +182,8 @@ Extension: 10</programlisting></para>
             <term><code>Extension: &lt;exten&gt;</code></term>
 
             <listitem>
-              <simpara>Die Zielextension.</simpara>
+              <simpara>Die Zielextension, die bei Erfolg aufgerufen
+              wird.</simpara>
             </listitem>
           </varlistentry>
 
@@ -203,13 +211,13 @@ Extension: 10</programlisting></para>
             <listitem>
               <simpara>Normalerweise werden Call Files nach der Abarbeitung
               direkt gelöscht. Ist <parameter>Archive: yes</parameter>
-              gesetzt, werden die Call Files aber nicht gelöscht, sondern ins
-              Verzeichnis
+              gesetzt, werden die Call Files aber stattdessen ins Verzeichnis
               <filename>/var/spool/asterisk/outgoing_done/</filename>
               verschoben. Dabei wird Asterisk noch eine Zeile zum Call File
-              hinzufügen. Diese Besteht aus dem Eintrag <parameter>Status:
-              &lt;Expired|Completed|Failed&gt;</parameter> und beschreibt das
-              Ergebnis des Call Files.</simpara>
+              hinzufügen. Diese beschreibt das Ergebnis des Call-Files und
+              sieht so aus:</simpara>
+
+              <literallayout>Status: &lt;Expired|Completed|Failed&gt;</literallayout>
             </listitem>
           </varlistentry>
         </variablelist></para>
@@ -218,53 +226,170 @@ Extension: 10</programlisting></para>
     <section id="call-file-zukunft">
       <title>Call Files in der Zukunft aufrufen</title>
 
-      <para>Beim Aufruf eines Call Files vergleicht Asterisk dessen "zu letzt
-      verändert" Zeit mit der aktuellen Uhrzeit. Liegt dieser Eintrag in der
-      Zukunft, wird das Call File nicht bearbeitet. So kann man leicht Call
-      Files zeitgesteuert abarbeiten.</para>
+      <para>Beim Aufruf eines Call Files vergleicht Asterisk die Zeit der
+      letzten Änderung der Datei mit der aktuellen Uhrzeit. Liegt dieser
+      Eintrag in der Zukunft, wird das Call File noch nicht abgearbeitet. So
+      kann man leicht Call Files zeitgesteuert abarbeiten.</para>
     </section>
 
     <section id="call-file-weckruf">
       <title>Beispiel Weckruf</title>
 
-      <para>Nehmen wir an ein Hotel möchte über Asterisk ein einfaches
+      <para>Nehmen wir an, ein Hotel möchte über Asterisk ein einfaches
       Weckruf-System erstellen. Kunden sollen einen Weckruf über die
       Servicerufnummer *77* aktivieren können. Nach der *77* soll das genaue
       Datum und die Weckuhrzeit gewählt werden.<programlisting>[hotel-intern]
 exten =&gt; _*77*XXXXXXXXXXXX,1,Answer()
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Jahr = ${EXTEN:4:4})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Monat = ${EXTEN:8:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Tag = ${EXTEN:10:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Stunden = ${EXTEN:12:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Minuten = ${EXTEN:14:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,NoOp(Weckruf soll fuer die Rufnummer ${CALLERID(num)} soll um ${Stunden}:${Minuten} Uhr am ${Tag}.${Monat}.${Jahr} erfolgen.)
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Jahr=${EXTEN:4:4})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Monat=${EXTEN:8:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Tag=${EXTEN:10:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Stunden=${EXTEN:12:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Minuten=${EXTEN:14:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,NoOp(Weckruf fuer ${CALLERID(num)} am ${Tag}.${Monat}.${Jahr} um ${Stunden}:${Minuten} erfolgen.)
 exten =&gt; _*77*XXXXXXXXXXXX,n,System(echo 'Channel: SIP/${CALLERID(num)}\nContext: Weckruf\nExtension: 23' &gt; /tmp/${UNIQUEID}.call)
 exten =&gt; _*77*XXXXXXXXXXXX,n,System(touch -t ${Jahr}${Monat}${Tag}${Stunden}${Minuten} /tmp/${UNIQUEID}.call)
 exten =&gt; _*77*XXXXXXXXXXXX,n,System(mv /tmp/${UNIQUEID}.call /var/spool/asterisk/outgoing/
-exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(rqsted-wakeup-for)
-exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Stunden}
-exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Minuten})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(weckruf-programmiert-um)
+exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Stunden})
 exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(digits/oclock)
+exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Minuten})
 exten =&gt; _*77*XXXXXXXXXXXX,n,Hangup()
 
 [Weckruf]
 exten =&gt; 23,1,Answer()
 exten =&gt; 23,n,Wait(1)
-exten =&gt; 23,n,Playback(this-is-yr-wakeup-call)
+exten =&gt; 23,n,Playback(sie-wollten-geweckt-werden)
 exten =&gt; 23,n,Wait(1)
 exten =&gt; 23,n,Hangup()</programlisting></para>
     </section>
   </section>
 
   <section id="asterisk-manager-api">
-    <title>Asterisk Manager API</title>
+    <title>Das Manager-Interface (AMI)<indexterm>
+        <primary>Manager-Interface</primary>
+      </indexterm><indexterm>
+        <primary>AMI</primary>
+      </indexterm><indexterm>
+        <primary><filename>manager.conf</filename></primary>
+      </indexterm><indexterm>
+        <primary>Asterisk Manager Interface</primary>
+      </indexterm></title>
 
-    <para></para>
+    <para>Das Manager-Interface aktiviert man, indem man in der
+    <filename>manager.conf</filename> im Abschnitt <code>[general]</code> den
+    Parameter <code>enabled=yes</code> setzt.<caution>
+        <para>Das sollte man nie auf einem Server mit öffentlichem Zugang
+        machen, außer man schützt sich zusätzlich durch
+        <command>iptables</command>, <command>ipfw</command> oder eine andere
+        Firewall oder einen SSH-Tunnel!</para>
+      </caution>Darunter legen wir uns einen Benutzer-Eintrag
+    an:<programlisting>[admin]
+secret = geheim
+deny = 0.0.0.0/0.0.0.0
+permit = 127.0.0.1/255.255.255.255
+read = system,call,log,verbose,command,agent,user,config
+write = system,call,log,verbose,command,agent,user,config</programlisting>Nach
+    einem Restart können wir uns auf Port 5038 mit dem AMI verbinden, was wir
+    auf der Shell mit <command>telnet</command><footnote>
+        <simpara>Hier kommt nur das <emphasis>Tool</emphasis>
+        <command>telnet</command> zum Einsatz. Das hat nichts mit dem
+        Telnet-Protokoll oder Port zu tun.</simpara>
+      </footnote>ausprobieren:<screen><prompt>$ </prompt>telnet 127.0.0.1 5038
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+Asterisk Call Manager/1.0</screen>Man kann hier von Hand Befehle (die meist
+    aus mehreren Zeilen bestehen) eintippen, z.B.:<screen>Action: Login
+ActionID: 1
+Username: admin
+Secret: geheim
+
+</screen></para>
+
+    <para>Antwort:<screen>Response: Success
+ActionID: 1
+Message: Authentication accepted
+</screen></para>
+
+    <simpara>Die primäre Verwendung liegt aber eher im automatisierte Zugriff
+    von einem Skript.</simpara>
+
+    <simpara>Nach erfolgreicher Authentifizierung können in beiden Richtung
+    Pakete gesendet werden. Die Art des Pakets wird immer von de ersten Zeile
+    darin bestimmt. Der Client sendet <code>Action</code>-Pakete, der Server
+    antwortet mit <code>Response</code> oder kann auch von sich aus
+    <code>Event</code>-Pakete schicken. Die Reihenfolge der Zeilen in einem
+    Paket ist ansonsten aber irrelevant. Zeilen werden durch CR LF<footnote>
+        <simpara>Carriage Return (ASCII 13 dezimal) und Line Feed (ASCII 10
+        dezimal)</simpara>
+      </footnote> beendet, das ganze Paket durch ein weiteres CR LF.
+    Normalerweise sendet der Client in jeder <code>Action</code> ein
+    <code>ActionID</code>-Feld mit beliebigem, möglichst eindeutigem,
+    Inhalt<footnote>
+        <simpara>hier bietet sich etwa der Name des Skripts ein Timestamp und
+        eine fortlaufende Nummer für jede Action an, z.B.
+        <code>testskript.php-1169405408-1</code></simpara>
+      </footnote>, das der Server so in seine <code>Response</code> übernimmt,
+    damit sich die Antworten bei Überschneidungen zuordnen lassen.</simpara>
+
+    <simpara>Der Server sendet <code>Event</code>-Pakete, um den Client über
+    verschiedene Ereignisse zu informieren. Es gibt auch Ereignisse, die von
+    einer <code>Action</code> des Clients ausgelöst werden. Dann sendet der
+    Server ein <code>Response: Follows</code> gefolgt von den Events (die dann
+    ebenfalls die <code>ActionID</code> beinhalten) und ein abschließendes
+    Event (normalerweise
+    <replaceable>Aktionsname</replaceable>Complete).</simpara>
+
+    <simpara>Wenn Ihr Client keine Events benötigt, kann er direkt im ersten
+    Authentifizierungs-Paket den Parameter <code>Events: off</code> senden, um
+    dann nur Antworten auf von ihm gesendete Actions zu erhalten.</simpara>
+
+    <simpara>Die Liste der verfügbaren Befehle erhält man im
+    <emphasis>CLI</emphasis> mit <code>show manager commands</code> (bzw.
+    <code>manager show commands</code>), Informationen über einen Befehl mit
+    <code>show manager command <replaceable>Befehlsname</replaceable></code>
+    (bzw. <code>manager show command
+    <replaceable>Befehlsname</replaceable></code>). Eine Übersicht findet man
+    auch auf <ulink
+    url="http://www.voip-info.org/wiki/view/Asterisk+manager+API">http://www.voip-info.org/wiki/view/Asterisk+manager+API</ulink>.</simpara>
+
+    <simpara>Für eine Liste der Events siehe <ulink
+    url="http://www.voip-info.org/wiki/view/asterisk+manager+events">http://www.voip-info.org/wiki/view/asterisk+manager+events</ulink>.
+    Beispiele und APIs in verschiedenen Programmiersprachen: <ulink
+    url="http://www.voip-info.org/wiki/view/Asterisk+manager+Examples">http://www.voip-info.org/wiki/view/Asterisk+manager+Examples</ulink>.
+    StarAstAPI (PHP): <ulink
+    url="http://www.starutilities.com/">http://www.starutilities.com/</ulink>.</simpara>
   </section>
 
-  <section>
-    <title>AJAM - Aynchronous Javascript Asterisk Manager</title>
+  <section id="manager-interface-ajam">
+    <title>AJAM<indexterm>
+        <primary>AJAM</primary>
+      </indexterm><indexterm>
+        <primary>Aynchronous Javascript Asterisk Manager</primary>
+      </indexterm><indexterm>
+        <primary><filename>http.conf</filename></primary>
+      </indexterm></title>
 
-    <para>Warnung: Reines 1.4er Feature.</para>
+    <subtitle>Aynchronous Javascript Asterisk Manager</subtitle>
+
+    <simpara>Seit Version 1.4 bringt Asterisk einen kleinen Web-Server mit,
+    AJAM genannt, über den man per HTTP auf das Asterisk Manager Interface
+    (AMI) zugreifen kann (eher als Demonstration). Dazu sind die Schritte wie
+    in <xref linkend="asterisk-manager-api" /> Voraussetzung. Um dann den
+    Web-Server zu aktivieren setzt man in der <filename>http.conf</filename>
+    im Abschnitt <code>[general]</code> die Einstellungen
+    <code>enabled=yes</code> und <code>enablestatic=yes</code>.
+    <code>bindaddr</code> stellt man auf <code>127.0.0.1</code>,
+    <code>bindport</code> auf <code>8088</code>. Zusätzlich muss in der
+    <filename>manager.conf</filename> der Parameter
+    <code>webenabled=yes</code> eingestellt sein.</simpara>
+
+    <para>Nach einem Restart können wir uns mit<literallayout>http://localhost:8088/asterisk/manager?action=login&amp;username=<replaceable>admin</replaceable>&amp;secret=<replaceable>geheim</replaceable></literallayout>einloggen
+    oder Befehle ausführen, unter<literallayout>http://localhost:8088/asterisk/static/ajamdemo.html</literallayout>die
+    AJAM-Demo sehen, unter<literallayout>http://localhost:8088/asterisk/rawman?action=status</literallayout>Consolen-Events
+    senden/sehen oder dies auch mit<literallayout>http://localhost:8088/asterisk/mxml?action=status</literallayout>in
+    XML-Form tun. Damit lassen sich vergleichsweise einfach Web-Anwendungen
+    entwickeln (i.d.R. für den internen Gebrauch), die per AJAX auf das
+    Manager-Interface zugreifen.</para>
   </section>
 </chapter>
