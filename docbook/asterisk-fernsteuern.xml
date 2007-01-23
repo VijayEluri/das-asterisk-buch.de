@@ -34,16 +34,16 @@
       <parameter>23</parameter> im Context
       <parameter>[meine-telefone]</parameter> anschauen will, kann man dies
       mit der Eingabe <command>asterisk -rx "show dialplan
-      23@meine-telefone"</command> erreichen:<screen>root@molokai:~&gt;asterisk -rx "show dialplan 23@meine-telefone"
-[ Context 'meine-telefone' created by 'pbx_config' ]
-  '23' =&gt;           1. Wait(1)                                    [pbx_config]
-                    2. Answer()                                   [pbx_config]
-                    3. Playback(hello-world)                      [pbx_config]
-                    4. Wait(1)                                    [pbx_config]
-                    5. Hangup()                                   [pbx_config]
-
--= 1 extension (5 priorities) in 1 context. =-
-root@molokai:~&gt;</screen></para>
+      23@meine-telefone"</command> erreichen:<screen>root@molokai:~&gt;asterisk -rx "show dialplan 23@meine-telefone"yyy123yyysw
+[ Context 'meine-telefone' created by 'pbx_config' ]yyy123yyysw
+  '23' =&gt;           1. Wait(1)                                    [pbx_config]yyy123yyysw
+                    2. Answer()                                   [pbx_config]yyy123yyysw
+                    3. Playback(hello-world)                      [pbx_config]yyy123yyysw
+                    4. Wait(1)                                    [pbx_config]yyy123yyysw
+                    5. Hangup()                                   [pbx_config]yyy123yyysw
+yyy123yyysw
+-= 1 extension (5 priorities) in 1 context. =-yyy123yyysw
+root@molokai:~&gt;yyy123yyysw</screen></para>
     </section>
   </section>
 
@@ -65,24 +65,24 @@ root@molokai:~&gt;</screen></para>
     <para>Der ganze Mechanismus lässt sich anhand eines Beispiels besser
     erklären. Nehmen wir an, dass an einer Asterisk-Anlage ein SIP-Telefon mit
     der Nummer 2000 angemeldet ist. Weiterhin haben wir im Dialplan die
-    folgende Extension eingetragen:<programlisting>[call-file-test]
-exten =&gt; 10,1,Answer()
-exten =&gt; 10,n,Wait(1)
-exten =&gt; 10,n,Playback(hello-world)
-exten =&gt; 10,n,Wait(1)
-exten =&gt; 10,n,Hangup()</programlisting></para>
+    folgende Extension eingetragen:<programlisting>[call-file-test]yyy123yyysw
+exten =&gt; 10,1,Answer()yyy123yyysw
+exten =&gt; 10,n,Wait(1)yyy123yyysw
+exten =&gt; 10,n,Playback(hello-world)yyy123yyysw
+exten =&gt; 10,n,Wait(1)yyy123yyysw
+exten =&gt; 10,n,Hangup()yyy123yyysw</programlisting></para>
 
     <para>Jetzt generieren wir im Verzeichnis <filename>/tmp/</filename> die
     Datei <filename>ein-test.call</filename> mit folgendem
-    Inhalt:<programlisting>Channel: SIP/2000
-MaxRetries: 2
-RetryTime: 60
-WaitTime: 30
-Context: call-file-test
-Extension: 10</programlisting></para>
+    Inhalt:<programlisting>Channel: SIP/2000yyy123yyysw
+MaxRetries: 2yyy123yyysw
+RetryTime: 60yyy123yyysw
+WaitTime: 30yyy123yyysw
+Context: call-file-testyyy123yyysw
+Extension: 10yyy123yyysw</programlisting></para>
 
     <para>Danach verschieben wir diese Datei mit <command>mv
-    /tmp/ein-test.call /var/spool/asterisk/outgoing/</command><screen>root@molokai:~&gt;mv /tmp/ein-test.call /var/spool/asterisk/outgoing/</screen></para>
+    /tmp/ein-test.call /var/spool/asterisk/outgoing/</command><screen>root@molokai:~&gt;mv /tmp/ein-test.call /var/spool/asterisk/outgoing/yyy123yyysw</screen></para>
 
     <para>Jetzt passiert folgendes:</para>
 
@@ -238,29 +238,29 @@ Extension: 10</programlisting></para>
       <para>Nehmen wir an, ein Hotel möchte über Asterisk ein einfaches
       Weckruf-System erstellen. Kunden sollen einen Weckruf über die
       Servicerufnummer *77* aktivieren können. Nach der *77* soll das genaue
-      Datum und die Weckuhrzeit gewählt werden.<programlisting>[hotel-intern]
-exten =&gt; _*77*XXXXXXXXXXXX,1,Answer()
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Jahr = ${EXTEN:4:4})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Monat = ${EXTEN:8:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Tag = ${EXTEN:10:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Stunden = ${EXTEN:12:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Minuten = ${EXTEN:14:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,NoOp(Weckruf soll fuer die Rufnummer ${CALLERID(num)} soll um ${Stunden}:${Minuten} Uhr am ${Tag}.${Monat}.${Jahr} erfolgen.)
-exten =&gt; _*77*XXXXXXXXXXXX,n,System(echo 'Channel: SIP/${CALLERID(num)}\nContext: Weckruf\nExtension: 23' &amp;gt; /tmp/${UNIQUEID}.call)
-exten =&gt; _*77*XXXXXXXXXXXX,n,System(touch -t ${Jahr}${Monat}${Tag}${Stunden}${Minuten} /tmp/${UNIQUEID}.call)
-exten =&gt; _*77*XXXXXXXXXXXX,n,System(mv /tmp/${UNIQUEID}.call /var/spool/asterisk/outgoing/
-exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(rqsted-wakeup-for)
-exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Stunden}
-exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Minuten})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(digits/oclock)
-exten =&gt; _*77*XXXXXXXXXXXX,n,Hangup()
-
-[Weckruf]
-exten =&gt; 23,1,Answer()
-exten =&gt; 23,n,Wait(1)
-exten =&gt; 23,n,Playback(this-is-yr-wakeup-call)
-exten =&gt; 23,n,Wait(1)
-exten =&gt; 23,n,Hangup()&lt;/programlisting&gt;</programlisting></para>
+      Datum und die Weckuhrzeit gewählt werden.<programlisting>[hotel-intern]yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,1,Answer()yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Jahr = ${EXTEN:4:4})yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Monat = ${EXTEN:8:2})yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Tag = ${EXTEN:10:2})yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Stunden = ${EXTEN:12:2})yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Minuten = ${EXTEN:14:2})yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,NoOp(Weckruf soll fuer die Rufnummer ${CALLERID(num)} soll um ${Stunden}:${Minuten} Uhr am ${Tag}.${Monat}.${Jahr} erfolgen.)yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,System(echo 'Channel: SIP/${CALLERID(num)}\nContext: Weckruf\nExtension: 23' &amp;gt; /tmp/${UNIQUEID}.call)yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,System(touch -t ${Jahr}${Monat}${Tag}${Stunden}${Minuten} /tmp/${UNIQUEID}.call)yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,System(mv /tmp/${UNIQUEID}.call /var/spool/asterisk/outgoing/yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(rqsted-wakeup-for)yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Stunden}yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Minuten})yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(digits/oclock)yyy123yyysw
+exten =&gt; _*77*XXXXXXXXXXXX,n,Hangup()yyy123yyysw
+yyy123yyysw
+[Weckruf]yyy123yyysw
+exten =&gt; 23,1,Answer()yyy123yyysw
+exten =&gt; 23,n,Wait(1)yyy123yyysw
+exten =&gt; 23,n,Playback(this-is-yr-wakeup-call)yyy123yyysw
+exten =&gt; 23,n,Wait(1)yyy123yyysw
+exten =&gt; 23,n,Hangup()&lt;/programlisting&gt;yyy123yyysw</programlisting></para>
     </section>
   </section>
 
@@ -283,32 +283,32 @@ exten =&gt; 23,n,Hangup()&lt;/programlisting&gt;</programlisting></para>
         <command>iptables</command>, <command>ipfw</command> oder eine andere
         Firewall oder einen SSH-Tunnel!</para>
       </caution>Darunter legen wir uns einen Benutzer-Eintrag
-    an:<programlisting>[admin]
-secret = geheim
-deny = 0.0.0.0/0.0.0.0
-permit = 127.0.0.1/255.255.255.255
-read = system,call,log,verbose,command,agent,user,config
-write = system,call,log,verbose,command,agent,user,config</programlisting>Nach
+    an:<programlisting>[admin]yyy123yyysw
+secret = geheimyyy123yyysw
+deny = 0.0.0.0/0.0.0.0yyy123yyysw
+permit = 127.0.0.1/255.255.255.255yyy123yyysw
+read = system,call,log,verbose,command,agent,user,configyyy123yyysw
+write = system,call,log,verbose,command,agent,user,configyyy123yyysw</programlisting>Nach
     einem Restart können wir uns auf Port 5038 mit dem AMI verbinden, was wir
     auf der Shell mit <command>telnet</command><footnote>
         <simpara>Hier kommt nur das <emphasis>Tool</emphasis>
         <command>telnet</command> zum Einsatz. Das hat nichts mit dem
         Telnet-Protokoll oder Port zu tun.</simpara>
-      </footnote>ausprobieren:<screen><prompt>$ </prompt>telnet 127.0.0.1 5038
-Trying 127.0.0.1...
-Connected to localhost.
-Escape character is '^]'.
-Asterisk Call Manager/1.0</screen>Man kann hier von Hand Befehle (die meist
-    aus mehreren Zeilen bestehen) eintippen, z.B.:<screen>Action: Login
-ActionID: 1
-Username: admin
-Secret: geheim
-
+      </footnote>ausprobieren:<screen><prompt>$ </prompt>telnet 127.0.0.1 5038yyy123yyysw
+Trying 127.0.0.1...yyy123yyysw
+Connected to localhost.yyy123yyysw
+Escape character is '^]'.yyy123yyysw
+Asterisk Call Manager/1.0yyy123yyysw</screen>Man kann hier von Hand Befehle (die meist
+    aus mehreren Zeilen bestehen) eintippen, z.B.:<screen>Action: Loginyyy123yyysw
+ActionID: 1yyy123yyysw
+Username: adminyyy123yyysw
+Secret: geheimyyy123yyysw
+yyy123yyysw
 </screen></para>
 
-    <para>Antwort:<screen>Response: Success
-ActionID: 1
-Message: Authentication accepted
+    <para>Antwort:<screen>Response: Successyyy123yyysw
+ActionID: 1yyy123yyysw
+Message: Authentication acceptedyyy123yyysw
 </screen></para>
 
     <simpara>Die primäre Verwendung liegt aber eher im automatisierte Zugriff

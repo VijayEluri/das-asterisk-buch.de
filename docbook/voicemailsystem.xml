@@ -126,51 +126,51 @@
         <simpara>Die <filename>voicemail.conf</filename> sieht in diesem
         Fall wie folgt aus:</simpara>
 
-        <programlisting>[general]
-; Die Sprachnachrichten werden im GSM Format gespeichert, 
-; um Platz zu sparen.
-format = gsm
-attach = yes
-
-[default]
-; Die Syntax fuer die Eintraege lautet:
-; MailboxNr =&gt; Passwort,Name,E-Mail,Pager,Optionen
-; (wobei die MailboxNr oft der Extension entspricht)
-200 =&gt; 1234,Horst Meier
-201 =&gt; 1234,Eva Meier
-202 =&gt; 1234,Peter Meier,peter@die-familie-meier.de
-203 =&gt; 1234,Lisa Meier,lisa@die-familie-meier.de,,delete=yes</programlisting>
+        <programlisting>[general]yyy123yyysw
+; Die Sprachnachrichten werden im GSM Format gespeichert, yyy123yyysw
+; um Platz zu sparen.yyy123yyysw
+format = gsmyyy123yyysw
+attach = yesyyy123yyysw
+yyy123yyysw
+[default]yyy123yyysw
+; Die Syntax fuer die Eintraege lautet:yyy123yyysw
+; MailboxNr =&gt; Passwort,Name,E-Mail,Pager,Optionenyyy123yyysw
+; (wobei die MailboxNr oft der Extension entspricht)yyy123yyysw
+200 =&gt; 1234,Horst Meieryyy123yyysw
+201 =&gt; 1234,Eva Meieryyy123yyysw
+202 =&gt; 1234,Peter Meier,peter@die-familie-meier.deyyy123yyysw
+203 =&gt; 1234,Lisa Meier,lisa@die-familie-meier.de,,delete=yesyyy123yyysw</programlisting>
 
         <simpara>Und in der <filename>extensions.conf</filename> wird
         auf die Voicemailbox wie folgt verwiesen:</simpara>
 
-        <programlisting>[familie-meier]
-; Wenn nach 30 Sekunden niemand abnimmt, geht das Gespraech 
-; auf die Voicemailbox, das gleiche bei besetzt:
-exten =&gt; 20[0-3],1,Dial(SIP/${EXTEN},30)
-exten =&gt; 20[0-3],n,Goto(s-${DIALSTATUS},1) ; je nach Status springen (NOANSWER,BUSY,CHANUNAVAIL,CONGESTION,ANSWER)
-exten =&gt; s-NOANSWER,1,Voicemail(${EXT},u)  ; Voicemail mit Ansage "nicht erreichbar"
-exten =&gt; s-BUSY,1,Voicemail(${EXT},b)      ; Voicemail mit Ansage "besetzt"
-exten =&gt; s-ANSWER,1,Hangup()               ; zur Sicherheit nach Gespräch auflegen
-exten =&gt; _s-.,1,Goto(s-NOANSWER,1)         ; alles andere wie nicht erreichbar behandeln
+        <programlisting>[familie-meier]yyy123yyysw
+; Wenn nach 30 Sekunden niemand abnimmt, geht das Gespraech yyy123yyysw
+; auf die Voicemailbox, das gleiche bei besetzt:yyy123yyysw
+exten =&gt; 20[0-3],1,Dial(SIP/${EXTEN},30)yyy123yyysw
+exten =&gt; 20[0-3],n,Goto(s-${DIALSTATUS},1) ; je nach Status springen (NOANSWER,BUSY,CHANUNAVAIL,CONGESTION,ANSWER)yyy123yyysw
+exten =&gt; s-NOANSWER,1,Voicemail(${EXT},u)  ; Voicemail mit Ansage "nicht erreichbar"yyy123yyysw
+exten =&gt; s-BUSY,1,Voicemail(${EXT},b)      ; Voicemail mit Ansage "besetzt"yyy123yyysw
+exten =&gt; s-ANSWER,1,Hangup()               ; zur Sicherheit nach Gespräch auflegenyyy123yyysw
+exten =&gt; _s-.,1,Goto(s-NOANSWER,1)         ; alles andere wie nicht erreichbar behandelnyyy123yyysw
+yyy123yyysw
+; auf der Extension 250 kann jeder Teilnehmer mit seinem yyy123yyysw
+; Telefon seine persoenliche Voicemailbox abrufen:yyy123yyysw
+exten =&gt; 250,1,VoiceMailMain(${CALLERID(num)})yyy123yyysw</programlisting>
 
-; auf der Extension 250 kann jeder Teilnehmer mit seinem 
-; Telefon seine persoenliche Voicemailbox abrufen:
-exten =&gt; 250,1,VoiceMailMain(${CALLERID(num)})</programlisting>
-
-        <para>Oder schöner so:<programlisting>[familie-meier]
-exten =&gt; 20[0-3],1,Macro(simple|SIP/${EXTEN}|${EXTEN})
-exten =&gt; 250,1,VoiceMailMain(${CALLERID(num)})
-
-[macro-simple];
-;  ${ARG1} - anzuklingelnde(s) Gerät(e) (z.B. SIP/123&amp;SIP/124)
-;  ${ARG2} - Mailbox (oft gleich ${MACRO_EXTEN})
-exten =&gt; s,1,Dial(${ARG1},30)               ; max. 30 Sekunden klingeln
-exten =&gt; s,n,Goto(s-${DIALSTATUS},1)        ; je nach Status springen (NOANSWER,BUSY,CHANUNAVAIL,CONGESTION,ANSWER)
-exten =&gt; s-NOANSWER,1,Voicemail(${ARG2},u)  ; Voicemail mit Ansage "nicht erreichbar"
-exten =&gt; s-BUSY,1,Voicemail(${ARG2},b)      ; Voicemail mit Ansage "besetzt"
-exten =&gt; s-ANSWER,1,Hangup()                ; zur Sicherheit nach Gespräch auflegen
-exten =&gt; _s-.,1,Goto(s-NOANSWER,1)          ; alles andere wie nicht erreichbar behandeln</programlisting></para>
+        <para>Oder schöner so:<programlisting>[familie-meier]yyy123yyysw
+exten =&gt; 20[0-3],1,Macro(simple|SIP/${EXTEN}|${EXTEN})yyy123yyysw
+exten =&gt; 250,1,VoiceMailMain(${CALLERID(num)})yyy123yyysw
+yyy123yyysw
+[macro-simple];yyy123yyysw
+;  ${ARG1} - anzuklingelnde(s) Gerät(e) (z.B. SIP/123&amp;SIP/124)yyy123yyysw
+;  ${ARG2} - Mailbox (oft gleich ${MACRO_EXTEN})yyy123yyysw
+exten =&gt; s,1,Dial(${ARG1},30)               ; max. 30 Sekunden klingelnyyy123yyysw
+exten =&gt; s,n,Goto(s-${DIALSTATUS},1)        ; je nach Status springen (NOANSWER,BUSY,CHANUNAVAIL,CONGESTION,ANSWER)yyy123yyysw
+exten =&gt; s-NOANSWER,1,Voicemail(${ARG2},u)  ; Voicemail mit Ansage "nicht erreichbar"yyy123yyysw
+exten =&gt; s-BUSY,1,Voicemail(${ARG2},b)      ; Voicemail mit Ansage "besetzt"yyy123yyysw
+exten =&gt; s-ANSWER,1,Hangup()                ; zur Sicherheit nach Gespräch auflegenyyy123yyysw
+exten =&gt; _s-.,1,Goto(s-NOANSWER,1)          ; alles andere wie nicht erreichbar behandelnyyy123yyysw</programlisting></para>
       </section>
     </section>
 
@@ -397,129 +397,129 @@ exten =&gt; _s-.,1,Goto(s-NOANSWER,1)          ; alles andere wie nicht erreichb
         <simpara>Die <filename>voicemail.conf</filename> der Apfelmus
         GmbH sieht wie folgt aus:</simpara>
 
-        <programlisting>[general]
-; Die Sprachnachrichten werden im qualitativ hochwertigen 
-; WAV Format gespeichert.
-format = wav
-
-; Die E-Mails mit den Sprachnachrichten fuer die Nutzer erhalten 
-; als Absender: voicemailsystem@apfelmus-gmbh.de
-serveremail = voicemailsystem@apfelmus-gmbh.de
-
-; Es duerfen maximal 200 Nachrichten pro Mailbox 
-; gespeichert werden.
-maxmsg = 200
-
-; Die maximale Laenge einer Sprachnachricht ist 5 Minuten
-maxmessage = 300
-
-; Text fuer die Benachrichtigungs-E-Mail.
-; Muss in einer Zeile stehen!
-emailbody = Guten Tag ${VM_NAME},\n\nSie haben eine neue Nachricht von ${VM_CALLERID} in Ihrer Voicemailbox ${VM_MAILBOX}. Bitte rufen Sie die 800 an, um die Nachricht abzuhoeren.\n\n-- Asterisk Voicemail System\n
-
-; Text fuer die Benachrichtigung per Pager.
-; Muss in einer Zeile stehen!
-pagerbody = Neue Voicemail von ${VM_CALLERID} um ${VM_DATE}.
-
-; Voice-Nachrichten anhaengen:
-attach = yes
-
-[default]
-; Die Syntax fuer die Konfigurationszeilen ist:
-; MailboxNr =&gt; Passwort,Name,E-Mail,Pager,Optionen
-150 =&gt; 1234,Hans Hausmeister,,pager.hausmeister@apfelmus-gmbh.de,review=yes|callback=interne-gespraeche
-802 =&gt; 1234,Verkauf Inland
-803 =&gt; 1234,Verkauf Ausland
-201 =&gt; 1234,Hans Wichtig,geschaeftsfuehrer1@apfelmus-gmbh.de,,review=yes|callback=interne-gespraeche
-202 =&gt; 1234,Uwe Wichtig,geschaeftsfuehrer2@apfelmus-gmbh.de,,review=yes|callback=interne-gespraeche
-804 =&gt; 1234,Sekretariat,sekr@apfelmus-gmbh.de,,,review=yes</programlisting>
+        <programlisting>[general]yyy123yyysw
+; Die Sprachnachrichten werden im qualitativ hochwertigen yyy123yyysw
+; WAV Format gespeichert.yyy123yyysw
+format = wavyyy123yyysw
+yyy123yyysw
+; Die E-Mails mit den Sprachnachrichten fuer die Nutzer erhalten yyy123yyysw
+; als Absender: voicemailsystem@apfelmus-gmbh.deyyy123yyysw
+serveremail = voicemailsystem@apfelmus-gmbh.deyyy123yyysw
+yyy123yyysw
+; Es duerfen maximal 200 Nachrichten pro Mailbox yyy123yyysw
+; gespeichert werden.yyy123yyysw
+maxmsg = 200yyy123yyysw
+yyy123yyysw
+; Die maximale Laenge einer Sprachnachricht ist 5 Minutenyyy123yyysw
+maxmessage = 300yyy123yyysw
+yyy123yyysw
+; Text fuer die Benachrichtigungs-E-Mail.yyy123yyysw
+; Muss in einer Zeile stehen!yyy123yyysw
+emailbody = Guten Tag ${VM_NAME},\n\nSie haben eine neue Nachricht von ${VM_CALLERID} in Ihrer Voicemailbox ${VM_MAILBOX}. Bitte rufen Sie die 800 an, um die Nachricht abzuhoeren.\n\n-- Asterisk Voicemail System\nyyy123yyysw
+yyy123yyysw
+; Text fuer die Benachrichtigung per Pager.yyy123yyysw
+; Muss in einer Zeile stehen!yyy123yyysw
+pagerbody = Neue Voicemail von ${VM_CALLERID} um ${VM_DATE}.yyy123yyysw
+yyy123yyysw
+; Voice-Nachrichten anhaengen:yyy123yyysw
+attach = yesyyy123yyysw
+yyy123yyysw
+[default]yyy123yyysw
+; Die Syntax fuer die Konfigurationszeilen ist:yyy123yyysw
+; MailboxNr =&gt; Passwort,Name,E-Mail,Pager,Optionenyyy123yyysw
+150 =&gt; 1234,Hans Hausmeister,,pager.hausmeister@apfelmus-gmbh.de,review=yes|callback=interne-gespraecheyyy123yyysw
+802 =&gt; 1234,Verkauf Inlandyyy123yyysw
+803 =&gt; 1234,Verkauf Auslandyyy123yyysw
+201 =&gt; 1234,Hans Wichtig,geschaeftsfuehrer1@apfelmus-gmbh.de,,review=yes|callback=interne-gespraecheyyy123yyysw
+202 =&gt; 1234,Uwe Wichtig,geschaeftsfuehrer2@apfelmus-gmbh.de,,review=yes|callback=interne-gespraecheyyy123yyysw
+804 =&gt; 1234,Sekretariat,sekr@apfelmus-gmbh.de,,,review=yesyyy123yyysw</programlisting>
 
         <simpara>Und in der <filename>extensions.conf</filename> wird
         auf die Voicemailbox wie folgt verwiesen:</simpara>
 
-        <programlisting>[hausmeister]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-hausmeister
-
-[it]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
-include =&gt; voicemailsystem-normal
-
-[geschaeftsfuehrer]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
-
-[sekretariat]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
-
-[verkauf-national]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-verkauf-national
-
-[verkauf-ausland]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-verkauf-ausland
-
-[versand]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
-
-[produktion]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
-
-[sonstige]
-
-[macro-simple];
-;  ${ARG1} - anzuklingelnde(s) Gerät(e) (z.B. SIP/123&amp;SIP/124)
-;  ${ARG2} - Mailbox (oft gleich ${MACRO_EXTEN})
-exten =&gt; s,1,Dial(${ARG1},30)               ; max. 30 Sekunden klingeln
-exten =&gt; s,n,Goto(s-${DIALSTATUS},1)        ; je nach Status springen (NOANSWER,BUSY,CHANUNAVAIL,CONGESTION,ANSWER)
-exten =&gt; s-NOANSWER,1,Voicemail(${ARG2},u)  ; Voicemail mit Ansage "nicht erreichbar"
-exten =&gt; s-BUSY,1,Voicemail(${ARG2},b)      ; Voicemail mit Ansage "besetzt"
-exten =&gt; s-ANSWER,1,Hangup()                ; zur Sicherheit nach Gespräch auflegen
-exten =&gt; _s-.,1,Goto(s-NOANSWER,1)          ; alles andere wie nicht erreichbar behandeln
-
-[interne-gespraeche]
-; Wenn der Hausmeister nicht ans Telefon geht, wird
-; das Telefonat auf die Voicemailbox 150 geleitet:
-exten =&gt; _15X,1,Macro(simple|SIP/${EXTEN}|150)
-
-; Die IT hat normale Voicemailboxen:
-exten =&gt; _16X,1,Macro(simple|SIP/${EXTEN}|${EXTEN})
-
-; Die beiden Geschaeftsfuehrer haben eine eigene Voicemailbox:
-exten =&gt; _20[1-2],1,Macro(simple|SIP/${EXTEN}|${EXTEN})
-
-; Das Sekretariat hat eine Gruppenmailbox:
-exten =&gt; _2[3-6]X,1,Macro(simple|SIP/${EXTEN}|804)
-
-; Der Verkauf National hat eine Gruppenmailbox:
-exten =&gt; _3[0-4]X,1,Macro(simple|SIP/${EXTEN}|802)
-
-; Der Verkauf Ausland hat eine Gruppenmailbox:
-exten =&gt; _3[5-9]X,1,Macro(simple|SIP/${EXTEN}|803)
-
-; Alle anderen erhalten keine Voicemailbox.
-exten =&gt; _[4-5]XX,1,Dial(SIP/${EXTEN},30)
-
-
-[voicemailsystem-komfort]
-exten =&gt; 800,1,VoiceMailMain(${CALLERID(num)})
-
-[voicemailsystem-normal]
-exten =&gt; 801,1,VoiceMailMain()
-
-[voicemailsystem-hausmeister]
-exten =&gt; 800,1,VoiceMailMain(150)
-
-[voicemailsystem-verkauf-national]
-exten =&gt; 800,1,VoiceMailMain(802,s)
-
-[voicemailsystem-verkauf-ausland]
-exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
+        <programlisting>[hausmeister]yyy123yyysw
+include =&gt; interne-gespraecheyyy123yyysw
+include =&gt; voicemailsystem-hausmeisteryyy123yyysw
+yyy123yyysw
+[it]yyy123yyysw
+include =&gt; interne-gespraecheyyy123yyysw
+include =&gt; voicemailsystem-komfortyyy123yyysw
+include =&gt; voicemailsystem-normalyyy123yyysw
+yyy123yyysw
+[geschaeftsfuehrer]yyy123yyysw
+include =&gt; interne-gespraecheyyy123yyysw
+include =&gt; voicemailsystem-komfortyyy123yyysw
+yyy123yyysw
+[sekretariat]yyy123yyysw
+include =&gt; interne-gespraecheyyy123yyysw
+include =&gt; voicemailsystem-komfortyyy123yyysw
+yyy123yyysw
+[verkauf-national]yyy123yyysw
+include =&gt; interne-gespraecheyyy123yyysw
+include =&gt; voicemailsystem-verkauf-nationalyyy123yyysw
+yyy123yyysw
+[verkauf-ausland]yyy123yyysw
+include =&gt; interne-gespraecheyyy123yyysw
+include =&gt; voicemailsystem-verkauf-auslandyyy123yyysw
+yyy123yyysw
+[versand]yyy123yyysw
+include =&gt; interne-gespraecheyyy123yyysw
+include =&gt; voicemailsystem-komfortyyy123yyysw
+yyy123yyysw
+[produktion]yyy123yyysw
+include =&gt; interne-gespraecheyyy123yyysw
+include =&gt; voicemailsystem-komfortyyy123yyysw
+yyy123yyysw
+[sonstige]yyy123yyysw
+yyy123yyysw
+[macro-simple];yyy123yyysw
+;  ${ARG1} - anzuklingelnde(s) Gerät(e) (z.B. SIP/123&amp;SIP/124)yyy123yyysw
+;  ${ARG2} - Mailbox (oft gleich ${MACRO_EXTEN})yyy123yyysw
+exten =&gt; s,1,Dial(${ARG1},30)               ; max. 30 Sekunden klingelnyyy123yyysw
+exten =&gt; s,n,Goto(s-${DIALSTATUS},1)        ; je nach Status springen (NOANSWER,BUSY,CHANUNAVAIL,CONGESTION,ANSWER)yyy123yyysw
+exten =&gt; s-NOANSWER,1,Voicemail(${ARG2},u)  ; Voicemail mit Ansage "nicht erreichbar"yyy123yyysw
+exten =&gt; s-BUSY,1,Voicemail(${ARG2},b)      ; Voicemail mit Ansage "besetzt"yyy123yyysw
+exten =&gt; s-ANSWER,1,Hangup()                ; zur Sicherheit nach Gespräch auflegenyyy123yyysw
+exten =&gt; _s-.,1,Goto(s-NOANSWER,1)          ; alles andere wie nicht erreichbar behandelnyyy123yyysw
+yyy123yyysw
+[interne-gespraeche]yyy123yyysw
+; Wenn der Hausmeister nicht ans Telefon geht, wirdyyy123yyysw
+; das Telefonat auf die Voicemailbox 150 geleitet:yyy123yyysw
+exten =&gt; _15X,1,Macro(simple|SIP/${EXTEN}|150)yyy123yyysw
+yyy123yyysw
+; Die IT hat normale Voicemailboxen:yyy123yyysw
+exten =&gt; _16X,1,Macro(simple|SIP/${EXTEN}|${EXTEN})yyy123yyysw
+yyy123yyysw
+; Die beiden Geschaeftsfuehrer haben eine eigene Voicemailbox:yyy123yyysw
+exten =&gt; _20[1-2],1,Macro(simple|SIP/${EXTEN}|${EXTEN})yyy123yyysw
+yyy123yyysw
+; Das Sekretariat hat eine Gruppenmailbox:yyy123yyysw
+exten =&gt; _2[3-6]X,1,Macro(simple|SIP/${EXTEN}|804)yyy123yyysw
+yyy123yyysw
+; Der Verkauf National hat eine Gruppenmailbox:yyy123yyysw
+exten =&gt; _3[0-4]X,1,Macro(simple|SIP/${EXTEN}|802)yyy123yyysw
+yyy123yyysw
+; Der Verkauf Ausland hat eine Gruppenmailbox:yyy123yyysw
+exten =&gt; _3[5-9]X,1,Macro(simple|SIP/${EXTEN}|803)yyy123yyysw
+yyy123yyysw
+; Alle anderen erhalten keine Voicemailbox.yyy123yyysw
+exten =&gt; _[4-5]XX,1,Dial(SIP/${EXTEN},30)yyy123yyysw
+yyy123yyysw
+yyy123yyysw
+[voicemailsystem-komfort]yyy123yyysw
+exten =&gt; 800,1,VoiceMailMain(${CALLERID(num)})yyy123yyysw
+yyy123yyysw
+[voicemailsystem-normal]yyy123yyysw
+exten =&gt; 801,1,VoiceMailMain()yyy123yyysw
+yyy123yyysw
+[voicemailsystem-hausmeister]yyy123yyysw
+exten =&gt; 800,1,VoiceMailMain(150)yyy123yyysw
+yyy123yyysw
+[voicemailsystem-verkauf-national]yyy123yyysw
+exten =&gt; 800,1,VoiceMailMain(802,s)yyy123yyysw
+yyy123yyysw
+[voicemailsystem-verkauf-ausland]yyy123yyysw
+exten =&gt; 800,1,VoiceMailMain(803,s)yyy123yyysw</programlisting>
       </section>
 
       <section id="voicemail-beispiele-firma-besonderheiten">
@@ -591,7 +591,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
       der Datei <filename>extensions.conf</filename> aufgerufen.
       Beispiel:</simpara>
 
-      <programlisting>exten =&gt; 2000,2,VoiceMail(2000,u)</programlisting>
+      <programlisting>exten =&gt; 2000,2,VoiceMail(2000,u)yyy123yyysw</programlisting>
 
       <section id="voicemail-applikationen-voicemail-syntax">
         <title
@@ -708,7 +708,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
       der Datei <filename>extensions.conf</filename> aufgerufen.
       Beispiel:</simpara>
 
-      <programlisting>exten =&gt; 300,1,VoiceMailMain()</programlisting>
+      <programlisting>exten =&gt; 300,1,VoiceMailMain()yyy123yyysw</programlisting>
 
       <section id="voicemail-applikationen-voicemailmain-syntax">
         <title
@@ -2264,10 +2264,10 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
 
         <simpara>Beispiel:</simpara>
 
-        <programlisting>[zonemessages]
-deutschland = Europe/Berlin | 'vm-received' Q 'digits/at' kM
-england = Europe/London | 'vm-received' Q 'digits/at' R
-military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</programlisting>
+        <programlisting>[zonemessages]yyy123yyysw
+deutschland = Europe/Berlin | 'vm-received' Q 'digits/at' kMyyy123yyysw
+england = Europe/London | 'vm-received' Q 'digits/at' Ryyy123yyysw
+military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'yyy123yyysw</programlisting>
       </section>
     </section>
 
@@ -2334,7 +2334,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
 
         <simpara>Beispiel:</simpara>
 
-        <programlisting>202 =&gt; 1234,Peter Meier,peter@familie-meier.de,,attachfmt=wav|delete=yes</programlisting>
+        <programlisting>202 =&gt; 1234,Peter Meier,peter@familie-meier.de,,attachfmt=wav|delete=yesyyy123yyysw</programlisting>
 
         <variablelist termlength="40">
           <?dbfo list-presentation="blocks"?>
@@ -2803,23 +2803,23 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
     linkend="voicemail-beispiele-meier" /> die folgende Konfiguration zu
     Grunde legen:</simpara>
 
-    <programlisting>[general]
-format = gsm
-
-[default]
-; Ext. =&gt; Passw.,Vorname Nachname,E-Mail,P.,Optionen
-;                ^^^^^^^^^^^^^^^^
-200 =&gt; 1234,Horst Meier
-201 =&gt; 1234,Eva Meier
-202 =&gt; 1234,Peter Meier,peter@die-familie-meier.de
-203 =&gt; 1234,Lisa Meier,lisa@die-familie-meier.de,,delete=yes</programlisting>
+    <programlisting>[general]yyy123yyysw
+format = gsmyyy123yyysw
+yyy123yyysw
+[default]yyy123yyysw
+; Ext. =&gt; Passw.,Vorname Nachname,E-Mail,P.,Optionenyyy123yyysw
+;                ^^^^^^^^^^^^^^^^yyy123yyysw
+200 =&gt; 1234,Horst Meieryyy123yyysw
+201 =&gt; 1234,Eva Meieryyy123yyysw
+202 =&gt; 1234,Peter Meier,peter@die-familie-meier.deyyy123yyysw
+203 =&gt; 1234,Lisa Meier,lisa@die-familie-meier.de,,delete=yesyyy123yyysw</programlisting>
 
     <simpara>Dann können wir daraus recht einfach ein
     Dial-by-Name-Directory generieren. Dies geschieht durch Aufruf des
     Programmes <code>Directory()</code> in der
     <filename>extensions.conf</filename>:</simpara>
 
-    <programlisting>exten =&gt; 800,1,Directory(default,from-intern)</programlisting>
+    <programlisting>exten =&gt; 800,1,Directory(default,from-intern)yyy123yyysw</programlisting>
 
     <section id="voicemail-telefonbuch-syntax">
       <title id="voicemail-telefonbuch-syntax.title">Syntax</title>
@@ -2911,13 +2911,13 @@ format = gsm
     <code>VoiceMail()</code> (oder <code>VoiceMailMain()</code>) darauf
     verweisen.</simpara>
 
-    <para>Sie könnten beispielsweise die VM-Boxen<programlisting>1001 =&gt; 1234,Hans Glueck,,,hidefromdir=yes
-1002 =&gt; 1234,Peter Pech,,,hidefromdir=yes</programlisting>im
+    <para>Sie könnten beispielsweise die VM-Boxen<programlisting>1001 =&gt; 1234,Hans Glueck,,,hidefromdir=yesyyy123yyysw
+1002 =&gt; 1234,Peter Pech,,,hidefromdir=yesyyy123yyysw</programlisting>im
     Abschnitt <code>[call-center-agenten]</code> anlegen und die User an
     geeigneter Stelle im Dialplan mit VMAuthenticate (<xref
     linkend="applikationen-vmauthenticate" />)
-    authentifizieren:<programlisting>exten =&gt; 988,n,Read(agentennr,agent-user,10,,3)
-exten =&gt; 988,n,VMAuthenticate(${agentennr}@call-center-agenten)</programlisting></para>
+    authentifizieren:<programlisting>exten =&gt; 988,n,Read(agentennr,agent-user,10,,3)yyy123yyysw
+exten =&gt; 988,n,VMAuthenticate(${agentennr}@call-center-agenten)yyy123yyysw</programlisting></para>
 
     <simpara>Betrachten Sie das aber nur als Denkanstoß bzw.
     Beschreibung einer von vielen Möglichkeiten zur Authentifizierung.

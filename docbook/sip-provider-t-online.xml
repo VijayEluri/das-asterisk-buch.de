@@ -43,14 +43,14 @@
       <filename>sip.conf</filename> der folgenden Registrierungs-Eintrag
       eingefügt:</para>
 
-      <programlisting>[general]
-;
-; Register to SIP Provider T-Online
-; register =&gt; user[:secret[:authuser]]@host[:port][/extension]
-;
-maxexpirey=240                  ; Wichtig fuer T-Online
-defaultexpirey=240              ; Wichtig fuer T-Online, mindestens 240
-register =&gt; 03222xxxxxxx:secret:hans.mustermann@tel.t-online.de/siptonline</programlisting>
+      <programlisting>[general]yyy123yyysw
+;yyy123yyysw
+; Register to SIP Provider T-Onlineyyy123yyysw
+; register =&gt; user[:secret[:authuser]]@host[:port][/extension]yyy123yyysw
+;yyy123yyysw
+maxexpirey=240                  ; Wichtig fuer T-Onlineyyy123yyysw
+defaultexpirey=240              ; Wichtig fuer T-Online, mindestens 240yyy123yyysw
+register =&gt; 03222xxxxxxx:secret:hans.mustermann@tel.t-online.de/siptonlineyyy123yyysw</programlisting>
 
       <para>Die beiden Parameter <code>maxexpirey</code> und
       <code>defaultexpirey</code> müssen für das T-Online-SIP-Gateway wie oben
@@ -64,13 +64,13 @@ register =&gt; 03222xxxxxxx:secret:hans.mustermann@tel.t-online.de/siptonline</p
           <parameter>defaultexpiry</parameter> heissen. Beide Schreibweisen
           funktionieren mittlerweile.<footnote>
               <para>Siehe auch den entsprechenden
-              Quelltextabschnitt:<programlisting>                } else if (!strcasecmp(v-&gt;name, "maxexpirey") ||
-!strcasecmp(v-&gt;name, "maxexpiry")) {
-                        max_expiry = atoi(v-&gt;value);
-                        if (max_expiry &lt; 1)
-                                max_expiry = DEFAULT_MAX_EXPIRY;
-                } else if (!strcasecmp(v-&gt;name, "defaultexpiry") ||
-!strcasecmp(v-&gt;name, "defaultexpirey")) {
+              Quelltextabschnitt:<programlisting>                } else if (!strcasecmp(v-&gt;name, "maxexpirey") ||yyy123yyysw
+!strcasecmp(v-&gt;name, "maxexpiry")) {yyy123yyysw
+                        max_expiry = atoi(v-&gt;value);yyy123yyysw
+                        if (max_expiry &lt; 1)yyy123yyysw
+                                max_expiry = DEFAULT_MAX_EXPIRY;yyy123yyysw
+                } else if (!strcasecmp(v-&gt;name, "defaultexpiry") ||yyy123yyysw
+!strcasecmp(v-&gt;name, "defaultexpirey")) {yyy123yyysw
 </programlisting></para>
             </footnote></para>
         </important> Werden diese Einstellungen nicht oder falsch gesetzt,
@@ -114,9 +114,9 @@ register =&gt; 03222xxxxxxx:secret:hans.mustermann@tel.t-online.de/siptonline</p
       und dann den Befehl <command>sip show registry aufrufen</command>,
       sollten Sie folgende Zeile sehen:</para>
 
-      <screen>*CLI&gt; sip show registry
-Host                            Username       Refresh State                Reg.Time
-tel.t-online.de:5060            03222xxxxxxx       225 Registered           Wed, 27 Dec 2006 19:01:07</screen>
+      <screen>*CLI&gt; sip show registryyyy123yyysw
+Host                            Username       Refresh State                Reg.Timeyyy123yyysw
+tel.t-online.de:5060            03222xxxxxxx       225 Registered           Wed, 27 Dec 2006 19:01:07yyy123yyysw</screen>
 
       <para>Werden auf der Konsole keine Registrierungsfehler ausgegeben, hat
       bereits alles geklappt und das Asterisk-System ist bei T-Online
@@ -129,11 +129,11 @@ tel.t-online.de:5060            03222xxxxxxx       225 Registered           Wed,
       wie immer, man erstellt eine entsprechende Extension und wählt darüber
       ein passendes Endgerät an.</para>
 
-      <programlisting>[default]
-exten =&gt; siptonline,1,Dial(SIP/2000)
-exten =&gt; siptonline,2,VoiceMail(u2000)
-exten =&gt; siptonline,102,VoiceMail(s2000)
-exten =&gt; siptonline,103,Hangup()</programlisting>
+      <programlisting>[default]yyy123yyysw
+exten =&gt; siptonline,1,Dial(SIP/2000)yyy123yyysw
+exten =&gt; siptonline,2,VoiceMail(u2000)yyy123yyysw
+exten =&gt; siptonline,102,VoiceMail(s2000)yyy123yyysw
+exten =&gt; siptonline,103,Hangup()yyy123yyysw</programlisting>
 
       <para>Nun sollte ein Anruf an Ihrer T-Online-VoIP-Nummer bereits ohne
       Probleme durchgestellt werden können.</para>
@@ -147,13 +147,13 @@ exten =&gt; siptonline,103,Hangup()</programlisting>
       </filename>erfolgen. Dort werden die Account-Informationen des Providers
       eingetragen, die ähnlich sind, wie oben bereits beschrieben</para>
 
-      <programlisting>[tonlineout]
-type=peer
-username=hans.mustermann@t-online.de
-secret=secret
-host=tel.t-online.de
-fromdomain=tel.t-online.de
-insecure=very</programlisting>
+      <programlisting>[tonlineout]yyy123yyysw
+type=peeryyy123yyysw
+username=hans.mustermann@t-online.deyyy123yyysw
+secret=secretyyy123yyysw
+host=tel.t-online.deyyy123yyysw
+fromdomain=tel.t-online.deyyy123yyysw
+insecure=veryyyy123yyysw</programlisting>
 
       <important>
         <para>Wird der Eintrag <code>insecure=very</code> nicht gesetzt,
@@ -170,9 +170,9 @@ insecure=very</programlisting>
       getätigt werden, in diesem Fall werden z.B. alle mit 0 beginnenden
       Rufnummern über das SIP-Gateway geleitet:</para>
 
-      <programlisting>exten =&gt; _0.,1,Set(CALLERID(num)=03222xxxxxxx)
-exten =&gt; _0.,n,Set(CALLERID(name)=03222xxxxxxx)
-exten =&gt; _0.,n,Dial(SIP/${EXTEN:1}@tonlineout)</programlisting>
+      <programlisting>exten =&gt; _0.,1,Set(CALLERID(num)=03222xxxxxxx)yyy123yyysw
+exten =&gt; _0.,n,Set(CALLERID(name)=03222xxxxxxx)yyy123yyysw
+exten =&gt; _0.,n,Dial(SIP/${EXTEN:1}@tonlineout)yyy123yyysw</programlisting>
 
       <important>
         <para>Werden nicht sowohl die CallerID-Nummer wie auch der
@@ -184,9 +184,9 @@ exten =&gt; _0.,n,Dial(SIP/${EXTEN:1}@tonlineout)</programlisting>
       CallerID-Nummer und CallerID-Name beide auf den Wert
       <code>anonymous</code> gesetzt werden:</para>
 
-      <programlisting>exten =&gt; _9.,1,Set(CALLERID(num)=anonymous)
-exten =&gt; _9.,n,Set(CALLERID(name)=anonymous)
-exten =&gt; _9.,n,Dial(SIP/${EXTEN:1}@tonlineout)</programlisting>
+      <programlisting>exten =&gt; _9.,1,Set(CALLERID(num)=anonymous)yyy123yyysw
+exten =&gt; _9.,n,Set(CALLERID(name)=anonymous)yyy123yyysw
+exten =&gt; _9.,n,Dial(SIP/${EXTEN:1}@tonlineout)yyy123yyysw</programlisting>
 
       <para></para>
     </section>
