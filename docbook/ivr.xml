@@ -68,15 +68,15 @@
         <para>Es sollte auch dem größten Geek unter den Lesern klar sein, dass
         eine solche IVR nur als Beispiel und niemals als reale Möglichkeit
         eines Heiratsantrages in Betracht gezogen werden sollte! ;-)</para>
-      </footnote><programlisting>exten =&gt; 10,1,Answer()yyy123yyysw
-exten =&gt; 10,2,Background(marryme)yyy123yyysw
-exten =&gt; 10,3,Hangup()yyy123yyysw
-yyy123yyysw
-exten =&gt; 1,1,Playback(thank-you-cooperation)yyy123yyysw
-exten =&gt; 1,2,Hangup()yyy123yyysw
-yyy123yyysw
-exten =&gt; 2,1,Playback(sorry)yyy123yyysw
-exten =&gt; 2,1,Hangup()yyy123yyysw</programlisting>Wird die 10 angerufen, hebt Asterisk
+      </footnote><programlisting>exten =&gt; 10,1,Answer()
+exten =&gt; 10,2,Background(marryme)
+exten =&gt; 10,3,Hangup()
+
+exten =&gt; 1,1,Playback(thank-you-cooperation)
+exten =&gt; 1,2,Hangup()
+
+exten =&gt; 2,1,Playback(sorry)
+exten =&gt; 2,1,Hangup()</programlisting>Wird die 10 angerufen, hebt Asterisk
     ab und spielt das Soundfile <filename>marryme.gsm</filename> ab. Während
     der Ansage kann jederzeit vom Benutzer eine Eingabe gemacht werden. Diese
     Eingabe wird als weitere Extension gewertet und abgerufen. Wer also die 1
@@ -106,7 +106,7 @@ exten =&gt; 2,1,Hangup()yyy123yyysw</programlisting>Wird die 10 angerufen, hebt 
           definiert werden, Informationen dazu bekommen Sie im CLI mit der
           Eingabe <command>show function TIMEOUT</command>.</para>
         </tip>Den <parameter>TIMEOUT</parameter> kann man in Sekunden angeben
-      und wie folgt im Dialplan setzen:<programlisting>exten =&gt; 10,1,Set(TIMEOUT(digit)=3)yyy123yyysw</programlisting></para>
+      und wie folgt im Dialplan setzen:<programlisting>exten =&gt; 10,1,Set(TIMEOUT(digit)=3)</programlisting></para>
     </section>
 
     <section id="ivr-falscheingaben">
@@ -116,20 +116,20 @@ exten =&gt; 2,1,Hangup()yyy123yyysw</programlisting>Wird die 10 angerufen, hebt 
       <para>Eine Falscheingabe (also eine nicht im Dialplan definierte
       Eingabe) kann mit der <code>i</code>-Extension (i wie invalid)
       abgefangen werden. Das einfache Beispiel würde folgendermaßen
-      aussehen:<programlisting>exten =&gt; 10,1,Answer()yyy123yyysw
-exten =&gt; 10,2,Background(marryme)yyy123yyysw
-exten =&gt; 10,3,Hangup()yyy123yyysw
-yyy123yyysw
-exten =&gt; 1,1,Playback(thank-you-cooperation)yyy123yyysw
-exten =&gt; 1,2,Hangup()yyy123yyysw
-yyy123yyysw
-exten =&gt; 2,1,Playback(sorry)yyy123yyysw
-exten =&gt; 2,1,Hangup()yyy123yyysw
-yyy123yyysw
-; Bei allen anderen Eingaben wird dieseyyy123yyysw
-; i-Extension aufgerufen.yyy123yyysw
-exten =&gt; i,1,Background(sorry)yyy123yyysw
-exten =&gt; i,2,Hangup()yyy123yyysw</programlisting></para>
+      aussehen:<programlisting>exten =&gt; 10,1,Answer()
+exten =&gt; 10,2,Background(marryme)
+exten =&gt; 10,3,Hangup()
+
+exten =&gt; 1,1,Playback(thank-you-cooperation)
+exten =&gt; 1,2,Hangup()
+
+exten =&gt; 2,1,Playback(sorry)
+exten =&gt; 2,1,Hangup()
+
+; Bei allen anderen Eingaben wird diese
+; i-Extension aufgerufen.
+exten =&gt; i,1,Background(sorry)
+exten =&gt; i,2,Hangup()</programlisting></para>
     </section>
 
     <section id="ivr-pausen">
@@ -140,19 +140,19 @@ exten =&gt; i,2,Hangup()yyy123yyysw</programlisting></para>
       Verzeichnis <filename>/var/lib/asterisk/sounds/silence/</filename> gibt
       es 1 bis 9 Sekunden lange Dateien, die nur Stille abspielen. Soll in
       unserem Heiratsantragsbeispiel noch 5 Sekunden auf eine Antwort gewartet
-      werden, so kann man das wie folgt erreichen:<programlisting>exten =&gt; 10,1,Answer()yyy123yyysw
-exten =&gt; 10,2,Background(marryme)yyy123yyysw
-exten =&gt; 10,3,Background(silence/5)yyy123yyysw
-exten =&gt; 10,4,Hangup()yyy123yyysw
-yyy123yyysw
-exten =&gt; 1,1,Playback(thank-you-cooperation)yyy123yyysw
-exten =&gt; 1,2,Hangup()yyy123yyysw
-yyy123yyysw
-exten =&gt; 2,1,Playback(sorry)yyy123yyysw
-exten =&gt; 2,1,Hangup()yyy123yyysw
-yyy123yyysw
-exten =&gt; i,1,Background(marryme)yyy123yyysw
-exten =&gt; i,2,Hangup()yyy123yyysw</programlisting></para>
+      werden, so kann man das wie folgt erreichen:<programlisting>exten =&gt; 10,1,Answer()
+exten =&gt; 10,2,Background(marryme)
+exten =&gt; 10,3,Background(silence/5)
+exten =&gt; 10,4,Hangup()
+
+exten =&gt; 1,1,Playback(thank-you-cooperation)
+exten =&gt; 1,2,Hangup()
+
+exten =&gt; 2,1,Playback(sorry)
+exten =&gt; 2,1,Hangup()
+
+exten =&gt; i,1,Background(marryme)
+exten =&gt; i,2,Hangup()</programlisting></para>
     </section>
   </section>
 
@@ -204,43 +204,43 @@ exten =&gt; i,2,Hangup()yyy123yyysw</programlisting></para>
 
     <para>Wenn der Verkauf unter der Extension 100 und der Hausmeister unter
     der Extension 150 erreichbar ist, sieht der Dialplan für diese IVR
-    folgendermaßen aus:<programlisting>[beispiel-ivr]yyy123yyysw
-; Das Menue wird staendig wiederholt.yyy123yyysw
-;yyy123yyysw
-exten =&gt; 30,1,Answer()yyy123yyysw
-exten =&gt; 30,2,Background(grundmenue)yyy123yyysw
-exten =&gt; 30,3,Background(silence/3)yyy123yyysw
-exten =&gt; 30,4,Goto(2)yyy123yyysw
-yyy123yyysw
-exten =&gt; 1,1,Dial(SIP/100)yyy123yyysw
-yyy123yyysw
-exten =&gt; 2,1,Dial(SIP/150)yyy123yyysw
-yyy123yyysw
-; Goto() springt in einen anderen yyy123yyysw
-; Context ([kantine])yyy123yyysw
-;yyy123yyysw
-exten =&gt; 3,1,Goto(kantine,100,1)yyy123yyysw
-yyy123yyysw
-exten =&gt; i,1,Goto(30,2)yyy123yyysw
-yyy123yyysw
-[kantine]yyy123yyysw
-exten =&gt; 100,1,Background(kantine)yyy123yyysw
-exten =&gt; 100,2,Background(silence/3)yyy123yyysw
-exten =&gt; 100,3,Goto(1)yyy123yyysw
-yyy123yyysw
-exten =&gt; 1,1,Playback(essensplan-diese-woche)yyy123yyysw
-exten =&gt; 1,2,Wait(2)yyy123yyysw
-exten =&gt; 1,3,Goto(1)yyy123yyysw
-yyy123yyysw
-exten =&gt; 2,1,Playback(essensplan-naechste-woche)yyy123yyysw
-exten =&gt; 2,2,Wait(2)yyy123yyysw
-exten =&gt; 2,3,Goto(1)yyy123yyysw
-yyy123yyysw
-; Bei einer Falscheingabe wird yyy123yyysw
-; wieder in das Start-Menue yyy123yyysw
-; gesprungen.yyy123yyysw
-;yyy123yyysw
-exten =&gt; i,1,Goto(beispiel-ivr,30,2)yyy123yyysw</programlisting></para>
+    folgendermaßen aus:<programlisting>[beispiel-ivr]
+; Das Menue wird staendig wiederholt.
+;
+exten =&gt; 30,1,Answer()
+exten =&gt; 30,2,Background(grundmenue)
+exten =&gt; 30,3,Background(silence/3)
+exten =&gt; 30,4,Goto(2)
+
+exten =&gt; 1,1,Dial(SIP/100)
+
+exten =&gt; 2,1,Dial(SIP/150)
+
+; Goto() springt in einen anderen 
+; Context ([kantine])
+;
+exten =&gt; 3,1,Goto(kantine,100,1)
+
+exten =&gt; i,1,Goto(30,2)
+
+[kantine]
+exten =&gt; 100,1,Background(kantine)
+exten =&gt; 100,2,Background(silence/3)
+exten =&gt; 100,3,Goto(1)
+
+exten =&gt; 1,1,Playback(essensplan-diese-woche)
+exten =&gt; 1,2,Wait(2)
+exten =&gt; 1,3,Goto(1)
+
+exten =&gt; 2,1,Playback(essensplan-naechste-woche)
+exten =&gt; 2,2,Wait(2)
+exten =&gt; 2,3,Goto(1)
+
+; Bei einer Falscheingabe wird 
+; wieder in das Start-Menue 
+; gesprungen.
+;
+exten =&gt; i,1,Goto(beispiel-ivr,30,2)</programlisting></para>
   </section>
 
   <section id="text2speech">
@@ -294,9 +294,9 @@ exten =&gt; i,1,Goto(beispiel-ivr,30,2)yyy123yyysw</programlisting></para>
       ''Additional Voices'' klicken). Die entsprechende Datei (hier
       beispielhaft immer als
       <filename>Cepstral_Matthias_i386-linux_4.1.2.tar.gz</filename>
-      bezeichnet) wird wie folgt installiert:<programlisting>tar xvzf Cepstral_Matthias_i386-linux_4.1.2.tar.gzyyy123yyysw
-cd Cepstral_Matthias_i386-linux_4.1.2yyy123yyysw
-./installyyy123yyysw</programlisting></para>
+      bezeichnet) wird wie folgt installiert:<programlisting>tar xvzf Cepstral_Matthias_i386-linux_4.1.2.tar.gz
+cd Cepstral_Matthias_i386-linux_4.1.2
+./install</programlisting></para>
     </section>
 
     <section id="cepstral-beispiel">
@@ -304,19 +304,19 @@ cd Cepstral_Matthias_i386-linux_4.1.2yyy123yyysw
 
       <para>Falls bei der Installation nicht anders angegeben, wird die Engine
       als <filename>/opt/swift/bin/swift</filename> installiert. Testen kann
-      man dies mit folgender Eingabe auf der Linux-Kommandozeile:<screen>/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "Dies ist ein Test."yyy123yyysw</screen>Das
+      man dies mit folgender Eingabe auf der Linux-Kommandozeile:<screen>/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "Dies ist ein Test."</screen>Das
       Ergebnis kann man sich entweder mit einem Audioplayer oder mit Asterisk
       anhören. Dazu einfach in der <filename>extensions.conf</filename>
-      folgenden Eintrag hinzufügen:<programlisting>exten =&gt; 1234,1,Answer()yyy123yyysw
-exten =&gt; 1234,2,Playback(/tmp/test)yyy123yyysw
-exten =&gt; 1234,3,Hangup()yyy123yyysw</programlisting>Um einen beliebigen Text ausgeben
+      folgenden Eintrag hinzufügen:<programlisting>exten =&gt; 1234,1,Answer()
+exten =&gt; 1234,2,Playback(/tmp/test)
+exten =&gt; 1234,3,Hangup()</programlisting>Um einen beliebigen Text ausgeben
       zu lassen, benutzen wir die
       <application>System()</application>-Applikation im Dialplan. Hier ein
-      Beispiel:<programlisting>exten =&gt; 1222,1,Answer()yyy123yyysw
-exten =&gt; 1222,2,System(rm -rf /tmp/test.wav)yyy123yyysw
-exten =&gt; 1222,3,System(/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "Noch ein Test.")yyy123yyysw
-exten =&gt; 1222,4,Playback(/tmp/test)yyy123yyysw
-exten =&gt; 1222,5,Hangup()yyy123yyysw</programlisting></para>
+      Beispiel:<programlisting>exten =&gt; 1222,1,Answer()
+exten =&gt; 1222,2,System(rm -rf /tmp/test.wav)
+exten =&gt; 1222,3,System(/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "Noch ein Test.")
+exten =&gt; 1222,4,Playback(/tmp/test)
+exten =&gt; 1222,5,Hangup()</programlisting></para>
     </section>
 
     <section id="cepstral-pausen">
@@ -324,11 +324,11 @@ exten =&gt; 1222,5,Hangup()yyy123yyysw</programlisting></para>
 
       <para>Cepstral benutzt SSML (Speech Synthesis Markup Language) innerhalb
       der Engine. So kann eine Pause im obigen Beispiel wie folgt eingefügt
-      werden:<programlisting>exten =&gt; 1222,1,Answer()yyy123yyysw
-exten =&gt; 1222,2,System(rm -rf /tmp/test.wav)yyy123yyysw
-exten =&gt; 1222,3,System(/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "Noch ein Test. &lt;break time='2500ms'/&gt; Ende!")yyy123yyysw
-exten =&gt; 1222,4,Playback(/tmp/test.wav)yyy123yyysw
-exten =&gt; 1222,5,Hangup()yyy123yyysw</programlisting>Information zu SSML findet man
+      werden:<programlisting>exten =&gt; 1222,1,Answer()
+exten =&gt; 1222,2,System(rm -rf /tmp/test.wav)
+exten =&gt; 1222,3,System(/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "Noch ein Test. &lt;break time='2500ms'/&gt; Ende!")
+exten =&gt; 1222,4,Playback(/tmp/test.wav)
+exten =&gt; 1222,5,Hangup()</programlisting>Information zu SSML findet man
       beim W3C unter <ulink
       url="http://www.w3.org/TR/speech-synthesis/">http://www.w3.org/TR/speech-synthesis/</ulink>.</para>
     </section>

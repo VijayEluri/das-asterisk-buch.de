@@ -88,19 +88,19 @@
   aus:</simpara>
 
   <para><emphasis
-  role="bold"><filename>agents.conf</filename></emphasis><programlisting>[agents]yyy123yyysw
-;    AgentenNr,Passwort,Nameyyy123yyysw
-agent =&gt; 1001,1234,Mark Spenceryyy123yyysw
-agent =&gt; 1002,1234,Will Meadowsyyy123yyysw</programlisting></para>
+  role="bold"><filename>agents.conf</filename></emphasis><programlisting>[agents]
+;    AgentenNr,Passwort,Name
+agent =&gt; 1001,1234,Mark Spencer
+agent =&gt; 1002,1234,Will Meadows</programlisting></para>
 
   <para><emphasis
-  role="bold"><filename>queues.conf</filename></emphasis><programlisting>[support-schlange]yyy123yyysw
-member =&gt; Agent/1001   ; Agent 1001 zur support-schlange hinzufügenyyy123yyysw
-member =&gt; Agent/1002   ;   ... 1002 ...yyy123yyysw</programlisting></para>
+  role="bold"><filename>queues.conf</filename></emphasis><programlisting>[support-schlange]
+member =&gt; Agent/1001   ; Agent 1001 zur support-schlange hinzufügen
+member =&gt; Agent/1002   ;   ... 1002 ...</programlisting></para>
 
   <para><emphasis
-  role="bold"><filename>extensions.conf</filename></emphasis><programlisting>exten =&gt; 20,1,Queue(support-schlange)   ; =&gt; Warteschlangeyyy123yyysw
-exten =&gt; 25,1,AgentLogin()              ; bei Anruf Loginyyy123yyysw</programlisting></para>
+  role="bold"><filename>extensions.conf</filename></emphasis><programlisting>exten =&gt; 20,1,Queue(support-schlange)   ; =&gt; Warteschlange
+exten =&gt; 25,1,AgentLogin()              ; bei Anruf Login</programlisting></para>
 
   <para>Und so funktioniert's: Die Agenten loggen sich über Extension
   <code>25</code> ein, hören fröhliche Musik und warten auf Anrufer.
@@ -113,10 +113,10 @@ exten =&gt; 25,1,AgentLogin()              ; bei Anruf Loginyyy123yyysw</program
 
     <para>Wir legen uns in der <filename>extensions.conf</filename>
     folgende Extension an, mit der wir gleich die ordnungsgemäße
-    Funktion der Wartemusik überprüfen können:<programlisting>exten =&gt; 222,1,Answer()                  ; abhebenyyy123yyysw
-exten =&gt; 222,n,Set(MUSICCLASS()=default) ; Musikklasse "default" setzenyyy123yyysw
-exten =&gt; 222,n,WaitMusicOnHold(20)       ; 20 Sekunden Musikyyy123yyysw
-exten =&gt; 222,n,Hangup()                  ; auflegenyyy123yyysw</programlisting></para>
+    Funktion der Wartemusik überprüfen können:<programlisting>exten =&gt; 222,1,Answer()                  ; abheben
+exten =&gt; 222,n,Set(MUSICCLASS()=default) ; Musikklasse "default" setzen
+exten =&gt; 222,n,WaitMusicOnHold(20)       ; 20 Sekunden Musik
+exten =&gt; 222,n,Hangup()                  ; auflegen</programlisting></para>
   </section>
 
   <section id="musiconhold.conf">
@@ -150,9 +150,9 @@ exten =&gt; 222,n,Hangup()                  ; auflegenyyy123yyysw</programlistin
     die MP3s ist 8000 Hz, mono.</simpara>
 
     <para>Die einfachste (Default-)Konfiguration mit nur einer
-    Musik-Klasse (<code>default</code>):<programlisting>[default]yyy123yyysw
-mode=quietmp3yyy123yyysw
-directory=/var/lib/asterisk/mohmp3yyy123yyysw</programlisting>Jetzt stoppen und
+    Musik-Klasse (<code>default</code>):<programlisting>[default]
+mode=quietmp3
+directory=/var/lib/asterisk/mohmp3</programlisting>Jetzt stoppen und
     starten wir Asterisk, z.B. mit <command>asterisk -rx "stop
     now"</command> und <command>asterisk</command> um die neue Extension
     und die Streams zu aktivieren (ein Reload reicht nicht aus). Wenn
@@ -162,16 +162,16 @@ directory=/var/lib/asterisk/mohmp3yyy123yyysw</programlisting>Jetzt stoppen und
 
     <para>Besser ist aber folgende Konfiguration, für die wir ein
     Verzeichnis <filename>moh-native</filename> in
-    <filename>/var/lib/asterisk/</filename> anlegen:<programlisting>[default]yyy123yyysw
-mode=files   ; Dateien direkt in einem Asterisk-kompatiblen Format lesenyyy123yyysw
-directory=/var/lib/asterisk/moh-nativeyyy123yyysw
-random=yes   ; Dateien in zufälliger Reihenfolge spielenyyy123yyysw</programlisting>Es
+    <filename>/var/lib/asterisk/</filename> anlegen:<programlisting>[default]
+mode=files   ; Dateien direkt in einem Asterisk-kompatiblen Format lesen
+directory=/var/lib/asterisk/moh-native
+random=yes   ; Dateien in zufälliger Reihenfolge spielen</programlisting>Es
     ist dazu notwendig, die MP3-Dateien in ein Asterisk-kompatibles
     Format zu konvertieren, was z.B. mit den Programmen
     <command>sox</command><footnote>
         <para><command>sox</command> (<ulink
         url="http://sox.sourceforge.net/">http://sox.sourceforge.net/</ulink>)
-        gibt es als Debian-Paket, also:<screen><prompt>$  </prompt>apt-get install soxyyy123yyysw</screen></para>
+        gibt es als Debian-Paket, also:<screen><prompt>$  </prompt>apt-get install sox</screen></para>
 
         <para>Für MacOS X gibt es - mit installierem Darwinports (<ulink
         url="http://darwinports.opendarwin.org/">http://darwinports.opendarwin.org/</ulink>
@@ -179,7 +179,7 @@ random=yes   ; Dateien in zufälliger Reihenfolge spielenyyy123yyysw</programlist
         url="http://darwinports.com/">http://darwinports.com/</ulink>,
         siehe auch <ulink
         url="http://apfelwiki.de/wiki/Main/MacPorts">http://apfelwiki.de/wiki/Main/MacPorts</ulink>)
-        - auch ein Paket:<screen><prompt>$  </prompt>port install soxyyy123yyysw</screen></para>
+        - auch ein Paket:<screen><prompt>$  </prompt>port install sox</screen></para>
 
         <simpara>Auf anderen Plattformen müssen Sie die Sourcen
         runterladen und kompilieren, sofern Sie keine Binaries
@@ -194,16 +194,16 @@ random=yes   ; Dateien in zufälliger Reihenfolge spielenyyy123yyysw</programlist
         installieren.</simpara>
 
         <para>Für MacOS X gibt es ein Paket über Darwinports (siehe
-        Beschreibung <command>sox</command>):<screen><prompt>$  </prompt>port install lameyyy123yyysw</screen>
+        Beschreibung <command>sox</command>):<screen><prompt>$  </prompt>port install lame</screen>
         oder über Fink (<ulink
-        url="http://fink.sourceforge.net/">http://fink.sourceforge.net/</ulink>):<screen><prompt>$  </prompt>fink install lameyyy123yyysw</screen>Natürlich
+        url="http://fink.sourceforge.net/">http://fink.sourceforge.net/</ulink>):<screen><prompt>$  </prompt>fink install lame</screen>Natürlich
         geht das auch über den FinkCommander mit grafischem
         Interface.</para>
       </footnote> so geht:</para>
 
-    <para><screen><prompt>$  </prompt>lame --decode musik.mp3 musik.wavyyy123yyysw
-<prompt>$  </prompt>sox -V musik.wav -r 8000 -c 1 -w musik.rawyyy123yyysw
-<prompt>$  </prompt>sox -V musik.wav -r 8000 -c 1 -w musik.gsmyyy123yyysw</screen>Damit
+    <para><screen><prompt>$  </prompt>lame --decode musik.mp3 musik.wav
+<prompt>$  </prompt>sox -V musik.wav -r 8000 -c 1 -w musik.raw
+<prompt>$  </prompt>sox -V musik.wav -r 8000 -c 1 -w musik.gsm</screen>Damit
     haben wir eine fiktive Datei <filename>musik.mp3</filename> ins WAV-
     und dann in die Formate RAW und GSM konvertiert (mit einer
     Abtastrate von 8 kHz). Wir können in unserem Verzeichnis auch
@@ -225,12 +225,12 @@ random=yes   ; Dateien in zufälliger Reihenfolge spielenyyy123yyysw</programlist
     Verzeichnis <filename>moh-native/</filename> kopiert, mit
     <command>sox</command> nach RAW und GSM umkodiert und dann die
     WAV-Dateien, die Probleme bereiteten, aus dem Verzeichnis
-    gelöscht:<programlisting><prompt>$  </prompt>cd /var/lib/asterisk/moh-native/yyy123yyysw
-<prompt>$  </prompt>for i in *.wav; do \yyy123yyysw
-sox $i -r 8000 -c 1 $(basename $i .wav).raw; \yyy123yyysw
-sox $i -r 8000 -c 1 $(basename $i .wav).gsm; \yyy123yyysw
-doneyyy123yyysw
-<prompt>$  </prompt>rm *.wavyyy123yyysw</programlisting></para>
+    gelöscht:<programlisting><prompt>$  </prompt>cd /var/lib/asterisk/moh-native/
+<prompt>$  </prompt>for i in *.wav; do \
+sox $i -r 8000 -c 1 $(basename $i .wav).raw; \
+sox $i -r 8000 -c 1 $(basename $i .wav).gsm; \
+done
+<prompt>$  </prompt>rm *.wav</programlisting></para>
 
     <para>Für CPU-kritische Anwendungen (große Installationen) sollten
     Sie einen Blick auf die Beschreibung in
@@ -270,7 +270,7 @@ doneyyy123yyysw
 
       <para>Legt die in <filename>musiconhold.conf</filename> definierte
       Musik-Klasse der Warteschleife fest. Wir wählen die oben angelegte
-      Klasse <code>default</code>:<programlisting>musiconhold = defaultyyy123yyysw</programlisting></para>
+      Klasse <code>default</code>:<programlisting>musiconhold = default</programlisting></para>
     </section>
 
     <section id="queues.conf-announce">
@@ -280,7 +280,7 @@ doneyyy123yyysw
       Beantworten eines Anrufs vorgespielt wird. Dies dient dazu, dass
       ein Agent, der auf mehreren Schlangen Anrufe entgegennimmt, weiß,
       um welche Schange es sich handelt und z.B. den Anrufer
-      entsprechend begrüßen kann.<programlisting>;announce = schlange-supportyyy123yyysw</programlisting>Wenn
+      entsprechend begrüßen kann.<programlisting>;announce = schlange-support</programlisting>Wenn
       Sie diese Einstellung verwenden, denken Sie daran, auch eine
       entsprechende Audio-Datei im
       <filename>sounds/</filename>-Verzeichnis anzulegen, also z.B.
@@ -349,7 +349,7 @@ doneyyy123yyysw
           </varlistentry>
         </variablelist>Es ist zu beachten, dass Agenten, für die ein
       niedrigerer Malus (penalty) festgelegt wurde, immer Agenten mit
-      höherem Malus vorgezogen werden.<programlisting>strategy = ringallyyy123yyysw</programlisting>Die
+      höherem Malus vorgezogen werden.<programlisting>strategy = ringall</programlisting>Die
       Einstellung ist abhängig von Ihren Gegebenheiten:
       <code>ringall</code> ist vielleicht lästig, die anderen Werte
       verursachen zusätzliche Wartezeit für den Anrufer, falls Agenten
@@ -362,7 +362,7 @@ doneyyy123yyysw
       <para>Legt die Zeit (in Sekunden) fest, in der Anrufe beantwortet
       sein sollen. Nur für statistische Auswertungen interessant
       (<quote>Wieviele Anrufe wurden innerhalb der Service-Zeit von x
-      Sekunden beantwortet?</quote>).<programlisting>servicelevel = 60yyy123yyysw</programlisting></para>
+      Sekunden beantwortet?</quote>).<programlisting>servicelevel = 60</programlisting></para>
     </section>
 
     <section id="queues.conf-context">
@@ -371,10 +371,10 @@ doneyyy123yyysw
       <para>Hier kann ein Kontext angegeben werden, in dem, wenn der
       Anrufer eine Extension mit nur <emphasis>einer</emphasis> Ziffer
       drückt, aus der Schlange rausgenommen und zu dieser Extension in
-      diesem Kontext weitergeleitet wird.<programlisting>context = supportschlange-kontext  ; so könnten wir es einstellenyyy123yyysw
-yyy123yyysw
-; aber wir lassen das erst mal weg, also auskommentiert:yyy123yyysw
-;context = supportschlange-kontextyyy123yyysw</programlisting></para>
+      diesem Kontext weitergeleitet wird.<programlisting>context = supportschlange-kontext  ; so könnten wir es einstellen
+
+; aber wir lassen das erst mal weg, also auskommentiert:
+;context = supportschlange-kontext</programlisting></para>
     </section>
 
     <section id="queues.conf-timeout">
@@ -382,14 +382,14 @@ yyy123yyysw
 
       <para>Legt fest, wie lange (in Sekunden) ein Telefon klingeln
       soll, bis wir es als nicht besetzt (also Timeout)
-      betrachten.<programlisting>timeout = 15yyy123yyysw</programlisting></para>
+      betrachten.<programlisting>timeout = 15</programlisting></para>
     </section>
 
     <section id="queues.conf-retry">
       <title><code>retry</code></title>
 
       <para>Bestimmt, wie lange (in Sekunden) gewartet werden soll,
-      bevor erneut alle Agenten angeklingelt werden.<programlisting>retry = 5yyy123yyysw</programlisting></para>
+      bevor erneut alle Agenten angeklingelt werden.<programlisting>retry = 5</programlisting></para>
     </section>
 
     <section id="queues.conf-weight">
@@ -399,7 +399,7 @@ yyy123yyysw
       Schlangen. Wenn ein Agent auf mehreren Schlangen ist, werden ihm
       zuerst Anrufe von Schlangen mit höherem Gewicht durchgestellt. So
       könnte z.B. einer Notfallschlange ein höheres Gewicht gegeben
-      werden.<programlisting>weight = 0yyy123yyysw</programlisting></para>
+      werden.<programlisting>weight = 0</programlisting></para>
     </section>
 
     <section id="queues.conf-wrapuptime">
@@ -407,16 +407,16 @@ yyy123yyysw
 
       <para>Die Wartezeit (in Sekunden), bevor ein Agent, der gerade
       einen Anruf beendet hat, erneut einen Anruf erhält (Default:
-      0).<programlisting>; wir lassen unseren Agenten eine kleine Verschnaufpause, umyyy123yyysw
-; einen Schluck Wasser zu trinken:yyy123yyysw
-wrapuptime = 10yyy123yyysw</programlisting></para>
+      0).<programlisting>; wir lassen unseren Agenten eine kleine Verschnaufpause, um
+; einen Schluck Wasser zu trinken:
+wrapuptime = 10</programlisting></para>
     </section>
 
     <section id="queues.conf-maxlen">
       <title><code>maxlen</code></title>
 
       <para>Maximale Anzahl der in der Schlange wartenden Anrufer
-      (Default: 0 für unbegrenzt).<programlisting>maxlen = 0yyy123yyysw</programlisting></para>
+      (Default: 0 für unbegrenzt).<programlisting>maxlen = 0</programlisting></para>
     </section>
 
     <section id="queues.conf-announce-frequency">
@@ -424,7 +424,7 @@ wrapuptime = 10yyy123yyysw</programlisting></para>
 
       <para>Bestimmt, in welchen Abständen (in Sekunden) den Anrufern
       ihre Position in der Schlange und/oder die geschätzte Wartezeit
-      angesagt werden soll (0 für aus).<programlisting>announce-frequency = 90yyy123yyysw</programlisting></para>
+      angesagt werden soll (0 für aus).<programlisting>announce-frequency = 90</programlisting></para>
     </section>
 
     <section id="queues.conf-announce-holdtime">
@@ -433,7 +433,7 @@ wrapuptime = 10yyy123yyysw</programlisting></para>
       <para>Ob die geschätzte Wartezeit in den Ankündigungen nach der
       Position genannt werden soll. Mögliche Werte sind <code>yes</code>
       (ja), <code>no</code> (nein) oder <code>once</code> (nur
-      einmal).<programlisting>announce-holdtime = yesyyy123yyysw</programlisting></para>
+      einmal).<programlisting>announce-holdtime = yes</programlisting></para>
     </section>
 
     <section id="queues.conf-announce-round-seconds">
@@ -442,7 +442,7 @@ wrapuptime = 10yyy123yyysw</programlisting></para>
       <para>Bei welchem Wert (1 - 59) Sekunden auf ganze Minuten auf-
       oder abgerundet werden sollen (offenbar werden die Sekunden aber
       trotzdem genannt). Mit der Einstellung 0 schalten wir die Ansage
-      der Sekunden aus.<programlisting>announce-round-seconds = 0yyy123yyysw</programlisting></para>
+      der Sekunden aus.<programlisting>announce-round-seconds = 0</programlisting></para>
     </section>
 
     <section id="queues.conf-sprachbausteine">
@@ -450,16 +450,16 @@ wrapuptime = 10yyy123yyysw</programlisting></para>
 
       <para>Die folgenden Parameter stellen ein, welche Sprachbausteine
       für die Ansagen der Position und Wartezeit verwendet werden. I.d.R
-      sind hier keine Veränderungen notwendig:<programlisting>queue-youarenext = queue-youarenext     ; "You are now first in line."yyy123yyysw
-queue-thereare = queue-thereare         ; "There are" ...yyy123yyysw
-queue-callswaiting = queue-callswaiting ; ... "calls waiting."yyy123yyysw
-queue-holdtime = queue-holdtime         ; "The current est. holdtime is" ...yyy123yyysw
-queue-minutes = queue-minutes           ; ... "minutes"yyy123yyysw
-queue-seconds = queue-seconds           ; ... "seconds"yyy123yyysw
-queue-thankyou = queue-thankyou         ; "Thank you for your patience."yyy123yyysw
-queue-lessthan = queue-less-than        ; ... "less than" ...yyy123yyysw
-queue-reporthold = queue-reporthold     ; "Hold time" ...yyy123yyysw
-periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy123yyysw</programlisting>Wenn
+      sind hier keine Veränderungen notwendig:<programlisting>queue-youarenext = queue-youarenext     ; "You are now first in line."
+queue-thereare = queue-thereare         ; "There are" ...
+queue-callswaiting = queue-callswaiting ; ... "calls waiting."
+queue-holdtime = queue-holdtime         ; "The current est. holdtime is" ...
+queue-minutes = queue-minutes           ; ... "minutes"
+queue-seconds = queue-seconds           ; ... "seconds"
+queue-thankyou = queue-thankyou         ; "Thank you for your patience."
+queue-lessthan = queue-less-than        ; ... "less than" ...
+queue-reporthold = queue-reporthold     ; "Hold time" ...
+periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"</programlisting>Wenn
       diese Parameter nicht angegeben werden (also auskommentiert sind),
       gelten diese Default-Werte.</para>
     </section>
@@ -470,7 +470,7 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
       <para>Bestimmt, in welchen Abständen (in Sekunden) den Anrufern
       die periodische Ankündigung (<code>periodic-announce</code>, s.o.,
       <quote>Zur Zeit sind alle Mitarbeiter im Gespräch, bitte warten
-      Sie.</quote>) angesagt werden soll.<programlisting>periodic-announce-frequency = 60yyy123yyysw</programlisting></para>
+      Sie.</quote>) angesagt werden soll.<programlisting>periodic-announce-frequency = 60</programlisting></para>
     </section>
 
     <section id="queues.conf-monitor-format">
@@ -481,8 +481,8 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
       und bestimmt das Aufzeichnungsformat. (Bei auskommentiertem
       <code>monitor-format</code> werden keine Mitschnitte gemacht.)
       Geben Sie hier also <code>gsm</code>, <code>wav</code> (große
-      Dateien!) oder <code>wav49</code> an.<programlisting>; wenn Sie Aufzeichnungen wollen, diese Zeile einkommentieren:yyy123yyysw
-;monitor-format = gsmyyy123yyysw</programlisting></para>
+      Dateien!) oder <code>wav49</code> an.<programlisting>; wenn Sie Aufzeichnungen wollen, diese Zeile einkommentieren:
+;monitor-format = gsm</programlisting></para>
 
       <simpara>Per Default werden die Dateien (eine
       <filename>-in</filename> und eine <filename>-out</filename>) nach
@@ -505,7 +505,7 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
       <filename><replaceable>...</replaceable>-in</filename> und
       <filename><replaceable>...</replaceable>-out</filename> zu einer
       Datei. Werte: <code>yes</code> oder
-      <code>no</code>.<programlisting>monitor-join = yesyyy123yyysw</programlisting>Weitere
+      <code>no</code>.<programlisting>monitor-join = yes</programlisting>Weitere
       Informationen über Mitschnitte siehe <xref
       linkend="applikationen-monitor" /></para>
     </section>
@@ -553,7 +553,7 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
           </varlistentry>
         </variablelist>Sollte ein Anrufer nicht in eine Schlange
       aufgenommen werden, ist die <code>Queue()</code>-Applikation
-      beendet, und der Dialplan wird fortgesetzt.<programlisting>joinempty = no  ; wir wollen unsere Anrufer nicht unnötig warten lassenyyy123yyysw</programlisting></para>
+      beendet, und der Dialplan wird fortgesetzt.<programlisting>joinempty = no  ; wir wollen unsere Anrufer nicht unnötig warten lassen</programlisting></para>
     </section>
 
     <section id="queues.conf-leavewhenempty">
@@ -562,7 +562,7 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
       <para>Legt fest, ob Anrufer aus einer Schlange entfernt werden,
       sobald sich alle Agenten ausgeloggt haben. Mögliche Werte wie bei
       <code>joinempty</code>. Nach dem Verlassen der Schlange wir der
-      Dialplan fortgesetzt.<programlisting>leavewhenempty = strict  ; Anrufer nicht unnötig warten lassenyyy123yyysw</programlisting></para>
+      Dialplan fortgesetzt.<programlisting>leavewhenempty = strict  ; Anrufer nicht unnötig warten lassen</programlisting></para>
     </section>
 
     <section id="queues.conf-eventwhencalled">
@@ -571,7 +571,7 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
       <para>Stellt ein (<code>yes</code>|<code>no</code>), ob u.a. die
       folgenden Events für das Manager-Interface erzeugt werden:
       AgentCalled, AgentDump, AgentConnect,
-      AgentComplete.<programlisting>eventwhencalled = yesyyy123yyysw</programlisting></para>
+      AgentComplete.<programlisting>eventwhencalled = yes</programlisting></para>
     </section>
 
     <section id="queues.conf-eventmemberstatus">
@@ -579,7 +579,7 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
 
       <para>Stellt ein (<code>yes</code>|<code>no</code>), ob
       QueueMemberStatus-Events im Manager-Interface erzeugt werden (das
-      können viele sein!).<programlisting>eventmemberstatus = noyyy123yyysw</programlisting></para>
+      können viele sein!).<programlisting>eventmemberstatus = no</programlisting></para>
     </section>
 
     <section id="queues.conf-reportholdtime">
@@ -587,14 +587,14 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
 
       <para>Legt fest (<code>yes</code>|<code>no</code>), ob dem Agenten
       die Wartezeit des Anrufers angesagt werden soll, bevor dieser zu
-      ihm durchgestellt wird. (Geschmacksfrage)<programlisting>reportholdtime = noyyy123yyysw</programlisting></para>
+      ihm durchgestellt wird. (Geschmacksfrage)<programlisting>reportholdtime = no</programlisting></para>
     </section>
 
     <section id="queues.conf-memberdelay">
       <title><code>memberdelay</code></title>
 
       <para>Stellt ein, wie lange (in Sekunden) der Anrufer Stille hört,
-      bevor er mit einem Agenten verbunden wird.<programlisting>memberdelay = 1yyy123yyysw</programlisting></para>
+      bevor er mit einem Agenten verbunden wird.<programlisting>memberdelay = 1</programlisting></para>
     </section>
 
     <section id="queues.conf-timeoutrestart">
@@ -603,7 +603,7 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
       <para>Bestimmt, ob der Antwort-Timeout eines Agenten bei einem
       Besetzt- oder Leitung-überlastet-Signal zurückgesetzt wird. Kann
       nützlich für Agenten sein, die die Berechtigung haben, einen Anruf
-      abzuweisen.<programlisting>timeoutrestart = yesyyy123yyysw</programlisting></para>
+      abzuweisen.<programlisting>timeoutrestart = yes</programlisting></para>
     </section>
 
     <section id="queues.conf-autopause">
@@ -611,7 +611,7 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
 
       <para>Dieser Parameter legt fest, ob ein Agent, der einen Anruf
       nicht beantwortet, automatisch pausiert werden
-      soll.<programlisting>autopause = noyyy123yyysw</programlisting></para>
+      soll.<programlisting>autopause = no</programlisting></para>
     </section>
 
     <section id="queues.conf-ringinuse">
@@ -620,7 +620,7 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
       <para>Legt fest, ob auch solche Agenten angeklingelt werden
       sollen, von denen bekannt ist, dass sie gerade im Gespräch sind.
       Der bisher einzige Channel driver, der diesen Status übermittelt,
-      ist SIP.<programlisting>ringinuse = noyyy123yyysw</programlisting></para>
+      ist SIP.<programlisting>ringinuse = no</programlisting></para>
     </section>
 
     <section id="queues.conf-member">
@@ -628,7 +628,7 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
 
       <para>Es ist möglich direkt in der
       <filename>queues.conf</filename> Agenten <emphasis
-      role="bold">statisch</emphasis> in der Form<programlisting>member =&gt; <replaceable>Technologie</replaceable>/<replaceable>Resource</replaceable>[,<replaceable>Malus</replaceable>]yyy123yyysw</programlisting>-
+      role="bold">statisch</emphasis> in der Form<programlisting>member =&gt; <replaceable>Technologie</replaceable>/<replaceable>Resource</replaceable>[,<replaceable>Malus</replaceable>]</programlisting>-
       also z.B. <code>member =&gt; Zap/2</code> - anzulegen (darf
       mehrmals verwendet werden, siehe
       <filename>queues.conf</filename>). Das kann jedoch zu Problemen
@@ -641,10 +641,10 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"yyy
 
       <para>Wir verwenden daher lieber die <emphasis
       role="bold">dynamische</emphasis> Form und ordnen unserer Schlange
-      <code>support</code> in der Form<programlisting>member =&gt; Agent/<replaceable>AgentenNr</replaceable>yyy123yyysw</programlisting>zwei
+      <code>support</code> in der Form<programlisting>member =&gt; Agent/<replaceable>AgentenNr</replaceable></programlisting>zwei
       Agenten <code>1001</code> und <code>1002</code>
-      zu:<programlisting>member =&gt; Agent/1001yyy123yyysw
-member =&gt; Agent/1002yyy123yyysw</programlisting>Diese Agenten müssen wir noch in
+      zu:<programlisting>member =&gt; Agent/1001
+member =&gt; Agent/1002</programlisting>Diese Agenten müssen wir noch in
       der <filename>agents.conf</filename> definieren (s.u.)<footnote>
           <simpara>sonst wären es wirklich Geheimagenten ;-)</simpara>
         </footnote>. Die <code>AgentenNr</code> ist eine frei wählbare
@@ -689,7 +689,7 @@ member =&gt; Agent/1002yyy123yyysw</programlisting>Diese Agenten müssen wir noch
       linkend="queues.conf-timeout" />) der Schlange liegt! Da haben wir
       15 Sekunden eingestellt, also wählen wir hier 14.</simpara>
 
-      <programlisting>autologoff = 14yyy123yyysw</programlisting>
+      <programlisting>autologoff = 14</programlisting>
     </section>
 
     <section id="agents.conf-ackcall">
@@ -700,7 +700,7 @@ member =&gt; Agent/1002yyy123yyysw</programlisting>Diese Agenten müssen wir noch
       Raute (<code>#</code>) drücken müssen, um ein Gespräch anzunehmen.
       Es ist zu beachten, dass in bisherigen Asterisk-Versionen der
       Voiceprompt dem Agenten nicht mitgeteilt hat, dass er
-      <code>#</code> drücken muss.<programlisting>ackcall = noyyy123yyysw</programlisting></para>
+      <code>#</code> drücken muss.<programlisting>ackcall = no</programlisting></para>
     </section>
 
     <section id="agents.conf-endcall">
@@ -708,7 +708,7 @@ member =&gt; Agent/1002yyy123yyysw</programlisting>Diese Agenten müssen wir noch
 
       <para>Stellte ein (<code>yes</code>|<code>no</code>), ob Agenten
       Anrufe durch Drücken der Stern-Taste (<code>*</code>) beenden
-      können.<programlisting>endcall = yesyyy123yyysw</programlisting></para>
+      können.<programlisting>endcall = yes</programlisting></para>
     </section>
 
     <section id="agents.conf-wrapuptime">
@@ -717,14 +717,14 @@ member =&gt; Agent/1002yyy123yyysw</programlisting>Diese Agenten müssen wir noch
       <para>Legt (wie <code>wrapuptime</code> in der queues.conf, die
       doppelte Angabe ist nicht klar) die Wartezeit fest, bis ein Agent,
       der gerade einen Anruf beendet hat, erneut einen Anruf erhält-
-      hier allerdings in Millisekunden. Default: 5000.<programlisting>wrapuptime = 5000   ; 5 Sekunden Pauseyyy123yyysw</programlisting></para>
+      hier allerdings in Millisekunden. Default: 5000.<programlisting>wrapuptime = 5000   ; 5 Sekunden Pause</programlisting></para>
     </section>
 
     <section id="agents.conf-musiconhold">
       <title><code>musiconhold</code></title>
 
       <para>Legt die Music-on-Hold-Klasse für die Agenten
-      fest.<programlisting>musiconhold = defaultyyy123yyysw</programlisting></para>
+      fest.<programlisting>musiconhold = default</programlisting></para>
     </section>
 
     <section id="agents.conf-updatecdr">
@@ -734,7 +734,7 @@ member =&gt; Agent/1002yyy123yyysw</programlisting>Diese Agenten müssen wir noch
       so dass die Kanalangabe
       <code><replaceable>Agent</replaceable>/<replaceable>AgentenNr</replaceable></code>
       enthält, damit wir wissen, welcher Agent das Gespräch geführt
-      hat.<programlisting>updatecdr = yesyyy123yyysw</programlisting></para>
+      hat.<programlisting>updatecdr = yes</programlisting></para>
     </section>
 
     <section id="agents.conf-recordagentcalls">
@@ -742,7 +742,7 @@ member =&gt; Agent/1002yyy123yyysw</programlisting>Diese Agenten müssen wir noch
 
       <para>Gespräche mit Agenten aufzeichnen
       (<code>yes</code>|<code>no</code>). Default:
-      <code>no</code>.<programlisting>recordagentcalls = noyyy123yyysw</programlisting></para>
+      <code>no</code>.<programlisting>recordagentcalls = no</programlisting></para>
     </section>
 
     <section id="agents.conf-recordformat">
@@ -750,7 +750,7 @@ member =&gt; Agent/1002yyy123yyysw</programlisting>Diese Agenten müssen wir noch
 
       <para>Aufzeichnungsformat für Mitschnitte. <code>gsm</code>,
       <code>wav</code> (große Dateien!) oder <code>wav49</code>.
-      Default: <code>wav</code>.<programlisting>recordformat = gsmyyy123yyysw</programlisting></para>
+      Default: <code>wav</code>.<programlisting>recordformat = gsm</programlisting></para>
     </section>
 
     <section id="agents.conf-createlink">
@@ -759,7 +759,7 @@ member =&gt; Agent/1002yyy123yyysw</programlisting>Diese Agenten müssen wir noch
       <para>Legt fest (<code>yes</code>|<code>no</code>), ob im
       User-field (dem Freitextfeld) des CDR der Dateiname der
       Aufzeichnung gespeichert werden soll, damit man sie später
-      zuordnen kann.<programlisting>createlink = yesyyy123yyysw</programlisting></para>
+      zuordnen kann.<programlisting>createlink = yes</programlisting></para>
     </section>
 
     <section id="agents.conf-urlprefix">
@@ -768,8 +768,8 @@ member =&gt; Agent/1002yyy123yyysw</programlisting>Diese Agenten müssen wir noch
       <para>Wenn Sie <code>createlink</code> verwenden, kann mit
       <code>urlprefix</code> direkt eine URL vor den Dateinamen gesetzt
       werden, unter der sie die Aufzeichnungen mit einem Web-Server im
-      Intranet verfügbar gemacht haben.<programlisting>; so könnte ein Beispiel aussehen:yyy123yyysw
-;urlprefix = http://astbox/anrufe/yyy123yyysw</programlisting></para>
+      Intranet verfügbar gemacht haben.<programlisting>; so könnte ein Beispiel aussehen:
+;urlprefix = http://astbox/anrufe/</programlisting></para>
     </section>
 
     <section id="agents.conf-savecallsin">
@@ -777,17 +777,17 @@ member =&gt; Agent/1002yyy123yyysw</programlisting>Diese Agenten müssen wir noch
 
       <para>Hier können Sie angeben, in welchem Verzeichnis die
       Mitschnitte gespeichert werden sollen. Default:
-      <filename>/var/spool/asterisk/monitor</filename><programlisting>; wenn wir z.B. die Mitschnitte in /var/calls/ speichern wollen:yyy123yyysw
-;savecallsin = /var/callsyyy123yyysw</programlisting></para>
+      <filename>/var/spool/asterisk/monitor</filename><programlisting>; wenn wir z.B. die Mitschnitte in /var/calls/ speichern wollen:
+;savecallsin = /var/calls</programlisting></para>
     </section>
 
     <section id="agents.conf-agent">
       <title><code>agent</code></title>
 
       <para><code>agent</code> wird zur Definition von Agenten verwendet
-      (kann mehrfach vorkommen).<programlisting>; Format: agent =&gt; AgentenNr,Passwort,Nameyyy123yyysw
-agent =&gt; 1001,0000,Mark Spenceryyy123yyysw
-agent =&gt; 1002,0000,Will Meadowsyyy123yyysw</programlisting></para>
+      (kann mehrfach vorkommen).<programlisting>; Format: agent =&gt; AgentenNr,Passwort,Name
+agent =&gt; 1001,0000,Mark Spencer
+agent =&gt; 1002,0000,Will Meadows</programlisting></para>
     </section>
   </section>
 
@@ -805,45 +805,45 @@ agent =&gt; 1002,0000,Will Meadowsyyy123yyysw</programlisting></para>
     eingereiht.</para>
 
     <para>Eine minimale Extension, die die Anrufer in die Warteschleife
-    einreiht, sähe so aus:<programlisting>exten =&gt; 20,1,Answer()                   ; abhebenyyy123yyysw
-exten =&gt; 20,n,Set(MUSICCLASS()=default)  ; Musikklasse "default" setzenyyy123yyysw
-exten =&gt; 20,n,Queue(support,t)           ; in Schlange "support" einreihenyyy123yyysw
-exten =&gt; 20,n,Hangup()                   ; hinterher auflegenyyy123yyysw</programlisting></para>
+    einreiht, sähe so aus:<programlisting>exten =&gt; 20,1,Answer()                   ; abheben
+exten =&gt; 20,n,Set(MUSICCLASS()=default)  ; Musikklasse "default" setzen
+exten =&gt; 20,n,Queue(support,t)           ; in Schlange "support" einreihen
+exten =&gt; 20,n,Hangup()                   ; hinterher auflegen</programlisting></para>
 
     <para>Wir lieben es etwas vollständiger und verwenden diese
-    Extension:<programlisting>exten =&gt; 20,n,Wait(2)yyy123yyysw
-exten =&gt; 20,n,Answer()                   ; abhebenyyy123yyysw
-exten =&gt; 20,n,Set(MUSICCLASS()=default)  ; Musikklasse "default" setzenyyy123yyysw
-exten =&gt; 20,n,Queue(support,t)           ; in Schlange "support" einreihenyyy123yyysw
-; zur Erinnerung: die Option t erlaubt es dem Agenten, den Anrufyyy123yyysw
-; an eine andere Extension weiterzuleitenyyy123yyysw
-; setzt QUEUESTATUS =yyy123yyysw
-; TIMEOUT | FULL | JOINEMPTY | JOINUNAVAIL | LEAVEEMPTY | LEAVEUNAVAILyyy123yyysw
-exten =&gt; 20,n,Goto(q-${QUEUESTATUS},1)  ; je nach QUEUESTATUS springenyyy123yyysw
-yyy123yyysw
-; keine Agenten auf der Schlange:yyy123yyysw
-; (hier könnte man alternativ auf VoiceMail() leiten)yyy123yyysw
-exten =&gt; q-JOINEMPTY,1,Wait(1)yyy123yyysw
-exten =&gt; q-JOINEMPTY,n,Playback(vm-nobodyavail,noanswer)yyy123yyysw
-exten =&gt; q-JOINEMPTY,n,Playback(vm-goodbye,noanswer)yyy123yyysw
-exten =&gt; q-JOINEMPTY,n,Hangup()yyy123yyysw
-yyy123yyysw
-; keine Agenten (oder nur nicht-verfügbare) auf der Schlange:yyy123yyysw
-exten =&gt; q-JOINUNAVAIL,1,Goto(q-JOINEMPTY,1)   ; wie JOINEMPTY behandelnyyy123yyysw
-yyy123yyysw
-; alle Agenten haben Schlange verlassen:yyy123yyysw
-exten =&gt; q-LEAVEEMPTY,1,Goto(q-JOINEMPTY,1)    ; wie JOINEMPTY behandelnyyy123yyysw
-yyy123yyysw
-; alle Agenten (auch nicht-verfügbare) haben Schlange verlassen:yyy123yyysw
-exten =&gt; q-LEAVEUNAVAIL,1,Goto(q-JOINEMPTY,1)  ; wie JOINEMPTY behandelnyyy123yyysw
-yyy123yyysw
-; kein Agent antwortet:yyy123yyysw
-exten =&gt; q-TIMEOUT,1,Goto(q-JOINEMPTY,1)       ; wie JOINEMPTY behandelnyyy123yyysw
-yyy123yyysw
-; max. Anruferzahl für Schlange erreicht:yyy123yyysw
-; (hier könnte man alternativ auf VoiceMail() leiten)yyy123yyysw
-exten =&gt; q-FULL,1,Busy(5)yyy123yyysw
-exten =&gt; q-FULL,n,Hangup()yyy123yyysw</programlisting>Wenn wir diese Extension
+    Extension:<programlisting>exten =&gt; 20,n,Wait(2)
+exten =&gt; 20,n,Answer()                   ; abheben
+exten =&gt; 20,n,Set(MUSICCLASS()=default)  ; Musikklasse "default" setzen
+exten =&gt; 20,n,Queue(support,t)           ; in Schlange "support" einreihen
+; zur Erinnerung: die Option t erlaubt es dem Agenten, den Anruf
+; an eine andere Extension weiterzuleiten
+; setzt QUEUESTATUS =
+; TIMEOUT | FULL | JOINEMPTY | JOINUNAVAIL | LEAVEEMPTY | LEAVEUNAVAIL
+exten =&gt; 20,n,Goto(q-${QUEUESTATUS},1)  ; je nach QUEUESTATUS springen
+
+; keine Agenten auf der Schlange:
+; (hier könnte man alternativ auf VoiceMail() leiten)
+exten =&gt; q-JOINEMPTY,1,Wait(1)
+exten =&gt; q-JOINEMPTY,n,Playback(vm-nobodyavail,noanswer)
+exten =&gt; q-JOINEMPTY,n,Playback(vm-goodbye,noanswer)
+exten =&gt; q-JOINEMPTY,n,Hangup()
+
+; keine Agenten (oder nur nicht-verfügbare) auf der Schlange:
+exten =&gt; q-JOINUNAVAIL,1,Goto(q-JOINEMPTY,1)   ; wie JOINEMPTY behandeln
+
+; alle Agenten haben Schlange verlassen:
+exten =&gt; q-LEAVEEMPTY,1,Goto(q-JOINEMPTY,1)    ; wie JOINEMPTY behandeln
+
+; alle Agenten (auch nicht-verfügbare) haben Schlange verlassen:
+exten =&gt; q-LEAVEUNAVAIL,1,Goto(q-JOINEMPTY,1)  ; wie JOINEMPTY behandeln
+
+; kein Agent antwortet:
+exten =&gt; q-TIMEOUT,1,Goto(q-JOINEMPTY,1)       ; wie JOINEMPTY behandeln
+
+; max. Anruferzahl für Schlange erreicht:
+; (hier könnte man alternativ auf VoiceMail() leiten)
+exten =&gt; q-FULL,1,Busy(5)
+exten =&gt; q-FULL,n,Hangup()</programlisting>Wenn wir diese Extension
     anrufen, werden wir, da keine Agenten angemeldet sind, die Ansage
     hören, dass z.Zt. niemand unseren Anruf entgegennehmen kann. (Wenn
     Sie das verschleiern wollen, setzen Sie in der
@@ -851,9 +851,9 @@ exten =&gt; q-FULL,n,Hangup()yyy123yyysw</programlisting>Wenn wir diese Extensio
     <code>joinempty=yes</code> und <code>leaveempty=no</code>.)</para>
 
     <para>Es fehlt also noch eine Extension unter der sich die Agenten
-    einloggen, d.h. anwesend melden:<programlisting>exten =&gt; 25,1,Answer()       ; abhebenyyy123yyysw
-exten =&gt; 25,n,AgentLogin()   ; Agent einloggenyyy123yyysw
-exten =&gt; 25,n,Hangup()       ; hinterher auflegenyyy123yyysw</programlisting>Mit
+    einloggen, d.h. anwesend melden:<programlisting>exten =&gt; 25,1,Answer()       ; abheben
+exten =&gt; 25,n,AgentLogin()   ; Agent einloggen
+exten =&gt; 25,n,Hangup()       ; hinterher auflegen</programlisting>Mit
     <code>AgentLogin()</code> bleibt die Verbindung zum Agenten
     dauerhaft bestehen, und die eingehenden Anrufe werden auf diesen
     bereits aufgebauten Sprachkanal aufgeschaltet. Wenn der Agent den
@@ -873,8 +873,8 @@ exten =&gt; 25,n,Hangup()       ; hinterher auflegenyyy123yyysw</programlisting>
     <para>Digium verwendet im Beispiel
     <filename>doc/queues-with-callback-members.txt</filename> (in AEL,
     lässt sich aber leicht in einen <quote>herkömmlichen</quote>
-    Dialplan umwandeln)<programlisting>Read(agentennr,agent-user);yyy123yyysw
-VMAuthenticate(${agentennr},s);yyy123yyysw</programlisting>zum Authentifizieren der
+    Dialplan umwandeln)<programlisting>Read(agentennr,agent-user);
+VMAuthenticate(${agentennr},s);</programlisting>zum Authentifizieren der
     Agenten, <code>AddQueueMember()</code> zum dynamischen Hinzufügen
     zur Schlange und <code>Dial()</code> zum Anrufen der Agenten.</para>
 
@@ -907,7 +907,7 @@ VMAuthenticate(${agentennr},s);yyy123yyysw</programlisting>zum Authentifizieren 
     <filename>/var/log/asterisk/queue_log</filename> detailliert
     festgehalten (natürlich werden auch Einträge im CDR-Log gemacht). Im
     <filename>queue_log</filename> steht ein Eintrag pro Zeile im
-    Format:<programlisting><replaceable>Timestamp</replaceable>|<replaceable>Anruf-ID</replaceable>|<replaceable>Schlange</replaceable>|<replaceable>Kanal</replaceable>|<replaceable>Event</replaceable>|<replaceable>Param1</replaceable>[|<replaceable>Param2</replaceable>[|<replaceable>Param3</replaceable>]]yyy123yyysw</programlisting></para>
+    Format:<programlisting><replaceable>Timestamp</replaceable>|<replaceable>Anruf-ID</replaceable>|<replaceable>Schlange</replaceable>|<replaceable>Kanal</replaceable>|<replaceable>Event</replaceable>|<replaceable>Param1</replaceable>[|<replaceable>Param2</replaceable>[|<replaceable>Param3</replaceable>]]</programlisting></para>
 
     <variablelist termlength="11">
       <varlistentry>
@@ -1142,105 +1142,105 @@ VMAuthenticate(${agentennr},s);yyy123yyysw</programlisting>zum Authentifizieren 
         <simpara>wlloyd at slap.net, veröffentlicht auf der
         Digium-Mailingliste <code>asterisk-users</code>, siehe: <ulink
         url="http://lists.digium.com/pipermail/asterisk-users/2005-July/109892.html">http://lists.digium.com/pipermail/asterisk-users/2005-July/109892.html</ulink></simpara>
-      </footnote>:<programlisting>#!/usr/bin/perl -wyyy123yyysw
-#yyy123yyysw
-# wlloyd at slap.netyyy123yyysw
-yyy123yyysw
-# The asterisk version indpendant way to get queue stats into Mysql,  yyy123yyysw
-Postgresyyy123yyysw
-# or whatever is supported by Perl DBIyyy123yyysw
-yyy123yyysw
-# It's all about named pipesyyy123yyysw
-yyy123yyysw
-# to setup this softwareyyy123yyysw
-# stop asteriskyyy123yyysw
-# rm /var/log/asterisk/queue_logyyy123yyysw
-# mkfifo /var/log/asterisk/queue_logyyy123yyysw
-yyy123yyysw
-# make sure permissions are setupyyy123yyysw
-# chmod 777 /var/log/asterisk/queue_logyyy123yyysw
-yyy123yyysw
-# run this program as root or under another user as you see fit.yyy123yyysw
-# should start BEFORE asterisk.  Add to /etc/rc.d/rc.local or whateveryyy123yyysw
-yyy123yyysw
-# restart asteriskyyy123yyysw
-yyy123yyysw
-# requires a DB table like the following..yyy123yyysw
-# CREATE TABLE csr_queue (yyy123yyysw
-#  qname varchar(30) default NULL,yyy123yyysw
-#  agent varchar(30) default NULL,yyy123yyysw
-#  action text,yyy123yyysw
-#  info1 text,yyy123yyysw
-#  info2 text,yyy123yyysw
-#  info3 text,yyy123yyysw
-#  timestamp int(11) NOT NULL default '0',yyy123yyysw
-#  id tinytext NOT NULLyyy123yyysw
-#) TYPE=MyISAM;yyy123yyysw
-yyy123yyysw
-use DBI;yyy123yyysw
-use IO::File;yyy123yyysw
-yyy123yyysw
-my $opt_debug = 0;yyy123yyysw
-yyy123yyysw
-# if you want postgres change this to "Pg"yyy123yyysw
-my $db_type = "mysql";yyy123yyysw
-my $db_host = "127.0.0.1";yyy123yyysw
-my $db_user_name = 'username';yyy123yyysw
-my $db_password = 'password';yyy123yyysw
-my $db_database = 'asteriskstat';yyy123yyysw
-yyy123yyysw
-my $dbh = DBI-&gt;connect("DBI:$db_type:dbname=$db_database;host= yyy123yyysw
-$db_host;", $db_user_name, $db_password);yyy123yyysw
-yyy123yyysw
-open(FIFO, "&lt; /var/log/asterisk/queue_log")        or die "Can't open  yyy123yyysw
-queue_log : $!\n";yyy123yyysw
-yyy123yyysw
-while (1) {yyy123yyysw
-yyy123yyysw
-     $message = &lt;FIFO&gt;;yyy123yyysw
-     next unless defined $message;   # interrupted or nothing loggedyyy123yyysw
-     chomp $message;yyy123yyysw
-yyy123yyysw
-     # remove chars that will cause DB problemsyyy123yyysw
-     $message =~ s/\"\'//g;yyy123yyysw
-yyy123yyysw
-     @data = split(/\|/,$message);yyy123yyysw
-yyy123yyysw
-     # these messages are almost useless for my purposesyyy123yyysw
-     next if ($data[4] eq "QUEUESTART" );yyy123yyysw
-     next if ($data[4] eq "CONFIGRELOAD" );yyy123yyysw
-yyy123yyysw
-     if (!defined($data[5])) {yyy123yyysw
-       $data[5] = '';yyy123yyysw
-     }yyy123yyysw
-     if (!defined($data[6])) {yyy123yyysw
-       $data[6] = '';yyy123yyysw
-     }yyy123yyysw
-     if (!defined($data[7])) {yyy123yyysw
-       $data[7] = '';yyy123yyysw
-     }yyy123yyysw
-yyy123yyysw
-     my $sql = "INSERT INTO csr_queue (timestamp, id, qname, agent,  yyy123yyysw
-action, info1, info2, info3) VALUES ('$data[0]', '$data[1]', '$data yyy123yyysw
-[2]', '$data[3]', '$data[4]', '$data[5]', '$data[6]', '$data[7]')";yyy123yyysw
-yyy123yyysw
-     print "$sql \n\n" if ($opt_debug);yyy123yyysw
-yyy123yyysw
-     $dbh-&gt;do($sql);yyy123yyysw
-yyy123yyysw
-# if you want an actual logfile you might want to uncomment thisyyy123yyysw
-#        if ( open(LOG, "&gt;&gt; /var/log/asterisk/queue_log_real") ) {yyy123yyysw
-#            print LOG "$message\n";yyy123yyysw
-#            close(LOG);yyy123yyysw
-#        } else {yyy123yyysw
-#            warn "Couldn't log to /var/log/asterisk_queue_log: $!\n";yyy123yyysw
-#        }yyy123yyysw
-#yyy123yyysw
-}yyy123yyysw
-yyy123yyysw
-$dbh-&gt;disconnect();yyy123yyysw
-yyy123yyysw
-exit 0;yyy123yyysw</programlisting>Bei QueueMetrics (kostenlose Demo-Version) wird
+      </footnote>:<programlisting>#!/usr/bin/perl -w
+#
+# wlloyd at slap.net
+
+# The asterisk version indpendant way to get queue stats into Mysql,  
+Postgres
+# or whatever is supported by Perl DBI
+
+# It's all about named pipes
+
+# to setup this software
+# stop asterisk
+# rm /var/log/asterisk/queue_log
+# mkfifo /var/log/asterisk/queue_log
+
+# make sure permissions are setup
+# chmod 777 /var/log/asterisk/queue_log
+
+# run this program as root or under another user as you see fit.
+# should start BEFORE asterisk.  Add to /etc/rc.d/rc.local or whatever
+
+# restart asterisk
+
+# requires a DB table like the following..
+# CREATE TABLE csr_queue (
+#  qname varchar(30) default NULL,
+#  agent varchar(30) default NULL,
+#  action text,
+#  info1 text,
+#  info2 text,
+#  info3 text,
+#  timestamp int(11) NOT NULL default '0',
+#  id tinytext NOT NULL
+#) TYPE=MyISAM;
+
+use DBI;
+use IO::File;
+
+my $opt_debug = 0;
+
+# if you want postgres change this to "Pg"
+my $db_type = "mysql";
+my $db_host = "127.0.0.1";
+my $db_user_name = 'username';
+my $db_password = 'password';
+my $db_database = 'asteriskstat';
+
+my $dbh = DBI-&gt;connect("DBI:$db_type:dbname=$db_database;host= 
+$db_host;", $db_user_name, $db_password);
+
+open(FIFO, "&lt; /var/log/asterisk/queue_log")        or die "Can't open  
+queue_log : $!\n";
+
+while (1) {
+
+     $message = &lt;FIFO&gt;;
+     next unless defined $message;   # interrupted or nothing logged
+     chomp $message;
+
+     # remove chars that will cause DB problems
+     $message =~ s/\"\'//g;
+
+     @data = split(/\|/,$message);
+
+     # these messages are almost useless for my purposes
+     next if ($data[4] eq "QUEUESTART" );
+     next if ($data[4] eq "CONFIGRELOAD" );
+
+     if (!defined($data[5])) {
+       $data[5] = '';
+     }
+     if (!defined($data[6])) {
+       $data[6] = '';
+     }
+     if (!defined($data[7])) {
+       $data[7] = '';
+     }
+
+     my $sql = "INSERT INTO csr_queue (timestamp, id, qname, agent,  
+action, info1, info2, info3) VALUES ('$data[0]', '$data[1]', '$data 
+[2]', '$data[3]', '$data[4]', '$data[5]', '$data[6]', '$data[7]')";
+
+     print "$sql \n\n" if ($opt_debug);
+
+     $dbh-&gt;do($sql);
+
+# if you want an actual logfile you might want to uncomment this
+#        if ( open(LOG, "&gt;&gt; /var/log/asterisk/queue_log_real") ) {
+#            print LOG "$message\n";
+#            close(LOG);
+#        } else {
+#            warn "Couldn't log to /var/log/asterisk_queue_log: $!\n";
+#        }
+#
+}
+
+$dbh-&gt;disconnect();
+
+exit 0;</programlisting>Bei QueueMetrics (kostenlose Demo-Version) wird
     ebenfalls ein Perl-Skript <filename>queueLoader.pl</filename>
     mitgeliefert.</para>
   </section>

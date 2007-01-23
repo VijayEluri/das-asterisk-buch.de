@@ -184,101 +184,101 @@
     englische E-Mail finden Sie im <xref
     linkend="anhang-iax-vs-sip" />):</para>
 
-    <screen>Date: Mon, 5 Jul 2004 18:59:52 -0500 (CDT)yyy123yyysw
-From: Mark Spencer &lt;markster@digium.com&gt;yyy123yyysw
-yyy123yyysw
-Ich möchte einige Unterschiede zwischen SIP und IAX kurz yyy123yyysw
-zusammenfassen. Vielleicht hilft Dir das bei der yyy123yyysw
-Entscheidungsfindung.yyy123yyysw
-yyy123yyysw
-1) IAX arbeitet während des Gesprächs unabhängig von der Anzahl yyy123yyysw
-der Anrufe und des verwendeten Codecs effizienter als RTP. Der yyy123yyysw
-Vorteil liegt irgendwo zwischen 2400 Kbit/s für einen yyy123yyysw
-Einzelanruf und der dreifachen Anzahl der Anrufe pro Megabit yyy123yyysw
-bei G.729, wenn die Messung bei aktiviertem Trunk-Modus auf der yyy123yyysw
-MAC-Ebene vorgenommen wird.yyy123yyysw
-yyy123yyysw
-2) IAX ist nicht ASCII-, sondern datenelementkodiert. Dies machtyyy123yyysw
-Implementierungen wesentlich leichter und zudem robuster yyy123yyysw
-gegenüber Pufferüberlaufangriffen, da absolut keine Textanalyse yyy123yyysw
-oder -interpretation erforderlich ist. IAX führt den gesamten yyy123yyysw
-IP-Stapel, IAX-Stapel, TDM-Schnittstelle, Echokompensation und yyy123yyysw
-Erzeugung der Anrufer-ID auf 4k Heap und Stack sowie 64k Flash yyy123yyysw
-aus. Dies veranschaulicht ganz klar die yyy123yyysw
-Implementierungseffizienz des Entwurfs. Die Größe der yyy123yyysw
-IAX-Signalpakete ist drastisch geringer als die bei SIP, was yyy123yyysw
-aber in der Regel nur dann erwähnenswert ist, wenn zahlreiche yyy123yyysw
-Clients sich häufig registrieren. Allgemein gesprochen ist IAX2 yyy123yyysw
-bei der Kodierung, der Dekodierung und der Überprüfung der Daten yyy123yyysw
-effizienter. Zudem wäre es für den Autor einer yyy123yyysw
-IAX-Implementierung extrem schwierig, eine Inkompatibilität mit yyy123yyysw
-einer anderen Implementierung herzustellen, da für eine yyy123yyysw
-Interpretation kaum Raum vorhanden ist.yyy123yyysw
-yyy123yyysw
-3) IAX weist eine sehr klare Trennung von Schicht 2 und Schicht yyy123yyysw
-3 auf, d. h. sowohl Signalisierung als auch Tondaten haben yyy123yyysw
-definierte Zustände, werden robust und in konsistenter Weise yyy123yyysw
-übertragen, und wenn ein Endpunkt des Anrufs unvermittelt yyy123yyysw
-verschwindet, dann wird der Anruf auch zeitnah beendet und zwaryyy123yyysw
-auch dann, wenn keine weiteren Signale und/oder Audiodaten yyy123yyysw
-empfangen werden. Einen solchen Mechanismus weist SIP nicht auf; yyy123yyysw
-hinzu kommt, dass, was die Signalisierung angeht, die yyy123yyysw
-Zuverlässigkeit sehr niedrig und schwerfällig ist, weswegen yyy123yyysw
-zusätzlich zum Kernstandard RF3261 weitere Standards benötigt yyy123yyysw
-werden.yyy123yyysw
-yyy123yyysw
-4) Die einheitlichen Signalisierungs- und Audiopfade von IAX yyy123yyysw
-gestatten die transparente Navigation von NATs , und der yyy123yyysw
-Firewall-Administrator muss lediglich einen einzigen Port yyy123yyysw
-öffnen, um den Einsatz von IAX zu gestatten. Der IAX-Client yyy123yyysw
-muss für einen korrekten Betrieb überhaupt nichts über das yyy123yyysw
-Netzwerk wissen, in dem er sich befindet. Anders gesagt: Es kann yyy123yyysw
-niemals eine durch eine Firewall bedingte Situation auftreten, yyy123yyysw
-in der IAX einen Anruf aufbauen und dann keine Audiodaten yyy123yyysw
-übertragen kann (natürlich vorausgesetzt, es ist genügendyyy123yyysw
-Bandbreite vorhanden).yyy123yyysw
-yyy123yyysw
-5) Das authentifizierte Übertragungssystem von IAX gestattet yyy123yyysw
-die Übertragung von Audio- und Rufsteuerdaten über einen yyy123yyysw
-zwischengeschalteten Server auf eine robuste Weise: Wenn zwei yyy123yyysw
-Endpunkte einander aus irgendeinem Grund nicht erkennen können, yyy123yyysw
-wird der Ruf über den Zentralserver gehalten.yyy123yyysw
-yyy123yyysw
-6) IAX trennt die Caller-ID vom Authentifizierungsmechanismus yyy123yyysw
-des Benutzers. SIP verfügt hierzu über keine eindeutige Methode, yyy123yyysw
-sofern nicht Remote-Party-IDs verwendet werden.yyy123yyysw
-yyy123yyysw
-7) SIP ist ein IETF-Standard. Zwar gibt es eine neue yyy123yyysw
-Dokumentation von Frank Miller, aber IAX ist gegenwärtig noch yyy123yyysw
-kein veröffentlichter Standard.yyy123yyysw
-yyy123yyysw
-8) IAX ermöglicht es einem Endpunkt, die Gültigkeit einer yyy123yyysw
-Telefonnummer zu überprüfen, damit er weiß, ob die Nummer yyy123yyysw
-vollständig ist, vollständig sein könnte oder aber zwar yyy123yyysw
-vollständig ist, aber länger sein könnte. SIP bietet hierfür yyy123yyysw
-keine vollständige Unterstützung.yyy123yyysw
-yyy123yyysw
-9) IAX sendet DTMF stets außerbandig, d. h. es kann keine yyy123yyysw
-Verwirrung bezüglich der Frage entstehen, welche Methode verwendet yyy123yyysw
-wird.yyy123yyysw
-yyy123yyysw
-10) IAX unterstützt die Übertragung von Sprache und Kontext, was yyy123yyysw
-in einer Asterisk-Umgebung durchaus sinnvoll ist. Mehr fällt mir yyy123yyysw
-jetzt im Moment nicht ein.yyy123yyysw
-yyy123yyysw
-Markyyy123yyysw
-yyy123yyysw
-PS: Ich nehme mal an, dass SIP trotzdem ein paar Vorteile yyy123yyysw
-aufweisen muss (andernfalls wären seine Entwickler ja Dummköpfe).yyy123yyysw
-yyy123yyysw
-Es bleibt also zu fragen, wie IAX die folgenden Aspekte verwaltet:yyy123yyysw
-1) Bandbreitenanzeigeyyy123yyysw
-2) Neue Codecsyyy123yyysw
-3) Erweiterbarkeityyy123yyysw
-4) Parken von Verbindungen und andere komplexe Szenarienyyy123yyysw
-5) Videotelephonieyyy123yyysw
-yyy123yyysw
-Ich habe den Eindruck, dass dies alles in SIP besser geregelt ist.yyy123yyysw</screen>
+    <screen>Date: Mon, 5 Jul 2004 18:59:52 -0500 (CDT)
+From: Mark Spencer &lt;markster@digium.com&gt;
+
+Ich möchte einige Unterschiede zwischen SIP und IAX kurz 
+zusammenfassen. Vielleicht hilft Dir das bei der 
+Entscheidungsfindung.
+
+1) IAX arbeitet während des Gesprächs unabhängig von der Anzahl 
+der Anrufe und des verwendeten Codecs effizienter als RTP. Der 
+Vorteil liegt irgendwo zwischen 2400 Kbit/s für einen 
+Einzelanruf und der dreifachen Anzahl der Anrufe pro Megabit 
+bei G.729, wenn die Messung bei aktiviertem Trunk-Modus auf der 
+MAC-Ebene vorgenommen wird.
+
+2) IAX ist nicht ASCII-, sondern datenelementkodiert. Dies macht
+Implementierungen wesentlich leichter und zudem robuster 
+gegenüber Pufferüberlaufangriffen, da absolut keine Textanalyse 
+oder -interpretation erforderlich ist. IAX führt den gesamten 
+IP-Stapel, IAX-Stapel, TDM-Schnittstelle, Echokompensation und 
+Erzeugung der Anrufer-ID auf 4k Heap und Stack sowie 64k Flash 
+aus. Dies veranschaulicht ganz klar die 
+Implementierungseffizienz des Entwurfs. Die Größe der 
+IAX-Signalpakete ist drastisch geringer als die bei SIP, was 
+aber in der Regel nur dann erwähnenswert ist, wenn zahlreiche 
+Clients sich häufig registrieren. Allgemein gesprochen ist IAX2 
+bei der Kodierung, der Dekodierung und der Überprüfung der Daten 
+effizienter. Zudem wäre es für den Autor einer 
+IAX-Implementierung extrem schwierig, eine Inkompatibilität mit 
+einer anderen Implementierung herzustellen, da für eine 
+Interpretation kaum Raum vorhanden ist.
+
+3) IAX weist eine sehr klare Trennung von Schicht 2 und Schicht 
+3 auf, d. h. sowohl Signalisierung als auch Tondaten haben 
+definierte Zustände, werden robust und in konsistenter Weise 
+übertragen, und wenn ein Endpunkt des Anrufs unvermittelt 
+verschwindet, dann wird der Anruf auch zeitnah beendet und zwar
+auch dann, wenn keine weiteren Signale und/oder Audiodaten 
+empfangen werden. Einen solchen Mechanismus weist SIP nicht auf; 
+hinzu kommt, dass, was die Signalisierung angeht, die 
+Zuverlässigkeit sehr niedrig und schwerfällig ist, weswegen 
+zusätzlich zum Kernstandard RF3261 weitere Standards benötigt 
+werden.
+
+4) Die einheitlichen Signalisierungs- und Audiopfade von IAX 
+gestatten die transparente Navigation von NATs , und der 
+Firewall-Administrator muss lediglich einen einzigen Port 
+öffnen, um den Einsatz von IAX zu gestatten. Der IAX-Client 
+muss für einen korrekten Betrieb überhaupt nichts über das 
+Netzwerk wissen, in dem er sich befindet. Anders gesagt: Es kann 
+niemals eine durch eine Firewall bedingte Situation auftreten, 
+in der IAX einen Anruf aufbauen und dann keine Audiodaten 
+übertragen kann (natürlich vorausgesetzt, es ist genügend
+Bandbreite vorhanden).
+
+5) Das authentifizierte Übertragungssystem von IAX gestattet 
+die Übertragung von Audio- und Rufsteuerdaten über einen 
+zwischengeschalteten Server auf eine robuste Weise: Wenn zwei 
+Endpunkte einander aus irgendeinem Grund nicht erkennen können, 
+wird der Ruf über den Zentralserver gehalten.
+
+6) IAX trennt die Caller-ID vom Authentifizierungsmechanismus 
+des Benutzers. SIP verfügt hierzu über keine eindeutige Methode, 
+sofern nicht Remote-Party-IDs verwendet werden.
+
+7) SIP ist ein IETF-Standard. Zwar gibt es eine neue 
+Dokumentation von Frank Miller, aber IAX ist gegenwärtig noch 
+kein veröffentlichter Standard.
+
+8) IAX ermöglicht es einem Endpunkt, die Gültigkeit einer 
+Telefonnummer zu überprüfen, damit er weiß, ob die Nummer 
+vollständig ist, vollständig sein könnte oder aber zwar 
+vollständig ist, aber länger sein könnte. SIP bietet hierfür 
+keine vollständige Unterstützung.
+
+9) IAX sendet DTMF stets außerbandig, d. h. es kann keine 
+Verwirrung bezüglich der Frage entstehen, welche Methode verwendet 
+wird.
+
+10) IAX unterstützt die Übertragung von Sprache und Kontext, was 
+in einer Asterisk-Umgebung durchaus sinnvoll ist. Mehr fällt mir 
+jetzt im Moment nicht ein.
+
+Mark
+
+PS: Ich nehme mal an, dass SIP trotzdem ein paar Vorteile 
+aufweisen muss (andernfalls wären seine Entwickler ja Dummköpfe).
+
+Es bleibt also zu fragen, wie IAX die folgenden Aspekte verwaltet:
+1) Bandbreitenanzeige
+2) Neue Codecs
+3) Erweiterbarkeit
+4) Parken von Verbindungen und andere komplexe Szenarien
+5) Videotelephonie
+
+Ich habe den Eindruck, dass dies alles in SIP besser geregelt ist.</screen>
 
     <para>Nachtrag zu dieser E-Mail: IAX ist mittlerweile ein offenes und gut
     dokumentiertes Protokoll.</para>
