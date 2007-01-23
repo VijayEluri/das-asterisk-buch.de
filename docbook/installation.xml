@@ -220,6 +220,78 @@
                   xmlns:xi="http://www.w3.org/2001/XInclude" />
     </section>
 
+    <section id="weitere-voiceprompts">
+      <title>Weitere Sprachprompts</title>
+
+      <para>Da wir gerade dabei sind, bietet sich die Gelegenheit an noch ein
+      paar zusätzliche Sprachbausteine (Prompts) mit zu installieren. Diese
+      können mit <command>wget
+      http://ftp.digium.com/pub/asterisk/releases/asterisk-sounds-1.2.1.tar.gz</command>
+      downgeloadet werden (vorher noch mit <command>cd ..</command> ein
+      Verzeichnis rauf gehen):<screen>debian:/usr/src/asterisk-1.2.13# cd ..
+debian:/usr/src# wget http://ftp.digium.com/pub/asterisk/releases/asterisk-sounds-1.2.1.tar.gz
+--11:38:17--  http://ftp.digium.com/pub/asterisk/releases/asterisk-sounds-1.2.1.tar.gz
+           =&gt; `asterisk-sounds-1.2.1.tar.gz'
+Auflösen des Hostnamen »ftp.digium.com«.... 69.16.138.164, 216.27.40.102
+Verbindungsaufbau zu ftp.digium.com[69.16.138.164]:80... verbunden.
+HTTP Anforderung gesendet, warte auf Antwort... 200 OK
+Länge: 3,249,876 [application/x-gzip]
+
+100%[====================================&gt;] 3,249,876    153.27K/s    ETA 00:00
+
+11:38:39 (149.37 KB/s) - »asterisk-sounds-1.2.1.tar.gz« gespeichert [3249876/3249876]
+
+debian:/usr/src#</screen></para>
+
+      <para>Jetzt in das mit <command>tar xvzf
+      asterisk-sounds-1.2.1.tar.gz</command> ausgepackte Verzeichnis wechseln
+      (<command>cd asterisk-sounds-1.2.1</command>) und dort mit <command>make
+      install</command> die Sprachbausteine installieren.<screen>debian:/usr/src# tar xvzf asterisk-sounds-1.2.1.tar.gz 
+asterisk-sounds-1.2.1/
+asterisk-sounds-1.2.1/sounds-extra.txt
+asterisk-sounds-1.2.1/README.txt
+asterisk-sounds-1.2.1/sounds/
+asterisk-sounds-1.2.1/sounds/call-fwd-parallel.gsm
+asterisk-sounds-1.2.1/sounds/accounts-payable.gsm
+asterisk-sounds-1.2.1/sounds/language.gsm
+
+[...]
+
+asterisk-sounds-1.2.1/sounds/research-and-development.gsm
+asterisk-sounds-1.2.1/sounds/distribution.gsm
+asterisk-sounds-1.2.1/sounds/login-fail.gsm
+asterisk-sounds-1.2.1/sounds/repair.gsm
+asterisk-sounds-1.2.1/sounds/T-to-enable-ancmnt.gsm
+asterisk-sounds-1.2.1/Makefile
+debian:/usr/src# cd asterisk-sounds-1.2.1
+debian:/usr/src/asterisk-sounds-1.2.1# make install
+mkdir -p /var/lib/asterisk/sounds
+mkdir -p /var/lib/asterisk/sounds/letters
+mkdir -p /var/lib/asterisk/sounds/phonetic
+mkdir -p /var/lib/asterisk/sounds/silence
+mkdir -p /var/lib/asterisk/sounds/wx
+mkdir -p /var/lib/asterisk/sounds/ha
+for x in sounds/letters/*.gsm; do \
+        if grep -q "^%`basename $x`%" sounds-extra.txt; then \
+                install -m 644 $x /var/lib/asterisk/sounds/letters ; \
+        else \
+                echo "No description for $x"; \
+                exit 1; \
+        fi; \
+
+[...]
+
+for x in sounds/*.gsm; do \
+        if grep -q "^%`basename $x`%" sounds-extra.txt; then \
+                install -m 644 $x /var/lib/asterisk/sounds ; \
+        else \
+                echo "No description for $x"; \
+                exit 1; \
+        fi; \
+done
+debian:/usr/src/asterisk-sounds-1.2.1# </screen></para>
+    </section>
+
     <section id="asterisk-konfigurieren">
       <title id="Server-konfigurieren">Den Asterisk-Server
       konfigurieren</title>
@@ -228,7 +300,7 @@
       jetzt alle Konfigurationsdateien in einer einfachen
       Standardausführung:</para>
 
-      <screen>debian:/usr/src/asterisk-1.2.13# cd /etc/asterisk 
+      <screen>debian:/usr/src/asterisk-sounds-1.2.1# cd /etc/asterisk 
 debian:/etc/asterisk# ls
 adsi.conf           cdr_tds.conf     indications.conf  privacy.conf
 adtranvofr.conf     codecs.conf      logger.conf       queues.conf
