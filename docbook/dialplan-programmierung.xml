@@ -29,7 +29,7 @@
     Abschnitte heißen im Asterisk-Jargon Contexte. Am Anfang eines Dialplanes
     muss es immer einen <code>[general]</code>-Context für allgemeine
     Konfigurationen geben, die danach folgenden Contexte können beliebig
-    genannt werden. Die Contexte bilden das Verbindungsstück zwischen der
+    benannt werden. Die Contexte bilden das Verbindungsstück zwischen der
     Definition eines Telefones (z.B. SIP oder ISDN) und dem Dialplan. Für ein
     Telefon wird immer ein Context definiert. Ein Beispiel aus einer sip.conf:
     <programlisting>[2000]
@@ -78,10 +78,10 @@ Regeln, Anweisungen, ...</programlisting></para>
         url="http://www.voip-info.org/wiki/view/Asterisk+RealTime">
         <citetitle>http://www.voip-info.org/wiki/view/Asterisk+RealTime</citetitle>
         </ulink>.</para>
-      </footnote> Das Neu-Einlesen des Dialplanes kann aber auch im laufenden
-    Betrieb im Command Line Interface durch den Befehl <command>reload
-    now</command> bzw. <command>extensions reload</command> forciert
-    werden.</para>
+      </footnote> Das erneute Einlesen des Dialplanes kann aber auch im
+    laufenden Betrieb im Command Line Interface durch den Befehl
+    <command>reload now</command> bzw. <command>extensions reload</command>
+    forciert werden.</para>
 
     <section id="extension-syntax">
       <title>Syntax</title>
@@ -105,8 +105,7 @@ Regeln, Anweisungen, ...</programlisting></para>
 
       <para><programlisting>exten =&gt;
 <replaceable>Extension</replaceable>,<replaceable>Priorität</replaceable>,<replaceable>Applikation</replaceable>()
-</programlisting>
-z.B.<programlisting>exten =&gt; 123,1,Answer()
+</programlisting> z.B.<programlisting>exten =&gt; 123,1,Answer()
 </programlisting></para>
     </section>
 
@@ -182,7 +181,8 @@ exten =&gt; 1234,n,Hangup()</programlisting></para>
         <code>n</code>-Prioritäten Label zu vergeben. Damit sind z.B. solche
         Konstrukte möglich:<programlisting>[...]
 
-exten =&gt; s,n,GotoIf($[${APFELMUS} = 1]?<emphasis role="bold">ja</emphasis>:<emphasis role="bold">nein</emphasis>)
+exten =&gt; s,n,GotoIf($[${APFELMUS} = 1]?<emphasis role="bold">ja</emphasis>:<emphasis
+              role="bold">nein</emphasis>)
 exten =&gt; s,n<emphasis role="bold">(ja)</emphasis>,NoOp(Ja)
 exten =&gt; s,n<emphasis role="bold">(nein)</emphasis>,NoOp(Nein)
 
@@ -443,14 +443,14 @@ exten =&gt; 03012345678,1,Dial(SIP/03012345678)</programlisting></para>
     <section id="reihenfolge-beim-pattern-matching">
       <title>Reihenfolge beim Matching von Patterns</title>
 
-      <para>Asterisk sucht bevor es einen anderen Context included immer erst
-      im aktuellen Context nach einem Treffer (einem Match). Gibt es einen
-      Treffer, wird dieser benutzt. Gibt es keinen Treffer, wird das erste
-      Include vollzogen und dort nach einem Treffer gesucht. Dies funktioniert
-      rekursiv nach unten. Es können also auch Includes innerhalb von Includes
-      abgearbeitet werden.</para>
+      <para>Asterisk sucht bevor es einen anderen Context einbindet (include)
+      immer erst im aktuellen Context nach einem Treffer (einem Match). Gibt
+      es einen Treffer, wird dieser benutzt. Gibt es keinen Treffer, wird das
+      erste Include vollzogen und dort nach einem Treffer gesucht. Dies
+      funktioniert rekursiv nach unten - auch verschachtelt - es können also
+      auch Includes innerhalb von Includes abgearbeitet werden.</para>
 
-      <para>Im Zweifelsfall können Sie zum Debugen auch hier die Applikation
+      <para>Im Zweifelsfall können Sie zum Debuggen auch hier die Applikation
       <command>show dialplan nummer@name-des-contextes</command> benutzen, um
       heraus zu finden, welche Regel von Asterisk angewendet wird.</para>
     </section>
@@ -826,7 +826,7 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
         ergeben. Im genannten Beispiel könnten wir den String
         <quote>Apfelbaum</quote> in die Teilstrings <quote>Apfel</quote> und
         <quote>baum</quote> zerlegen, aber auch <quote>Apf</quote> und
-        <quote>elbaum</quote> sind korrekte Teilstrings. Ein String hat
+        <quote>elbaum</quote> sind echte Teilstrings. Ein String hat
         theoretisch keine begrenzte Größe, er kann beliebig viele Zeichen
         enthalten, der gesamte Text dieses Buches könnte so als ein String
         aufgefasst werden. Natürlich wäre das dann nicht mehr sehr handlich,
@@ -1053,18 +1053,18 @@ exten =&gt; s,5,Hangup()</programlisting>
   <section id="programmierer-howto">
     <title>Kleines Programmierer Howto</title>
 
-    <para>Die Schwierigkeit eines solchen Buches liegt unter anderem in dem
-    breiten Grundwissen der Leser. Ein Buch über Asterisk wird von Admins,
+    <para>Die Schwierigkeit eines solchen Buches liegt unter anderem im breit
+    gestreuten Grundwissen der Leser. Ein Buch über Asterisk wird von Admins,
     Programmierern, Telefonanlagentechnikern und vielen anderen technisch
-    interessierten Menschen gelesen. Die Programmierkenntnisse sind dabei sehr
-    unterschiedlich. Um die Fähigkeiten von Asterisk auszureißen benötigt man
-    schon ein wenig Programmiertalent und eine gewisses Basiswissen. In diesem
-    Howto möchte ich die wichtigsten Grundprinzipien und Ideen für
-    Programmierer erläutern. Dabei gehe ich beispielhaft vor und verweise bei
-    Detailfragen auf <xref linkend="applikationen" />. Weiterhin wird es in
-    diesem Howto teilweise zu Wiederholungen von bereits besprochenen Stoff
-    kommen. Dafür gibt es aber über alles auch einen sehr schnellen
-    Überblick.</para>
+    interessierten Menschen gelesen. Die praktischen Programmierkenntnisse
+    sind dabei sehr unterschiedlich ausgeprägt. Um die Fähigkeiten von
+    Asterisk auszureizen benötigt man schon einfache Programmierkenntnisse und
+    ein gesundes Basiswissen. In diesem Howto möchte ich die wichtigsten
+    Grundprinzipien und Ideen für Programmierer erläutern. Dabei gehe ich
+    beispielhaft vor und verweise bei Detailfragen auf <xref
+    linkend="applikationen" />. Einige Themen werden sie hier sicher aus
+    anderen Kapiteln wiedererkennen. Dieses kleine Howto wird ihnen einen sehr
+    schnellen Überblick zu dem Thema bieten.</para>
 
     <section id="programmierer-howto-programmstruktur">
       <title>Programmstruktur</title>
@@ -1245,13 +1245,23 @@ exten =&gt; 1015,n,Return()</programlisting></para>
     <para>Lange Zeit wurde in Asterisk Dialplänen hauptsächlich mit Priority
     Jumping gearbeitet. Dazu wurde von bestimmten Applikationen (z.B.
     <code>Dial()</code>) die Priorität bei bestimmten Ereignissen um 101
-    hochgesetzt. Diese Funktionalität ist aber mittlerweile offiziel
-    <emphasis>deprecated</emphasis> (also unerwünscht) und soll nicht mehr
-    benutzt werden. Beim Suchen nach Lösungen im Internet oder auch in anderen
-    Asteriskbüchern werden Sie aber immer wieder auf diesen Lösungsweg
-    stossen. Es ist dann besser die jeweilige Lösung zu "ent-deprecaten". An
-    sonsten werden Sie mit Ihrem Dialplan bei zukünftigen Asterisk Versionen
-    Probleme beim Upgrade bekommen.</para>
+    hochgesetzt. Diese Funktionalität ist aber mittlerweile offiziell
+    <emphasis>deprecated</emphasis> (also im Sinne von "überholt")) und wird
+    zwar noch unterstützt, sollte jedoch nicht mehr benutzt werden. Die
+    Klassifizierung "deprecated" bezeichnet zumeist Funktionen und
+    Funktionsaufrufe, für die mittlerweile entsprechende Nachfolger oder
+    Folgekonstrukte existieren und künftig durch diese neuen ersetzt werden
+    sollen. Beim Suchen nach Lösungen und Anregungen im Internet oder auch in
+    anderen Asteriskbüchern werden Sie ebenfalls immer wieder auf
+    Lösungsvorschläge stoßen, die dieses überholte Konstrukt mit den
+    Prioritäten verwenden. Auch wenn die Unterstützung für derart erstellte
+    Dialpläne sicher nicht morgen eingestellt wird, so werden sie doch
+    mittelfristig schlechter unterstützt werden und man kann dann nicht sicher
+    sein, dass es eine Lösung in der alten Notation geben wird. Es hat auch
+    Vorteile sich aktiv mit einer Umstellung frühzeitig zu beschäftigen, da
+    sie bei künftigen Updates der Asterisk-Software deutlich weniger Gefahr
+    laufen werden, dass ihr Dialplan nicht mehr so funktioniert, wie sie das
+    gewohnt sind.</para>
   </section>
 
   <section id="ael">
@@ -1263,8 +1273,8 @@ exten =&gt; 1015,n,Return()</programlisting></para>
     <filename>extensions.ael</filename> gefunden haben. In dieser Datei ist
     ein Teil des Dialplanes in der Asterisk Extension Language (kurz AEL)
     abgespeichert. AEL ist ein Versuch die Programmierung des Dialplanes
-    syntaktisch mehr an andere Programmiersprachen anzulehnen. Wenn ein
-    normaler Dialplan wie folgt aussieht:<programlisting>[meine-telefone]
+    syntaktisch mehr an andere Programmiersprachen anzulehnen. Wenn ein sonst
+    üblicher Dialplan wie folgt aussieht:<programlisting>[meine-telefone]
 exten =&gt; 23,1,Wait(1)
 exten =&gt; 23,2,Answer()
 exten =&gt; 23,3,Playback(hello-world)
@@ -1285,14 +1295,14 @@ exten =&gt; 23,5,Hangup()</programlisting></para>
     <para>Wie spielen die beiden Versionen des Dialplanes zusammen? Asterisk
     lädt erst die Datei <code>extensions.conf</code> und dann konvertiert es
     die Datei <code>extensions.ael</code> in das <code>.conf</code> Format, um
-    es dann nach zu laden. Es werden also beide Dateien geladen und als
-    Dialplan ausgeführt! Da die AEL erst noch in das alte Format umkonvertiert
-    werden muss, könnte man sogar mit einem leichten zeitlichen Nachteil
+    es danach zu laden. Es werden also beide Dateien geladen und als Dialplan
+    ausgeführt! Da die AEL erst noch in das alte Format umkonvertiert werden
+    muss, könnte man sogar mit einem leichten zeitlichen Nachteil
     argumentieren. Wenn in beiden Dateien die gleiche Extension im gleichen
     Context definiert ist, dann nimmt Asterisk die
     <filename>extensions.conf</filename> Variante.</para>
 
-    <para>Ob man den traditionellen oder den AEL Weg wählt, muss jeder selber
+    <para>Ob man den traditionellen oder den AEL Weg wählt, muss jeder selbst
     entscheiden. Vom technischen Standpunkt gibt es keine Unterschiede in der
     Funktionalität. Wer sich für AEL interessiert, sollte einmal einen Blick
     in die Datei <filename>/etc/asterisk/extensions.ael</filename> werfen.
@@ -1300,8 +1310,8 @@ exten =&gt; 23,5,Hangup()</programlisting></para>
 
     <para>In diesem Buch werden alle Beispiele immer im traditionellen Modus
     beschrieben. Einer der Gründe dafür ist, das AEL bei der Asterisk Version
-    1.2 noch als experimentell eingestuft wurde. Er mit der Asterisk Version
-    1.4 gilt es als Stable.</para>
+    1.2 noch als experimentell eingestuft wurde. Erst mit der Asterisk Version
+    1.4 ist AEL vom Status "stable" .</para>
   </section>
 
   <xi:include href="applikationen.xml"
