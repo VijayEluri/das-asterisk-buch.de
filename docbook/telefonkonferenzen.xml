@@ -11,7 +11,7 @@
 
   <title>Telefonkonferenzen</title>
 
-  <section id="telefonkonferenzen-einleitung">
+  <section id="konferenzraum-einleitung">
     <title>Einleitung</title>
 
     <para>Asterisk bieten von Haus aus eine sehr gutes Konferenztool.
@@ -23,7 +23,7 @@
     muss man die Teilnehmerzahl auf 3 begrenzen.</para>
   </section>
 
-  <section>
+  <section id="konferenzraum-installation">
     <title>Installation und das Timing Device</title>
 
     <para>Eine Standard Asterisk Installation wie Sie sie aus dem ersten
@@ -47,12 +47,16 @@
 
         <para>Wer keine entsprechende Hardware zur Verfügung hat oder einbauen
         will, der kann auf auf das <code>ztdummy</code> Modul in Kombination
-        mit einem 2.6er Kernel zurückgreifen. Zur Installation befolgen Sie
-        bitte die Anleitung unter <xref linkend="isdn-1.2-digium-b410p" />.
-        Nur den <command>make b410p</command> Schritt können Sie überspringen.
-        Nach der Installation können Sie dann mit modprobe ztdummy das
-        entsprechende Modul laden und haben damit auch Zugriff auf die
-        Konferenzfunktionen von Asterisk.</para>
+        mit einem 2.6er Kernel zurückgreifen.<footnote>
+            <para>Es ist auch möglich ein ztdummy Modul mit einem 2.4er Kernel
+            zu kompilieren. Dies setzt aber eine spezielle USB-Hardware voraus
+            und es ist deshalb ein suboptimaler Weg.</para>
+          </footnote> Zur Installation befolgen Sie bitte die Anleitung unter
+        <xref linkend="isdn-1.2-digium-b410p" />. Nur den <command>make
+        b410p</command> Schritt können Sie überspringen. Nach der Installation
+        können Sie dann mit modprobe ztdummy das entsprechende Modul laden und
+        haben damit auch Zugriff auf die Konferenzfunktionen von
+        Asterisk.</para>
       </listitem>
     </itemizedlist>
 
@@ -60,5 +64,48 @@
     anbietet, gehen Sie bitte ins CLI und geben Sie <command>show application
     MeetMe</command> ein. Sollte der Hilfetext angezeigt werden, können Sie
     eine Konferenz einleiten.</para>
+  </section>
+
+  <section id="konferenzraum-definition">
+    <title>Definition von Konferenzräumen</title>
+
+    <para>In Asterisk finden Konferenzen immer in virutellen Konferenzräumen
+    statt. Diese müssen in der Konfigurationsdatei
+    <filename>/etc/asterisk/meetme.conf</filename> definiert werden. Dies
+    geschieht im Bereich <code>[rooms]</code> und hat eine denkbar einfache
+    Syntax: <code>conf =&gt;
+    Konferenzraumnummer[,PIN][,Admin-PIN]</code></para>
+
+    <para>Möchten Sie einen für jeden frei zugänglichen Konferenzraum mit der
+    Nummer 1234 einrichten, so muss der entsprechende Teil in der
+    <filename>meetme.conf</filename> wie folgt aussehen:<programlisting>[rooms]
+conf =&gt; 1234</programlisting></para>
+
+    <para>Sollen zusätzlich noch die Räume 700 bis 705 mit jeweils dem
+    gleichen PIN 5678 eingerichten werden, so sieht die <filename>meetme.conf
+    </filename>wie folgt aus:<programlisting>[rooms]
+conf =&gt; 1234
+conf =&gt; 700,5678
+conf =&gt; 701,5678
+conf =&gt; 702,5678
+conf =&gt; 703,5678
+conf =&gt; 704,5678
+conf =&gt; 705,5678
+</programlisting></para>
+  </section>
+
+  <section id="konferenzraum-meetme">
+    <title>Zugang im Dialplan</title>
+
+    <para>Mit der Applikation <code>MeetMe()</code> können Sie ganz einfach in
+    einen Konferenzraum eintretten. Soll z.B. jeder Anrufer der die Nummer
+    5555 anruft in den Konferenzraum 1234 gestellt werden, so geschiet dies
+    mit folgendem Dialplan:<programlisting>[intern]
+exten =&gt; 5555,1,Answer()
+exten =&gt; 5555,n,Wait(1)
+exten =&gt; 5555,n,MeetMe(1234)
+exten =&gt; 5555,n,Hangup()</programlisting></para>
+
+    <para></para>
   </section>
 </chapter>
