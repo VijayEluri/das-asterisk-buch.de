@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<chapter id="telefonkonferenzen" lang="de" revision="$Revision: 1.2 $">
+  <!--% Copyright (c) 2007 - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Telefonkonferenzen</title>
+
+  <section id="telefonkonferenzen-einleitung">
+    <title>Einleitung</title>
+
+    <para>Asterisk bieten von Haus aus eine sehr gutes Konferenztool.
+    Allerdings gilt es auch hier wie so oft im Umgang mit Asterisk: Es gibt
+    keine perfekte fertige Lösung! Man muss sich alles aus kleinen Bausteinen
+    zusammenbauen. Ein in Deutschland typisches Beispiel ist dafür die 3er
+    Konferenz. In Asterisk gibt es keine 3er Konferenzfunktionalität. Es gibt
+    "nur" eine n-er Konferenz. Wenn man daraus eine 3er Konferenz machen will,
+    muss man die Teilnehmerzahl auf 3 begrenzen.</para>
+  </section>
+
+  <section>
+    <title>Installation und das Timing Device</title>
+
+    <para>Eine Standard Asterisk Installation wie Sie sie aus dem ersten
+    Kapitel des Buches kennen ist nicht in der Lage Telefonkonferenzen zu
+    realisieren. Das Problem liegt am nicht vorhandenen Timing Device. Um die
+    incoming Channels einer Telefonkonferenz richtig mischen zu können,
+    benötigt Asterisk einen klaren und für alle Channels gleichen Takt. Es
+    gibt hierfür prinzipiel zwei Möglichkeiten:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Treiber einer Hardware-Karte</para>
+
+        <para>Wenn Sie die zaptel-Treiber eine Digium-Karte oder den Junghanns
+        BRIstuff zusammen mit einer ISDN-Karte installieren, bekommt Asterisk
+        automatisch ein Timing-Device.</para>
+      </listitem>
+
+      <listitem>
+        <para>ztdummy Modul ohne Hardware</para>
+
+        <para>Wer keine entsprechende Hardware zur Verfügung hat oder einbauen
+        will, der kann auf auf das <code>ztdummy</code> Modul in Kombination
+        mit einem 2.6er Kernel zurückgreifen. Zur Installation befolgen Sie
+        bitte die Anleitung unter <xref linkend="isdn-1.2-digium-b410p" />.
+        Nur den <command>make b410p</command> Schritt können Sie überspringen.
+        Nach der Installation können Sie dann mit modprobe ztdummy das
+        entsprechende Modul laden und haben damit auch Zugriff auf die
+        Konferenzfunktionen von Asterisk.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Um herrauszufinden, ob Ihr Asterisk auch die Konferenzfunktionalität
+    anbietet, gehen Sie bitte ins CLI und geben Sie <command>show application
+    MeetMe</command> ein. Sollte der Hilfetext angezeigt werden, können Sie
+    eine Konferenz einleiten.</para>
+  </section>
+</chapter>
