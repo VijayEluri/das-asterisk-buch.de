@@ -32,9 +32,9 @@
 
     <para>Zunächst stellen Sie sicher, dass das Debian Linux (stable) System
     genau auf dem Stand ist wie in <xref linkend="installation-1.2-debian" />
-    beschrieben. Wir setzen hier vor der Installation der Asterisk-Sourcen
-    auf. Zur korrekten Erzeugung aller Treiber des bristuff-Pakets werden die
-    zum installierten Kernel passenden Sourcen benötigt. Stellen Sie vorher
+    beschrieben. Wir setzen hier vor der Installation der Asterisk-Sourcen an.
+    Zur korrekten Erzeugung aller Treiber des bristuff-Pakets werden die zum
+    installierten Kernel passenden Sourcen benötigt. Stellen Sie vorher
     mittels <command>uname -a</command> fest, welche Kernel-Version
     installiert ist und laden Sie mit <command>apt-get install
     kernel-source-&lt;version&gt;</command> die dazu passenden Sourcen
@@ -58,8 +58,8 @@ debian:~#</screen>
     befindet sich nun eine Datei
     <filename>kernel-source-2.4.27.tar.bz2</filename>. Diese wird mit dem
     Kommando <command>tar xvjf kernel-source-2.4.27.tar.bz2</command>
-    dekomprimiert und entpacken. Danach wird ein Soft-Link mit Namen
-    <filename>linux</filename> auf diese Sourcen angelegt.</para>
+    dekomprimiert und entpackt. Danach wird ein "symbolic" Link mit Namen
+    <filename>linux</filename> auf diese Sourcen gelegt.</para>
 
     <screen>debian:~# cd /usr/src/
 debian:/usr/src# tar xvjf kernel-source-2.4.27.tar.bz2
@@ -68,8 +68,8 @@ debian:/usr/src# ln -s kernel-source-2.4.27 linux
 debian:/usr/src#</screen>
 
     <important>
-      <para>Setzen Sie einen Kernel der Version 2.6 ein, muss der Soft-Link
-      den Namen <filename>linux-2.6</filename> tragen.</para>
+      <para>Setzen Sie einen Kernel der Version 2.6 ein, muss der Sym-Link den
+      Namen <filename>linux-2.6</filename> tragen.</para>
     </important>
 
     <para>Die Kernel-Sourcen müssen nun für die aktuelle Installation
@@ -113,7 +113,7 @@ rm -f .depend .hdepend
 scripts/mkdep -- init/*.c &gt; .depend
 debian:/usr/src/linux#</screen>
 
-    <para>Das Schlimmste ist überstanden, nun sind alle Kernel-Sourcen korrekt
+    <para>Das Schlimmste ist überstanden, nun sind alle Kernel-Quellen korrekt
     konfiguriert und es kann mit der eigentlichen bristuff-Installation
     weitergehen.</para>
 
@@ -167,8 +167,8 @@ debian:/usr/src#</screen>
     <command>install.sh</command> im gerade entpackten Verzeichnis. Der
     Kompiliervorgang kann je nach Rechenleistung des PCs wenige Minuten oder
     bis zu einer Stunde dauern. Einige Zwischenschritte müssen vom Anwender
-    jedoch manuell mit <keycap>ENTER</keycap> bestätigt werden. Vorteil ist
-    allerdings, dass dieses Installationsskript nahezu alles erledigt,
+    jedoch manuell mit <keycap>ENTER</keycap> bestätigt werden. Der Vorteil
+    ist allerdings, dass dieses Installationsskript nahezu alles erledigt;
     angefangen vom Herunterladen der notwendigen Asterisk- und Zusatzpakete
     bis hin zur wesentlichen Installation des Sytems.</para>
 
@@ -305,7 +305,7 @@ dchan=12</screen>
     <itemizedlist>
       <listitem>
         <para>Sollen ISDN-B-Kanäle für spezielle Zwecke reserviert werden oder
-        können alle für rausgehende Verbindungen genutzt werden?</para>
+        können alle für ausgehende Verbindungen genutzt werden?</para>
       </listitem>
     </itemizedlist>
 
@@ -600,13 +600,15 @@ exten =&gt; _0[0-9].,n,Dial(Zap/g2/${EXTEN:1})</programlisting>
     sich um die korrekte Darstellung der Rufnummer komplett alleine kümmern,
     inkl. nationaler und internationaler Vorwahlnummern. Ein Fehler in einer
     solchen Konfiguration führt schlicht dazu, dass niemand die von Ihnen
-    angezeigte Rufnummer zurückrufen kann (ausserdem kann dies rechtliche
-    Schritte nach sich ziehen, da ein solcher Verstoss kein Kavaliersdelikt
-    ist). Ein solches Feature sollte also mit allen notwendigen Fällen (Anruf
-    innerhalb derselben Stadt, Anruf in fremder Stadt, Anruf im Ausland, etc.)
-    ausgiebigst getestet werden.</para>
+    angezeigte Rufnummer zurückrufen kann, im ungünstigsten Fall weisen sie
+    vielleicht auch eine Nummer eines anderen Teilnehmers aus, das kann sogar
+    rechtliche Schritte nach sich ziehen, da ein solcher Verstoss kein
+    Kavaliersdelikt darstellt. Sie sollten also von diesem Feature nur mit der
+    gebotenen Vorsicht Gebrauch machen und alle Szenarien (Anruf innerhalb
+    derselben Stadt, Anruf in fremder Stadt, Anruf im Ausland, etc.)
+    ausgiebigst getestet haben.</para>
 
-    <para>Die Anlage ist nun grundlegend für den funktionsfähigen Betrieb am
-    ISDN-Anschluss konfiguriert.</para>
+    <para>Herzlichen Glückwunsch - die Anlage ist nun grundlegend für den
+    Betrieb am ISDN-Anschluss konfiguriert.</para>
   </section>
 </section>
