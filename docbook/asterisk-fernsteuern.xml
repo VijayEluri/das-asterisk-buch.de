@@ -287,10 +287,22 @@ exten =&gt; 23,n,Hangup()</programlisting></para>
 secret = geheim
 deny = 0.0.0.0/0.0.0.0
 permit = 127.0.0.1/255.255.255.255
-read = system,call,log,verbose,command,agent,user,config
-write = system,call,log,verbose,command,agent,user,config</programlisting>Nach
-    einem Restart von Asterisk können wir uns auf Port 5038 mit dem AMI
-    verbinden, was wir auf der Shell mit <command>telnet</command><footnote>
+read = all,system,call,log,verbose,command,agent,user,config
+write = all,system,call,log,verbose,command,agent,user,config</programlisting>Die
+    Optionen nach <code>read</code> und <code>write</code> geben an, für
+    welche Befehlsklassen wir dem User Rechte geben.<footnote>
+        <simpara>Welche Rechte-Klassen man zum Ausführen eines Befehls haben
+        muss, erfährt man im CLI mit <command>show manager commands</command>
+        bzw. <command>manager show commands</command>.</simpara>
+      </footnote><caution>
+        <para>Diese großzügige Rechtevergabe dient nur zum Testen! Mit dem
+        Recht <code>command</code> kann der User z.B. Asterisk stoppen. Seit
+        1.4 ist es sogar möglich, durch das AMI den Dialplan zu verändern und
+        dann evtl. mit <code>System()</code> auf der Shell Befehle mit
+        root-Rechten auszuführen!</para>
+      </caution> Nach einem Restart von Asterisk können wir uns auf Port 5038
+    mit dem AMI verbinden, was wir auf der Shell mit
+    <command>telnet</command><footnote>
         <simpara>Hier kommt nur das <emphasis>Tool</emphasis>
         <command>telnet</command> zum Einsatz. Das hat nichts mit dem
         Telnet-Protokoll oder Port zu tun.</simpara>
@@ -304,15 +316,18 @@ ActionID: 1
 Username: admin
 Secret: geheim
 
-</screen></para>
+</screen><note>
+        <simpara>Alle Befehls-Pakete werden wurch zwei Returns
+        abgeschlossen.</simpara>
+      </note></para>
 
     <para>Antwort:<screen>Response: Success
 ActionID: 1
 Message: Authentication accepted
 </screen></para>
 
-    <simpara>Die primäre Verwendung liegt aber eher im automatisierte Zugriff
-    von einem Skript.</simpara>
+    <simpara>Die primäre Verwendung liegt aber ganz klar im automatisierten
+    Zugriff durch Skripte.</simpara>
 
     <note>
       <para>Die Manager-API ist nicht unbedingt dafür berühmt, viele
@@ -362,11 +377,7 @@ Message: Authentication accepted
     <code>manager show commands</code>), Informationen über einen Befehl mit
     <code>show manager command <replaceable>Befehlsname</replaceable></code>
     (bzw. <code>manager show command
-    <replaceable>Befehlsname</replaceable></code>)<footnote>
-        <simpara>Nur der Vollständigkeit halber der Link zur entsprechenden -
-        veralteten - Seite auf voip-info.org: <ulink
-        url="http://www.voip-info.org/wiki/view/Asterisk+manager+API">http://www.voip-info.org/wiki/view/Asterisk+manager+API</ulink></simpara>
-      </footnote>.<screen>mos-eisley*CLI&gt; manager show commands
+    <replaceable>Befehlsname</replaceable></code>):<screen>mos-eisley*CLI&gt; manager show commands
   Action           Privilege        Synopsis                                               
   ------           ---------        --------                                               
   AbsoluteTimeout  call,all         Set Absolute Timeout                                   
@@ -415,7 +426,9 @@ Message: Authentication accepted
     Dialplan-Applikation - neu ist vor allem die Action
     <code>Originate</code>, mit der man einen ausgehenden Anruf veranlassen
     kann, und <code>Command</code>, was einen Befehl direkt auf dem CLI
-    ausführt. Wie man einen Befehl benutzt, erfährt man so:<screen>mos-eisley*CLI&gt; manager show command Command
+    ausführt. Da wir unserem User <code>admin</code> alle Rechte gegeben haben
+    (s.o.), darf er alle Befehle ausführen. Wie man einen Befehl benutzt,
+    erfährt man so:<screen>mos-eisley*CLI&gt; manager show command Command
 Action: Command 
 Synopsis: Execute Asterisk CLI Command
 Privilege: command,all
@@ -428,67 +441,78 @@ Variables: (Names marked with * are required)
     undokumentiert. Auf <ulink
     url="http://www.voip-info.org/wiki/view/asterisk+manager+events">http://www.voip-info.org/wiki/view/asterisk+manager+events</ulink>
     findet sich eine zusammengesammelte Liste mit spärlichen Hinweisen. Ein
-    paar Erklärungen kann man auf xx<ulink
+    paar Erklärungen kann man auf <ulink
     url="http://asterisk-java.sourceforge.net/apidocs/net/sf/asterisk/manager/event/package-frame.html">http://asterisk-java.sourceforge.net/apidocs/net/sf/asterisk/manager/event/package-frame.html</ulink>
     nachlesen<footnote>
         <simpara>Nicht verwirren lassen, das ist eigentlich eine
         Java-Dokumentation.</simpara>
       </footnote>.</simpara>
 
-    <simpara>Für das Manager-Interface gibt es mittlerweile mehr oder weniger
-    gute APIs in verschiedenen Programmiersprachen (PHP, Perl, Python, Ruby
-    etc.), die natürlich hier nicht alle getestet werden konnten<footnote>
-        <simpara>Beispiele mit Anmerkungen auf <ulink
-        url="http://www.voip-info.org/wiki/view/Asterisk+manager+Examples">http://www.voip-info.org/wiki/view/Asterisk+manager+Examples</ulink></simpara>
-      </footnote>. Sollte die API für Ihre Lieblingssprache nicht laufen,
-    können Sie das Problem sicher lösen - bis hierher haben sowieso nur Leute
-    gelesen, die schon mal programmiert haben. :-)</simpara>
+    <section>
+      <title>StarAstAPI für PHP<indexterm>
+          <primary>StarAstAPI</primary>
+        </indexterm></title>
 
-    <para>Wir testen hier ganz kurz die StarAstAPI<footnote>
-        <simpara>von <ulink
-        url="http://www.starutilities.com/">http://www.starutilities.com/</ulink></simpara>
-      </footnote> in PHP, die ein PHP 5 voraussetzt<footnote>
-        <simpara>Die API läßt sich aber relativ leicht auf PHP 4 umschreiben,
-        obwohl der Code recht unübersichtlich ist.</simpara>
-      </footnote>, das mit <code>--enable-sockets</code> kompiliert
-    wurde.<footnote>
-        <para>Auf der Shell erfährt man mit <command>php -m</command>, welche
-        Module einkompiliert sind.</para>
-      </footnote> Leider findet man in den StarAstAPI-Dateien noch die seit
-    Jahren veralteten <quote>short open tags</quote> (<code>&lt;?</code>),
-    ersetzen Sie diese ggf. durch die korrekte Syntax (<code>&lt;?php</code>).
-    Der API liegen 4 Demo-Skripte bei: <filename>sLogin.php</filename>
-    versucht nur, sich einzuloggen<footnote>
-        <simpara>Wenn Sie nach der Anleitung oben vorgegangen sind, müssen Sie
-        natürlich jeweils den Benutzernamen und das Passwort entsprechend
-        anpassen.</simpara>
-      </footnote>, <filename>sCommand.php</filename> führt den CLI-Befehl
-    <code>reload</code> aus, <filename>sDial.php</filename> versucht eine
-    Verbindung mit SIP/120, <filename>sEvents.php</filename> empfängt Events.
-    Wenn wir gleichzeitig mit <command>asterisk -vvvr</command> die CLI
-    beobachten und mit <command>php -q sLogin.php</command> eine Verbindung
-    zum AMI öffnen<footnote>
-        <simpara>hier absichtlich mit falschem User/Passwort</simpara>
-      </footnote>, sehen wir im CLI:<screen>mos-eisley*CLI&gt; 
+      <simpara>Vorweg gesagt: Erwarten Sie nicht zu viel von diesem kleinen
+      Exkurs. StarAstAPI ist noch verbesserungsfähig. :-)</simpara>
+
+      <simpara>Für das Manager-Interface gibt es mittlerweile mehr oder
+      weniger gute APIs in verschiedenen Programmiersprachen (PHP, Perl,
+      Python, Ruby etc.), die natürlich hier nicht alle getestet werden
+      konnten<footnote>
+          <simpara>Beispiele mit Anmerkungen auf <ulink
+          url="http://www.voip-info.org/wiki/view/Asterisk+manager+Examples">http://www.voip-info.org/wiki/view/Asterisk+manager+Examples</ulink></simpara>
+        </footnote>. Sollte die API für Ihre Lieblingssprache nicht laufen,
+      können Sie das Problem sicher lösen - bis hierher haben sowieso nur
+      Leute gelesen, die schon mal programmiert haben. :-)</simpara>
+
+      <para>Wir testen hier ganz kurz die StarAstAPI<footnote>
+          <simpara>von <ulink
+          url="http://www.starutilities.com/">http://www.starutilities.com/</ulink></simpara>
+        </footnote> in PHP, die ein PHP 5 voraussetzt<footnote>
+          <simpara>Die API läßt sich aber relativ leicht auf PHP 4
+          umschreiben, obwohl der Code recht unübersichtlich und schlecht
+          formatiert ist. Im Zweifelsfall einfach immer das beheben, was der
+          Parse-Error bemängelt. :-)</simpara>
+        </footnote>, das mit <code>--enable-sockets</code> kompiliert
+      wurde.<footnote>
+          <para>Auf der Shell erfährt man mit <command>php -m</command>,
+          welche Module einkompiliert sind.</para>
+        </footnote> Leider findet man in den StarAstAPI-Dateien noch die seit
+      Jahren veralteten <quote>short open tags</quote> (<code>&lt;?</code>),
+      ersetzen Sie diese ggf. durch die korrekte Syntax
+      (<code>&lt;?php</code>). Der API liegen 4 Demo-Skripte bei:
+      <filename>sLogin.php</filename> versucht nur, sich einzuloggen<footnote>
+          <simpara>Wenn Sie nach der Anleitung oben vorgegangen sind, müssen
+          Sie natürlich jeweils den Benutzernamen und das Passwort
+          entsprechend anpassen.</simpara>
+        </footnote>, <filename>sCommand.php</filename> führt den CLI-Befehl
+      <code>reload</code> aus, <filename>sDial.php</filename> versucht eine
+      Verbindung mit SIP/120, <filename>sEvents.php</filename> empfängt
+      Events. Wenn wir gleichzeitig mit <command>asterisk -vvvr</command> die
+      CLI beobachten und mit <command>php -q sLogin.php</command> eine
+      Verbindung zum AMI öffnen<footnote>
+          <simpara>hier absichtlich mit falschem User/Passwort</simpara>
+        </footnote>, sehen wir im CLI:<screen>mos-eisley*CLI&gt; 
   == Parsing '/etc/asterisk/manager.conf': Found
 [Jan 26 20:08:09] NOTICE[10352]: manager.c:961 authenticate: 127.0.0.1 tried to authenticate with nonexistent user 'mark'
   == Connect attempt from '127.0.0.1' unable to authenticate
 mos-eisley*CLI&gt; </screen> Es hat also wegen des falschen Users nicht
-    funktioniert, trotzdem meldet das Demo-Skript:<screen>$  php -q sLogin.php 
+      funktioniert, trotzdem meldet das Demo-Skript:<screen>$  php -q sLogin.php 
 Login Sucessful 
 
 </screen>und danach das Response-Paket:<screen>Response:  Error
 ActionID:  1
 Message:  Authentication failed
 </screen>StarAstAPI arbeitet also nicht ganz sauber, kann aber sicher ohne
-    allzu großen Aufwand verbessert werden. Wenn wir <command>php -q
-    sEvents.php</command> aufrufen - jetzt mit dem richtigen User - sehen wir
-    im CLI:<screen>mos-eisley*CLI&gt; 
+      allzu großen Aufwand verbessert werden. Wenn wir <command>php -q
+      sEvents.php</command> aufrufen - jetzt mit dem richtigen User - sehen
+      wir im CLI:<screen>mos-eisley*CLI&gt; 
   == Parsing '/etc/asterisk/manager.conf': Found
   == Manager 'admin' logged on from 127.0.0.1
 mos-eisley*CLI&gt; </screen>Testhalber führen wir im CLI ein
-    <code>reload</code> aus, was sich in diesen Events in der Ausgabe des
-    PHP-Skripts widerspiegelt:<screen>Event:  Reload
+      <code>reload</code> aus, was sich in diesen Events in der Ausgabe des
+      PHP-Skripts widerspiegelt:<screen>Event:  Reload
 Privilege:  system,all
 Message:  Reload Requested
 
@@ -501,7 +525,8 @@ Peer_Count:  0
 User_Count:  0
 
 </screen>Lassen Sie sich was einfallen! Schreiben Sie ein kleines Skript, das
-    all Ihre Freunde anruft - natürlich mitten in der Nacht!</para>
+      all Ihre Freunde anruft - natürlich mitten in der Nacht!</para>
+    </section>
   </section>
 
   <section id="manager-interface-ajam">
