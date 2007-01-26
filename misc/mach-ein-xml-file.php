@@ -1,7 +1,7 @@
 #!/usr/bin/php5
 <?php
 // Siehe hilfe
-$options = getopt('b:d:ehlo:rp:s:uvz');
+$options = getopt('b:d:efhlo:rp:s:uvz');
 
 // Grundeinstellungen. Wenn $dir nicht gesetzt wird, dann
 // das aktuelle Verzeichniss. xy ist fuer die auswahl spaeter,
@@ -12,6 +12,7 @@ $pass   = "";
 $xy     = 0;
 $string = "yyy123yyysw";
 $output = "singel.xml";
+$zahl   = 0;
 
 // Ausgabe der Hilfe und exit, egal was sonst noch angegeben ist.
 if ( array_key_exists('h',$options)){
@@ -34,6 +35,7 @@ if ( array_key_exists('h',$options)){
     -o DATEIOUT        singel file in diese datei schreiben, default: singel.xml
     -v                 führt eine validierung der quelle-dateien aus
     -l                 löscht am ende nicht die veränderten quellen
+    -f                 keine Ersetzung von <footnote> nach <Footnote> (auch End-Tag)
 
 ";
     print ($hilfe);
@@ -103,38 +105,53 @@ if ( !array_key_exists('e',$options)){
         copy ($value, $bak);
         $write = fopen ($value, "w");
         $read = fopen ($bak, "r");
+
 // dann wird das backup zeile fuer zeile eingelesen
         while (!feof($read)) {
             $buffer = fgets($read);
-// trifft es auch einen von den strings, setzt es xy auf 1
+            if ( !array_key_exists('f',$options)){            
+                if(strstr($buffer, '<footnote>')){
+                    $buffer = str_replace("<footnote>", "<Footnote>", $buffer);
+                }
+                if(strstr($buffer, '</footnote>')){
+                    $buffer = str_replace("</footnote>", "</Footnote>", $buffer);
+                }
+            }
+// treffen wir auf den anfangspunkt, fangen wor an, alles zeilenweise in
+// ein array zu schreiben, damit wir es nach herzenslust manipulieren koennen
             if (strstr($buffer, '<screen>') or (strstr($buffer, '<programlisting>'))){
                 $xy = 1;
             }
-// trifft es auf screen-ende, wird vor dem screen der string eingesetzt, sofern
-// screen nicht gleich am anfang steht. das gleiche sofort dannach fuer programlisting
-// xy wird auf 0 gesetzt und damit findet kein ersetzen mehr statt.
-// sollten screen und /screen in einer zeile stehen, wirds problematische
-// das gilt natuerlich auch fuer programlisting
-            if (strstr($buffer, '</screen>')){
-                if (!ereg( '^</screen>', $buffer)){
-                    $buffer = str_replace('</screen>', $string . '</screen>', $buffer);
+            if (strstr($buffer, '</screen>') or (strstr($buffer, '</programlisting>'))){
+                $zahl += 1;
+                $input[$zahl] = $buffer;
+                // jetzt wird sortiert ...
+                ksort ($input); // bloss kein risiko eingehen...
+                foreach ($input as $key => $val) {
+                    if (isset($input[$key+1])) {
+                        if (!preg_match('/>$/', $val) and !preg_match('/^</',$input[$key+1])) { 
+                            $buffer = ereg_replace("\n", "$string\n", $val);
+                            fwrite ($write, $buffer);
+                        } else { 
+                            fwrite ($write, $val);
+                        } 
+                    } else { 
+                        fwrite ($write, $val); 
+                    }
                 }
                 $xy = 0;
+                unset($input);
+                $buffer = "";
             }
-            if (strstr($buffer, '</programlisting>')){
-                if (!ereg( '^</programlisting>', $buffer)){
-                    $buffer = str_replace('</programlisting>', $string . '</programlisting>', $buffer);
-                }
-                $xy = 0;
-            }
-// wenn xy 1 ist, wird nun am ende der zeile, aber vor dem unix-zeilenumbruch
-// der string eingefuegt, ausser, wenn screen oder programmlisting eh am zeilenende steht
             if ($xy == 1) {
-                if (!preg_match('/<screen>$/', $buffer) and !preg_match('/<programlisting>$/', $buffer)){
-                    $buffer = ereg_replace("\n", "$string\n", $buffer);
-                }
+                // Warum einen zaehler? weil wir ganz sicher sein wollen
+                // wir brauchen die exakte reihenfolge ...
+                $zahl += 1;
+                $input[$zahl] = $buffer;
             }
-            fwrite ($write, $buffer);
+            if ($xy == 0) {
+                fwrite ($write, $buffer); 
+            }
         }
         fclose ($write);
         fclose ($read);
@@ -149,6 +166,7 @@ if ( array_key_exists('v',$options)){
 //        or die("Source ist nicht valid\n");
     
 }
+
 
 // wenn erwuenscht (default) wird der single file erzeugt
 if ( !array_key_exists('z',$options)){
