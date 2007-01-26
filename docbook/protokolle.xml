@@ -66,8 +66,8 @@
       (Sockets) her. Auf diesem Kanal können in beide Richtungen Daten
       übertragen werden. TCP setzt in den meisten Fällen auf das IP
       (Internet-Protokoll) auf, weshalb häufig (und oft nicht ganz korrekt)
-      auch vom TCP/IP-Protokoll die Rede ist. Es ist in Schicht
-      4 des OSI-Referenzmodells angesiedelt. Aufgrund seiner vielen angenehmen
+      auch vom TCP/IP-Protokoll die Rede ist. Es ist in Schicht 4 des
+      OSI-Referenzmodells angesiedelt. Aufgrund seiner vielen angenehmen
       Eigenschaften (Datenverluste werden erkannt und automatisch behoben,
       Datenübertragung ist in beiden Richtungen möglich, Netzwerküberlastung
       wird verhindert usw.) ist TCP ein sehr weit verbreitetes Protokoll zur
@@ -158,16 +158,10 @@
           Headers zurückschickt. Der Client bestätigt zuletzt den Erhalt des
           SYN/ACK-Pakets durch das Senden eines eigenen ACK-Pakets mit der
           Sequenznummer y+1. Dieser Vorgang wird auch als Forward
-          Acknowledgement bezeichnet. Außerdem sendet der Client den
-          Wert x+1 aus Sicherheitsgründen ebenso zurück. Dieses ACK-Segment
-          erhält der Server, das ACK-Segment ist durch das gesetzte ACK-Flag
-          gekennzeichnet. Die Verbindung ist damit aufgebaut. 1. SYN-SENT
-          &rarr; &lt;SEQ=100&gt;&lt;CTL=SYN&gt; &rarr; SYN-RECEIVED 2.
-          SYN/ACK-RECEIVED &larr;
-          &lt;SEQ=300&gt;&lt;ACK=101&gt;&lt;CTL=SYN,ACK&gt; &larr;
-          SYN/ACK-SENT 3. ACK-SENT &rarr;
-          &lt;SEQ=101&gt;&lt;ACK=301&gt;&lt;CTL=ACK&gt; &rarr;
-          ESTABLISHED</para>
+          Acknowledgement bezeichnet. Außerdem sendet der Client den Wert x+1
+          aus Sicherheitsgründen ebenso zurück. Dieses ACK-Segment erhält der
+          Server, das ACK-Segment ist durch das gesetzte ACK-Flag
+          gekennzeichnet. Die Verbindung ist damit aufgebaut.</para>
         </section>
 
         <section>
@@ -199,8 +193,8 @@
       <section id="tcp-header">
         <title>Aufbau des TCP-Headers</title>
 
-        <para>Das TCP-Segment besteht immer aus zwei Teilen - dem Header
-        und der Nutzlast (Payload). Die Nutzlast enthält die zu übertragenden
+        <para>Das TCP-Segment besteht immer aus zwei Teilen - dem Header und
+        der Nutzlast (Payload). Die Nutzlast enthält die zu übertragenden
         Daten, die wiederum Protokollinformationen der Anwendungsschicht wie
         HTTP oder FTP entsprechen können. Der Header enthält für die
         Kommunikation erforderliche Daten sowie das Dateiformat beschreibende
@@ -217,7 +211,7 @@
       </section>
 
       <section id="tcp-datenuebertragung">
-        <title> Datenübertragung</title>
+        <title>Datenübertragung</title>
 
         <para></para>
 
@@ -256,61 +250,60 @@
           abgeschickt. Diese sind nicht notwendigerweise sortiert, da im
           Internet jedes TCP-Segment einen anderen Weg nehmen und es dadurch
           zu Verzögerungen kommen kann. Damit die TCP-Software im Empfänger
-          die Segmente wieder sortieren kann, ist jedes Segment
-          nummeriert (die Segmente werden sozusagen
-          durchgezählt). Bei der Zuordnung der Segmente wird die Sequenznummer
-          herangezogen. Der Empfänger muss diejenigen TCP-Segmente bestätigen,
-          die einwandfrei (Prüfsumme ist in Ordnung) angekommen sind.</para>
+          die Segmente wieder sortieren kann, ist jedes Segment nummeriert
+          (die Segmente werden sozusagen durchgezählt). Bei der Zuordnung der
+          Segmente wird die Sequenznummer herangezogen. Der Empfänger muss
+          diejenigen TCP-Segmente bestätigen, die einwandfrei (Prüfsumme ist
+          in Ordnung) angekommen sind.</para>
         </section>
       </section>
 
       <section id="tcp-flusssteuerung">
-        <title> Flusssteuerung</title>
+        <title>Flusssteuerung</title>
 
         <para>Da die Anwendung Daten aus dem Puffer liest, ändert sich der
         Füllstand des Puffers ständig. Deshalb ist es notwendig, den
         Datenfluss dem Füllstand entsprechend zu steuern. Dies geschieht mit
         dem Sliding Window und dessen Größe. Den Puffer des Senders erweitern
         wir, wie in Abb. 8 zu sehen, auf 10 Segmente. In der Abb. 8a werden
-        gerade die Segmente 1-5 übertragen. Die Übertragung ist
-        vergleichbar mit Abb. 7. Obwohl der Puffer des Empfängers in Abb. 7 am
-        Ende voll ist, fordert er mit ACK=7301 die nächsten Daten ab dem Byte
-        7301 beim Sender an. Dies hat zur Folge, dass das nächste TCP-Segment
-        vom Empfänger nicht mehr verarbeitet werden kann. Ausnahmen sind
-        jedoch TCP-Segmente mit gesetztem URG-Flag. Mit dem Window-Feld kann
-        er dem Sender mitteilen, dass er keine Daten mehr verschicken soll.
-        Dies geschieht, indem er im Window-Feld den Wert Null einträgt (Zero
+        gerade die Segmente 1-5 übertragen. Die Übertragung ist vergleichbar
+        mit Abb. 7. Obwohl der Puffer des Empfängers in Abb. 7 am Ende voll
+        ist, fordert er mit ACK=7301 die nächsten Daten ab dem Byte 7301 beim
+        Sender an. Dies hat zur Folge, dass das nächste TCP-Segment vom
+        Empfänger nicht mehr verarbeitet werden kann. Ausnahmen sind jedoch
+        TCP-Segmente mit gesetztem URG-Flag. Mit dem Window-Feld kann er dem
+        Sender mitteilen, dass er keine Daten mehr verschicken soll. Dies
+        geschieht, indem er im Window-Feld den Wert Null einträgt (Zero
         Window). Der Wert Null entspricht dem freien Speicherplatz im Puffer.
         Die Anwendung des Empfängers liest nun die Segmente 1-5 aus dem
         Puffer, womit wieder ein Speicherplatz von 7300 Byte frei ist. Damit
-        kann er die restlichen Segmente 6-10 mit einem TCP-Header, der
-        die Werte SEQ=1, ACK=7301 und Window=7300 enthält, beim Sender
-        anfordern. Der Sender weiß nun, dass er maximal fünf TCP-Segmente an
-        den Empfänger schicken kann, und verschiebt das Window um fünf
-        Segmente nach rechts. Die Segmente 6-10 werden nun alle zusammen
-        als Burst verschickt. Kommen alle TCP-Segmente beim Empfänger an, so
-        quittiert er sie mit SEQ=1 und ACK=14601 und fordert die nächsten
-        Daten an. Silly Window Syndrome: Der Empfänger sendet ein Zero Window
-        an den Sender, da sein Puffer voll ist. Die Anwendung beim Empfänger
-        liest allerdings nur zwei Byte aus dem Puffer. Der Empfänger schickt
-        einen TCP-Header mit Window=2 (Window Update) an den Sender und
-        fordert gleichzeitig die zwei Byte an. Der Sender kommt der
-        Aufforderung nach und schickt die zwei Byte in einem 42 Byte großen
-        Paket (mit IP-Header und TCP-Header) an den Empfänger. Damit ist der
-        Puffer des Empfängers wieder voll, und er schickt wieder ein Zero
-        Window an den Sender. Die Anwendung liest jetzt zum Beispiel hundert
-        Byte aus dem Puffer. Der Empfänger schickt wieder einen TCP-Header mit
-        einem kleinen Window-Wert an den Sender. Dieses Spiel setzt sich immer
-        wieder fort und verschwendet Bandbreite, da nur sehr kleine Pakete
-        versandt werden. Clarks Lösung ist, dass der Empfänger ein Zero Window
-        senden und so lange mit dem Window Update warten soll, bis die
-        Anwendung mindestens die maximale Segmentgröße (maximum segment size,
-        in unseren bisherigen Beispielen 1460 Byte) aus dem Puffer gelesen hat
-        oder der Puffer halbleer ist. Je nachdem, was zuerst eintritt (Dave
-        Clark, 1982). Auch der Sender kann zu kleine Pakete abschicken und
-        dadurch Bandbreite verschwenden. Dieser Umstand wird mit dem
-        Nagle-Algorithmus beseitigt. Deswegen ergänzt er sich mit Clarks
-        Lösung.</para>
+        kann er die restlichen Segmente 6-10 mit einem TCP-Header, der die
+        Werte SEQ=1, ACK=7301 und Window=7300 enthält, beim Sender anfordern.
+        Der Sender weiß nun, dass er maximal fünf TCP-Segmente an den
+        Empfänger schicken kann, und verschiebt das Window um fünf Segmente
+        nach rechts. Die Segmente 6-10 werden nun alle zusammen als Burst
+        verschickt. Kommen alle TCP-Segmente beim Empfänger an, so quittiert
+        er sie mit SEQ=1 und ACK=14601 und fordert die nächsten Daten an.
+        Silly Window Syndrome: Der Empfänger sendet ein Zero Window an den
+        Sender, da sein Puffer voll ist. Die Anwendung beim Empfänger liest
+        allerdings nur zwei Byte aus dem Puffer. Der Empfänger schickt einen
+        TCP-Header mit Window=2 (Window Update) an den Sender und fordert
+        gleichzeitig die zwei Byte an. Der Sender kommt der Aufforderung nach
+        und schickt die zwei Byte in einem 42 Byte großen Paket (mit IP-Header
+        und TCP-Header) an den Empfänger. Damit ist der Puffer des Empfängers
+        wieder voll, und er schickt wieder ein Zero Window an den Sender. Die
+        Anwendung liest jetzt zum Beispiel hundert Byte aus dem Puffer. Der
+        Empfänger schickt wieder einen TCP-Header mit einem kleinen
+        Window-Wert an den Sender. Dieses Spiel setzt sich immer wieder fort
+        und verschwendet Bandbreite, da nur sehr kleine Pakete versandt
+        werden. Clarks Lösung ist, dass der Empfänger ein Zero Window senden
+        und so lange mit dem Window Update warten soll, bis die Anwendung
+        mindestens die maximale Segmentgröße (maximum segment size, in unseren
+        bisherigen Beispielen 1460 Byte) aus dem Puffer gelesen hat oder der
+        Puffer halbleer ist. Je nachdem, was zuerst eintritt (Dave Clark,
+        1982). Auch der Sender kann zu kleine Pakete abschicken und dadurch
+        Bandbreite verschwenden. Dieser Umstand wird mit dem Nagle-Algorithmus
+        beseitigt. Deswegen ergänzt er sich mit Clarks Lösung.</para>
       </section>
 
       <section id="tcp-slow-start">
@@ -335,7 +328,7 @@
       </section>
 
       <section id="tcp-ueberlastkontrolle">
-        <title> Überlastkontrolle</title>
+        <title>Überlastkontrolle</title>
 
         <para>Gehen bei einer bestimmten Fenstergröße Pakete verloren, kann
         das festgestellt werden, wenn der Sender innerhalb einer bestimmten
@@ -368,10 +361,10 @@
         Paket, welches den Empfänger erreicht hat, wenn auch außer der Reihe.
         Da dadurch nach dem Fehler schneller wieder die volle Sendeleistung
         erreicht wird, nennt man das Prinzip Fast-Recovery (schnelles
-        Erholen). Bis zum Erkennen des Paketverlustes wurden noch
-        weitere Pakete bis zur Sendefenstergröße übertragen. Der Empfänger
-        konnte diese nicht nutzen, weil ein Paket der Serie verlorenging, aber
-        er kann sie im Puffer halten. Nach der Neuübertragung des verlorenen
+        Erholen). Bis zum Erkennen des Paketverlustes wurden noch weitere
+        Pakete bis zur Sendefenstergröße übertragen. Der Empfänger konnte
+        diese nicht nutzen, weil ein Paket der Serie verlorenging, aber er
+        kann sie im Puffer halten. Nach der Neuübertragung des verlorenen
         Pakets durch den Sender bestätigt der Empfänger mittels ACK und einer
         höheren Sequenznummer die nun vollständige Paketfolge. Das erspart dem
         Sender, alle nach dem Paketverlust übertragenen Pakete erneut zu
@@ -388,7 +381,7 @@
       </section>
 
       <section id="tcp-datenintegritaet">
-        <title>Datenintegrität und Zuverlässigkeit </title>
+        <title>Datenintegrität und Zuverlässigkeit</title>
 
         <para>Im Gegensatz zum verbindungslosen UDP implementiert TCP einen
         bidirektionalen, byte-orientierten, zuverlässigen Datenstrom zwischen
@@ -403,12 +396,11 @@
         (Timeout) eintrifft. Die Daten der Pakete werden beim Empfänger in
         einem Puffer in der richtigen Reihenfolge zu einem Datenstrom
         zusammengefügt und doppelte Pakete verworfen. Der Datentransfer kann
-        selbstverständlich jederzeit nach dem Aufbau einer
-        Verbindung gestört, verzögert oder ganz unterbrochen werden.
-        Das Übertragungssystem läuft dann in einen Timeout. Der vorab
-        getätigte Verbindungsaufbau stellt also keinerlei
-        Gewähr für eine nachfolgende, dauerhaft gesicherte Übertragung
-        dar.</para>
+        selbstverständlich jederzeit nach dem Aufbau einer Verbindung gestört,
+        verzögert oder ganz unterbrochen werden. Das Übertragungssystem läuft
+        dann in einen Timeout. Der vorab getätigte Verbindungsaufbau stellt
+        also keinerlei Gewähr für eine nachfolgende, dauerhaft gesicherte
+        Übertragung dar.</para>
       </section>
     </section>
 
@@ -426,7 +418,7 @@
       dies zu Verzögerungen bei der Sprachübertragung führen würde.</para>
 
       <section id="udp-funktionsweise">
-        <title> Funktionsweise</title>
+        <title>Funktionsweise</title>
 
         <para>Um die Daten, die mit UDP versendet werden, dem richtigen
         Programm auf dem Zielrechner zukommen zu lassen, werden bei UDP
@@ -437,7 +429,7 @@
       </section>
 
       <section id="udp-eigenschaften">
-        <title> Eigenschaften</title>
+        <title>Eigenschaften</title>
 
         <para>UDP stellt einen verbindungslosen, nicht-zuverlässigen
         Übertragungsdienst bereit. Das bedeutet, dass es keine Garantie gibt,
