@@ -26,34 +26,39 @@
 
     <simpara>Braucht die Welt eigentlich <emphasis>noch</emphasis> ein
     VoIP-Protokoll, wo es doch schon SIP, H.323 etc. und eine Reihe
-    proprietärer Protokolle gibt? Darüber lässt sich natürlich streiten.
-    IAX hat aber einige Vorteile, hier die wichtigsten, neben weiteren
-    technischen Details:</simpara>
+    proprietärer Protokolle gibt? Darüber lässt sich natürlich streiten. IAX
+    hat aber einige Vorteile, hier die wichtigsten, neben weiteren technischen
+    Details:</simpara>
 
     <itemizedlist>
       <listitem>
-        <simpara>Geringer Overhead. Im Vergleich zu beispielsweise SIP
-        (und dem darin verwendeten RTP) hat IAX als reines UDP-Protokoll
-        ein deutlich besseres Nutzdaten:Overhead-Verhältnis.</simpara>
+        <simpara>Geringer Overhead. Im Vergleich zu beispielsweise SIP (und
+        dem darin verwendeten RTP) hat IAX als reines UDP-Protokoll ein
+        deutlich besseres Nutzdaten:Overhead-Verhältnis.</simpara>
       </listitem>
 
       <listitem>
         <simpara>NAT-/Firewall-tauglich. Trotz solcher Hürden kann IAX
-        problemlos Anrufe initiieren und entgegennehmen etc. Es muss nur
-        ein einziger Firewall-Port freigegeben werden (bei SIP
-        mindestens 3).</simpara>
+        problemlos Anrufe initiieren und entgegennehmen etc. Es muss nur ein
+        einziger Firewall-Port freigegeben werden (bei SIP mindestens
+        3).</simpara>
       </listitem>
 
       <listitem>
-        <simpara>Einfaches Protokoll. Es müssen keinerlei Strings
-        geparst werden, was IAX kaum anfällig für Speicherüberläufe
-        macht.</simpara>
+        <simpara>Einfaches Protokoll. Es müssen keinerlei Strings geparst
+        werden, was IAX kaum anfällig für Speicherüberläufe macht.</simpara>
       </listitem>
 
       <listitem>
         <simpara>Gesprächs-Transfers. Gespräche können sowohl über einen
         zentralen Server laufen als auch direkt zwischen zwei
         Teilnehmern.</simpara>
+      </listitem>
+
+      <listitem>
+        <para>Trunking. Dadurch kann über die gleiche Datenleitung eine viel
+        höhere Anzahl von simultanen Gespräche geführt werden (siehe <xref
+        linkend="codecs-trunking" />).</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -63,43 +68,41 @@
 
     <simpara>Am Anfang der <filename>iax.conf</filename> steht immer der
     Eintrag <code>[general]</code>. Ähnlich wie bei der
-    <filename>sip.conf</filename> werden im
-    <code>[general]</code>-Abschnitt allgemeine Parameter übergeben.
-    Darunter kommt dann die Definition der einzelnen Channels.</simpara>
+    <filename>sip.conf</filename> werden im <code>[general]</code>-Abschnitt
+    allgemeine Parameter übergeben. Darunter kommt dann die Definition der
+    einzelnen Channels.</simpara>
 
-    <simpara>Als Beispiel für die Möglichkeiten des IAX-Protokolls
-    verbinden wir zwei voneinander unabhängige Telefonanlagen mit dem
-    IAX-Protokoll. So können Gespräche von der einen zur anderen Anlage
-    geführt werden und müssen nicht über das Festnetz geroutet
-    werden.</simpara>
+    <simpara>Als Beispiel für die Möglichkeiten des IAX-Protokolls verbinden
+    wir zwei voneinander unabhängige Telefonanlagen mit dem IAX-Protokoll. So
+    können Gespräche von der einen zur anderen Anlage geführt werden und
+    müssen nicht über das Festnetz geroutet werden.</simpara>
 
     <section id="iax-beispielkonf-aufgabe">
       <title>Aufgabenstellung</title>
 
       <simpara>Es gibt zwei Anlagen mit jeweils zwei Telefonen (1000 und
-      1001). Die Anlagen heißen <code>ast1</code> und <code>ast2</code>.
-      Jede Anlage soll in der Lage sein, Gespräche an die andere Anlage
-      mit dem IAX-Protokoll zu übermitteln. Dazu wird eine Vorwahl
-      benutzt. Die Vorwahl <code>0901</code> verbindet zur Anlage
-      <code>ast1</code> und <code>0902</code> zur Anlage
-      <code>ast2</code>. Die Anlage <code>ast1</code> besitzt in diesem
-      Beispiel die IP-Adresse <code>192.168.0.101</code> und die Anlage
-      <code>ast2</code> die IP-Adresse
-      <code>192.168.0.102</code>.</simpara>
+      1001). Die Anlagen heißen <code>ast1</code> und <code>ast2</code>. Jede
+      Anlage soll in der Lage sein, Gespräche an die andere Anlage mit dem
+      IAX-Protokoll zu übermitteln. Dazu wird eine Vorwahl benutzt. Die
+      Vorwahl <code>0901</code> verbindet zur Anlage <code>ast1</code> und
+      <code>0902</code> zur Anlage <code>ast2</code>. Die Anlage
+      <code>ast1</code> besitzt in diesem Beispiel die IP-Adresse
+      <code>192.168.0.101</code> und die Anlage <code>ast2</code> die
+      IP-Adresse <code>192.168.0.102</code>.</simpara>
     </section>
 
     <section id="iax-beispielkonf-ast1">
       <title>Konfiguration ast1</title>
 
-      <para>Die <filename>iax.conf</filename> enthält folgende
-      Konfiguration: <programlisting>[ast2]
+      <para>Die <filename>iax.conf</filename> enthält folgende Konfiguration:
+      <programlisting>[ast2]
 type = friend
 host = 192.168.0.102
 secret = 1234
 context = test-telefone
 permit = 0.0.0.0/0.0.0.0</programlisting> Die
-      <filename>extensions.conf</filename> enthält folgende
-      Konfiguration: <programlisting>[via-asterisk2]
+      <filename>extensions.conf</filename> enthält folgende Konfiguration:
+      <programlisting>[via-asterisk2]
 exten =&gt; 09021000,1,Dial(IAX2/ast2/1000)
 exten =&gt; 09021001,1,Dial(IAX2/ast2/1001)
 ;          ^   ^               ^     ^
@@ -110,15 +113,15 @@ exten =&gt; 09021001,1,Dial(IAX2/ast2/1001)
     <section id="iax-beispielkonf-ast2">
       <title>Konfiguration ast2</title>
 
-      <para>Die <filename>iax.conf</filename> enthält folgende
-      Konfiguration: <programlisting>[ast1]
+      <para>Die <filename>iax.conf</filename> enthält folgende Konfiguration:
+      <programlisting>[ast1]
 type = friend
 host = 192.168.0.101
 secret = 1234
 context = test-telefone
 permit = 0.0.0.0/0.0.0.0</programlisting> Die
-      <filename>extensions.conf</filename> enthält folgende
-      Konfiguration: <programlisting>[via-asterisk1]
+      <filename>extensions.conf</filename> enthält folgende Konfiguration:
+      <programlisting>[via-asterisk1]
 exten =&gt; 09011000,1,Dial(IAX2/ast1/1000)
 exten =&gt; 09011001,1,Dial(IAX2/ast1/1001)</programlisting></para>
     </section>
@@ -127,11 +130,10 @@ exten =&gt; 09011001,1,Dial(IAX2/ast1/1001)</programlisting></para>
   <section id="iax-globalekonf">
     <title>Globale Einstellungen</title>
 
-    <simpara>Die folgenden Parameter können nur im
-    <code>[general]</code>-Teil definiert werden, sind also gültig für
-    alle Channels. Sie können hier außerdem auch einige der in <xref
-    linkend="iax-channelkonf" /> beschriebenen Einstellungen
-    verwenden.</simpara>
+    <simpara>Die folgenden Parameter können nur im <code>[general]</code>-Teil
+    definiert werden, sind also gültig für alle Channels. Sie können hier
+    außerdem auch einige der in <xref linkend="iax-channelkonf" />
+    beschriebenen Einstellungen verwenden.</simpara>
 
     <section id="iax-globalekonf-bandwidth">
       <title><code>bandwidth</code></title>
@@ -152,21 +154,19 @@ exten =&gt; 09011001,1,Dial(IAX2/ast1/1001)</programlisting></para>
 
       <synopsis>bandwidth = <replaceable>[low|medium|high]</replaceable></synopsis>
 
-      <simpara>Dient als Gruppierung verschiedener Soundcodecs. Auf
-      diese Weise kann man einfacher bestimmte Situationen definieren.
-      Das ist eine komfortable Alternative zu <code>allow</code> und
-      <code>disallow</code> (<xref
-      linkend="iax-globalekonf-allow" />).</simpara>
+      <simpara>Dient als Gruppierung verschiedener Soundcodecs. Auf diese
+      Weise kann man einfacher bestimmte Situationen definieren. Das ist eine
+      komfortable Alternative zu <code>allow</code> und <code>disallow</code>
+      (<xref linkend="iax-globalekonf-allow" />).</simpara>
 
       <variablelist termlength="8">
         <varlistentry>
           <term><code>high</code></term>
 
           <listitem>
-            <simpara>Erlaubt alle Codecs: G.723.1, GSM, ulaw (G.711),
-            alaw, G.726, ADPCM, slinear, LPC10, G.729, Speex, iLBC.
-            Sollte nur bei Verbindungen ab 10 Mb/s verwendet
-            werden.</simpara>
+            <simpara>Erlaubt alle Codecs: G.723.1, GSM, ulaw (G.711), alaw,
+            G.726, ADPCM, slinear, LPC10, G.729, Speex, iLBC. Sollte nur bei
+            Verbindungen ab 10 Mb/s verwendet werden.</simpara>
           </listitem>
         </varlistentry>
 
@@ -174,8 +174,7 @@ exten =&gt; 09011001,1,Dial(IAX2/ast1/1001)</programlisting></para>
           <term><code>medium</code></term>
 
           <listitem>
-            <simpara>Verbietet die Codecs slinear, ulaw und
-            alaw.</simpara>
+            <simpara>Verbietet die Codecs slinear, ulaw und alaw.</simpara>
           </listitem>
         </varlistentry>
 
@@ -222,10 +221,10 @@ disallow = lpc10   ; hat schlechte Qualität</programlisting>
       <code>plc10</code>, <code>adpcm</code>, <code>g729</code>,
       <code>speex</code>, <code>ilbc</code>, <code>h261</code>,
       <code>h263</code> und der Platzhalter <code>all</code>. Siehe auch
-      <code>bandwidth</code> (<xref
-      linkend="iax-globalekonf-bandwidth" />) für eine komfortable
-      Einstellung. <code>allow</code> und <code>disallow</code> können
-      mehrmals verwendet werden und sind damit eine Ausnahme.</simpara>
+      <code>bandwidth</code> (<xref linkend="iax-globalekonf-bandwidth" />)
+      für eine komfortable Einstellung. <code>allow</code> und
+      <code>disallow</code> können mehrmals verwendet werden und sind damit
+      eine Ausnahme.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -276,9 +275,9 @@ allow = gsm</programlisting>
 
       <synopsis>codecpriority = <replaceable>[caller|host|disabled|reqonly]</replaceable></synopsis>
 
-      <simpara>Definiert, welcher Teilnehmer einer eingehenden
-      Verbindung die höhere Priorität bei der Verhandlung des
-      Soundcodecs hat. Default: <code>host</code></simpara>
+      <simpara>Definiert, welcher Teilnehmer einer eingehenden Verbindung die
+      höhere Priorität bei der Verhandlung des Soundcodecs hat. Default:
+      <code>host</code></simpara>
 
       <variablelist termlength="10">
         <varlistentry>
@@ -301,8 +300,7 @@ allow = gsm</programlisting>
           <term><code>disabled</code></term>
 
           <listitem>
-            <simpara>Codec-Präferenzen werden nicht
-            berücksichtigt.</simpara>
+            <simpara>Codec-Präferenzen werden nicht berücksichtigt.</simpara>
           </listitem>
         </varlistentry>
 
@@ -310,9 +308,8 @@ allow = gsm</programlisting>
           <term><code>reqonly</code></term>
 
           <listitem>
-            <simpara>Codec-Präferenzen werden ignoriert und der Anruf
-            nur dann akzeptiert, wenn der angeforderte Codec verfügbar
-            ist.</simpara>
+            <simpara>Codec-Präferenzen werden ignoriert und der Anruf nur dann
+            akzeptiert, wenn der angeforderte Codec verfügbar ist.</simpara>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -341,8 +338,8 @@ allow = gsm</programlisting>
 
       <synopsis>authdebug = <replaceable>[yes|no]</replaceable></synopsis>
 
-      <simpara>Standardmäßig ist ein minimales Debugging bei der
-      Autorisierung von IAX-Verbindungen eingestellt. Dies kann mit
+      <simpara>Standardmäßig ist ein minimales Debugging bei der Autorisierung
+      von IAX-Verbindungen eingestellt. Dies kann mit
       <code>authdebug=no</code> deaktiviert werden.</simpara>
 
       <simpara>Beispiel:</simpara>
@@ -370,12 +367,11 @@ allow = gsm</programlisting>
       <synopsis>autokill = <replaceable>[yes|Timeout in Millisekunden]</replaceable></synopsis>
 
       <simpara>Falls <code>autokill</code> nicht gesetzt ist, versucht
-      Asterisk einen nicht erreichbaren Host sehr lange zu erreichen.
-      Dies kann bei vielen gleichzeitigen Versuchen (auf mehreren
-      Channels) zu Performanceproblemen führen. Mit
-      <code>autokill=yes</code> wird die Verbindung nach 2000
-      Millisekunden abgebrochen. Alternativ kann man auch die Anzahl der
-      Millisekunden angeben.</simpara>
+      Asterisk einen nicht erreichbaren Host sehr lange zu erreichen. Dies
+      kann bei vielen gleichzeitigen Versuchen (auf mehreren Channels) zu
+      Performanceproblemen führen. Mit <code>autokill=yes</code> wird die
+      Verbindung nach 2000 Millisekunden abgebrochen. Alternativ kann man auch
+      die Anzahl der Millisekunden angeben.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -403,9 +399,9 @@ allow = gsm</programlisting>
 
       <simpara>AMA ist die Abkürzung für <quote>Automatic Message
       Accounting</quote> und spezifiziert u.a. Standardmechanismen zur
-      Erzeugung und Übermittlung von Anrufprotokollen (Call Data Records
-      / Call Detail Records / CDRs, im Dt. auch Kommunikationsdatensatz
-      / KDS).</simpara>
+      Erzeugung und Übermittlung von Anrufprotokollen (Call Data Records /
+      Call Detail Records / CDRs, im Dt. auch Kommunikationsdatensatz /
+      KDS).</simpara>
 
       <simpara>Mit <code>omit</code> werden keine Aufzeichnungen
       gemacht.</simpara>
@@ -467,8 +463,8 @@ allow = gsm</programlisting>
       Version 1: 5036).</simpara>
 
       <important>
-        <simpara>Diese Einstellung muss immer <emphasis>vor</emphasis>
-        dem <code>bindaddr</code>-Eintrag erfolgen!</simpara>
+        <simpara>Diese Einstellung muss immer <emphasis>vor</emphasis> dem
+        <code>bindaddr</code>-Eintrag erfolgen!</simpara>
       </important>
 
       <simpara>Beispiel:</simpara>
@@ -495,11 +491,11 @@ allow = gsm</programlisting>
 
       <synopsis>delayreject = <replaceable>[yes|no]</replaceable></synopsis>
 
-      <simpara>Diese Einstellung kann auf <code>yes</code> gesetzt
-      werden, um evtl. Brute-Force-Attacken (zum Passwortknacken)
-      abzuschwächen. Dann wird nach jedem falschen Einlogversuch 1000
-      Millisekunden (also 1 Sekunde) gewartet, bis der nächste Versuch
-      akzeptiert wird. Default: <code>no</code></simpara>
+      <simpara>Diese Einstellung kann auf <code>yes</code> gesetzt werden, um
+      evtl. Brute-Force-Attacken (zum Passwortknacken) abzuschwächen. Dann
+      wird nach jedem falschen Einlogversuch 1000 Millisekunden (also 1
+      Sekunde) gewartet, bis der nächste Versuch akzeptiert wird. Default:
+      <code>no</code></simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -525,12 +521,11 @@ allow = gsm</programlisting>
 
       <synopsis>language = <replaceable>[en|de|...]</replaceable></synopsis>
 
-      <simpara>Konfiguriert die Sprache für den entsprechenden Channel.
-      Gobale Standardsprache ist Englisch. Die Sprache, die gesetzt ist,
-      wird vom Kanal als Informationselement gesendet. Diese Einstellung
-      wird auch von Anwendungen wie <code>SayNumber()</code> gelesen,
-      die für verschiedene Sprachen unterschiedliche Sprachbausteine
-      verwenden.</simpara>
+      <simpara>Konfiguriert die Sprache für den entsprechenden Channel. Gobale
+      Standardsprache ist Englisch. Die Sprache, die gesetzt ist, wird vom
+      Kanal als Informationselement gesendet. Diese Einstellung wird auch von
+      Anwendungen wie <code>SayNumber()</code> gelesen, die für verschiedene
+      Sprachen unterschiedliche Sprachbausteine verwenden.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -556,15 +551,15 @@ allow = gsm</programlisting>
 
       <synopsis>mailboxdetail = <replaceable>[yes|no]</replaceable></synopsis>
 
-      <simpara>Wenn <code>mailboxdetail</code> auf <code>yes</code>
-      gesetzt ist, wird dem Apparat des Mailboxbenutzers die Anzahl der
-      neuen (und die der alten) Nachrichten übermittelt (zur Anzeige auf
-      dem Display o.ä.). Ansonsten wird nur signalisiert, dass es neue
-      Nachrichten gibt (ohne die Anzahl zu nennen).</simpara>
+      <simpara>Wenn <code>mailboxdetail</code> auf <code>yes</code> gesetzt
+      ist, wird dem Apparat des Mailboxbenutzers die Anzahl der neuen (und die
+      der alten) Nachrichten übermittelt (zur Anzeige auf dem Display o.ä.).
+      Ansonsten wird nur signalisiert, dass es neue Nachrichten gibt (ohne die
+      Anzahl zu nennen).</simpara>
 
-      <simpara>Diese Einstellung ist bei neueren Asterisk-Versionen
-      nicht mehr verfügbar. Mittlerweile verhält sich Asterisk immer
-      (standardkonform) wie <code>mailboxdetail=yes</code></simpara>
+      <simpara>Diese Einstellung ist bei neueren Asterisk-Versionen nicht mehr
+      verfügbar. Mittlerweile verhält sich Asterisk immer (standardkonform)
+      wie <code>mailboxdetail=yes</code></simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -590,23 +585,22 @@ allow = gsm</programlisting>
 
       <synopsis>tos = <replaceable>[...]</replaceable></synopsis>
 
-      <simpara>ToS steht für <quote>Type of Service</quote>; das sind
-      Flags im IP-Header, die von manchen Routern ausgelesen und befolgt
-      werden. Damit kann das Routingverhalten optimiert werden. Die
-      Empfehlung dieser Einstellung für IAX ist <code>tos=ef</code>. EF
-      steht für Expedited Forwarding, also etwa Express-Übertragung, was
-      nach geringer Latenz, geringer Verlustrate und wenig Jitter
-      verlangt. Default ist <code>none</code> (wegen
-      Rückwärts-Kompatibilität).</simpara>
+      <simpara>ToS steht für <quote>Type of Service</quote>; das sind Flags im
+      IP-Header, die von manchen Routern ausgelesen und befolgt werden. Damit
+      kann das Routingverhalten optimiert werden. Die Empfehlung dieser
+      Einstellung für IAX ist <code>tos=ef</code>. EF steht für Expedited
+      Forwarding, also etwa Express-Übertragung, was nach geringer Latenz,
+      geringer Verlustrate und wenig Jitter verlangt. Default ist
+      <code>none</code> (wegen Rückwärts-Kompatibilität).</simpara>
 
       <simpara>Die Vielzahl der möglichen Werte soll hier nicht weiter
       beschrieben werden, Interessierte seien auf die Spezifizierung von
       Differentiated Services in RFC 2474 und die IANA-DSCP<footnote>
           <simpara><ulink
           url="http://www.iana.org/assignments/dscp-registry">http://www.iana.org/assignments/dscp-registry</ulink></simpara>
-        </footnote> verwiesen. Hier nur ein ins Deutsch übersetzter
-      Auszug aus der Asterisk beiliegenden Datei
-      <filename>doc/README.tos</filename> (1.2) / <filename>doc/ip-tos.txt</filename> (1.4):</simpara>
+        </footnote> verwiesen. Hier nur ein ins Deutsch übersetzter Auszug aus
+      der Asterisk beiliegenden Datei <filename>doc/README.tos</filename>
+      (1.2) / <filename>doc/ip-tos.txt</filename> (1.4):</simpara>
 
       <blockquote>
         <attribution><filename>doc/ip-tos.txt</filename></attribution>
@@ -615,26 +609,25 @@ allow = gsm</programlisting>
         sind:</simpara>
 
         <simpara><code>be</code> (best effort, die normale, geringste
-        Priorität), <code>cs1</code>, <code>af11</code>,
-        <code>af12</code>, <code>af13</code>, <code>cs2</code>,
-        <code>af21</code>, <code>af22</code>, <code>af23</code>,
-        <code>cs3</code>, <code>af31</code>, <code>af32</code>,
-        <code>af33</code>, <code>cs4</code>, <code>af41</code>,
-        <code>af42</code>, <code>af42</code>, <code>ef</code> (expedited
-        forwarding), <code>lowdelay</code> (geringe Latenz),
-        <code>throughput</code> (Durchsatz), <code>reliability</code>
-        (Zuverlässigkeit), <code>mincost</code> (geringste monetäre
-        Kosten), <code>none</code> (wie <code>be</code>)</simpara>
+        Priorität), <code>cs1</code>, <code>af11</code>, <code>af12</code>,
+        <code>af13</code>, <code>cs2</code>, <code>af21</code>,
+        <code>af22</code>, <code>af23</code>, <code>cs3</code>,
+        <code>af31</code>, <code>af32</code>, <code>af33</code>,
+        <code>cs4</code>, <code>af41</code>, <code>af42</code>,
+        <code>af42</code>, <code>ef</code> (expedited forwarding),
+        <code>lowdelay</code> (geringe Latenz), <code>throughput</code>
+        (Durchsatz), <code>reliability</code> (Zuverlässigkeit),
+        <code>mincost</code> (geringste monetäre Kosten), <code>none</code>
+        (wie <code>be</code>)</simpara>
 
-        <simpara>Außerdem kann man auch deren numerische Pendants
-        angeben (z.B. <code>tos=0x18</code>).</simpara>
+        <simpara>Außerdem kann man auch deren numerische Pendants angeben
+        (z.B. <code>tos=0x18</code>).</simpara>
 
-        <simpara>Die Werte <code>lowdelay</code>,
-        <code>throughput</code>, <code>reliability</code>,
-        <code>mincost</code> und <code>none</code> sind veraltet und
-        sollen nicht mehr verwendet werden, da sie das ToS-Byte nach dem
-        alten <quote>IP precedence</quote>-Modell aus RFC 791 und 1349
-        setzen.</simpara>
+        <simpara>Die Werte <code>lowdelay</code>, <code>throughput</code>,
+        <code>reliability</code>, <code>mincost</code> und <code>none</code>
+        sind veraltet und sollen nicht mehr verwendet werden, da sie das
+        ToS-Byte nach dem alten <quote>IP precedence</quote>-Modell aus RFC
+        791 und 1349 setzen.</simpara>
 
         <screen>===========================================
 Konfig.-         Parameter     Empfohlene
@@ -649,14 +642,14 @@ iax.conf         tos           ef
 iaxprov.conf     tos           ef
 ===========================================</screen>
 
-        <simpara>Für den größtmöglichen Nutzen müssen Sie sicherstellen,
-        dass Ihre Netzwerk-Hardware ToS unterstützt (ggf. aktivieren).
-        Für Cisco-Geräte siehe <quote>Enterprise QoS Solution Reference
-        Network Design Guide</quote><footnote>
+        <simpara>Für den größtmöglichen Nutzen müssen Sie sicherstellen, dass
+        Ihre Netzwerk-Hardware ToS unterstützt (ggf. aktivieren). Für
+        Cisco-Geräte siehe <quote>Enterprise QoS Solution Reference Network
+        Design Guide</quote><footnote>
             <simpara><ulink
             url="http://www.cisco.com/application/pdf/en/us/guest/netsol/ns432/c649/ccmigration_09186a008049b062.pdf">http://www.cisco.com/application/pdf/en/us/guest/netsol/ns432/c649/ccmigration_09186a008049b062.pdf</ulink></simpara>
-          </footnote> , für Linux-Systeme siehe <quote>Linux Advanced
-        Routing &amp; Traffic Control HowTo</quote><footnote>
+          </footnote> , für Linux-Systeme siehe <quote>Linux Advanced Routing
+        &amp; Traffic Control HowTo</quote><footnote>
             <simpara><ulink
             url="http://www.lartc.org/">http://www.lartc.org/</ulink></simpara>
           </footnote>.</simpara>
@@ -689,12 +682,12 @@ iaxprov.conf     tos           ef
       <simpara>ADSI (Analog Display Services Interface)<footnote>
           <simpara>wird per FSK (Frequency Shift Keying, dt.:
           Frequenzumtastung) übertragen</simpara>
-        </footnote> sind verschiedene Daten-Dienste für analoge Telefone
-      mit einem Display, z.B. blinkende LED / Anzeige im Display bei
-      wartenen Nachrichten etc.</simpara>
+        </footnote> sind verschiedene Daten-Dienste für analoge Telefone mit
+      einem Display, z.B. blinkende LED / Anzeige im Display bei wartenen
+      Nachrichten etc.</simpara>
 
-      <simpara>Falls Sie kompatible Telefone haben, können Sie diese
-      Dienst aktivieren.</simpara>
+      <simpara>Falls Sie kompatible Telefone haben, können Sie diese Dienst
+      aktivieren.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -720,40 +713,40 @@ iaxprov.conf     tos           ef
 
       <synopsis>register =&gt; <replaceable>username[:password]@remote-host</replaceable></synopsis>
 
-      <simpara>Ist unser Asterisk-Server nur über eine dynamische
-      IP-Adresse erreichbar (also kein DNS, sondern nur eine
-      IP-Adresse), so muss er sich bei jedem IP-Adresswechsel bei seiner
-      Gegenstelle neu registieren, sonst weiß die Gegenstelle nicht, an
-      welche IP-Adresse sie Gespräche durchstellen soll. Dazu wird
-      <code>register =&gt;</code> verwendet.</simpara>
+      <simpara>Ist unser Asterisk-Server nur über eine dynamische IP-Adresse
+      erreichbar (also kein DNS, sondern nur eine IP-Adresse), so muss er sich
+      bei jedem IP-Adresswechsel bei seiner Gegenstelle neu registieren, sonst
+      weiß die Gegenstelle nicht, an welche IP-Adresse sie Gespräche
+      durchstellen soll. Dazu wird <code>register =&gt;</code>
+      verwendet.</simpara>
 
-      <simpara>Beachten Sie, dass <code>register</code>-Angaben nur
-      benutzt werden, wenn das entfernte Ende Sie als Peer und
+      <simpara>Beachten Sie, dass <code>register</code>-Angaben nur benutzt
+      werden, wenn das entfernte Ende Sie als Peer und
       <code>host=dynamic</code> eingestellt hat.</simpara>
 
-      <simpara>Das grundlegende Format einer Registerangabe sieht wie
-      folgt aus:</simpara>
+      <simpara>Das grundlegende Format einer Registerangabe sieht wie folgt
+      aus:</simpara>
 
       <simpara><code>register =&gt;
       username[:password]@remote-host</code></simpara>
 
-      <simpara>Alternativ können Sie durch die Einbettung des Namens
-      eines geeigneten RSA-Schlüssels<footnote>
+      <simpara>Alternativ können Sie durch die Einbettung des Namens eines
+      geeigneten RSA-Schlüssels<footnote>
           <simpara>Asterisk-RSA-Schlüssel finden sich normalerweise in
-          <filename>/var/lib/asterisk/keys/</filename>. Sie können
-          mittels des <command>astkey</command>-Skripts eigene Schlüssel
+          <filename>/var/lib/asterisk/keys/</filename>. Sie können mittels des
+          <command>astkey</command>-Skripts eigene Schlüssel
           generieren.</simpara>
-        </footnote> in eckige Klammern (<code>[]</code>) einen
-      RSA-Schlüssel spezifizieren:<footnote>
-          <simpara>Die eckigen Klammern sind hier Pflicht und nicht wie
-          im Rest des Buches als Optionsangabe zu lesen.</simpara>
+        </footnote> in eckige Klammern (<code>[]</code>) einen RSA-Schlüssel
+      spezifizieren:<footnote>
+          <simpara>Die eckigen Klammern sind hier Pflicht und nicht wie im
+          Rest des Buches als Optionsangabe zu lesen.</simpara>
         </footnote></simpara>
 
       <simpara><code>register =&gt;
       username:[rsa-key-name]@remote-host</code></simpara>
 
-      <simpara>Standardmäßig werden Registeranfragen über Port 4569
-      gesendet. Sie können aber durch Anhängen von
+      <simpara>Standardmäßig werden Registeranfragen über Port 4569 gesendet.
+      Sie können aber durch Anhängen von
       <code>:<replaceable>Portnummer</replaceable></code> (also z.B.
       <code>:4444</code>) an den Hostnamen explizit einen anderen
       angeben.</simpara>
@@ -787,12 +780,11 @@ iaxprov.conf     tos           ef
       <synopsis>type = <replaceable>[user|peer|friend]</replaceable></synopsis>
 
       <simpara>Legt fest, ob es sich um eine Verbindung zu einem
-      <code>user</code> (z.B. Benutzer-Endgerät, verbindet sich mit uns)
-      oder <code>peer</code> (z.B. Gateway in ein anderes
-      Asterisk-Netzwerk, zu dem wir die Verbindung herstellen) handelt.
-      <code>friend</code> ist eine Kurzschreibweise um einen
-      <code>user</code> und einen <code>peer</code> mit den gleichen
-      Angaben zu definieren.</simpara>
+      <code>user</code> (z.B. Benutzer-Endgerät, verbindet sich mit uns) oder
+      <code>peer</code> (z.B. Gateway in ein anderes Asterisk-Netzwerk, zu dem
+      wir die Verbindung herstellen) handelt. <code>friend</code> ist eine
+      Kurzschreibweise um einen <code>user</code> und einen <code>peer</code>
+      mit den gleichen Angaben zu definieren.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -800,12 +792,11 @@ iaxprov.conf     tos           ef
 
       <warning>
         <simpara>Wenn Sie nicht für alle User-Einträge
-        (<code>type=user</code>) IP-basierte Zugangsbeschränkungen
-        (siehe <xref linkend="iax-channelkonf-permit" />) definiert
-        haben, müssen Sie in der iax.conf einen Eintrag
-        <code>[guest]</code> haben, bei dem Sie weder <code>auth</code>
-        noch <code>secret</code> angeben. Andernfalls können sich
-        beliebige User verbinden, indem sie ein Passwort
+        (<code>type=user</code>) IP-basierte Zugangsbeschränkungen (siehe
+        <xref linkend="iax-channelkonf-permit" />) definiert haben, müssen Sie
+        in der iax.conf einen Eintrag <code>[guest]</code> haben, bei dem Sie
+        weder <code>auth</code> noch <code>secret</code> angeben. Andernfalls
+        können sich beliebige User verbinden, indem sie ein Passwort
         erraten.</simpara>
 
         <simpara>Beispiel:</simpara>
@@ -837,9 +828,8 @@ callerid="IAX-Gast-Benutzer"</programlisting>
 
       <simpara>Der angegebene String wird als Dateiname für die
       Abrechnungsdateien im Verzeichnis
-      <filename>/var/log/asterisk/cdr-csv/</filename> benutzt. Verwenden
-      Sie daher nur Kleinbuchstaben, Ziffern, Bindestrich,
-      Unterstrich.</simpara>
+      <filename>/var/log/asterisk/cdr-csv/</filename> benutzt. Verwenden Sie
+      daher nur Kleinbuchstaben, Ziffern, Bindestrich, Unterstrich.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -865,9 +855,9 @@ callerid="IAX-Gast-Benutzer"</programlisting>
 
       <synopsis>bandwidth = <replaceable>[low|medium|high]</replaceable></synopsis>
 
-      <simpara><code>bandwidth</code> dient als Gruppierung
-      verschiedener Soundcodecs. Auf diese Weise kann man einfacher
-      bestimmte Situationen definieren (siehe <xref
+      <simpara><code>bandwidth</code> dient als Gruppierung verschiedener
+      Soundcodecs. Auf diese Weise kann man einfacher bestimmte Situationen
+      definieren (siehe <xref
       linkend="iax-globalekonf-bandwidth" />).</simpara>
 
       <simpara>Beispiel:</simpara>
@@ -895,11 +885,10 @@ callerid="IAX-Gast-Benutzer"</programlisting>
       <synopsis>allow = <replaceable>[all|Name des Codecs]</replaceable></synopsis>
 
       <simpara>Bestimmte Soundcodecs können gezielt erlaubt
-      (<code>allow</code>) oder verboten (<code>disallow</code>) werden
-      (siehe <xref linkend="iax-globalekonf-allow" />). Dabei ist zu
-      beachten, das evtl. im <code>[general]</code>-Bereich erlaubte
-      Codecs erst durch ein <code>disallow=all</code> wieder verboten
-      werden müssen.</simpara>
+      (<code>allow</code>) oder verboten (<code>disallow</code>) werden (siehe
+      <xref linkend="iax-globalekonf-allow" />). Dabei ist zu beachten, das
+      evtl. im <code>[general]</code>-Bereich erlaubte Codecs erst durch ein
+      <code>disallow=all</code> wieder verboten werden müssen.</simpara>
 
       <simpara>Diese Parameter sind nicht zu verwechseln mit
       <code>permit</code> und <code>deny</code> (siehe <xref
@@ -984,8 +973,8 @@ allow = gsm</programlisting>
 
       <simpara>AMA ist die Abkürzung für <quote>Automatic Message
       Accounting</quote> und spezifiziert u.a. Standardmechanismen zur
-      Erzeugung und Übermittlung von Anrufprotokollen (CDRs) (siehe
-      <xref linkend="iax-globalekonf-amaflags" />).</simpara>
+      Erzeugung und Übermittlung von Anrufprotokollen (CDRs) (siehe <xref
+      linkend="iax-globalekonf-amaflags" />).</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1011,14 +1000,13 @@ allow = gsm</programlisting>
 
       <synopsis>callerid = <replaceable>[Name[ &lt;Nummer&gt;]]</replaceable></synopsis>
 
-      <simpara>Mit <code>callerid</code> können Sie die angezeigte
-      Caller-ID für einen Nutzer oder ein Peer setzen. Wenn Sie ein
-      Caller-ID-Feld für einen Benutzer definieren, werden alle Anrufe,
-      die auf diesem Kanal eingehen, mit dieser Caller-ID verknüpft,
-      unabhängig davon, was Ihnen das andere Ende sendet. Das ist aus
-      Sicherheitsgründen zu empfehlen (außer, Sie vertrauen dem anderen
-      Ende), da es sehr leicht möglich ist, seine Caller-ID zu
-      fälschen.</simpara>
+      <simpara>Mit <code>callerid</code> können Sie die angezeigte Caller-ID
+      für einen Nutzer oder ein Peer setzen. Wenn Sie ein Caller-ID-Feld für
+      einen Benutzer definieren, werden alle Anrufe, die auf diesem Kanal
+      eingehen, mit dieser Caller-ID verknüpft, unabhängig davon, was Ihnen
+      das andere Ende sendet. Das ist aus Sicherheitsgründen zu empfehlen
+      (außer, Sie vertrauen dem anderen Ende), da es sehr leicht möglich ist,
+      seine Caller-ID zu fälschen.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1047,9 +1035,9 @@ allow = gsm</programlisting>
 
       <simpara>Als <code>host</code> wird entweder der Hostname oder die
       IP-Adresse des anderen Rechners angegeben. Bei Hosts mit dynamisch
-      vergebenen (also wechselnden) IP-Adressen verwenden Sie den
-      Sonderfall <code>host=dynamic</code>, vorzugsweise in Kombination
-      mit der Einstellung <code>defaultip</code> (<xref
+      vergebenen (also wechselnden) IP-Adressen verwenden Sie den Sonderfall
+      <code>host=dynamic</code>, vorzugsweise in Kombination mit der
+      Einstellung <code>defaultip</code> (<xref
       linkend="iax-channelkonf-defaultip" />).</simpara>
 
       <simpara>Beispiele:</simpara>
@@ -1080,9 +1068,9 @@ allow = gsm</programlisting>
 
       <simpara>Die <code>defaultip</code>-Einstellung ergänzt
       <code>host=dynamic</code> (siehe <xref
-      linkend="iax-channelkonf-host" />). Ist ein Host noch nicht bei
-      Ihrem Server angemeldet, versucht Asterisk, Nachrichten an die
-      hier definierte Standard-IP-Adresse zu schicken.</simpara>
+      linkend="iax-channelkonf-host" />). Ist ein Host noch nicht bei Ihrem
+      Server angemeldet, versucht Asterisk, Nachrichten an die hier definierte
+      Standard-IP-Adresse zu schicken.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1109,15 +1097,15 @@ allow = gsm</programlisting>
       <synopsis>permit = <replaceable>IP-Adresse[/Netzmaske]</replaceable></synopsis>
 
       <simpara><code>permit</code> und <code>deny</code> erlauben und
-      beschränken die IP-Adressen, von denen Verbindungen zum
-      entsprechenden Eintrag möglich sind. Üblicherweise wird zuerst ein
-      <code>deny=0.0.0.0/0.0.0.0</code> (alle verbieten) vorangestellt
-      und dann mit <code>permit</code> die erlaubte IP-Adresse oder ein
-      Bereich von Adressen freigegeben. Die Reihenfolge von
-      <code>deny</code> und <code>permit</code> ist entscheidend, und
-      beide können für mehrere Hosts/Bereiche auch mehrfach auftreten.
-      Wenn genau ein Host gemeint ist, können Sie die Netzmaske (wäre
-      <code>255.255.255.255</code>) weglassen.</simpara>
+      beschränken die IP-Adressen, von denen Verbindungen zum entsprechenden
+      Eintrag möglich sind. Üblicherweise wird zuerst ein
+      <code>deny=0.0.0.0/0.0.0.0</code> (alle verbieten) vorangestellt und
+      dann mit <code>permit</code> die erlaubte IP-Adresse oder ein Bereich
+      von Adressen freigegeben. Die Reihenfolge von <code>deny</code> und
+      <code>permit</code> ist entscheidend, und beide können für mehrere
+      Hosts/Bereiche auch mehrfach auftreten. Wenn genau ein Host gemeint ist,
+      können Sie die Netzmaske (wäre <code>255.255.255.255</code>)
+      weglassen.</simpara>
 
       <para>Dieses Beispiel erlaubt nur Verbindungen aus dem Bereich
       <code>192.168.0.*</code> (Netzmaske 24 Bits, Klasse C
@@ -1125,15 +1113,13 @@ allow = gsm</programlisting>
 permit = 192.168.0.102/255.255.255.0  ; 192.168.0.* erlauben
 permit = 192.168.5.5                  ; 192.168.5.5 erlauben</programlisting></para>
 
-      <para>Alle erlauben bis auf
-      <code>192.168.*.*</code>:<programlisting>permit = 0.0.0.0/0.0.0.0              ; alle erlauben
+      <para>Alle erlauben bis auf <code>192.168.*.*</code>:<programlisting>permit = 0.0.0.0/0.0.0.0              ; alle erlauben
 deny = 192.168.0.0/255.255.0.0        ; 192.168.*.* verbieten</programlisting></para>
 
-      <para>Dieses Beispiel ist Blödsinn, da zuerst
-      <code>192.168.0.0</code> - <code>192.168.0.127</code> verboten,
-      dann aber wieder <emphasis>alle</emphasis> erlaubt werden, was die
-      erste Regel überschreibt. So wird also nichts
-      verboten:<programlisting>deny = 192.168.0.0/255.255.255.127
+      <para>Dieses Beispiel ist Blödsinn, da zuerst <code>192.168.0.0</code> -
+      <code>192.168.0.127</code> verboten, dann aber wieder
+      <emphasis>alle</emphasis> erlaubt werden, was die erste Regel
+      überschreibt. So wird also nichts verboten:<programlisting>deny = 192.168.0.0/255.255.255.127
 permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
     </section>
 
@@ -1183,14 +1169,13 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
 
       <synopsis>auth = <replaceable>[plaintext|md5|rsa]</replaceable></synopsis>
 
-      <simpara>Zum Identifizieren des anderen Peers/Users stehen 3
-      Methoden, zur Auswahl: <code>plaintext</code>, <code>md5</code>
-      und <code>rsa</code>.</simpara>
+      <simpara>Zum Identifizieren des anderen Peers/Users stehen 3 Methoden,
+      zur Auswahl: <code>plaintext</code>, <code>md5</code> und
+      <code>rsa</code>.</simpara>
 
       <variablelist termlength="11">
         <varlistentry>
-          <term><code>plaintext</code><indexterm
-              significance="preferred">
+          <term><code>plaintext</code><indexterm significance="preferred">
               <primary><filename>iax.conf</filename></primary>
 
               <secondary>Authentifizierungsmethoden</secondary>
@@ -1204,10 +1189,10 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
             </indexterm></term>
 
           <listitem>
-            <simpara>Sehr unsicher, da das Passwort im Klartext
-            übertragen wird. Sollte daher nicht verwendet werden. Das
-            Passwort wird mit <code>secret</code> (<xref
-            linkend="iax-channelkonf-secret" />) angegeben.</simpara>
+            <simpara>Sehr unsicher, da das Passwort im Klartext übertragen
+            wird. Sollte daher nicht verwendet werden. Das Passwort wird mit
+            <code>secret</code> (<xref linkend="iax-channelkonf-secret" />)
+            angegeben.</simpara>
           </listitem>
         </varlistentry>
 
@@ -1228,8 +1213,8 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
           <listitem>
             <simpara>In diesem Challenge/Response-Verfahren wird eine
             MD5-Prüfsumme übertragen. Das Passwort wird mit
-            <code>secret</code> (<xref
-            linkend="iax-channelkonf-secret" />) angegeben.</simpara>
+            <code>secret</code> (<xref linkend="iax-channelkonf-secret" />)
+            angegeben.</simpara>
           </listitem>
         </varlistentry>
 
@@ -1248,19 +1233,16 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
             </indexterm></term>
 
           <listitem>
-            <simpara>Das sicherste Verfahren durch öffentliche und
-            private Schlüssel. Diese Schlüssel werden bei
-            <code>inkeys</code> (<xref
-            linkend="iax-channelkonf-inkeys" />) und
-            <code>outkeys</code> (<xref
-            linkend="iax-channelkonf-outkey" />) angegeben.</simpara>
+            <simpara>Das sicherste Verfahren durch öffentliche und private
+            Schlüssel. Diese Schlüssel werden bei <code>inkeys</code> (<xref
+            linkend="iax-channelkonf-inkeys" />) und <code>outkeys</code>
+            (<xref linkend="iax-channelkonf-outkey" />) angegeben.</simpara>
           </listitem>
         </varlistentry>
       </variablelist>
 
-      <simpara>Mit <code>auth</code> legen Sie eine durch Komma
-      getrennte Liste von erlaubten Authentifizierungsmethoden
-      fest.</simpara>
+      <simpara>Mit <code>auth</code> legen Sie eine durch Komma getrennte
+      Liste von erlaubten Authentifizierungsmethoden fest.</simpara>
 
       <para>Beispiel:</para>
 
@@ -1318,21 +1300,20 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
 
       <synopsis>inkeys = <replaceable>[rsa-key:rsa-key:...]</replaceable></synopsis>
 
-      <simpara>Legt für die Authentifizierungsmethode <code>rsa</code>
-      (siehe <xref linkend="iax-channelkonf-auth" />) den öffentlichen
-      RSA-Schlüssel des zu authentifizierenden Systems fest. Um mehr als
-      einen RSA-Schlüssel mit einer Benutzer-Kanaldefinition zu
-      verknüpfen, trennen Sie die Schlüsselnamen mit einem Doppelpunkt
-      (<code>:</code>). Jeder dieser Schlüssel wird dann eine Verbindung
-      für gültig erklären können.</simpara>
+      <simpara>Legt für die Authentifizierungsmethode <code>rsa</code> (siehe
+      <xref linkend="iax-channelkonf-auth" />) den öffentlichen RSA-Schlüssel
+      des zu authentifizierenden Systems fest. Um mehr als einen RSA-Schlüssel
+      mit einer Benutzer-Kanaldefinition zu verknüpfen, trennen Sie die
+      Schlüsselnamen mit einem Doppelpunkt (<code>:</code>). Jeder dieser
+      Schlüssel wird dann eine Verbindung für gültig erklären
+      können.</simpara>
 
       <simpara>Diese Schlüssel müssen als Dateien so benannt sein:
       <filename>/var/lib/asterisk/keys/<replaceable>schluesselname</replaceable>.pub</filename></simpara>
 
       <simpara>Beispiel:</simpara>
 
-      <simpara><code>inkeys =
-      server-koblenz:server-bonn</code></simpara>
+      <simpara><code>inkeys = server-koblenz:server-bonn</code></simpara>
     </section>
 
     <section id="iax-channelkonf-outkey">
@@ -1354,12 +1335,11 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
 
       <synopsis>outkey = <replaceable>[rsa-key]</replaceable></synopsis>
 
-      <simpara>Sie können die <code>outkey</code>-Option verwenden, um
-      sich bei einem Peer mit Hilfe eines RSA-Schlüssels zu
-      authentifizieren. Für ausgehende Authentifizierung kann nur ein
-      RSA-Schlüssel verwendet werden. Der <code>outkey</code> wird nicht
-      verteilt, er ist Ihr privater Schlüssel und sollte
-      3DES-verschlüsselt sein.</simpara>
+      <simpara>Sie können die <code>outkey</code>-Option verwenden, um sich
+      bei einem Peer mit Hilfe eines RSA-Schlüssels zu authentifizieren. Für
+      ausgehende Authentifizierung kann nur ein RSA-Schlüssel verwendet
+      werden. Der <code>outkey</code> wird nicht verteilt, er ist Ihr privater
+      Schlüssel und sollte 3DES-verschlüsselt sein.</simpara>
 
       <simpara>Diese Schlüssel müssen als Dateien so benannt sein:
       <filename>/var/lib/asterisk/keys/<replaceable>schluesselname</replaceable>.key</filename></simpara>
@@ -1388,14 +1368,14 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
 
       <synopsis>mailbox = <replaceable>[Mailboxname[@Mailbox-Context]]</replaceable></synopsis>
 
-      <simpara>Wenn Sie in einer Kanaldefinition einen Peer mit einer
-      Mailbox verknüpfen, wird Voicemail eine MWI (Message Waiting
-      Indication)-Nachricht an die Knoten am Ende dieses Kanals
-      schicken. Befindet sich die Mailboxnummer in einem anderen
-      Voicemail-Kontext als <code>default</code>, können Sie sie als
-      <code><replaceable>mailbox@context</replaceable></code> angeben.
-      Um mehrere Mailboxen mit einem einzigen Peer zu verknüpfen, müssen
-      Sie den <code>mailbox</code>-Befehl mehrmals verwenden.</simpara>
+      <simpara>Wenn Sie in einer Kanaldefinition einen Peer mit einer Mailbox
+      verknüpfen, wird Voicemail eine MWI (Message Waiting
+      Indication)-Nachricht an die Knoten am Ende dieses Kanals schicken.
+      Befindet sich die Mailboxnummer in einem anderen Voicemail-Kontext als
+      <code>default</code>, können Sie sie als
+      <code><replaceable>mailbox@context</replaceable></code> angeben. Um
+      mehrere Mailboxen mit einem einzigen Peer zu verknüpfen, müssen Sie den
+      <code>mailbox</code>-Befehl mehrmals verwenden.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1421,11 +1401,11 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
 
       <synopsis>language = <replaceable>[en|de|...]</replaceable></synopsis>
 
-      <simpara>Konfiguriert die Sprache für den entsprechenden Channel.
-      Die Standardsprache ist Englisch. Diese Einstellung wird von
-      verschiedenen Anwendungen wie z.B. der Voicemailbox oder auch der
-      Applikation <code>SayNumber()</code> verwendet, um verschiedene
-      Sprachbausteine zu benutzen.</simpara>
+      <simpara>Konfiguriert die Sprache für den entsprechenden Channel. Die
+      Standardsprache ist Englisch. Diese Einstellung wird von verschiedenen
+      Anwendungen wie z.B. der Voicemailbox oder auch der Applikation
+      <code>SayNumber()</code> verwendet, um verschiedene Sprachbausteine zu
+      benutzen.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1482,11 +1462,10 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
       ersten Registrieren eines Peers ausgeführt wird. Ist mit
       <code>regexten</code> keine Extension angegeben, so wird als
       auszuführende Extension der Name des Peers benutzt. Dabei ist zu
-      beachten, dass Asterisk als erstes automatisch ein
-      <code>NoOp</code> mit der Priorität 1 ausführt. Als erste
-      Priorität danach ist also die 2 zu benutzen. Mehrere Kontexte
-      können nacheinander aufgeführt werden; als Trennungszeichen wird
-      ein <code>&amp;</code> benutzt.</simpara>
+      beachten, dass Asterisk als erstes automatisch ein <code>NoOp</code> mit
+      der Priorität 1 ausführt. Als erste Priorität danach ist also die 2 zu
+      benutzen. Mehrere Kontexte können nacheinander aufgeführt werden; als
+      Trennungszeichen wird ein <code>&amp;</code> benutzt.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1512,10 +1491,10 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
 
       <synopsis>regexten = <replaceable>[Nummer]</replaceable></synopsis>
 
-      <simpara>Wird in Verbindung mit <code>regcontext</code> verwendet,
-      um die Extension zu spezifizieren, die in dem konfigurierten
-      Kontext ausgeführt werden soll. Falls <code>regexten</code> nicht
-      explizit konfiguriert ist, wird der Name des Peers als Extension
+      <simpara>Wird in Verbindung mit <code>regcontext</code> verwendet, um
+      die Extension zu spezifizieren, die in dem konfigurierten Kontext
+      ausgeführt werden soll. Falls <code>regexten</code> nicht explizit
+      konfiguriert ist, wird der Name des Peers als Extension
       verwendet.</simpara>
 
       <simpara>Beispiel:</simpara>
@@ -1575,15 +1554,15 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
 
       <synopsis>forcejitterbuffer = <replaceable>[yes|no]</replaceable></synopsis>
 
-      <simpara>Normalerweise ist es Aufgabe der Endgeräte einen
-      Jitter-Buffer <footnote>
-          <simpara>Jitter bezieht sich auf die variierende Latenz
-          zwischen den Datenpaketen. Bei zu großen Schwankungen kann es
-          zu Tonausfällen kommen.</simpara>
-        </footnote> zu realisieren. Sollte dies aus irgendeinem Grund
-      nicht oder nur schlecht funktionieren (manche Geräte haben einen
-      schlechten Jitter-Buffer), kann man diesen Buffer auch auf
-      Asterisk als VoIP-Brücke aktivieren.</simpara>
+      <simpara>Normalerweise ist es Aufgabe der Endgeräte einen Jitter-Buffer
+      <footnote>
+          <simpara>Jitter bezieht sich auf die variierende Latenz zwischen den
+          Datenpaketen. Bei zu großen Schwankungen kann es zu Tonausfällen
+          kommen.</simpara>
+        </footnote> zu realisieren. Sollte dies aus irgendeinem Grund nicht
+      oder nur schlecht funktionieren (manche Geräte haben einen schlechten
+      Jitter-Buffer), kann man diesen Buffer auch auf Asterisk als VoIP-Brücke
+      aktivieren.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1609,10 +1588,9 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
 
       <synopsis>maxjitterbuffer = <replaceable>[Laenge in Millisekunden]</replaceable></synopsis>
 
-      <simpara>Mit diesem Parameter wird die maximale Größe des
-      Jitter-Buffers eingestellt. Sie sollten diesen Wert i.d.R. nicht
-      höher als 500 einstellen, sonst kann es zu Tonaussetzern
-      kommen.</simpara>
+      <simpara>Mit diesem Parameter wird die maximale Größe des Jitter-Buffers
+      eingestellt. Sie sollten diesen Wert i.d.R. nicht höher als 500
+      einstellen, sonst kann es zu Tonaussetzern kommen.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1639,13 +1617,12 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
       <synopsis>resyncthreshold=<replaceable>[Wert in Millisekunden]</replaceable></synopsis>
 
       <simpara>Der Resynchronisierungs-Grenzwert wird benutzt, um den
-      Jitter-Buffer, im Falle der Erkennung einer signifikanten Änderung
-      über wenige Frames, neu zu takten/neu abzustimmen unter der
-      Annahme, dass der Veränderung eine Verwechslung von Zeitstempeln
-      zugrunde liegt. Der Resynchronisierungs-Grenzwert ist definiert
-      als die gemessene Schwankung plus dem Wert von
-      <code>resyncthreshold</code>, der in Millisekunden angegeben
-      wird.</simpara>
+      Jitter-Buffer, im Falle der Erkennung einer signifikanten Änderung über
+      wenige Frames, neu zu takten/neu abzustimmen unter der Annahme, dass der
+      Veränderung eine Verwechslung von Zeitstempeln zugrunde liegt. Der
+      Resynchronisierungs-Grenzwert ist definiert als die gemessene Schwankung
+      plus dem Wert von <code>resyncthreshold</code>, der in Millisekunden
+      angegeben wird.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1672,20 +1649,19 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
       <synopsis>trunk = <replaceable>[yes|no]</replaceable></synopsis>
 
       <simpara>Asterisk kann bei IAX-Verbindungen zu einer bestimmten
-      IP-Adresse (z.B. beim Verbinden von zwei Asterisk-Servern) alle
-      Channels über einen Trunk versehen. Dadurch wird der Overhead von
-      mehreren Verbindungen zu einer Adresse reduziert. Der Trunk-Modus
-      funktioniert nur mit geeigneter Hardware (Digium Zaptel) oder
-      entsprechender Emulationssoftware für timing-Zwecke<footnote>
+      IP-Adresse (z.B. beim Verbinden von zwei Asterisk-Servern) alle Channels
+      über einen Trunk versehen. Dadurch wird der Overhead von mehreren
+      Verbindungen zu einer Adresse reduziert. Der Trunk-Modus funktioniert
+      nur mit geeigneter Hardware (Digium Zaptel) oder entsprechender
+      Emulationssoftware für timing-Zwecke<footnote>
           <para>z.B. das bei Asterisk enthaltene Kernel-Modul
-          <code>ztdummy</code> oder <code>zaprtc</code> von Junghanns
-          (<ulink
+          <code>ztdummy</code> oder <code>zaprtc</code> von Junghanns (<ulink
           url="http://www.junghanns.net/downloads/">http://www.junghanns.net/downloads/</ulink>)</para>
         </footnote>.</simpara>
 
-      <simpara>Bei der Version 1.2.x arbeitet der Jitter-Buffer (siehe
-      <xref linkend="iax-channelkonf-jitterbuffer" />) nicht gut bei
-      eingeschaltetem Trunk-Modus.</simpara>
+      <simpara>Bei der Version 1.2.x arbeitet der Jitter-Buffer (siehe <xref
+      linkend="iax-channelkonf-jitterbuffer" />) nicht gut bei eingeschaltetem
+      Trunk-Modus.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1711,9 +1687,9 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
 
       <synopsis>trunkfreq = <replaceable>[Wiederholrate in Millisekunden]</replaceable></synopsis>
 
-      <simpara>Mit <code>trunkfreq</code> wird in Millisekunden
-      angegeben, wie oft Trunk-Nachrichten gesendet werden. Gilt nur,
-      wenn <code>trunk=yes</code> gesetzt wurde.</simpara>
+      <simpara>Mit <code>trunkfreq</code> wird in Millisekunden angegeben, wie
+      oft Trunk-Nachrichten gesendet werden. Gilt nur, wenn
+      <code>trunk=yes</code> gesetzt wurde.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1739,16 +1715,15 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
 
       <synopsis>qualify = <replaceable>[yes|no|Zeit in Millisekunden]</replaceable></synopsis>
 
-      <simpara>Mit <code>qualify=yes</code> werden in festen
-      Zeitabständen Ping-Nachrichten an die entfernten Peers gesendet,
-      um herauszufinden, ob sie verfügbar sind und welche Latenz
-      zwischen den Antworten liegt. Die Peers antworten mit
-      Pong-Nachrichten. Ein Peer wird als nicht erreichbar angesehen,
-      wenn innerhalb von 2000 ms noch keine Antwort vorliegt (um diese
-      Voreinstellung zu ändern, setzen Sie <code>qualify</code> auf die
-      entsprechende Anzahl an Millisekunden, die auf eine Anwort
-      gewartet werden soll). Einige Endgeräte (/Software) kommen nicht
-      mit diesen Nachrichten zurecht.</simpara>
+      <simpara>Mit <code>qualify=yes</code> werden in festen Zeitabständen
+      Ping-Nachrichten an die entfernten Peers gesendet, um herauszufinden, ob
+      sie verfügbar sind und welche Latenz zwischen den Antworten liegt. Die
+      Peers antworten mit Pong-Nachrichten. Ein Peer wird als nicht erreichbar
+      angesehen, wenn innerhalb von 2000 ms noch keine Antwort vorliegt (um
+      diese Voreinstellung zu ändern, setzen Sie <code>qualify</code> auf die
+      entsprechende Anzahl an Millisekunden, die auf eine Anwort gewartet
+      werden soll). Einige Endgeräte (/Software) kommen nicht mit diesen
+      Nachrichten zurecht.</simpara>
 
       <simpara>Beispiel:</simpara>
 
@@ -1776,9 +1751,9 @@ permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
 
       <simpara>Stellt ein, ob für die Verfügbarkeitsprüfung durch
       <code>qualify</code> immer der Mittelwert der letzten beiden
-      Pong-Nachrichten verwendet werden soll. Hosts mit schlechter
-      Verbindung könnten sonst fälschlicherweise als nicht verfügbar
-      eingestuft werden.</simpara>
+      Pong-Nachrichten verwendet werden soll. Hosts mit schlechter Verbindung
+      könnten sonst fälschlicherweise als nicht verfügbar eingestuft
+      werden.</simpara>
 
       <simpara>Beispiel:</simpara>
 
