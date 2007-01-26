@@ -1,6 +1,6 @@
-<?xml version = '1.0' encoding = 'ISO-8859-1'?>
-<section revision="$Revision: $" id="installation-1.2-fedora" lang="de" >
-<!--% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<section id="installation-1.2-fedora" lang="de" revision="$Revision: $">
+  <!--% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
 % Copyright (c) 2006 - Klaus Franken <asterisk@StrukturPunkt.de>
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
@@ -8,25 +8,33 @@
 % with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
 % Texts. A copy of the license is included in the section entitled "GNU
 % Free Documentation License".
-% Asterisk training and consulting is offered at http://www.amooma.de-->  
-<title>Installation Asterisk 1.2.x auf Fedora Linux</title>
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Installation Asterisk 1.2.x auf Fedora Linux</title>
+
+  <indexterm>
+    <primary>Asterisk 1.2 Installation</primary>
+
+    <secondary>Fedora Linux</secondary>
+  </indexterm>
+
   <para>Diese Installationsanleitung setzt ein frisch installiertes Fedora
-  Core 6 &quot;Zod&quot; voraus. Eine Liste von Mirrors zum Download des ISO-Images
-  findet man unter <ulink url="http://fedora.redhat.com/Download/mirrors.html" >
-      <citetitle>http://fedora.redhat.com/Download/mirrors.html</citetitle>
-    </ulink>.
-  Auf einem Mirror Ihrer Wahl laden Sie dann das CD- oder besser gleich das
-  DVD-Image herunter. Mit der gebrannten DVD können Sie nun den Rechner booten
-  und Fedora installieren.</para>
-  <para>
-    <emphasis>Bitte logen Sie sich danach als Benutzer root in das System
+  Core 6 "Zod" voraus. Eine Liste von Mirrors zum Download des ISO-Images
+  findet man unter <ulink
+  url="http://fedora.redhat.com/Download/mirrors.html">
+  <citetitle>http://fedora.redhat.com/Download/mirrors.html</citetitle>
+  </ulink>. Auf einem Mirror Ihrer Wahl laden Sie dann das CD- oder besser
+  gleich das DVD-Image herunter. Mit der gebrannten DVD können Sie nun den
+  Rechner booten und Fedora installieren.</para>
+
+  <para><emphasis>Bitte logen Sie sich danach als Benutzer root in das System
   ein und führen Sie alle hier angegebenen Befehle mit diesem Benutzer
-  aus.</emphasis>
-  </para>
+  aus.</emphasis></para>
+
   <para>Als Erstes stellen Sie mit einem <command>yum -y update</command>
   sicher, dass Ihr Fedora Linux-System nur aktuelle Pakete installiert
   hat:<screen>[root@fc6 ~]# yum -y update
-Loading &quot;installonlyn&quot; plugin
+Loading "installonlyn" plugin
 Setting up Update Process
 Setting up repositories
 core                      100% |=========================| 1.1 kB    00:00     
@@ -38,13 +46,16 @@ Reading repository metadata in from local files
 
 Replaced: bluez-pin.i386 0:0.30-5
 Complete!
-[root@fc6 ~]# </screen>
-  </para>
-  <para>Am besten starten Sie nach dem Update den Server neu mit <command>init 6</command></para>
-  <para>Jetzt müssen Sie mit <command>yum -y groupinstall &quot;Development
-  Tools&quot;</command> noch einige Pakete installieren:</para>
-  <screen>[root@fc6 ~]# yum -y groupinstall &quot;Development Tools&quot;
-Loading &quot;installonlyn&quot; plugin
+[root@fc6 ~]# </screen></para>
+
+  <para>Am besten starten Sie nach dem Update den Server neu mit <command>init
+  6</command></para>
+
+  <para>Jetzt müssen Sie mit <command>yum -y groupinstall "Development
+  Tools"</command> noch einige Pakete installieren:</para>
+
+  <screen>[root@fc6 ~]# yum -y groupinstall "Development Tools"
+Loading "installonlyn" plugin
 Setting up Group Process
 Setting up repositories
 Setting up repositories
@@ -59,10 +70,11 @@ Installed: autoconf.noarch 0:2.59-12 automake.noarch 0:1.9.6-2.1 automake14.noar
 Dependency Installed: cairo-java.i386 0:1.0.5-3.fc6 elfutils-libs.i386 0:0.123-1.fc6 glib-java.i386 0:0.2.6-3.fc6 glibc-devel.i386 0:2.5-3 glibc-headers.i386 0:2.5-3 gmp.i386 0:4.1.4-9.fc6 imake.i386 0:1.0.2-3 libgconf-java.i386 0:2.12.4-5.fc6 libgfortran.i386 0:4.1.1-30 libgomp.i386 0:4.1.1-30 libgtk-java.i386 0:2.8.7-2.fc6 libpfm.i386 0:3.2-0.060621.8.1 libstdc++-devel.i386 0:4.1.1-30 perl-URI.noarch 0:1.35-3 systemtap-runtime.i386 0:0.5.10-1.fc6
 Complete!
 [root@fc6 ~]# </screen>
+
   <para>Zum Schluss noch ein <command>yum -y install libtermcap-devel
   ncurses-devel openssl-devel</command> ausführen, damit das Kompilieren von
   Asterisk erfolgreich durchgeführt werden kann:<screen>[root@fc6 ~]# yum -y install libtermcap-devel ncurses-devel openssl-devel
-Loading &quot;installonlyn&quot; plugin
+Loading "installonlyn" plugin
 Setting up Install Process
 Setting up repositories
 
@@ -71,28 +83,28 @@ Setting up repositories
 Installed: libtermcap-devel.i386 0:2.0.8-46.1 ncurses-devel.i386 0:5.5-24.20060715 openssl-devel.i386 0:0.9.8b-8.3.fc6
 Dependency Installed: e2fsprogs-devel.i386 0:1.39-7.fc6 krb5-devel.i386 0:1.5-7 zlib-devel.i386 0:1.2.3-3
 Complete!
-[root@fc6 ~]# </screen>
-  </para>
-  <para>Auf der Asterisk-Homepage <ulink url="http://www.asterisk.org/" >
-      <citetitle>http://www.asterisk.org/</citetitle>
-    </ulink>
-  finden Sie die notwendigen Quellen, um Asterisk zu kompilieren. Nehmen Sie
-  bitte eine stabile und keine Entwickler-Version und laden Sie diese mit
-  <command>wget
+[root@fc6 ~]# </screen></para>
+
+  <para>Auf der Asterisk-Homepage <ulink url="http://www.asterisk.org/">
+  <citetitle>http://www.asterisk.org/</citetitle> </ulink> finden Sie die
+  notwendigen Quellen, um Asterisk zu kompilieren. Nehmen Sie bitte eine
+  stabile und keine Entwickler-Version und laden Sie diese mit <command>wget
   http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz</command> in
   das Verzeichnis <filename>/usr/src/</filename> herunter:</para>
+
   <screen>fc6:~# cd /usr/src
 fc6:/usr/src# wget http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz
 --18:30:46--  http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz
-           => `asterisk-1.2-current.tar.gz'
+           =&gt; `asterisk-1.2-current.tar.gz'
 Auflösen des Hostnamen »ftp.digium.com«.... 69.16.138.164
 Verbindungsaufbau zu ftp.digium.com[69.16.138.164]:80... verbunden.
 HTTP Anforderung gesendet, warte auf Antwort... 200 OK
 Länge: 10,584,113 [application/x-gzip]
 
-100%[====================================>] 10,584,113   224.71K/s    ETA 00:00
+100%[====================================&gt;] 10,584,113   224.71K/s    ETA 00:00
 
 18:31:36 (207.67 KB/s) - »asterisk-1.2-current.tar.gz« gespeichert [10584113/10584113]</screen>
+
   <para>Die komprimierte Datei muss jetzt mit <command>tar xvzf
   asterisk-1.2-current.tar.gz</command> entpackt werden:<screen>fc6:/usr/src# tar xvzf asterisk-1.2-current.tar.gz 
 asterisk-1.2.14/
@@ -110,8 +122,8 @@ asterisk-1.2.14/cli.c
 asterisk-1.2.14/io.c
 asterisk-1.2.14/ulaw.c
 asterisk-1.2.14/logger.c
-fc6:/usr/src#</screen>
-  </para>
+fc6:/usr/src#</screen></para>
+
   <para>Die entpackten Dateien müssen jetzt kompiliert werden.<footnote>
       <para>Die Linux-Cracks unter den Lesern mögen mir diese starke
       Vereinfachung verzeihen.</para>
@@ -124,6 +136,7 @@ fc6:/usr/src#</screen>
     </warning>Übrigens ist dies jetzt ein guter Moment, sich einen Kaffee oder
   Tee zu kochen. Der Kompiliervorgang kann je nach Rechenleistung des PCs
   wenige Minuten oder bis zu einer Stunde dauern.</para>
+
   <screen>fc6:/usr/src# cd asterisk-1.2.14
 fc6:/usr/src/asterisk-1.2.14# make
 if cmp -s .cleancount .lastclean ; then echo ; else \
@@ -141,11 +154,13 @@ make[1]: Leaving directory `/usr/src/asterisk-1.2.14/stdtime'
  +               make install                +
  +-------------------------------------------+
 [root@fc6 asterisk-1.2.14]#</screen>
+
   <para>Die Software ist jetzt kompiliert und muss nur noch mit <command>make
   install</command> installiert (sprich an die vorgesehenen Stellen im
   Dateisystem kopiert) werden:</para>
+
   <screen>fc6:/usr/src/asterisk-1.2.14# make install
-build_tools/make_version_h > include/asterisk/version.h.tmp
+build_tools/make_version_h &gt; include/asterisk/version.h.tmp
 if cmp -s include/asterisk/version.h.tmp include/asterisk/version.h ; 
 then echo;
 
@@ -172,6 +187,7 @@ then echo;
  + **Note** This requires that you have      +
  + doxygen installed on your local system    +
  +-------------------------------------------+</screen>
+
   <para>Geschafft! Die soeben kompilierten Programmdateien sind jetzt auf dem
   System installiert. Allerdings finden wir im
   Asterisk-Konfigurationsverzeichnis <filename>/etc/asterisk/</filename> noch
@@ -179,17 +195,18 @@ then echo;
   von Asterisk und da wir nicht von Null beginnen möchten, lassen wir uns die
   Standarddateien erstellen. Dies erreichen wir mit <command>make
   samples</command>:</para>
+
   <screen>fc6:/usr/src/asterisk-1.2.14# make samples
-build_tools/make_version_h > include/asterisk/version.h.tmp
+build_tools/make_version_h &gt; include/asterisk/version.h.tmp
 if cmp -s include/asterisk/version.h.tmp include/asterisk/version.h ; 
 then echo;
 
 [...]
 
 done</screen>
+
   <para>Fertig! Asterisk ist auf Ihrem System installiert. Mit dem Befehl
   <command>asterisk -V</command> können Sie die installierte Version
   herausfinden (bitte achten Sie auf das großgeschriebene V):<screen>fc6:/usr/src/asterisk-1.2.14# asterisk -V
-Asterisk 1.2.14</screen>
-  </para>
+Asterisk 1.2.14</screen></para>
 </section>
