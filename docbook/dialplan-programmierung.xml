@@ -181,7 +181,8 @@ exten =&gt; 1234,n,Hangup()</programlisting></para>
         <code>n</code>-Prioritäten Label zu vergeben. Damit sind z.B. solche
         Konstrukte möglich:<programlisting>[...]
 
-exten =&gt; s,n,GotoIf($[${APFELMUS} = 1]?<emphasis role="bold">ja</emphasis>:<emphasis role="bold">nein</emphasis>)
+exten =&gt; s,n,GotoIf($[${APFELMUS} = 1]?<emphasis role="bold">ja</emphasis>:<emphasis
+              role="bold">nein</emphasis>)
 exten =&gt; s,n<emphasis role="bold">(ja)</emphasis>,NoOp(Ja)
 exten =&gt; s,n<emphasis role="bold">(nein)</emphasis>,NoOp(Nein)
 
@@ -355,6 +356,46 @@ exten =&gt; _10X,3,Hangup()
               </listitem>
             </varlistentry>
           </variablelist></para>
+      </section>
+
+      <section>
+        <title>Wann matcht welches Pattern?</title>
+
+        <para id="wann-triff-welches-pattern">Pattern Matchin in Asterisk ist
+        bei großen Dialplänen eine trickreiche Angelegenheit. Asterisk geht
+        nämlich nicht wie allgemein angenohmen wird plump von oben nach unten
+        den Dialplan durch. Nein, es priorisiert innerhalb der
+        Patterns!</para>
+
+        <para>Je exakter ein Pattern matcht, desto höher ist die
+        Wahrscheinlichkeit das es matcht. Asterisk geht allerdings - bevor es
+        eine Entscheidung trifft - den ganzen Context durch. Es könnte ja
+        sein, das ein anderes Pattern noch besser matcht.</para>
+
+        <para>Beispiel:<programlisting>[verkauf]
+exten =&gt; _12X.,1,NoOp{12X}
+exten =&gt; 12345,1,NoOp(12345}
+exten =&gt; _1234.,1,NoOp{1234.}</programlisting></para>
+
+        <para>Wenn in diesem Beispiel die 12345 gewählt wird, dann wird die
+        zweite Zeile ausgeführt, denn sie stellt den optimalen Treffer da.
+        Wenn die 12346 gewählt wird, dann trifft die letzte Zeile, denn sie
+        macht besser als die erste.</para>
+
+        <para><warning>
+            <para>Es gibt eine Sonderregel für das Pattern _.</para>
+
+            <para>"_." matcht immer und hat auch immer die höchste Priorität.
+            Es ist also egal, was Sie sonst noch in diesem Context für Regeln
+            haben! Es wird immer nur die Regel mit dem Pattern "_."
+            ausgeführt. Man sollte also lieber ein "_X." nehmen, ausser man
+            ist sich absolut sicher und weiss man man tut.</para>
+          </warning>Auch wenn die Reihenfolge von Pattern nicht immer ganz
+        trival ist, gibt es eine einfache Debugging Möglichkeit. Mit
+        <command>show dialplan 12345@verkauf</command> lässt sich der Dialplan
+        für die gewählte Nummer 12345 im Context verkauf auflisten. So kann
+        man für spezielle Nummern überprüfen, ob auch die dafür vorgesehene
+        Regel matcht.</para>
       </section>
     </section>
   </section>
