@@ -166,7 +166,7 @@ Extension: 10</programlisting></para>
             <term><code>Account: &lt;account&gt;</code></term>
 
             <listitem>
-              <simpara>Der Abrechnungscode für Ihr CDR System.</simpara>
+              <simpara>Der Abrechnungscode für Ihr CDR-System.</simpara>
             </listitem>
           </varlistentry>
 
@@ -250,7 +250,7 @@ exten =&gt; _*77*XXXXXXXXXXXX,n,System(echo 'Channel: SIP/${CALLERID(num)}\nCont
 exten =&gt; _*77*XXXXXXXXXXXX,n,System(touch -t ${Jahr}${Monat}${Tag}${Stunden}${Minuten} /tmp/${UNIQUEID}.call)
 exten =&gt; _*77*XXXXXXXXXXXX,n,System(mv /tmp/${UNIQUEID}.call /var/spool/asterisk/outgoing/
 exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(rqsted-wakeup-for)
-exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Stunden}
+exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Stunden})
 exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Minuten})
 exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(digits/oclock)
 exten =&gt; _*77*XXXXXXXXXXXX,n,Hangup()
@@ -260,7 +260,7 @@ exten =&gt; 23,1,Answer()
 exten =&gt; 23,n,Wait(1)
 exten =&gt; 23,n,Playback(this-is-yr-wakeup-call)
 exten =&gt; 23,n,Wait(1)
-exten =&gt; 23,n,Hangup()&lt;/programlisting&gt;</programlisting></para>
+exten =&gt; 23,n,Hangup()</programlisting></para>
     </section>
   </section>
 
@@ -282,15 +282,15 @@ exten =&gt; 23,n,Hangup()&lt;/programlisting&gt;</programlisting></para>
         machen, außer man schützt sich zusätzlich durch
         <command>iptables</command>, <command>ipfw</command> oder eine andere
         Firewall oder einen SSH-Tunnel!</para>
-      </caution>Darunter legen wir uns einen Benutzer-Eintrag
+      </caution>Ganz unten legen wir uns einen Benutzer-Eintrag
     an:<programlisting>[admin]
 secret = geheim
 deny = 0.0.0.0/0.0.0.0
 permit = 127.0.0.1/255.255.255.255
 read = system,call,log,verbose,command,agent,user,config
 write = system,call,log,verbose,command,agent,user,config</programlisting>Nach
-    einem Restart können wir uns auf Port 5038 mit dem AMI verbinden, was wir
-    auf der Shell mit <command>telnet</command><footnote>
+    einem Restart von Asterisk können wir uns auf Port 5038 mit dem AMI
+    verbinden, was wir auf der Shell mit <command>telnet</command><footnote>
         <simpara>Hier kommt nur das <emphasis>Tool</emphasis>
         <command>telnet</command> zum Einsatz. Das hat nichts mit dem
         Telnet-Protokoll oder Port zu tun.</simpara>
@@ -313,6 +313,19 @@ Message: Authentication accepted
 
     <simpara>Die primäre Verwendung liegt aber eher im automatisierte Zugriff
     von einem Skript.</simpara>
+
+    <note>
+      <para>Die Manager-API ist nicht unbedingt dafür berühmt, viele
+      gleichzeitige Verbindungen handhaben zu können. In so einer
+      Last-Situation könnte man über den Einsatz eines speziellen Proxys wie
+      den <quote>Simple Asterisk Manager Proxy</quote><footnote>
+          <simpara><ulink
+          url="http://www.popvox.com/simpleproxy.pl">http://www.popvox.com/simpleproxy.pl</ulink></simpara>
+        </footnote> (ein Perl-Skript) nachdenken, der viele Verbindungen
+      entgegennimmt und zu einer bündelt - für die zugreifenden Skripte völlig
+      transparent. Für die folgenden <quote>Spielereien</quote> ist das aber
+      unnötig.</para>
+    </note>
 
     <simpara>Nach erfolgreicher Authentifizierung können in beiden Richtung
     Pakete gesendet werden. Die Art des Pakets wird immer von de ersten Zeile
@@ -344,21 +357,151 @@ Message: Authentication accepted
     Authentifizierungs-Paket den Parameter <code>Events: off</code> senden, um
     dann nur Antworten auf von ihm gesendete Actions zu erhalten.</simpara>
 
-    <simpara>Die Liste der verfügbaren Befehle erhält man im
+    <para>Die Liste der verfügbaren Befehle erhält man im
     <emphasis>CLI</emphasis> mit <code>show manager commands</code> (bzw.
     <code>manager show commands</code>), Informationen über einen Befehl mit
     <code>show manager command <replaceable>Befehlsname</replaceable></code>
     (bzw. <code>manager show command
-    <replaceable>Befehlsname</replaceable></code>). Eine Übersicht findet man
-    auch auf <ulink
-    url="http://www.voip-info.org/wiki/view/Asterisk+manager+API">http://www.voip-info.org/wiki/view/Asterisk+manager+API</ulink>.</simpara>
+    <replaceable>Befehlsname</replaceable></code>)<footnote>
+        <simpara>Nur der Vollständigkeit halber der Link zur entsprechenden -
+        veralteten - Seite auf voip-info.org: <ulink
+        url="http://www.voip-info.org/wiki/view/Asterisk+manager+API">http://www.voip-info.org/wiki/view/Asterisk+manager+API</ulink></simpara>
+      </footnote>.<screen>mos-eisley*CLI&gt; manager show commands
+  Action           Privilege        Synopsis                                               
+  ------           ---------        --------                                               
+  AbsoluteTimeout  call,all         Set Absolute Timeout                                   
+  AgentCallbackLo  agent,all        Sets an agent as logged in by callback                 
+  AgentLogoff      agent,all        Sets an agent as no longer logged in                   
+  Agents           agent,all        Lists agents and their status                          
+  ChangeMonitor    call,all         Change monitoring filename of a channel                
+  Command          command,all      Execute Asterisk CLI Command                           
+  DBGet            system,all       Get DB Entry                                           
+  DBPut            system,all       Put DB Entry                                           
+  Events           &lt;none&gt;           Control Event Flow                                     
+  ExtensionState   call,all         Check Extension Status                                 
+  GetConfig        config,all       Retrieve configuration                                 
+  Getvar           call,all         Gets a Channel Variable                                
+  Hangup           call,all         Hangup Channel                                         
+  IAXnetstats      &lt;none&gt;           Show IAX Netstats                                      
+  IAXpeers         &lt;none&gt;           List IAX Peers                                         
+  ListCommands     &lt;none&gt;           List available manager commands                        
+  Logoff           &lt;none&gt;           Logoff Manager                                         
+  MailboxCount     call,all         Check Mailbox Message Count                            
+  MailboxStatus    call,all         Check Mailbox                                          
+  Monitor          call,all         Monitor a channel                                      
+  Originate        call,all         Originate Call                                         
+  Park             call,all         Park a channel                                         
+  ParkedCalls      &lt;none&gt;           List parked calls                                      
+  PauseMonitor     call,all         Pause monitoring of a channel                          
+  Ping             &lt;none&gt;           Keepalive command                                      
+  PlayDTMF         call,all         Play DTMF signal on a specific channel.                
+  QueueAdd         agent,all        Add interface to queue.                                
+  QueuePause       agent,all        Makes a queue member temporarily unavailable           
+  QueueRemove      agent,all        Remove interface from queue.                           
+  Queues           &lt;none&gt;           Queues                                                 
+  QueueStatus      &lt;none&gt;           Queue Status                                           
+  Redirect         call,all         Redirect (transfer) a call                             
+  SetCDRUserField  call,all         Set the CDR UserField                                  
+  Setvar           call,all         Set Channel Variable                                   
+  SIPpeers         system,all       List SIP peers (text format)                           
+  SIPshowpeer      system,all       Show SIP peer (text format)                            
+  Status           call,all         Lists channel status                                   
+  StopMonitor      call,all         Stop monitoring a channel                              
+  UnpauseMonitor   call,all         Unpause monitoring of a channel                        
+  UpdateConfig     config,all       Update basic configuration                             
+  UserEvent        user,all         Send an arbitrary event                                
+  WaitEvent        &lt;none&gt;           Wait for an event to occur</screen>Diese
+    Befehle sind fast immer gleichlautend mit einer entsprechenden
+    Dialplan-Applikation - neu ist vor allem die Action
+    <code>Originate</code>, mit der man einen ausgehenden Anruf veranlassen
+    kann, und <code>Command</code>, was einen Befehl direkt auf dem CLI
+    ausführt. Wie man einen Befehl benutzt, erfährt man so:<screen>mos-eisley*CLI&gt; manager show command Command
+Action: Command 
+Synopsis: Execute Asterisk CLI Command
+Privilege: command,all
+Description: Run a CLI command.
+Variables: (Names marked with * are required)
+        *Command: Asterisk CLI command to run
+        ActionID: Optional Action id for message matching.</screen></para>
 
-    <simpara>Für eine Liste der Events siehe <ulink
-    url="http://www.voip-info.org/wiki/view/asterisk+manager+events">http://www.voip-info.org/wiki/view/asterisk+manager+events</ulink>.
-    Beispiele und APIs in verschiedenen Programmiersprachen: <ulink
-    url="http://www.voip-info.org/wiki/view/Asterisk+manager+Examples">http://www.voip-info.org/wiki/view/Asterisk+manager+Examples</ulink>.
-    StarAstAPI (PHP): <ulink
-    url="http://www.starutilities.com/">http://www.starutilities.com/</ulink>.</simpara>
+    <simpara>Die von Asterisk verschickten Events sind bisher so gut wie
+    undokumentiert. Auf <ulink
+    url="http://www.voip-info.org/wiki/view/asterisk+manager+events">http://www.voip-info.org/wiki/view/asterisk+manager+events</ulink>
+    findet sich eine zusammengesammelte Liste mit spärlichen Hinweisen. Ein
+    paar Erklärungen kann man auf xx<ulink
+    url="http://asterisk-java.sourceforge.net/apidocs/net/sf/asterisk/manager/event/package-frame.html">http://asterisk-java.sourceforge.net/apidocs/net/sf/asterisk/manager/event/package-frame.html</ulink>
+    nachlesen<footnote>
+        <simpara>Nicht verwirren lassen, das ist eigentlich eine
+        Java-Dokumentation.</simpara>
+      </footnote>.</simpara>
+
+    <simpara>Für das Manager-Interface gibt es mittlerweile mehr oder weniger
+    gute APIs in verschiedenen Programmiersprachen (PHP, Perl, Python, Ruby
+    etc.), die natürlich hier nicht alle getestet werden konnten<footnote>
+        <simpara>Beispiele mit Anmerkungen auf <ulink
+        url="http://www.voip-info.org/wiki/view/Asterisk+manager+Examples">http://www.voip-info.org/wiki/view/Asterisk+manager+Examples</ulink></simpara>
+      </footnote>. Sollte die API für Ihre Lieblingssprache nicht laufen,
+    können Sie das Problem sicher lösen - bis hierher haben sowieso nur Leute
+    gelesen, die schon mal programmiert haben. :-)</simpara>
+
+    <para>Wir testen hier ganz kurz die StarAstAPI<footnote>
+        <simpara>von <ulink
+        url="http://www.starutilities.com/">http://www.starutilities.com/</ulink></simpara>
+      </footnote> in PHP, die ein PHP 5 voraussetzt<footnote>
+        <simpara>Die API läßt sich aber relativ leicht auf PHP 4 umschreiben,
+        obwohl der Code recht unübersichtlich ist.</simpara>
+      </footnote>, das mit <code>--enable-sockets</code> kompiliert
+    wurde.<footnote>
+        <para>Auf der Shell erfährt man mit <command>php -m</command>, welche
+        Module einkompiliert sind.</para>
+      </footnote> Leider findet man in den StarAstAPI-Dateien noch die seit
+    Jahren veralteten <quote>short open tags</quote> (<code>&lt;?</code>),
+    ersetzen Sie diese ggf. durch die korrekte Syntax (<code>&lt;?php</code>).
+    Der API liegen 4 Demo-Skripte bei: <filename>sLogin.php</filename>
+    versucht nur, sich einzuloggen<footnote>
+        <simpara>Wenn Sie nach der Anleitung oben vorgegangen sind, müssen Sie
+        natürlich jeweils den Benutzernamen und das Passwort entsprechend
+        anpassen.</simpara>
+      </footnote>, <filename>sCommand.php</filename> führt den CLI-Befehl
+    <code>reload</code> aus, <filename>sDial.php</filename> versucht eine
+    Verbindung mit SIP/120, <filename>sEvents.php</filename> empfängt Events.
+    Wenn wir gleichzeitig mit <command>asterisk -vvvr</command> die CLI
+    beobachten und mit <command>php -q sLogin.php</command> eine Verbindung
+    zum AMI öffnen<footnote>
+        <simpara>hier absichtlich mit falschem User/Passwort</simpara>
+      </footnote>, sehen wir im CLI:<screen>mos-eisley*CLI&gt; 
+  == Parsing '/etc/asterisk/manager.conf': Found
+[Jan 26 20:08:09] NOTICE[10352]: manager.c:961 authenticate: 127.0.0.1 tried to authenticate with nonexistent user 'mark'
+  == Connect attempt from '127.0.0.1' unable to authenticate
+mos-eisley*CLI&gt; </screen> Es hat also wegen des falschen Users nicht
+    funktioniert, trotzdem meldet das Demo-Skript:<screen>$  php -q sLogin.php 
+Login Sucessful 
+
+</screen>und danach das Response-Paket:<screen>Response:  Error
+ActionID:  1
+Message:  Authentication failed
+</screen>StarAstAPI arbeitet also nicht ganz sauber, kann aber sicher ohne
+    allzu großen Aufwand verbessert werden. Wenn wir <command>php -q
+    sEvents.php</command> aufrufen - jetzt mit dem richtigen User - sehen wir
+    im CLI:<screen>mos-eisley*CLI&gt; 
+  == Parsing '/etc/asterisk/manager.conf': Found
+  == Manager 'admin' logged on from 127.0.0.1
+mos-eisley*CLI&gt; </screen>Testhalber führen wir im CLI ein
+    <code>reload</code> aus, was sich in diesen Events in der Ausgabe des
+    PHP-Skripts widerspiegelt:<screen>Event:  Reload
+Privilege:  system,all
+Message:  Reload Requested
+
+Event:  ChannelReload
+Privilege:  system,all
+Channel:  SIP
+ReloadReason:  RELOAD (Channel module reload)
+Registry_Count:  0
+Peer_Count:  0
+User_Count:  0
+
+</screen>Lassen Sie sich was einfallen! Schreiben Sie ein kleines Skript, das
+    all Ihre Freunde anruft - natürlich mitten in der Nacht!</para>
   </section>
 
   <section id="manager-interface-ajam">
