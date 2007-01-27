@@ -432,7 +432,7 @@ Message: Authentication accepted
     erfährt man so:<screen>mos-eisley*CLI&gt; manager show command Command
 Action: Command 
 Synopsis: Execute Asterisk CLI Command
-Privilege: command,all
+Privilege: command,a
 Description: Run a CLI command.
 Variables: (Names marked with * are required)
         *Command: Asterisk CLI command to run
@@ -487,10 +487,11 @@ send_user "Mailbox: $mailbox\n"
 # Durchschleifen von stdout zum User abschalten:
 log_user 0
 
-# TCP-Verbindung zum AMI öffnen:
+# Verbindung zum AMI öffnen:
 spawn telnet 127.0.0.1 5038
 
-# auf "Manager" warten und bei Erfolg ein Login-Paket senden:
+# auf die Zeichenfolge "Manager" warten und bei Erfolg
+# ein Login-Paket senden:
 #
 expect "Manager" {
     send_user "Verbunden.\n"
@@ -500,27 +501,23 @@ expect "Manager" {
 # Login erfolgreich?:
 #
 expect {
-    "Response: Error" {
+    -re "Response:\\s*Error" {
         send_user "Login fehlgeschlagen.\n"
         exit 1
     }
-    "Response: Success" {
+    -re "Response:\\s*Success" {
         send_user "Eingeloggt.\n"
+        # Anzahl der Mailbox-Nachrichten abfragen:
+        send "Action: MailboxCount\nMailbox: 1234@default\n\n"
     }
-}
-
-# Anzahl der Mailbox-Nachrichten abfragen:
-#
-expect "\n" {
-    send "Action: MailboxCount\nMailbox: 1234@default\n\n"
 }
 
 expect {
-    "Response: Error" {
+    -re "Response:\\s*Error" {
         send_user "Abfragen der Mailbox fehlgeschlagen.\n"
         exit 1
     }
-    "Response: Success" {}
+    -re "Response:\\s*Success" {}
 }
 expect {
     -re "NewMessages:\\s*(\[\\d]*)" {
@@ -532,15 +529,20 @@ expect {
         send_user "Alte Nachrichten: $expect_out(1,string)\n"
     }
 }
-</programlisting></para>
 
-      <para>Wir rufen das Skript (das wir als <filename>vmcount.exp</filename>
-      gespeichert haben) als root auf:<screen>$ ./vmcount.exp 123@default
+# Ausloggen - nicht unbedingt nötig, aber sauber:
+send "Action: Logoff\n\n"
+</programlisting>Wir speichern das Skript als <filename>vmcount.exp</filename>
+      und setzen es mit <command>chmod a+x vmcount.exp</command> auf
+      ausführbar.</para>
+
+      <para>Aufruf:<screen>$ ./vmcount.exp 123@default
 Mailbox: 123@default
 Verbunden.
 Eingeloggt.
 Neue Nachrichten: 0
-Alte Nachrichten: 0</screen></para>
+Alte Nachrichten: 0
+</screen></para>
     </section>
 
     <section id="manager-interface-starastapi">
@@ -621,6 +623,85 @@ User_Count:  0
 
 </screen>Lassen Sie sich was einfallen! Schreiben Sie ein kleines Skript, das
       all Ihre Freunde anruft - natürlich mitten in der Nacht!</para>
+    </section>
+
+    <section id="manager-interface-beispiel-php">
+      <title>Beispiel: Anzahl der Mailbox-Nachrichten mit PHP abfragen</title>
+
+      <para>So könnten wir das Beispiel aus <xref
+      linkend="manager-interface-beispiel-expect" /> in PHP mit der StarAstAPI
+      lösen:<programlisting>#!/usr/bin/php -q
+&lt;?php
+# der Parameter -q dient dazu, bei einem CGI-PHP die Ausgabe der
+# Header abzuschalten
+
+if ($argc != 2) {
+    echo "Fehler: Geben Sie eine Mailbox an!\n";
+    exit(1);
+}
+# das erste Argument nach dem Programmnamen ist die Mailbox:
+$mailbox = $argv[1];
+echo "Mailbox: $mailbox\n\n";
+
+# StarAstAPI einbinden:
+require_once './StarAstAPI/StarAstAPI.php';
+
+# verbinden und einloggen:
+#
+$ami = new AstClientConnection();
+if ($ami-&gt;Login( 'admin', 'geheim', '127.0.0.1', 5038 )) {
+    $rp = $ami-&gt;GetResponse('1');
+    //echo $rp-&gt;ToString();
+} else {
+    exit(1);
+}
+
+# folgendes Paket senden:
+#     Action: MailboxCount
+#     Mailbox: $mailbox
+#     ActionID: 2
+#
+$data = new AstPacketData;
+$data-&gt;AddKVPair( 'Action'  , 'MailboxCount' );
+$data-&gt;AddKVPair( 'Mailbox' , $mailbox );
+$data-&gt;AddKVPair( 'ActionID', '2' );
+$packet = new AstPacket;
+$packet-&gt;SetAstPacketType( 'Action' );
+$packet-&gt;SetAstPacketData( $data );
+$ami-&gt;SendPacket( $packet );
+
+# Antwort-Paket mit ActionID 2 lesen:
+#
+$rPacket = $ami-&gt;GetResponse('2');
+//echo $rp-&gt;ToString();
+$rData = $rPacket-&gt;GetAstPacketData();
+$r = $rData-&gt;GetAll();
+
+echo "Neue Nachrichten: ", (int)trim($r['NewMessages:']), "\n";
+echo "Alte Nachrichten: ", (int)trim($r['OldMessages:']), "\n";
+echo "\n";
+
+# Ausloggen - nicht unbedingt nötig, aber sauber:
+#
+$ami-&gt;Logoff();
+# allerdings ist die Funktion der StarAstAPI nicht gerade schön.
+# sie tut dies:
+#echo "Logoff Called from somewhere ...";
+#socket_close($this-&gt;mSocket);
+
+echo "\n";
+?&gt;</programlisting>Wir speichern das Skript als
+      <filename>vmcount.php</filename> und setzen es mit <command>chmod a+x
+      vmcount.exp</command> auf ausführbar.</para>
+
+      <para>Aufruf:<screen>$ ./vmcount.php 123@default
+Mailbox: 123123123
+
+Neue Nachrichten: 0
+Alte Nachrichten: 0
+
+Logoff Called from somewhere ...
+</screen></para>
     </section>
   </section>
 
