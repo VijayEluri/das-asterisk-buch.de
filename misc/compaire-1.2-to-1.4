@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then 
+              echo usage: $0 Application-Name
+              exit
+fi
+
+APPLICATION=$1
+
+rm -f $APPLICATION-1.2.txt
+rm -f $APPLICATION-1.4.txt
+rm -f $APPLICATION-Hilfe.txt
+
+ssh -C -l root 10.42.0.143 "asterisk -rx 'show application $APPLICATION'" > $APPLICATION-1.4.txt
+ssh -C -l root 10.42.0.145 "asterisk -rx 'show application $APPLICATION'" > $APPLICATION-1.2.txt
+
+echo -n "    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>"
+cat $APPLICATION-1.4.txt | sed s/\&/\&amp\;/g | sed "s/</\&lt;/g" | sed "s/>/\&gt;/g"
+echo -n "</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>"
+diff $APPLICATION-1.4.txt $APPLICATION-1.2.txt > $APPLICATION-diff.txt
+cat $APPLICATION-diff.txt | sed s/\&/\&amp\;/g | sed "s/</\&lt;/g" | sed "s/>/\&gt;/g"
+echo "- keine - </screen></para>
+    </formalpara>"
+
+rm -f $APPLICATION-1.2.txt
+rm -f $APPLICATION-1.4.txt
+rm -f $APPLICATION-Hilfe.txt
