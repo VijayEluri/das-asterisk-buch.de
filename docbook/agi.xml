@@ -9,45 +9,43 @@
 % Free Documentation License".
 % Asterisk training and consulting is offered at http://www.amooma.de-->
 
-  <title>Asterisk Gateway Interface (AGI)<indexterm
-      significance="preferred">
+  <title>Asterisk Gateway Interface (AGI)<indexterm significance="preferred">
       <primary>AGI</primary>
     </indexterm><indexterm significance="preferred">
       <primary>Asterisk Gateway Interface</primary>
     </indexterm></title>
 
-  <para>Das Asterisk Gateway Interface (AGI) ist vergleichbar mit CGI
-  auf Webservern. Es sind externe Programme, die innerhalb des Dialplans
-  (der <filename>extensions.conf</filename>) aufgerufen werden.
-  AGI-Skripte können mit Asterisk interagieren und Befehle ausführen.
-  AGI-Skripte können prinzipiell in allen Programmier- und
-  Skriptsprachen (z.B. Unix-Shell Script) geschrieben werden, die mit
-  den Standardsockets unter Unix umgehen können. Die folgenden
-  Beschreibungen gelten also nur als Beispiele für eine
+  <para>Das Asterisk Gateway Interface (AGI) ist vergleichbar mit CGI auf
+  Webservern. Es sind externe Programme, die innerhalb des Dialplans (der
+  <filename>extensions.conf</filename>) aufgerufen werden. AGI-Skripte können
+  mit Asterisk interagieren und Befehle ausführen. AGI-Skripte können
+  prinzipiell in allen Programmier- und Skriptsprachen (z.B. Unix-Shell
+  Script) geschrieben werden, die mit den Standardsockets unter Unix umgehen
+  können. Die folgenden Beschreibungen gelten also nur als Beispiele für eine
   Implementierung.</para>
 
   <section id="agi-datenstroeme">
     <title>Datenströme</title>
 
     <para>Für AGI-Skripte ist ein Verständnis des Unix-Datenstrom-Models
-    unabdingbar. Im Anhang dieses Buches finden Sie Informationen zu
-    diesem Prinzip.</para>
+    unabdingbar. Im Anhang dieses Buches finden Sie Informationen zu diesem
+    Prinzip.</para>
 
     <section id="agi-stdin">
       <title>STDIN</title>
 
-      <para>Das AGI-Skript bekommt über den <quote>standard
-      input</quote> (STDIN) einige Informationen von Asterisk. Das
-      Format sieht folgendermaßen aus:<programlisting>agi_request: programmname.php
+      <para>Das AGI-Skript bekommt über den <quote>standard input</quote>
+      (STDIN) einige Informationen von Asterisk. Das Format sieht
+      folgendermaßen aus:<programlisting>agi_request: programmname.php
 agi_channel: Zap/1-2
 agi_language: de
 agi_callerid: Hans Beispiel
 agi_context: extern
 agi_extension: 1234
 agi_priority: 2
-</programlisting>Nach dem Übergeben dieser Grundinformationen sendet
-      Asterisk noch eine Leerzeile, um dem AGI-Skript mitzuteilen, dass
-      die Übertragung beendet ist.</para>
+</programlisting>Nach dem Übergeben dieser Grundinformationen sendet Asterisk
+      noch eine Leerzeile, um dem AGI-Skript mitzuteilen, dass die Übertragung
+      beendet ist.</para>
 
       <section id="agi-headers">
         <title>AGI Headers</title>
@@ -59,34 +57,33 @@ agi_priority: 2
           <listitem>
             <para><code>agi_request</code></para>
 
-            <para>Der Dateiname des aufgerufenen AGI-Programmes.</para>
+            <para>Der Dateiname des aufgerufenen AGI-Programms</para>
           </listitem>
 
           <listitem>
             <para><code>agi_channel</code></para>
 
-            <para>Der Channel.</para>
+            <para>Der Channel</para>
           </listitem>
 
           <listitem>
             <para><code>agi_language</code></para>
 
-            <para>Die eingestellte Sprache (z.B. en für Englisch oder de
-            für Deutsch).</para>
+            <para>Die eingestellte Sprache (z.B. en für Englisch oder de für
+            Deutsch)</para>
           </listitem>
 
           <listitem>
             <para><code>agi_type</code></para>
 
             <para>Die Channel-Art (z.B. <code>sip</code> für SIP oder
-            <code>zap</code> für ISDN).</para>
+            <code>zap</code> für ISDN)</para>
           </listitem>
 
           <listitem>
             <para><code>agi_uniqueid</code></para>
 
-            <para>Eine im System unique (einmalige) ID für das
-            Gespräch.</para>
+            <para>Eine im System unique (einmalige) ID für das Gespräch</para>
           </listitem>
 
           <listitem>
@@ -99,39 +96,38 @@ agi_priority: 2
           <listitem>
             <para><code>agi_context</code></para>
 
-            <para>Den Ursprungs-Context.</para>
+            <para>Der Ursprungs-Context</para>
           </listitem>
 
           <listitem>
             <para><code>agi_extension</code></para>
 
-            <para>Die Ursprungs-Extension.</para>
+            <para>Die Ursprungs-Extension</para>
           </listitem>
 
           <listitem>
             <para><code>agi_priority</code></para>
 
             <para>Die Priorität in der Extension beim Aufruf des
-            AGI-Skriptes.</para>
+            AGI-Skripts</para>
           </listitem>
 
           <listitem>
             <para><code>agi_accountcode</code></para>
 
-            <para>Abrechnungscode.</para>
+            <para>Abrechnungscode</para>
           </listitem>
 
           <listitem>
             <para><code>agi_calleridname</code></para>
 
-            <para>Name aus der Caller-ID (z.B. <code>Hans
-            Meier</code>)</para>
+            <para>Name aus der Caller-ID (z.B. <code>Hans Meier</code>)</para>
           </listitem>
 
           <listitem>
             <para><code>agi_callingpres</code></para>
 
-            <para>Die Caller-ID im ZAP-Channel.</para>
+            <para>Die Caller-ID im ZAP-Channel</para>
           </listitem>
         </itemizedlist>
       </section>
@@ -142,39 +138,37 @@ agi_priority: 2
 
       <para>Nachdem das AGI-Skript die Grundinformationen von Asterisk
       erhalten hat, beginnt es mit seiner Arbeit und gibt Befehle über
-      <quote>standard out</quote> (STDOUT) zurück an Asterisk. Um sich
-      diese Kommunikation anzuschauen, kann man im CLI mit <command>set
-      verbose 5</command> den Verbosity-Level entsprechend
-      hochsetzen.</para>
+      <quote>standard out</quote> (STDOUT) zurück an Asterisk. Um sich diese
+      Kommunikation anzuschauen, kann man im CLI mit <command>set verbose
+      5</command> den Verbosity-Level entsprechend hochsetzen.</para>
     </section>
 
     <section id="agi-stderr">
       <title>STDERR</title>
 
-      <para><quote>Standard error</quote> (STDERR) ist der formale Weg,
-      um Fehler- oder Debugmeldungen vom AGI-Skript auf die Console (das
-      CLI) von Asterisk zu bringen.</para>
+      <para><quote>Standard error</quote> (STDERR) ist der formale Weg, um
+      Fehler- oder Debugmeldungen vom AGI-Skript auf die Console (das CLI) von
+      Asterisk zu bringen.</para>
     </section>
   </section>
 
   <section id="agi-verzeichnisse">
     <title>Verzeichnisse und Rechte</title>
 
-    <para>AGI Skripte werden von Asterisk standardmässig im Verzeichnis
+    <para>AGI-Skripte werden von Asterisk standardmäßig im Verzeichnis
     <filename>/var/lib/asterisk/agi-bin</filename>/ gesucht.</para>
 
-    <para>Achten Sie darauf, das das entsprechende Skript von Asterisk
-    auch ausgeführt werden darf. Dies kann durch den Aufruf des Befehles
+    <para>Achten Sie darauf, dass das entsprechende Skript von Asterisk auch
+    ausgeführt werden darf. Dies wird durch den Aufruf des Befehls
     <command>chmod 755 <replaceable>skriptname</replaceable></command>
-    gewährleistet werden.</para>
+    gewährleistet.</para>
   </section>
 
   <section id="agi-aufruf-im-dialplan">
     <title>Aufruf eines AGI im Dialplan</title>
 
     <para>Ein AGI-Skript wird im Dialplan über die Applikation
-    <code>agi</code> aufgerufen. Die kann wie folgt
-    aussehen:<programlisting>exten =&gt; 1234,1,Answer()
+    <code>agi</code> aufgerufen. Die kann wie folgt aussehen:<programlisting>exten =&gt; 1234,1,Answer()
 exten =&gt; 1234,2,AGI(mein-agi-programm.php)
 exten =&gt; 1234,3,Hangup()</programlisting></para>
   </section>
@@ -182,51 +176,47 @@ exten =&gt; 1234,3,Hangup()</programlisting></para>
   <section id="agi-perl">
     <title>Perl</title>
 
-    <para>In der Standard-Asterisk-Installation ist ein Test AGI-Skript
-    mit dem Namen <filename>agi-test.agi</filename> <footnote>
+    <para>In der Standard-Asterisk-Installation ist ein Test-AGI-Skript mit
+    dem Namen <filename>agi-test.agi</filename> <footnote>
         <para>Die Dateiendung <filename>agi</filename> ist dabei nicht
         zwingend notwendig. Man könnte die Datei auch
         <filename>agi-test.pl</filename> nennen.</para>
       </footnote>im Verzeichnis
-    <filename>/var/lib/asterisk/agi-bin/</filename> abgespeichert.
-    Anhand dieses Perl--Programms werden wir die grundsätzliche Arbeit
-    mit AGI-Skripten beschreiben.</para>
+    <filename>/var/lib/asterisk/agi-bin/</filename> abgespeichert. Anhand
+    dieses Perl-Programms werden wir die grundsätzliche Arbeit mit
+    AGI-Skripten beschreiben.</para>
 
-    <para>Das Skript wird dabei in der
-    <filename>extensions.conf</filename> wie folgt
-    aufgerufen:<programlisting>exten =&gt; 1234,1,Answer()
+    <para>Das Skript wird dabei in der <filename>extensions.conf</filename>
+    wie folgt aufgerufen:<programlisting>exten =&gt; 1234,1,Answer()
 exten =&gt; 1234,2,AGI(agi-test.agi)
 exten =&gt; 1234,3,Hangup()</programlisting></para>
 
     <section id="agi-perl-agi-test.agi">
-      <title>Schritt für Schritt Analyse des agi-test.agi
-      Skriptes</title>
+      <title>Schritt-für-Schritt-Analyse des agi-test.agi-Skripts</title>
 
-      <para>Wir besprechen das Beispiel-Skript Zeilen- oder
-      Abschnittsweise.<programlisting>#!/usr/bin/perl
-use strict;</programlisting>Die ersten zwei Zeilen sagen dem
-      ausführendem Betriebsystem, dass es sich um ein Perl-Programm
-      handelt, das mit dem Interpreter
-      <filename>/usr/bin/perl</filename> ausgeführt werden soll.
+      <para>Wir besprechen das Beispiel-Skript zeilen- oder
+      abschnittsweise.<programlisting>#!/usr/bin/perl
+use strict;</programlisting>Die ersten zwei Zeilen sagen dem ausführenden
+      Betriebssystem, dass es sich um ein Perl-Programm handelt, das mit dem
+      Interpreter <filename>/usr/bin/perl</filename> ausgeführt werden soll.
       <code>use strict</code> bewirkt eine konsequentere Behandlung von
       Fehlern innerhalb des Perl-Programms.<programlisting>$|=1;</programlisting>Diese
-      kleine Zeile bringt Perl dazu die Ausgabe von Text nicht zu
-      puffern. So können wir sicher sein, dass alle Ausgaben auch
-      unmittelbar an Asterisk übergeben und nicht erst in einem Buffer
-      zwischengespeichert werden.<programlisting># Setup some variables
+      kleine Zeile bringt Perl dazu, die Ausgabe von Text nicht zu puffern. So
+      können wir sicher sein, dass alle Ausgaben auch unmittelbar an Asterisk
+      übergeben und nicht erst in einem Buffer zwischengespeichert
+      werden.<programlisting># Setup some variables
 my %AGI; my $tests = 0; my $fail = 0; my $pass = 0;</programlisting>Hier
-      werden verschiedene Variablen definiert. Das Hash
-      <code>%AGI</code> nimmt die initialen Eingaben von Asterisk auf.
-      Die restlichen Variablen zählen die Gesamtanzahl der Tests, die
-      Anzahl der fehlgeschlagenen Tests und die Anzahl der
-      funktionierenden Tests.<programlisting>while(&lt;STDIN&gt;) {
+      werden verschiedene Variablen definiert. Das Hash <code>%AGI</code>
+      nimmt die initialen Eingaben von Asterisk auf. Die restlichen Variablen
+      zählen die Gesamtanzahl der Tests, die Anzahl der fehlgeschlagenen Tests
+      und die Anzahl der funktionierenden Tests.<programlisting>while(&lt;STDIN&gt;) {
   chomp;
   last unless length($_);
   if (/^agi_(\w+)\:\s+(.*)$/) {
     $AGI{$1} = $2;
   }
-}</programlisting>Die eben eingelesenen Werte werden zum Debuggen auf
-      STDERR, also im Endeffekt auf dem CLI ausgegeben.<programlisting>sub checkresult {
+}</programlisting>Die eben eingelesenen Werte werden zum Debuggen auf STDERR,
+      also im Endeffekt auf dem CLI ausgegeben.<programlisting>sub checkresult {
   my ($res) = @_;
   my $retval;
   $tests++;
@@ -244,28 +234,26 @@ my %AGI; my $tests = 0; my $fail = 0; my $pass = 0;</programlisting>Hier
     print STDERR "FAIL (unexpected result '$res')\n";
     $fail++;
   }
-}</programlisting>Die Subroutine <code>checkresult</code> liest das
-      Ergebnis eines Befehls an Asterisk aus und bestimmt, ob der Test
-      erfolgreich war oder nicht. Entsprechend werden die Variablen
-      <code>$fail</code> und <code>$pass</code> hochgezählt. Nachdem die
-      Grundlagen gelegt sind, können die einzelnen Tests beginnen: Die
-      Datei <filename>beep.gsm</filename> wird
-      abgespielt.<programlisting>print STDERR "1.  Testing 'sendfile'...";
+}</programlisting>Die Subroutine <code>checkresult</code> liest das Ergebnis
+      eines Befehls an Asterisk aus und bestimmt, ob der Test erfolgreich war
+      oder nicht. Entsprechend werden die Variablen <code>$fail</code> und
+      <code>$pass</code> hochgezählt. Nachdem die Grundlagen gelegt sind,
+      können die einzelnen Tests beginnen: Die Datei
+      <filename>beep.gsm</filename> wird abgespielt.<programlisting>print STDERR "1.  Testing 'sendfile'...";
 print "STREAM FILE beep \"\"\n";
 my $result = &lt;STDIN&gt;;
-&amp;checkresult($result);</programlisting>Der Text "hello world" wird
-      an den Anrufer geschickt. Das funktioniert natürlich nur, wenn das
-      Protokoll und das Endgerät diese Funktion
-      unterstützen.<programlisting>print STDERR "2.  Testing 'sendtext'...";
+&amp;checkresult($result);</programlisting>Der Text "hello world" wird an den
+      Anrufer geschickt. Das funktioniert natürlich nur, wenn das Protokoll
+      und das Endgerät diese Funktion unterstützen.<programlisting>print STDERR "2.  Testing 'sendtext'...";
 print "SEND TEXT \"hello world\"\n";
 my $result = &lt;STDIN&gt;;
-&amp;checkresult($result);</programlisting>Das Bild "asterisk-image"
-      wird an den Anrufer geschickt. Auch diese Funktion ist vom
-      Protokoll und dem Endgerät abhängig.<programlisting>print STDERR "3.  Testing 'sendimage'...";
+&amp;checkresult($result);</programlisting>Das Bild "asterisk-image" wird an
+      den Anrufer geschickt. Auch diese Funktion ist vom Protokoll und dem
+      Endgerät abhängig.<programlisting>print STDERR "3.  Testing 'sendimage'...";
 print "SEND IMAGE asterisk-image\n";
 my $result = &lt;STDIN&gt;;
-&amp;checkresult($result);</programlisting>Die Zahl 192837465 wird dem
-      Anrufer vorgelesen.<programlisting>print STDERR "4.  Testing 'saynumber'...";
+&amp;checkresult($result);</programlisting>Die Zahl 192837465 wird dem Anrufer
+      vorgelesen.<programlisting>print STDERR "4.  Testing 'saynumber'...";
 print "SAY NUMBER 192837465 \"\"\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Dieser Befehl wartet 1000
@@ -275,16 +263,16 @@ print "WAIT FOR DIGIT 1000\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Ein 3000-Millisekunden-langes
       GSM-Soundfile mit dem Namen <filename>testagi.gsm</filename> wird
-      aufgenommen. Die Aufnahme kann durch die Eingabe der Zahlen 1, 2,
-      3 oder 4 unterbrochen werden.<programlisting>print STDERR "6.  Testing 'record'...";
+      aufgenommen. Die Aufnahme kann durch die Eingabe der Zahlen 1, 2, 3 oder
+      4 unterbrochen werden.<programlisting>print STDERR "6.  Testing 'record'...";
 print "RECORD FILE testagi gsm 1234 3000\n";
 my $result = &lt;STDIN&gt;;
-&amp;checkresult($result);</programlisting>Das soeben aufgenommene
-      Soundfile wird abgespielt.<programlisting>print STDERR "6a.  Testing 'record' playback...";
+&amp;checkresult($result);</programlisting>Das soeben aufgenommene Soundfile
+      wird abgespielt.<programlisting>print STDERR "6a.  Testing 'record' playback...";
 print "STREAM FILE testagi \"\"\n";
 my $result = &lt;STDIN&gt;;
-&amp;checkresult($result);</programlisting>Nun erfolgt die Ausgabe auf
-      dem CLI, wie viele Tests funktioniert oder nicht funktioniert
+&amp;checkresult($result);</programlisting>Nun erfolgt die Ausgabe auf dem
+      CLI, wie viele Tests funktioniert oder nicht funktioniert
       haben.<programlisting>print STDERR "================== Complete ======================\n";
 print STDERR "$tests tests completed, $pass passed, $fail failed\n";
 print STDERR "==================================================\n";</programlisting><warning>
@@ -292,12 +280,11 @@ print STDERR "==================================================\n";</programlis
           Aufbau:<programlisting>fwrite(STDOUT,"BEFEHL $value \"\"\n");
 #                            ^^^^^^^</programlisting>Der in dieser Zeile
           unterschlängelte Teil (zwischen <code>$value</code> und
-          <code>);</code>) ist zwingend erforderlich, damit der Befehl
-          korrekt ausgeführt wird. Es handelt sich hierbei um ein
-          Argument ohne Inhalt, das durch zwei gequotete
-          Anführungszeichen dargestellt wird. Abgeschlossen wird der
-          gesamte Befehl durch ein ''line feed'' (ein Zeilenendzeichen).
-          In diesem Fall ein <code>\n</code>.</para>
+          <code>);</code>) ist zwingend erforderlich, damit der Befehl korrekt
+          ausgeführt wird. Es handelt sich hierbei um ein Argument ohne
+          Inhalt, das durch zwei gequotete Anführungszeichen dargestellt wird.
+          Abgeschlossen wird der gesamte Befehl durch ein ''line feed'' (ein
+          Zeilenendzeichen), in diesem Fall ein <code>\n</code>.</para>
         </warning></para>
     </section>
   </section>
@@ -309,13 +296,12 @@ print STDERR "==================================================\n";</programlis
     Webapplikationen geworden.<footnote>
         <para>Böse Zungen sprechen auch vom BASIC des 21. Jahrhunderts.
         ;-)</para>
-      </footnote> Da man aber aktuelle PHP Versionen auch für den Aufruf
-    von Programmen auf der Kommandozeile benutzen kann, ist sie eine für
-    AGI-Skripte gut geeignete Sprache. Als Beispiel benutzen wir ein
-    kleines PHP-Programm (<filename>lotto.php</filename>), das 6
-    zufällige Zahlen von 1 bis 49 auswählt und dem Anrufer vorspricht.
-    Die Beschreibung der einzelnen Schritte erfolgt im
-    Quellcode.<programlisting>#!/usr/bin/php -q
+      </footnote> Da man aber aktuelle PHP-Versionen auch für den Aufruf von
+    Programmen auf der Kommandozeile benutzen kann, ist PHP eine für
+    AGI-Skripte gut geeignete Sprache. Als Beispiel benutzen wir ein kleines
+    PHP-Programm (<filename>lotto.php</filename>), das 6 zufällige Zahlen von
+    1 bis 49 auswählt und dem Anrufer vorspricht. Die Beschreibung der
+    einzelnen Schritte erfolgt im Quellcode.<programlisting>#!/usr/bin/php -q
 &lt;?php
 
 # Sicherheitseinstellung. Das Skript laeuft nicht 
@@ -396,10 +382,10 @@ foreach ($Lottozahlen as $value) {
   fflush(STDOUT);
 }
 
-?&gt;</programlisting>Das Programm <filename>lotto.php</filename> muss
-    im Verzeichnis <filename>/var/lib/asterisk/agi-bin/</filename>
-    abgespeichert werden und wird in der
-    <filename>extensions.conf</filename> wie folgt aufgerufen:</para>
+?&gt;</programlisting>Das Programm <filename>lotto.php</filename> muss im
+    Verzeichnis <filename>/var/lib/asterisk/agi-bin/</filename> abgespeichert
+    werden und wird in der <filename>extensions.conf</filename> wie folgt
+    aufgerufen:</para>
 
     <programlisting>exten =&gt; 1234,1,Answer()
 exten =&gt; 1234,2,AGI(lotto.php)
@@ -408,17 +394,16 @@ exten =&gt; 1234,3,Hangup()</programlisting>
     <section id="agi-phpagi">
       <title>phpAGI</title>
 
-      <para>Wer PHP und AGI benutzen, aber nicht das Rad neu erfinden
-      will, kann die fertige PHP-Klasse phpAGI benutzen. Informationen
-      und die dazugehörigen Dateien finden Sie auf der Homepage des
-      Projektes <ulink
+      <para>Wer PHP und AGI einsetzen, aber nicht das Rad neu erfinden will,
+      kann die fertige PHP-Klasse phpAGI benutzen. Informationen und die
+      dazugehörigen Dateien finden Sie auf der Homepage des Projekts <ulink
       url="http://phpagi.sourceforge.net/"><citetitle>http://phpagi.sourceforge.net/</citetitle></ulink>.</para>
 
-      <para>Das folgende bei phpAGI mitgelieferte Programm gibt schnell
-      einen Überblick über die Funktionsaufrufe<footnote>
+      <para>Das folgende bei phpAGI mitgelieferte Programm gibt schnell einen
+      Überblick über die Funktionsaufrufe<footnote>
           <para>Für die Benutzung von <code>text2wav</code> muss ein
-          Text-to-Speech System (z.B. Festival) installiert und
-          konfiguriert sein.</para>
+          Text-to-Speech-System (z.B. Festival) installiert und konfiguriert
+          sein.</para>
         </footnote><programlisting>&lt;?php
 /**
 * @package phpAGI_examples
@@ -461,9 +446,9 @@ function my_ip(&amp;$agi, $peer)
   <section id="agi-andere-programmiersprachen">
     <title>Andere Programmiersprachen</title>
 
-    <para>Wie am Anfang dieses Kapitels schon beschrieben: Man kann
-    AGI-Programme in jeder beliebigen Programmiersprache schreiben.
-    Fertige Bibliotheken finden sich z.B. für</para>
+    <para>Wie am Anfang dieses Kapitels schon erwähnt, kann man AGI-Programme
+    in jeder beliebigen Programmiersprache schreiben. Fertige Bibliotheken
+    finden sich z.B. für</para>
 
     <itemizedlist>
       <listitem>
@@ -495,9 +480,9 @@ function my_ip(&amp;$agi, $peer)
       </listitem>
     </itemizedlist>
 
-    <para>Am einfachsten ist eine Suche in der Suchmaschine der Wahl
-    nach den Schlüsselwörtern <quote>AGI</quote> und dem Namen der
-    Programmiersprache. Eine weiterer Startpunkt ist die Webseite <ulink
+    <para>Am einfachsten ist eine Suche in der Suchmaschine der Wahl nach den
+    Schlüsselwörtern <quote>AGI</quote> und dem Namen der Programmiersprache.
+    Ein weiterer Startpunkt ist die Webseite <ulink
     url="http://www.voip-info.org/wiki-Asterisk+AGI">http://www.voip-info.org/wiki-Asterisk+AGI</ulink>.</para>
   </section>
 
@@ -508,8 +493,8 @@ function my_ip(&amp;$agi, $peer)
         <secondary>Befehle</secondary>
       </indexterm></title>
 
-    <para>Die folgenden Befehle ermöglichen es einem AGI-Skript, mit
-    Asterisk zu interagieren. Die meisten dieser Befehle sind von
+    <para>Die folgenden Befehle ermöglichen es einem AGI-Skript, mit Asterisk
+    zu interagieren. Die meisten dieser Befehle sind von
     Dialplan-Applikationen (siehe <xref linkend="applikationen" />) mit
     ähnlichen Namen abgeleitet.</para>
 
@@ -557,8 +542,8 @@ function my_ip(&amp;$agi, $peer)
       <synopsis>CHANNEL STATUS [<replaceable>Kanalname</replaceable>]</synopsis>
 
       <para>Abfrage des Status eines Kanals. Wenn der
-      <code><parameter>Kanalname</parameter></code> nicht angegeben ist,
-      wird der aktuelle Kanal benutzt.</para>
+      <code><parameter>Kanalname</parameter></code> nicht angegeben ist, wird
+      der aktuelle Kanal benutzt.</para>
 
       <para>Ergebniswerte nach Ausführung:</para>
 
@@ -594,8 +579,7 @@ function my_ip(&amp;$agi, $peer)
             <row>
               <entry>4</entry>
 
-              <entry>Der Channel wird gerade angerufen (es
-              klingelt).</entry>
+              <entry>Der Channel wird gerade angerufen (es klingelt).</entry>
             </row>
 
             <row>
@@ -681,8 +665,8 @@ function my_ip(&amp;$agi, $peer)
       <synopsis>DATABASE GET <replaceable>Familie</replaceable> <replaceable>Schlüssel</replaceable></synopsis>
 
       <para>Gibt den entsprechenden Eintrag für
-      <parameter>Familie</parameter>/<parameter>Schlüssel</parameter>
-      aus der Asterisk-Datenbank aus.</para>
+      <parameter>Familie</parameter>/<parameter>Schlüssel</parameter> aus der
+      Asterisk-Datenbank aus.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -713,8 +697,8 @@ function my_ip(&amp;$agi, $peer)
 
       <para>Speichert den Wert <parameter>Wert</parameter> in der
       Asterisk-Datenbank unter
-      <parameter>Familie</parameter>/<parameter>Schlüssel</parameter>
-      ab. Das kann ein Hinzufügen oder ein Update sein.</para>
+      <parameter>Familie</parameter>/<parameter>Schlüssel</parameter> ab. Das
+      kann ein Hinzufügen oder ein Update sein.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -744,9 +728,9 @@ function my_ip(&amp;$agi, $peer)
       <synopsis>EXEC <replaceable>Applikation</replaceable> <replaceable>Argumente</replaceable></synopsis>
 
       <para>Führt eine Dialplan-Applikation aus (siehe <xref
-      linkend="applikationen" />). Die <parameter>Argumente</parameter>
-      werden dabei der Applikation übergegeben. Mehrere Argumente werden
-      durch ein Pipe-Zeichen (<code>|</code>) getrennt.</para>
+      linkend="applikationen" />). Die <parameter>Argumente</parameter> werden
+      dabei der Applikation übergeben. Mehrere Argumente werden durch ein
+      Pipe-Zeichen (<code>|</code>) getrennt.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -757,15 +741,14 @@ function my_ip(&amp;$agi, $peer)
               <row>
                 <entry>-2</entry>
 
-                <entry>Fehler. Konnte die Applikation nicht finden /
-                aufrufen.</entry>
+                <entry>Fehler. Konnte die Applikation nicht
+                finden/aufrufen.</entry>
               </row>
 
               <row>
                 <entry><replaceable>Wert</replaceable></entry>
 
-                <entry>Erfolgreich. Ergebniswert der
-                Applikation.</entry>
+                <entry>Erfolgreich. Ergebniswert der Applikation.</entry>
               </row>
             </tbody>
           </tgroup>
@@ -781,11 +764,10 @@ function my_ip(&amp;$agi, $peer)
 
       <para>Vergleichbar mit der
       <application>Background()</application>-Applikation in der
-      <filename>extensions.conf</filename>. Spielt die Audiodatei mit
-      dem Namen <parameter>Dateiname</parameter> ab und wartet auf
-      DTMF-Eingaben. Diese werden durch
-      <parameter>maxZiffern</parameter> limitiert. Die maximale Zeit
-      wird durch <parameter>Timeout</parameter> begrenzt.</para>
+      <filename>extensions.conf</filename>. Spielt die Audiodatei mit dem
+      Namen <parameter>Dateiname</parameter> ab und wartet auf DTMF-Eingaben.
+      Diese werden durch <parameter>maxZiffern</parameter> limitiert. Die
+      maximale Zeit wird durch <parameter>Timeout</parameter> begrenzt.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -808,9 +790,9 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>GET FULL VARIABLE <replaceable>Variablenname</replaceable> [<replaceable>Kanalname</replaceable>]</synopsis>
 
-      <para>Gibt den Wert der Variable
-      <parameter>Variablenname</parameter> aus dem Kanal
-      <parameter>Kanalname</parameter> (oder dem aktuellen) aus.</para>
+      <para>Gibt den Wert der Variable <parameter>Variablenname</parameter>
+      aus dem Kanal <parameter>Kanalname</parameter> (oder dem aktuellen)
+      aus.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -839,9 +821,9 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>GET OPTION <replaceable>Dateiname</replaceable> <replaceable>Escape_Ziffern</replaceable> [<replaceable>Timeout</replaceable>]</synopsis>
 
-      <para>Verhält sich wie <code>STREAM FILE</code>. Hat aber
-      zusätzlich die Möglichkeit, einen <parameter>Timeout</parameter>
-      in Sekunden anzugeben.</para>
+      <para>Verhält sich wie <code>STREAM FILE</code>. Bietet aber zusätzlich
+      die Möglichkeit, einen <parameter>Timeout</parameter> in Sekunden
+      anzugeben.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -864,11 +846,11 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>GET VARIABLE <replaceable>Variablenname</replaceable></synopsis>
 
-      <para>Ähnlich wie <code>GET FULL VARIABLE</code>. Allerdings
-      versteht <code>GET VARIABLE</code> keine komplexen oder
-      systemeigenen Variablen.<warning>
-          <simpara>Im Zweifelsfall sollte man <code>GET FULL
-          VARIABLE</code> benutzen.</simpara>
+      <para>Ähnlich wie <code>GET FULL VARIABLE</code>. Allerdings versteht
+      <code>GET VARIABLE</code> keine komplexen oder systemeigenen
+      Variablen.<warning>
+          <simpara>Im Zweifelsfall sollte man <code>GET FULL VARIABLE</code>
+          benutzen.</simpara>
         </warning></para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
@@ -887,8 +869,7 @@ function my_ip(&amp;$agi, $peer)
               <row>
                 <entry>1 (<replaceable>Wert</replaceable>)</entry>
 
-                <entry>Erfolgreich. Wert der Variablen (in
-                Klammern)</entry>
+                <entry>Erfolgreich. Wert der Variablen (in Klammern)</entry>
               </row>
             </tbody>
           </tgroup>
@@ -900,9 +881,9 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>HANGUP [<replaceable>Kanalname</replaceable>]</synopsis>
 
-      <para>Legt den virtuellen Hörer auf dem angegebenen Kanal auf.
-      Wurde kein <parameter>Kanalname</parameter> angegeben, wird der
-      aktuelle Kanal aufgelegt.</para>
+      <para>Legt den virtuellen Hörer auf dem angegebenen Kanal auf. Wurde
+      kein <parameter>Kanalname</parameter> angegeben, wird der aktuelle Kanal
+      aufgelegt.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -913,8 +894,7 @@ function my_ip(&amp;$agi, $peer)
               <row>
                 <entry>-1</entry>
 
-                <entry>Fehler. Der angegebene Kanal existiert
-                nicht.</entry>
+                <entry>Fehler. Der angegebene Kanal existiert nicht.</entry>
               </row>
 
               <row>
@@ -932,9 +912,8 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>NOOP [<replaceable>Text</replaceable>]</synopsis>
 
-      <para>Es wird nichts gemacht (<code>NOOP</code> steht für
-      No-Operation). <parameter>Text</parameter> wird auf dem CLI
-      ausgegeben.</para>
+      <para>Es wird nichts gemacht (<code>NOOP</code> steht für No-Operation).
+      <parameter>Text</parameter> wird auf dem CLI ausgegeben.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -957,11 +936,10 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>RECEIVE CHAR <replaceable>Timeout</replaceable></synopsis>
 
-      <para>Wenn ein Channel die Übermittlung von Text unterstützt, dann
-      kann mit <code>RECEIVE CHAR</code> ein ein eizelnes Zeichen
-      empfangen werden. <parameter>Timeout</parameter> gibt die
-      Wartezeit für den Empfang in Millisekunden an (0 für
-      unendlich).</para>
+      <para>Wenn ein Channel die Übermittlung von Text unterstützt, dann kann
+      mit <code>RECEIVE CHAR</code> ein einzelnes Zeichen empfangen werden.
+      <parameter>Timeout</parameter> gibt die Wartezeit für den Empfang in
+      Millisekunden an (0 für unendlich).</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -996,10 +974,10 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>RECEIVE TEXT <replaceable>Timeout</replaceable></synopsis>
 
-      <para>Wenn ein Channel die Übermittlung von Text unterstützt, dann
-      kann mit <code>RECEIVE CHAR</code> ein solcher Text empfangen
-      werden. <parameter>Timeout</parameter> gibt die Wartezeit für den
-      Empfang in Millisekunden an (0 für unendlich).</para>
+      <para>Wenn ein Channel die Übermittlung von Text unterstützt, dann kann
+      mit <code>RECEIVE CHAR</code> ein solcher Text empfangen werden.
+      <parameter>Timeout</parameter> gibt die Wartezeit für den Empfang in
+      Millisekunden an (0 für unendlich).</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1034,21 +1012,20 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>RECORD FILE <replaceable>Dateiname</replaceable> <replaceable>Format</replaceable> <replaceable>Escape_Ziffern</replaceable> <replaceable>Timeout</replaceable> [<replaceable>Offset</replaceable>] [BEEP] [s=<replaceable>Stille</replaceable>]</synopsis>
 
-      <para>Funktioniert wie ein Rekorder, der alle Audiosignale in der
-      Datei <parameter>Dateiname</parameter> im angegebenen
-      <parameter>Format</parameter> aufzeichnet. Beendet werden kann
-      dies durch einen definierten DTMF-Ton
-      <parameter>Escape_Ziffern</parameter> oder durch einen
-      <parameter>Timeout</parameter> in Millisekunden (dabei steht -1
-      für keinen Timeout).</para>
+      <para>Funktioniert wie ein Rekorder, der alle Audiosignale in der Datei
+      <parameter>Dateiname</parameter> im angegebenen
+      <parameter>Format</parameter> aufzeichnet. Beendet werden kann dies
+      durch einen definierten DTMF-Ton <parameter>Escape_Ziffern</parameter>
+      oder durch einen <parameter>Timeout</parameter> in Millisekunden (dabei
+      steht -1 für keinen Timeout).</para>
 
       <para><parameter>BEEP</parameter> spielt vor der Aufnahme einen
       Signalton. <parameter>Stille</parameter> definiert die Anzahl der
-      Stille-Sekunden bis die Applikation auch ohne Eingabe von
-      DTMF-Tönen einen Timeout ausgibt.</para>
+      Stille-Sekunden, bis die Applikation auch ohne Eingabe von DTMF-Tönen
+      einen Timeout ausgibt.</para>
 
-      <para>Mit <parameter>Offset</parameter> wird vor Beginn der
-      Aufnahme soviele Sekunde wie angegeben gewartet.</para>
+      <para>Mit <parameter>Offset</parameter> wird vor Beginn der Aufnahme so
+      viele Sekunden wie angegeben gewartet.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1077,8 +1054,8 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SAY ALPHA <replaceable>String</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
 
-      <para>Buchstabiert den übergebenen <parameter>String</parameter>.
-      Die Ausgabe kann durch Eingabe einer Ziffer, die in
+      <para>Buchstabiert den übergebenen <parameter>String</parameter>. Die
+      Ausgabe kann durch Eingabe einer Ziffer, die in
       <parameter>Escape_Ziffern</parameter> bestimmt wird, abgebrochen
       werden.</para>
 
@@ -1116,11 +1093,10 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SAY DATE <replaceable>Timestamp</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
 
-      <para>Sagt das übergebene Datum an.
-      <parameter>Timestamp</parameter> ist dabei die Anzahl der Sekunden
-      seit 00:00:00 Uhr am 1. Januar 1970. Die Ausgabe kann durch
-      Eingabe einer Ziffer, die in <code>Escape_Ziffern</code> bestimmt
-      wird, abgebrochen werden.</para>
+      <para>Sagt das übergebene Datum an. <parameter>Timestamp</parameter> ist
+      dabei die Anzahl der Sekunden seit 00:00:00 Uhr am 1. Januar 1970. Die
+      Ausgabe kann durch Eingabe einer Ziffer, die in
+      <code>Escape_Ziffern</code> bestimmt wird, abgebrochen werden.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1156,11 +1132,11 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SAY DATETIME <replaceable>Timestamp</replaceable> [<replaceable>Escape_Ziffern</replaceable>] [<replaceable>Format</replaceable>] [<replaceable>Zeitzone</replaceable>]</synopsis>
 
-      <para>Sagt das übergebene Datum. <parameter>Timestamp</parameter>
-      ist dabei die Anzahl der Sekunden seit 00:00:00 Uhr am 1. Januar
-      1970. Das <parameter>Format</parameter> bestimmt die Art der
-      Ausgabe. Folgende Werte sind dabei möglich:<informaltable
-          colsep="none" frame="none" rowsep="none">
+      <para>Sagt das übergebene Datum. <parameter>Timestamp</parameter> ist
+      dabei die Anzahl der Sekunden seit 00:00:00 Uhr am 1. Januar 1970. Das
+      <parameter>Format</parameter> bestimmt die Art der Ausgabe. Folgende
+      Werte sind dabei möglich:<informaltable colsep="none" frame="none"
+          rowsep="none">
           <tgroup cols="2">
             <colspec colnum="1" colwidth="95pt" />
 
@@ -1212,14 +1188,14 @@ function my_ip(&amp;$agi, $peer)
               <row>
                 <entry><code>H</code></entry>
 
-                <entry>Stunde (im 24-Std.-System). Dabei wir 07
-                <quote>Null - Sieben</quote> ausgesprochen!</entry>
+                <entry>Stunde (im 24-Std.-System). Dabei wird 07 <quote>Null -
+                Sieben</quote> ausgesprochen!</entry>
               </row>
 
               <row>
                 <entry><code>k</code></entry>
 
-                <entry>Stunde (im 24-Std.-System). Dabei wir 07 nur
+                <entry>Stunde (im 24-Std.-System). Dabei wird 07 nur
                 <quote>Sieben</quote> ausgesprochen.</entry>
               </row>
 
@@ -1238,16 +1214,15 @@ function my_ip(&amp;$agi, $peer)
               <row>
                 <entry><code>Q</code></entry>
 
-                <entry><quote>Heute</quote>, <quote>Gestern</quote> oder
-                der Inhalt der Werte <code>ABdY</code></entry>
+                <entry><quote>Heute</quote>, <quote>Gestern</quote> oder der
+                Inhalt der Werte <code>ABdY</code></entry>
               </row>
 
               <row>
                 <entry><code>q</code></entry>
 
-                <entry><quote> </quote> (für heute),
-                <quote>Gestern</quote>, der Wochentag oder
-                <code>ABdY</code></entry>
+                <entry><quote> </quote> (für heute), <quote>Gestern</quote>,
+                der Wochentag oder <code>ABdY</code></entry>
               </row>
 
               <row>
@@ -1260,15 +1235,14 @@ function my_ip(&amp;$agi, $peer)
         </informaltable></para>
 
       <para>Die <parameter>Zeitzone</parameter> wird wie in der
-      Konfigurationsdatei
-      <filename>/etc/asterisk/voicemail.conf</filename>
+      Konfigurationsdatei <filename>/etc/asterisk/voicemail.conf</filename>
       angegeben.</para>
 
       <para>Die Ausgabe kann durch Eingabe einer Ziffer, die in
-      <parameter>Escape_Ziffern</parameter> bestimmt wird, abgebrochen
-      werden. Wenn <parameter>Escape_Ziffern</parameter> oder
-      <parameter>Format</parameter> ausgelassen werden soll, muss
-      stattdessen <code>""</code> angegeben werden.</para>
+      <parameter>Escape_Ziffern</parameter> bestimmt wird, abgebrochen werden.
+      Wenn <parameter>Escape_Ziffern</parameter> oder
+      <parameter>Format</parameter> ausgelassen werden soll, muss stattdessen
+      <code>""</code> angegeben werden.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1304,11 +1278,10 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SAY DIGITS <replaceable>Zahl</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
 
-      <para>Sagt die angegebene <parameter>Zahl</parameter> Ziffer für
-      Ziffer an (z.B. 123 wird <quote>eins, zwei, drei</quote>
-      gesprochen). Die Ausgabe kann durch Eingabe einer Ziffer, die in
-      <code>Escape_Ziffern</code> bestimmt wird, abgebrochen
-      werden.</para>
+      <para>Sagt die angegebene <parameter>Zahl</parameter> Ziffer für Ziffer
+      an (z.B. wird 123 <quote>eins, zwei, drei</quote> gesprochen). Die
+      Ausgabe kann durch Eingabe einer Ziffer, die in
+      <code>Escape_Ziffern</code> bestimmt wird, abgebrochen werden.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1344,11 +1317,10 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SAY NUMBER <replaceable>Zahl</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
 
-      <para>Sagt die angegebene <parameter>Zahl</parameter> an (z.B. 123
-      wird <quote>ein-hundert-drei-und-zwanzig</quote> gesprochen). Die
-      Ausgabe kann durch Eingabe einer Ziffer, die in
-      <code>Escape_Ziffern</code> bestimmt wird, abgebrochen
-      werden.</para>
+      <para>Sagt die angegebene <parameter>Zahl</parameter> an (z.B. 123 wird
+      <quote>ein-hundert-drei-und-zwanzig</quote> gesprochen). Die Ausgabe
+      kann durch Eingabe einer Ziffer, die in <code>Escape_Ziffern</code>
+      bestimmt wird, abgebrochen werden.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1384,11 +1356,10 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SAY PHONETIC <replaceable>String</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
 
-      <para>Sagt den angegebenen <parameter>String</parameter> im
-      phonetischen NATO-Alphabet an (z.B. <code>a</code> wird
-      <quote>alpha</quote> gesprochen). Die Ausgabe kann durch Eingabe
-      einer Ziffer, die in <code>Escape_Ziffern</code> bestimmt wird,
-      abgebrochen werden.</para>
+      <para>Sagt den angegebenen <parameter>String</parameter> im phonetischen
+      NATO-Alphabet an (z.B. <code>a</code> wird <quote>alpha</quote>
+      gesprochen). Die Ausgabe kann durch Eingabe einer Ziffer, die in
+      <code>Escape_Ziffern</code> bestimmt wird, abgebrochen werden.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1424,11 +1395,10 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SAY TIME <replaceable>Timestamp</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
 
-      <para>Sagt die übergebene Zeit. <parameter>Timestamp</parameter>
-      ist dabei die Anzahl der Sekunden seit 00:00:00 Uhr am 1. Januar
-      1970. Die Ausgabe kann durch Eingabe einer Ziffer, die in
-      <code>Escape_Ziffern</code> bestimmt wird, abgebrochen
-      werden.</para>
+      <para>Sagt die übergebene Zeit. <parameter>Timestamp</parameter> ist
+      dabei die Anzahl der Sekunden seit 00:00:00 Uhr am 1. Januar 1970. Die
+      Ausgabe kann durch Eingabe einer Ziffer, die in
+      <code>Escape_Ziffern</code> bestimmt wird, abgebrochen werden.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1464,10 +1434,10 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SEND IMAGE <replaceable>Dateiname</replaceable></synopsis>
 
-      <para>Sendet das in <parameter>Dateiname</parameter> angegebene
-      Bild auf den aktuellen Kanal. Der Dateiname darf keine Endung
-      (z.B. <code>.gif</code> oder <code>.jpg</code>) enthalten. Diese
-      Funktion wird von den meisten Channels nicht unterstützt.</para>
+      <para>Sendet das in <parameter>Dateiname</parameter> angegebene Bild auf
+      den aktuellen Kanal. Der Dateiname darf keine Endung (z.B.
+      <code>.gif</code> oder <code>.jpg</code>) enthalten. Diese Funktion wird
+      von den meisten Channels nicht unterstützt.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1526,9 +1496,9 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SET AUTOHANGUP <replaceable>Timeout</replaceable></synopsis>
 
-      <para>Stellt ein automatisches Auflegen nach der angegebenen
-      Anzahl von Sekunden ein. Mit dem Wert <code>0</code> kann diese
-      Funktion wieder deaktiviert werden.</para>
+      <para>Stellt ein automatisches Auflegen nach der angegebenen Anzahl von
+      Sekunden ein. Mit dem Wert <code>0</code> kann diese Funktion wieder
+      deaktiviert werden.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1574,8 +1544,8 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SET CONTEXT <replaceable>Kontextname</replaceable></synopsis>
 
-      <para>Setzt den Context, der nach dem Ausführen der
-      AGI-Applikation angesprungen wird.</para>
+      <para>Setzt den Kontext, der nach dem Ausführen der AGI-Applikation
+      angesprungen wird.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1593,9 +1563,9 @@ function my_ip(&amp;$agi, $peer)
         </informaltable></para>
 
       <important>
-        <para>Es wird nicht überprüft, ob der Kontext existiert. Wenn
-        Sie einen ungültigen Kontext angeben, wird der Anruf nach
-        Beendigung des Skriptes aufgelegt.</para>
+        <para>Es wird nicht überprüft, ob der Kontext existiert. Wenn Sie
+        einen ungültigen Kontext angeben, wird der Anruf nach Beendigung des
+        Skripts aufgelegt.</para>
       </important>
     </section>
 
@@ -1604,8 +1574,8 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SET EXTENSION <replaceable>Extension</replaceable></synopsis>
 
-      <para>Setzt die Extension, die nach dem Ausführen der
-      AGI-Applikation angesprungen wird.</para>
+      <para>Setzt die Extension, die nach dem Ausführen der AGI-Applikation
+      angesprungen wird.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1623,11 +1593,10 @@ function my_ip(&amp;$agi, $peer)
         </informaltable></para>
 
       <important>
-        <para>Es wird nicht überprüft, ob die Extension existiert. Wenn
-        Sie eine ungültige Extension angeben, wird Asterisk nach
-        Beendigung des Skriptes bei der <code>i</code>-Extension
-        weitermachen, falls vorhanden. Ansonsten wird der Anruf
-        aufgelegt.</para>
+        <para>Es wird nicht überprüft, ob die Extension existiert. Wenn Sie
+        eine ungültige Extension angeben, wird Asterisk nach Beendigung des
+        Skripts bei der <code>i</code>-Extension weitermachen, falls
+        vorhanden. Ansonsten wird der Anruf aufgelegt.</para>
       </important>
     </section>
 
@@ -1636,11 +1605,10 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SET MUSIC [on [<replaceable>Klasse</replaceable>]|off]</synopsis>
 
-      <para>Aktiviert (<code>on</code>) oder deaktiviert
-      (<code>off</code>) die Warteschleifenmusik. Wenn
-      <parameter>Klasse</parameter> nicht angegeben wurde, wird die
-      Musikklasse <code>default</code> benutzt (siehe
-      Konfigurationsdatei
+      <para>Aktiviert (<code>on</code>) oder deaktiviert (<code>off</code>)
+      die Warteschleifenmusik. Wenn <parameter>Klasse</parameter> nicht
+      angegeben wurde, wird die Musikklasse <code>default</code> benutzt
+      (siehe Konfigurationsdatei
       <filename>/etc/asterisk/musiconhold.conf</filename>).</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
@@ -1664,9 +1632,9 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SET PRIORITY <replaceable>Priorität</replaceable></synopsis>
 
-      <para>Setzt die Priorität, die nach dem Ausführen der
-      AGI-Applikation angesprungen wird (als Priorität kann auch ein
-      Label angegeben werden).</para>
+      <para>Setzt die Priorität, die nach dem Ausführen der AGI-Applikation
+      angesprungen wird (als Priorität kann auch ein Label angegeben
+      werden).</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1684,9 +1652,9 @@ function my_ip(&amp;$agi, $peer)
         </informaltable></para>
 
       <important>
-        <para>Es wird nicht überprüft, ob die Priorität existiert. Wenn
-        Sie eine ungültige Priorität angeben, wird der Anruf nach
-        Beendigung des Skriptes aufgelegt.</para>
+        <para>Es wird nicht überprüft, ob die Priorität existiert. Wenn Sie
+        eine ungültige Priorität angeben, wird der Anruf nach Beendigung des
+        Skriptes aufgelegt.</para>
       </important>
     </section>
 
@@ -1695,9 +1663,8 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>SET VARIABLE <replaceable>Variablenname</replaceable> <replaceable>Wert</replaceable></synopsis>
 
-      <para>Setzt die Kanal-Variable
-      <parameter>Variablenname</parameter> auf den Wert
-      <parameter>Wert</parameter>.</para>
+      <para>Setzt die Kanal-Variable <parameter>Variablenname</parameter> auf
+      den Wert <parameter>Wert</parameter>.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1720,15 +1687,14 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>STREAM FILE <replaceable>Dateiname</replaceable> <replaceable>Escape_Ziffern</replaceable> [<replaceable>Offset</replaceable>]</synopsis>
 
-      <para>Spielt die angegebene Datei <parameter>Dateiname</parameter>
-      ab (dabei darf keine Dateiendung wie <code>.wav</code> oder
-      <code>.gsm</code> angegeben werden). Das Abspielen kann dabei
-      durch die Eingabe einer Ziffer, die in <code>Escape_Ziffern</code>
-      definiert wurde, abgebrochen werden. Ist dies nicht erwünscht (es
-      soll also kein Abbruch möglich sein), so muss an dieser Stelle
-      <code>""</code> angegeben werden. Mit
-      <parameter>Offset</parameter> kann ein Offset zum Start der Datei
-      angegeben werden.</para>
+      <para>Spielt die angegebene Datei <parameter>Dateiname</parameter> ab
+      (dabei darf keine Dateiendung wie <code>.wav</code> oder
+      <code>.gsm</code> angegeben werden). Das Abspielen kann dabei durch die
+      Eingabe einer Ziffer, die in <code>Escape_Ziffern</code> definiert
+      wurde, abgebrochen werden. Ist dies nicht erwünscht (es soll also kein
+      Abbruch möglich sein), so muss an dieser Stelle <code>""</code>
+      angegeben werden. Mit <parameter>Offset</parameter> kann ein Offset zum
+      Start der Datei bestimmt werden.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1760,10 +1726,9 @@ function my_ip(&amp;$agi, $peer)
         </informaltable></para>
 
       <important>
-        <para><code>STREAM FILE</code> funktioniert manchmal nicht
-        korrekt mit anderen Sprachen als Englisch. Stattdessen kann man
-        <code>EXEC Playback <replaceable>Dateiname</replaceable></code>
-        verwenden.</para>
+        <para><code>STREAM FILE</code> funktioniert manchmal nicht korrekt mit
+        anderen Sprachen als Englisch. Stattdessen kann man <code>EXEC
+        Playback <replaceable>Dateiname</replaceable></code> verwenden.</para>
       </important>
     </section>
 
@@ -1772,12 +1737,11 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>TDD MODE [on|off]</synopsis>
 
-      <para>Aktiviert (<code>on</code>) oder deaktiviert
-      (<code>off</code>) Übertragung und Empfang des TDD-Protokolls
-      (Baudot) für TDD-Geräte (Telecommunications Device für the Deaf,
-      Telekommunikationsgerät für Taubstumme, auch Schreibtelefon
-      genannt) auf dem aktiven Kanal. Bisher wird TDD nur von
-      Zap-Kanälen unterstützt.</para>
+      <para>Aktiviert (<code>on</code>) oder deaktiviert (<code>off</code>)
+      Übertragung und Empfang des TDD-Protokolls (Baudot) für TDD-Geräte
+      (Telecommunications Device für the Deaf, Telekommunikationsgerät für
+      Taubstumme, auch Schreibtelefon genannt) auf dem aktiven Kanal. Bisher
+      wird TDD nur von Zap-Kanälen unterstützt.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
@@ -1812,10 +1776,9 @@ function my_ip(&amp;$agi, $peer)
 
       <synopsis>VERBOSE <replaceable>Meldung</replaceable> <replaceable>Level</replaceable></synopsis>
 
-      <para>Schreibt die <parameter>Meldung</parameter> auf das Command
-      Line Interface (CLI). <parameter>Level</parameter> gibt dabei den
-      Mindestwert des Verbosity-Levels an, damit die Ausgabe angezeigt
-      wird.</para>
+      <para>Schreibt die <parameter>Meldung</parameter> auf das Command Line
+      Interface (CLI). <parameter>Level</parameter> gibt dabei den Mindestwert
+      des Verbosity-Levels an, damit die Ausgabe angezeigt wird.</para>
 
       <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
           frame="none" rowsep="none">
