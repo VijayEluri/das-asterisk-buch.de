@@ -25,52 +25,50 @@
   <section>
     <title>CDR-Felder</title>
 
-    <simpara>Die Felder werden in <xref linkend="funktionen-cdr" />
-    erklärt. Das Format ist normalerweise: Kontonr, Anrufer-Nr,
-    Ziel-Extension, Ziel-Kontext, CallerID, Kanal, Ziel-Kanal, letzte
-    Applikation, Argumente der letzten Applikation, Start-Zeit,
-    Antwort-Zeit, End-Zeit, Dauer, Abrechnungs-Dauer, Erfolgsstatus,
-    AMA-Flags [,UniqueID] [,User-Feld]</simpara>
+    <simpara>Die Felder werden in <xref linkend="funktionen-cdr" /> erklärt.
+    Das Format ist normalerweise: Kontonr, Anrufer-Nr, Ziel-Extension,
+    Ziel-Kontext, CallerID, Kanal, Ziel-Kanal, letzte Applikation, Argumente
+    der letzten Applikation, Start-Zeit, Antwort-Zeit, End-Zeit, Dauer,
+    Abrechnungs-Dauer, Erfolgsstatus, AMA-Flags [,UniqueID]
+    [,User-Feld]</simpara>
   </section>
 
   <section>
     <title>Speicherung von Userfield und UniqueID</title>
 
     <simpara>Mit der Funktion <code>CDR()</code> (<xref
-    linkend="funktionen-cdr" />) können im User-Field
-    (<code>userfield</code>) beliebige Informationen zu einem Anruf
-    gespeichert werden. Dies funktioniert allerdings nur unter folgenden
-    Bedingungen:</simpara>
+    linkend="funktionen-cdr" />) können im User-Field (<code>userfield</code>)
+    beliebige Informationen zu einem Anruf gespeichert werden. Dies
+    funktioniert allerdings nur unter folgenden Bedingungen:</simpara>
 
     <section>
       <title>Asterisk 1.2</title>
 
       <para>Die einfachste Möglichkeit ist die Verwendung des
-      <code>custom</code>-Backends, das automatisch das
-      <code>userfield</code> speichert (siehe
-      <filename>cdr_custom.conf</filename>). Es übernimmt die gleiche
-      Funktion wie das <code>csv</code>-Backend.</para>
+      <code>custom</code>-Backends, das automatisch das <code>userfield</code>
+      speichert (siehe <filename>cdr_custom.conf</filename>). Es übernimmt die
+      gleiche Funktion wie das <code>csv</code>-Backend.</para>
 
       <para>In den Backends <filename>cdr_odbc.c</filename> und
-      <filename>cdr_pgsql.c</filename> ist <emphasis>keine</emphasis>
-      Änderung notwendig.</para>
+      <filename>cdr_pgsql.c</filename> ist <emphasis>keine</emphasis> Änderung
+      notwendig.</para>
 
-      <para>Das Backend <filename>cdr_addon_mysql.c</filename> aus den
-      Addons liest die Einstellung <parameter>userfield</parameter> aus
-      der <filename>cdr_mysql.conf</filename>.</para>
+      <para>Das Backend <filename>cdr_addon_mysql.c</filename> aus den Add-ons
+      liest die Einstellung <parameter>userfield</parameter> aus der
+      <filename>cdr_mysql.conf</filename>.</para>
 
-      <para>Die Backends <code>csv</code> und <code>sqlite</code> müssen
-      mit Unterstützung für das <code>userfield</code> kompiliert worden
-      sein. Dafür muss man <emphasis>vor</emphasis> dem Kompilieren im
-      Verzeichnis <filename>cdr/</filename> im Quellverzeichnis folgende
-      Dateien ändern:</para>
+      <para>Die Backends <code>csv</code> und <code>sqlite</code> müssen mit
+      Unterstützung für das <code>userfield</code> kompiliert worden sein.
+      Dafür muss man <emphasis>vor</emphasis> dem Kompilieren im Verzeichnis
+      <filename>cdr/</filename> im Quellverzeichnis folgende Dateien
+      ändern:</para>
 
       <formalpara>
         <title><filename>cdr_csv.c</filename></title>
 
-        <para>Die Kommentarzeichen um die folgenden Zeilen entfernen (in
-        der Version 1.2.13 die Zeilen 53/54):<informaltable
-            colsep="none" frame="none" rowsep="none">
+        <para>Die Kommentarzeichen um die folgenden Zeilen entfernen (in der
+        Version 1.2.13 die Zeilen 53/54):<informaltable colsep="none"
+            frame="none" rowsep="none">
             <tgroup cols="2">
               <tbody>
                 <row>
@@ -82,10 +80,9 @@
                 </row>
               </tbody>
             </tgroup>
-          </informaltable>Statt des Backends <code>csv</code> können Sie
-        aber auch einfach <code>custom</code> verwenden, das das
-        Log-Format aus der <filename>cdr_custom.conf</filename>
-        liest!</para>
+          </informaltable>Statt des Backends <code>csv</code> können Sie aber
+        auch einfach <code>custom</code> verwenden, das das Log-Format aus der
+        <filename>cdr_custom.conf</filename> liest!</para>
       </formalpara>
 
       <formalpara>
@@ -107,15 +104,14 @@
           </informaltable></para>
       </formalpara>
 
-      <simpara><filename>cdr_tds.c</filename> müsste angepasst werden,
-      aber es dient dazu, auf einem Microsoft-SQL-Server zu speichern,
+      <simpara><filename>cdr_tds.c</filename> müsste ebenfalls angepasst
+      werden, aber es dient dazu, auf einem Microsoft-SQL-Server zu speichern,
       und wir konzentrieren uns auf Debian. Daher wird es hier nicht
       beschrieben.</simpara>
 
-      <simpara>In allen Fällen sind die entsprechenden
-      Konfigurationsdateien der Backends in
-      <filename>/etc/asterisk/</filename> zu beachten (sofern sie eine
-      haben): <filename>cdr_odbc.conf</filename> und
+      <simpara>In allen Fällen sind die entsprechenden Konfigurationsdateien
+      der Backends in <filename>/etc/asterisk/</filename> zu beachten (sofern
+      sie eine haben): <filename>cdr_odbc.conf</filename> und
       <filename>cdr_pgsql.conf</filename>, und natürlich die generelle
       <filename>cdr.conf</filename>.</simpara>
     </section>
@@ -123,13 +119,13 @@
     <section>
       <title>Asterisk 1.4</title>
 
-      <para>In Asterisk 1.4 wir nur noch die zentrale Datei cdr.conf für
-      alle Backends verwendet. Darin kann man pro Backend einen Bereich
-      definieren, für CSV z.B. so:<programlisting>[csv]
+      <para>In Asterisk 1.4 wird nur noch die zentrale Datei cdr.conf für alle
+      Backends verwendet. Darin kann man pro Backend einen Bereich definieren,
+      für CSV z.B. so:<programlisting>[csv]
 usegmtime=yes    ; log date/time in GMT
 loguniqueid=yes  ; log uniqueid
-loguserfield=yes ; User-Field aufzei</programlisting>Dadurch ist auch
-      für das <code>csv</code>-Backend keine Änderung mehr am Quellcode
+loguserfield=yes ; User-Field aufzei</programlisting>Dadurch ist auch für das
+      <code>csv</code>-Backend keine Änderung mehr am Quellcode
       notwendig.</para>
     </section>
   </section>
@@ -137,8 +133,7 @@ loguserfield=yes ; User-Field aufzei</programlisting>Dadurch ist auch
   <section>
     <title>Auswertung</title>
 
-    <para>Software zur Normalisierung und Auswertung von
-    CDRs:<itemizedlist>
+    <para>Software zur Normalisierung und Auswertung von CDRs:<itemizedlist>
         <listitem>
           <simpara>CDRTool (<ulink
           url="http://www.ag-projects.com/CDRTool.html">http://www.ag-projects.com/CDRTool.html</ulink>)</simpara>
@@ -148,8 +143,7 @@ loguserfield=yes ; User-Field aufzei</programlisting>Dadurch ist auch
           <simpara>Call Accounting Mate (<ulink
           url="http://www.callaccounting.ws/">http://www.callaccounting.ws/</ulink>)</simpara>
         </listitem>
-      </itemizedlist>Weitere Informationen und Links zu Software auf
-    <ulink
+      </itemizedlist>Weitere Informationen und Links zu Software auf <ulink
     url="http://www.voip-info.org/wiki/view/Asterisk+billing">http://www.voip-info.org/wiki/view/Asterisk+billing</ulink>.</para>
   </section>
 
@@ -157,8 +151,8 @@ loguserfield=yes ; User-Field aufzei</programlisting>Dadurch ist auch
     <title>h-Extension</title>
 
     <para>Die Extension <code>h</code> (hangup) kann, wenn sie eine
-    nennenswerte Zeit beansprucht, die Abrechnungsdauer der CDRs
-    verfälschen. Entweder sollten Sie sie nicht verwenden, oder in der
+    nennenswerte Zeit beansprucht, die Abrechnungsdauer der CDRs verfälschen.
+    Entweder sollten Sie sie nicht verwenden oder in der
     <code>h</code>-Extension <code>ResetCDR(w)</code> ausführen, um die
     Gesprächsdauer für den CDR zu beenden.</para>
   </section>
@@ -166,15 +160,14 @@ loguserfield=yes ; User-Field aufzei</programlisting>Dadurch ist auch
   <section>
     <title>Transfers</title>
 
-    <para>Bei der Aufzeichnung von CDRs bei IAX-zu-IAX-Verbindungen ist
-    zu beachten, dass normalerweise versucht wird, eine direkte
-    Verbindung zwischen den beiden Teilnehmern herzustellen und das
-    Gespräch nicht mehr über den zentralen (Asterisk-)Server zu
-    übertragen. Das ist normalerweise ein sehr gutes Feature, führt aber
-    dazu, dass im CDR nur eine sehr kurze Gesprächsdauer angegeben ist.
-    I.d.R. ist das selbst aus Abrechnungsaspekten in Ordnung, denn wenn
-    Sie keine Daten mehr übertragen müssen, entstehen ja auch keine
-    Kosten. Falls Sie trotzdem die korrekte Gesprächsdauer benötigen,
-    müssen Sie IAX-Transfers abschalten.</para>
+    <para>Bei der Aufzeichnung von CDRs bei IAX-zu-IAX-Verbindungen ist zu
+    beachten, dass normalerweise versucht wird, eine direkte Verbindung
+    zwischen den beiden Teilnehmern herzustellen und das Gespräch nicht mehr
+    über den zentralen (Asterisk-)Server zu übertragen. Das ist normalerweise
+    ein sehr gutes Feature, führt aber dazu, dass im CDR nur eine sehr kurze
+    Gesprächsdauer angegeben ist. In der Regel ist das selbst aus
+    Abrechnungsaspekten in Ordnung, denn wenn Sie keine Daten mehr übertragen
+    müssen, entstehen ja auch keine Kosten. Falls Sie trotzdem die korrekte
+    Gesprächsdauer benötigen, müssen Sie IAX-Transfers abschalten.</para>
   </section>
 </appendix>
