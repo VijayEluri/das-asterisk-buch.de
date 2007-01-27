@@ -808,10 +808,14 @@ Message: Thanks for all the fish.
     &lt;/response&gt;
 &lt;/ajax-response&gt;
 </screen></para>
+    </section>
 
-      <simpara>Bei AJAX-Anwendungen - das erkennt man leicht am Namen
+    <section id="manager-interface-ajam-hinweise">
+      <title>Hinweise zu AJAX und AJAM</title>
+
+      <para>Bei AJAX-Anwendungen - das erkennt man leicht am Namen
       <quote>Asynchronous JavaScript and XML</quote> - ist XML das übliche
-      Format, obwohl es wegen seiner ausgeblähten Struktur vielfach kritisiert
+      Format, obwohl es wegen seiner aufgeblähten Struktur vielfach kritisiert
       wird. Für AJAX können aber auch andere Formate wie JSON<footnote>
           <simpara><ulink
           url="http://de.wikipedia.org/wiki/JSON">http://de.wikipedia.org/wiki/JSON</ulink></simpara>
@@ -820,7 +824,36 @@ Message: Thanks for all the fish.
       geeignet, da die Datenstruktur hier nativ mit <code>eval()</code> in ein
       Objekt umgewandelt werden kann und wenig Overhead hat. Es existieren
       aber auch zahlreiche Implementierungen für PHP, Perl etc. Eine Ausgabe
-      in JSON fehlt dem AJAM bisher jedoch leider.</simpara>
+      in JSON fehlt dem AJAM bisher jedoch leider.</para>
+
+      <para>Für Zugriffe von AJAX-Anwendungen auf den AJAM ist der Ping-Befehl
+      besonders hilfreich, der dazu dient, die Verbindung und
+      Authentifizierung offenzuhalten.<literallayout>http://localhost:8088/asterisk/rawman?action=Ping</literallayout><screen>Response: Pong
+</screen></para>
+
+      <para>Unter der URL<literallayout>http://localhost:8088/asterisk/static/ajamdemo.html</literallayout>ist
+      eine kleine Beispiel-Anwendung mitgeliefert, die den Zugriff per AJAX
+      demonstriert. Sie verwendet die äußerst praktische JavaScript-Library
+      Prototype<footnote>
+          <simpara><ulink
+          url="http://prototype.conio.net/">http://prototype.conio.net/</ulink>,
+          mittlerweile auch <ulink
+          url="http://www.prototypejs.org/">http://www.prototypejs.org/</ulink>,
+          siehe <ulink
+          url="http://en.wikipedia.org/wiki/Prototype_Javascript_Framework">http://en.wikipedia.org/wiki/Prototype_Javascript_Framework</ulink>
+          oder <ulink
+          url="http://de.wikipedia.org/wiki/Prototype">http://de.wikipedia.org/wiki/Prototype</ulink></simpara>
+        </footnote> für die AJAX-Zugriffe und zeigt mit der Action
+      <code>Status</code> die momentan aktiven Kanäle an. Sie können die
+      AJAM-Demo als Basis für eigene AJAX-Anwendungen heranziehen.</para>
+
+      <para>Der Web-Server von Asterisk ist sehr minimalistisch und ersetzt
+      keinesfalls einen <quote>richtigen</quote> Server wie den Apache, der
+      auch PHP-Skripte ausführt etc. Um beides zu vereinen könnte man z.B. in
+      der <filename>httpd.conf</filename> des Apache an der entsprechenden
+      Stelle den Eintrag<programlisting>ProxyPass /ajam http://localhost:8088/asterisk</programlisting>verwenden,
+      um für alle Zugriffe auf den URL-Pfad <code>/ajam</code> nur als Proxy
+      zu fungieren und die Anfragen zum AJAM durchzuschleusen.</para>
     </section>
   </section>
 </chapter>
