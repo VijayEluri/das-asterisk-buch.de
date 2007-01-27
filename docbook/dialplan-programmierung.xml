@@ -497,6 +497,40 @@ exten =&gt; _2000,1,Dial(SIP/2000)
 exten =&gt; 03012345678,1,Dial(SIP/03012345678)</programlisting></para>
     </section>
 
+    <section id="include-zeitgesteuert">
+      <title>Includes zeitgesteuert</title>
+
+      <para>Durch die Fähigkeit includes auch zeitgesteuert durchzuführen,
+      kann man mit diesem Mechanismus sehr leicht Tag- und Nachtschaltungen
+      durchführen.</para>
+
+      <section id="include-zeitgesteuert-syntax">
+        <title>Syntax</title>
+
+        <para><programlisting>include =&gt; context|&lt;uhrzeit&gt;|&lt;wochentag&gt;|&lt;tag-des-monats&gt;|&lt;monat&gt;</programlisting>Die
+        Wochentag und Monate werden immer durch die ersten drei Buchstaben des
+        entsprechenden enlischen Begriffes bestimmt. Wochentage: mon, tue,
+        wed, thu, fri, sat, sun</para>
+      </section>
+
+      <section>
+        <title>Beispiel</title>
+
+        <para>Wenn eine Firma an Wochentagen von 09:00 bis 17:00 Uhr und
+        Samstags von 09:00 bis 14:00 Uhr geöffnet hat. Dann kann ein Dialplan
+        dafür wie folgt aussehen:<programlisting>; Tag
+&#8232;include =&gt; tagschaltung|09:00-17:00|mon-fri|*|*
+&#8232;include =&gt; tagschaltung|09:00-14:00|sat|*|*
+include =&gt; anrufbeantworter
+
+[tagschaltung]
+exten =&gt; _X.,1,Dial(SIP/2000)
+
+[anrufbeantworter]
+exten =&gt; _X.,1,VoiceMail(2000,u)&#8232;</programlisting></para>
+      </section>
+    </section>
+
     <section id="reihenfolge-beim-include">
       <title>Reihenfolge beim Include</title>
 
