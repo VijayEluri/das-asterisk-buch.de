@@ -449,7 +449,101 @@ Variables: (Names marked with * are required)
         Java-Dokumentation.</simpara>
       </footnote>.</simpara>
 
-    <section>
+    <section id="manager-interface-beispiel-expect">
+      <title>Beispiel: Anzahl der Mailbox-Nachrichten mit
+      <command>expect</command> abfragen</title>
+
+      <simpara>Nehmen wir an, wir wollten über das Manager-Interface die
+      Anzahl der Nachrichten in einer Voicemailbox abfragen. Diese einfache
+      Aufgabe lässt sich leicht mit einem Skript für <command>expect</command>
+      lösen.</simpara>
+
+      <sidebar>
+        <simpara><command>expect</command> ist ein erweiterter
+        Tcl-Interpreter, mit dem man automatisiert interaktive Shell-Programme
+        ansteuern kann.<footnote>
+            <simpara><ulink
+            url="http://expect.nist.gov/">http://expect.nist.gov/</ulink>,
+            <ulink
+            url="http://en.wikipedia.org/wiki/Expect">http://en.wikipedia.org/wiki/Expect</ulink></simpara>
+          </footnote></simpara>
+      </sidebar>
+
+      <para>Folgendes Expect-Skript verbindet sich mit dem AMI, loggt sich ein
+      und gibt schließlich die Anzahl der neuen und alten Nachrichten in der
+      angegebenen Mailbox aus:<programlisting>#!/usr/bin/expect
+#
+# Aufruf: ./vmcount.exp 1234@default
+
+if {[llength $argv] != 1} {
+    send_user "Fehler: Geben Sie eine Mailbox an!\n"
+    exit 1
+}
+
+# erstes Argument ist die abzufragende Mailbox:
+set mailbox [lindex $argv 0]
+send_user "Mailbox: $mailbox\n"
+
+# Durchschleifen von stdout zum User abschalten:
+log_user 0
+
+# TCP-Verbindung zum AMI öffnen:
+spawn telnet 127.0.0.1 5038
+
+# auf "Manager" warten und bei Erfolg ein Login-Paket senden:
+#
+expect "Manager" {
+    send_user "Verbunden.\n"
+    send "Action: Login\nUsername: admin\nSecret: geheim\n\n"
+}
+
+# Login erfolgreich?:
+#
+expect {
+    "Response: Error" {
+        send_user "Login fehlgeschlagen.\n"
+        exit 1
+    }
+    "Response: Success" {
+        send_user "Eingeloggt.\n"
+    }
+}
+
+# Anzahl der Mailbox-Nachrichten abfragen:
+#
+expect "\n" {
+    send "Action: MailboxCount\nMailbox: 1234@default\n\n"
+}
+
+expect {
+    "Response: Error" {
+        send_user "Abfragen der Mailbox fehlgeschlagen.\n"
+        exit 1
+    }
+    "Response: Success" {}
+}
+expect {
+    -re "NewMessages:\\s*(\[\\d]*)" {
+        send_user "Neue Nachrichten: $expect_out(1,string)\n"
+    }
+}
+expect {
+    -re "OldMessages:\\s*(\[\\d]*)" {
+        send_user "Alte Nachrichten: $expect_out(1,string)\n"
+    }
+}
+</programlisting></para>
+
+      <para>Wir rufen das Skript (das wir als <filename>vmcount.exp</filename>
+      gespeichert haben) als root auf:<screen>$ ./vmcount.exp 123@default
+Mailbox: 123@default
+Verbunden.
+Eingeloggt.
+Neue Nachrichten: 0
+Alte Nachrichten: 0</screen></para>
+    </section>
+
+    <section id="manager-interface-starastapi">
       <title>StarAstAPI für PHP<indexterm>
           <primary>StarAstAPI</primary>
         </indexterm></title>
