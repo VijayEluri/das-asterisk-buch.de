@@ -796,8 +796,7 @@ The option string may contain zero or more of the following characters:
     Datenschutz und der Wahrung von Persönlichkeitsrechten unterliegen. Sie
     sollten sich genau darüber informieren, wann und wie sie Telefonate
     aufzeichnen dürfen. Als allgemeine Regel gilt, dass sie ohne Wissen und
-    Einverständnis der Teilnehmer kein Telefonat aufzeichnen dürfen.
-    </simpara>
+    Einverständnis der Teilnehmer kein Telefonat aufzeichnen dürfen.</simpara>
 
     <simpara>Können die ID des Anrufers (caller id) und/oder die ID des
     Agenten (agent id) nicht ermittelt werden, wird diese Anwendung zur
@@ -4235,6 +4234,29 @@ exten =&gt; 6001,1,Macro(link-umleitung,0261123456)</programlisting>Es kann
     dazu nötig sein, die Flash-Dauer (Einstellung <code>flash</code>) in der
     <filename>zapata.conf</filename> auf die Vorgabe Ihres Anbieters zu
     setzen, z.B. <code>flash=200</code>.</para>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'Flash' =- 
+
+[Synopsis]
+Flashes a Zap Trunk
+
+[Description]
+  Flash(): Sends a flash on a zap trunk.  This is only a hack for
+people who want to perform transfers and such via AGI and is generally
+quite useless oths application will only work on Zap trunks.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-forkcdr">
@@ -5559,6 +5581,107 @@ exten =&gt; 123,n,MeetMe(333,DpM,1234)</programlisting>
           </varlistentry>
         </variablelist></para>
     </formalpara>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'MeetMe' =- 
+
+[Synopsis]
+MeetMe conference bridge
+
+[Description]
+  MeetMe([confno][,[options][,pin]]): Enters the user into a specified MeetMe
+conference.  If the conference number is omitted, the user will be prompted
+to enter one.  User can exit the conference by hangup, or if the 'p' option
+is specified, by pressing '#'.
+Please note: The Zaptel kernel modules and at least one hardware driver (or ztdummy)
+             must be present for conferencing to operate properly. In addition, the chan_zap
+             channel driver must be loaded for the 'i' and 'r' options to operate at all.
+
+The option string may contain zero or more of the following characters:
+      'a' -- set admin mode
+      'A' -- set marked mode
+      'b' -- run AGI script specified in ${MEETME_AGI_BACKGROUND}
+             Default: conf-background.agi  (Note: This does not work with
+             non-Zap channels in the same conference)
+      'c' -- announce user(s) count on joining a conference
+      'd' -- dynamically add conference
+      'D' -- dynamically add conference, prompting for a PIN
+      'e' -- select an empty conference
+      'E' -- select an empty pinless conference
+      'i' -- announce user join/leave with review
+      'I' -- announce user join/leave without review
+      'l' -- set listen only mode (Listen only, no talking)
+      'm' -- set initially muted
+      'M' -- enable music on hold when the conference has a single caller
+      'o' -- set talker optimization - treats talkers who aren't speaking as
+             being muted, meaning (a) No encode is done on transmission and
+             (b) Received audio that is not registered as talking is omitted
+             causing no buildup in background noise
+      'p' -- allow user to exit the conference by pressing '#'
+      'P' -- always prompt for the pin even if it is specified
+      'q' -- quiet mode (don't play enter/leave sounds)
+      'r' -- Record conference (records as ${MEETME_RECORDINGFILE}
+             using format ${MEETME_RECORDINGFORMAT}). Default filename is
+             meetme-conf-rec-${CONFNO}-${UNIQUEID} and the default format is
+             wav.
+      's' -- Present menu (user or admin) when '*' is received ('send' to menu)
+      't' -- set talk only mode. (Talk only, no listening)
+      'T' -- set talker detection (sent to manager interface and meetme list)
+      'w[(&lt;secs&gt;)]'
+          -- wait until the marked user enters the conference
+      'x' -- close the conference when last marked user exits
+      'X' -- allow user to exit the conference by entering a valid single
+             digit extension ${MEETME_EXIT_CONTEXT} or the current context
+             if that variable is not defined.
+      '1' -- do not play message when first person enters
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>8,11c8,11
+&lt;   MeetMe([confno][,[options][,pin]]): Enters the user into a specified MeetMe
+&lt; conference.  If the conference number is omitted, the user will be prompted
+&lt; to enter one.  User can exit the conference by hangup, or if the 'p' option
+&lt; is specified, by pressing '#'.
+---
+&gt;   MeetMe([confno][,[options][,pin]]): Enters the user into a specified MeetMe conference.
+&gt; If the conference number is omitted, the user will be prompted to enter
+&gt; one. 
+&gt; User can exit the conference by hangup, or if the 'p' option is specified, by pressing '#'.
+20,21c20,21
+&lt;              Default: conf-background.agi  (Note: This does not work with
+&lt;              non-Zap channels in the same conference)
+---
+&gt;              Default: conf-background.agi
+&gt;              (Note: This does not work with non-Zap channels in the same conference)
+27,30c27,28
+&lt;       'i' -- announce user join/leave with review
+&lt;       'I' -- announce user join/leave without review
+&lt;       'l' -- set listen only mode (Listen only, no talking)
+&lt;       'm' -- set initially muted
+---
+&gt;       'i' -- announce user join/leave
+&gt;       'm' -- set monitor only mode (Listen only, no talking)
+32,35d29
+&lt;       'o' -- set talker optimization - treats talkers who aren't speaking as
+&lt;              being muted, meaning (a) No encode is done on transmission and
+&lt;              (b) Received audio that is not registered as talking is omitted
+&lt;              causing no buildup in background noise
+41,42c35
+&lt;              meetme-conf-rec-${CONFNO}-${UNIQUEID} and the default format is
+&lt;              wav.
+---
+&gt;              meetme-conf-rec-${CONFNO}-${UNIQUEID} and the default format is wav.
+52d44
+&lt;       '1' -- do not play message when first person enters
+</screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-meetmeadmin">
@@ -5669,6 +5792,66 @@ exten =&gt; 123,1,MeetMeAdmin(333,k,3)</programlisting>
       <para><xref linkend="applikationen-meetme" />, <xref
       linkend="applikationen-meetmecount" /></para>
     </formalpara>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'MeetMeAdmin' =- 
+
+[Synopsis]
+MeetMe conference Administration
+
+[Description]
+  MeetMeAdmin(confno,command[,user]): Run admin command for conference
+      'e' -- Eject last user that joined
+      'k' -- Kick one user out of conference
+      'K' -- Kick all users out of conference
+      'l' -- Unlock conference
+      'L' -- Lock conference
+      'm' -- Unmute one user
+      'M' -- Mute one user
+      'n' -- Unmute all users in the conference
+      'N' -- Mute all non-admin users in the conference
+      'r' -- Reset one user's volume settings
+      'R' -- Reset all users volume settings
+      's' -- Lower entire conference speaking volume
+      'S' -- Raise entire conference speaking volume
+      't' -- Lower one user's talk volume
+      'T' -- Raise one user's talk volume
+      'u' -- Lower one user's listen volume
+      'U' -- Raise one user's listen volume
+      'v' -- Lower entire conference listening volume
+      'V' -- Raise entire conference listening volume
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>14,27c14,17
+&lt;       'm' -- Unmute one user
+&lt;       'M' -- Mute one user
+&lt;       'n' -- Unmute all users in the conference
+&lt;       'N' -- Mute all non-admin users in the conference
+&lt;       'r' -- Reset one user's volume settings
+&lt;       'R' -- Reset all users volume settings
+&lt;       's' -- Lower entire conference speaking volume
+&lt;       'S' -- Raise entire conference speaking volume
+&lt;       't' -- Lower one user's talk volume
+&lt;       'T' -- Raise one user's talk volume
+&lt;       'u' -- Lower one user's listen volume
+&lt;       'U' -- Raise one user's listen volume
+&lt;       'v' -- Lower entire conference listening volume
+&lt;       'V' -- Raise entire conference listening volume
+---
+&gt;       'm' -- Unmute conference
+&gt;       'M' -- Mute conference
+&gt;       'n' -- Unmute entire conference (except admin)
+&gt;       'N' -- Mute entire conference (except admin)
+</screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-meetmecount">
@@ -5701,6 +5884,39 @@ exten =&gt; 333,1,MeetMeCount(123,anzahl)</programlisting>
 
       <para><xref linkend="applikationen-meetme" />, <xref
       linkend="applikationen-meetmeadmin" /></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'MeetMeCount' =- 
+
+[Synopsis]
+MeetMe participant count
+
+[Description]
+  MeetMeCount(confno[|var]): Plays back the number of users in the specified
+MeetMe conference. If var is specified, playback will be skipped and the value
+will be returned in the variable. Upon app completion, MeetMeCount will hangup
+the channel, unless priority n+1 exists, in which case priority progress will
+continue.
+A ZAPTEL INTERFACE MUST BE INSTALLED FOR CONFERENCING FUNCTIONALITY.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>10,12c10,11
+&lt; will be returned in the variable. Upon app completion, MeetMeCount will hangup
+&lt; the channel, unless priority n+1 exists, in which case priority progress will
+&lt; continue.
+---
+&gt; will be returned in the variable. Upon app completion, MeetMeCount will hangup the
+&gt; channel, unless priority n+1 exists, in which case priority progress will continue.
+</screen></para>
     </formalpara>
   </section>
 
@@ -10641,6 +10857,29 @@ exten =&gt; 123,n,Hangup()</programlisting>
       <para><xref linkend="applikationen-zapscan" />, <xref
       linkend="applikationen-chanspy" /></para>
     </formalpara>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'ZapBarge' =- 
+
+[Synopsis]
+Barge in (monitor) Zap channel
+
+[Description]
+  ZapBarge([channel]): Barges in on a specified zap
+channel or prompts if one is not specified.  Returns
+-1 when caller user hangs up and is independent of the
+state of the channel being monitored.
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-zapras">
@@ -10677,6 +10916,31 @@ exten =&gt; 123,n,Hangup()</programlisting>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,ZapRAS(debug|64000|noauth|netmask|255.255.255.0|10.0.0.1:10.0.0.2)</programlisting>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'ZapRAS' =- 
+
+[Synopsis]
+Executes Zaptel ISDN RAS application
+
+[Description]
+  ZapRAS(args): Executes a RAS server using pppd on the given channel.
+The channel must be a clear channel (i.e. PRI source) and a Zaptel
+channel to be able to use this function (No modem emulation is included).
+Your pppd must be patched to be zaptel aware. Arguments should be
+separated by | characters.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-zapscan">
@@ -10705,6 +10969,29 @@ exten =&gt; 123,n,ZapRAS(debug|64000|noauth|netmask|255.255.255.0|10.0.0.1:10.0.
 
       <para><xref linkend="applikationen-zapbarge" />, <xref
       linkend="applikationen-chanspy" /></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+      <para><screen>
+  -= Info about application 'ZapScan' =- 
+
+[Synopsis]
+Scan Zap channels to monitor calls
+
+[Description]
+  ZapScan([group]) allows a call center manager to monitor Zap channels in
+a convenient way.  Use '#' to select the next channel and use '*' to exit
+Limit scanning to a channel GROUP by setting the option group argument.
+
+</screen></para>
+    </formalpara>
+
+    <formalpara>
+      <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+      <para><screen>- keine - </screen></para>
     </formalpara>
   </section>
 </section>
