@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<chapter id="analog" lang="de" revision="$Revision: 1.2 $">
+  <!--% Copyright (c) 2007 - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Upgrade Asterisk 1.2 auf 1.4</title>
+
+  <section id="v12aufv14-einleitung">
+    <title>Einleitung</title>
+
+    <para>Beim Schreiben dieses Buches wurde grossen Wert darauf gelegt, das
+    immer alles auf der Asterisk Version 1.2 und auf der Asterisk Version 1.4
+    funktioniert. Immer wenn es Abweichungen gibt, wurde diese besonders
+    hervorgehoben. Vollkommen deprecated (von den Entwicklern unerwünschte)
+    Wege wurden gar nicht erst beschrieben. Sie sind also gut gerüstet für
+    beide Versionen. Einige besonders wichtige Neuerungen werden in diesem
+    Kapitel behandelt.</para>
+  </section>
+
+  <section id="v14-buildsystem">
+    <title>Das neue Buildsystem</title>
+
+    <para>Wie Sie im Installationskapitel schon gelesen haben ist die Version
+    1.4 die erste Asterisk Version, die mit einem
+    <command>./configure</command> Skript vor dem kompilieren konfiguriert
+    werden muss. Hilfe zu diesem Skript kann man mit <command>./configure
+    --help</command> aufrufen.</para>
+
+    <section id="menuselect">
+      <title>menuselect</title>
+
+      <para>Wie beim Linux-Kernel schon seit Jahren bekannt, kann man<footnote>
+          <para>Können heisst aber wie so oft nicht müssen. Für einen Großteil
+          aller Asterisk Installationen ist diese Funktionaliät unnötig und
+          oft ein Quell der Zeitverschwendung.</para>
+        </footnote> bei der Version 1.4 mit einem <command>make
+      menuselect</command> einzelne Module aktivieren oder deaktivieren. Das
+      Menü sieht wie folgt aus:<screen>                      *************************************
+                            Asterisk Module Selection
+                      *************************************
+
+                               Press 'h' for help.
+
+                         ---&gt; 1.  Applications
+                              2.  Call Detail Recording
+                              3.  Channel Drivers
+                              4.  Codec Translators
+                              5.  Format Interpreters
+                              6.  Dialplan Functions
+                              7.  PBX Modules
+                              8.  Resource Modules
+                              9.  Voicemail Build Options
+                              10. Compiler Flags
+                              11. Module Embedding
+                              12. Core Sound Packages
+                              13. Music On Hold File Packages
+                              14. Extras Sound Packages
+</screen></para>
+
+      <para>Wenn man bestimmte Bibliotheken oder Programme nicht installiert
+      hat, kann man entsprechende Module nicht aktivieren. Hier ein Beispiel
+      für <code>func_curl</code> und <code>func_odbc</code>:<screen>                      *************************************
+                            Asterisk Module Selection
+                      *************************************
+
+                               Press 'h' for help.
+
+                              [*] 1.  func_base64
+                              [*] 2.  func_callerid
+                              [*] 3.  func_cdr
+                              [*] 4.  func_channel
+                              XXX 5.  func_curl
+                              [*] 6.  func_cut
+                              [*] 7.  func_db
+                              [*] 8.  func_enum
+                              [*] 9.  func_env
+                              [*] 10. func_global
+                              [*] 11. func_groupcount
+                              [*] 12. func_language
+                              [*] 13. func_logic
+                              [*] 14. func_math
+                              [*] 15. func_md5
+                              [*] 16. func_moh
+                              XXX 17. func_odbc
+                              [*] 18. func_rand
+</screen></para>
+
+      <para>Wer die Funktion curl benutzen will, muss auf einem Debian Linux
+      erst mit <command>apt-get -y install libcurl3 curl
+      libcurl3-dev</command> die entsprechenden Pakete installieren und danach
+      ein <command>make clean &amp;&amp; ./configure &amp;&amp; make
+      menuselect</command> ausführen, um dann im folgenden Fenster überprüfen
+      zu können, das die Funktion jetzt mit einkompiliert werden kann:<screen>                      *************************************
+                            Asterisk Module Selection
+                      *************************************
+
+                               Press 'h' for help.
+
+                              [*] 1.  func_base64
+                              [*] 2.  func_callerid
+                              [*] 3.  func_cdr
+                              [*] 4.  func_channel
+                              [*] 5.  func_curl
+                              [*] 6.  func_cut
+                              [*] 7.  func_db
+                              [*] 8.  func_enum
+                              [*] 9.  func_env
+                              [*] 10. func_global
+                              [*] 11. func_groupcount
+                              [*] 12. func_language
+                              [*] 13. func_logic
+                              [*] 14. func_math
+                              [*] 15. func_md5
+                              [*] 16. func_moh
+                              XXX 17. func_odbc
+                              [*] 18. func_rand
+</screen></para>
+    </section>
+
+    <section id="v14-voiceprompts">
+      <title>Neue Soundcodecs für die Voiceprompts</title>
+
+      <para>Innerhalb von <command>make menuselect</command> kann man auch die
+      Installation von Voiceprompts für andere Codecs aktivieren. Alle
+      englischen Sprachbausteine wurden von Digium neu aufgenommen und in
+      allen populären Codecs encoded.<screen>                      *************************************
+                            Asterisk Module Selection
+                      *************************************
+
+                               Press 'h' for help.
+
+                              [ ] 1.  EXTRA-SOUNDS-EN-WAV
+                              [ ] 2.  EXTRA-SOUNDS-EN-ULAW
+                              [ ] 3.  EXTRA-SOUNDS-EN-ALAW
+                              [ ] 4.  EXTRA-SOUNDS-EN-GSM
+                              [ ] 5.  EXTRA-SOUNDS-EN-G729
+                              [ ] 6.  EXTRA-SOUNDS-EN-G722
+</screen></para>
+    </section>
+  </section>
+
+  <section id="v14-neue-cli-struktur">
+    <title>Neue Struktur bei CLI Kommandos</title>
+
+    <para>Ab der Asterisk Version 1.4 wird im CLI (Command Line Interface)
+    eine neue Struktur für Kommandos eingefügt. Die Commandos sollten jetzt
+    nach folgendem Muster eingegeben werden: <code>&lt;modulname&gt;
+    &lt;kommando&gt; &lt;objekt&gt;</code></para>
+
+    <para>So bekommt man mit der Eingabe <command>show voicemail
+    users</command> folgende Ausgabe im CLI:<screen>debian*CLI&gt; show voicemail users 
+Context    Mbox  User                      Zone       NewMsg
+default    general New User                                  0
+default    1234  Example Mailbox                           0
+other      1234  Company2 User                             0
+The 'show voicemail users' command is deprecated and will be removed in a future release. Please use 'voicemail show users' instead.
+debian*CLI&gt;</screen></para>
+
+    <para>In der letzten Zeile wird darauf hingewiesen das diese Art der
+    Eingabe deprecated (unerwünscht) ist. Benutzt man die neue Struktur
+    <command>show voicemail users</command>, dann bekommt man keine
+    Fehlermeldung:<screen>debian*CLI&gt; show voicemail users 
+Context    Mbox  User                      Zone       NewMsg
+default    general New User                                  0
+default    1234  Example Mailbox                           0
+other      1234  Company2 User                             0
+debian*CLI&gt;</screen></para>
+
+    <para>In diesem Buch wurde absichtlich die alte Schreibweise benutzt, weil
+    es für die Asterisk Version 1.2 und 1.4 geschrieben ist. Falls Sie nur
+    noch die neue Version einsetzten, sollten Sie sich langsam an die neue
+    Struktur gewöhnen.</para>
+  </section>
+</chapter>
