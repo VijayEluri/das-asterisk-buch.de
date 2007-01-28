@@ -300,7 +300,7 @@ write = all,system,call,log,verbose,command,agent,user,config</programlisting>Di
         1.4 ist es sogar möglich, durch das AMI den Dialplan zu verändern und
         dann evtl. mit <code>System()</code> auf der Shell Befehle mit
         root-Rechten auszuführen!</para>
-      </caution> Nach einem Restart von Asterisk können wir uns auf Port 5038
+      </caution>Nach einem Restart von Asterisk können wir uns auf Port 5038
     mit dem AMI verbinden, was wir auf der Shell mit
     <command>telnet</command><footnote>
         <simpara>Hier kommt nur das <emphasis>Tool</emphasis>
@@ -722,19 +722,24 @@ Logoff Called from somewhere ...
         url="http://de.wikipedia.org/wiki/Ajax_(Programmierung)">http://de.wikipedia.org/wiki/Ajax_(Programmierung)</ulink></simpara>
       </footnote> (Asynchronous JavaScript and XML) abgeleitet.</simpara>
 
-    <simpara>Zur Einrichtung sind die Schritte wie in <xref
+    <para>Zur Einrichtung sind die Schritte wie in <xref
     linkend="asterisk-manager-api" /> Voraussetzung, zusätzlich stellt man in
     der <filename>manager.conf</filename> im Abschnitt <code>[general]</code>
-    den Parameter <code>webenabled</code> auf <code>yes</code> ein. Um dann
-    den Web-Server zu aktivieren setzt man in der
-    <filename>http.conf</filename> im Abschnitt <code>[general]</code> die
-    Einstellungen <code>enabled=yes</code> und <code>enablestatic=yes</code>.
-    <code>bindaddr</code> stellt man auf <code>127.0.0.1</code>,
-    <code>bindport</code> auf <code>8088</code>, <code>prefix</code> auf
-    <code>asterisk</code>. Beachten Sie auch den Parameter
-    <code>httptimeout</code> in der <filename>manager.conf</filename>, der
-    festlegt, nach welcher Inaktivität (in Sekunden) man im Web-Interface
-    automatisch ausgeloggt wird.</simpara>
+    den Parameter <code>webenabled</code> auf <code>yes</code> ein. Beachten
+    Sie auch den Parameter <code>httptimeout</code>, der festlegt, nach
+    welcher Inaktivität (in Sekunden) man im Web-Interface automatisch
+    ausgeloggt wird. Um dann den Web-Server zu aktivieren setzt man in der
+    <filename>http.conf</filename> die Einstellungen<programlisting>[general]
+enabled=yes
+enablestatic=yes
+bindaddr=127.0.0.1
+bindport=8088
+prefix=asterisk</programlisting><code>enablestatic</code> muss man nur dann
+    aktivieren, wenn der AJAM auch als Web-Server für statische Dateien im
+    Verzeichnis <filename>/var/lib/asterisk/static-http/</filename> fungieren
+    soll. Normalerweise stellt man das auf <code>no</code>, es ist aber
+    Voraussetzung für die Asterisk AJAM Demo (<xref
+    linkend="manager-interface-ajam-demo" />).</para>
 
     <simpara>Restart nicht vergessen!</simpara>
 
@@ -763,22 +768,34 @@ Logoff Called from somewhere ...
       also die Anzahl der Nachrichten auf einer Mailbox abzufragen. Der AJAM
       bietet hier folgende Möglichkeiten:</simpara>
 
-      <bridgehead>HTML</bridgehead>
+      <section id="ajam-format-html">
+        <title>HTML<indexterm>
+            <primary>AJAM</primary>
 
-      <para>Unter der URL<literallayout>http://localhost:8088/asterisk/manager</literallayout>wartet
-      das Manager-Interface auf unsere Anfragen. Dabei werden die Felder eines
-      Pakets als Parameter an die URL gehängt. Probieren Sie die folgenden
-      beiden Adressen im Web-Browser aus:<literallayout>http://localhost:8088/asterisk/manager?action=Login&amp;username=admin&amp;secret=geheim
+            <secondary>HTML</secondary>
+          </indexterm></title>
+
+        <para>Unter der URL<literallayout>http://localhost:8088/asterisk/manager</literallayout>wartet
+        das Manager-Interface auf unsere Anfragen. Dabei werden die Felder
+        eines Pakets als Parameter an die URL gehängt. Probieren Sie die
+        folgenden beiden Adressen im Web-Browser aus:<literallayout>http://localhost:8088/asterisk/manager?action=Login&amp;username=admin&amp;secret=geheim
 http://localhost:8088/asterisk/manager?action=MailboxCount&amp;mailbox=123</literallayout></para>
 
-      <simpara>Die Antwort erfolgt jeweils als HTML-Seite, ist also für den
-      Zugriff durch Skripte denkbar ungeeignet.</simpara>
+        <simpara>Die Antwort erfolgt jeweils als HTML-Seite, ist also für den
+        Zugriff durch Skripte denkbar ungeeignet.</simpara>
+      </section>
 
-      <bridgehead>Plain-Text</bridgehead>
+      <section id="ajam-format-text">
+        <title>Plain-Text<indexterm>
+            <primary>AJAM</primary>
 
-      <para>Man kann in der URL <code>manager</code> durch <code>rawman</code>
-      ersetzen, dann erfolgt die Antwort als Plain-Text. Zum Einloggen und
-      Abfragen der Mailbox-Nachrichten also:<literallayout>http://localhost:8088/asterisk/rawman?action=Login&amp;username=admin&amp;secret=geheim</literallayout><screen>Response: Success
+            <secondary>Plain-Text</secondary>
+          </indexterm></title>
+
+        <para>Man kann in der URL <code>manager</code> durch
+        <code>rawman</code> ersetzen, dann erfolgt die Antwort als Plain-Text.
+        Zum Einloggen und Abfragen der Mailbox-Nachrichten
+        also:<literallayout>http://localhost:8088/asterisk/rawman?action=Login&amp;username=admin&amp;secret=geheim</literallayout><screen>Response: Success
 Message: Authentication accepted
 </screen><literallayout>http://localhost:8088/asterisk/rawman?action=MailboxCount&amp;mailbox=123</literallayout><screen>Response: Success
 Message: Mailbox Message Count
@@ -789,16 +806,22 @@ OldMessages: 0
 Message: Thanks for all the fish.
 </screen></para>
 
-      <simpara>Diese Text-Ausgabe kann man also gut in automatisierten
-      Skripten verwenden.</simpara>
+        <simpara>Diese Text-Ausgabe kann man also gut in automatisierten
+        Skripten verwenden.</simpara>
+      </section>
 
-      <bridgehead>XML</bridgehead>
+      <section id="ajam-format-xml">
+        <title>XML<indexterm>
+            <primary>AJAM</primary>
 
-      <para>Will man stattdessen lieber XML, dann ruft man <code>mxml</code>
-      auf. Die XML-Ausgabe ist hier zur leichteren Lesbarkeit formatiert
-      dargestellt, der AJAM macht keine Zeilenumbrüche innerhalb der Tags.
-      Einen korrekten XML-Parser würde das aber auch so wie hier dargestellt
-      nicht stören.<literallayout>http://localhost:8088/asterisk/mxml?action=Login&amp;username=admin&amp;secret=geheim</literallayout><screen>&lt;ajax-response&gt;
+            <secondary>XML</secondary>
+          </indexterm></title>
+
+        <para>Will man stattdessen lieber XML, dann ruft man <code>mxml</code>
+        auf. Die XML-Ausgabe ist hier zur leichteren Lesbarkeit formatiert
+        dargestellt, der AJAM macht keine Zeilenumbrüche innerhalb der Tags.
+        Einen korrekten XML-Parser würde das aber auch so wie hier dargestellt
+        nicht stören.<literallayout>http://localhost:8088/asterisk/mxml?action=Login&amp;username=admin&amp;secret=geheim</literallayout><screen>&lt;ajax-response&gt;
     &lt;response type='object' id='unknown'&gt;
         &lt;generic
             response='Success'
@@ -823,28 +846,32 @@ Message: Thanks for all the fish.
     &lt;/response&gt;
 &lt;/ajax-response&gt;
 </screen></para>
+      </section>
     </section>
 
     <section id="manager-interface-ajam-hinweise">
       <title>Hinweise zu AJAX und AJAM</title>
 
-      <bridgehead>JSON</bridgehead>
+      <section id="ajam-format-json">
+        <title>JSON</title>
 
-      <para>Bei AJAX-Anwendungen - das erkennt man leicht am Namen
-      <quote>Asynchronous JavaScript and XML</quote> - ist XML das übliche
-      Format, obwohl es wegen seiner aufgeblähten Struktur vielfach kritisiert
-      wird. Für AJAX können aber auch andere Formate wie JSON<footnote>
-          <simpara><ulink
-          url="http://de.wikipedia.org/wiki/JSON">http://de.wikipedia.org/wiki/JSON</ulink></simpara>
-        </footnote> zum Einsatz kommen. JSON (JavaScript Object Notation) ist
-      - der Name verrät es - besonders gut für JavaScript-Anwendungen
-      geeignet, da die Datenstruktur hier nativ mit <code>eval()</code> in ein
-      Objekt umgewandelt werden kann und wenig Overhead hat. Es existieren
-      aber auch zahlreiche Implementierungen für PHP, Perl etc. Eine Ausgabe
-      in JSON fehlt dem AJAM bisher jedoch leider. Man könnte aber
-      beispielsweise die Plain-Text-Ausgabe clientseitig in JSON umwandeln,
-      wenn einem das leichter fällt oder sich besser in vorhandene JS-Libs
-      inegrieren lässt. Hier der Ansatz als Idee:<programlisting>// angenommen in responseText ist der empfangene Antwort-Text
+        <para>Bei AJAX-Anwendungen - das erkennt man leicht am Namen
+        <quote>Asynchronous JavaScript and XML</quote> - ist XML das übliche
+        Format, obwohl es wegen seiner aufgeblähten Struktur vielfach
+        kritisiert wird. Für AJAX können aber auch andere Formate wie
+        JSON<footnote>
+            <simpara><ulink
+            url="http://de.wikipedia.org/wiki/JSON">http://de.wikipedia.org/wiki/JSON</ulink></simpara>
+          </footnote> zum Einsatz kommen. JSON (JavaScript Object Notation)
+        ist - der Name verrät es - besonders gut für JavaScript-Anwendungen
+        geeignet, da die Datenstruktur hier nativ mit <code>eval()</code> in
+        ein Objekt umgewandelt werden kann und wenig Overhead hat. Es
+        existieren aber auch zahlreiche Implementierungen für PHP, Perl etc.
+        Eine Ausgabe in JSON fehlt dem AJAM bisher jedoch leider. Man könnte
+        aber beispielsweise die Plain-Text-Ausgabe clientseitig in JSON
+        umwandeln, wenn einem das leichter fällt oder sich besser in
+        vorhandene JS-Libs inegrieren lässt. Hier der Ansatz als
+        Idee:<programlisting>// angenommen in responseText ist der empfangene Antwort-Text
 // gespeichert, was wir hier nur simulieren:
 var responseText = 'Response: Success\n'
 +'Message: Mailbox Message Count\n'
@@ -862,41 +889,48 @@ eval('var packet = {'+ responseText +'}');
 // jetzt kann man wie bei jedem Objekt so auf die Felder zugreifen:
 alert( packet['NewMessages'] );   // gibt "0" aus
 </programlisting></para>
+      </section>
 
-      <bridgehead>Ping</bridgehead>
+      <section id="manager-interface-ajam-ping">
+        <title>Ping</title>
 
-      <para>Für Zugriffe von AJAX-Anwendungen auf den AJAM ist der Ping-Befehl
-      besonders hilfreich, der dazu dient, die Verbindung und
-      Authentifizierung offenzuhalten.<literallayout>http://localhost:8088/asterisk/rawman?action=Ping</literallayout><screen>Response: Pong
+        <para>Für Zugriffe von AJAX-Anwendungen auf den AJAM ist der
+        Ping-Befehl besonders hilfreich, der dazu dient, die Verbindung und
+        Authentifizierung offenzuhalten.<literallayout>http://localhost:8088/asterisk/rawman?action=Ping</literallayout><screen>Response: Pong
 </screen></para>
+      </section>
 
-      <bridgehead>AJAM Demo</bridgehead>
+      <section id="manager-interface-ajam-demo">
+        <title>AJAM Demo</title>
 
-      <para>Unter der URL<literallayout>http://localhost:8088/asterisk/static/ajamdemo.html</literallayout>ist
-      eine kleine Beispiel-Anwendung mitgeliefert, die den Zugriff per AJAX
-      demonstriert. Sie verwendet die äußerst praktische JavaScript-Library
-      Prototype<footnote>
-          <simpara><ulink
-          url="http://prototype.conio.net/">http://prototype.conio.net/</ulink>,
-          mittlerweile auch <ulink
-          url="http://www.prototypejs.org/">http://www.prototypejs.org/</ulink>,
-          siehe <ulink
-          url="http://en.wikipedia.org/wiki/Prototype_Javascript_Framework">http://en.wikipedia.org/wiki/Prototype_Javascript_Framework</ulink>
-          oder <ulink
-          url="http://de.wikipedia.org/wiki/Prototype">http://de.wikipedia.org/wiki/Prototype</ulink></simpara>
-        </footnote> für die AJAX-Zugriffe und zeigt mit der Action
-      <code>Status</code> die momentan aktiven Kanäle an. Sie können die
-      AJAM-Demo als Basis für eigene AJAX-Anwendungen heranziehen.</para>
+        <para>Unter der URL<literallayout>http://localhost:8088/asterisk/static/ajamdemo.html</literallayout>ist
+        eine kleine Beispiel-Anwendung mitgeliefert, die den Zugriff per AJAX
+        demonstriert. Sie verwendet die äußerst praktische JavaScript-Library
+        Prototype<footnote>
+            <simpara><ulink
+            url="http://prototype.conio.net/">http://prototype.conio.net/</ulink>,
+            mittlerweile auch <ulink
+            url="http://www.prototypejs.org/">http://www.prototypejs.org/</ulink>,
+            siehe <ulink
+            url="http://en.wikipedia.org/wiki/Prototype_Javascript_Framework">http://en.wikipedia.org/wiki/Prototype_Javascript_Framework</ulink>
+            oder <ulink
+            url="http://de.wikipedia.org/wiki/Prototype">http://de.wikipedia.org/wiki/Prototype</ulink></simpara>
+          </footnote> für die AJAX-Zugriffe und zeigt mit der Action
+        <code>Status</code> die momentan aktiven Kanäle an. Sie können die
+        AJAM-Demo als Basis für eigene AJAX-Anwendungen heranziehen.</para>
+      </section>
 
-      <bridgehead>Apache</bridgehead>
+      <section id="manager-interface-ajam-apache">
+        <title>Apache</title>
 
-      <para>Der Web-Server von Asterisk ist sehr minimalistisch und ersetzt
-      keinesfalls einen <quote>richtigen</quote> Server wie den Apache, der
-      auch PHP-Skripte ausführt etc. Um beides zu vereinen könnte man z.B. in
-      der <filename>httpd.conf</filename> des Apache an der entsprechenden
-      Stelle den Eintrag<programlisting>ProxyPass /ajam http://localhost:8088/asterisk</programlisting>verwenden,
-      um für alle Zugriffe auf den URL-Pfad <code>/ajam</code> nur als Proxy
-      zu fungieren und die Anfragen zum AJAM durchzuschleusen.</para>
+        <para>Der Web-Server von Asterisk ist sehr minimalistisch und ersetzt
+        keinesfalls einen <quote>richtigen</quote> Server wie den Apache, der
+        auch PHP-Skripte ausführt etc. Um beides zu vereinen könnte man z.B.
+        in der <filename>httpd.conf</filename> des Apache an der
+        entsprechenden Stelle den Eintrag<programlisting>ProxyPass /ajam http://localhost:8088/asterisk</programlisting>verwenden,
+        um für alle Zugriffe auf den URL-Pfad <code>/ajam</code> nur als Proxy
+        zu fungieren und die Anfragen zum AJAM durchzuschleusen.</para>
+      </section>
     </section>
   </section>
 </chapter>
