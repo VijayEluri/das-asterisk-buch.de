@@ -108,12 +108,11 @@
         einem Port (normalerweise Port 80) gleichzeitig mehrere Verbindungen
         zu einem anderen Rechner geöffnet hat. Ports sind 16-Bit-Zahlen
         (Portnummern) und reichen von 0 bis 65535. Ports von 0 bis 1023 sind
-        reserviert (englisch: well known ports[1]) und werden von der IANA
-        vergeben, z.B. ist Port 80 für das im WWW verwendete HTTP-Protokoll
-        reserviert. Allerdings ist das Benutzen der vordefinierten Ports nicht
-        bindend. So kann jeder Administrator beispielsweise einen FTP-Server
-        (normalerweise Port 21) auch auf einem beliebigen anderen Port laufen
-        lassen.</para>
+        reserviert und werden von der IANA vergeben, z.B. ist Port 80 für das
+        im WWW verwendete HTTP-Protokoll reserviert. Allerdings ist das
+        Benutzen der vordefinierten Ports nicht bindend. So kann jeder
+        Administrator beispielsweise einen FTP-Server (normalerweise Port 21)
+        auch auf einem beliebigen anderen Port laufen lassen.</para>
       </section>
 
       <section id="tcp-verbindungsaufbau">
@@ -155,7 +154,7 @@
           TCP-Header). Die Start-Sequenznummer ist eine beliebige Zahl, deren
           Generierung von der jeweiligen TCP-Implementierung abhängig ist. Sie
           sollte jedoch möglichst zufällig sein, um Sicherheitsrisiken zu
-          vermeiden [2]. Die Gegenstelle (siehe Skizze) empfängt das Paket und
+          vermeiden. Die Gegenstelle (siehe Skizze) empfängt das Paket und
           sendet in einem eigenen SYN-Paket im Gegenzug ihre
           Start-Sequenznummer y (die ebenfalls beliebig und unabhängig von der
           Start-Sequenznummer der Gegenstelle ist). Zugleich bestätigt sie den
@@ -270,46 +269,10 @@
         <para>Da die Anwendung Daten aus dem Puffer liest, ändert sich der
         Füllstand des Puffers ständig. Deshalb ist es notwendig, den
         Datenfluss dem Füllstand entsprechend zu steuern. Dies geschieht mit
-        dem Sliding Window und dessen Größe. Den Puffer des Senders erweitern
-        wir, wie in Abb. 8 zu sehen, auf 10 Segmente. In der Abb. 8a werden
-        gerade die Segmente 1-5 übertragen. Die Übertragung ist vergleichbar
-        mit Abb. 7. Obwohl der Puffer des Empfängers in Abb. 7 am Ende voll
-        ist, fordert er mit ACK=7301 die nächsten Daten ab dem Byte 7301 beim
-        Sender an. Dies hat zur Folge, dass das nächste TCP-Segment vom
-        Empfänger nicht mehr verarbeitet werden kann. Ausnahmen sind jedoch
-        TCP-Segmente mit gesetztem URG-Flag. Mit dem Window-Feld kann er dem
-        Sender mitteilen, dass er keine Daten mehr verschicken soll. Dies
-        geschieht, indem er im Window-Feld den Wert Null einträgt (Zero
-        Window). Der Wert Null entspricht dem freien Speicherplatz im Puffer.
-        Die Anwendung des Empfängers liest nun die Segmente 1-5 aus dem
-        Puffer, womit wieder ein Speicherplatz von 7300 Byte frei ist. Damit
-        kann er die restlichen Segmente 6-10 mit einem TCP-Header, der die
-        Werte SEQ=1, ACK=7301 und Window=7300 enthält, beim Sender anfordern.
-        Der Sender weiß nun, dass er maximal fünf TCP-Segmente an den
-        Empfänger schicken kann, und verschiebt das Window um fünf Segmente
-        nach rechts. Die Segmente 6-10 werden nun alle zusammen als Burst
-        verschickt. Kommen alle TCP-Segmente beim Empfänger an, so quittiert
-        er sie mit SEQ=1 und ACK=14601 und fordert die nächsten Daten an.
-        Silly Window Syndrome: Der Empfänger sendet ein Zero Window an den
-        Sender, da sein Puffer voll ist. Die Anwendung beim Empfänger liest
-        allerdings nur zwei Byte aus dem Puffer. Der Empfänger schickt einen
-        TCP-Header mit Window=2 (Window Update) an den Sender und fordert
-        gleichzeitig die zwei Byte an. Der Sender kommt der Aufforderung nach
-        und schickt die zwei Byte in einem 42 Byte großen Paket (mit IP-Header
-        und TCP-Header) an den Empfänger. Damit ist der Puffer des Empfängers
-        wieder voll, und er schickt wieder ein Zero Window an den Sender. Die
-        Anwendung liest jetzt zum Beispiel hundert Byte aus dem Puffer. Der
-        Empfänger schickt wieder einen TCP-Header mit einem kleinen
-        Window-Wert an den Sender. Dieses Spiel setzt sich immer wieder fort
-        und verschwendet Bandbreite, da nur sehr kleine Pakete versandt
-        werden. Clarks Lösung ist, dass der Empfänger ein Zero Window senden
-        und so lange mit dem Window Update warten soll, bis die Anwendung
-        mindestens die maximale Segmentgröße (maximum segment size, in unseren
-        bisherigen Beispielen 1460 Byte) aus dem Puffer gelesen hat oder der
-        Puffer halbleer ist. Je nachdem, was zuerst eintritt (Dave Clark,
-        1982). Auch der Sender kann zu kleine Pakete abschicken und dadurch
-        Bandbreite verschwenden. Dieser Umstand wird mit dem Nagle-Algorithmus
-        beseitigt. Deswegen ergänzt er sich mit Clarks Lösung.</para>
+        dem Sliding Window und dessen Größe. Die Größe dieser Windows wird
+        ständig angepasst und der Process der Anpassung ist ein nicht zu
+        unterschätzender Overhead in der Kommunikation von Sender und
+        Empfänger.</para>
       </section>
 
       <section id="tcp-slow-start">
