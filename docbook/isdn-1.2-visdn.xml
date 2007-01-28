@@ -16,9 +16,9 @@
     <title>Versatile ISDN Subsystem für Linux 2.6</title>
 
     <para>vISDN ist ein alternatives Treibermodell für HFC basierte ISDN
-    Karten. Unterstützt werden alle Karten mit folgenden Chipsätzen (s. <ulink
-    url="http://www.visdn.org/drivers.php">
-    <citetitle>http://www.visdn.org/drivers.php</citetitle></ulink>):<itemizedlist>
+    Karten. Unterstützt werden alle Karten mit folgenden Chipsätzen (siehe:
+    <ulink
+    url="http://www.visdn.org/drivers.php">http://www.visdn.org/drivers.php</ulink>):<itemizedlist>
         <listitem>
           <para>Cologne Chip's HFC USB</para>
         </listitem>
@@ -78,12 +78,16 @@
       </listitem>
 
       <listitem>
-        <para>build essentials</para>
+        <para>build-essentials (oder auf nicht-Debian Systemen
+        entsprechendes)</para>
       </listitem>
 
       <listitem>
         <para>lspci, bash3, automake1.9, autoconf, libtool, ppp-dev, iproute,
         udev</para>
+
+        <para>(Die Bash in der Version 3 ist auf vielen Systemen
+        Standard)</para>
       </listitem>
     </itemizedlist>
 
@@ -156,8 +160,7 @@ visdn-0.18.3/COPYING</screen>
     <screen>asterisco:~# cd visdn-0.18.3 
 asterisco:~visdn-0.18.3# configure 
 asterisco:~visdn-0.18.3# make 
-asterisco:~visdn-0.18.3# make install 
-</screen>
+asterisco:~visdn-0.18.3# make install</screen>
 
     <para>Nun aktualisieren wir noch die Modulabhängigkeiten und den librarie
     cache:</para>
@@ -173,7 +176,7 @@ asterisco:/visdn-0.18.3# ldconfig</screen>
 
     <programlisting>asterisco:/visdn-0.18.3# cp samples/30-visdn.rules /etc/udev/rules.d</programlisting>
 
-    <para>Die Installation von vISDN wäre damit abgeschlossen und wir k#nnen
+    <para>Die Installation von vISDN wäre damit abgeschlossen und wir können
     mit der Konfiguration fortfahren.</para>
   </section>
 
@@ -185,8 +188,7 @@ asterisco:/visdn-0.18.3# ldconfig</screen>
 
       <para>Die Konfiguration erfolgt am Beispiel einer HFC-PCI Karte im NT
       Modus zum Anschluss eines ISDN Telefons oder einer ISDN TK-Anlage an
-      Asterisk. Weiter unten folgen Beispiele für die Verwendung mehrerer
-      dieser Karten, sowie für Quad-HFC und vGSM Karten.</para>
+      Asterisk.</para>
 
       <para>vISDN identifiziert die Karten nach ihrem PCI Steckplatz. Daher
       muss nun via lspci der Steckplatz der HFC Karte ermittelt werden
@@ -238,7 +240,9 @@ asterisco:~# ln -s /usr/local/etc/visdn /etc</programlisting>
     <para>Das Laden der Kernelmodule und die Konfiguration der vISDN Devices
     übernimmt das Script visdn_configurator. Unter Debian 3.1 (sarge) muss
     dieses noch angepasst werden. Dazu editieren wir
-    /usr/local/sbin/visdn_configurator und ändern in der ersten Zeile.</para>
+    /usr/local/sbin/visdn_configurator und ändern in der ersten Zeile (Sofern
+    die Bash in der Version 3 nicht schon installiert ist. Überprüfen Sie dies
+    vorher mit dem Befehl <emphasis>bash --version</emphasis>):</para>
 
     <programlisting>#!/bin/bash</programlisting>
 
@@ -254,8 +258,8 @@ Waiting for device file /dev/visdn/netdev-control to appear......done
 D: 000006
 E: 000007</screen>
 
-    <para>Anschließend kann mit dmesg überprüft werden, ob die Module
-    erfolgreich geladen wurden. Die Ausgabe sollte ungefähr so
+    <para>Anschließend kann mit <emphasis>dmesg</emphasis> überprüft werden,
+    ob die Module erfolgreich geladen wurden. Die Ausgabe sollte ungefähr so
     aussehen:</para>
 
     <screen>hfc-pci: pci-0000:00:0f.0:st:chan[D] channel opened 
@@ -308,7 +312,7 @@ clir_mode = unrestricted_default
 overlap_sending = Yes
 overlap_receiving = No</screen>
 
-    <para>Erl-uterung einiger Parameter:</para>
+    <para>Erläuterung einiger Parameter:</para>
 
     <informaltable>
       <tgroup cols="2">
