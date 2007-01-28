@@ -506,13 +506,12 @@ zaptel                209412  25 qozap
     direkt angegeben werden.</para>
 
     <programlisting>[eingehend]
-exten =&gt; 123456,1,Dial(SIP/2000,20,j)
-exten =&gt; 123456,2,VoiceMail(2000,u)
-exten =&gt; 123456,102,VoiceMail(2000,b)
+exten =&gt; 123456,1,Dial(SIP/2000,20)
+exten =&gt; 123456,n,VoiceMail(2000)
 
-exten =&gt; 654321,1,Dial(SIP/2001,20,j)
-exten =&gt; 654321,2,VoiceMail(2001,u)
-exten =&gt; 654321,102,VoiceMail(2001,b)</programlisting>
+exten =&gt; 654321,1,Dial(SIP/2001,20)
+exten =&gt; 654321,n,VoiceMail(2001)
+</programlisting>
 
     <para>Wenn Sie diese Sektion in der Datei
     <filename>extensions.conf</filename> eingerichtet und Asterisk neu haben
@@ -532,14 +531,13 @@ exten =&gt; 654321,102,VoiceMail(2001,b)</programlisting>
 
     <programlisting>[eingehend]
 ; Zentrale -0
-exten =&gt; 1234560,1,Dial(SIP/1000,20,j)
-exten =&gt; 1234560,2,VoiceMail(1000,u)
-exten =&gt; 1234560,102,VoiceMail(1000,b)
+exten =&gt; 1234560,1,Dial(SIP/1000,20)
+exten =&gt; 1234560,n,VoiceMail(1000)
 
 ; Restliche Teilnehmer
-exten =&gt; _123456[1-9]XX,1,Dial(SIP/${EXTEN:6},20,j)
-exten =&gt; _123456[1-9]XX,2,VoiceMail(${EXTEN:6},u)
-exten =&gt; _123456[1-9]XX,102,VoiceMail(${EXTEN:6},b)</programlisting>
+exten =&gt; _123456[1-9]XX,1,Dial(SIP/${EXTEN:6},20)
+exten =&gt; _123456[1-9]XX,n,VoiceMail(${EXTEN:6})
+</programlisting>
 
     <para>Dies ist natürlich nur ein kleines übersichtliches Beispiel. Im
     "wirklichen Leben" werden gerade größere Firmenanlagen mit einer Vielzahl
@@ -558,8 +556,8 @@ exten =&gt; _123456[1-9]XX,102,VoiceMail(${EXTEN:6},b)</programlisting>
     es in vielen Telefonanlagen der Fall ist.</para>
 
     <programlisting>[rausgehend]
-exten =&gt; _0[0-9].,1,Set(CALLERID(num)=123456${CALLERID(num):0:3})
-exten =&gt; _0[0-9].,n,Dial(Zap/g1/${EXTEN:1})</programlisting>
+exten =&gt; _0X.,1,Set(CALLERID(num)=123456${CALLERID(num):0:3})
+exten =&gt; _0X.,n,Dial(Zap/g1/${EXTEN:1})</programlisting>
 
     <para>Zunächst wird die eigene Durchwahl um die Basisnummer ergänzt, damit
     der angerufene Partner auch die richtige Durchwahlnummer angezeigt
@@ -576,8 +574,8 @@ exten =&gt; _0[0-9].,n,Dial(Zap/g1/${EXTEN:1})</programlisting>
     draußen.</para>
 
     <programlisting>[rausgehend_g2]
-exten =&gt; _0[0-9].,1,Set(CALLERID(num)=1234560)
-exten =&gt; _0[0-9].,n,Dial(Zap/g2/${EXTEN:1})</programlisting>
+exten =&gt; _0X.,1,Set(CALLERID(num)=1234560)
+exten =&gt; _0X.,n,Dial(Zap/g2/${EXTEN:1})</programlisting>
 
     <para>Inwieweit es sinnvoll ist, spezielle Endgeräte auf spezielle Kanäle
     zu legen, hängt vom konkreten Einzelfall ab.</para>
