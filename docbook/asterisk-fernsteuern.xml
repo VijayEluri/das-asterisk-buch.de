@@ -738,6 +738,21 @@ Logoff Called from somewhere ...
 
     <simpara>Restart nicht vergessen!</simpara>
 
+    <caution>
+      <para>Nach meiner Einschätzung ist es in den seltensten Fällen
+      empfehlenswert, andere Web-Applikationen also solche, die ausschließlich
+      für den Administrator zugänglich sind, direkt auf die AJAM-Schnittstelle
+      zugreifen zu lassen, und das ist wohl auch nicht so gedacht, denn dazu
+      lassen sich die Rechte mit <code>read</code> und <code>write</code>
+      (siehe <xref linkend="asterisk-manager-api" />) einfach nicht granular
+      genug einstellen. Denken Sie daran, dass ein User absichtlich oder
+      unabsichtlich auch andere Aktionen ausführen kann als Sie ihm im in der
+      GUI zur Verfügung stellen. Besser wäre es, Ihre Applikation auf z.B. ein
+      PHP-Skript zugreifen zu lassen, das nur vordefinierte erlaubte Befehle
+      auf dem AMI ausführt, und zur Sicherheit muss noch nicht mal dieses
+      Skript alle AMI-Rechte haben.</para>
+    </caution>
+
     <section id="manager-interface-beispiel-ajam">
       <title>Beispiel: Anzahl der Mailbox-Nachrichten per AJAM
       abfragen</title>
@@ -813,6 +828,8 @@ Message: Thanks for all the fish.
     <section id="manager-interface-ajam-hinweise">
       <title>Hinweise zu AJAX und AJAM</title>
 
+      <bridgehead>JSON</bridgehead>
+
       <para>Bei AJAX-Anwendungen - das erkennt man leicht am Namen
       <quote>Asynchronous JavaScript and XML</quote> - ist XML das übliche
       Format, obwohl es wegen seiner aufgeblähten Struktur vielfach kritisiert
@@ -824,12 +841,36 @@ Message: Thanks for all the fish.
       geeignet, da die Datenstruktur hier nativ mit <code>eval()</code> in ein
       Objekt umgewandelt werden kann und wenig Overhead hat. Es existieren
       aber auch zahlreiche Implementierungen für PHP, Perl etc. Eine Ausgabe
-      in JSON fehlt dem AJAM bisher jedoch leider.</para>
+      in JSON fehlt dem AJAM bisher jedoch leider. Man könnte aber
+      beispielsweise die Plain-Text-Ausgabe clientseitig in JSON umwandeln,
+      wenn einem das leichter fällt oder sich besser in vorhandene JS-Libs
+      inegrieren lässt. Hier der Ansatz als Idee:<programlisting>// angenommen in responseText ist der empfangene Antwort-Text
+// gespeichert, was wir hier nur simulieren:
+var responseText = 'Response: Success\n'
++'Message: Mailbox Message Count\n'
++'Mailbox: 123\n'
++'NewMessages: 0\n'
++'OldMessages: 0\n';
+
+// einfache Anführungszeichen escapen:
+responseText = responseText.replace( /\'/g, "\\'" );
+// Felder quoten:
+responseText = responseText.replace( /^([a-z\d]*):\s*(.*)/gmi, "'$1':'$2'," );
+// in Objekt umwandeln:
+eval('var packet = {'+ responseText +'}');
+
+// jetzt kann man wie bei jedem Objekt so auf die Felder zugreifen:
+alert( packet['NewMessages'] );   // gibt "0" aus
+</programlisting></para>
+
+      <bridgehead>Ping</bridgehead>
 
       <para>Für Zugriffe von AJAX-Anwendungen auf den AJAM ist der Ping-Befehl
       besonders hilfreich, der dazu dient, die Verbindung und
       Authentifizierung offenzuhalten.<literallayout>http://localhost:8088/asterisk/rawman?action=Ping</literallayout><screen>Response: Pong
 </screen></para>
+
+      <bridgehead>AJAM Demo</bridgehead>
 
       <para>Unter der URL<literallayout>http://localhost:8088/asterisk/static/ajamdemo.html</literallayout>ist
       eine kleine Beispiel-Anwendung mitgeliefert, die den Zugriff per AJAX
@@ -846,6 +887,8 @@ Message: Thanks for all the fish.
         </footnote> für die AJAX-Zugriffe und zeigt mit der Action
       <code>Status</code> die momentan aktiven Kanäle an. Sie können die
       AJAM-Demo als Basis für eigene AJAX-Anwendungen heranziehen.</para>
+
+      <bridgehead>Apache</bridgehead>
 
       <para>Der Web-Server von Asterisk ist sehr minimalistisch und ersetzt
       keinesfalls einen <quote>richtigen</quote> Server wie den Apache, der
