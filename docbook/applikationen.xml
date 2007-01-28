@@ -6233,10 +6233,10 @@ behavior.</screen></para>
     <simpara>Startet verschiedene Macros in Abhängigkeit einer
     Expression.</simpara>
 
-    <synopsis>MacroIf(&lt;expr&gt;?macronameA[,argA1][:macronameB[,argB1]])</synopsis>
+    <synopsis>MacroIf(<replaceable>Ausdruck</replaceable>?<replaceable>MacronameA</replaceable>[,<replaceable>argA1</replaceable>][:<replaceable>MacronameB</replaceable>[,<replaceable>argB1</replaceable>]])</synopsis>
 
-    <simpara>Arbeitet wie <code>GotoIf()</code>, nur das anstatt einer
-    Sprungadresse ein Macroname als Ziel angegeben wird.</simpara>
+    <simpara>Ruft bedingt ein Makro auf, wobei ein Ausdruck im Stil von
+    <code>GotoIf()</code> ausschlaggebend ist.</simpara>
 
     <note>
       <formalpara>
@@ -7378,6 +7378,8 @@ monitored, otherwise 0.</screen></para>
 
       <para><xref linkend="applikationen-changemonitor" />, <xref
       linkend="applikationen-stopmonitor" />, <xref
+      linkend="applikationen-pausemonitor" />, <xref
+      linkend="applikationen-unpausemonitor" />, <xref
       linkend="applikationen-mixmonitor" />, <xref
       linkend="applikationen-record" /></para>
     </formalpara>
@@ -7392,16 +7394,15 @@ monitored, otherwise 0.</screen></para>
       <secondary><code>Morsecode()</code></secondary>
     </indexterm>
 
-    <simpara>Gibt einen angegebenen String als Morsecode aus.</simpara>
+    <simpara>Gibt einen angegebenen String als Morsezeichen aus.</simpara>
 
-    <synopsis>Morsecode(&lt;string&gt;)</synopsis>
+    <synopsis>Morsecode(<replaceable>String</replaceable>)</synopsis>
 
-    <simpara>Spielt den angegebenen String als Morsecode.</simpara>
+    <simpara>Spielt den angegebenen String als Morsezeichen.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Morsecode("Das Pferd frisst den Hafer nicht.")
-exten =&gt; 123,n,Hangup()
-</programlisting>
+exten =&gt; 123,n,Hangup()</programlisting>
 
     <note>
       <formalpara>
@@ -7728,19 +7729,19 @@ variables or functions without having any effect.</screen></para>
 
     <simpara>Rundruf.</simpara>
 
-    <synopsis>Page(Technology/Resource&amp;Technology2/Resource2[|options])</synopsis>
+    <synopsis>Page(<replaceable>Technology</replaceable>/<replaceable>Resource</replaceable>[&amp;<replaceable>Technology2</replaceable>/<replaceable>Resource2</replaceable>[&amp;<replaceable>...</replaceable>]][,<replaceable>Optionen</replaceable>])</synopsis>
 
     <simpara>Die als Parameter angegebenen Telefone werden angerufen und
     kommen automatisch in einen Konferenzraum, in dem sie allerdings nicht
     sprechen können. Dies kann nur der Initiator des Rundrufes.
     Optionen:</simpara>
 
-    <variablelist termlength="12">
+    <variablelist spacing="compact" termlength="3">
       <varlistentry>
         <term><code>d</code></term>
 
         <listitem>
-          <simpara>Full Duplex Modus aktivieren</simpara>
+          <simpara>Full-Duplex-Modus aktivieren</simpara>
         </listitem>
       </varlistentry>
 
@@ -7756,7 +7757,7 @@ variables or functions without having any effect.</screen></para>
         <term><code>r</code></term>
 
         <listitem>
-          <simpara>Der Rundruf wird in einer Datei abgespeichert.</simpara>
+          <simpara>Der Rundruf wird in einer Datei aufgezeichnet.</simpara>
         </listitem>
       </varlistentry>
     </variablelist>
@@ -7791,7 +7792,7 @@ destroyed when the original caller leaves.  Valid options are:
 &lt;         q - quiet, do not play beep to caller
 &lt;         r - record the page into a file (see 'r' for app_meetme)
 ---
-&gt; 	 q - quiet, do not play beep to caller</screen></para>
+&gt;    q - quiet, do not play beep to caller</screen></para>
       </formalpara>
     </note>
   </section>
@@ -8057,6 +8058,15 @@ Pauses monitoring of a channel until it is re-enabled by a call to UnpauseMonito
         <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
       </formalpara>
     </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applikationen-monitor" />, <xref
+      linkend="applikationen-unpausemonitor" />, <xref
+      linkend="applikationen-stopmonitor" />, <xref
+      linkend="applikationen-changemonitor" /></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-pausequeuemember">
@@ -11284,7 +11294,8 @@ Stops monitoring a channel. Has no effect if the channel is not monitored</scree
     <formalpara>
       <title>Siehe auch</title>
 
-      <para><xref linkend="applikationen-monitor" /></para>
+      <para><xref linkend="applikationen-monitor" />, <xref
+      linkend="applikationen-pausemonitor" /></para>
     </formalpara>
   </section>
 
