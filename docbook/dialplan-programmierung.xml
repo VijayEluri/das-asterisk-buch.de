@@ -1242,6 +1242,72 @@ exten =&gt; s,5,Hangup()</programlisting>
     </section>
   </section>
 
+  <section id="macro">
+    <title>Macro</title>
+
+    <para>Ein Macro ist eine Art Unterprogramm. Es kann komplexe Workflows
+    enthalten und dann im restlichen Dialplan immer mit einer einzigen Zeile
+    aufgerufen werden. Ein einfaches Beispiel kann so
+    aussehen:<programlisting>[macro-anruf]
+exten =&gt; s,1,Dial(SIP/${MACRO_EXTEN},10)
+exten =&gt; s,n,VoiceMail(${MACRO_EXTEN})</programlisting></para>
+
+    <para> Ein solches Macro würde im rest des Dialplanes dann wie folgt
+    aufgerufen werden:<programlisting>[verkauf]
+exten =&gt; _2XXX,1,Macro(anruf)
+
+[hausmeister]
+exten =&gt; _2XXX,1,Macro(anruf)</programlisting></para>
+
+    <para>Bei einem zweizeiligen Macro ist der Effekt natürlich nicht so groß
+    wie bei einem langen Macro, aber es ist klar, worum es geht.</para>
+
+    <para>Die Benutzung oder nicht Benutzung von Macros spaltet die Asterisk
+    Entwicklergemeinde in zwei Lager. Für die eine Hälfte machen sie den
+    Dialplan übersichtlicher und für die andere Hälfte machen sie ihn total
+    unübersichtlich. Entscheiden Sie selber, zu welcher Gruppierung Sie
+    gehören!</para>
+
+    <section>
+      <title>Macro Basics</title>
+
+      <para>Bei der Definition eines Macros sind folgende Punkte zu
+      beachten:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Bei der Definition eines Macros gibt es nur eine Extension
+          (die s-Extension).</para>
+        </listitem>
+
+        <listitem>
+          <para>Auf die ursprünglichen Variablen
+          <parameter>${EXTEN}</parameter> und
+          <parameter>${CONTEXT}</parameter> kann innerhalb des Macros nicht
+          direkt zugegriffen werden. Das geschieht über die Variablen
+          <parameter>${MACRO_EXTEN}</parameter> und
+          <parameter>${MACRO_CONTEXT}</parameter>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Beim Aufruf eines Macros können zusätzliche Argumente
+          übergeben werden (mit Komma oder Pipe abgetrennt). Diese können im
+          Macro mit <parameter>${ARGn}</parameter> (n ist dabei eine
+          natürliche Zahl) abgerufen werden.</para>
+        </listitem>
+
+        <listitem>
+          <para>Ein Macro wird durch <code>[macro-macroname]</code> definiert
+          und mit der Applikation <command>Macro()</command> im Dialplan
+          aufgerufen.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Weitere Informationen zu Macros finden Sie unter <xref
+      linkend="applikationen-macro" />.</para>
+    </section>
+  </section>
+
   <section id="programmierer-howto">
     <title>Kleines Programmierer Howto</title>
 
