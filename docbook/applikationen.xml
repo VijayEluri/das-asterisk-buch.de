@@ -2641,31 +2641,29 @@ Otherwise, this application will wait until the calling channel hangs up.</scree
       <secondary><code>ContinueWhile()</code></secondary>
     </indexterm>
 
-    <simpara>Springt während der Ausführung einer While()-Schleife wieder nach
-    oben.</simpara>
+    <simpara>Springt während der Ausführung einer While-Schleife wieder zum
+    Anfang.</simpara>
 
     <synopsis>ContinueWhile()</synopsis>
 
     <simpara>Mit <code>ContinueWhile()</code> kann die Ausführung einer
-    While()-Schleife im Dialplan unterbrochen werden. Es wird dann direkt zum
-    Kontrolinstanz gesprungen.</simpara>
+    While-Schleife im Dialplan unterbrochen werden. Es wird dann direkt zum
+    Beginn der While-Schleife gesprungen und die Bedingung erneut
+    geprüft.</simpara>
 
     <note>
       <formalpara>
         <title>Interner Hilfetext zu dieser Applikation in Asterisk
         1.4:</title>
 
-        <para><screen>
-  -= Info about application 'ContinueWhile' =- 
+        <para><screen>  -= Info about application 'ContinueWhile' =- 
 
 [Synopsis]
 Restart a While loop
 
 [Description]
 Usage:  ContinueWhile()
-Returns to the top of the while loop and re-evaluates the conditional.
-
-</screen></para>
+Returns to the top of the while loop and re-evaluates the conditional.</screen></para>
       </formalpara>
 
       <formalpara>
@@ -2678,7 +2676,8 @@ Returns to the top of the while loop and re-evaluates the conditional.
     <formalpara>
       <title>Siehe auch</title>
 
-      <para><xref linkend="ael" /></para>
+      <para><xref linkend="applikationen-while" />, <xref
+      linkend="applikationen-exitwhile" />, <xref linkend="ael" /></para>
     </formalpara>
   </section>
 
@@ -4762,20 +4761,24 @@ supplied, the current channel's context will be used.
       <secondary><code>ExternalIVR()</code></secondary>
     </indexterm>
 
-    <simpara>Startet eine externe IVR Applikation.</simpara>
+    <simpara>Startet eine externe IVR-Applikation.</simpara>
 
-    <synopsis>ExternalIVR(command[,arg[,arg...]])</synopsis>
+    <synopsis>ExternalIVR(<replaceable>Shell-Befehl</replaceable>[,<replaceable>Arg1</replaceable>[,<replaceable>Arg2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
 
-    <simpara>Forkt den Prozess und startet eine externe IVR
-    Applikation.</simpara>
+    <simpara>Forkt den Prozess und startet eine externe IVR<footnote>
+        <simpara>Interactive Voice Response</simpara>
+      </footnote>-Applikation. Diese Applikation erhält alle DTMF-Ereignisse
+    um darauf reagieren zu können. Sie wird beim Auflegen des Kanals
+    benachrichtigt, muss sich aber selber beenden. Das
+    Kommunikations-Protokoll zwischen Asterisk und der Applikation wird in
+    <filename>doc/externalivr.txt</filename> beschrieben.</simpara>
 
     <note>
       <formalpara>
         <title>Interner Hilfetext zu dieser Applikation in Asterisk
         1.4:</title>
 
-        <para><screen>
-  -= Info about application 'ExternalIVR' =- 
+        <para><screen>  -= Info about application 'ExternalIVR' =- 
 
 [Synopsis]
 Interfaces with an external IVR application
@@ -4788,9 +4791,7 @@ via simple commands issued over its stdout. The external application
 will receive all DTMF events received on the channel, and notification
 if the channel is hung up. The application will not be forcibly terminated
 when the channel is hung up.
-See doc/externalivr.txt for a protocol specification.
-
-</screen></para>
+See doc/externalivr.txt for a protocol specification.</screen></para>
       </formalpara>
 
       <formalpara>
@@ -11605,6 +11606,8 @@ EndWhile is called until expr is no longer true.</screen></para>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-endwhile" />, <xref
+      linkend="applikationen-exitwhile" />, <xref
+      linkend="applikationen-continuewhile" />, <xref
       linkend="applikationen-gotoif" /></para>
     </formalpara>
   </section>
