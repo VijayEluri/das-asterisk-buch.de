@@ -6168,8 +6168,8 @@ Arguments and return values as in application Macro()</screen></para>
       <title>Siehe auch</title>
 
       <para><xref linkend="applikationen-macro" />, <xref
-      linkend="applikationen-goto" />, <xref
-      linkend="applikationen-gosub" /></para>
+      linkend="applikationen-goto" />, <xref linkend="applikationen-gosub" />,
+      <filename>doc/macroexclusive.txt</filename></para>
     </formalpara>
   </section>
 
@@ -6217,8 +6217,7 @@ behavior.</screen></para>
     <formalpara>
       <title>Siehe auch</title>
 
-      <para><xref linkend="applikationen-goto" />, <xref
-      linkend="applikationen-gosub" /></para>
+      <para><xref linkend="applikationen-macro" /></para>
     </formalpara>
   </section>
 
@@ -6234,10 +6233,10 @@ behavior.</screen></para>
     <simpara>Startet verschiedene Macros in Abhängigkeit einer
     Expression.</simpara>
 
-    <synopsis>MacroIf(&lt;expr&gt;?macroname_a[,arg1][:macroname_b[,arg1]])</synopsis>
+    <synopsis>MacroIf(&lt;expr&gt;?macronameA[,argA1][:macronameB[,argB1]])</synopsis>
 
-    <simpara>Arbeitet wie GotoIf, nur das anstatt einer Sprungadresse ein
-    Macroname als Ziel angegeben wird.</simpara>
+    <simpara>Arbeitet wie <code>GotoIf()</code>, nur das anstatt einer
+    Sprungadresse ein Macroname als Ziel angegeben wird.</simpara>
 
     <note>
       <formalpara>
@@ -6266,9 +6265,9 @@ Arguments and return values as in application macro()</screen></para>
     <formalpara>
       <title>Siehe auch</title>
 
-      <para><xref linkend="applikationen-goto" />, <xref
+      <para><xref linkend="applikationen-macro" />, <xref
       linkend="applikationen-gotoif" />, <xref
-      linkend="applikationen-gosub" /></para>
+      linkend="applikationen-gosubif" /></para>
     </formalpara>
   </section>
 
@@ -10712,8 +10711,8 @@ SetCDRUserField(value): Set the CDR 'user field' to value
 
     <synopsis>SetGlobalVar(variable=value)</synopsis>
 
-    <simpara>Kann anstatt <code>Set(variable=value,g)</code> benutzt werden,
-    um eine globale Variable zu setzen.</simpara>
+    <simpara>Setzt eine globale Variable. Falls die Variable nicht existiert,
+    wird sie gleichzeitig definiert.</simpara>
 
     <note>
       <formalpara>
@@ -10736,6 +10735,21 @@ the specified value.</screen></para>
         <para><screen>- keine - </screen></para>
       </formalpara>
     </note>
+
+    <important>
+      <para>Obwohl in der internen Hilfe noch kein Hinweis darauf steht, ist
+      diese Applikation deprecated. Im Source-Code wird man
+      fündig:<programlisting>ast_log(LOG_WARNING, "SetGlobalVar is deprecated.  Please use Set(GLOBAL(%s)=%s) instead.\n", name, stringp);</programlisting>Bitte
+      verwenden Sie also in Asterisk 1.2 <code>Set()</code> mit der Option
+      <code>g</code> und in Asterisk 1.4 <code>GLOBAL()</code>.</para>
+    </important>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applikationen-set" />, <xref
+      linkend="funktionen-global" /></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-setmusiconhold">
