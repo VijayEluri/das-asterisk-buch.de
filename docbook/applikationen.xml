@@ -2384,7 +2384,7 @@ ChannelRedirect(channel|[[context|]extension|]priority):
         </varlistentry>
 
         <varlistentry>
-          <term><code>r[(<replaceable>Name</replaceable>)]</code></term>
+          <term><code>r([<replaceable>Name</replaceable>])</code></term>
 
           <listitem>
             <para>(record) Die Sitzung in einer Datei im Verzeichnis
@@ -2558,7 +2558,8 @@ only channels beginning with this string will be spied upon.
     <formalpara>
       <title>Siehe auch</title>
 
-      <para><xref linkend="applikationen-zapbarge" />, <xref
+      <para><xref linkend="applikationen-extenspy" />, <xref
+      linkend="applikationen-zapbarge" />, <xref
       linkend="applikationen-zapscan" />, <xref
       linkend="applikationen-monitor" /></para>
     </formalpara>
@@ -4636,7 +4637,7 @@ arguments, if the current time matches the given time specification.</screen></p
     <synopsis>ExitWhile()</synopsis>
 
     <simpara>Mit <code>ExitWhile()</code> kann innerhalb einer While-Schleife
-    die weitere Ausführung abgebrochen werden. Unabhängig davon, ob die
+    die weitere Ausführung abgebrochen werden, unabhängig davon, ob die
     While-Kondition erfüllt ist oder nicht.</simpara>
 
     <note>
@@ -4644,17 +4645,14 @@ arguments, if the current time matches the given time specification.</screen></p
         <title>Interner Hilfetext zu dieser Applikation in Asterisk
         1.4:</title>
 
-        <para><screen>
-  -= Info about application 'ExitWhile' =- 
+        <para><screen>  -= Info about application 'ExitWhile' =- 
 
 [Synopsis]
 End a While loop
 
 [Description]
 Usage:  ExitWhile()
-Exits a While loop, whether or not the conditional has been satisfied.
-
-</screen></para>
+Exits a While loop, whether or not the conditional has been satisfied.</screen></para>
       </formalpara>
 
       <formalpara>
@@ -4663,6 +4661,13 @@ Exits a While loop, whether or not the conditional has been satisfied.
         <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
       </formalpara>
     </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applikationen-while" />, <xref
+      linkend="applikationen-endwhile" /></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-extenspy">
@@ -4674,32 +4679,32 @@ Exits a While loop, whether or not the conditional has been satisfied.
       <secondary><code>ExtenSpy()</code></secondary>
     </indexterm>
 
-    <simpara>Bei einem Gespräch zuhören und bei Bedarf
-    rein"wispern".</simpara>
+    <simpara>Einen Kanal belauschen und bei Bedarf reinflüstern.</simpara>
 
-    <synopsis>ExtenSpy(exten[@context][,options])</synopsis>
+    <synopsis>ExtenSpy(<replaceable>Extension</replaceable>[@<replaceable>Context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
 
     <simpara><code>ExtenSpy()</code> kann auf Channels zu der angegebenen
-    Extension geschaltet werden. Optionen:</simpara>
+    Extension geschaltet werden um das ein- und ausgehende Audio mitzuhören.
+    Optionen:</simpara>
 
-    <variablelist termlength="15">
+    <variablelist termlength="11">
       <varlistentry>
         <term><code>b</code></term>
 
         <listitem>
-          <simpara>Nur Channels abhören, die zu einem bridged Call
+          <simpara>Nur Channels abhören, die zu einem verbundenen Anruf
           gehören.</simpara>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term><code>g(grp)</code></term>
+        <term><code>g(<replaceable>grp</replaceable>)</code></term>
 
         <listitem>
-          <simpara>Nur Channels abhören, die im Inhalt der Variable
-          ${SPYGROUP} eine durch ":" getrennte Liste von Schlüsselwörtern hat,
-          die auch das Schlüsselwort <parameter>grp</parameter>
-          enthält.</simpara>
+          <simpara>Nur Channels abhören, bei denen in deren Kanal-Variable
+          <code>${SPYGROUP}</code> die Gruppe <code>grp</code> enthalten ist.
+          <code>${SPYGROUP}</code> kann eine durch <code>:</code> getrennt
+          Liste von Werten sein.</simpara>
         </listitem>
       </varlistentry>
 
@@ -4707,26 +4712,27 @@ Exits a While loop, whether or not the conditional has been satisfied.
         <term><code>q</code></term>
 
         <listitem>
-          <simpara>Kein Ton beim Begin abspielen.</simpara>
+          <simpara>Keinen Ton beim Beginn abspielen.</simpara>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term><code>r[(name)]</code></term>
+        <term><code>r([<replaceable>name</replaceable>])</code></term>
 
         <listitem>
-          <simpara>Abgehörte Gespräche werde in das Spool Verzeichnis
-          aufgezeichnet. Bei Bedarf kann mit <parameter>name</parameter> ein
-          Standard-Dateiname eingestellt werden.</simpara>
+          <simpara>Abgehörte Gespräche werde im Spool-Verzeichnis
+          aufgezeichnet. Bei Bedarf kann mit <code>name</code> ein Dateiname
+          (ohne Erweiterung) eingestellt werden, Default ist
+          <filename>chanspy</filename>.</simpara>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term><code>v[wert]</code></term>
+        <term><code>v([<replaceable>wert</replaceable>])</code></term>
 
         <listitem>
-          <simpara>Verändert die Gesprächslautstärke. Die Werte reichen von -4
-          bis 4.</simpara>
+          <simpara>Verändert die anfängliche Lautstärke. Die Werte reichen von
+          -4 bis 4.</simpara>
         </listitem>
       </varlistentry>
 
@@ -4734,8 +4740,8 @@ Exits a While loop, whether or not the conditional has been satisfied.
         <term><code>w</code></term>
 
         <listitem>
-          <simpara>Aktiviert den Wisper-Modus. So kann man in den beobachteten
-          Channel rein"wispern".</simpara>
+          <simpara>Aktiviert den Flüster-Modus (whisper mode). So kann man in
+          den abgehörten Channel reinflüstern.</simpara>
         </listitem>
       </varlistentry>
 
@@ -4744,7 +4750,7 @@ Exits a While loop, whether or not the conditional has been satisfied.
 
         <listitem>
           <simpara>Aktiviert "private whisper mode". So kann man zwar in den
-          beobachteten Channel sprechen, aber diesen nicht hören.</simpara>
+          abgehörten Channel sprechen, aber diesen nicht hören.</simpara>
         </listitem>
       </varlistentry>
     </variablelist>
@@ -4754,8 +4760,7 @@ Exits a While loop, whether or not the conditional has been satisfied.
         <title>Interner Hilfetext zu dieser Applikation in Asterisk
         1.4:</title>
 
-        <para><screen>
-  -= Info about application 'ExtenSpy' =- 
+        <para><screen>  -= Info about application 'ExtenSpy' =- 
 
 [Synopsis]
 Listen to a channel, and optionally whisper into it
@@ -4784,9 +4789,7 @@ supplied, the current channel's context will be used.
                     the spied-on channel.
     W             - Enable 'private whisper' mode, so the spying channel can
                     talk to the spied-on channel but cannot listen to that
-                    channel.
-
-</screen></para>
+                    channel.</screen></para>
       </formalpara>
 
       <formalpara>
@@ -4795,6 +4798,15 @@ supplied, the current channel's context will be used.
         <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
       </formalpara>
     </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applikationen-chanspy" />, <xref
+      linkend="applikationen-zapbarge" />, <xref
+      linkend="applikationen-zapscan" />, <xref
+      linkend="applikationen-monitor" /></para>
+    </formalpara>
   </section>
 
   <section id="applikationen-externalivr">
