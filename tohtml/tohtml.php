@@ -14,7 +14,7 @@ ini_set('memory_limit', '50M');
 
 
 
-$opts = getOpt('hu:p:t');
+$opts = getOpt('hu:p:tr');
 if (array_key_exists('h',$opts)) {
 	$help = '
     Optionen;
@@ -23,7 +23,7 @@ if (array_key_exists('h',$opts)) {
     -h                 Hilfe
     -u svnUsername     anderer Benutzer zum Auschecken als anonymous
     -p svnPassword     Passwort für den SVN-User
-    -l                 nicht erneut Auschecken
+    -r                 nicht erneut Auschecken
     -t                 nicht erneut von Docbook nach HTML transformieren
 
 ';
@@ -40,9 +40,15 @@ if (array_key_exists('p',$opts))
 else
 	$p = '';
 
+echo "
+Aus SVN auschecken ...
+===============================================
+";
 if (! array_key_exists('r',$opts)){
-	//passthru ("svn co $u $p https://svn.amooma.com/das-asterisk-buch/docbook/ $dir");
-}
+	passthru ("svn co $u $p 'https://svn.amooma.com/das-asterisk-buch/docbook/' '$docbookDir'");
+} else
+	echo "uebersprungen
+";
 
 
 
@@ -66,16 +72,17 @@ $params = array(
 	//'preface.autolabel'        => 'i',  # lowercase roman (i, ii, iii ...)
 	'chunker.output.indent'    => 'yes',
 	'chunker.output.omit-xml-declaration' => 'yes',
-	//'html.extra.head.links'    => '1',
+	'html.extra.head.links'    => '1',
 	'chunk.fast' => '1',
-	'chunk.section.depth'      => '2',
+	'chunk.section.depth'      => '2',  # bis zu welcher Tiefe gechunkt werden soll
 	'chunk.first.sections'     => '1',
 	'chunk.tocs.and.lots' => '1',
 	'navig.graphics'           => '1',
 	'navig.graphics.path'      => 'img/',
 	'navig.graphics.extension' => '.gif',
 	'navig.showtitles'         => '1',
-	'ulink.target'             => '_blank',
+	'ulink.target'             => '_blank',  # externe Links in neuem Fenster
+	'ignore.image.scaling'     => '1',
 	
 );
 
@@ -179,7 +186,7 @@ document.getElementById("email-obf-'. $counter .'").innerHTML = "<a href=\"mailt
 $werbung = file_get_contents( $myDir .'werbung.inc.html' );
 foreach (glob($htmlDir.'*.html') as $filename) {
 	$baseName = baseName( $filename );
-	echo 'processing ', $baseName, " ...\n";
+	echo 'bearbeite ', $baseName, " ...\n";
 	
 	$href = ($baseName != 'index.html') ? $baseName : '';
 	
@@ -191,8 +198,10 @@ foreach (glob($htmlDir.'*.html') as $filename) {
 	$html = preg_replace( '/(<\/body>)/', '</td><td id="sidebar-right">'. $werbung .'</td></tr></table>', $html );
 	$html = preg_replace_callback( '/<a\s+href="mailto:[^@]+@[a-z.\-_0-9]+\.[a-z]+"[^>]*>([^@]+@[a-z.\-_0-9]+\.[a-z]+)<\/a>/', 'replaceEmail', $html );
 	$html = str_replace( '</head>', '<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<script type="text/javascript" src="aux.js"></script>
 </head>', $html );
 	$html = preg_replace( '/(<a\s+accesskey="t"\s+href="bk01-toc.html">)[^<]*(<\/a>)/', '$1<img src="img/toc.gif" alt="Inhaltsverzeichnis" />$2', $html );
+	$html = preg_replace( '/<\/html>/', "\n<!-- Seite erzeugt am ". date('Y-m-d') ." um ". date('H:i T') ." -->\n</html>", $html );
 	
 	$fh = fOpen( $html2Dir . $baseName, 'wb' );
 	fWrite($fh, $html, strLen($html));
@@ -206,9 +215,10 @@ Bilder und CSS kopieren ...
 passthru( "cp -r '".$myDir."stylesheets/docbook-xsl/images' '".$html2Dir."/img'" );
 passthru( "cp -r ".$myDir."img/* '".$html2Dir."/img/'" );
 passthru( "cp -r '".$myDir."css' '".$html2Dir."/'" );
-//passthru( "cp -r '".$myDir."sb.gif' '".$html2Dir."/img/'" );
 passthru( "cp -r '".$myDir."favicon.ico' '".$html2Dir."/'" );
-//passthru( "cp -r '".$myDir."ast.gif' '".$html2Dir."/img/'" );
+passthru( "cp -r '".$myDir."aux.js' '".$html2Dir."/'" );
+passthru( "cp -r '".$docbookDir."bilder' '".$html2Dir."/'" );
+passthru( "cp -r '".$docbookDir."screenshots' '".$html2Dir."/'" );
 
 
 echo "
