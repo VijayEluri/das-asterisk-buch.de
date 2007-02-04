@@ -196,7 +196,9 @@ function initFootnotes() {
 					}
 					
 					var ftnName = 'ftn-'+ links[i].id;
-					HINTS_ITEMS[ftnName] = wrapHint( ftn.innerHTML );
+					var html = ftn.innerHTML;
+					html = html.replace(/id="(ftn\.[^"]+)/g, 'id="ignored-$1');
+					HINTS_ITEMS[ftnName] = wrapHint( html );
 					
 					links[i].setAttribute('onmouseover', 'myHints.show("'+ftnName+'");');
 					links[i].setAttribute('onmouseout', 'myHints.hide();');
