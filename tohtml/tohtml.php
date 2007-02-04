@@ -220,7 +220,7 @@ passthru( "cp -r ".$myDir."img/* '".$html2Dir."/img/'" );
 passthru( "cp -r '".$myDir."css' '".$html2Dir."/'" );
 passthru( "cp -r '".$myDir."favicon.ico' '".$html2Dir."/'" );
 passthru( "cp -r '".$myDir."aux.js' '".$html2Dir."/'" );
-passthru( "cp -r '".$myDir."trackvp' '".$html2Dir."/'" );
+//passthru( "cp -r '".$myDir."trackvp' '".$html2Dir."/'" );
 passthru( "cp -r '".$docbookDir."bilder' '".$html2Dir."/'" );
 passthru( "cp -r '".$docbookDir."screenshots' '".$html2Dir."/'" );
 
