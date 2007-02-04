@@ -183,7 +183,8 @@ function tocToHtml( $toc ) {
 
 function buildHtmlToc( $toc, $file ) {
 	$parent = parentFromToc( $toc, $file );
-	$html = '&uarr; <b><a href="'. $parent['href'] .'">'. $parent['title'] .'</a></b><br /><br />'."\n";
+	$html = '&uarr; <b><a href="bk01-toc.html">'. 'Inhaltsverzeichnis' .'</a></b><br /><br />'."\n";
+	$html.= '&uarr; <b><a href="'. $parent['href'] .'">'. $parent['title'] .'</a></b><br /><br />'."\n";
 	if (hasKids( $toc, $file )) {
 		$self = selfFromToc( $toc, $file );
 		$htmlSelf = '&uarr; <b><a href="'. $self['href'] .'">'. $self['title'] .'</a></b><br /><br />'."\n";
