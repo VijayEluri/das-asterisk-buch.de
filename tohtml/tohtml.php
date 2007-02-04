@@ -195,7 +195,7 @@ foreach (glob($htmlDir.'*.html') as $filename) {
 	
 	$html = file_get_contents( $htmlDir . $baseName );
 	$html = preg_replace_callback( '/<pre([^>]*)>([^<]*)<\/pre>/', 'replacePre', $html );
-	$html = preg_replace( '/(<body[^>]*>)/', '$1<table id="outer" cellspacing="0"><tr><td id="sidebar-left">'. $menu .'</td><td id="content-container">', $html );
+	$html = preg_replace( '/(<body[^>]*>)/', '$1<table id="outer" cellspacing="0"><tr><td id="sidebar-left">'."\n". $menu .'</td><td id="content-container">', $html );
 	$html = preg_replace( '/(<\/body>)/', '</td><td id="sidebar-right">'. $werbung .'</td></tr></table>', $html );
 	if (array_key_exists('e',$opts)) {
 		$html = preg_replace_callback( '/<a\s+href="mailto:[^@]+@[a-z.\-_0-9]+\.[a-z]+"[^>]*>([^@]+@[a-z.\-_0-9]+\.[a-z]+)<\/a>/', 'replaceEmail', $html );
