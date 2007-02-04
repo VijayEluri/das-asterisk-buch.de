@@ -180,7 +180,6 @@ var HINTS_CFG = {
 };
 
 var HINTS_ITEMS = {};
-
 var myHints = null;
 
 function initFootnotes() {
@@ -196,9 +195,10 @@ function initFootnotes() {
 						ftn = ftn.parentNode;
 					}
 					
-					HINTS_ITEMS[ftn.id] = wrapHint( ftn.innerHTML );
+					var ftnName = 'ftn-'+ links[i].id;
+					HINTS_ITEMS[ftnName] = wrapHint( ftn.innerHTML );
 					
-					links[i].setAttribute('onmouseover', 'myHints.show("'+ftn.id+'");');
+					links[i].setAttribute('onmouseover', 'myHints.show("'+ftnName+'");');
 					links[i].setAttribute('onmouseout', 'myHints.hide();');
 					
 					
