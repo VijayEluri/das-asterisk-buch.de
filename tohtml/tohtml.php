@@ -14,7 +14,7 @@ ini_set('memory_limit', '50M');
 
 
 
-$opts = getOpt('hu:p:tr');
+$opts = getOpt('hu:p:tre');
 if (array_key_exists('h',$opts)) {
 	$help = '
     Optionen;
@@ -25,6 +25,7 @@ if (array_key_exists('h',$opts)) {
     -p svnPassword     Passwort für den SVN-User
     -r                 nicht erneut Auschecken
     -t                 nicht erneut von Docbook nach HTML transformieren
+    -e                 E-Mail-Adressen mit JS schuetzen
 
 ';
 	echo $help;
@@ -196,7 +197,9 @@ foreach (glob($htmlDir.'*.html') as $filename) {
 	$html = preg_replace_callback( '/<pre([^>]*)>([^<]*)<\/pre>/', 'replacePre', $html );
 	$html = preg_replace( '/(<body[^>]*>)/', '$1<table id="outer" cellspacing="0"><tr><td id="sidebar-left">'. $menu .'</td><td id="content-container">', $html );
 	$html = preg_replace( '/(<\/body>)/', '</td><td id="sidebar-right">'. $werbung .'</td></tr></table>', $html );
-	$html = preg_replace_callback( '/<a\s+href="mailto:[^@]+@[a-z.\-_0-9]+\.[a-z]+"[^>]*>([^@]+@[a-z.\-_0-9]+\.[a-z]+)<\/a>/', 'replaceEmail', $html );
+	if (array_key_exists('e',$opts)) {
+		$html = preg_replace_callback( '/<a\s+href="mailto:[^@]+@[a-z.\-_0-9]+\.[a-z]+"[^>]*>([^@]+@[a-z.\-_0-9]+\.[a-z]+)<\/a>/', 'replaceEmail', $html );
+	}
 	$html = str_replace( '</head>', '<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 <script type="text/javascript" src="aux.js"></script>
 </head>', $html );
