@@ -345,24 +345,24 @@ Database entries removed.</screen><important>
 ;
 ; aktivieren
 exten =&gt; _44X.,1,Answer()
-exten =&gt; _44X.,2,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
-exten =&gt; _44X.,3,SayDigits(${EXTEN:2})
-exten =&gt; _44X.,4,NoOp(Weiterleitung fuer ${CALLERID(num)} auf ${EXTEN:2} aktiviert.) 
-exten =&gt; _44X.,5,Hangup()
+exten =&gt; _44X.,n,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
+exten =&gt; _44X.,n,SayDigits(${EXTEN:2})
+exten =&gt; _44X.,n,NoOp(Weiterleitung fuer ${CALLERID(num)} auf ${EXTEN:2} aktiviert.) 
+exten =&gt; _44X.,n,Hangup()
 
 ; deaktivieren
 exten =&gt; 44,1,Answer()
-exten =&gt; 44,2,DBdel(CF/${CALLERID(num)})
-exten =&gt; 44,3,Playback(auth-thankyou)
-exten =&gt; 44,4,NoOp(Weiterleitung fuer ${CALLERID(num)} deaktiviert.) 
-exten =&gt; 44,5,Hangup()
+exten =&gt; 44,n,DBdel(CF/${CALLERID(num)})
+exten =&gt; 44,n,Playback(auth-thankyou)
+exten =&gt; 44,n,NoOp(Weiterleitung fuer ${CALLERID(num)} deaktiviert.) 
+exten =&gt; 44,n,Hangup()
 
 [from-extern]
 exten =&gt; _X.,1,NoOp(Anruf von ${CALLERID(num)} fuer ${EXTEN})
-exten =&gt; _X.,2,GotoIf($[foo${DB(CF/${EXTEN})} != foo]?100:20)
-exten =&gt; _X.,20,Dial(SIP/${EXTEN})
-exten =&gt; _X.,100,NoOp(Anruf fuer ${EXTEN} wird verbunden zu ${DB(CF/${EXTEN})})
-exten =&gt; _X.,101,Dial(local/${DB(CF/${EXTEN})})</programlisting>
+exten =&gt; _X.,n,GotoIf($[foo${DB(CF/${EXTEN})} != foo]?normal:forward)
+exten =&gt; _X.,n(normal),Dial(SIP/${EXTEN})
+exten =&gt; _X.,n(forward),NoOp(Anruf fuer ${EXTEN} wird verbunden zu ${DB(CF/${EXTEN})})
+exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})</programlisting>
     </section>
 
     <section id="komplexes-callforwarding">
@@ -380,43 +380,43 @@ exten =&gt; _X.,101,Dial(local/${DB(CF/${EXTEN})})</programlisting>
 ;
 ; aktivieren
 exten =&gt; _44X.,1,Answer()
-exten =&gt; _44X.,2,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
-exten =&gt; _44X.,3,SayDigits(${EXTEN:2})
-exten =&gt; _44X.,4,NoOp(Weiterleitung fuer ${CALLERID(num)} auf ${EXTEN:2} aktiviert.) 
-exten =&gt; _44X.,5,Hangup()
+exten =&gt; _44X.,n,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
+exten =&gt; _44X.,n,SayDigits(${EXTEN:2})
+exten =&gt; _44X.,n,NoOp(Weiterleitung fuer ${CALLERID(num)} auf ${EXTEN:2} aktiviert.) 
+exten =&gt; _44X.,n,Hangup()
 
 ; deaktivieren
 exten =&gt; 44,1,Answer()
-exten =&gt; 44,2,DBdel(CF/${CALLERID(num)})
-exten =&gt; 44,3,Playback(auth-thankyou)
-exten =&gt; 44,4,NoOp(Weiterleitung fuer ${CALLERID(num)} deaktiviert.) 
-exten =&gt; 44,5,Hangup()
+exten =&gt; 44,n,DBdel(CF/${CALLERID(num)})
+exten =&gt; 44,n,Playback(auth-thankyou)
+exten =&gt; 44,n,NoOp(Weiterleitung fuer ${CALLERID(num)} deaktiviert.) 
+exten =&gt; 44,n,Hangup()
 
 ; CallForwarding für die gesamte Telefonanlage
 ;
 ; aktivieren
 exten =&gt; _55X.,1,Answer()
-exten =&gt; _55X.,2,Set(DB(CF/anlage)=${EXTEN:2})
-exten =&gt; _55X.,3,SayDigits(${EXTEN:2})
-exten =&gt; _55X.,4,NoOp(Weiterleitung der Anlage auf ${EXTEN:2} aktiviert.) 
-exten =&gt; _55X.,5,Hangup()
+exten =&gt; _55X.,n,Set(DB(CF/anlage)=${EXTEN:2})
+exten =&gt; _55X.,n,SayDigits(${EXTEN:2})
+exten =&gt; _55X.,n,NoOp(Weiterleitung der Anlage auf ${EXTEN:2} aktiviert.) 
+exten =&gt; _55X.,n,Hangup()
 
 ; deaktivieren
 exten =&gt; 55,1,Answer()
-exten =&gt; 55,2,DBdel(CF/anlage)
-exten =&gt; 55,3,Playback(auth-thankyou)
-exten =&gt; 55,4,NoOp(Weiterleitung der Anlage deaktiviert.) 
-exten =&gt; 55,5,Hangup()
+exten =&gt; 55,n,DBdel(CF/anlage)
+exten =&gt; 55,n,Playback(auth-thankyou)
+exten =&gt; 55,n,NoOp(Weiterleitung der Anlage deaktiviert.) 
+exten =&gt; 55,n,Hangup()
 
 [from-extern]
 exten =&gt; _X.,1,NoOp(Anruf von ${CALLERID(num)} fuer ${EXTEN})
-exten =&gt; _X.,4,GotoIf($[foo${DB(CF/anlage)} != foo]?200:5)
-exten =&gt; _X.,5,GotoIf($[foo${DB(CF/${EXTEN})} != foo]?100:6)
-exten =&gt; _X.,6,Dial(SIP/${EXTEN})
-exten =&gt; _X.,100,NoOp(Anruf fuer ${EXTEN} wird verbunden zu ${DB(CF/${EXTEN})})
-exten =&gt; _X.,101,Dial(local/${DB(CF/${EXTEN})})
-exten =&gt; _X.,200,NoOp(Anruf fuer ${EXTEN} wird verbunden zu ${DB(CF/anlage)})
-exten =&gt; _X.,201,Dial(local/${DB(CF/anlage)})
+exten =&gt; _X.,n,GotoIf($[foo${DB(CF/anlage)} != foo]?cfanlage:zweiteregel)
+exten =&gt; _X.,n(zweiteregel),GotoIf($[foo${DB(CF/${EXTEN})} != foo]?cfnormal:normal)
+exten =&gt; _X.,n(normal),Dial(SIP/${EXTEN})
+exten =&gt; _X.,n(cfnormal),NoOp(Anruf fuer ${EXTEN} wird verbunden zu ${DB(CF/${EXTEN})})
+exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})
+exten =&gt; _X.,n(cfanlage),NoOp(Anruf fuer ${EXTEN} wird verbunden zu ${DB(CF/anlage)})
+exten =&gt; _X.,n,Dial(local/${DB(CF/anlage)})
 </programlisting></para>
     </section>
   </section>
