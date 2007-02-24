@@ -1,0 +1,1626 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<chapter id="kapitel-programmieren" lang="de" revision="$Revision: 1.18 $">
+  <!--% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Programmieren im Dialplan</title>
+
+  <para>Die Erstellung von intelligenten Funktionen oder Programmen kann in
+  Asterisk extern über ein AGI-Skript oder intern in der
+  <filename>extensions.conf</filename> erfolgen. In diesem Kapitel
+  beschäftigen wir uns mit der internen Variante.</para>
+
+  <para>In der Konfigurationsdatei <filename>extensions.conf</filename> wird
+  der so genannte Dialplan definiert. Dabei ähnelt der Dialplan häufig einem
+  BASIC-Programm. Der Admin kann in einer einfachen Skriptsprache
+  Programmabläufe und damit auch das Routing von Telefonaten erstellen. Ohne
+  diesen Dialplan kann weder raus- noch reintelefoniert werden!</para>
+
+  <section id="der-context">
+    <title>Context</title>
+
+    <indexterm>
+      <primary>Context</primary>
+    </indexterm>
+
+    <para>Der Dialplan wird in verschiedene Abschnitte unterteilt. Diese
+    Abschnitte heißen im Asterisk-Jargon Contexte. Am Anfang eines Dialplanes
+    muss es immer einen <code>[general]</code>-Context für allgemeine
+    Konfigurationen geben, die danach folgenden Contexte können beliebig
+    benannt werden. Die Contexte bilden das Verbindungsstück zwischen der
+    Definition eines Telefones (z.B. SIP oder ISDN) und dem Dialplan. Für ein
+    Telefon wird immer ein Context definiert. Ein Beispiel aus einer sip.conf:
+    <programlisting>[2000]
+type=friend
+context=interne-telefone
+secret=1234
+host=dynamic</programlisting>Das SIP-Telefon mit der Nummer 2000 ruft in
+    dieser Konfiguration immer den Context <code>interne-telefone</code> auf.
+    Wenn also ein Benutzer mit dem Telefon 2000 eine bestimmte Nummer wählt,
+    dann sucht Asterisk im Context <code>interne-telefone</code> nach der
+    entsprechenden Extension (also der dazu passenden Regel). Ist diese
+    Extension nicht vorhanden, passiert auch nichts.</para>
+
+    <section id="context-syntax">
+      <title>Syntax</title>
+
+      <para>Ein Context selbst wird eingeleitet durch Text in eckigen
+      Klammern. <quote>Text</quote> ist hierbei ein sinnvoller Name, der den
+      Context benennt und als spätere Referenz für denselben verwendet wird.
+      Alle Zeilen nach einer solchen Einleitung bis zum nächsten Context
+      werden als Bestandteil (Regeln, Anweisungen) dieses Contextes
+      behandelt:<programlisting>[general]
+
+[interne-telefone]
+Regeln, Anweisungen, ...
+
+[apfelmus]
+Regeln, Anweisungen, ...</programlisting></para>
+    </section>
+  </section>
+
+  <section id="die-extension">
+    <title>Extension</title>
+
+    <indexterm>
+      <primary>Extension</primary>
+    </indexterm>
+
+    <para>Die einzelnen Dialplan-Programme werden Asterisk-intern Extensions
+    genannt. Eine Extension wird nicht kompiliert, sondern bei jedem Durchlauf
+    von Asterisk interpretiert. Das Einlesen erfolgt einmalig automatisch
+    während des Startens des Asterisk-Daemons.<footnote>
+        <para>Eine Ausnahme stellt hier die Asterisk RealTime Architecture
+        (ARA) dar. In einem ARA-System wird der Dialplan in einer Datenbank
+        (z.B. MySQL) abgespeichert und dort von Asterisk bei jedem Anruf neu
+        eingelesen (also nicht nur einmal beim Starten von Asterisk). So
+        können Dialpläne auch im laufenden Betrieb ständig geändert werden.
+        Allerdings hat diese Variante viele Nachteile. Nährere Informationen
+        zu ARA finden Sie unter <ulink
+        url="http://www.voip-info.org/wiki/view/Asterisk+RealTime">
+        <citetitle>http://www.voip-info.org/wiki/view/Asterisk+RealTime</citetitle>
+        </ulink>.</para>
+      </footnote> Das erneute Einlesen des Dialplanes kann aber auch im
+    laufenden Betrieb im Command Line Interface durch den Befehl
+    <command>reload now</command> bzw. <command>extensions reload</command>
+    forciert werden.</para>
+
+    <section id="extension-syntax">
+      <title>Syntax</title>
+
+      <para>Eine Extension besteht immer aus folgenden Teilen:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Extension (Nummer oder Name)</para>
+        </listitem>
+
+        <listitem>
+          <para>Priorität (also der Programmzeilenzähler)</para>
+        </listitem>
+
+        <listitem>
+          <para>Applikation - das ist die Anweisung, die Asterisk ausführen
+          soll.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><programlisting>exten =&gt;
+<replaceable>Extension</replaceable>,<replaceable>Priorität</replaceable>,<replaceable>Applikation</replaceable>()
+</programlisting> z.B.<programlisting>exten =&gt; 123,1,Answer()
+</programlisting></para>
+    </section>
+
+    <section id="die-prioritaet">
+      <title>Priorität</title>
+
+      <indexterm>
+        <primary>Priorität</primary>
+      </indexterm>
+
+      <para>Eine typische Extension besteht aus mehreren Schritten. Damit
+      Asterisk diese Schritte in der richtigen Reihenfolge ausführen kann,
+      braucht es eine Art Zähler. Das erinnert ein wenig an frühe
+      BASIC-Programme, die auch am Anfang einer jeden Zeile einen solchen
+      Zähler hatten. Dieser Zähler heißt bei Asterisk Priorität. Prioritäten
+      werden der Reihenfolge nach abgearbeitet (es wird immer +1 gezählt).
+      Wenn die nächste logische Priorität (Lücken sind nicht zulässig!) nicht
+      definiert ist bricht Asterisk ab.</para>
+
+      <section id="prioritaet-hello-world">
+        <title>Ein hello-world Beispiel</title>
+
+        <para>Die folgende Extension wird immer ausgelöst, wenn ein Telefon
+        mit dem Context <code>apfelmus</code> die Nummer 8888 anruft. Asterisk
+        nimmt dann ab, spielt den Sprachbaustein
+        <filename>hello-world</filename> ab und legt auf.<programlisting>[apfelmus]
+exten =&gt; 8888,1,Answer()
+exten =&gt; 8888,2,Playback(hello-world)
+exten =&gt; 8888,3,Hangup()</programlisting></para>
+      </section>
+
+      <section id="n-prioritaet">
+        <title>n-Priorität</title>
+
+        <indexterm>
+          <primary>Priorität</primary>
+
+          <secondary>n-Priorität</secondary>
+        </indexterm>
+
+        <para>Seit der Asterisk-Version 1.2.0 ist es möglich, Prioritäten
+        nicht nur streng mit Zahlen, sondern auch mit dem Platzhalter
+        <code>n</code> zu belegen. Der n-Zähler fungiert hierbei als ein
+        automatischer Programmzähler. Jedesmal, wenn die Programmsteuerung auf
+        die n-Priorität stößt, addiert sie 1 zum letzten Wert der Priorität.
+        Dies ist dann hilfreich, falls Sie viele aufeinander folgende Regeln
+        definiert haben und eine weitere Regel einfügen möchten, denn dann
+        müssen Sie nicht mehr die Zähler der nachfolgenden Regeln neu
+        nummerieren. Wenn eine normale Extension wie folgt aussieht:</para>
+
+        <programlisting>exten =&gt; 1234,1,Answer()
+exten =&gt; 1234,2,Wait(2)
+exten =&gt; 1234,3,Play(tt-monkeys)
+exten =&gt; 1234,4,Wait(2)
+exten =&gt; 1234,5,Hangup()</programlisting>
+
+        <para>kann man die gleiche Extension auch mit der n-Priorität
+        definieren:<programlisting>exten =&gt; 1234,1,Answer()
+exten =&gt; 1234,n,Wait(2)
+exten =&gt; 1234,n,Play(tt-monkeys)
+exten =&gt; 1234,n,Wait(2)
+exten =&gt; 1234,n,Hangup()</programlisting></para>
+
+        <para>Dies kann nicht nur an der zweiten Priorität, sondern an einer
+        beliebigen Stelle passieren:<programlisting>exten =&gt; 1234,1,Answer()
+exten =&gt; 1234,2,Wait(2)
+exten =&gt; 1234,3,Play(tt-monkeys)
+exten =&gt; 1234,n,Wait(2)
+exten =&gt; 1234,n,Hangup()</programlisting></para>
+
+        <para>Die meisten Beispiele in diesem Buch verwenden die traditionelle
+        Art (also ohne die <code>n</code>-Priorität), weil es Applikationen
+        (z.B. <code>Dial()</code>) gibt, die eine bestimmte Anzahl von
+        Prioritäten (nämlich 101) hochzählen, falls ein bestimmtes Ereignis
+        eintritt. Dies ist mit der n-Priorität nicht mehr einfach
+        abbildbar.</para>
+      </section>
+    </section>
+
+    <section id="regular-expression">
+      <title>Regular Expressions</title>
+
+      <indexterm>
+        <primary>Regular Expression</primary>
+      </indexterm>
+
+      <para>Mit unserem bisherigen Wissen müssen wir pro möglicher Rufnummer
+      immer eine eigene Extension schreiben. Dies würde schon nach kurzer Zeit
+      sehr lange und fehleranfällige Dialpläne nach sich ziehen. Sollen z.B.
+      die Rufnummern 100 bis 109 jeweils immer den hello-world Sprachbaustein
+      abspielen, so würde die extensions.conf wie folgt
+      aussehen:<programlisting>[general]
+
+[apfelmus]
+exten =&gt; 100,1,Answer()
+exten =&gt; 100,2,Playback(hello-world)
+exten =&gt; 100,3,Hangup()
+
+exten =&gt; 101,1,Answer()
+exten =&gt; 101,2,Playback(hello-world)
+exten =&gt; 101,3,Hangup()
+
+exten =&gt; 102,1,Answer()
+exten =&gt; 102,2,Playback(hello-world)
+exten =&gt; 102,3,Hangup()
+
+exten =&gt; 103,1,Answer()
+exten =&gt; 103,2,Playback(hello-world)
+exten =&gt; 103,3,Hangup()
+
+exten =&gt; 104,1,Answer()
+exten =&gt; 104,2,Playback(hello-world)
+exten =&gt; 104,3,Hangup()
+
+exten =&gt; 105,1,Answer()
+exten =&gt; 105,2,Playback(hello-world)
+exten =&gt; 105,3,Hangup()
+
+exten =&gt; 106,1,Answer()
+exten =&gt; 106,2,Playback(hello-world)
+exten =&gt; 106,3,Hangup()
+
+exten =&gt; 107,1,Answer()
+exten =&gt; 107,2,Playback(hello-world)
+exten =&gt; 107,3,Hangup()
+
+exten =&gt; 108,1,Answer()
+exten =&gt; 108,2,Playback(hello-world)
+exten =&gt; 108,3,Hangup()
+
+exten =&gt; 109,1,Answer()
+exten =&gt; 109,2,Playback(hello-world)
+exten =&gt; 109,3,Hangup()
+</programlisting></para>
+
+      <para>Unter Verwendung einer Regular Expression<tip>
+          <para>Definition Regular Expression:</para>
+
+          <para>"Reguläre Ausdrücke (Abk. RegExp oder Regex, engl. regular
+          expressions) dienen der Beschreibung von (Unter-)Mengen von
+          Zeichenketten mit Hilfe syntaktischer Regeln. Sie finden vor allem
+          in der Softwareentwicklung Verwendung; für fast alle
+          Programmiersprachen existieren Implementierungen." (zitiert aus
+          <ulink url="http://de.wikipedia.org/wiki/Regul%C3%A4rer_Ausdruck">
+          <citetitle>http://de.wikipedia.org/wiki/Regul%C3%A4rer_Ausdruck</citetitle>
+          </ulink>)</para>
+        </tip> sieht der gleiche Dialplan gleich viel handlicher
+      aus:<programlisting>[general]
+
+[apfelmus]
+exten =&gt; _10X,1,Answer()
+exten =&gt; _10X,2,Playback(hello-world)
+exten =&gt; _10X,3,Hangup()
+</programlisting></para>
+
+      <section id="regular-expression-syntax">
+        <title>Syntax<indexterm>
+            <primary>Pattern</primary>
+          </indexterm><indexterm>
+            <primary>Suchmuster</primary>
+          </indexterm></title>
+
+        <para>Eine Regular Expression wird immer mit einem Unterstrich
+        (<code>_</code>) vor dem eigentlichen Pattern (Suchmuster)
+        eingeleitet:<programlisting>exten =&gt; _Regular Expression,Prioritaet,Applikation</programlisting></para>
+
+        <para>Eine Regular Expression kann in Asterisk aus den folgenden
+        Elementen<footnote>
+            <para>Es gibt noch weitere Elemente, die im deutschen Sprachraum
+            aber im Allgemeinen wenig Sinn machen. Aus diesem Grund werden sie
+            hier nicht aufgeführt.</para>
+          </footnote> bestehen:<variablelist termlength="7">
+            <varlistentry>
+              <term><code>[ABC]</code></term>
+
+              <listitem>
+                <para>Die Ziffern A, B und C. Beispiel für die Zahlen 34, 37
+                und 38:<programlisting>exten =&gt; _3[478],1,NoOp(Test)</programlisting></para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><code>[A-B]</code></term>
+
+              <listitem>
+                <para>Beliebige Ziffer von A bis B. Beispiel für alle Zahlen
+                von 31 bis 35:<programlisting>exten =&gt; _3[1-5],1,NoOp(Test)</programlisting>(z.B.
+                auch <code>[25-8]</code> möglich für die Ziffern
+                2,5,6,7,8)</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><code>X</code></term>
+
+              <listitem>
+                <para>Beliebige Ziffer von 0 bis 9. Beispiel für alle Zahlen
+                von 300 bis 399:<programlisting>exten =&gt; _3XX,1,NoOp(Test)</programlisting></para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><code>Z</code></term>
+
+              <listitem>
+                <para>Beliebige Ziffer von 1 bis 9. Beispiel für alle Zahlen
+                von 31 bis 39:<programlisting>exten =&gt; _3Z,1,NoOp(Test)</programlisting></para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><code>N</code></term>
+
+              <listitem>
+                <para>Beliebige Ziffer von 2 bis 9. Beispiel für alle Zahlen
+                von 32 bis 39:<programlisting>exten =&gt; _3N,1,NoOp(Test)</programlisting></para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><code>.</code></term>
+
+              <listitem>
+                <para>Eine oder mehrere beliebige Ziffer(n). Beispiel für alle
+                Nummer, die mit einer 0 beginnen:<programlisting>exten =&gt; _0.,1,NoOp(Test)</programlisting></para>
+
+                <note>
+                  <para>Das Pattern <code>_.</code> sollten Sie nicht
+                  verwenden! Es trifft auch auf besondere Extensions wie
+                  <code>i</code>, <code>t</code> oder <code>h</code> zu.
+                  Benutzen Sie stattdessen <code>_X.</code> oder
+                  <code>_X</code> falls nötig.</para>
+                </note>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><code>!</code></term>
+
+              <listitem>
+                <para>Eine oder mehrere beliebige Ziffer(n) - ab Asterisk 1.4.
+                Dieser besondere Platzhalter trifft zu, sobald unzweifelhaft
+                nicht eine andere explizite Nummer im Dialplan gewählt wird.
+                Hebt dann sofort die Leitung ab für <quote>overlap
+                dialing</quote>. Hier nur der Vollständigkeit halber
+                erwähnt.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist></para>
+      </section>
+
+      <section id="wann-matcht-welches-pattern">
+        <title>Wann matcht welches Pattern?</title>
+
+        <indexterm>
+          <primary>Pattern Matching</primary>
+
+          <secondary>Prioritäten verschiedener Pattern</secondary>
+        </indexterm>
+
+        <para id="wann-triff-welches-pattern">Pattern Matchin in Asterisk ist
+        bei großen Dialplänen eine trickreiche Angelegenheit. Asterisk geht
+        nämlich nicht wie allgemein angenommen wird plump von oben nach unten
+        den Dialplan durch. Nein, es priorisiert innerhalb der
+        Patterns!</para>
+
+        <para>Je exakter ein Pattern matcht, desto höher ist die
+        Wahrscheinlichkeit das es matcht. Asterisk geht allerdings - bevor es
+        eine Entscheidung trifft - den ganzen Context durch. Es könnte ja
+        sein, das ein anderes Pattern noch besser matcht.</para>
+
+        <para>Beispiel:<programlisting>[verkauf]
+exten =&gt; _12X.,1,NoOp{12X}
+exten =&gt; 12345,1,NoOp(12345}
+exten =&gt; _1234.,1,NoOp{1234.}</programlisting></para>
+
+        <para>Wenn in diesem Beispiel die 12345 gewählt wird, dann wird die
+        zweite Zeile ausgeführt, denn sie stellt den optimalen Treffer da.
+        Wenn die 12346 gewählt wird, dann trifft die letzte Zeile, denn sie
+        matcht besser als die erste.</para>
+
+        <para><warning>
+            <para>Es gibt eine Sonderregel für das Pattern _.</para>
+
+            <para>"_." matcht immer und hat auch immer die höchste Priorität.
+            Es ist also egal, was Sie sonst noch in diesem Context für Regeln
+            haben! Es wird immer nur die Regel mit dem Pattern "_."
+            ausgeführt. Man sollte also lieber ein "_X." nehmen, ausser man
+            ist sich absolut sicher und weiss was das Pattern "_."
+            bewirkt.</para>
+          </warning>Auch wenn die Reihenfolge von Pattern nicht immer ganz
+        trival ist, gibt es eine einfache Debugging Möglichkeit. Mit
+        <command>show dialplan 12345@verkauf</command> lässt sich der Dialplan
+        für die gewählte Nummer 12345 im Context verkauf auflisten. So kann
+        man für spezielle Nummern überprüfen, ob auch die dafür vorgesehene
+        Regel matcht.</para>
+      </section>
+    </section>
+  </section>
+
+  <section id="grundlegende-applikationen">
+    <title>Grundlegende Applikationen</title>
+
+    <para>Um die Programmierbeispiele in diesem Kapitel halbwegs sinnvoll zu
+    gestalten, benötigen wir folgende Applikationen:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><code>Answer()</code></para>
+
+        <para>Die <code>Answer()</code>-Applikation dient dazu, einen
+        Verbindungsversuch zu akzeptieren. Wenn ein Channel klingelt, dann
+        kann <code>Answer()</code> den virtuellen Hörer abnehmen.</para>
+      </listitem>
+
+      <listitem>
+        <para><code>Hangup()</code></para>
+
+        <para><code>Hangup()</code> ist das Gegenstück zu
+        <code>Answer()</code>. Die Verbindung wird getrennt, der virtuelle
+        Hörer aufgelegt.</para>
+      </listitem>
+
+      <listitem>
+        <para><code>Playback(Soundfile)</code></para>
+
+        <para>Mit <code>Playback()</code> kann man Sounddateien abspielen.
+        Diese finden sich, wenn kein anderes Verzeichnis angegeben worden ist,
+        im Verzeichnis <filename>/var/lib/asterisk/sounds/</filename>. Die
+        Dateiendung wird dabei nicht angegeben (Asterisk sucht sich den
+        optimalen Codec selbstständig raus).</para>
+      </listitem>
+
+      <listitem>
+        <para><code>Wait(Zahl)</code></para>
+
+        <para>Mit <code>Wait()</code> kann man eine Pause abrufen. Die Zahl in
+        der Klammer gibt die Anzahl der zu wartenden Sekunden an.</para>
+      </listitem>
+
+      <listitem>
+        <para><code>NoOp(String)</code></para>
+
+        <para>Die Applikation <code>NoOp()</code> macht nichts. NoOP steht für
+        No-Operation. Sie ist aber ein praktisches Tool, um Dialpläne zu
+        debuggen. Der Inhalt des übergebenen Strings wird auf dem CLI
+        (Konsole) ausgegeben. Im CLI muss dafür aber der Verbose Level auf
+        mindestens 4 eingestellt sein (einfach im CLI <command>set verbose
+        4</command> eingeben).</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="includes-im-dialplan">
+    <title>Includes im Dialplan</title>
+
+    <indexterm>
+      <primary>Include</primary>
+    </indexterm>
+
+    <para>Includes bringen Struktur und Ordnung in grosse Dialpläne. Mit einem
+    Include können andere Contexte in den aktuellen Context eingebaut (also
+    "included") werden.</para>
+
+    <section id="include-syntax">
+      <title>Syntax</title>
+
+      <para><programlisting>include =&gt; Name-des-anderen-Contextes</programlisting></para>
+    </section>
+
+    <section id="include-beispiel">
+      <title>Beispiel</title>
+
+      <para><programlisting>[verkauf]
+include =&gt; intern
+include =&gt; extern
+
+[intern]
+exten =&gt; _2000,1,Dial(SIP/2000)
+
+[extern]
+exten =&gt; 03012345678,1,Dial(SIP/03012345678)</programlisting></para>
+    </section>
+
+    <section id="include-zeitgesteuert">
+      <title>Includes zeitgesteuert</title>
+
+      <para>Durch die Fähigkeit includes auch zeitgesteuert durchzuführen,
+      kann man mit diesem Mechanismus sehr leicht Tag- und Nachtschaltungen
+      durchführen.</para>
+
+      <section id="include-zeitgesteuert-syntax">
+        <title>Syntax</title>
+
+        <para><programlisting>include =&gt; context|&lt;uhrzeit&gt;|&lt;wochentag&gt;|&lt;tag-des-monats&gt;|&lt;monat&gt;</programlisting>Die
+        Wochentag und Monate werden immer durch die ersten drei Buchstaben des
+        entsprechenden enlischen Begriffes bestimmt. Wochentage: mon, tue,
+        wed, thu, fri, sat, sun</para>
+      </section>
+
+      <section>
+        <title>Beispiel</title>
+
+        <para>Wenn eine Firma an Wochentagen von 09:00 bis 17:00 Uhr und
+        Samstags von 09:00 bis 14:00 Uhr geöffnet hat. Dann kann ein Dialplan
+        dafür wie folgt aussehen:<programlisting>; Tag
+&#8232;include =&gt; tagschaltung|09:00-17:00|mon-fri|*|*
+&#8232;include =&gt; tagschaltung|09:00-14:00|sat|*|*
+include =&gt; anrufbeantworter
+
+[tagschaltung]
+exten =&gt; _X.,1,Dial(SIP/2000)
+
+[anrufbeantworter]
+exten =&gt; _X.,1,VoiceMail(2000,u)&#8232;</programlisting></para>
+      </section>
+    </section>
+
+    <section id="reihenfolge-beim-include">
+      <title>Reihenfolge beim Include</title>
+
+      <para>Asterisk sucht bevor es einen anderen Context einbindet (include)
+      immer erst im aktuellen Context nach einem Treffer (einem Match). Gibt
+      es einen Treffer, wird dieser benutzt. Gibt es keinen Treffer, wird das
+      erste Include vollzogen und dort nach einem Treffer gesucht. Dies
+      funktioniert rekursiv nach unten - auch verschachtelt - es können also
+      auch Includes innerhalb von Includes abgearbeitet werden.</para>
+
+      <para>Im Zweifelsfall können Sie zum Debuggen auch hier die Applikation
+      <command>show dialplan nummer@name-des-contextes</command> benutzen, um
+      heraus zu finden, welche Regel von Asterisk angewendet wird.</para>
+    </section>
+  </section>
+
+  <section id="variablen">
+    <title>Variablen</title>
+
+    <indexterm>
+      <primary>Variablen</primary>
+    </indexterm>
+
+    <para>Variablen sind Platzhalter für konkrete Werte. Diese konkreten Werte
+    sind abhängig von der Definition der Variablen, also dem Typ, und können
+    bei Asterisk Zahlen, Buchstaben und Buchstabenfolgen sein. Variablen
+    dienen dazu, das kompilierte Programm flexibler zu gestalten und für
+    unterschiedliche oder wechselnde Einsatzzwecke anzupassen. Die Verwendung
+    von Variablen ermöglicht erst den individuellen Einsatz eines Programms,
+    ohne die erneute Übersetzung des Programmcodes in ein ausführbares
+    Programm.<tip>
+        <para>Wer noch nie programmiert hat oder mit Variablen in Berührung
+        gekommen ist, sollte sich an dieser Stelle kurz bei <ulink
+        url="http://de.wikipedia.org/wiki/Variable_%28Programmierung%29">
+        <citetitle>http://de.wikipedia.org/wiki/Variable_%28Programmierung%29</citetitle>
+        </ulink> in die Materie einlesen.</para>
+      </tip> Variablen haben bei Asterisk unterschiedliche Reichweiten. Es
+    gibt lokale (im Asterisk-Jargon Channel-Variablen genannt) Variablen, die
+    Werte nur für den jeweiligen und aktiven Channel (also das aktuelle
+    Gespräch) setzen, und globale Variablen, die Werte für alle Channels
+    setzen. Die bereits von Asterisk vorgesehenen Variablen haben wir ja in
+    Form der Parameter in den Konfigurationsdateien schon ausführlich kennen
+    gelernt. Neben diesen gibt es auch die Möglichkeit, eigene Variablen zu
+    definieren und diese in den Konfigurationsdateien zu verwenden.</para>
+
+    <section id="variablen-auslesen">
+      <title>Variablen in einer Extension auslesen</title>
+
+      <para>Der Wert einer Variable kann immer in der Syntax
+      <code>${VARIABLENNAME}</code> ausgelesen werden. Es gibt Variablen, die
+      vom Asterisk-System automatisch gesetzt werden. So wird z.B. die
+      angerufene Nummer immer in der Variable <code>EXTEN</code>
+      abgespeichert. Durch Regular Expressions und den Einsatz von Variablen
+      kann man somit einen langen Dialplan häufig stark komprimieren.</para>
+
+      <para>Beispiel vorher:<programlisting>exten =&gt; 100,1,Dial(SIP/100)
+exten =&gt; 101,1,Dial(SIP/101)
+exten =&gt; 102,1,Dial(SIP/102)
+exten =&gt; 103,1,Dial(SIP/103)
+exten =&gt; 104,1,Dial(SIP/104)
+exten =&gt; 105,1,Dial(SIP/105)
+exten =&gt; 106,1,Dial(SIP/106)
+exten =&gt; 107,1,Dial(SIP/107)
+exten =&gt; 108,1,Dial(SIP/108)
+exten =&gt; 109,1,Dial(SIP/109)
+</programlisting></para>
+
+      <para>Beispiel nachher:<programlisting>exten =&gt; _10X,1,Dial(SIP/${EXTEN})</programlisting></para>
+    </section>
+
+    <section id="variablen-allgemeines">
+      <title>Allgemeines</title>
+
+      <para>Variablennamen müssen nicht wie in unseren Beispielen
+      großgeschrieben werden und sind auch nicht an Groß- und Kleinschreibung
+      gebunden. Die Großschreibung von Variablen führt aber meistens zu besser
+      lesbarem Code, da Sie bereits an der Schreibweise erkennen können, dass
+      es sich um eine Variable handelt. Umgekehrt bedeutet das aber auch, dass
+      Groß- und Kleinschreibung nicht für die Unterscheidung von Variablen
+      verwendet werden kann.<important>
+          <para>Die von Asterisk selbst generierten Variablen wie ${EXTEN}
+          müssen immer in Großbuchstaben geschrieben werden.</para>
+        </important></para>
+
+      <section id="var-strings">
+        <title>Strings</title>
+
+        <indexterm>
+          <primary>Variablen</primary>
+
+          <secondary>Strings</secondary>
+        </indexterm>
+
+        <para>Strings (als Variablen, die keine Zahlen, sondern Text
+        enthalten) sollten immer in Anführungszeichen gesetzt werden. Asterisk
+        akzeptiert sie aber auch ohne diese Markierung. So sind die folgenden
+        zwei Zeilen im Ergebnis gleich:<programlisting>exten =&gt; 1234,1,Set(OBST=Apfel)
+exten =&gt; 1234,2,Set(OBST="Apfel")</programlisting></para>
+
+        <para>Sollte der String ein Komma oder ein Leerzeichen enthalten, dann
+        <emphasis>müssen</emphasis> Sie Anführungszeichen verwenden, da diese
+        sonst als Kommandos und nicht als Strings interpretiert
+        werden:<programlisting>exten =&gt; 1234,1,Set(OBSTSORTEN="Apfel, Birne, usw.")</programlisting></para>
+      </section>
+
+      <section id="var-quoting">
+        <title>Quoting</title>
+
+        <indexterm>
+          <primary>Variablen</primary>
+
+          <secondary>Quoting</secondary>
+        </indexterm>
+
+        <para>Bei einer Variablen, die Zeichen oder Zeichenfolgen (Wörter,
+        Text) als Werte enthält, kann es vorkommen, dass man bestimmte Zeichen
+        verwenden möchte, die bereits für andere Funktionen reserviert sind.
+        Wollen Sie zum Beispiel ein Underscore-Zeichen als Bestandteil des
+        Variablenwertes verwenden, müssen Sie es besonders kennzeichnen, bzw.
+        maskieren. Diese Kennzeichnung nennt man beim Programmieren
+        <phrase>escapen</phrase>. Folgende Zeichen müssen auf jeden Fall
+        maskiert (<quote>escaped</quote>) werden:<programlisting>[ ] $ " \</programlisting></para>
+
+        <para>Das Quoting in der <filename>extensions.conf</filename> erfolgt
+        mit einem vorangestellten <code>\</code> (Backslash).</para>
+
+        <para>Beispiel:</para>
+
+        <programlisting>exten =&gt; 1234,1,Set(BETRAG="10,00 US \$")</programlisting>
+      </section>
+
+      <section id="var-integer">
+        <title>Integer</title>
+
+        <indexterm>
+          <primary>Variablen</primary>
+
+          <secondary>Integer</secondary>
+        </indexterm>
+
+        <para>Bestehen Variablen aus einer Ganzzahl (Integer), so kann diese
+        maximal 18 Stellen betragen. Bei Zahlen, die größer sind, tritt ein
+        Fehler auf, der im Logfile protokolliert wird.<tip>
+            <para>Wer mit größeren oder Kommazahlen (Real) arbeiten will, kann
+            dies mit einem AGI-Skript realisieren (siehe <xref
+            linkend="kapitel-agi" />).</para>
+          </tip></para>
+      </section>
+    </section>
+
+    <section id="globale-var-globals">
+      <title>Globale Variablen in der extensions.conf definieren</title>
+
+      <indexterm>
+        <primary>Variablen</primary>
+
+        <secondary>Globale Variablen in der extensions.conf ([globals])
+        definieren.</secondary>
+      </indexterm>
+
+      <para>Eine globale Variable kann am Anfang der
+      <filename>extensions.conf</filename> gesetzt werden. Dies muss im
+      besonderen Context <code>[globals]</code> erfolgen (er folgt dem Context
+      <code>[general]</code>).</para>
+
+      <para>Beispiel:<programlisting>[general]
+
+[globals]
+KLINGELZEIT=90
+
+[from-intern]
+exten =&gt; _XXX,1,Dial(SIP/${EXTEN},${KLINGELZEIT})
+exten =&gt; _XXX,n,VoiceMail(${EXTEN})
+</programlisting></para>
+    </section>
+
+    <section id="global-var-set">
+      <title>Variablen mit Set() definieren</title>
+
+      <indexterm>
+        <primary>Variablen</primary>
+
+        <secondary>Set()</secondary>
+      </indexterm>
+
+      <para>Die Applikation <code> <code>Set()</code> </code> wird benutzt, um
+      eine Variable in einer Extension zu setzen.<footnote>
+          <para>siehe auch <xref linkend="applikationen-set" /></para>
+        </footnote></para>
+
+      <section id="set-syntax">
+        <title>Syntax</title>
+
+        <para><code>Set(Variablenname=Wert[,Variablenname2=Wert2][,Option])</code></para>
+
+        <para>Als Option kann ein <parameter> <code>g</code> </parameter>
+        angegeben werden. Mit diesem <parameter>g</parameter> kann mit
+        <code>Set()</code> eine globale Variable gesetzt werden. Ohne diese
+        Option geht Asterisk immer von lokalen Channel-Variablen aus.</para>
+
+        <para>Beispiel:</para>
+
+        <programlisting>; Eine globale Variable setzen:
+exten =&gt; 10,1,Set(KLINGELZEIT=90,g)
+
+; Eine Channel-Variable setzen:
+exten =&gt; 10,2,Set(LIEBLINGSOBSTSORTE="Apfel")
+
+; Zwei Channel-Variablen auf einmal setzen:
+exten =&gt; 10,3,Set(VAR1=10,VAR2=23)
+
+; Die Variablen auf dem CLI ausgeben
+exten =&gt; 10,4,NoOp(KLINGELZEIT = ${KLINGELZEIT})
+exten =&gt; 10,5,NoOp(LIEBLINGSOBSTSORTE = ${LIEBLINGSOBSTSORTE})
+exten =&gt; 10,6,NoOp(VAR1 = ${VAR1})
+exten =&gt; 10,7,NoOp(VAR2 = ${VAR2})</programlisting>
+      </section>
+    </section>
+
+    <section id="var-vererbung">
+      <title>Vererbung von Channel-Variablen</title>
+
+      <indexterm>
+        <primary>Variablen</primary>
+
+        <secondary>Vererbung von Channel-Variablen</secondary>
+      </indexterm>
+
+      <para>Wird im Lauf eines Gespräches ein weiterer Channel aufgebaut, so
+      hat dieser natürlich wieder eigene Channel-Variablen.</para>
+
+      <section id="var-einstufige-vererbung">
+        <title>Einstufige Vererbung</title>
+
+        <para>Will man eine Channel-Variable übergeben, aber keine globale
+        Variable dafür benutzen, so kann man der Channel-Variable ein
+        <code>_</code> (Underscore) voransetzen. Diese Channel-Variable wird
+        dann an den nächsten Channel vererbt. Dabei wird der Underscore
+        entfernt. Die Vererbung kann also nur einmal erfolgen.</para>
+
+        <para>Beispiel:<programlisting>exten =&gt; 1234,1,Set(_KUCHENSORTE="Marmorkuchen")</programlisting></para>
+      </section>
+
+      <section id="var-mehrstufige-vererbung">
+        <title>Mehrstufige Vererbung</title>
+
+        <para>Will man eine Channel-Variable beliebig oft vererben, so muss
+        man zwei <code>__</code> (Underscore)-Zeichen vor die Variable setzen.
+        Die zwei Underscore-Zeichen werden dann immer mitvererbt.</para>
+
+        <warning>
+          <para>Asterisk unterscheidet die Namen von Variablen, die mit einem
+          Underscore anfangen, nicht von Variablen, die keinen Underscore
+          haben. So wird im folgenden Beispiel aus der vererbbaren
+          Channel-Variable <code>KUCHENSORTE</code> eine normale (nicht
+          vererbbare) Channel-Variable:<programlisting>exten =&gt; 1234,1,Set(__KUCHENSORTE="Marmorkuchen")
+exten =&gt; 1234,n,Set(KUCHENSORTE="Marmorkuchen")</programlisting></para>
+        </warning>
+
+        <para>Beispiel:<programlisting>exten =&gt; 1234,1,Set(__KUCHENSORTE="Nusskuchen")</programlisting></para>
+
+        <para>Bei einem Abruf einer vererbten Channel-Variable ist es egal, ob
+        man die Unterstriche voranstellt oder nicht. Die beiden folgenden
+        Zeilen geben zweimal den gleichen Wert im CLI aus:<programlisting>exten =&gt; 1234,1,NoOp(${__KUCHENSORTE})
+exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
+      </section>
+    </section>
+
+    <section id="feste-channel-var">
+      <title>Feste Channel-Variablen</title>
+
+      <indexterm>
+        <primary>Variablen</primary>
+
+        <secondary>Feste Channel-Variablen</secondary>
+      </indexterm>
+
+      <para>Die folgende Liste enthält die wichtigsten fest einprogrammierten
+      Channel-Variablen, die nicht in der <filename>extensions.conf</filename>
+      überschrieben, aber ausgelesen werden können.<warning>
+          <para>Eine komplette Liste aller vordefinierten Variablen finden Sie
+          in der Datei <filename>doc/README.variables</filename> (Asterisk
+          1.2) und <filename>doc/channelvariables.txt</filename> (Asterisk
+          1.4). In dieser Liste werden nur nicht DEPRECATED Variablen
+          aufgelistet. So finden Sie z.B. ein ${CALLERIDNUM} nicht in dieser
+          Liste, weil dies deprecated ist (man soll anstatt die Funktion
+          ${CALLERID(num)} benutzen).</para>
+        </warning>Die für das jeweilige Thema relevanten Variablen werden aber
+      im Buch immer in jedem Kapitel extra aufgeführt.<footnote>
+          <para>Ein klassisches Henne-Ei-Problem</para>
+        </footnote></para>
+
+      <note>
+        <para>Bei einigen der hier aufgeführten Variablen handelt es sich gar
+        nicht um Variblen, sondern um eingebaute Funktionen. Da dies in der
+        Praxis aber oft verschwimmt, werden sie hier trotzdem
+        aufgelistet.</para>
+      </note>
+
+      <para><variablelist termlength="10">
+          <?dbfo list-presentation="blocks"?>
+
+          <?dbhtml list-presentation="list"?>
+
+          <varlistentry>
+            <term><code>${ANSWEREDTIME}</code></term>
+
+            <listitem>
+              <para>Die Gesamtzeit (in Sekunden) seitdem das Gespräch zustande
+              gekommen ist.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${BLINDTRANSFER}</code></term>
+
+            <listitem>
+              <para>Der Name des Channels auf der anderen Seite eines
+              Blind-Transfers.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${CHANNEL}</code></term>
+
+            <listitem>
+              <para>Name des aktuellen Channels</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${CONTEXT}</code></term>
+
+            <listitem>
+              <para>Name des aktuellen Contextes</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${EPOCH}</code></term>
+
+            <listitem>
+              <para>Aktueller Unix Style Epoch.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${EXTEN}</code></term>
+
+            <listitem>
+              <para>Aktuell gewählte Extension</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${ENV(VARIABLENNAME)}</code></term>
+
+            <listitem>
+              <para>Umgebungsvariable <code>VARIABLENNAME</code></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${HANGUPCAUSE}</code></term>
+
+            <listitem>
+              <para>Grund für das Beenden (hangup) eines Gespräches</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${INVALID_EXTEN}</code></term>
+
+            <listitem>
+              <para>Wird in der <code>i</code>-Extension benutzt und enthält
+              die gewählte Extension.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${PRIORITY}</code></term>
+
+            <listitem>
+              <para>Aktuelle Priorität innerhalb der Extension</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${TRANSFER_CONTEXT}</code></term>
+
+            <listitem>
+              <para>Context eines weiterverbundenen Gespräches</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${UNIQUEID}</code></term>
+
+            <listitem>
+              <para>Im System einzigartige (unique) ID für das aktuelle
+              Gespräch</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>${SYSTEMNAME}</code></term>
+
+            <listitem>
+              <para>In der <filename>/etc/asterisk/asterisk.conf</filename>
+              Datei eingetragener <parameter>systemname</parameter>
+              Parameter.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+    </section>
+
+    <section id="variablenmanipulation">
+      <title>Variablenmanipulation</title>
+
+      <indexterm>
+        <primary>Variablen</primary>
+
+        <secondary>Manipulation</secondary>
+      </indexterm>
+
+      <para>Variablen an sich eröffnen ihren Nutzen erst dann, wenn man sie
+      zur Laufzeit verändern kann. Mit Hilfe dieser Variabilität lassen sich
+      komplexe Verhaltensweisen steuern und vorsehen.</para>
+
+      <section id="var-substring">
+        <title>Substring</title>
+
+        <para>In der Regel bezeichnen Strings eine Aneinanderreihung einzelner
+        Zeichen (character). Die Größe eines Strings bestimmt sich durch die
+        Anzahl der identifizierbaren einzelnen Zeichen. Zum Beispiel besteht
+        der String <quote>Apfelbaum</quote> aus 9 Zeichen. Ein String kann
+        grundsätzlich in so genannte Teilstrings zerlegt werden, also Strings,
+        die, wenn man sie wieder aneinanderreiht, den ursprünglichen String
+        ergeben. Im genannten Beispiel könnten wir den String
+        <quote>Apfelbaum</quote> in die Teilstrings <quote>Apfel</quote> und
+        <quote>baum</quote> zerlegen, aber auch <quote>Apf</quote> und
+        <quote>elbaum</quote> sind echte Teilstrings. Ein String hat
+        theoretisch keine begrenzte Größe, er kann beliebig viele Zeichen
+        enthalten, der gesamte Text dieses Buches könnte so als ein String
+        aufgefasst werden. Natürlich wäre das dann nicht mehr sehr handlich,
+        dennoch ist der Vorgang des Zerlegens eines Strings in Teilstrings
+        eine Standardprozedur beim Programmieren von Anwendungen. In vielen
+        Programmiersprachen heißt die hier beschriebene Funktionalität
+        <emphasis>Substring</emphasis>. Mit einer Substring-Funktion kann man
+        Teile eines Strings ausschneiden und das Ergebnis in einer anderen
+        Variablen abspeichern. In Asterisk gibt es keine eigenständige Routine
+        für diese Substring-Funktion, sondern hierfür wird ein <code>:</code>
+        (Doppelpunkt) nach dem Variablennamen eingesetzt. Vom Inhalt der
+        Variablen, also dem String, wird dann eine vorgegebene Anzahl von
+        Zeichen (Länge) als Teilstring abgetrennt.</para>
+
+        <section id="var-substring-syntax">
+          <title>Syntax</title>
+
+          <para><synopsis>${<replaceable>VARIABLENNAME</replaceable>[:<replaceable>Anfang</replaceable>[:<replaceable>Laenge</replaceable>]]}</synopsis></para>
+        </section>
+
+        <section id="var-substring-beispiel">
+          <title>Beispiele</title>
+
+          <para>Bei einer Telefonanlage wird traditionell eine führende 0
+          (Null) gewählt, um eine Amtsleitung zu bekommen. Die zu wählende
+          Telefonnummer darf diese 0 aber nicht enthalten. Wird die Nummer
+          <code>0030 227 32320</code> gewählt, so kann man mit folgender Zeile
+          die eigentliche Rufnummer in die Variable
+          <varname>${RUFNUMMER}</varname> abspeichern.<footnote>
+              <para>Für alle neugierigen Leser: Das ist die Telefonnummer des
+              Parlamentsarchives des Deutschen Bundestages in Berlin.</para>
+            </footnote> <programlisting>exten =&gt; _0X.,1,Set(RUFNUMMER=${EXTEN:1})</programlisting></para>
+
+          <para>Wenn die Angabe der Länge fehlt, wird automatisch der Rest des
+          Strings genommen.</para>
+
+          <para>Wenn wir die letzten 5 Ziffern der gewählten Nummer benötigen,
+          dann erreichen wir das mit einer negativen Zahl. Bei der oben
+          gewählten Nummer würde die folgende Zeile den Wert 32320 in der
+          Variablen <varname>${DURCHWAHL}</varname>
+          abspeichern.<programlisting>exten =&gt; _0X.,1,Set(DURCHWAHL=${EXTEN:-5})</programlisting></para>
+
+          <para>Möchten wir die Vorwahl in einer separaten Variable
+          abspeichern, so erreichen wir dies durch:<programlisting>exten =&gt; _0X.,1,Set(VORWAHL=${EXTEN:1:3})</programlisting>Diese
+          Zeile geht davon aus, dass die Vorwahl 3-stellig ist und speichert
+          sie in der Variable <varname>${VORWAHL}</varname>.<footnote>
+              <para>Leider macht diese Variante in Deutschland wenig Sinn, da
+              es unterschiedlich lange Vorwahlen gibt. Mehr Informationen zur
+              deutschen Vorwahl finden Sie unter <ulink
+              url="http://de.wikipedia.org/wiki/Telefonvorwahl_%28Deutschland%29">
+              <citetitle>http://de.wikipedia.org/wiki/Telefonvorwahl_%28Deutschland%29.</citetitle>
+              </ulink></para>
+            </footnote></para>
+
+          <para>Nehmen wir an, wir möchten bei Telefonaten zur Nummer
+          <code>00012024562121</code> nach Amerika die einzelnen Bestandteile
+          herausfiltern:<footnote>
+              <para>Um Ihnen das Gespräch nach Amerika zu sparen: Dies ist die
+              Nummer der Besucherzentrale des Weißen Hauses in Washington DC.
+              ;-)</para>
+            </footnote><programlisting>exten =&gt; _0001X.,1,Set(INTERNATIONALEVORWAHL=${EXTEN:3:1})
+exten =&gt; _0001X.,n,Set(ORTSVORWAHL=${EXTEN:4:3})
+exten =&gt; _0001X.,n,Set(RUFNUMMER=${EXTEN:7})
+exten =&gt; _0001X.,n,Set(DURCHWAHL=${EXTEN:-4}</programlisting></para>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <section id="besondere-extensions">
+    <title>Besondere Extensions</title>
+
+    <indexterm>
+      <primary>Extensions</primary>
+
+      <secondary>Besondere Extensions</secondary>
+    </indexterm>
+
+    <para>Da sämtliche Programmierlogik über Extensions programmiert werden
+    muss, benötigen wir noch eine Reihe von besonderen und vom System
+    vorbelegte Extensions.</para>
+
+    <section id="h-extension">
+      <title>Die h-Extension</title>
+
+      <indexterm>
+        <primary>Extensions</primary>
+
+        <secondary>h-Extension</secondary>
+      </indexterm>
+
+      <para>Das <code>h</code> steht bei dieser Standard-Extension für Hangup
+      (Auflegen). Sie wird aufgerufen, sobald ein Gespräch beendet wurde.
+      Dabei muss berücksichtig werden, dass dann logischerweise der Wert der
+      Variable <varname>${EXTEN}</varname> nicht mehr die ursprüngliche
+      Extension, sondern den Wert <code>h</code> enthält.</para>
+
+      <section id="h-extension-beispiel">
+        <title>Beispiel</title>
+
+        <para>Sollen in der globalen Variable GESPRAECHE immer die Anzahl der
+        aktuell geführten Gespräche gespeichert werden, so muss diese beim
+        Aufbau eines Gesprächs um 1 erhöht und beim Abbau eines Gesprächs
+        (also beim Auflegen) wieder um 1 vermindert werden. Der folgende
+        Dialplan zeigt die Grundidee:<programlisting>[global]
+GESPRAECHE=0
+
+[from-intern]
+exten =&gt; _X.,1,Set(GESPRAECHE=$[${GESPRAECHE} + 1]|g)
+exten =&gt; _X.,2,Dial(SIP/${EXTEN})
+
+exten =&gt; h,1,Set(GESPRAECHE=$[${GESPRAECHE} - 1]|g)</programlisting></para>
+      </section>
+    </section>
+
+    <section id="i-extension">
+      <title>Die i-Extension</title>
+
+      <indexterm>
+        <primary>Extensions</primary>
+
+        <secondary>i-Extension</secondary>
+      </indexterm>
+
+      <para>Um einen Context "wasserdicht" zu machen, wird die
+      <code>i</code>-Extension benutzt. Das <code>i</code> steht dabei für
+      invalid (ungültig) und behandelt alle im entsprechenden Context nicht
+      definierten Zielrufnummern. Auch hier wird in der Variable
+      <code>EXTEN</code> natürlich nicht mehr die angewählte Nummer
+      abgebildet, diese ist mit der Variable <code>INVALID_EXTEN</code>
+      abrufbar.</para>
+
+      <section id="i-extension-beispiel">
+        <title>Beispiel</title>
+
+        <para>In der Apfelmus GmbH können aus der Abteilung B nur die
+        Rufnummern 100 bis 199 angerufen werden. Alle anderen Gespräche führen
+        zur Ansage des Bausteines that-is-not-rec-phn-num.<footnote>
+            <para>Der Sprachbaustein in der Datei
+            <filename>that-is-not-rec-phn-num.gsm</filename> enthält den
+            folgenden Text: "That is not a recognized phone number".</para>
+          </footnote><programlisting>[abteilung-b]
+exten =&gt; _1XX,1,Dial(${EXTEN})
+
+exten =&gt; i,1,NoOp(Undefinierte Nummer ${INVALID_EXTEN} wurde gewaehlt.)
+exten =&gt; i,2,Answer()
+exten =&gt; i,3,Playback(that-is-not-rec-phn-num)
+exten =&gt; i,4,Hangup()</programlisting></para>
+      </section>
+    </section>
+
+    <section id="o-und-a-extension">
+      <title>Die o- und a-Extension</title>
+
+      <indexterm>
+        <primary>Extensions</primary>
+
+        <secondary>o-Extension</secondary>
+      </indexterm>
+
+      <indexterm>
+        <primary>Extensions</primary>
+
+        <secondary>a-Extension</secondary>
+      </indexterm>
+
+      <para>Wurde in der Konfigurationsdatei
+      <filename>voicemail.conf</filename> der Eintrag
+      <code>operator=yes</code> gesetzt, so kann innerhalb der Voicemailbox
+      durch Drücken der <code>0</code> (Null) die <code>o</code>-Extension
+      aufgerufen werden (<code>o</code> für Operator).</para>
+
+      <para>Durch Drücken der Stern-Taste (<code>*</code>) kommt man hingegen
+      in die <code>a</code>-Extension (abort, Abbruch).</para>
+    </section>
+
+    <section id="t-extension">
+      <title>Die t- und T-Extension</title>
+
+      <indexterm>
+        <primary>Extensions</primary>
+
+        <secondary>t-Extension</secondary>
+      </indexterm>
+
+      <indexterm>
+        <primary>Extensions</primary>
+
+        <secondary>T-Extension</secondary>
+      </indexterm>
+
+      <para>Bei den <code>t</code>- und <code>T</code>-Extensions handelt es
+      sich jeweils um Timeout-Extensions, also Zeitüberschreitungen.</para>
+
+      <section id="klein-t-extension">
+        <title>t-Extension</title>
+
+        <para>Erfolgt nach einer bestimmten Zeit in einem IVR-Menü keine
+        Eingabe, so wird die <code>t</code>-Extension aufgerufen.</para>
+
+        <para>Beispiel:<programlisting>[hauptmenue]
+exten =&gt; 10,1,Answer()
+exten =&gt; 10,n,Background(marryme)             ; "Heiraten? 1 für ja, 2 für nein"
+
+exten =&gt; 1,1,Playback(thank-you-cooperation)  ; 1 =&gt; "Danke"
+exten =&gt; 1,n,Hangup()
+
+exten =&gt; 2,1,Playback(hangup-try-again)       ; 2 =&gt; "Nochmal probieren"
+exten =&gt; 2,n,Hangup()
+
+exten =&gt; t,1,Hangup()                         ; keine Eingabe =&gt; auflegen</programlisting></para>
+      </section>
+
+      <section id="gross-t-extension">
+        <title>T-Extension</title>
+
+        <para>Die <code>T</code>-Extension wird nach einem Absolute Timeout
+        aufgerufen. Dieser kann mit
+        <code>Set(TIMEOUT(absolute)=&lt;Sekunden&gt;)</code> gesetzt
+        werden.<warning>
+            <para>Bitte achten Sie darauf, das vor und nach dem "=" Zeichen
+            kein Leerzeichen stehen darf.</para>
+          </warning> Der Timeout wird immer dann gestartet, wenn der Zähler
+        neu gesetzt wird (es wird also nicht automatisch vom Anfang des
+        Gespräches gezählt). Mit <code>Set(TIMEOUT(absolute)=0)</code> wird
+        dieser Timeout wieder deaktiviert.</para>
+
+        <para>Beispiel:<programlisting>exten =&gt; 20,1,Answer()
+exten =&gt; 20,2,Set(TIMEOUT(absolute)=120)
+exten =&gt; 20,3,Playback(hello-world)
+exten =&gt; 20,4,Wait(1)
+exten =&gt; 20,5,Goto(3)
+
+exten =&gt; T,1,Wait(1)
+exten =&gt; T,2,Playback(thank-you-for-calling)
+exten =&gt; T,3,Wait(1)
+exten =&gt; T,4,Hangup()</programlisting></para>
+      </section>
+    </section>
+
+    <section id="s-extension">
+      <title>Die s-Extension</title>
+
+      <indexterm>
+        <primary>Extensions</primary>
+
+        <secondary>s-Extension</secondary>
+      </indexterm>
+
+      <para>Der erste Parameter einer Regel (Extension) ist immer der Name
+      bzw. die Nummer. Was passiert aber, falls der Anruf auf einer
+      klassischen analogen Leitung eintrifft und Asterisk gar nicht wissen
+      kann, an wen der Anruf gerichtet ist? Dies ist dann der Fall, wenn Sie
+      Asterisk mittels eines analogen Anschlusses an das Festnetz anschließen
+      und die Rufnummerweitergabe aus dem Festnetz an den analogen
+      Teilnehmeranschluss nicht erfolgt. Für dieses und alle anderern
+      Szenarien, in denen der eingehende Anruf ohne eine Zielrufnummer
+      ankommt, gibt es die <code>s</code>-Extension.<warning>
+          <para>Wenn Sie ein ATA-Device, also einen Analog to VoIP-Adapter
+          benutzen, so benötigen Sie dafür keine <code>s</code>-Extension. Die
+          Zielrufnummer müssen Sie hierbei im Adapter (meist über ein
+          Webinterface) konfigurieren.</para>
+        </warning></para>
+
+      <para>Beispiel:</para>
+
+      <programlisting>exten =&gt; s,1,Answer()
+exten =&gt; s,2,Wait(1)
+exten =&gt; s,3,Play(carried-away-by-monkeys)
+exten =&gt; s,4,Wait(1)
+exten =&gt; s,5,Hangup()</programlisting>
+    </section>
+  </section>
+
+  <section id="macro">
+    <title>Macro</title>
+
+    <para>Ein Macro ist eine Art Unterprogramm. Es kann komplexe Workflows
+    enthalten und dann im restlichen Dialplan immer mit einer einzigen Zeile
+    aufgerufen werden. Ein einfaches Beispiel kann so
+    aussehen:<programlisting>[macro-anruf]
+exten =&gt; s,1,Dial(SIP/${MACRO_EXTEN},10)
+exten =&gt; s,n,VoiceMail(${MACRO_EXTEN})</programlisting></para>
+
+    <para>Ein solches Macro würde im rest des Dialplanes dann wie folgt
+    aufgerufen werden:<programlisting>[verkauf]
+exten =&gt; _2XXX,1,Macro(anruf)
+
+[hausmeister]
+exten =&gt; _2XXX,1,Macro(anruf)</programlisting></para>
+
+    <para>Bei einem zweizeiligen Macro ist der Effekt natürlich nicht so groß
+    wie bei einem langen Macro, aber es ist klar, worum es geht.</para>
+
+    <para>Die Benutzung oder nicht Benutzung von Macros spaltet die Asterisk
+    Entwicklergemeinde in zwei Lager. Für die eine Hälfte machen sie den
+    Dialplan übersichtlicher und für die andere Hälfte machen sie ihn total
+    unübersichtlich. Entscheiden Sie selber, zu welcher Gruppierung Sie
+    gehören!</para>
+
+    <section id="macro-basics">
+      <title>Macro Basics</title>
+
+      <para>Bei der Definition eines Macros sind folgende Punkte zu
+      beachten:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Bei der Definition eines Macros gibt es nur eine Extension
+          (die s-Extension).</para>
+        </listitem>
+
+        <listitem>
+          <para>Auf die ursprünglichen Variablen
+          <parameter>${EXTEN}</parameter> und
+          <parameter>${CONTEXT}</parameter> kann innerhalb des Macros nicht
+          direkt zugegriffen werden. Das geschieht über die Variablen
+          <parameter>${MACRO_EXTEN}</parameter> und
+          <parameter>${MACRO_CONTEXT}</parameter>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Beim Aufruf eines Macros können zusätzliche Argumente
+          übergeben werden (mit Komma oder Pipe abgetrennt). Diese können im
+          Macro mit <parameter>${ARGn}</parameter> (n ist dabei eine
+          natürliche Zahl) abgerufen werden.</para>
+        </listitem>
+
+        <listitem>
+          <para>Ein Macro wird durch <code>[macro-macroname]</code> definiert
+          und mit der Applikation <command>Macro()</command> im Dialplan
+          aufgerufen.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Weitere Informationen zu Macros finden Sie unter <xref
+      linkend="applikationen-macro" />.<tip>
+          <para>Mit der Applikation <command>MacroExclusive()</command> kann
+          man sicherstellen, das das konkrete Macro immer nur einmal zu einem
+          gegebenen Zeitpunkt aufgerufen wird (siehe <xref
+          linkend="applikationen-macroexclusive" />).</para>
+        </tip></para>
+    </section>
+  </section>
+
+  <section id="programmierer-howto">
+    <title>Kleines Programmierer Howto</title>
+
+    <indexterm>
+      <primary>Howto</primary>
+
+      <secondary>Kleines Programmierer Howto</secondary>
+    </indexterm>
+
+    <para>Die Schwierigkeit eines solchen Buches liegt unter anderem im breit
+    gestreuten Grundwissen der Leser. Ein Buch über Asterisk wird von Admins,
+    Programmierern, Telefonanlagentechnikern und vielen anderen technisch
+    interessierten Menschen gelesen. Die praktischen Programmierkenntnisse
+    sind dabei sehr unterschiedlich ausgeprägt. Um die Fähigkeiten von
+    Asterisk auszureizen benötigt man schon einfache Programmierkenntnisse und
+    ein gesundes Basiswissen. In diesem Howto möchte ich die wichtigsten
+    Grundprinzipien und Ideen für Programmierer erläutern. Dabei gehe ich
+    beispielhaft vor und verweise bei Detailfragen auf <xref
+    linkend="applikationen" />. Einige Themen werden sie hier sicher aus
+    anderen Kapiteln wiedererkennen. Dieses kleine Howto wird ihnen einen sehr
+    schnellen Überblick zu dem Thema bieten.</para>
+
+    <section id="programmierer-howto-programmstruktur">
+      <title>Programmstruktur</title>
+
+      <para>Im Dialplan (also der
+      <filename>/etc/asterisk/extensions.conf</filename>) gibt es für jede zur
+      Verfügung gestellte Zielrufnummer ein kleines Programm. Dieses Programm
+      heißt bei Asterisk Extension. Eine Extension sieht dabei wie folgt
+      aus:<programlisting>exten =&gt; 1001,1,Answer()
+exten =&gt; 1001,n,Playback(hello-world)
+exten =&gt; 1001,n,Hangup()</programlisting></para>
+
+      <para>Häufig sieht man die Prioritäten auch nicht mit <code>n</code>
+      sondern mit Zahlen benannt.<programlisting>exten =&gt; 1001,1,Answer()
+exten =&gt; 1001,2,Playback(hello-world)
+exten =&gt; 1001,3,Hangup()</programlisting>Die Funktionsweise der jeweiligen
+      Extensions ist identisch. Wer mit <code>n</code> programmiert, kann
+      später aber leichter einzelne Zeilen löschen oder hinzufügen.</para>
+    </section>
+
+    <section id="programmierer-howto-variablen">
+      <title>Variablen</title>
+
+      <para>Zum Generieren und Verändern von Variablen wird die Applikation
+      <code>Set()</code> benutzt:<programlisting>exten =&gt; 1002,1,Set(Lieblingstier = "Tiger")
+exten =&gt; 1002,n,Set(Lieblingszahl = 23)</programlisting></para>
+
+      <para>Zum Lesen und Ausgeben von Variblen wird die Syntax
+      <code>${VARIABLENNAME}</code> benutzt. Mit der Applikation
+      <code>NoOp()</code> kann man Variablenwerte auf dem CLI ausgeben (ab
+      Verbose-Level 3):<programlisting>exten =&gt; 1003,1,NoOp(${Lieblingstier})
+exten =&gt; 1003,n,NoOp(${Lieblingszahl})</programlisting></para>
+
+      <para>Es gibt verschiedene Arten von Variablen:<itemizedlist>
+          <listitem>
+            <para>Globale Variablen</para>
+
+            <para>Gelten im gesamten Dialplan und werden mit
+            <code>Set(X=23,g)</code> generiert und verändert.<programlisting>exten =&gt; 1004,1,Set(SOLL-UEBERALL-LESBAR-SEIN = 23,g)
+exten =&gt; 1004,n,NoOp(${SOLL-UEBERALL-LESBAR-SEIN})</programlisting></para>
+          </listitem>
+
+          <listitem>
+            <para>Channel Variablen</para>
+
+            <para>Gelten nur im aktiven Channel (ein Channel kann z.B. ein
+            Gespräch von Peter und Uwe sein). Sie werden mit
+            <code>Set(Y=42)</code> generiert und verändert.<programlisting>exten =&gt; 1005,1,Set(SOLL-NUR-HIER-LESBAR-SEIN = 42)
+exten =&gt; 1005,n,NoOp(${SOLL-NUR-HIER-LESBAR-SEIN})</programlisting></para>
+          </listitem>
+
+          <listitem>
+            <para>System Variablen</para>
+
+            <para>Diese sind quasi "Gott gegeben" (ok, natürlich eher
+            "Asterisk gegeben" ;-)) und können einfach im Dialplan aufgerufen
+            werden. Eine typische Systemvariable ist ${EXTEN}.<programlisting>exten =&gt; 1006,1,NoOp(Gewaehlte Nummer: ${EXTEN})</programlisting></para>
+          </listitem>
+        </itemizedlist></para>
+    </section>
+
+    <section id="programmierer-howto-labels-und-goto">
+      <title>Labels und Goto()</title>
+
+      <indexterm>
+        <primary>Labels</primary>
+      </indexterm>
+
+      <para>Mit <code>Goto()</code> kann man innerhalb des Dialplanes Sprünge
+      zu einem mit (Labelname) definierten Label vollziehen:<footnote>
+          <para>Man kann natürlich mit <code>Goto()</code> auch zu einer
+          bestimmten Priorität springen. Aber dann ist der ganze Vorteil der
+          n-Priorität wieder weg.</para>
+        </footnote></para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Innerhalb einer Extension:<programlisting>exten =&gt; 1007,1,Answer()
+exten =&gt; 1007,n(Anfang),Wait(1)
+exten =&gt; 1007,n,Playback(hello-world)
+exten =&gt; 1007,n,Goto(Anfang)</programlisting></para>
+        </listitem>
+
+        <listitem>
+          <para>Von Extension zu Extension:<programlisting>exten =&gt; 1008,1,Answer()
+exten =&gt; 1008,n,Goto(1009,Ping)
+
+exten =&gt; 1009,1(Ping),Playback(hello-world)
+exten =&gt; 1009,n,Wait(2)
+exten =&gt; 1009,n,Goto(1010,Pong)
+
+exten =&gt; 1010,1(Pong),Playback(weasels-eaten-phonesys)
+exten =&gt; 1010,n,Wait(2)
+exten =&gt; 1010,n,Goto(1009,Ping)</programlisting></para>
+        </listitem>
+
+        <listitem>
+          <para>Von Context zu Context:<programlisting>[zentrale]
+exten =&gt; 1011,1,Answer()
+exten =&gt; 1011,n,Playback(hello-world)
+exten =&gt; 1011,n,Goto(verkauf,1012,1)
+
+[verkauf]
+exten =&gt; 1012,1,Playback(hello-world)
+exten =&gt; 1012,n,Hangup()</programlisting></para>
+        </listitem>
+      </itemizedlist>
+
+      <formalpara>
+        <title>Siehe auch:</title>
+
+        <para><xref linkend="applikationen-goto" /></para>
+      </formalpara>
+    </section>
+
+    <section id="programmierer-howto-while">
+      <title>While() Schleifen</title>
+
+      <indexterm>
+        <primary>While() Schleifen</primary>
+      </indexterm>
+
+      <para>Mit <code>While()</code> lassen sich Schleifen im Dialplan
+      erzeugen:<programlisting>exten =&gt; 1013,1,Answer()
+exten =&gt; 1013,n,Set(i=1)
+exten =&gt; 1013,n,While($[${i} &lt; 10])
+exten =&gt; 1013,n,SayNumber(${i})
+exten =&gt; 1013,n,Wait(1)
+exten =&gt; 1013,n,Set(i=$[${i} + 1])
+exten =&gt; 1013,n,EndWhile()
+exten =&gt; 1013,n,Hangup()</programlisting></para>
+
+      <formalpara>
+        <title>Siehe auch:</title>
+
+        <para><xref linkend="applikationen-while" /></para>
+      </formalpara>
+    </section>
+
+    <section id="programmierer-howto-gotoif">
+      <title>GotoIf() Bedingung</title>
+
+      <indexterm>
+        <primary>GotoIf() Bedingung</primary>
+      </indexterm>
+
+      <para>Mit GotoIf() lassen sich Sprünge zu anderen Teilen im Dialplan mit
+      einer Bedingung verbinden:<programlisting>exten =&gt; 1014,1,Answer()
+exten =&gt; 1014,n,Set(Lieblingsnebenstelle = 0815)
+exten =&gt; 1014,n,NoOp(Ueberpruefe, ob Anruf von ${Lieblingsnebenstelle} kommt.)
+exten =&gt; 1014,n,GotoIf($[${CALLERID(num) = ${Lieblingsnebenstelle}]?ja,nein)
+
+exten =&gt; 1014,n(ja),Playback(hello-world)
+exten =&gt; 1014,n,Hangup()
+
+exten =&gt; 1014,n(nein),Playback(tt-monkeys)
+exten =&gt; 1014,n,Hangup()</programlisting></para>
+
+      <formalpara>
+        <title>Siehe auch:</title>
+
+        <para><xref linkend="applikationen-gotoif" /></para>
+      </formalpara>
+    </section>
+
+    <section id="programmier-howto-gosub">
+      <title>Gosub() Unterprogramme</title>
+
+      <indexterm>
+        <primary>Gosub() Unterprogramme</primary>
+      </indexterm>
+
+      <para>Mit Gosub() kann man in ein Unterprogramm springen und aus diesem
+      mit Return() wieder zurück:<programlisting>exten =&gt; 1015,1,Gosub(cid-setzen)
+exten =&gt; 1015,n,Dial(SIP/${EXTEN})
+
+exten =&gt; 1015,n(cid-setzen),Set(CALLERID(all)=Apfelmus GmbH &lt;012345678&gt;)
+exten =&gt; 1015,n,Return()</programlisting></para>
+
+      <formalpara>
+        <title>Siehe auch:</title>
+
+        <para><xref linkend="applikationen-gosub" />, <xref
+        linkend="applikationen-gosubif" />, <xref
+        linkend="applikationen-return" />, <xref
+        linkend="applikationen-macro" /></para>
+      </formalpara>
+    </section>
+  </section>
+
+  <section id="priority-jumping">
+    <title>Priority Jumping ist deprecated</title>
+
+    <indexterm>
+      <primary>Priority Jumping</primary>
+
+      <secondary>+101</secondary>
+    </indexterm>
+
+    <para>Lange Zeit wurde in Asterisk Dialplänen hauptsächlich mit Priority
+    Jumping gearbeitet. Dazu wurde von bestimmten Applikationen (z.B.
+    <code>Dial()</code>) die Priorität bei bestimmten Ereignissen um 101
+    hochgesetzt. Diese Funktionalität ist aber mittlerweile offiziell
+    <emphasis>deprecated</emphasis> (also im Sinne von "überholt")) und wird
+    zwar noch unterstützt, sollte jedoch nicht mehr benutzt werden. Die
+    Klassifizierung "deprecated" bezeichnet zumeist Funktionen und
+    Funktionsaufrufe, für die mittlerweile entsprechende Nachfolger oder
+    Folgekonstrukte existieren und künftig durch diese neuen ersetzt werden
+    sollen. Beim Suchen nach Lösungen und Anregungen im Internet oder auch in
+    anderen Asteriskbüchern werden Sie ebenfalls immer wieder auf
+    Lösungsvorschläge stoßen, die dieses überholte Konstrukt mit den
+    Prioritäten verwenden. Auch wenn die Unterstützung für derart erstellte
+    Dialpläne sicher nicht morgen eingestellt wird, so werden sie doch
+    mittelfristig schlechter unterstützt werden und man kann dann nicht sicher
+    sein, dass es eine Lösung in der alten Notation geben wird. Es hat auch
+    Vorteile sich aktiv mit einer Umstellung frühzeitig zu beschäftigen, da
+    sie bei künftigen Updates der Asterisk-Software deutlich weniger Gefahr
+    laufen werden, dass ihr Dialplan nicht mehr so funktioniert, wie sie das
+    gewohnt sind.</para>
+  </section>
+
+  <section id="ael">
+    <title>Asterisk Extension Language (AEL)</title>
+
+    <indexterm>
+      <primary>AEL</primary>
+    </indexterm>
+
+    <indexterm>
+      <primary>Asterisk Extension Language</primary>
+    </indexterm>
+
+    <para>Wer einmal ein <command>ls</command> im Verzeichnis
+    <filename>/etc/asterisk/</filename> ausgeführt hat, wird dort nicht nur
+    eine Datei <filename>extensions.conf</filename>, sondern auch eine Datei
+    <filename>extensions.ael</filename> gefunden haben. In dieser Datei ist
+    ein Teil des Dialplanes in der Asterisk Extension Language (kurz AEL)
+    abgespeichert. AEL ist ein Versuch die Programmierung des Dialplanes
+    syntaktisch mehr an andere Programmiersprachen anzulehnen. Wenn ein sonst
+    üblicher Dialplan wie folgt aussieht:<programlisting>[meine-telefone]
+exten =&gt; 23,1,Wait(1)
+exten =&gt; 23,2,Answer()
+exten =&gt; 23,3,Playback(hello-world)
+exten =&gt; 23,4,Wait(1)
+exten =&gt; 23,5,Hangup()</programlisting></para>
+
+    <para>Dann sieht die gleiche Extension im gleichen Context in AEL wie
+    folgt aus:<programlisting>context meine-telefone {
+        23 =&gt; {
+                Wait(1);
+                Answer();
+                Playback(hello-world);
+                Wait(1);
+                Hangup();
+        };
+};</programlisting></para>
+
+    <para>Wie spielen die beiden Versionen des Dialplanes zusammen? Asterisk
+    lädt erst die Datei <code>extensions.conf</code> und dann konvertiert es
+    die Datei <code>extensions.ael</code> in das <code>.conf</code> Format, um
+    es danach zu laden. Es werden also beide Dateien geladen und als Dialplan
+    ausgeführt! Da die AEL erst noch in das alte Format umkonvertiert werden
+    muss, könnte man sogar mit einem leichten zeitlichen Nachteil
+    argumentieren. Wenn in beiden Dateien die gleiche Extension im gleichen
+    Context definiert ist, dann nimmt Asterisk die
+    <filename>extensions.conf</filename> Variante.</para>
+
+    <para>Ob man den traditionellen oder den AEL Weg wählt, muss jeder selbst
+    entscheiden. Vom technischen Standpunkt gibt es keine Unterschiede in der
+    Funktionalität. Wer sich für AEL interessiert, sollte einmal einen Blick
+    in die Datei <filename>/etc/asterisk/extensions.ael</filename> werfen.
+    Dort gibt es einige praktische Beispiele.</para>
+
+    <para>In diesem Buch werden alle Beispiele immer im traditionellen Modus
+    beschrieben. Einer der Gründe dafür ist, das AEL bei der Asterisk Version
+    1.2 noch als experimentell eingestuft wurde. Erst mit der Asterisk Version
+    1.4 ist AEL vom Status "stable" .</para>
+  </section>
+
+  <xi:include href="applikationen.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <xi:include href="funktionen.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+</chapter>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<section id="asterisk-und-dus-net" lang="de">
+  <!--% Copyright (c) 2006, 2007 - Stefan Wintermeyer <sw@amooma.de>
+% Copyright (c) 2007 - Klaus Franken <asterisk@StrukturPunkt.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>SIP-Provider dus.net</title>
+
+  <para>Der Provider dus.net <ulink
+  url="http://dus.net"><citetitle>http://dus.net</citetitle></ulink> bietet
+  eine gute Anbindung für SIP- und auch IAX-Clients und stellt darüber hinaus
+  eine eigene Dokumentation zur Anbindung seines Asterisk-Servers zur
+  Verfügung. Siehe:<citetitle><ulink
+  url="http://dus.net/index.php?id=165">http://dus.net/index.php?id=165</ulink></citetitle></para>
+
+  <para>Hier soll kurz beschrieben werden, wie man sich per SIP verbindet, um
+  über eine öffentliche Telefonnummer Gespräche anzunehmen und selber
+  heraustelefonieren zu können.</para>
+
+  <section id="asterisk-dus-net-registrieren">
+    <title>Asterisk bei dus.net registrieren</title>
+
+    <para>Es wird davon ausgegangen, dass Sie sich bei dus.net registriert
+    haben und dass Sie einen SIP-Benutzernamen und ein Passwort haben.</para>
+
+    <para>Diese Daten können Sie im Kundenbereich (<ulink
+    url="https://dus.net/kundenbereich/xp/"><citetitle>https://dus.net/kundenbereich/xp/</citetitle></ulink>)
+    / VoIP-Menü / SIP/IAX-Anschlüsse / Zugangsdaten überprüfen.</para>
+
+    <para>Zunächst wird in der <code>[general]</code>-Sektion der Datei
+    <filename>sip.conf</filename> der folgende Registrierungs-Eintrag
+    eingefügt:</para>
+
+    <programlisting>[general]
+;
+; Register to SIP Provider dus.net
+; register =&gt; user[:secret[:authuser]]@host[:port][/extension]
+;
+register =&gt; 0003xxxxxxxx:secret@proxy.dus.net/9999</programlisting>
+
+    <informaltable>
+      <tgroup cols="2">
+        <tbody>
+          <row>
+            <entry>0003xxxxxxxx</entry>
+
+            <entry>Der SIP-Benutzername (Username), der Ihnen von dus.net
+            zugewiesen wurde. Den SIP-Benutzernamen können Sie im
+            Kundenbereich (s.o.) überprüfen. Der SIP-Benutzername ist nicht zu
+            verwechseln mit dem Web-Benutzernamen, den Sie zum Einloggen im
+            Kundenbereich benötigen.</entry>
+          </row>
+
+          <row>
+            <entry>secret</entry>
+
+            <entry>Das SIP-Passwort (Kennwort), das Ihnen von dus.net
+            zugewiesen wurde. Das SIP-Passwort können Sie im Kundenbereich
+            (s.o.) überprüfen und ggf. neu setzen. Das SIP-Passwort ist nicht
+            zu verwechseln mit dem Web-Passwort, das Sie zum Einloggen im
+            Kundenbereich benötigen.</entry>
+          </row>
+
+          <row>
+            <entry>9999</entry>
+
+            <entry>Extension, die im Wählplan für eingehende Anrufe
+            angesprungen werden soll. Hier werden die Anrufe auf die Nummer
+            9999 geleitet, die gleich im Wählplan auf eine interne Nummer
+            geleitet wird.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>Wenn Sie <filename>sip.conf</filename> in Asterisk neu einladen und
+    dann den Befehl <command>sip show registry</command> aufrufen, sollten Sie
+    folgende Zeile sehen:</para>
+
+    <screen>*CLI&gt; sip show registry
+Host                            Username       Refresh State     
+proxy.dus.net:5060              000387220043       105 Registered</screen>
+
+    <para>Werden auf der Konsole keine Registrierungsfehler ausgegeben, hat
+    bereits alles geklappt und das Asterisk-System ist bei dus.net erfolgreich
+    registriert. Nun muss in der Datei <filename>extensions.conf</filename>
+    der Wählplan entsprechend angepasst werden.</para>
+
+    <para>Wird der Registrierungs-Befehl wie oben angegeben, landen eingehende
+    Anrufe im [default]-Context des Wählplans. Alles andere ist wie immer, man
+    erstellt eine entsprechende Extension und wählt darüber ein passendes
+    Endgerät an.</para>
+
+    <programlisting>[default]
+exten =&gt; 9999,1,Ringing
+exten =&gt; 9999,2,Set(LANGUAGE()=de)
+exten =&gt; 9999,3,Dial(SIP/1000,20)
+exten =&gt; 9999,4,Hangup()</programlisting>
+
+    <para>Nun sollte ein Anruf an Ihrer dus.net-VoIP-Nummer bereits ohne
+    Probleme auf die interne Nummer 1000 durchgestellt werden können.</para>
+  </section>
+
+  <section id="ueber-dus-net-telefonieren">
+    <title>Über dus.net telefonieren</title>
+
+    <para>Um über den Provider auch heraustelefonieren zu können, muss
+    zunächst ein weiterer Eintrag in der Datei <filename>sip.conf
+    </filename>erfolgen. Dort werden die Account-Informationen des Providers
+    eingetragen, die ähnlich sind, wie oben bereits beschrieben.</para>
+
+    <programlisting>[dusnet-out]
+type=peer
+username=0003xxxxxxxx
+fromuser=0003xxxxxxxx
+fromdomain=dus.net
+secret=secret
+insecure=very
+host=proxy.dus.net
+qualify=yes
+disallow=all
+allow=ulaw
+allow=alaw
+</programlisting>
+
+    <important>
+      <para>Wird der Eintrag <code>insecure=very</code> nicht gesetzt, würden
+      eingehende(!) Anrufe durch diesen Eintrag abgewiesen.</para>
+    </important>
+
+    <para>In dem Context der abgehenden Verbindung muss nun in der Datei
+    <filename>extensions.conf</filename> noch ein entsprechender Eintrag
+    getätigt werden, in diesem Fall werden z.B. alle mit 0 beginnenden
+    Rufnummern über das SIP-Gateway geleitet:</para>
+
+    <programlisting>exten =&gt; _0X.,1,SetCallerID(StrukturPunkt/Franken)
+exten =&gt; _0X.,2,Dial(SIP/${EXTEN}@dusnet-out)
+exten =&gt; _0X.,3,Hangup</programlisting>
+  </section>
+</section>

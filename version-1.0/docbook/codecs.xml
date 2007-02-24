@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<chapter id="codecs" lang="de" revision="$Revision: 1.2 $">
+  <!--% Copyright (c) 2007 - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Codecs</title>
+
+  <indexterm>
+    <primary>Codecs</primary>
+  </indexterm>
+
+  <section id="codecs-einleitung">
+    <title>Einleitung</title>
+
+    <para>Das Thema Codecs hat bei deutschen Asterisk-Installationen keine so
+    große Bedeutung wie bei Installationen in anderen Ländern. Der Grund liegt
+    darin, dass wir jahrelang ISDN-verwöhnt sind und die Qualität natürlich
+    nicht mehr missen wollen. Entsprechend entscheidet man sich in Deutschland
+    fast immer für den ISDN-Codec G.711 (alaw oder ulaw, ulaw<footnote>
+        <simpara>eigentlich µ-law (das ist der griechische Buchstabe my, im
+        physikalischen Einheitensystem als Präfix für micro)</simpara>
+      </footnote> ist die in den USA und Japan übliche Form, alaw die in
+    Europa übliche). In Amerika sieht das anders aus. Dort hat man
+    traditionell eher eine schlechte Sprachübertragungsqualität über das oft
+    veraltete Netz und entsprechend niedrigere Ansprüche. Für die meisten
+    Amerikaner ist ein Umstieg auf den G.711-Codec immer ein Sprung zu einer
+    viel besseren Qualität (einer der Gründe, warum VoIP in Amerika schneller
+    populär wurde als in Deutschland).</para>
+  </section>
+
+  <section id="codecs-beschreibung">
+    <title>Was macht ein Codec?</title>
+
+    <para>Ein Codec wandelt analoge Audiosignale in ein digitales Format um.
+    Dies kann nahezu verlustfrei (z.B. G.711)<footnote>
+        <simpara>aber auch <quote>nahezu verlustfrei</quote> ist immer
+        relativ</simpara>
+      </footnote> oder auch mit einem gewissen Verlust (z.B. GSM) geschehen.
+    Ohne einen Codec kann man keine Sprache übertragen. Und welchen Codec man
+    nimmt, hängt von der zur Verfügung stehenden Bandbreite und von der
+    verfügbaren Rechenleistung ab. Die Benutzung von Codecs ist immer ein
+    Kompromiss zwischen diesen beiden Werten (Bandbreite und
+    Rechenleistung).</para>
+
+    <para>Wir gehen in diesem Kapitel nicht allzu tief auf die Funktionsweisen
+    der verschiedenen Codecs ein. Dem interessierten Leser sei hier ein Blick
+    in die Wikipedia empfohlen. Für uns reicht ein genereller
+    Überblick.</para>
+  </section>
+
+  <section id="codecs-performance">
+    <title>Performance</title>
+
+    <indexterm>
+      <primary>Codecs</primary>
+
+      <secondary>Performance</secondary>
+    </indexterm>
+
+    <para>Das größte Problem beim Einsatz von hochkomprimierenden Codecs ist
+    die dadurch verbrauchte Rechenleistung. Bei Ihrer aktuellen Installation
+    können Sie im CLI mit dem Befehl <command>show translation</command> eine
+    Tabelle mit den Umcodierungszeiten für die verschiedenen Codecs
+    erhalten:<screen>molokai*CLI&gt; show translation 
+         Translation times between formats (in milliseconds) for one second of data
+          Source Format (Rows) Destination Format (Columns)
+
+          g723 gsm ulaw alaw g726aal2 adpcm slin lpc10 g729 speex ilbc g726 g722
+     g723    -   -    -    -        -     -    -     -    -     -    -    -    -
+      gsm    -   -    2    2        2     2    1     3    -     -   13    2    -
+     ulaw    -   2    -    1        2     2    1     3    -     -   13    2    -
+     alaw    -   2    1    -        2     2    1     3    -     -   13    2    -
+ g726aal2    -   2    2    2        -     2    1     3    -     -   13    1    -
+    adpcm    -   2    2    2        2     -    1     3    -     -   13    2    -
+     slin    -   1    1    1        1     1    -     2    -     -   12    1    -
+    lpc10    -   2    2    2        2     2    1     -    -     -   13    2    -
+     g729    -   -    -    -        -     -    -     -    -     -    -    -    -
+    speex    -   -    -    -        -     -    -     -    -     -    -    -    -
+     ilbc    -   3    3    3        3     3    2     4    -     -    -    3    -
+     g726    -   2    2    2        1     2    1     3    -     -   13    -    -
+     g722    -   -    -    -        -     -    -     -    -     -    -    -    -
+The 'show translation' command is deprecated and will be removed in a future release. Please use 'core show translation' instead.
+molokai*CLI&gt; </screen></para>
+
+    <para>In Ihrem System nicht verfügbare Codecs werden mit einem "-"
+    gekennzeichnet. Man kann in dieser Tabelle sehr leicht sehen, welcher
+    Codec auf diesem System die meiste CPU-Leistung erfordert: Es ist
+    ilbc.</para>
+
+    <para>Um Rechenzeit einzusparen, sollten Sie in Ihrem System so wenig
+    verschiedene Codecs wie möglich einsetzen. Wenn ein Gespräch von Telefon A
+    zu Telefon B mit dem gleichen Codec geschieht, dann kann Asterisk die
+    einzelnen Sprachpakete einfach durchreichen. Sollte A aber einen anderen
+    Codec als B sprechen, dann muss Asterisk jedes Sprachpaket erst de- und
+    dann wieder encodieren.</para>
+  </section>
+
+  <section id="codecs-konfiguration">
+    <title>Konfiguration des Codecs</title>
+
+    <indexterm>
+      <primary>Codecs</primary>
+
+      <secondary>Konfiguration</secondary>
+    </indexterm>
+
+    <para>Die Konfiguration des Codecs erfolgt immer technologieabhängig.
+    IAX-Telefone werden in der iax.conf und SIP-Telefone in der sip.conf
+    konfiguriert. Will man alle SIP-Telefone auf den Codec G.711 (also alaw
+    und ulaw) einstellen, dann geschieht das mit folgendem Code in der
+    sip.conf:<programlisting>[general]
+disallow=all
+allow=alaw
+allow=ulaw</programlisting></para>
+
+    <para>Wollen Sie im gleichen System das Telefon mit der Nummer 2000 so
+    einstellen, dass es nur GSM sprechen kann, so geschieht dies
+    folgendermaßen:<programlisting>[general]
+disallow=all
+allow=alaw
+allow=ulaw
+
+[2000]
+disallow=all
+allow=gsm</programlisting></para>
+  </section>
+
+  <section id="die-wichtigsten-codecs">
+    <title>Die wichtigsten Codecs</title>
+
+    <para>Mit dem Befehl <command>show translation</command> bekommen Sie eine
+    Auflistung der in Ihrem System verfügbaren Codecs (das sind alle mit einer
+    Zahl). Die in Asterisk-Installationen gebräuchlichsten Codecs werden in
+    der folgenden Liste kurz besprochen:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>GSM<indexterm>
+            <primary>Codecs</primary>
+
+            <secondary>GSM</secondary>
+          </indexterm></para>
+
+        <para>Ein Asteriskklassiker und uns allen von Handygesprächen bekannt.
+        Die Bandbreite beträgt 13,3 Kbps und die Qualität ist OK, wenn auch
+        nicht überragend.</para>
+      </listitem>
+
+      <listitem>
+        <para>iLBC<indexterm>
+            <primary>Codecs</primary>
+
+            <secondary>iLBC</secondary>
+          </indexterm></para>
+
+        <para>iLBC ist eine Art Geheimwaffe bei schmalen Bandbreiten. Die
+        Sprachqualität ist sehr gut und die Bandbreite beschränkt sich auf
+        13,3 bis 15 Kbps (je nach Framegröße). Skype benutzt eine Abwandlung
+        dieses Codecs. Das Problem mit iLBC ist aber seine Rechenintensität.
+        Deshalb wird er auch nicht von allen VoIP-Telefonen
+        unterstützt.</para>
+      </listitem>
+
+      <listitem>
+        <para>G.711<indexterm>
+            <primary>Codecs</primary>
+
+            <secondary>G.711</secondary>
+          </indexterm></para>
+
+        <para>Ein weiterer Klassiker. G.711 (auch als alaw oder ulaw
+        bezeichnet) ist allen deutschen Lesern von ISDN bekannt. Der Codec
+        bietet eine sehr gute Sprachqualität und benötigt 64 Kbps. Er ist
+        Standard für alle Gespräche im Intranet und wird von den meisten
+        Firmen auch im Internet benutzt.</para>
+      </listitem>
+
+      <listitem>
+        <para>G.722<indexterm>
+            <primary>Codecs</primary>
+
+            <secondary>G.722</secondary>
+          </indexterm></para>
+
+        <para>Die Chancen stehen nicht schlecht, dass G.722 irgendwann mal
+        G.711 ablöst. In seiner höchsten Auflösung bietet er eine viel bessere
+        Sprachqualität als G.711 (also noch mal besser als ISDN) und benötigt
+        dafür auch nur 64 Kbps. Leider wird er zur Zeit noch nicht von vielen
+        Telefonen unterstützt.</para>
+      </listitem>
+
+      <listitem>
+        <para>G.726<indexterm>
+            <primary>Codecs</primary>
+
+            <secondary>G.726</secondary>
+          </indexterm></para>
+
+        <para>Bietet die gleiche Sprachqualität wie G.711, benötigt aber nur
+        die halbe Bandbreite (32 Kbps). Im Gegensatz zu G.711 wird nicht immer
+        die aktuelle Information, sondern nur die Differenz zum vorherigen
+        Sprachpaket übertragen. So kann mit halber Bandbreite die gleiche
+        Sprachqualität erreicht werden. G.726 ist nicht allzu rechenintensiv,
+        aber natürlich benötigt er etwas mehr Rechenleistung als G.711.</para>
+      </listitem>
+
+      <listitem>
+        <para>G.729a<indexterm>
+            <primary>Codecs</primary>
+
+            <secondary>G.729a</secondary>
+          </indexterm></para>
+
+        <para>G.729a ist ein lizenzpflichtiger Codec, der mit 8 Kbps auskommt
+        und eine ähnlich gute Sprachqualität wie GSM bietet. Lizenzen für
+        Asterisk können bei <ulink
+        url="http://www.digium.com"><citetitle>Digium</citetitle></ulink>
+        gekauft werden. Er sticht weder durch Sprachqualität noch durch
+        Performance hervor. Allerdings ist er in sehr vielen VoIP-Telefonen
+        verbaut und damit eine gute Möglichkeit, Bandbreite zu sparen.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="codecs-trunking">
+    <title>Bandbreite und Trunking</title>
+
+    <indexterm>
+      <primary>Codecs</primary>
+
+      <secondary>Bandbreite</secondary>
+    </indexterm>
+
+    <indexterm>
+      <primary>Codecs</primary>
+
+      <secondary>Trunking</secondary>
+    </indexterm>
+
+    <para>Wer viele Gespräche gleichzeitig über eine Netzwerkverbindung führen
+    will (z.B. wenn zwei Asterisk-Anlagen miteinander verbunden werden), der
+    bekommt sehr schnell ein Bandbreitenproblem. Je nach Codec und Länge des
+    Frames kann es sein, dass der IP-Overhead genauso oder sogar größer ist
+    als die Nutzlast (also die übertragene Sprache). So bekommen Sie mit dem
+    SIP-Protokoll und der Verwendung des GSM-Codecs auf einer 2
+    MBit-Datenleitung nur ungefähr 35 gleichzeitige Gespräche (wobei beide
+    Gesprächspartner gleichzeitig reden können). 35 Gespräche über eine 2
+    MBit-Leitung ist aber nicht gerade viel. Da wären Sie mit einem normalen
+    Mulitplex-Anschluss besser bedient, da dort die Sprachqualität wesentlich
+    besser ist.</para>
+
+    <para>Die geniale Idee am Trunkingverfahren ist, nicht pro Nutzlastpaket
+    auch einen Overhead zu erzeugen, sondern mehrere Nutzlastpakete
+    zusammenzufassen und diese als ein Paket mit entsprechend nur einem
+    Overhead zu versenden. Dadurch lässt sich die Bandbreite sehr stark
+    reduzieren. So können Sie auf der gleichen 2 MBit-Datenleitung 77
+    simultane Gespräche führen (mit dem GSM-Codec). Möchten wir auf der
+    gleichen Verbindung eine ISDN-Sprachqualität bekommen, können wir unter
+    Einsatz von Trunking und dem G.726-Codec immer noch 44 simultane Gespräche
+    führen.</para>
+
+    <para>Trunking wird nur im IAX2-Protokoll (siehe <xref linkend="iax" />)
+    angeboten und sollte nur bei Verbindungen mit mindestens 2 simultanen
+    Verbindungen benutzt werden, da der Overhead bei einer Verbindung
+    geringfügig höher ist als ohne Trunking.</para>
+
+    <para>Wer sich intensiv mit der Bandbreitenproblematik auseinandersetzen
+    will, der kann auf <ulink
+    url="http://www.asteriskguru.com/tools/bandwidth_calculator.php"><citetitle>http://www.asteriskguru.com/tools/bandwidth_calculator.php</citetitle></ulink>
+    online verschiedene Szenarien durchrechnen.</para>
+  </section>
+</chapter>
