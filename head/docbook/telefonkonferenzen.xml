@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<chapter id="telefonkonferenzen" lang="de" revision="$Revision: 1.2 $">
+  <!--% Copyright (c) 2007 - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Telefonkonferenzen</title>
+
+  <section id="konferenzraum-einleitung">
+    <title>Einleitung</title>
+
+    <para>Asterisk bietet von Haus aus ein sehr gutes Konferenztool.
+    Allerdings gilt es auch hier wie so oft im Umgang mit Asterisk: Es gibt
+    keine perfekte fertige Lösung! Man muss sich alles aus kleinen Bausteinen
+    zusammenbauen. Ein in Deutschland typisches Beispiel ist dafür die
+    3er-Konferenz. In Asterisk gibt es keine 3er-Konferenzfunktionalität. Es
+    gibt "nur" eine n-er-Konferenz. Wenn man daraus eine 3er-Konferenz machen
+    will, muss man die Teilnehmerzahl auf 3 begrenzen.</para>
+  </section>
+
+  <section id="konferenzraum-installation">
+    <title>Installation und das Timing-Device</title>
+
+    <para>Eine Standard-Asterisk-Installation, wie Sie sie aus dem ersten
+    Kapitel des Buchs kennen, ist nicht in der Lage, Telefonkonferenzen zu
+    realisieren. Das Problem liegt am nicht vorhandenen Timing-Device. Um die
+    eingehenden Channels einer Telefonkonferenz richtig mischen zu können,
+    benötigt Asterisk einen klaren und für alle Channels gleichen Takt. Es
+    gibt hierfür prinzipiell zwei Möglichkeiten:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Treiber einer Hardware-Karte</para>
+
+        <para>Wenn Sie die Zaptel-Treiber einer Digium-Karte oder den
+        Junghanns BRIstuff zusammen mit einer ISDN-Karte installieren, bekommt
+        Asterisk automatisch ein Timing-Device.</para>
+      </listitem>
+
+      <listitem>
+        <para>ztdummy-Modul ohne Hardware</para>
+
+        <para>Wer keine entsprechende Hardware zur Verfügung hat oder einbauen
+        will, der kann auf das <code>ztdummy</code>-Modul in Kombination mit
+        einem 2.6er-Kernel zurückgreifen.<footnote>
+            <para>Es ist auch möglich, ein ztdummy-Modul mit einem
+            2.4er-Kernel zu kompilieren. Dies setzt aber eine spezielle
+            USB-Hardware voraus und ist deshalb ein suboptimaler Weg.</para>
+          </footnote> Zur Installation befolgen Sie bitte die Anleitung unter
+        <xref linkend="isdn-1.2-digium-b410p" />. Nur den <command>make
+        b410p</command>-Schritt können Sie überspringen. Nach der Installation
+        können Sie dann mit <command>modprobe ztdummy</command> das
+        entsprechende Modul laden und haben damit auch Zugriff auf die
+        Konferenzfunktionen von Asterisk.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Um herauszufinden, ob Ihr Asterisk auch die Konferenzfunktionalität
+    anbietet, gehen Sie bitte ins CLI und geben Sie <command>show application
+    MeetMe</command> ein. Sollte der Hilfetext angezeigt werden, können Sie
+    eine Konferenz einleiten.</para>
+  </section>
+
+  <section id="konferenzraum-definition">
+    <title>Definition von Konferenzräumen</title>
+
+    <para>In Asterisk finden Konferenzen immer in virtuellen Konferenzräumen
+    statt. Diese müssen in der Konfigurationsdatei
+    <filename>/etc/asterisk/meetme.conf</filename> definiert werden. Dies
+    geschieht im Bereich <code>[rooms]</code> und hat eine denkbar einfache
+    Syntax: <code>conf =&gt;
+    Konferenzraumnummer[,PIN][,Admin-PIN].</code></para>
+
+    <para>Möchten Sie einen für jeden frei zugänglichen Konferenzraum mit der
+    Nummer 1234 einrichten, so muss der entsprechende Teil in der
+    <filename>meetme.conf</filename> wie folgt aussehen:<programlisting>[rooms]
+conf =&gt; 1234</programlisting></para>
+
+    <para>Sollen zusätzlich noch die Räume 700 bis 705 mit jeweils dem
+    gleichen PIN 5678 eingerichtet werden, so sieht die <filename>meetme.conf
+    </filename>wie folgt aus:<programlisting>[rooms]
+conf =&gt; 1234
+conf =&gt; 700,5678
+conf =&gt; 701,5678
+conf =&gt; 702,5678
+conf =&gt; 703,5678
+conf =&gt; 704,5678
+conf =&gt; 705,5678
+</programlisting></para>
+  </section>
+
+  <section id="konferenzraum-meetme">
+    <title>Zugang im Dialplan</title>
+
+    <para>Mit der Applikation <code>MeetMe()</code> können Sie ganz einfach in
+    einen Konferenzraum eintreten. Soll z.B. jeder Anrufer, der die Nummer
+    5555 anruft, in den Konferenzraum 1234 gestellt werden, so geschieht dies
+    mit folgendem Dialplan:<programlisting>[intern]
+exten =&gt; 5555,1,Answer()
+exten =&gt; 5555,n,Wait(1)
+exten =&gt; 5555,n,MeetMe(1234)
+exten =&gt; 5555,n,Hangup()</programlisting></para>
+  </section>
+
+  <section id="meetmecount-ansage">
+    <title>Anzahl der Teilnehmer ansagen</title>
+
+    <para>Mit der Applikation <code>MeetMeCount()</code> kann man einem
+    Anrufer die Anzahl der Personen in einem Konferenzraum
+    mitteilen:<programlisting>[intern]
+exten =&gt; 5555,1,Answer()
+exten =&gt; 5555,n,Wait(1)
+exten =&gt; 5555,n,Playback(conf-thereare)
+exten =&gt; 5555,n,MeetMeCount(1234)
+exten =&gt; 5555,n,Playback(conf-peopleinconf)
+exten =&gt; 5555,n,MeetMe(1234)
+exten =&gt; 5555,n,Hangup()</programlisting></para>
+  </section>
+</chapter>

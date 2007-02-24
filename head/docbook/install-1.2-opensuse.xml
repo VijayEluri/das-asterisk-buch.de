@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<section id="installation-1.2-opensuse" lang="de" revision="$Revision: 1.6 $">
+  <!--% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Installation Asterisk 1.2.x auf OpenSUSE Linux</title>
+
+  <indexterm>
+    <primary>Asterisk 1.2 Installation</primary>
+
+    <secondary>OpenSuSE Linux</secondary>
+  </indexterm>
+
+  <para>Diese Installationsanleitung setzt ein aktuelles OpenSUSE 10.2 aus dem
+  stabilen Entwicklungszweig voraus. Falls Sie nicht bereits eine fertig
+  installierte OpenSUSE-Distribution haben, können Sie sich die entsprechenden
+  Installationsmedien auf folgender Seite herunterladen: <ulink
+  url="http://cdimage.debian.org/debian-cd/3.1_r4/i386/iso-cd/debian-31r4-i386-netinst.iso"><citetitle>http://de.opensuse.org/Stabile_Version</citetitle></ulink>.</para>
+
+  <para>Um Asterisk zu kompilieren, benötigen Sie einige zusätzliche Pakete.
+  Diese können Sie mit dem SuSE Administrationstool YaST installieren. Bitte
+  starten Sie dazu YaST.</para>
+
+  <para>Wählen Sie im Installationsfenster als Filter "Schemata" aus, dort
+  finden Sie dann als installierbare Schemata unter "Entwicklung" die Einträge
+  "Grundlegende Entwicklung", "C/C++ Entwicklung" und
+  "Linux-Kernel-Entwicklung".</para>
+
+  <screenshot>
+    <mediaobject>
+      <imageobject role="fo">
+        <imagedata fileref="screenshots/opensuse-yast1.png" />
+      </imageobject>
+
+      <imageobject role="html">
+        <imagedata fileref="screenshots/opensuse-yast1.html.jpg" />
+      </imageobject>
+    </mediaobject>
+  </screenshot>
+
+  <para>Wechseln Sie dann wieder auf "Suchen" als Filter und suchen Sie nach
+  folgenden Stichworten: "openssl, krb5, ncurses, zlib". Installieren Sie
+  jeweils das gleichnamige Paket, als auch das mit dem Zusatz "devel", also
+  z.B. "openssl" und "openssl-devel". Nach erfolgreicher Einrichtung der
+  Buildumgebung können dann im nächsten Schritt die Asterisk-Sourcen
+  heruntergeladen und kompiliert werden.</para>
+
+  <screenshot>
+    <mediaobject>
+      <imageobject role="fo">
+        <imagedata fileref="screenshots/opensuse-yast2.png" />
+      </imageobject>
+
+      <imageobject role="html">
+        <imagedata fileref="screenshots/opensuse-yast2.html.jpg" />
+      </imageobject>
+    </mediaobject>
+  </screenshot>
+
+  <para>Auf der Asterisk-Homepage <ulink
+  url="http://www.asterisk.org/"><citetitle>http://www.asterisk.org/</citetitle></ulink>
+  finden Sie die notwendigen Quellen, um Asterisk zu kompilieren. Nehmen Sie
+  bitte eine stabile und keine Entwickler-Version und laden Sie diese mit
+  <command>wget
+  http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz</command> in
+  das Verzeichnis <filename>/usr/src/</filename> herunter:</para>
+
+  <screen>linux:~# cd /usr/src
+linux:/usr/src# wget http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz
+--18:30:46--  http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz
+           =&gt; `asterisk-1.2-current.tar.gz'
+Auflösen des Hostnamen »ftp.digium.com«.... 69.16.138.164
+Verbindungsaufbau zu ftp.digium.com[69.16.138.164]:80... verbunden.
+HTTP Anforderung gesendet, warte auf Antwort... 200 OK
+Länge: 10,584,113 [application/x-gzip]
+
+100%[====================================&gt;] 10,584,113   224.71K/s    ETA 00:00
+
+18:31:36 (207.67 KB/s) - »asterisk-1.2-current.tar.gz« gespeichert [10584113/10584113]
+</screen>
+
+  <para>Die komprimierte Datei muss jetzt mit <command>tar xvzf
+  asterisk-1.2-current.tar.gz</command> entpackt werden:<screen>linux:/usr/src# tar xvzf asterisk-1.2-current.tar.gz 
+asterisk-1.2.13/
+asterisk-1.2.13/build_tools/
+asterisk-1.2.13/build_tools/make_svn_branch_name
+asterisk-1.2.13/build_tools/mkdep
+asterisk-1.2.13/build_tools/make_build_h
+asterisk-1.2.13/build_tools/make_version_h
+asterisk-1.2.13/build_tools/make_defaults_h
+asterisk-1.2.13/aesopt.h
+asterisk-1.2.13/utils.c
+asterisk-1.2.13/keys/
+[...]
+asterisk-1.2.13/cli.c
+asterisk-1.2.13/io.c
+asterisk-1.2.13/ulaw.c
+asterisk-1.2.13/logger.c
+linux:/usr/src# </screen></para>
+
+  <para>Die entpackten Dateien müssen jetzt kompiliert werden.<footnote>
+      <para>Die Linux-Cracks unter den Lesern mögen mir diese starke
+      Vereinfachung verzeihen.</para>
+    </footnote>Dies geschieht mit dem Befehl <command>make</command> im gerade
+  entpackten Verzeichnis.<warning>
+      <para>Bitte achten Sie darauf, dass die hier in der Dokumentation
+      benutzte Version 1.2.13 vielleicht zum Zeitpunkt Ihrer Installation
+      nicht mehr aktuell ist. Entsprechend werden sich die Verzeichnisnamen
+      ändern.</para>
+    </warning>Übrigens ist dies jetzt vielleicht ein guter Moment, sich einen
+  Kaffee oder Tee zu kochen. Der Kompiliervorgang kann je nach Rechenleistung
+  des PCs wenige Minuten oder bis zu einer Stunde dauern.</para>
+
+  <screen>linux:/usr/src# cd asterisk-1.2.13
+linux:/usr/src/asterisk-1.2.13# make
+if cmp -s .cleancount .lastclean ; then echo ; else \
+        make clean; cp -f .cleancount .lastclean;\
+
+[...]
+
+make[1]: Nothing to be done for `all'.
+make[1]: Leaving directory `/usr/src/asterisk-1.2.13/stdtime'
+ +--------- Asterisk Build Complete ---------+
+ + Asterisk has successfully been built, but +
+ + cannot be run before being installed by   +
+ + running:                                  +
+ +                                           +
+ +               make install                +
+ +-------------------------------------------+</screen>
+
+  <para>Die Software ist jetzt kompiliert und muss nur noch mit <command>make
+  install</command> installiert (sprich in die richtigen Verzeichnisse
+  kopiert) werden:</para>
+
+  <screen>linux:/usr/src/asterisk-1.2.13# make install
+build_tools/make_version_h &gt; include/asterisk/version.h.tmp
+if cmp -s include/asterisk/version.h.tmp include/asterisk/version.h ; 
+then echo;
+
+[...]
+
+ +---- Asterisk Installation Complete -------+
+ +                                           +
+ +    YOU MUST READ THE SECURITY DOCUMENT    +
+ +                                           +
+ + Asterisk has successfully been installed. +
+ + If you would like to install the sample   +
+ + configuration files (overwriting any      +
+ + existing config files), run:              +
+ +                                           +
+ +               make samples                +
+ +                                           +
+ +-----------------  or ---------------------+
+ +                                           +
+ + You can go ahead and install the asterisk +
+ + program documentation now or later run:   +
+ +                                           +
+ +              make progdocs                +
+ +                                           +
+ + **Note** This requires that you have      +
+ + doxygen installed on your local system    +
+ +-------------------------------------------+</screen>
+
+  <para>Die eben kompilierten Programmdateien sind jetzt auf dem System
+  installiert. Allerdings finden wir im Asterisk-Konfigurationsverzeichnis
+  <filename>/etc/asterisk/</filename> noch gähnende Leere vor. In diesem
+  Verzeichnis liegen die Konfigurationsdateien von Asterisk und da wir nicht
+  von Null beginnen möchten, lassen wir uns die Standarddateien erstellen.
+  Dies erreichen wir mit einem <command>make samples</command>:</para>
+
+  <screen>linux:/usr/src/asterisk-1.2.13# make samples
+build_tools/make_version_h &gt; include/asterisk/version.h.tmp
+if cmp -s include/asterisk/version.h.tmp include/asterisk/version.h ; 
+then echo;
+
+[...]
+
+done</screen>
+
+  <para>Fertig! Asterisk ist auf Ihrem System installiert. Mit dem Befehl
+  <command>asterisk -V</command> können Sie die installierte Version
+  herausfinden (bitte achten Sie darauf, dass es sich um ein großgeschriebenes
+  V handelt):<screen>linux:/usr/src/asterisk-1.2.13# asterisk -V
+Asterisk 1.2.13</screen></para>
+</section>
