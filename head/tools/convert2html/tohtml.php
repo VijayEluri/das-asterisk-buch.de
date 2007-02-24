@@ -1,6 +1,14 @@
 #!/usr/bin/php
 <?php
 
+
+die( "
+Achtung!
+Die aktuelle Version dieses Tools ist im 1.0 Branch.
+" );
+
+
+
 # alle Pfade *mit* abschließendem Slash:
 $myDir      = realPath(dirName(__FILE__).'/').'/';
 $docbookDir = $myDir .'docbook/';
