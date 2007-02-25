@@ -32,6 +32,19 @@ if (array_key_exists('h',$opts)) {
 	exit(0);
 }
 
+
+
+
+if (! file_exists( $myDir .'stylesheets/docbook-xsl/' )) {
+	echo "Symlink zum Stylesheet fehlt.\n";
+	echo "Im Verzeichnis stylesheets/ :\n";
+	echo "ln -s docbook-xsl-1.72.0/ docbook-xsl\n";
+	echo "\n";
+	exit(1);
+}
+
+
+
 if (array_key_exists('u',$opts))
 	$u = "--username '". $opts['b'] ."'";
 else
@@ -46,7 +59,12 @@ Aus SVN auschecken ...
 ===============================================
 ";
 if (! array_key_exists('r',$opts)){
-	passthru ("svn co $u $p 'https://svn.amooma.com/das-asterisk-buch/docbook/' '$docbookDir'");
+	exec ("svn co $u $p 'https://svn.amooma.com/das-asterisk-buch/branches/1.0/docbook/' '$docbookDir'", $out, $err);
+	echo implode("\n", $out), "\n";
+	if ($err != 0) {
+		echo "Fehler beim Auschecken!\n";
+		exit(1);
+	}
 } else
 	echo "uebersprungen
 ";
@@ -55,35 +73,35 @@ if (! array_key_exists('r',$opts)){
 
 
 $params = array(
-	'use.id.as.filename'       => '1',              # sprechende Dateinamen
-	'html.stylesheet'          => 'css/style.css',  # eigenes CSS
-	'admon.graphics'           => '1',              # Icons für z.B. note
-	'admon.graphics.path'      => 'img/',
-	'admon.graphics.extension' => '.gif',
-	'admon.textlabel'          => '0',
-	'toc.section.depth'        => '10',              # depth of the TOC
-	'toc.max.depth'            => '10',              # max. depth of the TOC
-	'generate.section.toc.level' => '0',  # depth of sections with TOCs
-	'generate.toc' => 'book toc',
-	'chapter.autolabel'        => '1',  # arabic (1, 2, 3 ...)
-	//'section.autolabel'        => '1',  # arabic (1, 2, 3 ...)
-	'section.autolabel.max.depth' => '2',
+	'use.id.as.filename'         => '1',      # sprechende Dateinamen
+	'html.stylesheet'            => 'css/style.css',  # eigenes CSS
+	'admon.graphics'             => '1',      # Icons für z.B. note
+	'admon.graphics.path'        => 'img/',
+	'admon.graphics.extension'   => '.gif',
+	'admon.textlabel'            => '0',
+	'toc.section.depth'          => '10',     # depth of the TOC
+	'toc.max.depth'              => '10',     # max. depth of the TOC
+	'generate.section.toc.level' => '0',      # depth of sections with TOCs
+	'generate.toc'               => 'book toc',
+	'chapter.autolabel'          => '1',      # arabic (1, 2, 3 ...)
+	//'section.autolabel'          => '1',      # arabic (1, 2, 3 ...)
+	'section.autolabel.max.depth'=> '2',
 	//'section.label.includes.component.label' => '1',
-	'appendix.autolabel'       => 'A',  # uppercase latin (A, B, C ...)
-	//'preface.autolabel'        => 'i',  # lowercase roman (i, ii, iii ...)
-	'chunker.output.indent'    => 'yes',
+	'appendix.autolabel'         => 'A',      # uppercase latin (A, B, C ...)
+	//'preface.autolabel'          => 'i',      # lowercase roman (i, ii, iii ...)
+	'chunker.output.indent'      => 'yes',
 	'chunker.output.omit-xml-declaration' => 'yes',
-	'html.extra.head.links'    => '1',
-	'chunk.fast' => '1',
-	'chunk.section.depth'      => '2',  # bis zu welcher Tiefe gechunkt werden soll
-	'chunk.first.sections'     => '1',
-	'chunk.tocs.and.lots' => '1',
-	'navig.graphics'           => '1',
-	'navig.graphics.path'      => 'img/',
-	'navig.graphics.extension' => '.gif',
-	'navig.showtitles'         => '1',
-	'ulink.target'             => '_blank',  # externe Links in neuem Fenster
-	'ignore.image.scaling'     => '1',
+	'html.extra.head.links'      => '1',
+	'chunk.fast'                 => '1',
+	'chunk.section.depth'        => '2',      # bis zu welcher Tiefe chunken
+	'chunk.first.sections'       => '1',
+	'chunk.tocs.and.lots'        => '1',
+	'navig.graphics'             => '1',
+	'navig.graphics.path'        => 'img/',
+	'navig.graphics.extension'   => '.gif',
+	'navig.showtitles'           => '1',
+	'ulink.target'               => '_blank', # externe Links in neuem Fenster
+	'ignore.image.scaling'       => '1',
 	
 );
 
@@ -185,6 +203,8 @@ document.getElementById("email-obf-'. $counter .'").innerHTML = "<a href=\"mailt
 }
 
 $werbung = file_get_contents( $myDir .'werbung.inc.html' );
+$bottom = file_get_contents( $myDir .'bottom.inc.html' );
+
 foreach (glob($htmlDir.'*.html') as $filename) {
 	$baseName = baseName( $filename );
 	echo 'bearbeite ', $baseName, " ...\n";
@@ -195,8 +215,36 @@ foreach (glob($htmlDir.'*.html') as $filename) {
 	
 	$html = file_get_contents( $htmlDir . $baseName );
 	$html = preg_replace_callback( '/<pre([^>]*)>([^<]*)<\/pre>/', 'replacePre', $html );
-	$html = preg_replace( '/(<body[^>]*>)/', '$1<table id="outer" cellspacing="0"><tr><td id="sidebar-left">'."\n". $menu .'</td><td id="content-container">', $html );
-	$html = preg_replace( '/(<\/body>)/', '</td><td id="sidebar-right">'. $werbung .'</td></tr></table>', $html );
+	
+	$html = preg_replace( '/(<body[^>]*>)/', '$1
+<div id="outer-t"><div id="outer-tr">
+
+<!-- ++++++++++++++++++++++++ SIDEBAR LEFT +++++++++++++++++++++++++ -->
+
+<div id="sidebar-left">
+'. $menu .'
+</div>
+
+<!-- +++++++++++++++++++++++++++ CONTENT +++++++++++++++++++++++++++ -->
+
+<div id="content-container">
+', $html );
+	$html = preg_replace( '/(<\/body>)/', '
+</div>
+
+<!-- ++++++++++++++++++++++++ SIDEBAR RIGHT ++++++++++++++++++++++++ -->
+
+<div id="sidebar-right">
+'. $werbung .'
+</div>
+
+</div></div>
+
+<!-- +++++++++++++++++++++++++++ BOTTOM ++++++++++++++++++++++++++++ -->
+
+'. $bottom .'
+$1', $html );
+	
 	if (array_key_exists('e',$opts)) {
 		$html = preg_replace_callback( '/<a\s+href="mailto:[^@]+@[a-z.\-_0-9]+\.[a-z]+"[^>]*>([^@]+@[a-z.\-_0-9]+\.[a-z]+)<\/a>/', 'replaceEmail', $html );
 	}
