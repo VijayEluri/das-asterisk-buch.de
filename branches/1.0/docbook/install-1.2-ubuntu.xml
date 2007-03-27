@@ -114,8 +114,8 @@ ubuntu@ubuntu:~$
   http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz</command> in
   das Verzeichnis <filename>/usr/src/</filename> herunter:</para>
 
-  <screen>ubuntu@ubuntu:~$ cd /tmp
-ubuntu@ubuntu:/tmp$ wget http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz
+  <screen>ubuntu@ubuntu:~$ cd /usr/src
+ubuntu@ubuntu:/usr/src$ wget http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz
 --09:36:42--  http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz
            =&gt; `asterisk-1.2-current.tar.gz'
 Resolving ftp.digium.com... 69.16.138.164
@@ -127,10 +127,10 @@ Length: 10,584,113 (10M) [application/x-gzip]
 
 09:38:29 (97.21 KB/s) - `asterisk-1.2-current.tar.gz' saved [10584113/10584113]
 
-ubuntu@ubuntu:/tmp$</screen>
+ubuntu@ubuntu:/usr/src$</screen>
 
   <para>Die komprimierte Datei muss jetzt mit <command>tar xvzf
-  asterisk-1.2-current.tar.gz</command> entpackt werden:<screen>ubuntu@ubuntu:/tmp$ tar xvzf asterisk-1.2-current.tar.gz 
+  asterisk-1.2-current.tar.gz</command> entpackt werden:<screen>ubuntu@ubuntu:/usr/src$ tar xvzf asterisk-1.2-current.tar.gz 
 asterisk-1.2.13/
 asterisk-1.2.13/build_tools/
 asterisk-1.2.13/build_tools/make_svn_branch_name
@@ -146,7 +146,7 @@ asterisk-1.2.13/cli.c
 asterisk-1.2.13/io.c
 asterisk-1.2.13/ulaw.c
 asterisk-1.2.13/logger.c
-ubuntu@ubuntu:/tmp$ </screen></para>
+ubuntu@ubuntu:/usr/src$ </screen></para>
 
   <para>Die entpackten Dateien müssen jetzt kompiliert werden.<footnote>
       <para>Die Linux-Cracks unter den Lesern mögen mir diese starke
@@ -162,8 +162,8 @@ ubuntu@ubuntu:/tmp$ </screen></para>
   Rechenleistung des PCs wenige Minuten oder bis zu einer Stunde
   dauern.</para>
 
-  <screen>ubuntu@ubuntu:/tmp$ cd asterisk-1.2.13/
-ubuntu@ubuntu:/tmp/asterisk-1.2.13$ make
+  <screen>ubuntu@ubuntu:/usr/src$ cd asterisk-1.2.13/
+ubuntu@ubuntu:/usr/src/asterisk-1.2.13$ make
 if cmp -s .cleancount .lastclean ; then echo ; else \
                 make clean; cp -f .cleancount .lastclean;\
 
@@ -171,7 +171,7 @@ if cmp -s .cleancount .lastclean ; then echo ; else \
 [...]
 
 make[1]: Nothing to be done for `all'.
-make[1]: Leaving directory `/tmp/asterisk-1.2.13/stdtime'
+make[1]: Leaving directory `/usr/src/asterisk-1.2.13/stdtime'
  +--------- Asterisk Build Complete ---------+
  + Asterisk has successfully been built, but +
  + cannot be run before being installed by   +
@@ -179,19 +179,19 @@ make[1]: Leaving directory `/tmp/asterisk-1.2.13/stdtime'
  +                                           +
  +               make install                +
  +-------------------------------------------+
-ubuntu@ubuntu:/tmp/asterisk-1.2.13$ </screen>
+ubuntu@ubuntu:/usr/src/asterisk-1.2.13$ </screen>
 
   <para>Die Software ist jetzt kompiliert und muss nur noch mit <command>sudo
   make install</command> installiert (sprich in die richtigen Verzeichnisse
   kopiert) werden:</para>
 
-  <screen>ubuntu@ubuntu:/tmp/asterisk-1.2.13$ sudo make install
+  <screen>ubuntu@ubuntu:/usr/src/asterisk-1.2.13$ sudo make install
 build_tools/make_version_h &gt; include/asterisk/version.h.tmp
 if cmp -s include/asterisk/version.h.tmp include/asterisk/version.h ; then echo;
 
 [...]
 
-make[1]: Leaving directory `/tmp/asterisk-1.2.13/stdtime'
+make[1]: Leaving directory `/usr/src/asterisk-1.2.13/stdtime'
  +---- Asterisk Installation Complete -------+
  +                                           +
  +    YOU MUST READ THE SECURITY DOCUMENT    +
@@ -214,7 +214,7 @@ make[1]: Leaving directory `/tmp/asterisk-1.2.13/stdtime'
  + doxygen installed on your local system    +
  +-------------------------------------------+
 
-ubuntu@ubuntu:/tmp/asterisk-1.2.13$ </screen>
+ubuntu@ubuntu:/usr/src/asterisk-1.2.13$ </screen>
 
   <para>Die eben kompilierten Programmdateien sind jetzt auf dem System
   installiert. Allerdings finden wir im Asterisk-Konfigurationsverzeichnis
@@ -223,7 +223,7 @@ ubuntu@ubuntu:/tmp/asterisk-1.2.13$ </screen>
   von Null beginnen möchten, lassen wir uns die Standarddateien erstellen.
   Dies erreichen wir mit einem <command>sudo make samples</command>:</para>
 
-  <screen>ubuntu@ubuntu:/tmp/asterisk-1.2.13$ sudo make samples
+  <screen>ubuntu@ubuntu:/usr/src/asterisk-1.2.13$ sudo make samples
 build_tools/make_version_h &gt; include/asterisk/version.h.tmp
 if cmp -s include/asterisk/version.h.tmp include/asterisk/version.h ; then echo;
 
@@ -232,13 +232,13 @@ if cmp -s include/asterisk/version.h.tmp include/asterisk/version.h ; then echo;
 for x in vm-theperson digits/1 digits/2 digits/3 digits/4 vm-isonphone; do \
                 cat /var/lib/asterisk/sounds/$x.gsm &gt;&gt; /var/spool/asterisk/voicemail/default/1234/busy.gsm ; \
         done
-ubuntu@ubuntu:/tmp/asterisk-1.2.13$ </screen>
+ubuntu@ubuntu:/usr/src/asterisk-1.2.13$ </screen>
 
   <para>Fertig! Asterisk ist auf Ihrem System installiert. Mit dem Befehl
   <command>sudo asterisk -V</command> können Sie die installierte Version
-  herausfinden (bitte achten Sie auf das großgeschriebene V):<screen>ubuntu@ubuntu:/tmp/asterisk-1.2.13$ sudo asterisk -V
+  herausfinden (bitte achten Sie auf das großgeschriebene V):<screen>ubuntu@ubuntu:/usr/src/asterisk-1.2.13$ sudo asterisk -V
 Asterisk 1.2.13
-ubuntu@ubuntu:/tmp/asterisk-1.2.13$ </screen><warning>
+ubuntu@ubuntu:/usr/src/asterisk-1.2.13$ </screen><warning>
       <para>Dadurch, dass Ubuntu normalen root-Zugriff nur über sudo zulässt,
       müssen Sie bei allen Beispielen in diesem Buch bei Aufrufen von Asterisk
       immer ein sudo davorschreiben. Wenn Sie als Benutzer ubuntu Asterisk

@@ -109,9 +109,9 @@ ubuntu@ubuntu:~$ </screen>
   bitte eine stabile und keine Entwickler-Version und laden Sie diese mit
   <command>wget
   http://ftp.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz</command> in
-  das Verzeichnis <filename>/tmp</filename> herunter:</para>
+  das Verzeichnis <filename>/usr/src</filename> herunter:</para>
 
-  <screen>ubuntu@ubuntu:/tmp$ wget http://ftp.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz
+  <screen>ubuntu@ubuntu:/usr/src$ wget http://ftp.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz
 --11:16:56--  http://ftp.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz
            =&gt; `asterisk-1.4-current.tar.gz'
 Resolving ftp.digium.com... 216.27.40.102, 69.16.138.164
@@ -123,11 +123,11 @@ Length: 10,928,902 (10M) [application/x-gzip]
 
 11:17:44 (228.19 KB/s) - `asterisk-1.4-current.tar.gz' saved [10928902/10928902]
 
-ubuntu@ubuntu:/tmp$ 
+ubuntu@ubuntu:/usr/src$ 
 </screen>
 
   <para>Die komprimierte Datei muss jetzt mit <command>tar xvzf
-  asterisk-1.4-current.tar.gz</command> entpackt werden:<screen>ubuntu@ubuntu:/tmp$ tar xvzf asterisk-1.4-current.tar.gz 
+  asterisk-1.4-current.tar.gz</command> entpackt werden:<screen>ubuntu@ubuntu:/usr/src$ tar xvzf asterisk-1.4-current.tar.gz 
 asterisk-1.4.0/
 asterisk-1.4.0/build_tools/
 asterisk-1.4.0/build_tools/mkpkgconfig
@@ -143,12 +143,12 @@ asterisk-1.4.0/menuselect/mxml/CHANGES
 asterisk-1.4.0/menuselect/mxml/mxml-file.c
 asterisk-1.4.0/menuselect/mxml/install-sh
 asterisk-1.4.0/menuselect/mxml/mxml.pc
-ubuntu@ubuntu:/tmp$ </screen></para>
+ubuntu@ubuntu:/usr/src$ </screen></para>
 
   <para>Asterisk 1.4 ist die erste Version, die den allgemein üblichen
   autoconf-Mechanismus benutzt. Zuerst muss also im Asterisk-Verzeichnis ein
-  <command>./configure</command> aufgerufen werden:<screen>ubuntu@ubuntu:/tmp$ cd asterisk-1.4.0/
-ubuntu@ubuntu:/tmp/asterisk-1.4.0$ ./configure 
+  <command>./configure</command> aufgerufen werden:<screen>ubuntu@ubuntu:/usr/src$ cd asterisk-1.4.0/
+ubuntu@ubuntu:/usr/src/asterisk-1.4.0$ ./configure 
 checking build system type... i686-pc-linux-gnu
 checking host system type... i686-pc-linux-gnu
 checking for uname... /bin/uname
@@ -188,7 +188,7 @@ $$$$             $$$$7         .$$$.
 configure: Package configured for: 
 configure: OS type  : linux-gnu
 configure: Host CPU : i686
-ubuntu@ubuntu:/tmp/asterisk-1.4.0$ </screen></para>
+ubuntu@ubuntu:/usr/src/asterisk-1.4.0$ </screen></para>
 
   <para>Die entpackten Dateien müssen jetzt kompiliert werden.<footnote>
       <para>Die Linux-Cracks unter den Lesern mögen mir diese starke
@@ -231,14 +231,14 @@ debian:/usr/src/asterisk-1.4.0#
   make install</command> installiert (sprich in die richtigen Verzeichnisse
   kopiert) werden:</para>
 
-  <screen>ubuntu@ubuntu:/tmp/asterisk-1.4.0$ sudo make install
+  <screen>ubuntu@ubuntu:/usr/src/asterisk-1.4.0$ sudo make install
 make[1]: Nothing to be done for `depend'.
 make[1]: Nothing to be done for `depend'.
 
 [...]
 
 for x in ; do /usr/bin/install -c -m 755 $x /usr/lib/asterisk/modules ; done
-make[1]: Leaving directory `/tmp/asterisk-1.4.0/main'
+make[1]: Leaving directory `/usr/src/asterisk-1.4.0/main'
  +---- Asterisk Installation Complete -------+
  +                                           +
  +    YOU MUST READ THE SECURITY DOCUMENT    +
@@ -260,7 +260,7 @@ make[1]: Leaving directory `/tmp/asterisk-1.4.0/main'
  + **Note** This requires that you have      +
  + doxygen installed on your local system    +
  +-------------------------------------------+
-ubuntu@ubuntu:/tmp/asterisk-1.4.0$ </screen>
+ubuntu@ubuntu:/usr/src/asterisk-1.4.0$ </screen>
 
   <para>Die eben kompilierten Programmdateien sind jetzt auf dem System
   installiert. Allerdings finden wir im Asterisk-Konfigurationsverzeichnis
@@ -269,7 +269,7 @@ ubuntu@ubuntu:/tmp/asterisk-1.4.0$ </screen>
   von Null beginnen möchten, lassen wir uns die Standarddateien erstellen.
   Dies erreichen wir mit einem <command>sudo make samples</command>:</para>
 
-  <screen>ubuntu@ubuntu:/tmp/asterisk-1.4.0$ sudo make samples
+  <screen>ubuntu@ubuntu:/usr/src/asterisk-1.4.0$ sudo make samples
 mkdir -p /etc/asterisk
 for x in configs/*.adsi; do \
                 if [ ! -f /etc/asterisk/$x ]; then \
@@ -282,11 +282,11 @@ for x in configs/*.adsi; do \
 for x in vm-theperson digits/1 digits/2 digits/3 digits/4 vm-isonphone; do \
                 cat /var/lib/asterisk/sounds/$x.gsm &gt;&gt; /var/spool/asterisk/voicemail/default/1234/busy.gsm ; \
         done
-ubuntu@ubuntu:/tmp/asterisk-1.4.0$ </screen>
+ubuntu@ubuntu:/usr/src/asterisk-1.4.0$ </screen>
 
   <para>Fertig! Asterisk ist auf Ihrem System installiert. Mit dem Befehl
   <command>sudo asterisk -V</command> können Sie die installierte Version
-  rausfinden (bitte achten Sie auf das großgeschriebene V):<screen>ubuntu@ubuntu:/tmp/asterisk-1.4.0$ sudo asterisk -V
+  rausfinden (bitte achten Sie auf das großgeschriebene V):<screen>ubuntu@ubuntu:/usr/src/asterisk-1.4.0$ sudo asterisk -V
 Asterisk 1.4.0
-ubuntu@ubuntu:/tmp/asterisk-1.4.0$</screen></para>
+ubuntu@ubuntu:/usr/src/asterisk-1.4.0$</screen></para>
 </section>
