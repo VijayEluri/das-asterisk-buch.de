@@ -184,7 +184,7 @@ function my_wordWrap( $text, $len=72, $split="\n" ) {
 function my_wordWrap_htmlEnt( $text, $len=72, $split="\n" ) {
 	$text = unHtmlEntities( $text );
 	$text = my_wordWrap( $text, $len=72, $split="\n" );
-	return html_specialChars( $text, ENT_QUOTES, 'UTF-8' );
+	return htmlSpecialChars( $text, ENT_QUOTES, 'UTF-8' );
 }
 
 function replacePre( $arr ) {
