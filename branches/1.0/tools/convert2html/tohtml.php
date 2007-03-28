@@ -154,6 +154,14 @@ HTML-Files verarbeiten ...
 ===============================================
 ";
 
+function unHtmlEntities( $text ) {
+	// numerische Entities ersetzen:
+	$text = preg_replace('/&#x([0-9A-F]+);/ie', 'chr(hexDec("\\1"))', $text);
+	$text = preg_replace('~&#([0-9]+);~e', 'chr("\\1")', $text);
+	// benannte Entities ersetzen:
+	return html_entity_decode( $text, ENT_QUOTES );
+}
+
 function my_wordWrap( $text, $len=72, $split="\n" ) {
 	$lines = explode("\n", $text);
 	$newText = '';
@@ -173,11 +181,17 @@ function my_wordWrap( $text, $len=72, $split="\n" ) {
 	return $newText;
 }
 
+function my_wordWrap_htmlEnt( $text, $len=72, $split="\n" ) {
+	$text = unHtmlEntities( $text );
+	$text = my_wordWrap( $text, $len=72, $split="\n" );
+	return html_specialChars( $text, ENT_QUOTES, 'UTF-8' );
+}
+
 function replacePre( $arr ) {
 	$text = $arr[2];
 	$text = preg_replace( '/\r/', "\n", $text );
 	//$text = wordWrap($text, 70, "\n".'<img src="img/sb.gif" alt="" />', true);
-	$text = my_wordWrap($text, 80, "\n".'<img src="img/sb.gif" alt="" />');
+	$text = my_wordWrap_htmlEnt($text, 80, "\n".'<img src="img/sb.gif" alt="" />');
 	return '<pre'. $arr[1] .'>' . $text . '</pre>';
 	return $arr[0];
 }
