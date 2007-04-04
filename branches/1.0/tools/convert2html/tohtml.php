@@ -246,9 +246,9 @@ if (! $ssi) {
 	$htmlTrClose  = $html2TrClose;
 	$htmlTblClose = $html2TblClose;
 } else {
-	$ssiMsieOpen = "\n".'<!--#if expr="$HTTP_USER_AGENT=/MSIE/" -->'."\n";
-	$ssiElse     = "\n".'<!--#else -->'."\n";
-	$ssiEnd      = "\n".'<!--#endif -->'."\n";
+	$ssiMsieOpen = '<!--#if expr="$HTTP_USER_AGENT=/MSIE/" -->';
+	$ssiElse     = "\n".'<!--#else -->';
+	$ssiEnd      = '<!--#endif -->'."\n";
 	$htmlTblOpen  = $ssiMsieOpen . $html1TblOpen  . $ssiElse . $html2TblOpen  . $ssiEnd;
 	$htmlTrOpen   = $ssiMsieOpen . $html1TrOpen   . $ssiElse . $html2TrOpen   . $ssiEnd;
 	$htmlTdSlOpen = $ssiMsieOpen . $html1TdSlOpen . $ssiElse . $html2TdSlOpen . $ssiEnd;
