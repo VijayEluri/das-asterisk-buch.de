@@ -14,7 +14,7 @@ ini_set('memory_limit', '50M');
 
 
 
-$opts = getOpt('hu:p:tre');
+$opts = getOpt('hu:p:tres');
 if (array_key_exists('h',$opts)) {
 	$help = '
     Optionen;
@@ -26,6 +26,7 @@ if (array_key_exists('h',$opts)) {
     -r                 nicht erneut Auschecken
     -t                 nicht erneut von Docbook nach HTML transformieren
     -e                 E-Mail-Adressen mit JS schuetzen
+    -s                 mit SSI-Weiche für Internet Explorer
 
 ';
 	echo $help;
@@ -48,6 +49,7 @@ if (! file_exists( $myDir .'stylesheets/docbook-xsl/' )) {
 $u = array_key_exists('u',$opts) ? ("--username '". $opts['u'] ."'") : '';
 $p = array_key_exists('p',$opts) ? ("--password '". $opts['p'] ."'") : '';
 
+$ssi = array_key_exists('s',$opts);
 
 
 
@@ -216,6 +218,48 @@ document.getElementById("email-obf-'. $counter .'").innerHTML = "<a href=\"mailt
 $werbung = file_get_contents( $myDir .'werbung.inc.html' );
 $bottom = file_get_contents( $myDir .'bottom.inc.html' );
 
+$html1TblOpen  = '<table id="outer-t">';
+$html1TrOpen   = '<tr id="outer-tr">';
+$html1TdSlOpen = '<td id="sidebar-left">';
+$html1TdCcOpen = '<td id="content-container">';
+$html1TdSrOpen = '<td id="sidebar-right">';
+$html1TdClose  = '</td>';
+$html1TrClose  = '</tr>';
+$html1TblClose = '</table>';
+
+$html2TblOpen  = '<div id="outer-t">';
+$html2TrOpen   = '<div id="outer-tr">';
+$html2TdSlOpen = '<div id="sidebar-left">';
+$html2TdCcOpen = '<div id="content-container">';
+$html2TdSrOpen = '<div id="sidebar-right">';
+$html2TdClose  = '</div>';
+$html2TrClose  = '</div>';
+$html2TblClose = '</div>';
+
+if (! $ssi) {
+	$htmlTblOpen  = $html2TblOpen;
+	$htmlTrOpen   = $html2TrOpen;
+	$htmlTdSlOpen = $html2TdSlOpen;
+	$htmlTdCcOpen = $html2TdCcOpen;
+	$htmlTdSrOpen = $html2TdSrOpen;
+	$htmlTdClose  = $html2TdClose;
+	$htmlTrClose  = $html2TrClose;
+	$htmlTblClose = $html2TblClose;
+} else {
+	$ssiMsieOpen = "\n".'<!--#if expr="$HTTP_USER_AGENT=/MSIE/" -->'."\n";
+	$ssiElse     = "\n".'<!--#else -->'."\n";
+	$ssiEnd      = "\n".'<!--#endif -->'."\n";
+	$htmlTblOpen  = $ssiMsieOpen . $html1TblOpen  . $ssiElse . $html2TblOpen  . $ssiEnd;
+	$htmlTrOpen   = $ssiMsieOpen . $html1TrOpen   . $ssiElse . $html2TrOpen   . $ssiEnd;
+	$htmlTdSlOpen = $ssiMsieOpen . $html1TdSlOpen . $ssiElse . $html2TdSlOpen . $ssiEnd;
+	$htmlTdCcOpen = $ssiMsieOpen . $html1TdCcOpen . $ssiElse . $html2TdCcOpen . $ssiEnd;
+	$htmlTdSrOpen = $ssiMsieOpen . $html1TdSrOpen . $ssiElse . $html2TdSrOpen . $ssiEnd;
+	$htmlTdClose  = $ssiMsieOpen . $html1TdClose  . $ssiElse . $html2TdClose  . $ssiEnd;
+	$htmlTrClose  = $ssiMsieOpen . $html1TrClose  . $ssiElse . $html2TrClose  . $ssiEnd;
+	$htmlTblClose = $ssiMsieOpen . $html1TblClose . $ssiElse . $html2TblClose . $ssiEnd;
+}
+
+
 foreach (glob($htmlDir.'*.html') as $filename) {
 	$baseName = baseName( $filename );
 	echo 'bearbeite ', $baseName, " ...\n";
@@ -228,28 +272,28 @@ foreach (glob($htmlDir.'*.html') as $filename) {
 	$html = preg_replace_callback( '/<pre([^>]*)>([^<]*)<\/pre>/', 'replacePre', $html );
 	
 	$html = preg_replace( '/(<body[^>]*>)/', '$1
-<div id="outer-t"><div id="outer-tr">
+'. $htmlTblOpen . $htmlTrOpen .'
 
 <!-- ++++++++++++++++++++++++ SIDEBAR LEFT +++++++++++++++++++++++++ -->
 
-<div id="sidebar-left">
+'. $htmlTdSlOpen .'
 '. $menu .'
-</div>
+'. $htmlTdClose .'
 
 <!-- +++++++++++++++++++++++++++ CONTENT +++++++++++++++++++++++++++ -->
 
-<div id="content-container">
+'. $htmlTdCcOpen .'
 ', $html );
 	$html = preg_replace( '/(<\/body>)/', '
-</div>
+'. $htmlTdClose .'
 
 <!-- ++++++++++++++++++++++++ SIDEBAR RIGHT ++++++++++++++++++++++++ -->
 
-<div id="sidebar-right">
+'. $htmlTdSrOpen .'
 '. $werbung .'
-</div>
+'. $htmlTdClose .'
 
-</div></div>
+'. $htmlTrClose . $htmlTblClose .'
 
 <!-- +++++++++++++++++++++++++++ BOTTOM ++++++++++++++++++++++++++++ -->
 
