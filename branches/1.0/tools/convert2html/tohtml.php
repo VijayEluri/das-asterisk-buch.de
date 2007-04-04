@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/usr/bin/php -q
 <?php
 
 # alle Pfade *mit* abschließendem Slash:
@@ -45,14 +45,11 @@ if (! file_exists( $myDir .'stylesheets/docbook-xsl/' )) {
 
 
 
-if (array_key_exists('u',$opts))
-	$u = "--username '". $opts['b'] ."'";
-else
-	$u = '';
-if (array_key_exists('p',$opts))
-	$p = "--password '". $opts['p'] ."'";
-else
-	$p = '';
+$u = array_key_exists('u',$opts) ? ("--username '". $opts['u'] ."'") : '';
+$p = array_key_exists('p',$opts) ? ("--password '". $opts['p'] ."'") : '';
+
+
+
 
 echo "
 Aus SVN auschecken ...
