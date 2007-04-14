@@ -1,0 +1,927 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<section id="sip" lang="de" revision="$Revision: 1.5 $">
+  <!--% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>SIP</title>
+
+  <para>SIP hat sich de facto zum Standardprotokoll im VoIP-Umfeld etabliert.
+  Warum?<footnote>
+      <para>Das fragen sich viele! ;-)</para>
+    </footnote></para>
+
+  <para>Wahrscheinlich liegt es an folgenden Punkten:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Es ist ein offenes Protokoll.</para>
+    </listitem>
+
+    <listitem>
+      <para>Die Spezifikation war von Anfang an als <ulink
+      url="http://www.ietf.org/rfc/rfc3261.txt"><citetitle>RFC
+      3261</citetitle></ulink> für jeden Entwickler kostenlos
+      einsehbar.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>Vom rein technischen Standpunkt ist das IAX-Protokoll dem
+  SIP-Protokoll in einzelnen Aspekten (siehe E-Mail von Mark Spencer)
+  mindestens leicht überlegen. Bei vielen Installationen würde man mit IAX
+  sogar sehr viel weniger Probleme haben, als mit SIP. Ein Grund hierfür ist
+  das NAT-Problem bei SIP, das bei IAX in dieser Form nicht auftritt und das
+  bei der Verwendung von SIP und einer Firewall dazu führt, dass bei der
+  Firewall sehr viele UDP-Ports freigeschaltet werden müssen. Weiterhin können
+  über einen IAX-Channel mehrere Gespräche gleichzeitig geführt werden. Bei
+  SIP muss für jedes Gespräch ein eigener Channel aufgebaut werden (großer
+  Verwaltungsoverhead).<note>
+      <para>Das IP-Protokoll unterscheidet zwei wesentliche
+      Transportmöglichkeiten: TCP und UDP. TCP unterstützt eine sichere
+      Übertragung von Daten, da nach der Übertragung durch Checksummen
+      überprüft wird, ob evtl. ein Paket fehlt. Dieses kann dann noch mal
+      angefordert werden. TCP wird zum Beispiel beim Abruf von Webseiten
+      benutzt. Bei den meisten Übertragungen von Ton- und Bildinformation
+      benötigt man diesen Overhead allerdings nicht. Falls bei einer
+      Videoübertragung ein Bild ausfällt, dann kann man dieses Bild nicht ein
+      paar Sekunden später einfügen. Es wird also einfach weggelassen -
+      Vergleichbares passiert bei Audiostreams. Für die Übertragung von
+      Multimediadaten wird in der Regel UDP verwendet. Es garantiert zwar
+      keine lückenlose Übertragung der Daten, besitzt dafür aber einen
+      geringeren Verwaltungsoverhead und ist in dieser Hinsicht schneller" als
+      TCP.</para>
+    </note></para>
+
+  <section id="sip-nat-problem">
+    <title>Das SIP-NAT-Problem</title>
+
+    <para>Die wenigsten Büro- und Privat-PCs haben eine eigene feste
+    IP-Adresse aus dem öffentlichen Adressbereich des Internets. Diese wäre
+    mit dem jetzigen IPv4-Standard wahrscheinlich auch nicht für jedes
+    TCP/IP-taugliche Gerät verfügbar, da der IPv4-Adressraum zu klein ist für
+    alle bereits vorhandenen Geräte.<note>
+        <para>Der IPv4-Adressraum verfügt über insgesamt 2 hoch 32 einzelne
+        Adressen und man kann wahrscheinlich nicht herausfinden, ob es
+        wirklich noch möglich wäre, jedem IP-fähigen, aktuell vorhandenen
+        Gerät eine feste IP-Adresse aus dem öffentlichen Adressraum zu geben.
+        Das Problem ist auch, dass die Adressen nicht wahllos vergeben werden
+        können, sondern nur innerhalb sinnvoller Broadcastdomains und bereits
+        ganze Class-A-Bereiche (ca. 17 Mio Adressen) in den Anfängen des
+        Internets großzügig auch einzelnen Firmen zugeteilt wurden.</para>
+      </note>Eine Lösung dieses Problems ist es Rechner, bzw. gesamte
+    Rechnernetze, über ein so genanntes NAT-Gateway mit dem Internet zu
+    verbinden. NAT ist das Akronym für "Network Address Translation". Mithilfe
+    von NAT teilt ein einzelner Rechner (NAT-Gateway) seine feste offizielle
+    IP-Adresse mit allen verbundenen Rechnern, die in der Regel über eine
+    IP-Adresse aus dem privaten, im Internet nicht gerouteten Bereich<footnote>
+        <para>IP-Adressen aus dem privaten Bereich beginnen beispielsweise mit
+        10. oder mit 192.168., also zum Beispiel 10.128.1.16 oder
+        192.168.1.3.</para>
+      </footnote>, verfügen. Ein NAT-Gateway nimmt alle Anfragen von Rechnern
+    aus dem privaten Netz (meist Intranet genannt) an und leitet diese dann
+    mit der eigenen offiziellen IP-Adresse ins Internet weiter. Kommen die
+    angeforderten Daten aus dem Internet zurück, leitet das NAT-Gateway die
+    Daten entsprechend ins Intranet<footnote>
+        <para>Es gibt mittlerweile viele unterschiedliche Formen von
+        NAT-Gateways, mit zum Teil sehr spezieller Funktionsweise. Hier wird
+        lediglich das grundlegende Funktionsprinzip eines NAT-Gateways und die
+        damit verbundenen Auswirkungen beschrieben.</para>
+      </footnote>. TCP/IP-Datenpakete bestehen in der Regel aus einem Envelope
+    (Umschlag) und dem Content/Payload (Inhalt/Nutzlast). Im Envelope stehen
+    Informationen über Ursprung und Ziel des Contents, also auch die
+    IP-Adresse des Rechners, von dem die Kommunikation gestartet wurde. Diese
+    Daten werden vom NAT-Gateway umgeschrieben. Es merkt sich die
+    ursprüngliche IP-Adresse (für die Rückantwort) und schreibt für den
+    öffentlichen Bereich des Internets seine eigene offizielle IP-Adresse in
+    den Envelope. Kommen die angeforderten Daten zurück, schreibt das
+    NAT-Gateway wieder die ursprüngliche IP-Adresse in den Envelope und leitet
+    die Daten entsprechend an den Rechner zurück, der eigentlich die
+    Kommunikaton gestartet hatte. Dies klappt bei den meisten Protokollen sehr
+    gut. Allerdings benutzt SIP nicht den Umschlag, sondern schreibt die für
+    das Protokoll benötigte IP-Adresse in den Inhalt des Paketes. Normale
+    NAT-Gateways können nur mit IP-Adressen im Envelope umgehen, nicht aber im
+    Content. Der gängige Fehler ist nun folgender: Der Zielrechner verfügt
+    über eine offizielle IP-Adresse und der Quellrechner über eine private
+    Adresse. Der anfordernde Rechner adressiert die Pakete mit der offiziellen
+    IP-Adresse und schreibt seine Absenderadresse direkt in den Content und
+    nicht in den Envelope. Die Pakete werden korrekt geroutet und landen beim
+    Zielrechner. Da die Quell-IP nicht im Envelope gesetzt war, konnte das
+    NAT-Gateway die private nicht in eine offizielle IP-Adresse umschreiben.
+    Daher versucht der Zielrechner, die Daten an die in den Paketen angegebene
+    IP-Adresse zu senden. IP-Adressen aus dem privaten Adressbereich werden
+    jedoch nicht geroutet und der Quellrechner erhält keine Daten vom
+    Zielrechner. In der Regel besitzen die Rechner im Intranet eines
+    Unternehmens IP-Adressen aus dem privaten Adressbereich und müssen für die
+    Kommunikation mit Rechnern im Internet auf die Dienste eines NAT-Gateways
+    zurückgreifen.<footnote>
+        <para>In seltenen Fällen nutzen Firmen trotz der Verwendung von
+        offiziellen IP-Adressen auch für interne Rechner ein NAT-Gateway. Oft,
+        weil sie zum Beispiel die Größe des Netzes nach außen maskieren
+        möchten und sich generell gewisse Sicherheitsvorteile davon
+        erhoffen.</para>
+      </footnote> Für Telefone im Intranet ist diese Adressproblematik ohne
+    Belang, da ja im Intranet alle IP-Adressen geroutet und IP-Pakete korrekt
+    verteilt werden. Verbindungen ins Internet sind jedoch mit SIP
+    standardmäßig über ein NAT-Gateway nicht möglich. Eine genaue Beschreibung
+    des NAT-Problems, das auch für einige andere Anwendungen relevant ist,
+    findet man in der Wikipedia unter <ulink
+    url="http://de.wikipedia.org/wiki/Network_Address_Translation">http://de.wikipedia.org/wiki/Network_Address_Translation</ulink>.</para>
+
+    <note>
+      <para>Auf welchen Ports Asterisk nach eingehenden RTP-Verbindungen
+      lauscht, kann in der <filename>rtp.conf</filename> eingestellt
+      werden.</para>
+    </note>
+  </section>
+
+  <section id="sip-extensions.conf">
+    <title>SIP-Geräte in der extensions.conf</title>
+
+    <para>In der <filename>extensions.conf</filename> werden Kanäle zu
+    SIP-Geräten in der Form
+    <code>SIP/<replaceable>Gerätename</replaceable></code> angegeben. Um einen
+    beliebigen SIP-User über das Internet zu erreichen, verwendet man
+    <code>SIP/<replaceable>user</replaceable>@<replaceable>domain</replaceable></code>,
+    für einen User auf einem Proxy gibt man
+    <code>SIP/<replaceable>proxy</replaceable>/<replaceable>user</replaceable></code>
+    oder
+    <code>SIP/<replaceable>user</replaceable>@<replaceable>proxy</replaceable></code>
+    an, wobei der Proxy als Abschnitt definiert sein muss (siehe <xref
+    linkend="sip.conf-channels" />).</para>
+
+    <para>Nützliche CLI-Befehle:<variablelist termlength="32">
+        <varlistentry>
+          <term><code>sip show peers</code></term>
+
+          <listitem>
+            <simpara>Listet alle SIP peers auf (auch friends)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>sip show users</code></term>
+
+          <listitem>
+            <simpara>Listet alle SIP users auf (auch friends)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>sip show registry</code></term>
+
+          <listitem>
+            <simpara>Zeigt den Status der Hosts, bei denen wir uns
+            anmelden</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>sip debug</code> bzw. <code>sip set debug</code></term>
+
+          <listitem>
+            <simpara>Zeigt SIP-Debug-Meldungen.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+  </section>
+
+  <section id="sip.conf-general">
+    <title>Globale Einstellungen</title>
+
+    <simpara>Diese Einstellungen werden in der sip.conf im Abschnitt
+    <code>[general]</code> vorgenommen. Hier sollen aber nur die wichtigsten
+    und gebräuchlichsten Parameter beschrieben werden, weitere Erklärungen zu
+    exotischen Parameter finden sich in der
+    <filename>sip.conf</filename>.</simpara>
+
+    <simpara>I.d.R. ist es möglich, diese Einstellungen auch für einzelne
+    User/Peers vorzunehmen.</simpara>
+
+    <section id="sip-general-context">
+      <title><code>context</code></title>
+
+      <synopsis>context = <replaceable>Contextname</replaceable></synopsis>
+
+      <para>Bestimmt den Context im Dialplan für eingehende Anrufe.</para>
+
+      <programlisting>context=default</programlisting>
+    </section>
+
+    <section id="sip-general-allowguest">
+      <title><code>allowguest</code></title>
+
+      <synopsis>allowguest = [yes|no]</synopsis>
+
+      <para>Anrufe von Gästen erlauben. Default: <code>yes</code></para>
+
+      <programlisting>allowguest=no</programlisting>
+    </section>
+
+    <section id="sip-general-allowtransfer">
+      <title><code>allowtransfer</code></title>
+
+      <synopsis>allowtransfer = [yes|no]</synopsis>
+
+      <para>Transfer von Verbindungen erlauben. Default: yes</para>
+
+      <programlisting>allowtransfer=yes</programlisting>
+    </section>
+
+    <section id="sip-general-realm">
+      <title><code>realm</code></title>
+
+      <synopsis>realm = <replaceable>Hostname</replaceable></synopsis>
+
+      <para>Der Systemname des Asterisk-Servers zur Authentifizierung.
+      Default: <code>asterisk</code> oder ein ggf. in
+      <filename>asterisk.conf</filename> eingestellter Systemname. Verwenden
+      Sie hier den Host- oder Domain-Namen Ihres Servers.</para>
+
+      <programlisting>realm=ast1.beispiel.de</programlisting>
+    </section>
+
+    <section id="sip-general-bindport">
+      <title><code>bindport</code></title>
+
+      <synopsis>bindport = <replaceable>Portnummer</replaceable></synopsis>
+
+      <para>Der UDP-Port, auf dem SIP-Verbindungen entgegengenommen werden
+      sollen. Default: 5060.</para>
+
+      <programlisting>bindport=5060</programlisting>
+    </section>
+
+    <section id="sip-general-bindaddr">
+      <title><code>bindaddr</code></title>
+
+      <synopsis>bindaddr = <replaceable>IP-Adresse</replaceable></synopsis>
+
+      <para>Die IP-Adresse, auf der SIP-Verbindungen entgegengenommen werden
+      sollen. Default: 0.0.0.0 für alle Adressen des Rechners.</para>
+
+      <programlisting>bindaddr=0.0.0.0</programlisting>
+    </section>
+
+    <section id="sip-general-tos">
+      <title>TOS-Flags (<code>tos_sip</code>, <code>tos_audio</code>,
+      <code>tos_video</code>)</title>
+
+      <para>Für SIP können 3 TOS<footnote>
+          <simpara>Type of Service, siehe <xref linkend="glossar-tos" /> und
+          <xref linkend="glossar-dscp" /></simpara>
+        </footnote>-Parameter angegeben werden, um SIP-Paketen im Netzwerk
+      eine andere Priorität als z.B. Datenübertragungen zu geben. Eine
+      genauere Beschreibung steht unter <xref
+      linkend="iax-globalekonf-tos" />. I.d.R. solle man diese Werte angeben
+      (per Default nicht gesetzt):</para>
+
+      <programlisting>tos_sip=cs3      ; für SIP-Pakete (Kommunikationsaufbau)
+tos_audio=ef     ; für RTP-Audio-Pakete
+tos_video=af41   ; für RTP-Video-Pakete</programlisting>
+    </section>
+
+    <section id="sip-general-allow">
+      <title>Sprach-Codecs (<code>allow</code>, <code>disallow</code>)</title>
+
+      <para>Mit <code>allow</code> und <code>disallow</code> können bestimmte
+      Sprachcodecs erlaubt oder nicht erlaubt werden. Außer den bekannten
+      Codecs gibt es <code>all</code> für alle. Dabei ist die Reihenfolge
+      wichtig.</para>
+
+      <programlisting>; Beispiel: alle Codecs ausser ilbc erlauben:
+allow=all
+disallow=ilbc
+
+; Beispiel: nur die Codecs gsm und ulaw erlauben:
+disallow=all
+allow=gsm
+allow=ulaw</programlisting>
+    </section>
+
+    <section id="sip-general-language">
+      <title><code>language</code></title>
+
+      <synopsis>language = <replaceable>Sprachkürzel</replaceable></synopsis>
+
+      <para>Stellt die Default-Sprache ein.</para>
+
+      <programlisting>language=de</programlisting>
+    </section>
+
+    <section id="sip-general-dtmfmode">
+      <title><code>dtmfmode</code></title>
+
+      <synopsis>dtmfmode = <replaceable>Modus</replaceable></synopsis>
+
+      <para>Verfahren, wie DTMF-Töne gesendet werden. Mögliche
+      Werte:<variablelist>
+          <varlistentry>
+            <term><code>rfc2833</code></term>
+
+            <listitem>
+              <simpara>(default) Informationsnachrichten nach RFC 2833
+              senden.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>info</code></term>
+
+            <listitem>
+              <simpara>Als SIP INFO Nachrichten senden.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>inband</code></term>
+
+            <listitem>
+              <simpara>DTMF-Töne <quote>inband</quote> als Audio
+              senden.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>auto</code></term>
+
+            <listitem>
+              <simpara>Verwendet <code>rfc2833</code> wenn möglich, sonst
+              <code>inband</code>.</simpara>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+
+      <programlisting>dtmfmode=rfc2833</programlisting>
+    </section>
+
+    <section id="sip-general-videosupport">
+      <title><code>videosupport</code></title>
+
+      <synopsis>videosupport = [yes|no]</synopsis>
+
+      <para>Schaltet die generelle Unterstützung von Video-Übertragungen ein
+      (nicht getestet). Video-Unterstützung kann in den einzelnen Kanälen
+      ausgeschaltet werden, kann aber dort nicht aktivierten werden ohne diese
+      globale Einstellung.</para>
+
+      <programlisting>videosupport=yes</programlisting>
+    </section>
+
+    <section id="sip-general-maxcallbitrate">
+      <title><code>maxcallbitrate</code></title>
+
+      <synopsis>maxcallbitrate = <replaceable>Übertragungsrate</replaceable></synopsis>
+
+      <para>Bestimmt die maximale Übertragungsrate für Video-Telefonate in
+      Kilobits pro Sekunde. Default: <code>384</code> (für 384 kb/s).</para>
+
+      <programlisting>maxcallbitrate=384</programlisting>
+    </section>
+
+    <section id="sip-general-g726nonstandard">
+      <title><code>g726nonstandard</code></title>
+
+      <synopsis>g726nonstandard = [yes|no]</synopsis>
+
+      <para>Stellt ein, dass, wenn ein Peer G726-32 Audio aushandelt, AAL2
+      packing statt RFC3551 packing verwendet wird (siehe
+      <filename>doc/rtp-packetization.txt</filename>, ab Asterisk 1.4). Dies
+      sollte nur eingestellt werden, wenn Sie Probleme mit z.B. Grandstream-
+      oder Sipura-Telefonen haben, die fälschlicherweise G726-32 aushandeln,
+      obwohl sie AAL2-G726-32 meinen.</para>
+
+      <programlisting>g726nonstandard=no</programlisting>
+    </section>
+
+    <section id="sip-general-rtpkeepalive">
+      <title><code>rtpkeepalive</code></title>
+
+      <synopsis>rtpkeepalive = <replaceable>Intervall</replaceable></synopsis>
+
+      <para>Sendet im in Sekunden angegebenen Intervall Keep-Alive-Pakete im
+      RTP-Stream, um NAT<footnote>
+          <simpara>Network Address Translation, wird häufig von Routern
+          verwendet, die zwischen einem privaten Netz und dem öffentlichen
+          Internet vermitteln</simpara>
+        </footnote>-Routen offenzuhalten.</para>
+
+      <programlisting>rtpkeepalive=5   ; alle 5 Sekunden Keep-Alive-Pakete senden</programlisting>
+    </section>
+
+    <section id="sip-general-t38pt_udptl">
+      <title><code>t38pt_udptl</code></title>
+
+      <synopsis>t38pt_udptl = [yes|no]</synopsis>
+
+      <para>Erlaubt das Durchschleifen von T.38-Fax-Übertragungen von SIP- zu
+      SIP-Kanälen. Default: <code>no</code>. Kann pro Kanal deaktiviert, aber
+      nicht ohne diese Einstellung aktiviert werden.</para>
+
+      <programlisting>t38pt_udptl=yes</programlisting>
+    </section>
+
+    <section id="sip-general-register">
+      <title><code>register</code></title>
+
+      <synopsis>register =&gt; <replaceable>user</replaceable>[:<replaceable>passwort</replaceable>[:<replaceable>authuser</replaceable>]]@<replaceable>host</replaceable>[:<replaceable>port</replaceable>][/<replaceable>extension</replaceable>]</synopsis>
+
+      <simpara>Damit kann sich Asterisk als SIP-User bei einem anderen
+      SIP-Proxy (z.B. einem externen Provider) registrieren.</simpara>
+
+      <simpara>Der Host ist entweder ein normaler Hostname, der per DNS
+      aufgelöst werden kann, oder der Name eines Abschnitts, der weiter unten
+      definiert ist.</simpara>
+
+      <simpara>Die Extension muss in der extensions.conf definiert sein, damit
+      Anrufe von diesem Proxy empfangen werden können. Ohne Angabe der
+      Extension gilt <code>s</code>.</simpara>
+
+      <programlisting>; eingehende Anrufe von sip-provider.de an die Extension 999 leiten:
+register =&gt; 123456:passwort@sip-provider.de/999
+
+; eingehende Anrufe von sip-provider an die Extension 999 leiten:
+register =&gt; 123456:passwort@sip-provider/999
+[sip-provider]
+<replaceable>...</replaceable></programlisting>
+    </section>
+
+    <section id="sip-general-externip">
+      <title><code>externip</code></title>
+
+      <synopsis>externip = <replaceable>IP-Adresse</replaceable></synopsis>
+
+      <para>Diese Einstellungen kann wichtig sein, wenn sich Asterisk hinter
+      einem NAT-Router befindet. Die angegebene IP-Adresse wird in ausgehenden
+      SIP-Nachrichten verwendet, damit die Empfänger unsere korrekte
+      öffentliche Adresse wissen (statt unserer Adresse aus dem privaten
+      Netz).</para>
+
+      <programlisting>externip=123.45.67.89</programlisting>
+    </section>
+
+    <section id="sip-general-externhost">
+      <title><code>externhost</code></title>
+
+      <synopsis>externhost = <replaceable>Hostname</replaceable></synopsis>
+
+      <para>Wie <xref linkend="sip-general-externip" />, nur dass stattdessen
+      der eigene öffentliche Hostname angegeben wird (der natürlich per DNS
+      auflösbar sein muss).</para>
+
+      <programlisting>externhost=hanspeter.dyndns.net</programlisting>
+    </section>
+
+    <section id="sip-general-localnet">
+      <title><code>localnet</code></title>
+
+      <synopsis>localnet = <replaceable>Adressraum</replaceable></synopsis>
+
+      <para>Gibt die lokalen, privaten Netzwerke an. Meist kann man folgendes
+      verwenden (nach RFC 1918 und Zeroconf):</para>
+
+      <programlisting>localnet=192.168.0.0/255.255.0.0
+localnet=10.0.0.0/255.0.0.0
+localnet=172.16.0.0/12
+localnet=169.254.0.0/255.255.0.0</programlisting>
+    </section>
+
+    <section id="sip-general-canreinvite">
+      <title><code>canreinvite</code></title>
+
+      <synopsis>canreinvite = [yes|nonat|update|update,nonat]</synopsis>
+
+      <para>Normalerweise versucht Asterisk den optimalsten <quote>audio
+      path</quote> zu wählen, d.h. bei 2 hergestellten Channels die beiden
+      Gesprächsteilnehmer direkt zu verbinden ohne Asterisk als Mittelsmann.
+      Das funktioniert aber nicht, wenn sich ein User in einem NAT
+      befindet.<variablelist termlength="8">
+          <varlistentry>
+            <term>yes</term>
+
+            <listitem>
+              <para>(default) Normale Einstellung. Asterisk versucht, den
+              kürzesten Audio-Pfad zu verwenden.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>nonat</term>
+
+            <listitem>
+              <para>Nur umleiten, wenn sich die Teilnehmer nicht hinter einem
+              NAT befinden (sofern das für Asterisk erkennbar ist).</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>update</term>
+
+            <listitem>
+              <para>Statt <code>INVITE</code>- <code>UPDATE</code>-Pakete zum
+              Umleiten verwenden. Kann mit <code>nonat</code> als
+              <code>update,nonat</code> kombiniert werden.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+
+      <programlisting>canreinvite=nonat</programlisting>
+    </section>
+
+    <section id="sip-general-jbenable">
+      <title><code>jbenable</code></title>
+
+      <synopsis>jbenable = [yes|no]</synopsis>
+
+      <para>Schaltet den <quote>Jitter-Buffer</quote> für eingehendes Audio
+      ein wenn nötig. Dadurch können unterschiedliche Latenzen von IP-Paketen
+      ausgeglichen werden (siehe <xref linkend="glossar-jitter" />). Default:
+      <code>no</code></para>
+
+      <programlisting>jbenable=yes</programlisting>
+    </section>
+
+    <section id="sip-general-jbforce">
+      <title><code>jbforce</code></title>
+
+      <synopsis>jbforce = [yes|no]</synopsis>
+
+      <para>Schaltet den Jitter-Buffer immer ein. (Natürlich muss auch
+      <code>jbenable</code> aktiviert sein.) Default: <code>no</code></para>
+
+      <programlisting>jbforce=no</programlisting>
+    </section>
+
+    <section id="sip-general-jbmaxsize">
+      <title><code>jbmaxsize</code></title>
+
+      <synopsis>jbmaxsize = <replaceable>Länge</replaceable></synopsis>
+
+      <para>Maximale Größe des Jitter-Buffers in Millisekunden. Default:
+      200.</para>
+
+      <programlisting>jbmaxsize=200</programlisting>
+    </section>
+
+    <section id="sip-general-jbresyncthreshold">
+      <title><code>jbresyncthreshold</code></title>
+
+      <synopsis>jbresyncthreshold = <replaceable>Länge</replaceable></synopsis>
+
+      <para>Resynchronisations-Rahmen des Jitter-Buffers. Default:
+      1000.</para>
+
+      <programlisting>jbresyncthreshold=500</programlisting>
+    </section>
+
+    <section id="sip-general-jbimpl">
+      <title><code>jbimpl</code></title>
+
+      <synopsis>jbimpl = [fixed|adaptive]</synopsis>
+
+      <para>Bestimmt, welcher Jitter-Buffer-Algorithmus verwendet wird. Bisher
+      sind zwei Algorithmen implementiert:<variablelist termlength="8">
+          <varlistentry>
+            <term><code>fixed</code></term>
+
+            <listitem>
+              <simpara>(default) Der klassiche Jitter-Buffer mit fester Größe
+              (immer <code>jbmaxsize</code>).</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>adaptive</code></term>
+
+            <listitem>
+              <simpara>Der neue Algorithmus mit variabler Größe (das ist auch
+              der Jitter-Buffer von IAX2).</simpara>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+
+      <programlisting>jbimpl=adaptive</programlisting>
+    </section>
+  </section>
+
+  <section id="sip.conf-channels">
+    <title>Channel-Einstellungen</title>
+
+    <simpara>Nach den allgemeinen Einstellungen können Kanäle zu anderen
+    Geräten in Abschnitten definiert werden. Das sind entweder users, peers
+    oder friends (friend ist die Kombination aus user und peer).</simpara>
+
+    <simpara>I.d.R. können hier auch die in <xref
+    linkend="sip.conf-general" /> beschriebenen Parameter verwendet und so für
+    einzelne Kanäle abgeändert werden.</simpara>
+
+    <para>Ein Abschnitt könnte z.B. so aussehen:<programlisting>[sip-provider-in]
+; für Anrufe, die über unseren SIP-Provider eingehen
+; Wir kennen die CallerID der eingehenden Anrufe noch nicht, daher
+; wird type=peer und der Abgleich per Hostname verwendet
+type=peer
+host=sip.provider.de
+context=from-provider</programlisting>oder so:<programlisting>[sip-provider-out]
+type=peer                ; da nur ausgehende Anrufe
+secret=geheim
+username=apfelmus       ; unser User
+fromuser=apfelmus       ; brauchen viele SIP-Provider
+host=sip.provider.de    ; Host des Providers
+port=5060               ; Port auf dem Host des Providers
+call-limit=5            ; max. 5 gleichzeitige ausgehende Anrufe zulassen</programlisting></para>
+
+    <simpara>Bitte beachten Sie auch, dass je nach <code>type</code> des
+    Kanals (<code>user</code> | <code>peer</code>) nicht alle Parameter
+    sinnvoll sind. In der <filename>sip.conf</filename> finden sich Beispiele
+    zu exotischen Parametern.</simpara>
+
+    <section id="sip-channel-type">
+      <title><code>type</code></title>
+
+      <synopsis>type = [user|peer|friend]</synopsis>
+
+      <para>Die Art des Geräts<variablelist termlength="8">
+          <varlistentry>
+            <term><code>user</code></term>
+
+            <listitem>
+              <simpara>Ein Gerät, das sich zum Anrufen mit uns verbindet (z.B.
+              ein lokales Telefon)</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>peer</code></term>
+
+            <listitem>
+              <simpara>Ein Gerät, mit dem wir uns verbinden, oder ein Gerät,
+              das sich mit uns verbindet, und das wir anhand des Host-Namens
+              zuordnen</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>friend</code></term>
+
+            <listitem>
+              <simpara><code>user</code> und <code>peer</code> in einem
+              Abschnitt</simpara>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+
+      <programlisting>type=peer</programlisting>
+    </section>
+
+    <section id="sip-channel-context">
+      <title><code>context</code></title>
+
+      <synopsis>context = <replaceable>Contextname</replaceable></synopsis>
+
+      <para>Der Context im Dialplan für eingehende Anrufe.</para>
+
+      <programlisting>context=from-birnenbrei</programlisting>
+    </section>
+
+    <section id="sip-channel-secret">
+      <title><code>secret</code></title>
+
+      <synopsis>secret = <replaceable>Passwort</replaceable></synopsis>
+
+      <para>Unser Passwort, mit dem wir uns authentifizieren, bzw. das
+      Passwort des anderen Geräts, um sich bei uns zu authentifizieren.</para>
+
+      <programlisting>secret=geheim</programlisting>
+    </section>
+
+    <section id="sip-channel-username">
+      <title><code>username</code></title>
+
+      <synopsis>username = <replaceable>Benutzername</replaceable></synopsis>
+
+      <para>Unser Benutzername / Account auf dem anderen Rechner.</para>
+
+      <programlisting>username=apfelmus</programlisting>
+    </section>
+
+    <section id="sip-channel-fromuser">
+      <title><code>fromuser</code></title>
+
+      <synopsis>fromuser = <replaceable>Benutzername</replaceable></synopsis>
+
+      <para>Wird von einigen SIP-Providern benötigt.</para>
+
+      <programlisting>fromuser=apfelmus</programlisting>
+    </section>
+
+    <section id="sip-channel-host">
+      <title><code>host</code></title>
+
+      <synopsis>host = [<replaceable>Hostname</replaceable>|dynamic]</synopsis>
+
+      <para>Hostname (oder Adresse) des anderen Rechners. <code>dynamic</code>
+      wird angegeben, wenn der Hostname des Geräts nicht bekannt ist, da er
+      dynamisch vergeben wird (oft zusammen mit <code>defaultip</code>
+      gebraucht).</para>
+
+      <programlisting>host=siphost.provider.de</programlisting>
+    </section>
+
+    <section id="sip-channel-defaultip">
+      <title><code>defaultip</code></title>
+
+      <synopsis>defaultip = <replaceable>IP-Adresse</replaceable></synopsis>
+
+      <para>Unter der angegebenen Adresse wird ein Host
+      (<code>host=dynamic</code>) zu erreichen versucht, der sich noch nicht
+      mit uns registriert hat.</para>
+
+      <programlisting>defaultip=192.168.0.33</programlisting>
+    </section>
+
+    <section id="sip-channel-port">
+      <title><code>port</code></title>
+
+      <synopsis>port = <replaceable>Portnummer</replaceable></synopsis>
+
+      <para>Port auf dem anderen Rechner, mit dem wir uns verbinden.</para>
+
+      <programlisting>port=5060</programlisting>
+    </section>
+
+    <section id="sip-channel-call-limit">
+      <title><code>call-limit</code></title>
+
+      <synopsis>call-limit = <replaceable>Anzahl</replaceable></synopsis>
+
+      <para>Limitiert die Anzahl der gleichzeitigen Telefonate mit diesem
+      Gerät. (Nicht für Realtime-Peers!) Bei <code>type=friend</code> wäre
+      <code>call-limit=1</code> ein Anruf für den <code>peer</code> und einer
+      für den <code>user</code>.</para>
+
+      <programlisting>call-limit=1</programlisting>
+    </section>
+
+    <section id="sip-channel-callerid">
+      <title><code>callerid</code></title>
+
+      <synopsis>callerid = <replaceable>Vorname</replaceable> <replaceable>Nachname</replaceable> &lt;<replaceable>Nummer</replaceable>&gt;</synopsis>
+
+      <para>Überschreibt die CallerID, die vom Gerät gesendet wird (und damit
+      oft nicht vertrauenswürdig ist).</para>
+
+      <programlisting>callerid=Hans Meier &lt;1234&gt;</programlisting>
+    </section>
+
+    <section id="sip-channel-nat">
+      <title><code>nat</code></title>
+
+      <synopsis>nat = [yes|no]</synopsis>
+
+      <para>Gibt Asterisk einen Hinweis, ob sich zwischen Server und dem Gerät
+      ein NAT-Router befindet.</para>
+
+      <programlisting>host=192.168.0.42
+nat=no</programlisting>
+    </section>
+
+    <section id="sip-channel-mailbox">
+      <title><code>mailbox</code></title>
+
+      <synopsis>mailbox = <replaceable>Nummer</replaceable>[@<replaceable>Context</replaceable>][,<replaceable>Nummer</replaceable>[@<replaceable>Context</replaceable>][,<replaceable>...</replaceable>]]</synopsis>
+
+      <para>Ordnet dem User eine Mailbox im angegebenen Voicemail-Context
+      (oder <code>default</code>) zu. Dadurch werden die entsprechenden
+      MWI<footnote>
+          <simpara>Message Waiting Indicator</simpara>
+        </footnote>-Nachrichten an das Gerät geschickt - z.B. für ein
+      Blinklicht bei neuen Nachrichten. Es können auch mehrere Mailboxen
+      angegeben werden.</para>
+
+      <programlisting>mailbox=1234@default</programlisting>
+    </section>
+
+    <section id="sip-channel-subscribemwi">
+      <title><code>subscribemwi</code></title>
+
+      <synopsis>subscribemwi = [yes|no]</synopsis>
+
+      <para>Schickt MWI-Nachrichten (siehe <xref
+      linkend="sip-channel-mailbox" />) nur dann, wenn das Gerät danach
+      fragt.</para>
+
+      <programlisting>subscribemwi=yes</programlisting>
+    </section>
+
+    <section id="sip-channel-vmexten">
+      <title><code>vmexten</code></title>
+
+      <synopsis>vmexten = <replaceable>Extension</replaceable></synopsis>
+
+      <para>Übergibt die Dialplan-Extension, unter der die Mailbox zu
+      erreichen ist. Default: <code>asterisk</code> (so auch in einigen
+      Endgeräten, z.B. snom, voreingestellt).</para>
+
+      <programlisting>vmexten=asterisk</programlisting>
+    </section>
+
+    <section id="sip-channel-allow">
+      <title>Sprach-Codecs (<code>allow</code>, <code>disallow</code>)</title>
+
+      <para>Mit <code>allow</code> und <code>disallow</code> können bestimmte
+      Sprachcodecs erlaubt oder nicht erlaubt werden. Siehe <xref
+      linkend="sip-general-allow" />.</para>
+    </section>
+
+    <section id="sip-channel-regexten">
+      <title><code>regexten</code></title>
+
+      <synopsis>regexten = <replaceable>Extension</replaceable></synopsis>
+
+      <para>Erzeugt dynamisch eine Extension, wenn sich das Gerät
+      anmeldet.</para>
+
+      <programlisting>regexten=1234</programlisting>
+    </section>
+
+    <section id="sip-channel-qualify">
+      <title><code>qualify</code></title>
+
+      <synopsis>qualify = [yes|no|<replaceable>Wartezeit</replaceable>]</synopsis>
+
+      <para>Schickt dem anderen Gerät regelmäßig Pings; wenn das Gerät
+      innerhalb der angegebenen Wartezeit (oder der Default-Zeit bei
+      <code>yes</code>) nicht mit einem Pong antwortet, gilt es als nicht
+      erreichbar.</para>
+
+      <programlisting>qualify=5000</programlisting>
+    </section>
+
+    <section id="sip-channel-callgroup">
+      <title><code>callgroup</code></title>
+
+      <synopsis>callgroup = <replaceable>Gruppen</replaceable></synopsis>
+
+      <para>Setzt für das Gerät die angegebene Call-Group. Es können auch
+      mehrere Gruppen durch Komma getrennt oder eine Reihe von Gruppen mit
+      <code>-</code> (Bindestrich) angegeben werden. Gruppennummern gehen von
+      0 bis 63.</para>
+
+      <programlisting>callgroup=2,4-7   ; setzt die Gruppen 2,4,5,6,7</programlisting>
+    </section>
+
+    <section id="sip-channel-pickupgroup">
+      <title><code>pickupgroup</code></title>
+
+      <synopsis>pickupgroup = <replaceable>Gruppen</replaceable></synopsis>
+
+      <para>Bestimmt die Pickup-Groups für das Gerät, also für welche der
+      durch <code>callgroup</code> angegebene Gruppen Pickup (Heranholen von
+      Gesprächen) erlaubt ist.</para>
+
+      <programlisting>pickupgroup=2,4-6   ; Pickup für die Gruppen 2,4,5,6 erlauben</programlisting>
+    </section>
+
+    <section id="sip-channel-permit">
+      <title>IP-Adressen-Beschränkung (<code>deny</code>,
+      <code>permit</code>)</title>
+
+      <para>Mit <code>permit</code> und <code>deny</code> können
+      IP-Adressräume, aus denen sich das Gerät bei uns registrieren kann,
+      erlaubt oder verboten werden (nicht zu verwechseln mit
+      <code>allow</code> / <code>disallow</code>!). Dabei ist die Reihenfolge
+      wichtig.</para>
+
+      <programlisting>; Verbinden nur von 192.168.0.* erlauben geht so:
+deny=0.0.0.0/0.0.0.0                ; alle verbieten
+permit=192.168.0.0/255.255.255.0   ; 192.168.0.* erlauben</programlisting>
+    </section>
+
+    <section id="sip-channel-setvar">
+      <title><code>setvar</code></title>
+
+      <synopsis>setvar = <replaceable>Variablenname</replaceable>=<replaceable>Wert</replaceable></synopsis>
+
+      <para>Setzt eine Channel-Variable für alle Anrufe von diesem
+      Gerät.</para>
+
+      <programlisting>setvar=KUNDENNR=1234</programlisting>
+    </section>
+
+    <section id="sip-channel-rfc2833compensate">
+      <title><code>rfc2833compensate</code></title>
+
+      <synopsis>rfc2833compensate = [yes|no]</synopsis>
+
+      <para>(ab Asterisk 1.4) Ermöglicht Rückwärtskompatibilität zum Erkennen
+      von DTMF-Tönen, die von einem verbundenen Asterisk-Gerät vor Version 1.4
+      gesendet werden.</para>
+
+      <programlisting>rfc2833compensate=yes</programlisting>
+    </section>
+  </section>
+</section>

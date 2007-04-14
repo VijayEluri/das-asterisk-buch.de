@@ -1,0 +1,3611 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<section id="funktionen" lang="de" revision="$Revision: 1.24 $">
+  <!--% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Funktionen im Dialplan</title>
+
+  <simpara>Seit Asterisk 1.2 gibt es im Dialplan nicht nur Applikationen,
+  sondern auch Funktionen. Anders als Applikationen können Funktionen nicht
+  direkt aufgerufen werden. Stattdessen geben sie einen Wert zurück oder - was
+  dem klassischen Verständnis einer Funktion widerspricht - man kann auch, in
+  Verbindung mit der Applikation <code>Set()</code> (siehe <xref
+  linkend="applikationen-set" />), schreibend auf sie zugreifen.
+  Funktionsnamen werden immer ganz in Großbuchstaben geschrieben. Funktionen
+  werden erstaunlicherweise wie Variablen durchwegs in <code>${}</code>
+  eingeklammert, was notwendig ist, da Strings nicht immer in Hochkommata
+  stehen müssen.</simpara>
+
+  <sidebar>
+    <simpara>Würde man die in Asterisk nicht unbedingt intuitive Trennung
+    zwischen Applikationen, Funktionen und sogar Variablen kritisieren, hätte
+    man damit wahrscheinlich nicht ganz unrecht. Auch die Benennung ist nicht
+    einheitlich: <code>SIP_HEADER()</code>, aber <code>SIPCHANINFO()</code> -
+    ein Problem vieler Programmiersprachen, das letztlich nichts aussagt, aber
+    die Einprägsamkeit erschwert. Zudem werden die Zeichen <code>,</code>
+    (Komma), <code>&amp;</code> (Und) und <code>|</code> (Pipe) scheinbar
+    willkürlich als Trennzeichen verwendet. Die Idee, in Funktionen zu
+    <emphasis>schreiben</emphasis>, ist recht ungewöhnlich und weicht vom
+    üblichen Verständnis einer Funktion ab.</simpara>
+
+    <simpara>Insgesamt wirkt die Dialplan-Programmierung - trotz der
+    Neuerungen in Version 1.4 - im Vergleich zu <quote>richtigen</quote>
+    Programmiersprachen sehr starr und wenig erweiterungsfähig. Wen das stört,
+    der sollte sich vielleicht mit der - noch experimentellen - AEL (Asterisk
+    Extension Language) befassen (siehe Datei
+    <filename>extensions.ael</filename>), die die gleichen Funktionen und
+    Applikationen verwendet, aber eine etwas robustere Struktur bietet und oft
+    übersichtlicher ist.</simpara>
+  </sidebar>
+
+  <simpara>Im Asterisk-CLI<footnote>
+      <para>Command Line Interface, kann durch <command>asterisk -r</command>
+      aufgerufen werden</para>
+    </footnote> können Sie mit <userinput>show functions</userinput> und
+  <userinput>show function
+  <replaceable>FUNKTIONSNAME</replaceable></userinput> bzw. <userinput>core
+  show functions</userinput> und <userinput>core show function
+  <replaceable>Funktionsname</replaceable></userinput> (ja nach
+  Asterisk-Version) herausfinden, welche Funktionen in Ihrer Installation
+  verfügbar sind. Dabei ist die komplette Großschreibung des Funktionsnamens
+  wichtig.</simpara>
+
+  <section id="funktionen-agent">
+    <title><code>AGENT()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>AGENT()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>AGENT(<replaceable>AgentenNr</replaceable>[:<replaceable>Feld</replaceable>])</synopsis>
+
+    <para>Gibt Informationen über einen Agenten, identifiziert duch die
+    <code>AgentenNr</code> zurück. Die folgenden Felder können abgefragt
+    werden:<variablelist termlength="10">
+        <varlistentry>
+          <term><code>status</code></term>
+
+          <listitem>
+            <simpara>(default) Der Einlog-Status des Agenten, entweder
+            <code>LOGGEDIN</code> oder <code>LOGGEDOUT</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>password</code></term>
+
+          <listitem>
+            <simpara>Das Passwort des Agenten</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>name</code></term>
+
+          <listitem>
+            <simpara>Der Name des Agenten</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>mohclass</code></term>
+
+          <listitem>
+            <simpara>Die Wartemusik-Klasse (Music on hold class)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>exten</code></term>
+
+          <listitem>
+            <simpara>Die Rückruf-Extension des Agenten. Wird von der
+            Applikation <code>AgentCallbackLogin()</code> verwendet.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>channel</code></term>
+
+          <listitem>
+            <simpara>Der Name des aktiven Kanals des Agenten
+            (<code>AgentLogin()</code>)</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist><programlisting>; die Variable foo auf den Namen des Agenten Nr. 42 setzen:
+exten =&gt; 123,1,Set(foo=${AGENT(42:name)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'AGENT' =- 
+
+[Syntax]
+AGENT(&lt;agentid&gt;[:item])
+
+[Synopsis]
+Gets information about an Agent
+
+[Description]
+The valid items to retrieve are:
+- status (default)      The status of the agent
+                          LOGGEDIN | LOGGEDOUT
+- password              The password of the agent
+- name                  The name of the agent
+- mohclass              MusicOnHold class
+- exten                 The callback extension for the Agent (AgentCallbackLogin)
+- channel               The name of the active channel for the Agent (AgentLogin)</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-array">
+    <title><code>ARRAY()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>ARRAY()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>ARRAY(<replaceable>var1</replaceable>[,<replaceable>var2</replaceable>[,<replaceable>...</replaceable>]])</synopsis>
+
+    <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
+
+    <para>Setzt mehrere Variablen gleichzeitig. (Der Name ist irreführend, ein
+    Array wird nicht erstellt.) Mit <code>ARRAY()</code> kann nur geschrieben,
+    nicht gelesen werden. Denken Sie daran, die nach dieser Funktion folgenden
+    Werte durch Komma zu trennen und dieses Komma durch Backslash
+    (<code>\</code>) zu escapen, da sonst von einem zweiten Parameter für
+    <code>Set()</code> ausgegangen würde!<programlisting>; var1 auf 1 und var2 auf 2 setzen:
+exten =&gt; 123,1,Set(ARRAY(var1,var2)=1\,2)</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'ARRAY' =- 
+
+[Syntax]
+ARRAY(var1[|var2[...][|varN]])
+
+[Synopsis]
+Allows setting multiple variables at once
+
+[Description]
+The comma-separated list passed as a value to which the function is set will
+be interpreted as a set of values to which the comma-separated list of
+variable names in the argument should be set.
+Hence, Set(ARRAY(var1|var2)=1\,2) will set var1 to 1 and var2 to 2
+Note: remember to either backslash your commas in extensions.conf or quote the
+entire argument, since Set can take multiple arguments itself.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-base64_decode">
+    <title><code>BASE64_DECODE()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>BASE64_DECODE()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>BASE64_DECODE(Base64_String)</synopsis>
+
+    <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
+
+    <para>Dekodiert einen Base64-kodierten String.<programlisting>exten =&gt; 123,1,Set(foo=${BASE64_DECODE("SGFsbG8gV2VsdA==")})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'BASE64_DECODE' =- 
+
+[Syntax]
+BASE64_DECODE(&lt;base64_string&gt;)
+
+[Synopsis]
+Decode a base64 string
+
+[Description]
+Returns the plain text string</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-base64_encode">
+    <title><code>BASE64_ENCODE()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>BASE64_ENCODE()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>BASE64_ENCODE(<replaceable>String</replaceable>)</synopsis>
+
+    <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
+
+    <para>Kodiert einen String mit Base64.<programlisting>exten =&gt; 123,1,Set(foo=${BASE64_ENCODE("Hallo Welt")})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'BASE64_ENCODE' =- 
+
+[Syntax]
+BASE64_ENCODE(&lt;string&gt;)
+
+[Synopsis]
+Encode a string in base64
+
+[Description]
+Returns the base64 string</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-callerid">
+    <title><code>CALLERID()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>CALLERID()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>CALLERID(<replaceable>Feld</replaceable>)</synopsis>
+
+    <para>Gibt Informationen über den Anrufer zurück oder setzt diese.
+    <code>Feld</code> ist eines der folgenden:<variablelist termlength="8">
+        <varlistentry>
+          <term><code>name</code></term>
+
+          <listitem>
+            <simpara>Name des Anrufers, alphanumerischer String. Sie sollten
+            sich auf wenige Zeichen - z.B. 15 - beschränken.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>num</code></term>
+
+          <listitem>
+            <simpara>Nummer, nur Ziffern. (manchmal findet man auch
+            <code>number</code>, evtl. abhängig von der
+            Asterisk-Version)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>all</code></term>
+
+          <listitem>
+            <simpara>Name und Nummer mit der Nummer in spitzen Klammern, z.B.:
+            "<code>Peter Meier &lt;012345&gt;</code>"</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>ani</code></term>
+
+          <listitem>
+            <simpara>ANI<footnote>
+                <simpara>Automatic Number Identification</simpara>
+              </footnote>-Nummer, für ausgehende Anrufe</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>dnid</code></term>
+
+          <listitem>
+            <simpara>DNID<footnote>
+                <simpara>Dialed/Destination Number Identification
+                Service</simpara>
+              </footnote>-Nummer. Die gewählte Nummer (manchmal findet man
+            auch <code>dnis</code>, evtl. abhängig von der
+            Asterisk-Version)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>rdnis</code></term>
+
+          <listitem>
+            <simpara>RDNIS<footnote>
+                <simpara>Redirected Dialed Number Identification
+                Service</simpara>
+              </footnote>-Nummer. Die Nummer, die auf die aktuelle Extension
+            umgeleitet hat, z.B. falls die Nummer einer Voicemailbox nicht die
+            gewählte Extension ist.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>Ab Asterisk 1.4 muss z.B. statt der Variablen
+    <code>${CALLERIDNUM}</code> die Funktion <code>${CALLERID(num)}</code>
+    verwendet werden, statt <code>${RDNIS}</code>
+    <code>$(CALLERID(rdnis))</code> etc. Die Applikation
+    <code>SetCIDName()</code> wird durch
+    <code>Set(CALLERID(name)=<replaceable>Name</replaceable>)</code> ersetzt,
+    <code>SetCallerID()</code> durch
+    <code>Set(CALLERID(all)=<replaceable>Name</replaceable>
+    &lt;<replaceable>Nummer</replaceable>&gt;)</code> etc.<programlisting>; die Variable foo auf die Anruferkennung setzen:
+exten =&gt; 123,1,Set(foo=${CALLERID(all)})
+
+; den Anrufernamen auf "Peter Meier" setzen:
+exten =&gt; 123,1,Set(CALLERID(name)="Peter Meier") </programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'CALLERID' =- 
+
+[Syntax]
+CALLERID(datatype[,&lt;optional-CID&gt;])
+
+[Synopsis]
+Gets or sets Caller*ID data on the channel.
+
+[Description]
+Gets or sets Caller*ID data on the channel.  The allowable datatypes
+are "all", "name", "num", "ANI", "DNID", "RDNIS".
+Uses channel callerid by default or optional callerid, if specified.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; CALLERID(datatype[,&lt;optional-CID&gt;])
+---
+&gt; CALLERID(datatype)
+13d12
+&lt; Uses channel callerid by default or optional callerid, if specified.</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-cdr">
+    <title><code>CDR()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>CDR()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>CDR(<replaceable>Feld</replaceable>)</synopsis>
+
+    <para>Liest oder setzt CDR<footnote>
+        <simpara>Call Data Record, siehe <xref
+        linkend="glossar-cdr" /></simpara>
+      </footnote>-Felder. <code>Feld</code> ist eines der folgenden (wenn
+    nicht anders angegeben ist nur Lesen möglich):<variablelist
+        termlength="13">
+        <varlistentry>
+          <term><code>clid</code></term>
+
+          <listitem>
+            <simpara>Caller-ID</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>src</code></term>
+
+          <listitem>
+            <simpara>Source, die Caller-ID-Nummer</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>dst</code></term>
+
+          <listitem>
+            <simpara>Destination, Ziel-Extension</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>dcontext</code></term>
+
+          <listitem>
+            <simpara>Destination context, der Ziel-Context</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>channel</code></term>
+
+          <listitem>
+            <simpara>Der Kanalname</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>dstchannel</code></term>
+
+          <listitem>
+            <simpara>Destination channel, der Ziel-Kanal, falls
+            zutreffend</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>lastapp</code></term>
+
+          <listitem>
+            <simpara>Die letzte ausgeführte Applikation</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>lastdata</code></term>
+
+          <listitem>
+            <simpara>Die Argumente der zuletzt ausgeführten
+            Applikation</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>start</code></term>
+
+          <listitem>
+            <simpara>Die Start-Zeit des Anrufs</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>answer</code></term>
+
+          <listitem>
+            <simpara>Die Zeit, zu der der Anruf beantwortet wurde</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>end</code></term>
+
+          <listitem>
+            <simpara>Die End-Zeit des Anrufs</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>duration</code></term>
+
+          <listitem>
+            <simpara>Die Dauer des Anrufs (in Sekunden)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>billsec</code></term>
+
+          <listitem>
+            <simpara>Die Dauer des Anrufs seit der Anruf beantwortet wurde,
+            also die zu berechnende Zeit (in Sekunden)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>disposition</code></term>
+
+          <listitem>
+            <simpara>Der Status des Anrufs: <code>ANSWERED</code>, <code>NO
+            ANSWER</code>, <code>BUSY</code> oder
+            <code>FAILED</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>amaflags</code></term>
+
+          <listitem>
+            <simpara>Die AMA<footnote>
+                <simpara>Automated Message Accounting</simpara>
+              </footnote>-Flags. <code>DEFAULT</code> (System-Default),
+            <code>BILLING</code> (zur Abrechnung), <code>DOCUMENTATION</code>
+            (zur Dokumentierung) oder <code>OMIT</code> (keine Aufzeichnung).
+            (Manchmal findet man statt <code>BILLING</code> und
+            <code>OMIT</code> auch die Angaben <code>BILL</code> und
+            <code>IGNORE</code> - evtl. abhängig von der
+            Asterisk-Version)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>accountcode</code></term>
+
+          <listitem>
+            <simpara>Die alphanumerische Nummer des Abrechnungskontos, max. 20
+            Zeichen (auch Setzen möglich)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>uniqueid</code></term>
+
+          <listitem>
+            <simpara>Die einmalige alphanumerische ID des Kanals (max. 32
+            Zeichen)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>userfield</code></term>
+
+          <listitem>
+            <simpara>Das User-Feld, in das beliebige Informationen (max. 255
+            Zeichen) geschrieben werden können (auch Setzen möglich)</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist><programlisting>; foo auf die Dauer des Anrufs setzen:
+exten =&gt; 123,1,Set(foo=${CDR(duration)})
+
+; das User-Feld auf "meine Infos" setzen:
+exten =&gt; 123,1,Set(CDR(userfield)=meine Infos)</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'CDR' =- 
+
+[Syntax]
+  Here is a list of all the available cdr field names:
+    clid          lastdata       disposition
+    src           start          amaflags
+    dst           answer         accountcode
+    dcontext      end            uniqueid
+    dstchannel    duration       userfield
+    lastapp       billsec        channel
+  All of the above variables are read-only, except for accountcode,
+  userfield, and amaflags. You may, however,  supply
+  a name not on the above list, and create your own
+  variable, whose value can be changed with this function,
+  and this variable will be stored on the cdr.
+   raw values for disposition:
+       1 = NO ANSWER
+       2 = BUSY
+       3 = FAILED
+       4 = ANSWERED
+    raw values for amaflags:
+       1 = OMIT
+       2 = BILLING
+       3 = DOCUMENTATION
+
+
+[Synopsis]
+Gets or sets a CDR variable
+
+[Description]
+Options:
+  'r' searches the entire stack of CDRs on the channel
+  'u' retrieves the raw, unprocessed value
+  For example, 'start', 'answer', and 'end' will be retrieved as epoch
+  values, when the 'u' option is passed, but formatted as YYYY-MM-DD HH:MM:SS
+  otherwise.  Similarly, disposition and amaflags will return their raw
+  integral values.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>5,26c5
+&lt;   Here is a list of all the available cdr field names:
+&lt;     clid          lastdata       disposition
+&lt;     src           start          amaflags
+&lt;     dst           answer         accountcode
+&lt;     dcontext      end            uniqueid
+&lt;     dstchannel    duration       userfield
+&lt;     lastapp       billsec        channel
+&lt;   All of the above variables are read-only, except for accountcode,
+&lt;   userfield, and amaflags. You may, however,  supply
+&lt;   a name not on the above list, and create your own
+&lt;   variable, whose value can be changed with this function,
+&lt;   and this variable will be stored on the cdr.
+&lt;    raw values for disposition:
+&lt;        1 = NO ANSWER
+&lt;        2 = BUSY
+&lt;        3 = FAILED
+&lt;        4 = ANSWERED
+&lt;     raw values for amaflags:
+&lt;        1 = OMIT
+&lt;        2 = BILLING
+&lt;        3 = DOCUMENTATION
+&lt; 
+---
+&gt; CDR(&lt;name&gt;[|options])
+32,38c11
+&lt; Options:
+&lt;   'r' searches the entire stack of CDRs on the channel
+&lt;   'u' retrieves the raw, unprocessed value
+&lt;   For example, 'start', 'answer', and 'end' will be retrieved as epoch
+&lt;   values, when the 'u' option is passed, but formatted as YYYY-MM-DD HH:MM:SS
+&lt;   otherwise.  Similarly, disposition and amaflags will return their raw
+&lt;   integral values.
+---
+&gt; Option 'r' searches the entire stack of CDRs on the channel</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-channel">
+    <title><code>CHANNEL()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>CHANNEL()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>CHANNEL(<replaceable>Feld</replaceable>)</synopsis>
+
+    <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
+
+    <para>Liest/setzt bestimmte Kanaldaten. <code>Feld</code> ist eines der
+    folgenden (wenn nicht anders angegeben, ist nur Lesen
+    möglich):<variablelist>
+        <varlistentry>
+          <term><code>audioreadformat</code></term>
+
+          <listitem>
+            <simpara>Das Format eingehender Audiodaten auf dem Kanal</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>audionativeformat</code></term>
+
+          <listitem>
+            <simpara>Das native Audioformat des Kanals</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>audiowriteformat</code></term>
+
+          <listitem>
+            <simpara>Das Format ausgehender Audiodaten auf dem Kanal</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>callgroup</code></term>
+
+          <listitem>
+            <simpara>In Asterisk lassen sich Extensions in Call groups von 0 -
+            63 einordnen, z.B. als Kundennummer.<footnote>
+                <simpara>Diese Beschränkung auf 64 Gruppen scheint rein
+                willkürlich zu sein, und dürfte für den ein oder anderen
+                Anwender nicht ausreichen.</simpara>
+              </footnote></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>channeltype</code></term>
+
+          <listitem>
+            <simpara>Die <quote>Technologie</quote> dieses Kanals, also z.B:
+            IAX oder SIP</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>language</code></term>
+
+          <listitem>
+            <simpara>Die Sprache für Voice-Prompts (auch Setzen
+            möglich)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>musicclass</code></term>
+
+          <listitem>
+            <simpara>Die Musik-Klasse für Wartemusik, wie in
+            <filename>musiconhold.conf</filename> definiert (auch Setzen
+            möglich)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>state</code></term>
+
+          <listitem>
+            <para>Zustand des Kanals (<code>Down</code>, <code>Rsrvd</code>,
+            <code>OffHook</code>, <code>Dialing</code>, <code>Ring</code>,
+            <code>Ringing</code>, <code>Up</code>, <code>Busy</code>,
+            <code>Dialing Offhook</code>, <code>Pre-ring</code>,
+            <code>Unknown</code>)</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>tonezone</code></term>
+
+          <listitem>
+            <simpara>Die <quote>Tone zone</quote> bestimmt die Ton-Signale
+            (Wählen, Klingeln, Besetzt, ...) für bestimmte Länder. Sie wird in
+            der Konfigurationsdatei des Kanals (z.B.
+            <filename>zaptel.conf</filename>) durch <code>loadzone</code> und
+            <code>defaultzone</code> festgelegt. Die möglichen Werte sind (wie
+            in der <filename>indications.conf</filename> definiert):
+            <code>at</code>, <code>au</code>, <code>be</code>,
+            <code>br</code>, <code>ch</code>, <code>cl</code>,
+            <code>cn</code>, <code>cz</code>, <code>de</code>,
+            <code>dk</code>, <code>ee</code>, <code>es</code>,
+            <code>fi</code>, <code>fr</code>, <code>gr</code>,
+            <code>hu</code>, <code>it</code>, <code>lt</code>,
+            <code>mx</code>, <code>ml</code>, <code>no</code>,
+            <code>nz</code>, <code>pl</code>, <code>pt</code>,
+            <code>ru</code>, <code>se</code>, <code>sg</code>,
+            <code>uk</code>, <code>us</code>, <code>us-old</code>,
+            <code>tw</code>, <code>ve</code>, <code>za</code>.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>videonativeformat</code></term>
+
+          <listitem>
+            <simpara>Das native Videoformat dieses Kanals</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>Zusätzlich zu diesen Feldern kann der Treiber des Kanals
+    noch weitere bereitstellen, die man in der entsprechenden Dokumentation
+    nachschlagen kann. Felder, die auf dem aktuellen Kanal nicht zur Verfügung
+    stehen, geben einen leeren String zurück.<programlisting>; Typ des Kanals abfragen:
+exten =&gt; 123,1,Set(foo=${CHANNEL(channeltype)})
+
+; Sprache auf Englisch setzen:
+exten =&gt; 123,1,Set(CHANNEL(language)=en)</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'CHANNEL' =- 
+
+[Syntax]
+CHANNEL(item)
+
+[Synopsis]
+Gets/sets various pieces of information about the channel.
+
+[Description]
+Gets/set various pieces of information about the channel.
+Standard items (provided by all channel technologies) are:
+R/O  audioreadformat     format currently being read
+R/O  audionativeformat   format used natively for audio
+R/O  audiowriteformat    format currently being written
+R/W  callgroup           call groups for call pickup
+R/O  channeltype         technology used for channel
+R/W  language            language for sounds played
+R/W  musicclass          class (from musiconhold.conf) for hold music
+R/W  rxgain              set rxgain level on channel drivers that support it
+R/O  state               state for channel
+R/W  tonezone            zone for indications played
+R/W  txgain              set txgain level on channel drivers that support it
+R/O  videonativeformat   format used natively for video
+
+Additional items may be available from the channel driver providing
+the channel; see its documentation for details.
+
+Any item requested that is not available on the current channel will
+return an empty string.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-checksipdomain">
+    <title><code>CHECKSIPDOMAIN()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>CHECKSIPDOMAIN()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>CHECKSIPDOMAIN(<replaceable>Domain</replaceable>)</synopsis>
+
+    <para>Prüft, ob die angegebene Domain (kann auch eine IP-Adresse sein)
+    eine SIP-Domain ist, die Asterisk als lokal behandelt (siehe Datei
+    <filename>sip.conf</filename>). Gibt den Domain-Namen oder einen leeren
+    String zurück.<programlisting>exten =&gt; 123,1,Set(foo=${CHECKSIPDOMAIN(123.45.67.89)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'CHECKSIPDOMAIN' =- 
+
+[Syntax]
+CHECKSIPDOMAIN(&lt;domain|IP&gt;)
+
+[Synopsis]
+Checks if domain is a local domain
+
+[Description]
+This function checks if the domain in the argument is configured
+as a local SIP domain that this Asterisk server is configured to handle.
+Returns the domain name if it is locally handled, otherwise an empty string.
+Check the domain= configuration in sip.conf</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-curl">
+    <title><code>CURL()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>CURL()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>CURL(<replaceable>URL</replaceable>[|<replaceable>POST-Daten</replaceable>])</synopsis>
+
+    <para>Lädt eine Webseite unter der angegebenen <code>URL</code> mit
+    <code>GET</code>. Wenn <code>POST-Daten</code> angegeben sind, werden
+    diese Daten mit <code>POST</code> gesendet. Gibt die Seite als String
+    zurück.<programlisting>; Die Seite unter der URL http://beispiel.de/seite.php?id=1&amp;action=view abrufen:
+exten =&gt; 123,1,Set(foo=${CURL(http://beispiel.de/seite.php?id=1&amp;action=view)})</programlisting></para>
+  </section>
+
+  <section id="funktionen-cut">
+    <title><code>CUT()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>CUT()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>CUT(<replaceable>Variablenname</replaceable>,<replaceable>Trennzeichen</replaceable>,<replaceable>Feld</replaceable>)</synopsis>
+
+    <para>(Offenbar müssen in Asterisk 1.2.8 statt der Kommas zwischen den
+    Parametern Pipe-Zeichen (<code>|</code>) verwendet werden.)</para>
+
+    <para>Zerteilt den String in einer Variablen anhand eines Trennzeichens
+    (Default: <code>-</code>) und gibt den so entstandenen Einzelteil an der
+    Stelle <code>Feld</code> (1-basiert) zurück. <code>Feld</code> kann auch
+    eine Spanne sein (z.B. <code>2-4</code>) oder mehrere Felder/Spannen,
+    durch <code>&amp;</code> getrennt, z.B. <code>2-4&amp;6</code>; die
+    entsprechenden Felder werden dann wieder durch das Trennzeichen verbunden.
+    Auch eine Range wie <code>3-</code> (alles ab Feld 3) oder <code>-3</code>
+    (bis Feld 3) ist möglich.</para>
+
+    <para>Ein Komma als Trennzeichen muss durch Backslash escaped werden, z.B.
+    <code>CUT(var,\,,2)</code>.</para>
+
+    <para><programlisting>exten =&gt; 123,1,Set(var=1-2-3-4-5)            ; var ist "1-2-3-4-5"
+exten =&gt; 123,n,Set(var=${CUT(var,,1-3&amp;5)})   ; var ist "1-2-3-5"</programlisting></para>
+
+    <important>
+      <para>Der Parameter <code>Variablenname</code> muss der
+      <emphasis>Name</emphasis> einer Variablen sein, nicht ein String. Die
+      wäre also <emphasis>falsch</emphasis>:
+      <code>CUT(${bar},,3)</code></para>
+    </important>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-fieldqty" /></para>
+    </formalpara>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'CUT' =- 
+
+[Syntax]
+CUT(&lt;varname&gt;,&lt;char-delim&gt;,&lt;range-spec&gt;)
+
+[Synopsis]
+Slices and dices strings, based upon a named delimiter.
+
+[Description]
+  varname    - variable you want cut
+  char-delim - defaults to '-'
+  range-spec - number of the field you want (1-based offset)
+             may also be specified as a range (with -)
+             or group of ranges and fields (with &amp;)</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-db">
+    <title><code>DB()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>DB()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>DB(<replaceable>Familie</replaceable>/<replaceable>Schlüssel</replaceable>)</synopsis>
+
+    <para>Liest/setzt einen Wert in der AstDB. Beim Lesen wird der Wert
+    zurückgegeben oder ein leerer String, wenn der Wert nicht existiert. Das
+    Ergebnis ist in der Variable <code>DB_RESULT</code>
+    verfügbar.<programlisting>; Eintrag open/source setzen und abfragen:
+exten =&gt; 123,1,Set(DB(open/source)=${ja})
+exten =&gt; 123,n,Set(var=${DB(open/source)})
+exten =&gt; 123,n,GotoIf($[[${DB(open/source)} = 1]?opensource:closedsource)</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'DB' =- 
+
+[Syntax]
+DB(&lt;family&gt;/&lt;key&gt;)
+
+[Synopsis]
+Read from or write to the Asterisk database
+
+[Description]
+This function will read from or write a value to the Asterisk database.  On a
+read, this function returns the corresponding value from the database, or blank
+if it does not exist.  Reading a database value will also set the variable
+DB_RESULT.  If you wish to find out if an entry exists, use the DB_EXISTS
+function.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-db_exists" />, <xref
+      linkend="funktionen-db_delete" />, <xref
+      linkend="applikationen-dbdeltree" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-db_delete">
+    <title><code>DB_DELETE()</code><indexterm>
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>DB_DELETE()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>DB_DELETE(<replaceable>Familie</replaceable>/<replaceable>Schlüssel</replaceable>)</synopsis>
+
+    <para>Löscht einen Wert aus der AstDB. Dabei wird auch die Variable
+    <code>DB_RESULT</code> auf den entsprechenden Wert gesetzt, falls
+    vorhanden.<programlisting>; den Eintrag cidnums/0123456789 löschen:
+exten =&gt; 123,1,Set(ignored=${DB_DELETE(cidnums/0123456789)})</programlisting></para>
+
+    <note>
+      <simpara>Vor Asterisk 1.4 muss statt der Funktion
+      <code>DB_DELETE()</code> die Applikation <code>DBdel()</code> verwendet
+      werden.</simpara>
+    </note>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'DB_DELETE' =- 
+
+[Syntax]
+DB_DELETE(&lt;family&gt;/&lt;key&gt;)
+
+[Synopsis]
+Return a value from the database and delete it
+
+[Description]
+This function will retrieve a value from the Asterisk database
+ and then remove that key from the database.  DB_RESULT
+will be set to the key's value if it exists.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-db" />, <xref
+      linkend="funktionen-db_exists" />, <xref
+      linkend="applikationen-dbdel" />, <xref
+      linkend="applikationen-dbdeltree" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-db_exists">
+    <title><code>DB_EXISTS()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>DB_EXISTS()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>DB_EXISTS(<replaceable>Familie</replaceable>/<replaceable>Schlüssel</replaceable>)</synopsis>
+
+    <para>Prüft, ob ein Schlüssel in der AstDB vorhanden ist. Gibt 1 oder 0
+    zurück. Setzt auch die Variable <code>DB_RESULT</code> auf den unter dem
+    Schlüssel gespeicherten Wert.<programlisting>; abfragen, ob der Eintrag cidnums/0123456789 existiert:
+exten =&gt; 123,1,Set(foo=${DB_EXISTS(cidnums/0123456789)})</programlisting></para>
+
+    <para>So kann z.B. die Applikation <code>LookupBlacklist()</code> ersetzt
+    werden. Springt, falls die Anrufernummer in der Blacklist ist, zum Context
+    <code>blacklisted</code>, Extension <code>s</code>, Priorität
+    <code>1</code>:<programlisting>exten =&gt; 123,1,GotoIf(${DB_EXISTS(blacklist/${CALLERID(num)})}?blacklisted,s,1)
+exten =&gt; 123,n,Dial(IAX2/benutzer:passwort@beispiel.de/500)
+
+[blacklisted]
+exten =&gt; s,1,NoOp(${CALLERID(num)} ist auf der Blacklist)
+exten =&gt; s,n,Hangup()</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'DB_EXISTS' =- 
+
+[Syntax]
+DB_EXISTS(&lt;family&gt;/&lt;key&gt;)
+
+[Synopsis]
+Check to see if a key exists in the Asterisk database
+
+[Description]
+This function will check to see if a key exists in the Asterisk
+database. If it exists, the function will return "1". If not,
+it will return "0".  Checking for existence of a database key will
+also set the variable DB_RESULT to the key's value if it exists.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-db" />, <xref
+      linkend="funktionen-db_delete" />, <xref
+      linkend="applikationen-dbdeltree" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-dundilookup">
+    <title><code>DUNDILOOKUP()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>DUNDILOOKUP()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>DUNDILOOKUP(<replaceable>Nummer</replaceable>[|<replaceable>DUNDi-Context</replaceable>[|<replaceable>Optionen</replaceable>]])</synopsis>
+
+    <para>Schlägt eine Telefonnummer mit DUNDi (<xref
+    linkend="glossar-dundi" />) nach. Wird kein <code>DUNDi-Context</code>
+    angegeben, wird <code>e164</code> angenommen. Mit der Option
+    <code>b</code> (bypass) wird der interne DUNDi-Cache umgangen. Gibt die
+    gefundene Verbindung in der Form <code>Technologie/Ressource</code> oder
+    einen leeren String zurück.<programlisting>; die Nummer 0123456789 nachschlagen:
+exten =&gt; 123,1,Set(foo=${DUNDILOOKUP(0123456789)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'DUNDILOOKUP' =- 
+
+[Syntax]
+DUNDILOOKUP(number[|context[|options]])
+
+[Synopsis]
+Do a DUNDi lookup of a phone number.
+
+[Description]
+This will do a DUNDi lookup of the given phone number.
+If no context is given, the default will be e164. The result of
+this function will the Technology/Resource found in the DUNDi
+lookup. If no results were found, the result will be blank.
+If the 'b' option is specified, the internal DUNDi cache will
+be bypassed.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><filename>dundi.conf</filename></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-enumlookup">
+    <title><code>ENUMLOOKUP()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>ENUMLOOKUP()</code></secondary>
+      </indexterm></title>
+
+    <para>Asterisk 1.2:<synopsis>ENUMLOOKUP(<replaceable>Nummer</replaceable>[,<replaceable>Dienst</replaceable>[,<replaceable>OptionenUndEintragsnr</replaceable>[,<replaceable>Zonen-Suffix</replaceable>]]])</synopsis></para>
+
+    <para>Asterisk 1.4:<synopsis>ENUMLOOKUP(<replaceable>Nummer</replaceable>[,<replaceable>Dienst</replaceable>[,<replaceable>Optionen</replaceable>,<replaceable>Eintragsnr</replaceable>[,<replaceable>Zonen-Suffix</replaceable>]]])</synopsis></para>
+
+    <para>Schlägt eine Nummer mit ENUM (<xref linkend="glossar-enum" />) nach.
+    <code>Dienst</code> kann u.A. <code>sip</code> (Default),
+    <code>iax2</code>, <code>h323</code>, <code>tel</code> oder
+    <code>ALL</code> sein. Mit der Option <code>c</code> wird die Anzahl der
+    Einträge zurückgegeben. Die <code>Eintragsnr</code> (Default
+    <code>1</code>) wählt einen Eintrag aus der Ergebnisliste aus.
+    Zonen-Suffix (Default: <code>e164.arpa</code>) ist die ENUM-Zone.
+    Ausführliche Beschreibung und Beispiele in
+    <filename>doc/README.enum</filename> (1.2) /
+    <filename>doc/enum.txt</filename> (1.4).<programlisting>; in Asterisk 1.2:
+exten =&gt; 123,1,Set(foo=${ENUMLOOKUP(+${CALLERID(num)},sip,1,freenum.org)})
+
+; in Astarisk 1.4:
+exten =&gt; 123,1,Set(foo=${ENUMLOOKUP(+${CALLERID(num)},sip,,1,freenum.org)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'ENUMLOOKUP' =- 
+
+[Syntax]
+ENUMLOOKUP(number[|Method-type[|options[|record#[|zone-suffix]]]])
+
+[Synopsis]
+ENUMLOOKUP allows for general or specific querying of NAPTR records or counts of NAPTR types for ENUM or ENUM-like DNS pointers
+
+[Description]
+Option 'c' returns an integer count of the number of NAPTRs of a certain RR type.
+Combination of 'c' and Method-type of 'ALL' will return a count of all NAPTRs for the record.
+Defaults are: Method-type=sip, no options, record=1, zone-suffix=e164.arpa
+
+For more information, see doc/enum.txt</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; ENUMLOOKUP(number[|Method-type[|options[|record#[|zone-suffix]]]])
+---
+&gt; ENUMLOOKUP(number[,Method-type[,options|record#[,zone-suffix]]])
+15c15
+&lt; For more information, see doc/enum.txt
+---
+&gt; For more information, see README.enum</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><filename>enum.conf</filename></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-env">
+    <title><code>ENV()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>ENV()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>ENV(<replaceable>Variablenname</replaceable>)</synopsis>
+
+    <para>Liest/setzt eine Umgebungsvariable (Environment). Umgebungsvariablen
+    sind keine Variablen in Asterisk, sondern in der Betriebssystem-Umgebung.
+    Sie können in der Shell mit <code>echo
+    $<replaceable>Variablenname</replaceable></code> ausgegeben werden.
+    Umgebungsvariablen unterscheiden zwischen Groß- unf Kleinschreibung und
+    werden fast immer großgeschrieben.<programlisting>; HOME lesen:
+exten =&gt; 123,1,Set(foo=${ENV(HOME)})
+
+; HOME setzen:
+exten =&gt; 123,1,Set(ENV(HOME)=/myAst)</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'ENV' =- 
+
+[Syntax]
+ENV(&lt;envname&gt;)
+
+[Synopsis]
+Gets or sets the environment variable specified
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-eval">
+    <title><code>EVAL()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>EVAL()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>EVAL(<replaceable>Variable</replaceable>)</synopsis>
+
+    <para>Wertet eine Variable doppelt aus. Das lässt sich am besten an einem
+    Beispiel erklären: Wenn die Variable <code>${VAR}</code> den String
+    "<code>${VAR2}</code>" enthält, würde sie ohne <code>Eval()</code> zu
+    diesem String ausgewertet. Mit <code>Eval()</code> wird auch
+    <code>${VAR2}</code> nochmal zu ihrem Inhalt ausgewertet.<programlisting>; wenn VAR den String "${VAR2}" enthält und VAR2 den String "Hallo Welt":
+exten =&gt; 123,1,Set(foo=${EVAL(${VAR})})
+; dann ist foo jetzt "Hallo Welt"</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'EVAL' =- 
+
+[Syntax]
+EVAL(&lt;variable&gt;)
+
+[Synopsis]
+Evaluate stored variables.
+
+[Description]
+Using EVAL basically causes a string to be evaluated twice.
+When a variable or expression is in the dialplan, it will be
+evaluated at runtime. However, if the result of the evaluation
+is in fact a variable or expression, using EVAL will have it
+evaluated a second time. For example, if the variable ${MYVAR}
+contains "${OTHERVAR}", then the result of putting ${EVAL(${MYVAR})}
+in the dialplan will be the contents of the variable, OTHERVAR.
+Normally, by just putting ${MYVAR} in the dialplan, you would be
+left with "${OTHERVAR}".</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-exists">
+    <title><code>EXISTS()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>EXISTS()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>EXISTS(<replaceable>Variable</replaceable>)</synopsis>
+
+    <para>Prüft, ob eine Variable definiert ist. Gibt 1 oder 0
+    zurück.<programlisting>exten =&gt; 123,1,Set(Var1=test)
+exten =&gt; 123,n,Set(Var2=)
+exten =&gt; 123,n,Set(foo=${EXISTS(${Var1})})   ; foo ist 1
+exten =&gt; 123,n,Set(foo=${EXISTS(${Var2})})   ; foo ist 0</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'EXISTS' =- 
+
+[Syntax]
+EXISTS(&lt;data&gt;)
+
+[Synopsis]
+Existence Test: Returns 1 if exists, 0 otherwise
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-fieldqty">
+    <title><code>FIELDQTY()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>FIELDQTY()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>FIELDQTY(<replaceable>Variablenname</replaceable>,<replaceable>Trennzeichen</replaceable>)</synopsis>
+
+    <para>Gibt zurück, wie viele Teilstrings entstehen würden, wenn man den
+    Inhalt der Variablen anhand des Trennzeichens aufteilt.<programlisting>exten =&gt; 123,1,Set(Var=hallo#du#da#am#telefon)
+exten =&gt; 123,n,Set(Anzahl=${FIELDQTY(Var,#)})    ; Anzahl ist 5</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'FIELDQTY' =- 
+
+[Syntax]
+FIELDQTY(&lt;varname&gt;|&lt;delim&gt;)
+
+[Synopsis]
+Count the fields, with an arbitrary delimiter
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; FIELDQTY(&lt;varname&gt;|&lt;delim&gt;)
+---
+&gt; FIELDQTY(&lt;varname&gt;,&lt;delim&gt;)</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-cut" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-filter">
+    <title><code>FILTER()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>FILTER()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>FILTER(<replaceable>erlaubte Zeichen</replaceable>,<replaceable>String</replaceable>)</synopsis>
+
+    <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
+
+    <para>Filtert den String, so dass nur noch die erlaubten Zeichen im
+    Rückgabewert vorkommen.<programlisting>; nur die Zeichen 0123456789 in ${cdrnum} zulassen:
+exten =&gt; 123,1,Set(foo=${FILTER(0123456789,${cdrnum})})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'FILTER' =- 
+
+[Syntax]
+FILTER(&lt;allowed-chars&gt;|&lt;string&gt;)
+
+[Synopsis]
+Filter the string to include only the allowed characters
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-global">
+    <title><code>GLOBAL()</code><indexterm>
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>GLOBAL()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>GLOBAL(<replaceable>Variablenname</replaceable>)</synopsis>
+
+    <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
+
+    <para>Wird verwendet, um eine Variable als global zu deklarieren, also
+    gültig über die Lebensdauer eines Kanals hinaus. In Asterisk 1.2 verwendet
+    man stattdessen <code>Set()</code> (<xref linkend="applikationen-set" />)
+    mit der Option <code>g</code>.<programlisting>; eine globale Variable ${meinevariable} definieren:
+exten =&gt; 123,1,Set(GLOBAL(meinevariable)=Test)</programlisting></para>
+
+    <note>
+      <para>Ob globale Variablen auch nach einem Reload von Asterisk noch
+      gültig sind, wird durch die Einstellung <code>clearglobalvars</code> in
+      der <filename>extensions.conf</filename> bestimmt.</para>
+    </note>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'GLOBAL' =- 
+
+[Syntax]
+GLOBAL(&lt;varname&gt;)
+
+[Synopsis]
+Gets or sets the global variable specified
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-group">
+    <title><code>GROUP()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>GROUP()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>GROUP([<replaceable>Kategorie</replaceable>])</synopsis>
+
+    <para>Liest/setzt die Gruppe des Kanals (Kanäle lassen sich beliebig
+    gruppieren).<programlisting>exten =&gt; 123,1,Set(GROUP()=ausgehende)                ; Gruppe setzen
+exten =&gt; 123,n,GotoIf($[${GROUP_COUNT()} &gt; 10]?200)   ; zu viele?
+exten =&gt; 123,n,Dial(0123456)                          ; wählen
+exten =&gt; 123,200,SetVar(DIALSTATUS=CHANUNAVAIL)       ; ablehnen</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'GROUP' =- 
+
+[Syntax]
+GROUP([category])
+
+[Synopsis]
+Gets or sets the channel group.
+
+[Description]
+Gets or sets the channel group.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-group_count" />, <xref
+      linkend="funktionen-group_list" />, <xref
+      linkend="funktionen-group_match_count" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-group_count">
+    <title><code>GROUP_COUNT()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>GROUP_COUNT()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>GROUP_COUNT([<replaceable>Gruppe</replaceable>[@<replaceable>Kategorie</replaceable>]])</synopsis>
+
+    <para>Gibt die Anzahl der Kanäle in der angegebenen Gruppe zurück. Wird
+    keine Gruppe angegeben, gilt die aktuelle Gruppe des
+    Kanals.<programlisting>; Anzahl der Kanäle in Gruppe ausgehende abfragen:
+exten =&gt; 123,1,Set(foo=${GROUP_COUNT(ausgehende)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'GROUP_COUNT' =- 
+
+[Syntax]
+GROUP_COUNT([groupname][@category])
+
+[Synopsis]
+Counts the number of channels in the specified group
+
+[Description]
+Calculates the group count for the specified group, or uses the
+channel's current group if not specifed (and non-empty).</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-group" />, <xref
+      linkend="funktionen-group_list" />, <xref
+      linkend="funktionen-group_match_count" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-group_list">
+    <title><code>GROUP_LIST()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>GROUP_LIST()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>GROUP_LIST()</synopsis>
+
+    <para>Gibt eine durch Leerzeichen getrennte Liste aller Gruppen zurück,
+    die für den aktuellen Kanal gesetzt sind.<programlisting>exten =&gt; 123,1,Set(foo=${GROUP_LIST()})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'GROUP_LIST' =- 
+
+[Syntax]
+GROUP_LIST()
+
+[Synopsis]
+Gets a list of the groups set on a channel.
+
+[Description]
+Gets a list of the groups set on a channel.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-group" />, <xref
+      linkend="funktionen-group_count" />, <xref
+      linkend="funktionen-group_match_count" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-group_match_count">
+    <title><code>GROUP_MATCH_COUNT()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>GROUP_MATCH_COUNT()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>GROUP_MATCH_COUNT(<replaceable>Muster</replaceable>[@<replaceable>Kategorie</replaceable>])</synopsis>
+
+    <para>Gibt die Anzahl der Kanäle zurück, auf die das angegebene Suchmuster
+    - ein regulärer Ausdruck - passt.<programlisting>; Anzahl der Kanäle in den Gruppen gruppe[1-4] abfragen:
+exten =&gt; 123,1,Set(foo=${GROUP_MATCH_COUNT(gruppe[1-4])})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'GROUP_MATCH_COUNT' =- 
+
+[Syntax]
+GROUP_MATCH_COUNT(groupmatch[@category])
+
+[Synopsis]
+Counts the number of channels in the groups matching the specified pattern
+
+[Description]
+Calculates the group count for all groups that match the specified pattern.
+Uses standard regular expression matching (see regex(7)).</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-group" />, <xref
+      linkend="funktionen-group_count" />, <xref
+      linkend="funktionen-group_list" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-iaxpeer">
+    <title><code>IAXPEER()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>IAXPEER()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>IAXPEER(<replaceable>Peer-Name</replaceable>[:<replaceable>Feld</replaceable>])</synopsis>
+
+    <para>Gibt Daten über einen IAX-Peer zurück. <code>Peer-Name</code> kann
+    auch <code>CURRENTCHANNEL</code> für den aktuellen Kanal sein.
+    <code>Feld</code> ist eines der folgenden:<variablelist termlength="15">
+        <varlistentry>
+          <term><code>ip</code></term>
+
+          <listitem>
+            <simpara>(Default) Die IP-Adresse des Peers</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>status</code></term>
+
+          <listitem>
+            <simpara>Der Status (wenn <code>qualify=yes</code> gesetzt
+            ist)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>mailbox</code></term>
+
+          <listitem>
+            <simpara>Die eingestellte Mailbox</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>context</code></term>
+
+          <listitem>
+            <simpara>Der eingestellte Context</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>expire</code></term>
+
+          <listitem>
+            <simpara>Die Unix-Time (Epoch), wann die Verbindung das nächste
+            Mal ausläuft.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>dynamic</code></term>
+
+          <listitem>
+            <simpara>Ob die Verbindung dynamisch (<code>dynamic</code>) ist
+            (<code>yes</code>|<code>no</code>).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>callerid_name</code></term>
+
+          <listitem>
+            <simpara>Der eingestellte Caller-ID-Name</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>callerid_num</code></term>
+
+          <listitem>
+            <simpara>Die eingestellte Caller-ID-Nummer</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>codecs</code></term>
+
+          <listitem>
+            <simpara>Die verfügbaren Codecs</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>codec[<replaceable>x</replaceable>]</code></term>
+
+          <listitem>
+            <simpara>Der Codec Nummer <code>x</code> (0-basiert) in der
+            Reihenfolge der Präferenz</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist><programlisting>; die IP-Adresse von peer1 abfragen:
+exten =&gt; 123,1,Set(foo=${IAXPEER(peer1:ip)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'IAXPEER' =- 
+
+[Syntax]
+IAXPEER(&lt;peername|CURRENTCHANNEL&gt;[|item])
+
+[Synopsis]
+Gets IAX peer information
+
+[Description]
+If peername specified, valid items are:
+- ip (default)          The IP address.
+- status                The peer's status (if qualify=yes)
+- mailbox               The configured mailbox.
+- context               The configured context.
+- expire                The epoch time of the next expire.
+- dynamic               Is it dynamic? (yes/no).
+- callerid_name         The configured Caller ID name.
+- callerid_num          The configured Caller ID number.
+- codecs                The configured codecs.
+- codec[x]              Preferred codec index number 'x' (beginning with zero).
+
+If CURRENTCHANNEL specified, returns IP address of current channel</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; IAXPEER(&lt;peername|CURRENTCHANNEL&gt;[|item])
+---
+&gt; IAXPEER(&lt;peername|CURRENTCHANNEL&gt;[:item])</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-sippeer" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-if">
+    <title><code>IF()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>IF()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>IF(<replaceable>Ausdruck</replaceable>?<replaceable>trueVal</replaceable>:<replaceable>falseVal</replaceable>)</synopsis>
+
+    <para>Gibt abhängig von der Bedingung den ersten oder zweiten Wert zurück.
+    Ist die Bedingung wahr, wird der Wert nach <code>?</code>, sonst der Wert
+    nach <code>:</code> zurückgegeben.<programlisting>; wenn ${Var}=123 ist, dann 5 zurückgeben, sonst 9:
+exten =&gt; 123,1,Set(foo=${IF($[ ${Var} = 123]?5:9)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'IF' =- 
+
+[Syntax]
+IF(&lt;expr&gt;?[&lt;true&gt;][:&lt;false&gt;])
+
+[Synopsis]
+Conditional: Returns the data following '?' if true else the data following ':'
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-iftime" />, x<xref
+      linkend="applikationen-execif" />, <xref
+      linkend="applikationen-gotoif" />, <xref
+      linkend="applikationen-gotoiftime" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-iftime">
+    <title><code>IFTIME()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>IFTIME()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>IFTIME(Zeit-<replaceable>Ausdruck</replaceable>?<replaceable>trueVal</replaceable>:<replaceable>falseVal</replaceable>)</synopsis>
+
+    <para>Gibt - wie <code>IF()</code> - abhängig von der Bedingung den ersten
+    oder zweiten Wert zurück, nur dass hier ein spezieller Zeit-Ausdruck
+    angegeben wird.</para>
+
+    <para>Der Zeit-Ausdruck ist aufgebaut im Format
+    <code><replaceable>Uhrzeit</replaceable>|<replaceable>Wochentag</replaceable>|<replaceable>Monatstag</replaceable>|<replaceable>Monat</replaceable></code>,
+    wobei jeder Teil auch eine Spanne (mit <code>-</code>) oder das immer
+    passende Wildcard <code>*</code> sein kann. Die Zeit wird im
+    24-Std.-Format (z.B. <code>08:00-18:00</code>), Wochentage und Monatsnamen
+    als 3-buchstabige englische Abkürzung (<code>mon</code>, <code>tue</code>,
+    <code>wed</code>, <code>thu</code>, <code>fri</code>, <code>sat</code>,
+    <code>sun</code> bzw. <code>jan</code>, <code>feb</code>,
+    <code>mar</code>, <code>apr</code>, <code>may</code>, <code>jun</code>,
+    <code>jul</code>, <code>aug</code>, <code>sep</code>, <code>oct</code>,
+    <code>nov</code>, <code>dec</code>) angegeben.<programlisting>; gültig 8-18 Uhr, montags, 1.-15. Dezember:
+exten =&gt; 123,1,Set(foo=${IFTIME(08:00-18:00|mon|1-15|dec?5:0)})
+
+; gültig jeden Samstag und Sonntag:
+exten =&gt; 123,1,Set(foo=${IFTIME(*|sat-sun|*|*?5:0)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'IFTIME' =- 
+
+[Syntax]
+IFTIME(&lt;timespec&gt;?[&lt;true&gt;][:&lt;false&gt;])
+
+[Synopsis]
+Temporal Conditional: Returns the data following '?' if true else the data following ':'
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-if" />, <xref
+      linkend="applikationen-execif" />, <xref
+      linkend="applikationen-gotoif" />, <xref
+      linkend="applikationen-gotoiftime" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-isnull">
+    <title><code>ISNULL()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>ISNULL()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>ISNULL(<replaceable>Wert</replaceable>)</synopsis>
+
+    <para>Gibt 1 zurück, wenn der Wert NULL (kein Wert) ist, sonst
+    0.<programlisting>exten =&gt; 123,1,Set(foo=${ISNULL(${Var1})})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'ISNULL' =- 
+
+[Syntax]
+ISNULL(&lt;data&gt;)
+
+[Synopsis]
+NULL Test: Returns 1 if NULL or 0 otherwise
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-keypadhash">
+    <title><code>KEYPADHASH()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>KEYPADHASH()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>KEYPADHASH(<replaceable>String</replaceable>)</synopsis>
+
+    <simpara>Wandelt die Buchstaben A-Z (und a-z) entsprechend der
+    Telefontastatur in Ziffern um. Damit können z.B. Vanity-Nummern wie
+    0800-AUTOHAUS (0800-28864287) in richtige Nummern umgewandelt
+    werden.</simpara>
+
+    <informaltable>
+      <tgroup cols="3" colsep="none" rowsep="none">
+        <colspec colnum="1" colwidth="60pt" />
+
+        <colspec colnum="2" colwidth="60pt" />
+
+        <colspec colnum="3" colwidth="60pt" />
+
+        <tbody>
+          <row>
+            <entry><code>1</code></entry>
+
+            <entry><code>2 ABC</code></entry>
+
+            <entry><code>3 DEF</code></entry>
+          </row>
+
+          <row>
+            <entry><code>4 GHI</code></entry>
+
+            <entry><code>5 JKL</code></entry>
+
+            <entry><code>6 MNO</code></entry>
+          </row>
+
+          <row>
+            <entry><code>7 PQRS</code></entry>
+
+            <entry><code>8 TUV</code></entry>
+
+            <entry><code>9 WXYZ</code></entry>
+          </row>
+
+          <row>
+            <entry><code>*</code></entry>
+
+            <entry><code>0</code></entry>
+
+            <entry><code>#</code></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <programlisting>exten =&gt; 123,1,Set(foo=${KEYPADHASH(AUTOHAUS)})  ; gibt 28864287 zurück</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'KEYPADHASH' =- 
+
+[Syntax]
+KEYPADHASH(&lt;string&gt;)
+
+[Synopsis]
+Hash the letters in the string into the equivalent keypad numbers.
+
+[Description]
+Example:  ${KEYPADHASH(Les)} returns "537"</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-language">
+    <title><code>LANGUAGE()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>LANGUAGE()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>LANGUAGE()</synopsis>
+
+    <para>Liest/setzt die Sprache des Kanals. Die Sprache beeinflusst u.a.,
+    welche Audiodateien abgespielt werden. Ist z.B. <code>de</code>
+    eingestellt und <code>Playback(tt-weasels)</code> wird ausgeführt, so wird
+    die Datei <filename>de/tt-weasels</filename> abgespielt (wenn vorhanden).
+    Gleiches gilt für <code>SayDigits()</code> etc.<programlisting>; abfragen:
+exten =&gt; 123,1,Set(foo=${LANGUAGE()})
+
+; Deutsch setzen:
+exten =&gt; 123,1,Set(LANGUAGE()=de)</programlisting><warning>
+        <para>Ist deprecated (unerwünscht). Nutzen Sie lieber die Funktion
+        <code>CHANNEL(language)</code>. Siehe <xref
+        linkend="funktionen-channel" /></para>
+      </warning></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'LANGUAGE' =- 
+
+[Syntax]
+LANGUAGE()
+
+[Synopsis]
+Gets or sets the channel's language.
+
+[Description]
+Deprecated. Use CHANNEL(language) instead.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>11c11,18
+&lt; Deprecated. Use CHANNEL(language) instead.
+---
+&gt; Gets or sets the channel language.  This information is used for the
+&gt; syntax in generation of numbers, and to choose a natural language file
+&gt; when available.  For example, if language is set to 'fr' and the file
+&gt; 'demo-congrats' is requested to be played, if the file
+&gt; 'fr/demo-congrats' exists, then it will play that file, and if not
+&gt; will play the normal 'demo-congrats'.  For some language codes,
+&gt; changing the language also changes the syntax of some Asterisk
+&gt; functions, like SayNumber.</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-len">
+    <title><code>LEN()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>LEN()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>LEN(<replaceable>String</replaceable>)</synopsis>
+
+    <para>Gibt die Länge (Anzahl der Zeichen) eines Strings
+    zurück.<programlisting>; angenommen, ${test} ist "Hallo Welt"
+exten =&gt; 123,1,Set(foo=${LEN(${test})})
+; dann wird 10 zurückgegeben</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'LEN' =- 
+
+[Syntax]
+LEN(&lt;string&gt;)
+
+[Synopsis]
+Returns the length of the argument given
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-math">
+    <title><code>MATH()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>MATH()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>MATH(<replaceable>Zahl1</replaceable> <replaceable>Operator</replaceable> <replaceable>Zahl2</replaceable>[,<replaceable>Ergebnistyp</replaceable>])</synopsis>
+
+    <para>Berechnet einfache mathematische Ausdrücke. Mögliche Operatoren
+    sind: <code>+</code>, <code>-</code>, <code>/</code>, <code>*</code>,
+    <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>,
+    <code>&gt;=</code>, <code>==</code>, <code>%</code> (modulo). Ergebnistyp:
+    <code>f</code>, <code>float</code> (Fließkommazahl, Default),
+    <code>i</code>, <code>int</code> (Ganzzahl), <code>h</code>,
+    <code>hex</code> (Wert im Hexadezimal-System), <code>c</code>,
+    <code>char</code> (Byte).<programlisting>; 3*8 als Ganzzahl berechnen:
+exten =&gt; 123,1,Set(i=${MATH(3*8,int)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'MATH' =- 
+
+[Syntax]
+MATH(&lt;number1&gt;&lt;op&gt;&lt;number 2&gt;[,&lt;type_of_result&gt;])
+
+[Synopsis]
+Performs Mathematical Functions
+
+[Description]
+Perform calculation on number 1 to number 2. Valid ops are: 
+    +,-,/,*,%,&lt;,&gt;,&gt;=,&lt;=,==
+and behave as their C equivalents.
+&lt;type_of_result&gt; - wanted type of result:
+  f, float - float(default)
+  i, int - integer,
+  h, hex - hex,
+  c, char - char
+Example: Set(i=${MATH(123%16,int)}) - sets var i=11</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-md5">
+    <title><code>MD5()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>MD5()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>MD5(<replaceable>String</replaceable>)</synopsis>
+
+    <para>Berechnet den MD5-Hash (Digest, Prüfsumme) eines Strings
+    (hexadezimale Rückgabe).<programlisting>exten =&gt; 123,1,Set(foo=${MD5(${string})})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'MD5' =- 
+
+[Syntax]
+MD5(&lt;data&gt;)
+
+[Synopsis]
+Computes an MD5 digest
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-musicclass">
+    <title><code>MUSICCLASS()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>MUSICCLASS()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>MUSICCLASS(<replaceable>Klasse</replaceable>)</synopsis>
+
+    <para>Liest/setzt die Music-on-Hold-Klasse (Klasse der
+    Wartemusik).<programlisting>; abfragen:
+exten =&gt; 123,1,Set(foo=${MUSICCLASS()})
+
+; auf "HeavyMetal" setzen:
+exten =&gt; 123,1,Set(MUSICCLASS()=HeavyMetal)</programlisting></para>
+
+    <important>
+      <para>Ab Asterisk 1.4 deprecated. Stattdessen
+      <code>Set(CHANNEL(musicclass)=<replaceable>default</replaceable>)</code>
+      verwenden, siehe <xref linkend="funktionen-channel" />.</para>
+    </important>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'MUSICCLASS' =- 
+
+[Syntax]
+MUSICCLASS()
+
+[Synopsis]
+Read or Set the MusicOnHold class
+
+[Description]
+Deprecated. Use CHANNEL(musicclass) instead.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>11c11
+&lt; Deprecated. Use CHANNEL(musicclass) instead.
+---
+&gt; This function will read or set the music on hold class for a channel.</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-odbc_sql">
+    <title><code>ODBC_SQL()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>ODBC_SQL()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>ODBC_SQL(<replaceable>SQL-Query</replaceable>)</synopsis>
+
+    <para>Führt den angegebenen SQL-Query aus und gibt ggf. das Ergebnis
+    zurück.<programlisting>; abfragen:
+exten =&gt; 123,1,Set(Name=${ODBC_SQL(SELECT name FROM liste WHERE nummer='123')})
+
+; setzen:
+exten =&gt; 123,1,Set(ODBC_SQL(UPDATE liste SET name='Peter' WHERE nummer='123'))</programlisting></para>
+  </section>
+
+  <section id="funktionen-odbc_user_database">
+    <title><code>ODBC_USER_DATABASE()</code><indexterm
+        significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>ODBC_USER_DATABASE()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>ODBC_USER_DATABASE(<replaceable>var1</replaceable>[,<replaceable>var2</replaceable>[,...]])</synopsis>
+
+    <para>Führt den in <filename>func_odbc.conf</filename> definierten
+    SQL-Query aus und gibt ggf. das Ergebnis zurück. Die in der Abfrage
+    definierten <code>${VAL1}</code>, <code>${VAL2}</code>, ...,
+    <code>${ARG1}</code>, <code>${ARG2}</code>, ... werden durch die
+    angegebenen Werte ersetzt.</para>
+
+    <para><filename>func_odbc.conf</filename>:<programlisting>[USER_DATABASE]
+dsn=meine_datenbank
+read=SELECT name FROM liste WHERE nummer='${ARG1}'
+write=UPDATE liste SET name=${VAL1} WHERE nummer='${ARG1}'</programlisting><filename>extensions.conf</filename>:<programlisting>; abfragen (read):
+exten =&gt; 123,1,Set(Name=${ODBC_USER_DATABASE(${EXTEN})})
+
+; setzen (write):
+exten =&gt; 123,1,Set(ODBC_USER_DATABASE(${CALLERID(name)})=1000)</programlisting></para>
+  </section>
+
+  <section id="funktionen-queueagentcount">
+    <title><code>QUEUEAGENTCOUNT()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>QUEUEAGENTCOUNT()</code></secondary>
+      </indexterm></title>
+
+    <simpara>in Asterisk 1.2 - für 1.4 siehe
+    <code>QUEUE_MEMBER_COUNT()</code></simpara>
+
+    <synopsis>QUEUEAGENTCOUNT(<replaceable>Warteschlange</replaceable>)</synopsis>
+
+    <para>Gibt die Anzahl der Agenten (im Gegensatz zu den Anrufern) auf der
+    Warteschlange zurück.<programlisting>; Anzahl der Agenten in der "supportSchlange":
+exten =&gt; 123,1,Set(foo=${QUEUEAGENTCOUNT(supportSchlange)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'QUEUEAGENTCOUNT' =- 
+
+[Syntax]
+QUEUEAGENTCOUNT(&lt;queuename&gt;)
+
+[Synopsis]
+Count number of agents answering a queue
+
+[Description]
+Returns the number of members currently associated with the specified queue.
+This function is deprecated.  You should use QUEUE_MEMBER_COUNT() instead.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-queue_member_count">
+    <title><code>QUEUE_MEMBER_COUNT()</code><indexterm
+        significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>QUEUE_MEMBER_COUNT()</code></secondary>
+      </indexterm></title>
+
+    <simpara>in Asterisk 1.4 - für 1.2 siehe
+    <code>QUEUEAGENTCOUNT()</code></simpara>
+
+    <synopsis>QUEUE_MEMBER_COUNT(<replaceable>Warteschlange</replaceable>)</synopsis>
+
+    <para>Gibt die Anzahl der Agenten (im Gegensatz zu den Anrufern) auf der
+    Warteschlange zurück.<programlisting>; Anzahl der Agenten in der "supportSchlange":
+exten =&gt; 123,1,Set(foo=${QUEUE_MEMBER_COUNT(supportSchlange)}) </programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'QUEUE_MEMBER_COUNT' =- 
+
+[Syntax]
+QUEUE_MEMBER_COUNT(&lt;queuename&gt;)
+
+[Synopsis]
+Count number of members answering a queue
+
+[Description]
+Returns the number of members currently associated with the specified queue.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-queue_member_list">
+    <title><code>QUEUE_MEMBER_LIST()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>QUEUE_MEMBER_LIST()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>QUEUE_MEMBER_LIST(<replaceable>Warteschlange</replaceable>)</synopsis>
+
+    <para>Gibt eine durch Komma getrennte Liste der Agenten auf einer
+    Warteschleife zurück.<programlisting>; Agenten in der "supportSchlange":
+exten =&gt; 123,1,Set(foo=${QUEUE_MEMBER_LIST(supportSchlange)})
+; gibt z.B. 5,8,33 zurück</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'QUEUE_MEMBER_LIST' =- 
+
+[Syntax]
+QUEUE_MEMBER_LIST(&lt;queuename&gt;)
+
+[Synopsis]
+Returns a list of interfaces on a queue
+
+[Description]
+Returns a comma-separated list of members associated with the specified queue.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-quote">
+    <title><code>QUOTE()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>QUOTE()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>QUOTE(<replaceable>String</replaceable>)</synopsis>
+
+    <para>Escaped Anführungszeichen innerhalb eines Strings.<programlisting>; wenn ${var} &gt;&gt;Die "Asterisk"-PBX&lt;&lt; ist
+exten =&gt; 123,1,Set(foo=${QUOTE(${var})})
+; dann wird &gt;&gt;Die \"Asterisk\"-PBX&lt;&lt; zurückggeben</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'QUOTE' =- 
+
+[Syntax]
+QUOTE(&lt;string&gt;)
+
+[Synopsis]
+Quotes a given string, escaping embedded quotes as necessary
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-rand">
+    <title><code>RAND()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>RAND()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>RAND(<replaceable>min</replaceable>,<replaceable>max</replaceable>)</synopsis>
+
+    <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
+
+    <para>Gibt ein Zahl zwischen <code>min</code> und <code>max</code> (beide
+    einschließlich) zurück. Der Default für <code>min</code> ist 0, der für
+    <code>max</code> ist die größte auf dem System darstellbare Ganzzahl
+    (meist 2147483647).<programlisting>; einen zufälligen Wert zwischen 1 und 10 (einschließlich) wählen:
+exten =&gt; 123,1,Set(zufall=${RAND(1,10)})
+
+; Glücksspiel:
+exten =&gt; 123,1,GotoIf($[${RAND(0,100)} &lt; 25]?gewonnen:verloren)
+exten =&gt; gewonnen,1,Playback(gewonnen)
+exten =&gt; gewonnen,n,Goto(123,1)
+exten =&gt; verloren,1,Playback(verloren)
+exten =&gt; verloren,n,Goto(123,1)</programlisting></para>
+
+    <note>
+      <para>Vor Asterisk 1.4 muss man stattdessen die Applikation
+      <code>Random()</code> verwenden.</para>
+    </note>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'RAND' =- 
+
+[Syntax]
+RAND([min][|max])
+
+[Synopsis]
+Choose a random number in a range
+
+[Description]
+Choose a random number between min and max.  Min defaults to 0, if not
+specified, while max defaults to RAND_MAX (2147483647 on many systems).
+  Example:  Set(junky=${RAND(1|8)}); 
+  Sets junky to a random number between 1 and 8, inclusive.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applikationen-random" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-regex">
+    <title><code>REGEX()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>REGEX()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>REGEX("<replaceable>Ausdruck</replaceable>" <replaceable>String</replaceable>)</synopsis>
+
+    <para>Gibt 1 zurück, wenn ein String auf einen regulären Ausdruck passt,
+    sonst 0. Der reguläre Ausdruck kann auch <code>^</code> (passt auf den
+    Anfang) und <code>$</code> (passt auf das Ende) enthalten. Variablen
+    werden vorher ausgewertet.</para>
+
+    <para>Der Parser in Asterisk 1.2 arbeitet nicht sauber und kann durch
+    besondere Zeichen wie <code>$</code> oder geschweifte Klammern im Ausdruck
+    verwirrt werden. Als Workaround definiert man sich z.B. eine Variable
+    <code>${dollar}</code> mit dem Inhalt "<code>$</code>" und verwendet diese
+    statt des <code>$</code>-Zeichens.</para>
+
+    <para><programlisting>; prüfen, ob der Ausdruck "[abc][0-9]" auf den String "b3" passt:
+exten =&gt; 123,1,Set(foo=${REGEX("[abc][0-9]" b3)})   ; gibt 1 zurück
+
+; prüfen, ob ${str} mit 0 endet, Asterisk 1.4:
+exten =&gt; 123,1,Set(foo=${REGEX("0$" ${str})})
+
+; in Asterisk 1.2 behilft man sich so:
+exten =&gt; 123,1,Set(foo=${REGEX("0${dollar}" ${str})})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'REGEX' =- 
+
+[Syntax]
+REGEX("&lt;regular expression&gt;" &lt;data&gt;)
+
+[Synopsis]
+Regular Expression
+
+[Description]
+Returns 1 if data matches regular expression, or 0 otherwise.
+Please note that the space following the double quotes separating the regex from the data
+is optional and if present, is skipped. If a space is desired at the beginning of the data,
+then put two spaces there; the second will not be skipped.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-set">
+    <title><code>SET()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>SET()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>SET(<replaceable>Variablenname</replaceable>=<replaceable>Ausdruck</replaceable>)</synopsis>
+
+    <para>Kann innerhalb von verschachtelten Ausdrücken verwendet werden, um
+    Variablen auf einen Wert zu setzen. (Nicht verwechseln mit der Applikation
+    <code>Set()</code>!)<programlisting>; ${a}, ${b}, ${c}, und ${d} auf 8 setzen:
+exten =&gt; 123,1,Set(a=${SET(b=${SET(c=${SET(d=8)})})})
+
+; es ist aber meist vorteilhafter, zugunsten der Übersichtlichkeit
+; ein oder zwei Zeilen mehr zu schreiben</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'SET' =- 
+
+[Syntax]
+SET(&lt;varname&gt;=[&lt;value&gt;])
+
+[Synopsis]
+SET assigns a value to a channel variable
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applikationen-set" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-sha1">
+    <title><code>SHA1()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>SHA1()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>SHA1(<replaceable>String</replaceable>)</synopsis>
+
+    <para>Berechnet den SHA1-Hash (Digest, Prüfsumme) eines Strings
+    (hexadezimale Rückgabe).<programlisting>; den SHA1-Hash von "Hallo Welt" berechnen:
+exten =&gt; 123,1,Set(sha1hash=${SHA1(Hallo Welt)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'SHA1' =- 
+
+[Syntax]
+SHA1(&lt;data&gt;)
+
+[Synopsis]
+Computes a SHA1 digest
+
+[Description]
+Generate a SHA1 digest via the SHA1 algorythm.
+ Example:  Set(sha1hash=${SHA1(junky)})
+ Sets the asterisk variable sha1hash to the string '60fa5675b9303eb62f99a9cd47f9f5837d18f9a0'
+ which is known as his hash</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-sipchaninfo">
+    <title><code>SIPCHANINFO()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>SIPCHANINFO()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>SIPCHANINFO(<replaceable>Feld</replaceable>)</synopsis>
+
+    <para>Gibt Daten des aktuellen SIP-Kanals zurück. Gültige Felder
+    sind:<variablelist termlength="11">
+        <varlistentry>
+          <term><code>peerip</code></term>
+
+          <listitem>
+            <simpara>Die IP-Adresse des Peers</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>recvip</code></term>
+
+          <listitem>
+            <simpara>Die ursprüngliche IP-Adresse des Peers</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>from</code></term>
+
+          <listitem>
+            <simpara>Die URI aus dem <code>From:</code>-Header</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>uri</code></term>
+
+          <listitem>
+            <simpara>Die URI aus dem <code>Contact:</code>-Header</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>useragent</code></term>
+
+          <listitem>
+            <simpara>Der User-Agent (Client-Programm)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>peername</code></term>
+
+          <listitem>
+            <simpara>Der Name des Peers</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist><programlisting>; den Namen des Peers abfragen:
+exten =&gt; 123,1,Set(foo=${SIPCHANINFO(peername)}) </programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'SIPCHANINFO' =- 
+
+[Syntax]
+SIPCHANINFO(item)
+
+[Synopsis]
+Gets the specified SIP parameter from the current channel
+
+[Description]
+Valid items are:
+- peerip                The IP address of the peer.
+- recvip                The source IP address of the peer.
+- from                  The URI from the From: header.
+- uri                   The URI from the Contact: header.
+- useragent             The useragent.
+- peername              The name of the peer.
+- t38passthrough        1 if T38 is offered or enabled in this channel, otherwise 0</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>18d17
+&lt; - t38passthrough        1 if T38 is offered or enabled in this channel, otherwise 0</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-sippeer">
+    <title><code>SIPPEER()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>SIPPEER()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>SIPPEER(<replaceable>Peername</replaceable>[,<replaceable>Feld</replaceable>])</synopsis>
+
+    <para>Gibt Informationen über einen SIP-Peer zurück. Gültige Felder
+    sind:<variablelist termlength="15">
+        <varlistentry>
+          <term><code>ip</code></term>
+
+          <listitem>
+            <simpara>(Default) Die IP-Adresse des Peers</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>mailbox</code></term>
+
+          <listitem>
+            <simpara>Die eingestellte Mailbox</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>context</code></term>
+
+          <listitem>
+            <simpara>Der eingestellte Context</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>expire</code></term>
+
+          <listitem>
+            <simpara>Die Unix-Zeit (Epoch), wann die Verbindung das nächste
+            Mal ausläuft.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>dynamic</code></term>
+
+          <listitem>
+            <simpara>Ob <code>dynamic=yes</code> gesetzt ist
+            (<code>yes</code>|<code>no</code>).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>callerid_name</code></term>
+
+          <listitem>
+            <simpara>Der eingestellte Caller-ID-Name</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>callerid_num</code></term>
+
+          <listitem>
+            <simpara>Die eingestellte Caller-ID-Nummer</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>codecs</code></term>
+
+          <listitem>
+            <simpara>Die verfügbaren Codecs</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>status</code></term>
+
+          <listitem>
+            <simpara>Der Status (wenn <code>qualify=yes</code> gesetzt
+            ist)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>regexten</code></term>
+
+          <listitem>
+            <simpara>Die Registrierungs-Extension
+            (<code>regexten</code>)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>limit</code></term>
+
+          <listitem>
+            <simpara>Begrenzung der Anzahl der Anrufe</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>curcalls</code></term>
+
+          <listitem>
+            <simpara>Die Anzahl der derzeitigen Anrufe (nur wenn ein Limit
+            gesetzt ist)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>language</code></term>
+
+          <listitem>
+            <simpara>Die Default-Sprache für diesen Peer</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>useragent</code></term>
+
+          <listitem>
+            <simpara>Der User-Agent des Peers</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>codec[<replaceable>x</replaceable>]</code></term>
+
+          <listitem>
+            <simpara>Der Codec Nummer <code>x</code> (0-basiert) in der
+            Reihenfolge der Präferenz</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>accountcode</code></term>
+
+          <listitem>
+            <simpara>Die Abrechnungsnummer im CDR für Gespräche mit diesem
+            Peer</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist><programlisting>; die IP-Adresse des Peers 2001:
+exten =&gt; 123,1,Set(sip_ip=${SIPPEER(2001,ip)})
+; der bevorzugte Codec des Peers:
+exten =&gt; 123,n,Set(sip_ip=${SIPPEER(2001,codec[0])})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'SIPPEER' =- 
+
+[Syntax]
+SIPPEER(&lt;peername&gt;[|item])
+
+[Synopsis]
+Gets SIP peer information
+
+[Description]
+Valid items are:
+- ip (default)          The IP address.
+- mailbox               The configured mailbox.
+- context               The configured context.
+- expire                The epoch time of the next expire.
+- dynamic               Is it dynamic? (yes/no).
+- callerid_name         The configured Caller ID name.
+- callerid_num          The configured Caller ID number.
+- codecs                The configured codecs.
+- status                Status (if qualify=yes).
+- regexten              Registration extension
+- limit                 Call limit (call-limit)
+- curcalls              Current amount of calls 
+                        Only available if call-limit is set
+- language              Default language for peer
+- accountcode           Account code for this peer
+- useragent             Current user agent id for peer
+- codec[x]              Preferred codec index number 'x' (beginning with zero).</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; SIPPEER(&lt;peername&gt;[|item])
+---
+&gt; SIPPEER(&lt;peername&gt;[:item])</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-iaxpeer" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-sip_header">
+    <title><code>SIP_HEADER()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>SIP_HEADER()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>SIP_HEADER(<replaceable>Headername</replaceable>[,<replaceable>Nummer</replaceable>])</synopsis>
+
+    <para>Gibt einen Header aus dem SIP-Protokoll zurück. Diese Funktion
+    werden Sie nur benötigen, wenn Sie genaue Kenntnis des SIP-Protokolls
+    haben. Da manche Header (wie <code>Via</code>) mehrfach vorkommen können,
+    kann man mit <code>Nummer</code> (1-basiert) angeben, welche Zeile man
+    haben will.<programlisting>; den TO-Header abfragen:
+exten =&gt; 123,1,Set(DN=${SIP_HEADER(TO):5})
+exten =&gt; 123,2,Set(DN=${CUT(DN,@,1)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'SIP_HEADER' =- 
+
+[Syntax]
+SIP_HEADER(&lt;name&gt;[,&lt;number&gt;])
+
+[Synopsis]
+Gets the specified SIP header
+
+[Description]
+Since there are several headers (such as Via) which can occur multiple
+times, SIP_HEADER takes an optional second argument to specify which header with
+that name to retrieve. Headers start at offset 1.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applikationen-sipaddheader" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-sort">
+    <title><code>SORT()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>SORT()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>SORT(<replaceable>Schlüssel1</replaceable>:<replaceable>Wert1</replaceable>[,<replaceable>Schlüssel2</replaceable>:<replaceable>Wert2</replaceable>[,...]])</synopsis>
+
+    <para>Sortiert eine Liste von Schlüsseln und Werten anhand der Werte (als
+    Fließkommazahlen) und gibt eine durch Komma getrennte Liste der Schlüssel
+    zurück.<programlisting>; Liste sortieren:
+exten =&gt; 123,1,Set(foo=${SORT(vier:4|haelfte:.5|hundert:100|pi:3.14|e:2.71828|minuseins:-1)})
+; foo ist jetzt "minuseins,haelfte,e,pi,vier,hundert"</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'SORT' =- 
+
+[Syntax]
+SORT(key1:val1[...][,keyN:valN])
+
+[Synopsis]
+Sorts a list of key/vals into a list of keys, based upon the vals
+
+[Description]
+Takes a comma-separated list of keys and values, each separated by a colon, and returns a
+comma-separated list of the keys, sorted by their values.  Values will be evaluated as
+floating-point numbers.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-stat">
+    <title><code>STAT()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>STAT()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>STAT(<replaceable>Flag</replaceable>,<replaceable>Dateiname</replaceable>)</synopsis>
+
+    <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
+
+    <para>Gibt Status-Informationen über eine Datei zurück (vgl. die
+    Shell-Befehl <command>test</command> und <command>stat</command>). Mit
+    <code>Dateiname</code> ist ein Datei-Knoten (<quote>inode</quote>)
+    gemeint, kann also auch ein Verzeichnis oder eine besondere Datei sein.
+    <code>Flag</code> ist eines der folgenden:<variablelist>
+        <varlistentry>
+          <term><code>d</code></term>
+
+          <listitem>
+            <simpara>Prüft, ob die Datei ein Verzeichnis ist.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>e</code></term>
+
+          <listitem>
+            <simpara>Prüft, ob die Datei existiert.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>f</code></term>
+
+          <listitem>
+            <simpara>Prüft, ob die Datei eine reguläre Datei ist (im Gegensatz
+            zu besonderen Dateien: block special file, character special file,
+            symbolic link, named pipe, socket).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>m</code></term>
+
+          <listitem>
+            <simpara>Gibt den Datei-Modus zurück (oktal), also die Rechte,
+            z.B. 0754.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>s</code></term>
+
+          <listitem>
+            <simpara>Gibt die Datei-Größe in Bytes zurück.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>A</code></term>
+
+          <listitem>
+            <simpara>Gibt die Unix-Time des letzten Zugriffs zurück
+            (access).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>C</code></term>
+
+          <listitem>
+            <simpara>Gibt die Unix-Time zurück, wann sich der Knoten (inode)
+            zuletzt geändert hat (change).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>M</code></term>
+
+          <listitem>
+            <simpara>Gibt die Unix-Time der letzten Veränderung zurück
+            (modification).</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist><programlisting>; letzte Veränderung der Datei /etc/crontab abfragen:
+exten =&gt; 123,1,Set(foo=${STAT(M,/etc/crontab)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'STAT' =- 
+
+[Syntax]
+STAT(&lt;flag&gt;,&lt;filename&gt;)
+
+[Synopsis]
+Does a check on the specified file
+
+[Description]
+flag may be one of the following:
+  d - Checks if the file is a directory
+  e - Checks if the file exists
+  f - Checks if the file is a regular file
+  m - Returns the file mode (in octal)
+  s - Returns the size (in bytes) of the file
+  A - Returns the epoch at which the file was last accessed
+  C - Returns the epoch at which the inode was last changed
+  M - Returns the epoch at which the file was last modified</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-strftime">
+    <title><code>STRFTIME()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>STRFTIME()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>STRFTIME([<replaceable>Unixtime</replaceable>][,[<replaceable>Zeitzone</replaceable>][,<remark>Format</remark>]])</synopsis>
+
+    <para>Formatiert eine Unix-Zeit (Epoch), umgerechnet in die angegebene
+    Zeitzone, in einem bestimmten Format. Wenn <code>Unixtime</code> nicht
+    angegeben wird, gilt die aktuelle Zeit. Der Default der
+    <code>Zeitzone</code> ist die des Rechners. Mögliche Zeitzonen finden Sie
+    in <filename>/usr/share/zoneinfo/</filename>. Die Formatierungsplatzhalter
+    sind die wie in der C-Funktion <code>strftime()</code> (siehe <command>man
+    strftime</command>), der Default ist <code>%c</code>, also die
+    Lokale-abhängige Darstellung von Datum und Zeit.<programlisting>; Datum/Zeit im Format JJJJ-MM-TT HH:MM:SS
+exten =&gt; 123,1,Set(zeit=${STRFTIME(${EPOCH},Europe/Berlin,"%Y-%m-%d %H:%M:%S")})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'STRFTIME' =- 
+
+[Syntax]
+STRFTIME([&lt;epoch&gt;][|[timezone][|format]])
+
+[Synopsis]
+Returns the current date/time in a specified format.
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; STRFTIME([&lt;epoch&gt;][|[timezone][|format]])
+---
+&gt; STRFTIME([&lt;epoch&gt;][,[timezone][,format]])</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-strptime">
+    <title><code>STRPTIME()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>STRPTIME()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>STRPTIME(<replaceable>DatumZeit</replaceable>|<replaceable>Zeitzone</replaceable>|<replaceable>Format</replaceable>)</synopsis>
+
+    <simpara><emphasis>(ab Asterisk 1.4 verfügbar)</emphasis></simpara>
+
+    <para>Wandelt einen formatierten Datums-/Zeit-String unter
+    Berücksichtigung der Zeitzone in einen Unix-Timestamp um.<programlisting>; Datum/Zeit im Format JJJJ-MM-TT HH:MM:SS in ${zeit} speichern:
+exten =&gt; 123,1,Set(zeit=${STRFTIME(${EPOCH},Europe/Berlin,"%Y-%m-%d %H:%M:%S")})
+; ${zeit} wieder in einen Timestamp umwandeln:
+exten =&gt; 123,n,Set(timestamp=${STRPTIME(${zeit}|Europe/Berlin|%Y-%m-%d %H:%M:%S)} </programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'STRPTIME' =- 
+
+[Syntax]
+STRPTIME(&lt;datetime&gt;|&lt;timezone&gt;|&lt;format&gt;)
+
+[Synopsis]
+Returns the epoch of the arbitrary date/time string structured as described in the format.
+
+[Description]
+This is useful for converting a date into an EPOCH time, possibly to pass to
+an application like SayUnixTime or to calculate the difference between two
+date strings.
+
+Example:
+  ${STRPTIME(2006-03-01 07:30:35|America/Chicago|%Y-%m-%d %H:%M:%S)} returns 1141219835</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="funktionen-strftime" /></para>
+    </formalpara>
+  </section>
+
+  <section id="funktionen-timeout">
+    <title><code>TIMEOUT()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>TIMEOUT()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>TIMEOUT(<replaceable>Art</replaceable>)</synopsis>
+
+    <para>Liest/setzt einen Timeout auf einem Kanal. Diese Arten von Timeouts
+    sind möglich:<variablelist termlength="10">
+        <varlistentry>
+          <term><code>absolute</code></term>
+
+          <listitem>
+            <simpara>Die gesamte, maximale Zeit, die ein Anruf dauern darf.
+            Beim Erreichen dieser Dauer wird auf die Extension <code>T</code>
+            (absolute timeout) weitergeleitet oder aufgelegt. Ein Wert von 0
+            bedeutet keine Begrenzung. Mit dem Aufruf dieser Funktion wird die
+            vorangehende Einstellung ungültig und neu gesetzt. Der Timeout
+            beginnt zum Zeitpunkt des Aufrufs dieser Funktion, nicht mit dem
+            Beginn des Anrufs.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>digit</code></term>
+
+          <listitem>
+            <simpara>Die maximale Zeit, die zwischen dem Eintippen von Ziffern
+            erlaubt ist. Beim Überschreiten wird die Eingabe des Users als
+            beendet angesehen. Wenn dann die Extension nicht existiert, wird
+            auf die Extension <code>i</code> (invalid) weitergeleitet oder
+            aufgelegt. Der Default ist 5 Sekunden.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>response</code></term>
+
+          <listitem>
+            <simpara>Die maximale Zeit, die auf eine Eingabe vom User gewartet
+            wird. Wenn der User keine Extension tippt, wird auf die Extension
+            <code>t</code> (timeout) weitergeleitet oder aufgelegt. Default:
+            10 Sekunden.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist><programlisting>; absoluten Timeout abfragen:
+exten =&gt; 123,1,Set(foo=${TIMEOUT(absolute)})
+
+; Anruf-Dauer auf maximal 60 Sekunden begrenzen:
+exten =&gt; 123,1,Set(TIMEOUT(absolute)=60)
+exten =&gt; 123,n,Dial(SIP/${EXTEN})
+exten =&gt; T,1,Playback(tut-uns-leid) 
+exten =&gt; T,n,Playback(auf-wiederhoeren) 
+exten =&gt; T,n,Hangup()</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'TIMEOUT' =- 
+
+[Syntax]
+TIMEOUT(timeouttype)
+
+[Synopsis]
+Gets or sets timeouts on the channel.
+
+[Description]
+Gets or sets various channel timeouts. The timeouts that can be
+manipulated are:
+
+absolute: The absolute maximum amount of time permitted for a call.  A
+     setting of 0 disables the timeout.
+
+digit:    The maximum amount of time permitted between digits when the
+          user is typing in an extension.  When this timeout expires,
+          after the user has started to type in an extension, the
+          extension will be considered complete, and will be
+          interpreted.  Note that if an extension typed in is valid,
+          it will not have to timeout to be tested, so typically at
+          the expiry of this timeout, the extension will be considered
+          invalid (and thus control would be passed to the 'i'
+          extension, or if it doesn't exist the call would be
+          terminated).  The default timeout is 5 seconds.
+
+response: The maximum amount of time permitted after falling through a
+     series of priorities for a channel in which the user may
+     begin typing an extension.  If the user does not type an
+     extension in this amount of time, control will pass to the
+     't' extension if it exists, and if not the call would be
+     terminated.  The default timeout is 10 seconds.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-txtcidname">
+    <title><code>TXTCIDNAME()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>TXTCIDNAME()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>TXTCIDNAME(<replaceable>Nummer</replaceable>)</synopsis>
+
+    <para>Schlägt den Namen des Anrufers mittels DNS (im TXT-Record)
+    nach.<programlisting>exten =&gt; 123,1,Set(foo=${TXTCIDNAME(012345678)})</programlisting></para>
+  </section>
+
+  <section id="funktionen-uridecode">
+    <title><code>URIDECODE()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>URIDECODE()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>URIDECODE(<replaceable>String</replaceable>)</synopsis>
+
+    <para>Dekodiert einen URI-kodierten String. Siehe
+    <code>URIENCODE()</code>.<programlisting>; "www.beispiel.de/?seite=Hallo%20Welt" dekodieren:
+exten =&gt; 123,1,Set(foo=${URIDECODE("Hallo%20Welt")})
+; ergibt "Hallo Welt"</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'URIDECODE' =- 
+
+[Syntax]
+URIDECODE(&lt;data&gt;)
+
+[Synopsis]
+Decodes a URI-encoded string according to RFC 2396.
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>8c8
+&lt; Decodes a URI-encoded string according to RFC 2396.
+---
+&gt; Decodes an URI-encoded string.</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-uriencode">
+    <title><code>URIENCODE()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>URIENCODE()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>URIENCODE(<replaceable>String</replaceable>)</synopsis>
+
+    <para>URI-kodiert einen String, d.h., dass Zeichen, die nicht in einer URI
+    vorkommen dürfen, durch Escape-Sequenzen der Form
+    <code>%<replaceable>XX</replaceable></code> ersetzt werden, wobei
+    <code>XX</code> der hexadezimale Wert des Zeichens ist.<programlisting>; "Hallo Welt" kodieren:
+exten =&gt; 123,1,Set(foo=${URIENCODE("Hallo Welt")})
+; ergibt "Hallo%20Welt"</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'URIENCODE' =- 
+
+[Syntax]
+URIENCODE(&lt;data&gt;)
+
+[Synopsis]
+Encodes a string to URI-safe encoding according to RFC 2396.
+
+[Description]
+Not available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>8c8
+&lt; Encodes a string to URI-safe encoding according to RFC 2396.
+---
+&gt; Encodes a string to URI-safe encoding.</screen></para>
+      </formalpara>
+    </note>
+  </section>
+
+  <section id="funktionen-vmcount">
+    <title><code>VMCOUNT()</code><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>VMCOUNT()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>VMCOUNT(<replaceable>VM-Box</replaceable>[@<replaceable>Context</replaceable>][|<replaceable>Ordner</replaceable>])</synopsis>
+
+    <para>Gibt die Anzahl der Voicemailnachrichten in einer Voicemailbox
+    zurück. Der Default-Context ist <code>default</code>, der Default-Ordner
+    ist <code>INBOX</code>.<programlisting>; Anzahl der Nachrichten in der Mailbox 456 abfragen:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Set(anzahl=${VMCOUNT(456)})
+exten =&gt; 123,n,Playback(vm-youhave)          ; "Sie haben"
+exten =&gt; 123,n,GotoIf($[ ${anzahl} = 0 ]?keine:neue)
+
+exten =&gt; 123,10(keine),Playback(vm-no)       ; "keine"
+exten =&gt; 123,n,Goto(weiter)
+
+exten =&gt; 123,20(neue),SayNumber($COUNT)      ; Anzahl
+exten =&gt; 123,n,Goto(weiter)
+
+exten =&gt; 123,30(weiter),Playback(vm-INBOX)   ; "neue"
+exten =&gt; 123,n,Playback(vm-messages)         ; "Nachrichten"
+exten =&gt; 123,n,Playback(vm-goodbye)          ; "Auf Wiederhören!"
+exten =&gt; 123,n,Hangup()</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'VMCOUNT' =- 
+
+[Syntax]
+VMCOUNT(vmbox[@context][|folder])
+
+[Synopsis]
+Counts the voicemail in a specified mailbox
+
+[Description]
+  context - defaults to "default"
+  folder  - defaults to "INBOX"</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <simpara>Siehe auch <xref
+    linkend="applikationen-mailboxexists" /></simpara>
+  </section>
+</section>

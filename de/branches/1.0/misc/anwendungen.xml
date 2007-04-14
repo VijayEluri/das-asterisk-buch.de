@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<chapter id="anwendungen" lang="de" revision="$Revision: 1.10 $">
+  <!--% Copyright (c) 2006 
+% - Stefan Wintermeyer <sw@amooma.de>
+% - Philipp Kempgen <pkempgen@uni-koblenz.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Diverse Anwendungsfälle</title>
+
+  <simpara>Hier werden Lösungen und Beispiele zu Anwendungsfällen für
+  spezifische Aufgaben gesammelt.</simpara>
+
+  <section id="pickup">
+    <title>Call-Pickup / Anrufe heranholen<indexterm>
+        <primary>Pickup</primary>
+      </indexterm><indexterm>
+        <primary>Heranholen</primary>
+      </indexterm></title>
+
+    <para>Wer eine Weile mit einer Telefonanlage gearbeitet hat, die
+    über eine Handvoll Telefone hinausgeht, kennt das Problem: Es
+    klingelt immer am falschen Apparat im Nebenzimmer - und zum
+    Aufstehen ist man zu faul, zu langsam ... Auch dieses Problem kann
+    Asterisk durch einen Eintrag in der
+    <filename>extensions.conf</filename> lösen:<programlisting>exten =&gt; _#7.,1,Pickup(${EXTEN:1})</programlisting>Dadurch
+    kann man an jedem Apparat (wie z.B. bei einer Alcatel-Anlage) durch
+    Wählen von<literallayout># 7 <replaceable>Nebenstellennummer</replaceable></literallayout>das
+    Gespräch vom klingelnden Apparats zu sich heranholen. Klingelt es
+    beispielsweise an Apparat <code>123</code>, können wir an einem
+    anderen Apparat durch Wählen von <code>#7123</code> den Anruf
+    annehmen.</para>
+
+    <para>Wollen wir das nur für einen bestimmten Kontext zulassen,
+    stellen wir einfach im <code>Pickup()</code>-Aufruf hinter die
+    Extension noch ein
+    <code>@<replaceable>kontextname</replaceable></code> z.B.
+    so:<programlisting>exten =&gt; _#7.,1,Pickup(${EXTEN:1}@verkauf)</programlisting></para>
+  </section>
+
+  <section id="least-cost-routing">
+    <title>Least-Cost-Routing (LCR)</title>
+
+    <para>Least-Cost-Routing für Asterisk in Deutschland mittels
+    ENUM:<itemizedlist>
+        <listitem>
+          <simpara><ulink
+          url="http://www.voip-info.org/wiki/view/cnum.info">http://www.voip-info.org/wiki/view/cnum.info</ulink></simpara>
+        </listitem>
+
+        <listitem>
+          <simpara><ulink
+          url="http://cnum.info/">http://cnum.info/</ulink></simpara>
+        </listitem>
+      </itemizedlist></para>
+  </section>
+
+  <section id="fax-mail">
+    <title>Mail-to-Fax, Fax-to-Mail</title>
+
+    <simpara>Auf <ulink
+    url="http://www.generationd.com/">http://www.generationd.com/</ulink>
+    findet man unter Downloads zwei Shell-Skripte
+    <command>mail2fax</command> und
+    <command>fax2mail</command>.</simpara>
+  </section>
+
+  <section id="anrufer-identifizierung">
+    <title>Anrufer-Identifizierung</title>
+
+    <simpara>Nicht alle Anrufer senden Ihre Caller-ID, und selbst wenn
+    sie eine senden, kann man ihr nicht unbedingt vertrauen. Wenn die
+    Anrufer-Nummer bekannt ist, hat man eine Chance, den zugehörigen
+    Namen herauszufinden.</simpara>
+
+    <simpara>Auf <ulink
+    url="http://www.generationd.com/">http://www.generationd.com/</ulink>
+    findet man unter Downloads ein PHP-Skript
+    <command>smartCID</command>, das zuerst in einer lokalen
+    MySQL-Tabelle nachschaut und falls nötig eine Inversuche (Reverse
+    Lookup) über 411.com<footnote>
+        <simpara><ulink
+        url="http://www.411.com/">http://www.411.com/</ulink></simpara>
+      </footnote> macht.</simpara>
+  </section>
+
+  <section id="manager-interface">
+    <title>Das Manager-Interface (AMI)<indexterm>
+        <primary>Manager-Interface</primary>
+      </indexterm><indexterm>
+        <primary>AMI</primary>
+      </indexterm><indexterm>
+        <primary><filename>manager.conf</filename></primary>
+      </indexterm></title>
+
+    <para>... aktiviert man, indem man in der
+    <filename>manager.conf</filename> im Abschnitt
+    <code>[general]</code> <code>enabled=yes</code> einstellt.<caution>
+        <para>Das sollte man auf einem Server mit öffentlichem Zugang
+        nie machen, außer man schützt sich zusätzlich durch
+        <command>iptables</command>, <command>ipfw</command> oder eine
+        andere Firewall oder einen SSH-Tunnel!</para>
+      </caution>Darunter legen wir uns einen Benutzer-Eintrag
+    an:<programlisting>[admin]
+secret = geheim
+deny = 0.0.0.0/0.0.0.0
+permit = 127.0.0.1/255.255.255.255
+read = system,call,log,verbose,command,agent,user,config
+write = system,call,log,verbose,command,agent,user,config</programlisting>Nach
+    einem Restart können wir uns auf Port 5038 mit dem AMI
+    verbinden<footnote>
+        <simpara>Hier kommt nur das <emphasis>Tool</emphasis>
+        <command>telnet</command> zum Einsatz. Das hat nichts mit dem
+        Telnet-Protokoll oder Port zu tun.</simpara>
+      </footnote>:<screen><prompt>$ </prompt>telnet 127.0.0.1 5038
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+Asterisk Call Manager/1.0
+</screen>Man kann hier von Hand Befehle (die meist aus mehreren Zeilen
+    bestehen) eintippen, z.B.:<screen>Action: Login
+ActionID: 1
+Username: admin
+Secret: geheim</screen></para>
+
+    <para>Antwort:<screen>Response: Success
+ActionID: 1
+Message: Authentication accepted</screen></para>
+
+    <simpara>Die primäre Verwendung liegt aber sicher eher im
+    automatisierte Skript-Zugriff.</simpara>
+
+    <simpara>Nach erfolgreicher Authentifizierung können in beiden
+    Richtung Pakete gesendet werden. Die Art des Pakets wird immer von
+    de ersten Zeile darin bestimmt. Der Client sendet
+    <code>Action</code>-Pakete, der Server antwortet mit
+    <code>Response</code> oder kann auch <code>Event</code>-Pakete
+    schicken. Die Reihenfolge der Zeilen in einem Paket ist ansonsten
+    aber irrelevant. Zeilen werden durch CR LF<footnote>
+        <simpara>Carriage Return (ASCII 13 dezimal) und Line Feed (ASCII
+        10 dezimal)</simpara>
+      </footnote> beendet, das ganze Paket durch ein weiteres CR LF.
+    Normalerweise sendet der Client in jeder <code>Action</code> ein
+    <code>ActionID</code>-Feld mit beliebigem Inhalt, das der Server so
+    in seine <code>Response</code> übernimmt, damit sich die Antworten
+    bei Überschneidungen zuordnen lassen.</simpara>
+
+    <simpara>Der Server sendet Events, um den Client über verschiedene
+    Ereignisse zu informieren. Es gibt auch Ereignisse, die von einer
+    <code>Action</code> des Clients ausgelöst werden. Dann sendet der
+    Server ein <code>Response: Follows</code> gefolgt von den Events
+    (die dann ebenfalls die <code>ActionID</code> beinhalten) und ein
+    abschließendes Event (normalerweise
+    <replaceable>Aktionsname</replaceable>Complete).</simpara>
+
+    <simpara>Wenn Ihr Client keine Events benötigt, kann er direkt im
+    ersten Authentifizierungs-Paket den Parameter <code>Events:
+    off</code> senden.</simpara>
+
+    <simpara>Die Liste der verfügbaren Befehle erhält man im
+    <emphasis>CLI</emphasis> mit <code>show manager commands</code>
+    (bzw. <code>manager show commands</code>), Informationen über einen
+    Befehl mit <code>show manager command
+    <replaceable>Befehlsname</replaceable></code> (bzw. <code>manager
+    show command <replaceable>Befehlsname</replaceable></code>) oder auf
+    <ulink
+    url="http://www.voip-info.org/wiki/view/Asterisk+manager+API">http://www.voip-info.org/wiki/view/Asterisk+manager+API</ulink>.</simpara>
+
+    <simpara>Für eine Liste der Events siehe <ulink
+    url="http://www.voip-info.org/wiki/view/asterisk+manager+events">http://www.voip-info.org/wiki/view/asterisk+manager+events</ulink>.
+    Beispiele und APIs in verschiedenen Programmiersprachen: <ulink
+    url="http://www.voip-info.org/wiki/view/Asterisk+manager+Examples">http://www.voip-info.org/wiki/view/Asterisk+manager+Examples</ulink>.
+    StarAstAPI (PHP): <ulink
+    url="http://www.starutilities.com/">http://www.starutilities.com/</ulink>.</simpara>
+
+    <section id="manager-interface-ajam">
+      <title>AJAM<indexterm>
+          <primary>AJAM</primary>
+        </indexterm><indexterm>
+          <primary>Aynchronous Javascript Asterisk Manager</primary>
+        </indexterm><indexterm>
+          <primary><filename>http.conf</filename></primary>
+        </indexterm></title>
+
+      <subtitle>Aynchronous Javascript Asterisk Manager</subtitle>
+
+      <simpara>Seit Version 1.4 bringt Asterisk außerdem einen kleinen
+      Web-Server mit, AJAM genannt, über den man per HTTP auf das
+      Asterisk Manager Interface (AMI) zugreifen kann (eher als
+      Demonstration). Dazu sind die Schritte wie oben Voraussetzung. Um
+      dann den Web-Server zu aktivieren setzt man in der
+      <filename>http.conf</filename> im Abschnitt <code>[general]</code>
+      die Einstellungen <code>enabled=yes</code> und
+      <code>enablestatic=yes</code>. <code>bindaddr</code> stellt man
+      auf <code>127.0.0.1</code>, <code>bindport</code> auf
+      <code>8088</code>. Zusätzlich muß in der
+      <filename>manager.conf</filename> <code>webenabled=yes</code>
+      eingestellt sein.</simpara>
+
+      <para>Nach einem Restart können wir uns mit<literallayout>http://localhost:8088/asterisk/manager?action=login&amp;username=admin&amp;secret=geheim</literallayout>einloggen
+      oder Befehle geben, unter<literallayout>http://localhost:8088/asterisk/static/ajamdemo.html</literallayout>die
+      AJAM-Demo sehen, unter<literallayout>http://localhost:8088/asterisk/rawman?action=status</literallayout>Consolen-Events
+      senden/sehen oder dies auch mit<literallayout>http://localhost:8088/asterisk/mxml?action=status</literallayout>in
+      XML-Form tun. Damit lassen sich vergleichsweise einfach
+      Web-Anwendungen entwickeln (i.d.R. für den internen Gebrauch), die
+      per AJAX auf das Manager-Interface zugreifen.</para>
+    </section>
+  </section>
+
+  <section id="app_conference">
+    <title>Konferenzen mit app_conference<indexterm
+        significance="preferred">
+        <primary>app_conference</primary>
+      </indexterm><indexterm>
+        <primary>Conference()</primary>
+      </indexterm><indexterm>
+        <primary>Konferenzen</primary>
+      </indexterm></title>
+
+    <simpara>Die mitgelieferte Applikation <code>MeetMe()</code> hat
+    einige Nachteile (siehe <xref linkend="applikationen-meetme" />),
+    die sie schlecht portierbar machen und auf einigen Systemen gar
+    nicht laufen lassen. Es gibt allerdings eine Alternative unter der
+    GPL, die zudem noch verspricht, schneller zu sein - sie heißt
+    <code>app_conference</code>. Diese Applikation ist dem
+    iaxclient-Projekt<footnote>
+        <simpara><ulink
+        url="http://sourceforge.net/projects/iaxclient/">http://sourceforge.net/projects/iaxclient/</ulink></simpara>
+      </footnote> angegliedert (aber sonst unabhängig davon). Die
+    Vorteile sind v.a. die Unabhängigkeit von Zaptel, die Unterstützung
+    von VAD<footnote id="footnote-vad">
+        <simpara>Voice Activity Detection. Dabei werden keine
+        Audio-Pakete von Teilnehmern übertragen, die momentan nicht
+        sprechen.</simpara>
+      </footnote> und die effiziente Kodierung/Dekodierung.</simpara>
+
+    <para>Der Nachteil: Sie müssen app_conference erst noch kompilieren,
+    was aber mit einem Asterisk 1.4.0 beta4 erstaunlich leicht ist. Wir
+    checken den Branch von mihai aus dem SVN aus:<screen><prompt>$ </prompt>svn co http://iaxclient.svn.sourceforge.net/svnroot/iaxclient/branches/team/mihai/app_conference</screen></para>
+
+    <note>
+      <para>Wir verwenden diesen Branch, da er am problemlosesten
+      funktionierte. Normalerweise würde man die Trunk-Version
+      auschecken:<screen><prompt>$ </prompt>svn co http://iaxclient.svn.sourceforge.net/svnroot/iaxclient/trunk/app_conference</screen>Sie
+      können sich vorher das Repository per Web-Browser ansehen<footnote>
+          <simpara>unter <ulink
+          url="http://iaxclient.svn.sourceforge.net/viewvc/iaxclient/">http://iaxclient.svn.sourceforge.net/viewvc/iaxclient/</ulink></simpara>
+        </footnote>, um zu entscheiden, welche Version Sie benutzen
+      wollen.</para>
+    </note>
+
+    <para>Wenn wir optimale Geschwindigkeit erreichen wollen, können wir
+    noch das <filename>Makefile</filename> im runtergeladenen
+    Verzeichnis <filename>app_conference</filename> anpassen, z.B. die
+    Zeile<programlisting>#CFLAGS += -O3 -ffast-math -funroll-all-loops -fsingle-precision-constant</programlisting>einkommentieren,
+    also das <code>#</code> davor entfernen. Weitere Compiler-Optionen
+    sind in den Zeilen davor und danach oder in den zahlreichen
+    Online-Handbüchern oder der <command>man</command>-Page zum gcc
+    beschrieben.<footnote>
+        <para>Für einen Mac mit Intel-Core-Duo-Prozessor könnte man z.B.
+        zusätzlich noch <code>-march=prescott -msse3
+        -mfpmath=sse,387</code> anfügen, für einen Core-2-Duo
+        <code>-march=nocona</code> ..., ab GCC 4.3 vermutlich
+        <code>-march=core2</code> ...</para>
+      </footnote></para>
+
+    <para>Jetzt <command>make</command> ausführen, wobei die letzte
+    Zeile der Ausgabe etwa so lauten sollte:<screen>gcc -pg -dynamic -bundle -undefined suppress -force_flat_namespace -o app_conference.so app_conference.o conference.o member.o frame.o cli.o libspeex/preprocess.o libspeex/misc.o libspeex/smallft.o</screen>und
+    (als root) <command>make install</command> zum Installieren.
+    Asterisk neustarten: <command>asterisk -rx "restart now"</command>.
+    Im Asterisk-CLI sollte dann <userinput>show application
+    Conference</userinput> eine Beschreibung der neuen Applikation
+    <code>Conference()</code> verkünden.</para>
+
+    <section id="applikationen-conference">
+      <title>Die Applikation Conference()<indexterm
+          significance="preferred">
+          <primary>Dialplan-Applikationen</primary>
+
+          <secondary><code>Conference()</code></secondary>
+        </indexterm></title>
+
+      <synopsis>Conference(<replaceable>Konferenzname</replaceable>,<replaceable>Flags</replaceable>,<replaceable>Priorität</replaceable>[,VADSTART,VADCONTINUE])</synopsis>
+
+      <para>Leitet den User in die angegebene Konferenz.
+      <code>Konferenzname</code> ist der alphanumerische Name der
+      Konferenz, also z.B. <code>123</code> oder
+      <code>besprechung</code> (wobei sich natürlich nur rein numerische
+      Namen zur Eingabe eignen). Folgende Flags sind in Kombination
+      möglich:<variablelist termlength="3">
+          <varlistentry>
+            <term><code>M</code></term>
+
+            <listitem>
+              <simpara>Moderator (z.Zt. kein Unterschied zu normalen
+              Teilnehmern)</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>S</code></term>
+
+            <listitem>
+              <simpara>Normaler Teilnehmer (kann sprechen)</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>L</code></term>
+
+            <listitem>
+              <simpara>Zuhörer (kann nicht sprechen)</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>T</code></term>
+
+            <listitem>
+              <simpara>Telefonanrufer (z.Zt. wie normaler
+              Sprecher)</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>V</code></term>
+
+            <listitem>
+              <simpara>VAD<footnoteref linkend="footnote-vad" /> für den
+              Teilnehmer aktivieren</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>D</code></term>
+
+            <listitem>
+              <simpara>Denoise, Entstör-Filter.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>d</code></term>
+
+            <listitem>
+              <simpara>Bei DTMF-Tönen Events an das Manager-Interface
+              senden.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>q</code></term>
+
+            <listitem>
+              <simpara>Keine Sounds beim Betreten/Verlassen
+              spielen.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>i</code></term>
+
+            <listitem>
+              <simpara>DTMF-Töne <quote>inband</quote> senden, also als
+              Audio</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>t</code></term>
+
+            <listitem>
+              <simpara>DTMF-Töne nach RFC-Spezifikation senden</simpara>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+
+      <simpara>Mit <code>Priorität</code> ist nicht etwa eine Priorität
+      im Dialplan gemeint, sondern hier könnte dem Sprecher ein höheres
+      Gewicht gegeben werden, was aber z.Zt. ignoriert wird, ebenso wie
+      die weiteren Parameter.</simpara>
+
+      <para>Die möglichen Befehle im CLI erfahren Sie mit
+      <userinput>help conference</userinput>. Zwei hilfreiche
+      sind:<variablelist termlength="26">
+          <varlistentry>
+            <term><code>conference show stats</code></term>
+
+            <listitem>
+              <simpara>Zeigt Informationen über aktive Konferenzen
+              an.</simpara>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>conference list
+            <replaceable>KonfName</replaceable></code></term>
+
+            <listitem>
+              <simpara>Zeigt eine Liste der Teilnehmer in der
+              angegebenen Konferenz.</simpara>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+
+      <para>Das Manager-Interface erhält z.B. die nützlichen Events
+      <code>ConferenceState</code> (ein Teilnehmer beginnt/hört auf zu
+      sprechen) und <code>ConferenceDTMF</code> (ein Teilnehmer hat eine
+      Taste gedrückt).</para>
+    </section>
+
+    <section id="applikationen-conference-anwendung">
+      <title>Anwendung</title>
+
+      <para><code>Conference()</code> selbst bietet zwar nicht - wie
+      <code>MeetMe()</code> - die Möglichkeit, Passwörter für
+      Konferenzräume zu setzen, aber über den Dialplan ist das natürlich
+      machbar:<programlisting>[default]
+
+exten =&gt; 999,1,Goto(konferenzen,s,1)
+
+
+[konferenzen]
+
+exten =&gt; s,1,Answer()
+exten =&gt; s,n,Wait(1)
+exten =&gt; s,n,Set(TIMEOUT(digit)=4)
+exten =&gt; s,n,Set(TIMEOUT(response)=6)
+exten =&gt; s,n,Read(confnum,conf/enter-number,4,s,3)      ; KonfNr eingeben
+exten =&gt; s,n,GotoIf($["${confnum}" != ""]?pass)         ; Eingabe?
+exten =&gt; s,n,Hangup()
+
+exten =&gt; s,20(pass),Set(pass=${DB(conferences/${confnum})})
+exten =&gt; s,n,GotoIf($["${pass}" = ""]?conf)             ; kein PW =&gt; Konf.
+exten =&gt; s,n,Read(eingabe,conf/enter-password,10,s,1)   ; PW eingeben
+exten =&gt; s,n,GotoIf($["${pass}" = "${eingabe}"]?conf)   ; PW ok =&gt; Konf.
+exten =&gt; s,n,Playback(conf/invalid-password)            ; PW falsch
+exten =&gt; s,n,Hangup()
+
+exten =&gt; s,30(conf),Playback(conf/join)
+exten =&gt; s,n,SayAlpha(${confnum})
+exten =&gt; s,n,Conference(${confnum},SVDd)                ; Konf.
+exten =&gt; s,n,Hangup()
+</programlisting></para>
+
+      <para>Um dann z.B. im CLI für die Konferenz 123 das Passwort
+      445566 zu setzen:<literallayout>database put conferences 123 445566</literallayout>bzw.<literallayout>database del conferences 123</literallayout>zum
+      Löschen.</para>
+
+      <simpara>Man könnte sich auch ein Skript programmieren, das über
+      das Manager-Interface oder über AGI nach DTMF-Eingaben lauscht und
+      es so einem Moderator erlaubt, das Passwort zu setzen, die
+      Konferenz zu sperren etc, oder das ein Web-Interface
+      bereitstellt.</simpara>
+    </section>
+  </section>
+</chapter>
