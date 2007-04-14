@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<section id="installation-1.4-fedora" lang="de" revision="$Revision$">
+  <!--% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Installation Asterisk 1.4.x auf Fedora Linux</title>
+
+  <indexterm>
+    <primary>Asterisk 1.4 Installation</primary>
+
+    <secondary>Fedora Linux</secondary>
+  </indexterm>
+
+  <para>Diese Installationsanleitung setzt ein frisch installiertes Fedora
+  Core 6 "Zod" voraus. Eine Liste von Mirrors zum Download des ISO-Images
+  findet man unter <ulink
+  url="http://fedora.redhat.com/Download/mirrors.html"><citetitle>http://fedora.redhat.com/Download/mirrors.html</citetitle></ulink>.
+  Auf einem Mirror Ihrer Wahl laden Sie dann das CD- oder besser gleich das
+  DVD-Image herunter. Mit der gebrannten DVD können Sie nun den Rechner booten
+  und Fedora installieren.</para>
+
+  <para><emphasis>Bitte loggen Sie sich danach als Benutzer root am System an und führen Sie alle hier angegebenen Befehle mit diesem Benutzer
+  aus.</emphasis></para>
+
+  <para>Als Erstes stellen Sie mit einem <command>yum -y update</command>
+  sicher, dass Ihr Fedora Linux-System nur aktuelle Pakete installiert
+  hat:<screen>[root@localhost ~]# yum -y update
+Loading "installonlyn" plugin
+Setting up Update Process
+Setting up repositories
+core                      100% |=========================| 1.1 kB    00:00     
+extras                    100% |=========================| 1.1 kB    00:00     
+updates                   100% |=========================| 1.2 kB    00:00     
+Reading repository metadata in from local files
+
+[...]
+
+bs.i386 0:0.7.40-1.fc6 system-config-soundcard.noarch 0:2.0.5-2.fc6 system-config-users.noarch 0:1.2.47-1.fc6 tar.i386 2:1.15.1-22.fc6 tcpdump.i386 14:3.9.4-9.fc6 tcsh.i386 0:6.14-12 traceroute.i386 3:2.0.2-1.fc6 tzdata.noarch 0:2006p-1.fc6 util-linux.i386 0:2.13-0.45.1.fc6 vnc-server.i386 0:4.1.2-7.fc6 wpa_supplicant.i386 1:0.4.9-1.fc6 xorg-x11-drv-ati.i386 0:6.6.3-1.fc6 xorg-x11-drv-i810.i386 0:1.6.5-10.fc6 xorg-x11-server-Xorg.i386 0:1.1.1-47.1.fc6 xorg-x11-xinit.i386 0:1.0.2-15.fc6 yelp.i386 0:2.16.0-10.fc6 ypbind.i386 3:1.19-6.fc6 yum.noarch 0:3.0.1-2.fc6 yum-updatesd.noarch 0:3.0.1-2.fc6
+Replaced: bluez-pin.i386 0:0.30-5
+Complete!
+[root@localhost ~]# </screen></para>
+
+  <para>Jetzt müssen Sie mit <command>yum -y groupinstall "Development
+  Tools"</command> noch einige Pakete installieren:</para>
+
+  <screen>[root@localhost ~]# yum -y groupinstall "Development Tools"
+Loading "installonlyn" plugin
+Setting up Group Process
+Setting up repositories
+Setting up repositories
+Reading repository metadata in from local files
+Package make - 1:3.81-1.1.i386 already installed and latest version
+
+[...]
+
+  Installing: automake17                   ####################### [56/56] 
+
+Installed: autoconf.noarch 0:2.59-12 automake.noarch 0:1.9.6-2.1 automake14.noarch 0:1.4p6-13 automake15.noarch 0:1.5-16 automake16.noarch 0:1.6.3-8 automake17.noarch 0:1.7.9-7 bison.i386 0:2.3-2.1 byacc.i386 0:1.9-29.2.2 cscope.i386 0:15.5-15.fc6.1 ctags.i386 0:5.6-1.1 cvs.i386 0:1.11.22-6.fc6 diffstat.i386 0:1.41-1.2.2 doxygen.i386 1:1.5.1-1 elfutils.i386 0:0.123-1.fc6 flex.i386 0:2.5.4a-41.fc6 frysk.i686 0:0.0.1.2006.12.01.rh1-1.fc6 gcc.i386 0:4.1.1-30 gcc-c++.i386 0:4.1.1-30 gcc-gfortran.i386 0:4.1.1-30 gdb.i386 0:6.5-13.fc6 indent.i386 0:2.2.9-14.fc6 libtool.i386 0:1.5.22-6.1 ltrace.i386 0:0.5-6.45svn.fc6 oprofile.i386 0:0.9.2-3.fc6 oprofile-gui.i386 0:0.9.2-3.fc6 patchutils.i386 0:0.2.31-2.2.2 pfmon.i386 0:3.2-0.060621.7.1 pstack.i386 0:1.2-7.2.2 python-ldap.i386 0:2.2.0-2.1 rcs.i386 0:5.7-30.1 redhat-rpm-config.noarch 0:8.0.45-6 rpm-build.i386 0:4.4.2-32 strace.i386 0:4.5.14-3 subversion.i386 0:1.4.2-2.fc6 swig.i386 0:1.3.29-2.fc6 systemtap.i386 0:0.5.10-1.fc6 texinfo.i386 0:4.8-14.fc6 valgrind.i386 1:3.2.1-4
+Dependency Installed: cairo-java.i386 0:1.0.5-3.fc6 elfutils-libs.i386 0:0.123-1.fc6 glib-java.i386 0:0.2.6-3.fc6 glibc-devel.i386 0:2.5-3 glibc-headers.i386 0:2.5-3 gmp.i386 0:4.1.4-9.fc6 imake.i386 0:1.0.2-3 libgconf-java.i386 0:2.12.4-5.fc6 libgfortran.i386 0:4.1.1-30 libglade-java.i386 0:2.12.5-3.fc6 libgnome-java.i386 0:2.12.4-3.fc6 libgomp.i386 0:4.1.1-30 libgtk-java.i386 0:2.8.7-2.fc6 libpfm.i386 0:3.2-0.060621.8.1 libstdc++-devel.i386 0:4.1.1-30 libvte-java.i386 0:0.12.1-5.fc6 perl-URI.noarch 0:1.35-3 systemtap-runtime.i386 0:0.5.10-1.fc6
+Complete!
+[root@localhost ~]# </screen>
+
+  <para>Zum Schluss noch ein <command>yum -y install libtermcap-devel
+  ncurses-devel openssl-devel</command> ausführen, damit das Kompilieren von
+  Asterisk erfolgreich durchgeführt werden kann:<screen>[root@localhost ~]# yum -y install libtermcap-devel ncurses-devel openssl-devel
+Loading "installonlyn" plugin
+Setting up Install Process
+Setting up repositories
+
+[...]
+
+Installed: libtermcap-devel.i386 0:2.0.8-46.1
+Complete!
+[root@localhost ~]# </screen></para>
+
+  <para>Auf der Asterisk-Homepage <ulink
+  url="http://www.asterisk.org/"><citetitle>http://www.asterisk.org/</citetitle></ulink>
+  finden Sie die notwendigen Quellen, um Asterisk zu kompilieren. Nehmen Sie
+  bitte eine stabile und keine Entwickler-Version und laden Sie diese mit
+  <command>wget
+  http://ftp.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz</command> in
+  das Verzeichnis <filename>/usr/src/</filename> herunter:</para>
+
+  <screen>[root@localhost ~]# cd /usr/src
+[root@localhost src]# wget http://ftp.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz
+--16:33:35--  http://ftp.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz
+AuflÃ¶sen des Rechnernamens Â»ftp.digium.comÂ«.... 69.16.138.164, 216.27.40.102
+Verbindungsaufbau mit ftp.digium.com[69.16.138.164]:80... verbunden.
+HTTP-Anfrage gesendet, warte auf Antwort... 200 OK
+LÃ¤nge: 10928902 (10M) [application/x-gzip]
+Speichere nach: Â»asterisk-1.4-current.tar.gzÂ«
+
+100%[=======================================&gt;] 10.928.902   142K/s   in 72s    
+
+16:34:48 (149 KB/s) - Â»asterisk-1.4-current.tar.gzÂ« gespeichert [10928902/10928902]
+
+[root@localhost src]#</screen>
+
+  <para>Die komprimierte Datei muss jetzt mit <command>tar xvzf
+  asterisk-1.4-current.tar.gz</command> entpackt werden:<screen>[root@localhost src]# tar xvzf asterisk-1.4-current.tar.gz 
+asterisk-1.4.0-beta3/
+asterisk-1.4.0-beta3/build_tools/
+asterisk-1.4.0-beta3/build_tools/mkpkgconfig
+asterisk-1.4.0-beta3/build_tools/get_moduleinfo
+asterisk-1.4.0-beta3/build_tools/mkdep
+
+[...]
+
+asterisk-1.4.0-beta3/menuselect/mxml/CHANGES
+asterisk-1.4.0-beta3/menuselect/mxml/mxml-file.c
+asterisk-1.4.0-beta3/menuselect/mxml/install-sh
+asterisk-1.4.0-beta3/menuselect/mxml/mxml.pc
+[root@localhost src]# </screen></para>
+
+  <para>Asterisk 1.4 ist die erste Version, die den allgemein üblichen
+  autoconf-Mechanismus benutzt. Zuerst muss also im Asterisk-Verzeichnis ein
+  <command>./configure</command> aufgerufen werden:<screen>[root@localhost src]# cd asterisk-1.4.0
+[root@localhost asterisk-1.4.0]# ./configure
+checking build system type... i686-pc-linux-gnu
+checking host system type... i686-pc-linux-gnu
+checking for uname... /bin/uname
+checking for gcc... gcc
+
+[...]
+
+configure: creating ./config.status
+config.status: creating build_tools/menuselect-deps
+config.status: creating makeopts
+config.status: creating channels/h323/Makefile
+config.status: creating include/asterisk/autoconfig.h
+
+               .$$$$$$$$$$$$$$$=..      
+            .$7$7..          .7$$7:.    
+          .$$:.                 ,$7.7   
+        .$7.     7$$$$           .$$77  
+     ..$$.       $$$$$            .$$$7 
+    ..7$   .?.   $$$$$   .?.       7$$$.
+   $.$.   .$$$7. $$$$7 .7$$$.      .$$$.
+ .777.   .$$$$$$77$$$77$$$$$7.      $$$,
+ $$$~      .7$$$$$$$$$$$$$7.       .$$$.
+.$$7          .7$$$$$$$7:          ?$$$.
+$$$          ?7$$$$$$$$$$I        .$$$7 
+$$$       .7$$$$$$$$$$$$$$$$      :$$$. 
+$$$       $$$$$$7$$$$$$$$$$$$    .$$$.  
+$$$        $$$   7$$$7  .$$$    .$$$.   
+$$$$             $$$$7         .$$$.    
+7$$$7            7$$$$        7$$$      
+ $$$$$                        $$$       
+  $$$$7.                       $$  (TM)     
+   $$$$$$$.           .7$$$$$$  $$      
+     $$$$$$$$$$$$7$$$$$$$$$.$$$$$$      
+       $$$$$$$$$$$$$$$$.                
+
+configure: Package configured for: 
+configure: OS type  : linux-gnu
+configure: Host CPU : i686
+[root@localhost asterisk-1.4.0]##</screen></para>
+
+  <para>Asterisk muss jetzt kompiliert werden.<footnote>
+      <para>Die Linux-Cracks unter den Lesern mögen mir diese starke
+      Vereinfachung verzeihen.</para>
+    </footnote>Dies geschieht mit dem Befehl <command>make</command>.<warning>
+      <para>Bitte achten Sie darauf, dass die hier in der Dokumentation
+      benutzte Version vielleicht zum Zeitpunkt Ihrer Installation nicht mehr
+      aktuell ist. Entsprechend werden sich die Verzeichnisnamen
+      ändern.</para>
+    </warning>Übrigens ist dies jetzt ein guter Moment, sich einen Kaffee oder
+  Tee zu kochen. Der Kompiliervorgang kann je nach Rechenleistung des PCs
+  wenige Minuten oder bis zu einer Stunde dauern.</para>
+
+  <screen>[root@localhost asterisk-1.4.0]# make
+make[1]: Entering directory `/usr/src/asterisk-1.4.0/menuselect'
+checking for gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables... 
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+
+[...]
+
+   [LD] abstract_jb.o acl.o aescrypt.o aeskey.o aestab.o alaw.o app.o ast_expr2.o ast_expr2f.o asterisk.o astmm.o autoservice.o callerid.o cdr.o channel.o chanvars.o cli.o config.o cryptostub.o db.o devicestate.o dns.o dnsmgr.o dsp.o enum.o file.o fixedjitterbuf.o frame.o fskmodem.o http.o image.o indications.o io.o jitterbuf.o loader.o logger.o manager.o md5.o netsock.o pbx.o plc.o privacy.o rtp.o say.o sched.o sha1.o slinfactory.o srv.o stdtime/localtime.o strcompat.o tdd.o term.o translate.o udptl.o ulaw.o utils.o editline/libedit.a db1-ast/libdb1.a -&gt; asterisk
+ +--------- Asterisk Build Complete ---------+
+ + Asterisk has successfully been built, and +
+ + can be installed by running:              +
+ +                                           +
+ +               make install                +
+ +-------------------------------------------+
+[root@localhost asterisk-1.4.0]#
+</screen>
+
+  <para>Die Software ist jetzt kompiliert und muss nur noch mit <command>make
+  install</command> installiert (sprich: in die vorgesehenen Verzeichnisse
+  kopiert) werden:</para>
+
+  <screen>[root@localhost asterisk-1.4.0]# make install
+make[1]: Für das Ziel »depend« ist nichts zu tun.
+make[1]: Für das Ziel »depend« ist nichts zu tun.
+
+[...]
+
+for x in ; do /usr/bin/install -c -m 755 $x /usr/lib/asterisk/modules ; done
+make[1]: Leaving directory `/usr/src/asterisk-1.4.0/main'
+ +---- Asterisk Installation Complete -------+
+ +                                           +
+ +    YOU MUST READ THE SECURITY DOCUMENT    +
+ +                                           +
+ + Asterisk has successfully been installed. +
+ + If you would like to install the sample   +
+ + configuration files (overwriting any      +
+ + existing config files), run:              +
+ +                                           +
+ +               make samples                +
+ +                                           +
+ +-----------------  or ---------------------+
+ +                                           +
+ + You can go ahead and install the asterisk +
+ + program documentation now or later run:   +
+ +                                           +
+ +              make progdocs                +
+ +                                           +
+ + **Note** This requires that you have      +
+ + doxygen installed on your local system    +
+ +-------------------------------------------+
+[root@localhost asterisk-1.4.0]# </screen>
+
+  <para>Die eben kompilierten Programmdateien sind jetzt auf dem System
+  installiert. Allerdings finden wir im Asterisk-Konfigurationsverzeichnis
+  <filename>/etc/asterisk/</filename> noch gähnende Leere vor. In diesem
+  Verzeichnis liegen die Konfigurationsdateien von Asterisk und da wir nicht
+  von Null beginnen möchten, lassen wir uns die Standarddateien erstellen.
+  Dies erreichen wir mit einem <command>make samples</command>:</para>
+
+  <screen>[root@localhost asterisk-1.4.0]# make samples
+mkdir -p /etc/asterisk
+for x in configs/*.adsi; do \
+        if [ ! -f /etc/asterisk/$x ]; then \
+                /usr/bin/install -c -m 644 $x /etc/asterisk/`/usr/bin/basename $x` ; \
+        fi ; \
+
+[...]
+
+for x in vm-theperson digits/1 digits/2 digits/3 digits/4 vm-isonphone; do \
+        cat /var/lib/asterisk/sounds/$x.gsm &gt;&gt; /var/spool/asterisk/voicemail/default/1234/busy.gsm ; \
+done
+[root@localhost asterisk-1.4.0]# </screen>
+
+  <para>Fertig! Asterisk ist auf Ihrem System installiert. Mit dem Befehl
+  <command>asterisk -V</command> können Sie die installierte Version
+  rausfinden (bitte achten Sie auf das großgeschriebene V):<screen>[root@localhost asterisk-1.4.0]# asterisk -V
+Asterisk 1.4.0
+[root@localhost asterisk-1.4.0]# </screen></para>
+</section>

@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section id="isdn-1.2-visdn" lang="de" revision="$Revision$">
+  <!--% Copyright (c) 2007
+% - Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>vISDN</title>
+
+  <section id="vISDN-1.2-visdn-auf-linux-2.6">
+    <title>Versatile ISDN Subsystem für Linux 2.6</title>
+
+    <para>vISDN ist ein alternatives Treibermodell für HFC basierte ISDN
+    Karten. Unterstützt werden alle Karten mit folgenden Chipsätzen (siehe:
+    <ulink
+    url="http://www.visdn.org/drivers.php">http://www.visdn.org/drivers.php</ulink>):<itemizedlist>
+        <listitem>
+          <para>Cologne Chip's HFC USB</para>
+        </listitem>
+
+        <listitem>
+          <para>Cologne Chip's HFC-S PCI A</para>
+        </listitem>
+
+        <listitem>
+          <para>Cologne Chip's HFC 4S/8S</para>
+        </listitem>
+
+        <listitem>
+          <para>Cologne Chip's HFC E1</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>Im Gegensatz zum <emphasis>zaphfc</emphasis> Projekt werden hierbei
+    erfreulicherweise auch externe USB Varianten mit HFC Chipsatz
+    unterstützt.</para>
+
+    <para>vISDN wurde 2005 von Daniele Orlandi initiert. Im selben Jahr wurde
+    die Firma Voismart aus Mailand Unterstüzer des Projektes. Voismart setzt
+    vISDN auch als Treiber für seine QuadHFC- und GSMKarten ein.</para>
+
+    <para>Daniele Orlandi startete das Projekt nach eigenen Angaben mit der
+    Absicht, ein neues und klares ISDN Subsystem für Linux Systeme mit Kernel
+    2.6 zu schreiben. Zaptel ist seiner Meinung nach zu sprachlastig, außerdem
+    ist die ISDN Unterstützung im Nachhinein eingepatcht worden und hat gerade
+    in Bezug auf EuroISDN einige Schwächen. Letzteres könnte den
+    Zertifizierungsprozess von Asterisk Systemen, die die ISDN-Anbindung via
+    Zaptel realisieren in einigen europäischen Ländern erschweren. vISDN hat
+    Anfang 2006 den Zertifizierungstest von Telecom Italia bestanden. vISDN
+    bedarf keiner Modifikation des Kernels oder der Asterisk Quellen. Zum
+    Erstellen der Treibermodule werden lediglich die Kernel-Header Dateien
+    benötigt. Die Integration in Asterisk wird als seperater Channel über
+    externe Module realisiert, es werden keine bestehenden Channeltreiber
+    gepatch oder auf sonstige Art und Weise modifiziert. Auf diese Weise kann
+    die vISDN Unterstützung in Asterisk auch sehr einfach wieder deaktiviert
+    werden.</para>
+  </section>
+
+  <section id="vISDN-1.2-voraussetzungen">
+    <title>Vorraussetzungen</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>eine oder mehrere der oben genannten ISDN-Karten</para>
+      </listitem>
+
+      <listitem>
+        <para>installiertes Asterisk mit Header Files</para>
+      </listitem>
+
+      <listitem>
+        <para>Kernel 2.6 (ab 2.6.8)</para>
+      </listitem>
+
+      <listitem>
+        <para>build-essentials (oder auf nicht-Debian Systemen
+        entsprechendes)</para>
+      </listitem>
+
+      <listitem>
+        <para>lspci, bash3, automake1.9, autoconf, libtool, ppp-dev, iproute,
+        udev</para>
+
+        <para>(Die Bash in der Version 3 ist auf vielen Systemen
+        Standard)</para>
+      </listitem>
+    </itemizedlist>
+
+    <warning>
+      <para>vISDN stellt eine weitere Variante der Integration von
+      HFC-basierten ISDN Karten in Linux und Asterisk dar. Es kann zwar auch
+      die bristuff-Version von Asterisk verwendet werden, jedoch kann
+      natürlich nur eine Variante der HFC-Treiber gleichzeitig geladen werden.
+      Module wie <emphasis>zaphfc</emphasis> oder <emphasis>qzap</emphasis>
+      dürfen also nicht geladen sein, wenn vISDN initialisiert wird.</para>
+
+      <para>Auch muss darauf geachtet werden, dass die entsprechende HFC-Karte
+      nicht bereits von einem anderen ISDN-Subsystem wir Hisax oder Capi
+      verwendet wird. Module wie zum Beispiel Hisax sind also ebenfalls zu
+      entladen. Wer sicher gehen will entlädt die entsprechenden Module an
+      dieser Stelle, z.B mit:</para>
+
+      <programlisting>asterisco:~# rmmod hisax isdn zaphfc qzap</programlisting>
+    </warning>
+  </section>
+
+  <section id="vISDN-1.2-debian-vorbereiten">
+    <title>Vorbereitung des Debian Systems</title>
+
+    <para>vISDN setzt einen Kernel der 2.6er Reihe voraus, empfohlen wird ein
+    Kernel &gt;= 2.6.8. Des weiteren werden die Kernel-Header zur Übersetzung
+    der Treiber benötigt. Sollten die Header Dateien noch nicht installiert
+    sein, kann man das unter Debian bequem per apt erledigen:</para>
+
+    <programlisting>asterisco:~# apt-get kernel-headers-`uname -r`</programlisting>
+
+    <para>Ist noch ein Kernel kleiner als Version 2.6.8 installiert, sollte
+    dieser vorher aktualisiert werden. Kernel der 2.4er Serie können, wie
+    erwähnt, nicht verwendet werden.</para>
+
+    <programlisting>asterisco:~# apt-get kernel-image-2.6.8-3-686</programlisting>
+
+    <para>Wurde in diesem Schritt der Kernel aktualisert, muss das System
+    natürlich neu gestartet werden. Nun installieren wir, falls noch nicht
+    geschehen, die übrigen benötigten Pakete:</para>
+
+    <programlisting>asterisco:~# apt-get install -y build-essential lspci automake1.9 autoconf libtool
+asterisco:~# apt-get install -y ppp-dev iproute bash3 udev</programlisting>
+
+    <para>Damit sollte das System vorbereitet sein und man kann mit der
+    Installation von vISDN fortfahren.</para>
+  </section>
+
+  <section id="vISDN-1.2-download-und-install">
+    <title>Download und Installation</title>
+
+    <para>Die vISDN Quellen stehen unter http://www.visdn.org zum Download
+    bereit. Die zur Drucklegung aktuelle Version ist 0.18.3. Da sich vISDN
+    Teils rasant weiterentwickelt, sollte stets die aktuellste unter
+    http://www.visdn.org/download/ auffindbare Version verwendet werden.
+    <programlisting>asterisco:~# wget http://www.visdn.org/download/visdn-0.18.3.tar.gz</programlisting>Das
+    heruntergeladene Archiv muss nun entpackt werden:</para>
+
+    <screen>asterisco:~# tar -xzvf visdn-0.18.3.tar.gz 
+visdn-0.18.3/ 
+visdn-0.18.3/NEWS 
+[.....] 
+visdn-0.18.3/ChangeLog 
+visdn-0.18.3/include/ 
+visdn-0.18.3/include/list.h 
+visdn-0.18.3/COPYING</screen>
+
+    <para>Nach Wechsel in das neu angelegte Verzeichnis lassen sich die
+    Treiber durch das gewohnte Trippel configure, make und make install
+    übersetzen:</para>
+
+    <screen>asterisco:~# cd visdn-0.18.3 
+asterisco:~visdn-0.18.3# configure 
+asterisco:~visdn-0.18.3# make 
+asterisco:~visdn-0.18.3# make install</screen>
+
+    <para>Nun aktualisieren wir noch die Modulabhängigkeiten und den librarie
+    cache:</para>
+
+    <screen>
+asterisco:/visdn-0.18.3# depmod -a 
+asterisco:/visdn-0.18.3# ldconfig</screen>
+
+    <para>Damit die entsprechenden Devices unter "/dev/visdn" automatisch beim
+    Laden der Module angelegt werden, muss noch eine entsprechende udev Regel
+    erstellt werden. Dazu kopieren wir die Datei 30-visdn-rules aus dem
+    samples Verzeichniss nach /etc/udev/rules.d:</para>
+
+    <programlisting>asterisco:/visdn-0.18.3# cp samples/30-visdn.rules /etc/udev/rules.d</programlisting>
+
+    <para>Die Installation von vISDN wäre damit abgeschlossen und wir können
+    mit der Konfiguration fortfahren.</para>
+  </section>
+
+  <section id="vISDN-1.2-konfiguration">
+    <title>Konfiguration einer HFC-PCI Karte im NT Modus</title>
+
+    <para>Die Konfiguration erfolgt am Beispiel einer HFC-PCI Karte im NT
+    Modus zum Anschluss eines ISDN Telefons oder einer ISDN TK-Anlage an
+    Asterisk.</para>
+
+    <para>vISDN identifiziert die Karten nach ihrem PCI Steckplatz. Daher muss
+    nun via lspci der Steckplatz der HFC Karte ermittelt werden:</para>
+
+    <screen>asterisco:/visdn-0.18.3# lspci 
+[...] 
+0000:00:03.0 Ethernet controller: Silicon Integrated Systems [SiS] SiS900 PCI 
+Fast Ethernet (rev 90) 
+0000:00:0f.0 Network controller: Cologne Chip Designs GmbH ISDN network 
+controller [HFC-PCI] (rev 02) 
+0000:00:13.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1 
+Controller (rev 50) 
+[...]</screen>
+
+    <para>Die HFC-PCI Karte hat also die Kennung 0000:00:0f.0. Nun muss für
+    diese Karte eine entsprechende Konfigurationsdatei angelegt werden. Zuerst
+    erstellen wir das Verzeichniss visdn und verlinken es der Gewohnheit wegen
+    nach /etc:</para>
+
+    <programlisting>asterisco:~# mkdir -p /usr/local/etc/visdn 
+asterisco:~# ln -s /usr/local/etc/visdn /etc</programlisting>
+
+    <para>Alternativ kann auch beim Kompilieren der configure Befehl mit der
+    Option <emphasis>--sysconfigdir=/etc</emphasis> aufgerufen werden.</para>
+
+    <para>Nun erstellen wir einem Editor unserer Wahl die Konfigurationsdatei
+    für die HFC-PCI Karte:</para>
+
+    <programlisting>asterisco:~# emacs /etc/isdn/device-pci-0000:00:0f.0</programlisting>
+
+    <para>Konfiguration der Karte im NT Modus (Point to Multipoint):</para>
+
+    <screen>&lt;netdev visdn0&gt; 
+  protocol lapd 
+  role NT 
+  mode P2MP 
+&lt;/netdev&gt;
+
+&lt;port st0&gt; 
+  attribute role NT 
+  attribute timer_t1 1500 
+  attribute timer_t3 1500
+  &lt;chan D&gt; 
+    connectmodule netdev visdn0 
+  &lt;/chan&gt;
+&lt;/port&gt;</screen>
+
+    <para>Das Laden der Kernelmodule und die Konfiguration der vISDN Devices
+    übernimmt das Script visdn_configurator. Unter Debian 3.1 (sarge) muss
+    dieses noch angepasst werden. Dazu editieren wir
+    /usr/local/sbin/visdn_configurator und ändern in der ersten Zeile (Sofern
+    die Bash in der Version 3 nicht schon installiert ist. Überprüfen Sie dies
+    vorher mit dem Befehl <emphasis>bash --version</emphasis>):</para>
+
+    <programlisting>#!/bin/bash</programlisting>
+
+    <para>in</para>
+
+    <programlisting>#!/bin/bash3</programlisting>
+
+    <para>Durch Aufruf des Konfigurationsscriptes kann das vISDN Subsystem
+    jetzt gestartet werden.</para>
+
+    <screen>asterisco:~# visdn_configurator
+Waiting for device file /dev/visdn/netdev-control to appear......done
+D: 000006
+E: 000007</screen>
+
+    <para>Anschließend kann mit <emphasis>dmesg</emphasis> überprüft werden,
+    ob die Module erfolgreich geladen wurden. Die Ausgabe sollte ungefähr so
+    aussehen:</para>
+
+    <screen>hfc-pci: pci-0000:00:0f.0:st:chan[D] channel opened 
+hfc-pci: pci-0000:00:0f.0:st:chan[D] channel started
+lapd: NETDEV_UP visdn0
+lapd:visdn0: PH-ACTIVATE-INDICATION</screen>
+
+    <para>Damit wäre das vISDN Subsystem initialisiert und konfiguriert. Nun
+    muss dieses noch in Asterisk integriert werden.</para>
+  </section>
+
+  <section>
+    <title>Konfiguration Asterisk</title>
+
+    <para>Die Konfiguration der vISDN-Kanäle (chan_visdn) erfolgt in der Datei
+    /etc/asterisk/visdn.conf. Dazu muss diese mit einem Texteditor geöffnet,
+    bzw. erstellt werden.</para>
+
+    <screen>asterisco:~# emacs /etc/asterisk/visdn.conf
+[general]
+[global]
+network_role = private
+tones_option = yes
+language = de
+outbound_called_ton = unknown
+force_outbound_cli =
+force_outbound_cli_ton = no
+clir_mode = unrestricted_default
+cli_rewriting = No
+national_prefix = 0
+international_prefix = 00
+network_specific_prefix =
+subscriber_prefix =
+abbreviated_prefix =
+overlap_sending = Yes
+overlap_receiving = No
+autorelease_dlc = 10
+call_bumping = No
+[visdn0]
+network_role = private
+context = from-internal-visdn
+tones_option = yes
+outbound_called_ton = unknown
+force_outbound_cli =
+force_outbound_cli_ton = no
+clip_default_name = vISDN
+clip_default_number = 300
+clip_numbers = 300
+clir_mode = unrestricted_default
+overlap_sending = Yes
+overlap_receiving = No</screen>
+
+    <para>Erläuterung einiger Parameter:</para>
+
+    <informaltable>
+      <tgroup cols="2">
+        <tbody>
+          <row>
+            <entry>context</entry>
+
+            <entry>der Context, in den Gespräche von diesem Channel geleitet
+            werden. In diesem Beispiel ist es der Context, in den man gelangt,
+            wenn man den Hörer des angeschlossenen ISDN-Telefons
+            abhebt.</entry>
+          </row>
+
+          <row>
+            <entry>force_outbound_cli</entry>
+
+            <entry>wird hier eine Nummer gesetzt, verwendet Asterisk immer
+            diese, wenn über den Channel heraustelefoniert wird. Dieser Wert
+            überschreibt die von Asterisk via SetCallerid(NUM) gesetzte
+            Rufnummer.Nur im TE-Modus relevant.</entry>
+          </row>
+
+          <row>
+            <entry>clip_default_number</entry>
+
+            <entry>wird von Asterisk keine CallerID für ausgehende Gespräche
+            gesetzt, wird automatisch die an dieser Stelle definierte
+            verwendet.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>Damit ist die Konfiguration des vISDN-Channels soweit abgeschlossen.
+    Wenn Asterisk seit der Installation der vISDN-Treiber noch nicht neu
+    gestartet wurde, kann man die Channeltreiber direkt am Asterisk CLI mit
+    dem load-Befehl nachladen:</para>
+
+    <screen>asterisco:~# asterisk -vvvvr
+*CLI&gt; load chan_visdn.so
+ Loaded /usr/lib/asterisk/modules/chan_visdn.so =&gt; (VISDN Channel For Asterisk)
+  == Parsing '/etc/asterisk/visdn.conf': Found
+  == Registered channel type 'VISDN' (VISDN Channel For Asterisk)
+  == Registered application 'VISDNOverlapDial'
+  == Registered application 'Disconnect'
+*CLI&gt;</screen>
+
+    <para>Ich empfehle allerdings Asterisk anzuhalten und mit den neuen
+    Treibern erst einmal aus der Konsole heraus zu starten :</para>
+
+    <screen>asterisco:~# asterisk -vvvvc
+[...]
+ [app_visdn_ppp.so] =&gt; (vISDN)
+  == Registered application 'vISDNppp'
+Asterisk Ready.
+*CLI&gt;</screen>
+
+    <para>Mit <emphasis>show visdn configuration</emphasis> kann nun überprüft
+    werden, ob der Channel richtig initalisiert wurde:</para>
+
+    <screen>*CLI&gt; show visdn interfaces
+Interface Role Mode TEI Status  Calls
+visdn0     NT   P2MP     Online 0
+*CLI&gt;</screen>
+
+    <para>In der extensions.conf muss nun noch ein Context entsprechend der
+    Konfiguration in /etc/asterisk/visdn.conf definiert werden:</para>
+
+    <screen>asterisco:~# emacs /etc/asterisk/extensions.conf
+[from-internal-visdn]
+exten =&gt; s,1,Set(TIMEOUT(digit)=4)
+exten =&gt; s,2,Set(TIMEOUT(response)=20)
+exten =&gt; _X.1,Dial(SIP/${EXTEN}@sipgate-flat,90,trg)</screen>
+  </section>
+</section>

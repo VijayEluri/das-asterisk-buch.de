@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<appendix id="anhang-conf-templates">
+  <title>Konfigurations-Templates<indexterm>
+      <primary>config templates</primary>
+    </indexterm><indexterm>
+      <primary>Konfigurations-Templates</primary>
+    </indexterm></title>
+
+  <simpara>Konfigurationsdateien wie die <filename>sip.conf</filename>,
+  <filename>iax.conf</filename> etc. haben oft viele ähnliche Einträge und
+  sind dadurch schlecht wartbar.</simpara>
+
+  <para>Das könnte in einer normalen <filename>sip.conf</filename>
+  stehen:<programlisting>[201]
+username=201
+secret=1111
+context=default
+type=friend
+qualify=yes
+host=dynamic
+canreinvite=no
+
+[202]
+username=202
+secret=2222
+context=default
+type=friend
+qualify=yes
+host=dynamic
+canreinvite=no
+
+[203]
+username=203
+secret=3333
+context=default
+type=friend
+qualify=yes
+host=dynamic
+canreinvite=no</programlisting></para>
+
+  <para>Asterisk bietet aber die kaum bekannte Möglichkeit, hierfür Templates
+  zu verwenden. Mit einem Template für unsere Telefone sähe das so
+  aus:<programlisting>[meine-telefone](!)       ; dieser Abschnitt ist das Template
+context=default
+type=friend
+qualify=yes
+host=dynamic
+canreinvite=no
+
+[201](meine-telefone)     ; Telefon 201
+username=201
+secret=1111
+
+[202](meine-telefone)     ; Telefon 202
+username=202
+secret=2222
+
+[203](meine-telefone)     ; Telefon 203
+username=203
+secret=3333</programlisting></para>
+
+  <simpara>Das ist besonders interssant, wenn man verschiedene Gruppen oder
+  Klassen von sehr ähnlichen Einträgen hat, also wenn nicht die Möglichkeit
+  besteht, einfach alle Gemeinsamkeiten in den Abschnitt
+  <code>[general]</code> zu schreiben. Schon in diesem einfachen Beispiel
+  haben wir uns ein paar Zeilen gespart und können vor allem Veränderungen für
+  alle Telefone der <quote>Klasse</quote> <code>meine-telefone</code> an
+  zentraler Stelle vornehmen.</simpara>
+
+  <section id="conf-templates-anlegen">
+    <title>Templates anlegen</title>
+
+    <para>Prinzipiell kann jeder Abschnitt als Template für andere dienen,
+    aber mit der Markierung <code>(!)</code> zeigt man dem Parser an, dass
+    dieser Abschnitt <emphasis>ausschließlich</emphasis> als Template dient
+    und selbst nicht benutzt wird. Wichtig ist, dass zwischen den eckigen und
+    runden Klammern keine Leerzeichen stehen. Templates können auch selbst
+    wieder auf Templates basieren.<programlisting>[meine-beispiel-template](!)
+context=default
+type=friend
+qualify=yes
+host=dynamic
+canreinvite=no</programlisting></para>
+  </section>
+
+  <section id="conf-templates-verwenden">
+    <title>Templates verwenden</title>
+
+    <para>Templates verwendet man durch Angabe von
+    <code>(<replaceable>Templatename</replaceable>)</code> direkt - ohne
+    Leerzeichen! - hinter dem Abschnittsbeginn. Dadurch wird zuerst das
+    angegebene Template eingebunden und dann die weiteren Parameter im
+    Abschnitt ausgewertet. Abschnitte können sogar von mehreren Templates
+    erben, z.B. so:<programlisting>[201](meine-telefone,verkauf)   ; erbt von "meine-telefone" und von "verkauf"
+username=201
+secret=1111</programlisting>Bei Bedarf kann man pro Abschnitt die
+    Einstellungen aus dem Template überschreiben.</para>
+
+    <section id="conf-templates-beispiel">
+      <title>Beispiel</title>
+
+      <para><programlisting>[telefone](!)               ; Template "telefone"
+type=friend
+qualify=yes
+dtmfmode=rfc2833
+disallow=all
+allow=alaw
+
+[snom](!,telefone)          ; Template "snom", erbt von "telefone"
+dtmfmode=inband
+
+[linksys](!,telefone)       ; Template "linksys", erbt von "telefone"
+qualify=no
+
+[snom1](snom)               ; Abschnitt "snom1", erbt von "snom"
+username=101
+secret=123
+
+[snom2](snom)               ; Abschnitt "snom2", erbt von "snom"
+username=102
+secret=123
+
+[linksys1](linksys)         ; Abschnitt "linksys1", erbt von "linksys"
+username=103
+secret=123</programlisting></para>
+
+      <para>Weitere Beispiele: <ulink
+      url="http://www.voip-info.org/wiki/index.php?page=Asterisk+config+template">http://www.voip-info.org/wiki/index.php?page=Asterisk+config+template</ulink></para>
+    </section>
+  </section>
+</appendix>

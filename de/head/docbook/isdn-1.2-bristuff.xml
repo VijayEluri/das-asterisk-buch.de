@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<section id="isdn-1.2-bristuff" lang="de" revision="$Revision$">
+  <!--% Copyright (c) 2006 
+% - Stefan Wintermeyer <sw@amooma.de>
+% - Norbert A. Richartz <richartz@networkers.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Junghanns (<quote>bristuffed</quote>)</title>
+
+  <para>Die <quote>bristuffed</quote>-Version von Asterisk ist eine von der
+  Firma Junghanns gepatchte Version von Asterisk, die neben der Anpassung
+  einiger Treiber auf die ISDN-Hardware von Junghanns auch einige nützliche
+  Anpassungen im Bereich des Asterisk-Funktionsumfangs enthält (siehe z.B.
+  <xref linkend="telefone-snom" />).<tip>
+      <para>Die bristuff-Version ist übrigens nicht nur für Junghanns
+      ISDN-Karten, sondern für alle ISDN-Karten mit dem Cologne-Chipsatz
+      geeignet. Dieser Chip ist erkennbar an dem auf ihm aufgedruckten Kölner
+      Dom.</para>
+    </tip> In diesem Kapitel wird beschrieben, wie man diese Version von
+  Asterisk installiert, und es wird gezeigt, wie man das System am Beispiel
+  der QuadBRI-ISDN-Karte an einem ISDN-Anlagen- oder Mehrgeräte-Anschluss
+  konfiguriert.</para>
+
+  <section id="bristuff-1.2-installation-asterisk">
+    <title>Installation Asterisk</title>
+
+    <para>Zunächst stellen Sie sicher, dass das Debian Linux (stable) System
+    genau auf dem Stand ist, wie in <xref linkend="installation-1.2-debian" />
+    beschrieben. Wir setzen hier vor der Installation der Asterisk-Sourcen an.
+    Zur korrekten Erzeugung aller Treiber des bristuff-Pakets werden die zum
+    installierten Kernel passenden Sourcen benötigt. Stellen Sie vorher
+    mittels <command>uname -a</command> fest, welche Kernel-Version
+    installiert ist und laden Sie mit <command>apt-get install
+    kernel-source-&lt;version&gt;</command> die dazu passenden Sourcen
+    herunter.</para>
+
+    <screen>debian:~# uname -a
+Linux debian 2.4.27-3-386 #1 Wed Dec 6 00:38:33 UTC 2006 i686 GNU/Linux
+debian:/usr/src# apt-get install kernel-source-2.4.27
+Paketlisten werden gelesen... Fertig
+Abhängigkeitsbaum wird aufgebaut... Fertig
+Die folgenden zusätzlichen Pakete werden installiert:
+  bzip2
+[...]
+Richte bzip2 ein (1.0.2-7) ...
+
+Richte kernel-source-2.4.27 ein (2.4.27-10sarge5) ...
+
+debian:~#</screen>
+
+    <para>Da BRIstuff das Programm <code>patch</code> benutzt, muss dieses
+    noch mit <command>apt-get -y install patch</command> installiert
+    werden.<screen>debian:/usr/src# apt-get -y install patch
+Paketlisten werden gelesen... Fertig
+Abhängigkeitsbaum wird aufgebaut... Fertig
+Die folgenden zusätzlichen Pakete werden installiert:
+  patch
+[...]
+
+debian:~#</screen></para>
+
+    <para>Wechseln Sie ins Verzeichnis <filename>/usr/src</filename>. Dort
+    befindet sich nun eine Datei
+    <filename>kernel-source-2.4.27.tar.bz2</filename>. Diese wird mit dem
+    Kommando <command>tar xvjf kernel-source-2.4.27.tar.bz2</command>
+    dekomprimiert und entpackt. Danach wird ein "symbolic" Link mit Namen
+    <filename>linux</filename> auf diese Sourcen gelegt.</para>
+
+    <screen>debian:~# cd /usr/src/
+debian:/usr/src# tar xvjf kernel-source-2.4.27.tar.bz2
+[...]
+debian:/usr/src# ln -s kernel-source-2.4.27 linux
+debian:/usr/src#</screen>
+
+    <important>
+      <para>Setzen Sie einen Kernel der Version 2.6 ein, muss der Sym-Link den
+      Namen <filename>linux-2.6</filename> tragen.</para>
+    </important>
+
+    <para>Die Kernel-Sourcen müssen nun für die aktuelle Installation
+    konfiguriert werden. Dazu wechseln Sie mit <command>cd linux</command> in
+    das neu angelegte Verzeichnis <filename>linux</filename> (oder
+    <filename>linux-2.6</filename>). Kopieren Sie dann mit <command>cp
+    /boot/config-2.4.27-3-386 .config</command> die aktuelle zum Kernel
+    gehörige Konfiguration aus dem Verzeichnis <filename>/boot</filename>
+    unter dem Namen <filename>.config</filename> in das Verzeichnis
+    <filename>linux</filename> (oder <filename>linux-2.6</filename>) und rufen
+    Sie die Befehle <command>make oldconfig</command> und <command>make
+    dep</command> auf.</para>
+
+    <screen>debian:/usr/src# cd linux
+debian:/usr/src/linux# cp /boot/config-2.4.27-3-386 .config
+debian:/usr/src/linux# make oldconfig
+rm -f include/asm
+( cd include ; ln -sf asm-i386 asm)
+/bin/sh scripts/Configure -d arch/i386/config.in
+#
+# Using defaults found in .config
+#
+*
+* Code maturity level options
+*
+[...]
+CRC32 functions (CONFIG_CRC32) [M/n/y/?]
+Hotplug firmware loading support (EXPERIMENTAL) (CONFIG_FW_LOADER) [M/n/y/?]
+
+*** End of Linux kernel configuration.
+*** Check the top-level Makefile for additional configuration.
+*** Next, you must run 'make dep'.
+
+debian:/usr/src/linux# make dep
+gcc -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer -o scripts/mkdep scripts/mkdep.c
+make[1]: Entering directory `/usr/src/kernel-source-2.4.27/arch/i386/boot'
+make[1]: Für das Ziel »dep« ist nichts zu tun.
+make[1]: Leaving directory `/usr/src/kernel-source-2.4.27/arch/i386/boot'
+rm -f .depend .hdepend
+[...]
+scripts/mkdep -- init/*.c &gt; .depend
+debian:/usr/src/linux#</screen>
+
+    <para>Das Schlimmste ist überstanden, nun sind alle Kernel-Quellen korrekt
+    konfiguriert und es kann mit der eigentlichen bristuff-Installation
+    weitergehen.</para>
+
+    <para>Auf der Homepage <ulink
+    url="http://www.junghanns.net">http://www.junghanns.net</ulink> der Firma
+    Junghanns befinden sich einige Informationen zu den unterstützten und
+    erhältlichen Karten sowie Links zu den stabilen und experimentellen
+    Versionen von bristuff. Alle bisher veröffentlichten Pakete finden sich
+    unter <ulink
+    url="http://www.junghanns.net/downloads">http://www.junghanns.net/downloads</ulink>.</para>
+
+    <para>Entgegen der bisherigen Philosophie empfehle ich die Installation
+    des aktuellsten bristuff-Pakets, da dieses auf einem sehr aktuellen
+    Asterisk 1.2-System basiert und viele Fehler der vorherigen Releases
+    eliminiert. Laden Sie die zur Drucklegung aktuelle Version mit
+    <command>wget
+    http://www.junghanns.net/downloads/bristuff-0.3.0-PRE-1w.tar.gz</command>
+    in das Verzeichnis <filename>/usr/src/</filename> herunter.</para>
+
+    <screen>debian:/usr/src/linux# cd /usr/src/
+debian:/usr/src# wget http://www.junghanns.net/downloads/bristuff-0.3.0-PRE-1w.tar.gz
+--17:18:53--  http://www.junghanns.net/downloads/bristuff-0.3.0-PRE-1w.tar.gz
+           =&gt; `bristuff-0.3.0-PRE-1w.tar.gz'
+Auflösen des Hostnamen »www.junghanns.net«.... 192.67.198.55
+Verbindungsaufbau zu www.junghanns.net[192.67.198.55]:80... verbunden.
+HTTP Anforderung gesendet, warte auf Antwort... 200 OK
+Länge: 275,886 [application/x-gzip]
+
+100%[=================================================================================================================&gt;] 275,886      913.34K/s
+
+17:18:54 (910.80 KB/s) - »bristuff-0.3.0-PRE-1w.tar.gz« gespeichert [275886/275886]</screen>
+
+    <para>Die komprimierte Datei muss jetzt mit <command>tar xvzf
+    bristuff-0.3.0-PRE-1w.tar.gz</command> entpackt werden:</para>
+
+    <screen>debian:/usr/src# tar xvzf bristuff-0.3.0-PRE-1w.tar.gz
+bristuff-0.3.0-PRE-1w/
+bristuff-0.3.0-PRE-1w/ISDNguard/
+bristuff-0.3.0-PRE-1w/ISDNguard/INSTALL.ISDNguard
+bristuff-0.3.0-PRE-1w/ISDNguard/Makefile
+bristuff-0.3.0-PRE-1w/ISDNguard/guard.c
+[...]
+bristuff-0.3.0-PRE-1w/qozap/zapata.conf
+bristuff-0.3.0-PRE-1w/qozap/zapata.conf.octoBRI
+bristuff-0.3.0-PRE-1w/qozap/zaptel.conf
+bristuff-0.3.0-PRE-1w/qozap/zaptel.conf.octoBRI
+debian:/usr/src#</screen>
+
+    <para>Die entpackten bristuff-Dateien müssen nun kompiliert und
+    installiert werden. Dies geschieht mit dem Skript
+    <command>install.sh</command> im gerade entpackten Verzeichnis. Der
+    Kompiliervorgang kann je nach Rechenleistung des PCs wenige Minuten oder
+    bis zu einer Stunde dauern. Einige Zwischenschritte müssen vom Anwender
+    jedoch manuell mit <keycap>ENTER</keycap> bestätigt werden. Der Vorteil
+    ist allerdings, dass dieses Installationsskript nahezu alles erledigt;
+    angefangen vom Herunterladen der notwendigen Asterisk- und Zusatzpakete
+    bis hin zur wesentlichen Installation des Systems.</para>
+
+    <screen>debian:/usr/src# cd bristuff-0.3.0-PRE-1w
+debian:/usr/src/bristuff-0.3.0-PRE-1w# ./install.sh
+--18:21:59--  http://www.asterisk-support.de/mirror/zaptel/zaptel-1.2.10.tar.gz
+           =&gt; `zaptel-1.2.10.tar.gz'
+Auflösen des Hostnamen »www.asterisk-support.de«.... 212.51.16.139
+Verbindungsaufbau zu www.asterisk-support.de[212.51.16.139]:80... verbunden.
+HTTP Anforderung gesendet, warte auf Antwort... 200 OK
+Länge: 1,258,750 [application/x-tar]
+
+100%[====================================&gt;] 1,258,750      1.04M/s
+
+18:22:01 (1.04 MB/s) - »zaptel-1.2.10.tar.gz« gespeichert [1258750/1258750]
+
+--18:22:01--  http://www.asterisk-support.de/mirror/libpri/libpri-1.2.4.tar.gz
+           =&gt; `libpri-1.2.4.tar.gz'
+Auflösen des Hostnamen »www.asterisk-support.de«.... 212.51.16.139
+
+[...]
+
+****************************************************
+ ASTERISK installed.
+             Installation finished.
+****************************************************
+debian:/usr/src/bristuff-0.3.0-PRE-1w#</screen>
+
+    <para>Die Software ist jetzt kompiliert und bereits zum großen Teil
+    installiert. Allerdings finden wir im Asterisk-Konfigurationsverzeichnis
+    <filename>/etc/asterisk/</filename> noch gähnende Leere vor. In diesem
+    Verzeichnis liegen die Konfigurationsdateien von Asterisk und da wir nicht
+    von Null beginnen möchten, lassen wir uns die Standarddateien erstellen.
+    Dies erreichen wir mit <command>make samples</command> aus dem Verzeichnis
+    <filename>/usr/src/bristuff-0.3.0-PRE-1w/asterisk</filename>:</para>
+
+    <screen>debian:/usr/src/bristuff-0.3.0-PRE-1w# cd asterisk
+debian:/usr/src/bristuff-0.3.0-PRE-1w/asterisk# make samples
+build_tools/make_version_h &gt; include/asterisk/version.h.tmp
+if cmp -s include/asterisk/version.h.tmp include/asterisk/version.h ; 
+then echo;
+
+[...]
+
+done
+debian:/usr/src/bristuff-0.3.0-PRE-1w/asterisk# cd ..
+debian:/usr/src/bristuff-0.3.0-PRE-1#</screen>
+
+    <para>Fertig! Asterisk ist auf Ihrem System installiert. Mit dem Befehl
+    <command>asterisk -V</command> können Sie die installierte Version
+    herausfinden (bitte achten Sie auf das großgeschriebene V):<screen>debian:/usr/src/bristuff-0.3.0-PRE-1w# asterisk -V
+Asterisk 1.2.13-BRIstuffed-0.3.0-PRE-1v</screen></para>
+  </section>
+
+  <section id="bristuff-1.2-konfiguration">
+    <title>Konfiguration der ISDN-Treiber</title>
+
+    <para>Dieses Kapitel beschreibt die Anbindung der bristuffed-Version von
+    Asterisk an einen ISDN-Anschluss. Stellvertretend für diverse andere
+    Karten der Firma Junghanns wird dies am Beispiel der quadBRI 4-Port
+    ISDN-Karte durchgeführt. Die gesamte Produktpalette von Junghanns ist
+    unter <ulink
+    url="http://www.junghanns.net/en/produkte.html">http://www.junghanns.net/en/produkte.html</ulink>
+    aufgeführt.</para>
+
+    <para>Die Konfiguration der ISDN-Treiber erfordert etwas Hintergrundwissen
+    zum Thema ISDN, das dieses Buch nicht in der ganzen Fülle vermitteln kann.
+    Es wird nachfolgend davon ausgegangen, dass die Installation an einem
+    solchen Anschluss durch entsprechend fachkundiges Personal, das mit den
+    wesentlichen Begriffen der ISDN-Technologie vertraut ist, vorbereitet und
+    durchgeführt wird.</para>
+
+    <para>Um eine quadBRI ISDN-Karte in Betrieb zu nehmen, sind einige weitere
+    Schritte notwendig. Zunächst kopieren Sie die notwendigen
+    Grundkonfigurationsdateien in die entsprechenden Verzeichnisse: aus dem
+    Verzeichnis <filename>/usr/src/bristuff-0.3.0-PRE-1w/qozap</filename> die
+    Datei <filename>zapata.conf</filename> nach
+    <filename>/etc/asterisk</filename> und die Datei
+    <filename>zaptel.conf</filename> nach <filename>/etc</filename>.</para>
+
+    <screen>debian:/usr/src/bristuff-0.3.0-PRE-1w# cp qozap/zapata.conf /etc/asterisk/
+debian:/usr/src/bristuff-0.3.0-PRE-1w# cp qozap/zaptel.conf /etc/
+debian:/usr/src/bristuff-0.3.0-PRE-1w#</screen>
+
+    <para>Die Datei <filename>zaptel.conf</filename> kann unverändert gelassen
+    werden, man kann aber natürlich die dort enthaltenen Ländereinstellungen
+    korrigieren. Dazu ändert man die Werte der Parameter <code>loadzone</code>
+    und <code>defaultzone</code> von <code>nl</code> nach
+    <code>de</code>.</para>
+
+    <screen>loadzone=de
+defaultzone=de
+# qozap span definitions
+# most of the values should be bogus because we are not really zaptel
+span=1,1,3,ccs,ami
+span=2,2,3,ccs,ami
+span=3,0,3,ccs,ami
+span=4,0,3,ccs,ami
+
+bchan=1,2
+dchan=3
+bchan=4,5
+dchan=6
+bchan=7,8
+dchan=9
+bchan=10,11
+dchan=12</screen>
+
+    <para>Die Anpassung der Datei <filename>zapata.conf</filename> in
+    <filename>/etc/asterisk</filename> hingegen erfordert schon etwas mehr
+    Hintergrundwissen. Zunächst wird auch hier der Ländercode
+    <code>language</code> von <code>en</code> nach <code>de</code> geändert
+    und die entsprechende Zeile einkommentiert. Nun muss das System an die
+    speziellen Bedürfnisse angepasst werden. Es können hier nicht alle
+    Möglichkeiten aufgeführt werden, aber es werden Beispiele für eine übliche
+    Konfiguration einer Asterisk-Anlage mit einer quadBRI-Karte gegeben.
+    Folgende Fragen müssen bei der Planung und Konfiguration der Anlage
+    geklärt werden:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Wird die Anlage an einem Mehrgeräteanschluss oder einem
+        Anlagenanschluss betrieben?</para>
+      </listitem>
+    </itemizedlist>
+
+    <itemizedlist>
+      <listitem>
+        <para>Wie viele Spans (also Ports) der quadBRI-Karte werden
+        belegt?</para>
+      </listitem>
+    </itemizedlist>
+
+    <itemizedlist>
+      <listitem>
+        <para>Sollen ISDN-B-Kanäle für spezielle Zwecke reserviert werden oder
+        können alle für ausgehende Verbindungen genutzt werden?</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Die Konfiguration der Anschlussart ist unkompliziert:</para>
+
+    <informaltable>
+      <tgroup cols="2">
+        <tbody>
+          <row>
+            <entry>(Komfort-)Anlagenanschluss</entry>
+
+            <entry>signalling = bri_cpe</entry>
+          </row>
+
+          <row>
+            <entry>(Komfort-)Mehrgeräteanschluss</entry>
+
+            <entry>signalling = bri_cpe_ptmp</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>Die Kanäle einer Karte können in Gruppen zusammengefasst werden,
+    daher sollte vor der Konfiguration geklärt sein, wie viele Kanäle
+    überhaupt zur Verfügung stehen und wie (oder ob überhaupt) diese Kanäle
+    unterschiedlichen Gruppen zugeteilt werden sollen. Bei einem Anlagen- oder
+    Mehrgeräteanschluss stehen in der Regel zwei B-Kanäle und ein D-Kanal zur
+    Verfügung. Die quadBRI-Karte kann also mit ihren 4 sogenannten Spans
+    maximal 8 B-Kanäle und 4 D-Kanäle ansteuern, was auch im unteren Teil der
+    <filename>zaptel.conf</filename>-Datei ersichtlich ist. Grob formuliert
+    sind also maximal 8 externe Gespräche möglich. Man kann Asterisk nun
+    entweder durch eine Gruppierung explizit vorgeben, welche Kanäle in
+    welchem Fall zu nutzen sind oder man macht sich darüber gar keine Gedanken
+    und fasst alles zu einer Gruppe zusammen. Eine Gruppe macht nur bei
+    ausgehenden Anrufen Sinn, bei eingehenden Anrufen kann man in der Regel
+    nicht direkt vorhersehen, auf welcher Leitung welcher Anrufer landen wird,
+    da diese meist im Round-Robin-Verfahren an die zur Verfügung stehenden
+    Anschlüsse verteilt werden. Daher kommt der Gruppen-Parameter auch später
+    im Kapitel nur bei abgehenden Wählverbindungen zum Tragen.</para>
+
+    <para>Möchten Sie sich keine Gedanken über ein Gruppierung machen, setzen
+    Sie alle verfügbaren B-Kanäle in eine Gruppe. Wichtig ist, dass dort
+    wirklich nur B-Kanäle aufgeführt werden, sonst kommt es im Wirkbetrieb zu
+    den unterschiedlichsten Fehlermeldungen. Welche Kanalnummern B-Kanäle und
+    welche D-Kanäle sind, wird aus dem unteren Teil der
+    <filename>zaptel.conf</filename> Datei recht deutlich (siehe oben).</para>
+
+    <screen>; Alle B-Kanäle in eine Gruppe
+group = 1
+; S/T port 1,2,3,4
+channel =&gt; 1,2,4,5,7,8,10,11</screen>
+
+    <para>Möchten Sie jeden Anschluss (à 2 B-Kanäle) in eine eigene Gruppe
+    setzen, so nutzen Sie die vorhandene Default-Konfiguration</para>
+
+    <screen>; Für jeden Anschluss eine eigene Gruppe
+group = 1
+; S/T port 1
+channel =&gt; 1-2
+
+group = 2
+; S/T port 2
+channel =&gt; 4-5
+
+group = 3
+; S/T port 3
+channel =&gt; 7-8
+
+group = 4
+; S/T port 4
+channel =&gt; 10-11</screen>
+
+    <para>Die Gruppen tauchen später in der Konfiguration des Wählplans wieder
+    auf, dort wird deren Nutzung deutlich.</para>
+
+    <para>Als Beispiel ist nachfolgend eine
+    <filename>zapata.conf</filename>-Datei für einen Euro-ISDN
+    (Komfort-)Anlagenanschluss mit 4 verfügbaren Anschlüssen, die in zwei
+    Gruppen aufgeteilt sind, dargestellt. Der Context für eingehende Anrufe
+    ist dabei "eingehend".</para>
+
+    <screen>;
+; Zapata telephony interface
+;
+; Configuration file
+
+[channels]
+;
+; Default language
+;
+language=de
+;
+; Default context
+;
+;
+switchtype = euroisdn
+
+; p2mp TE mode (for connecting ISDN lines in point-to-multipoint mode)
+;signalling = bri_cpe_ptmp
+; p2p TE mode (for connecting ISDN lines in point-to-point mode)
+signalling = bri_cpe
+; p2mp NT mode (for connecting ISDN phones in point-to-multipoint mode)
+;signalling = bri_net_ptmp
+; p2p NT mode (for connecting an ISDN pbx in point-to-point mode)
+;signalling = bri_net
+
+pridialplan = local
+prilocaldialplan = dynamic
+nationalprefix = 0
+internationalprefix = 00
+
+overlapdial=yes 
+immediate=no
+
+priindication = passthrough
+
+echocancel = yes
+
+context=eingehend
+
+group = 1
+; S/T port 1,2,3
+channel =&gt; 1,2,4,5,7,8
+
+group = 2
+; S/T port 4
+channel =&gt; 10-11</screen>
+
+    <tip>
+      <para>Die beiden Parameter <code>overlapdial=yes</code> und
+      <code>immediate=no</code> sorgen dafür, dass bei einem Anlagenanschluss
+      die Anrufe nicht sofort durchgestellt werden, sobald die erste gültige
+      Durchwahlnummer erreicht wurde. So kann man einen Anlagenanschluss mit
+      längeren Durchwahlnummern bestücken. Haben Sie beispielsweise einen
+      Anlagenanschluss mit der Basisnummer 123456, so sind an diesem
+      Anschluss, je nach gebuchtem Umfang, maximal die Durchwahlen 0 bis 9
+      enthalten, also 123456-0, 123456-1 bis 123456-9. Um Durchwahlen in der
+      Form 123456-10 oder 123456-111 zu ermöglichen, sind oben genannte
+      Einstellungen notwendig. Der Anruf wird dann erst nach einem kurzen
+      Timeout mit der kompletten gewählten Nummer zur Verfügung gestellt und
+      kann im Wählplan entsprechend bearbeitet werden.</para>
+    </tip>
+
+    <para>Nachdem alle Konfigurationsdateien angepasst wurden, müssen die
+    Treiber geladen werden. Dazu wechseln Sie in das Verzeichnis
+    <filename>qozap</filename> innerhalb des bristuff-Zweigs und laden
+    zunächst das Modul <filename>zaptel</filename> mittels
+    <command>modprobe</command> und danach per <command>insmod</command> das
+    Modul <filename>qozap.ko</filename> (Kernel 2.6) oder
+    <filename>qozap.o</filename> (Kernel 2.4). Abschließend muss noch das Tool
+    <filename><command>ztcfg</command></filename> aufgerufen werden.</para>
+
+    <screen>debian:/usr/src/bristuff-0.3.0-PRE-1w# cd qozap/
+debian:/usr/src/bristuff-0.3.0-PRE-1w/qozap# modprobe zaptel
+debian:/usr/src/bristuff-0.3.0-PRE-1w/qozap# insmod qozap.o
+debian:/usr/src/bristuff-0.3.0-PRE-1w/qozap# ztcfg
+debian:/usr/src/bristuff-0.3.0-PRE-1w/qozap# </screen>
+
+    <important>
+      <para>Der abschließende Aufruf des Tools <command>ztcfg</command> ist
+      immens wichtig, da die Karten ansonsten nicht richtig funktionieren.
+      Bitte beachten Sie, dass nach jedem Neustart des Asterisk-Rechners diese
+      Befehlsfolge wieder aufgerufen werden muss.</para>
+    </important>
+
+    <tip>
+      <para>Wenn Sie im zaptel-Verzeichnis das Kommando <command>make
+      config</command> aufrufen, wird unter <filename>/etc/init.d</filename>
+      ein entsprechendes init.d-Skript (<filename>zaptel</filename>)
+      installiert, das Sie über <command>chkconfig</command> zur Liste der
+      Startup-Skripte hinzufügen können. Die Karte wird dann bei jedem
+      Neustart inklusive aller Module automatisch initialisiert.</para>
+    </tip>
+
+    <para>Wenn Ihre Karte bereits mit dem ISDN-Anschluss verbunden ist,
+    sollten alle vorhandenen Kontroll-LEDs der Karte nun grün leuchten.
+    Sollten eine oder mehrere LEDs rot leuchten, so überprüfen Sie die
+    Anschlüsse und die Konfiguration. Ist ein Anschluss nicht belegt, ist es
+    hingegen OK, wenn dieser rot, die restlichen belegten Anschlüsse aber grün
+    leuchten. Zur Kontrolle können Sie auch ein abschließendes
+    <command>lsmod</command> aufrufen und sollten eine ähnliche
+    Bildschirmausgabe erhalten wie nachfolgend aufgeführt.</para>
+
+    <screen>debian:/usr/src/bristuff-0.3.0-PRE-1w/qozap# lsmod
+Module                  Size  Used by
+qozap                  28192  9
+zaptel                209412  25 qozap
+[...]</screen>
+
+    <para>Nun muss natürlich auch der Wählplan noch angepasst werden. Beginnen
+    wir mit den eingehenden Anrufen. Wie oben durch den Context-Parameter
+    beschrieben, gehen Anrufe im Context "eingehend" in die Anlage ein. Daher
+    muss natürlich auch eine entsprechende Context-Sektion in der Datei
+    <filename>extensions.conf</filename> enthalten sein. Ist die Anlage
+    beispielsweise an einem Mehrgeräteanschluss konfiguriert, dessen einzelne
+    Nummern keine Gemeinsamkeiten aufweisen, können die Endgerätenummern z.B.
+    direkt angegeben werden.</para>
+
+    <programlisting>[eingehend]
+exten =&gt; 123456,1,Dial(SIP/2000,20)
+exten =&gt; 123456,n,VoiceMail(2000)
+
+exten =&gt; 654321,1,Dial(SIP/2001,20)
+exten =&gt; 654321,n,VoiceMail(2001)
+</programlisting>
+
+    <para>Wenn Sie diese Sektion in der Datei
+    <filename>extensions.conf</filename> eingerichtet und Asterisk neu haben
+    laden lassen, kann man bereits die angegebenen Anschlüsse problemlos
+    anrufen.</para>
+
+    <para>Setzen Sie statt eines Mehrgeräteanschlusses einen Anlagenanschluss
+    ein, macht es in der Regel Sinn, mit etwas mehr "Intelligenz" im Wählplan
+    zu arbeiten. Angenommen, die Anlage wird in einer Firma installiert, die
+    mit dreistelligen Durchwahlen arbeitet. Dort sollten die Endgeräte so
+    konfiguriert werden, dass sich aus den Durchwahlen leicht die
+    Endgerätenummer ermitteln lässt, einfach um den Wählplan übersichtlich zu
+    halten und ein unnötiges Durcheinander oder Umrechnen zu vermeiden. Anbei
+    ein Beispiel für eine Anlage an einer 6-stelligen Basisnummer mit
+    dreistelligen Durchwahlen. Es wird ebenfalls berücksichtigt, dass die -0
+    in der Zentrale aufgeschaltet wird.</para>
+
+    <programlisting>[eingehend]
+; Zentrale -0
+exten =&gt; 1234560,1,Dial(SIP/1000,20)
+exten =&gt; 1234560,n,VoiceMail(1000)
+
+; Restliche Teilnehmer
+exten =&gt; _123456[1-9]XX,1,Dial(SIP/${EXTEN:6},20)
+exten =&gt; _123456[1-9]XX,n,VoiceMail(${EXTEN:6})
+</programlisting>
+
+    <para>Dies ist natürlich nur ein kleines übersichtliches Beispiel. Im
+    "wirklichen Leben" werden gerade größere Firmenanlagen mit einer Vielzahl
+    zusätzlicher Features ausgestattet werden, die weit über das reine
+    Anwählen von Mitarbeitern hinausgehen. Zudem sollte man sich auch Gedanken
+    über nicht belegte Durchwahlnummern etc. machen, damit diese nicht auf
+    einer Mailbox landen, die nie jemand abhört.</para>
+
+    <para>Nun sollen die Mitarbeiter natürlich auch mit der Außenwelt
+    telefonieren können. Hier kommen auch endlich die Gruppen ist Spiel, die
+    innerhalb der <filename>zapata.conf</filename>-Datei erstellt wurden. Der
+    Übersichtlichkeit halber können Sie auch die Anwahl nach außen in einem
+    eigenständigen Context programmieren, der dann im jeweiligen
+    Mitarbeiter-Context inkludiert wird. Zunächst das Beispiel für eine Wahl
+    nach draußen, bei dem man vor der eigentlichen Nummer eine 0 vorwählt, wie
+    es in vielen Telefonanlagen der Fall ist.</para>
+
+    <programlisting>[rausgehend]
+exten =&gt; _0X.,1,Set(CALLERID(num)=123456${CALLERID(num):0:3})
+exten =&gt; _0X.,n,Dial(Zap/g1/${EXTEN:1})</programlisting>
+
+    <para>Zunächst wird die eigene Durchwahl um die Basisnummer ergänzt, damit
+    der angerufene Partner auch die richtige Durchwahlnummer angezeigt
+    bekommt. Danach wird der Anruf über das Zap-Device, konkret über Gruppe 1,
+    an die gewählte Nummer (abzüglich der führenden 0, die in diesem Beispiel
+    für die Amtsholung definiert wurde) weitergeleitet. Das Zap-Device ist das
+    Device, welches oben durch die zaptel.conf und zapata.conf-Datei
+    konfiguriert wurde. Die Gruppe 1 entspricht den Einstellungen in der Datei
+    <filename>zapata.conf</filename>, somit geht der Anruf auf einem der
+    Kanäle 1, 2, 4, 5, 7 oder 8 raus, je nachdem, was gerade noch frei ist. Um
+    einen Anruf über Kanal 10 oder 11, also Gruppe 2, abzusetzen, muss einfach
+    nur der Gruppenname geändert werden. Zudem gehen in der nachfolgenden
+    Beispielkonfiguration alle Anrufe unter der Nummer der Zentrale nach
+    draußen.</para>
+
+    <programlisting>[rausgehend_g2]
+exten =&gt; _0X.,1,Set(CALLERID(num)=1234560)
+exten =&gt; _0X.,n,Dial(Zap/g2/${EXTEN:1})</programlisting>
+
+    <para>Inwieweit es sinnvoll ist, spezielle Endgeräte auf spezielle Kanäle
+    zu legen, hängt vom konkreten Einzelfall ab.</para>
+
+    <para>Eine Rufnummernübertragung findet im Übrigen nur dann statt, wenn am
+    Anschluss das Dienstemerkmal CLIP (Calling Line Identification
+    Presentation), also Rufnummernübertragung, aktiviert ist. In einem solchen
+    Fall reicht es aus, die Basisnummer wie im Beispiel zusammen mit einer
+    gültigen Durchwahl zusammenzusetzen. Die Vermittlungstelle kontrolliert,
+    ob sich diese Nummer im gebuchten Nummernkreis bewegt und ergänzt ggfs.
+    die Vorwahlnummer, wenn der Ruf in eine andere Stadt oder ein anderes Land
+    geht. Wird in der Anlage eine ungültige Caller-ID gesetzt, korrigiert die
+    Vermittlungstelle diese automatisch auf die zentrale Durchwahlnummer -0.
+    Es gibt allerdings Fälle, in denen es gewünscht ist, andere Nummern zu
+    übertragen, z.B. wenn man bei einer Anrufweiterleitung die Nummer des
+    Anrufers und nicht die des Weiterleitenden übertragen will. Um das zu
+    erreichen, muss beim Telekommunikationsanbieter das in der Regel
+    kostenpflichtige Merkmal "CLIP - no screening" beantragt werden, dann
+    können beliebige Caller-IDs angezeigt werden. Aber Vorsicht: Hier muss man
+    sich um die korrekte Darstellung der Rufnummer komplett alleine kümmern,
+    inkl. nationaler und internationaler Vorwahlnummern. Ein Fehler in einer
+    solchen Konfiguration führt schlicht dazu, dass niemand die von Ihnen
+    angezeigte Rufnummer zurückrufen kann. Im ungünstigsten Fall weisen Sie
+    vielleicht auch eine Nummer eines anderen Teilnehmers aus, das kann sogar
+    rechtliche Schritte nach sich ziehen, da ein solcher Verstoß kein
+    Kavaliersdelikt darstellt. Sie sollten also von diesem Feature nur mit der
+    gebotenen Vorsicht Gebrauch machen und alle Szenarien (Anruf innerhalb
+    derselben Stadt, Anruf in fremder Stadt, Anruf im Ausland, etc.)
+    ausgiebigst getestet haben.</para>
+
+    <para>Herzlichen Glückwunsch - die Anlage ist nun grundlegend für den
+    Betrieb am ISDN-Anschluss konfiguriert.</para>
+  </section>
+</section>

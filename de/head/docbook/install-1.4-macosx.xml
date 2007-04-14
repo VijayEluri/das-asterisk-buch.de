@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<section id="installation-1.4-macosx" lang="de" revision="$Revision$">
+  <!--% Copyright (c) 2006
+% - Stefan Wintermeyer <sw@amooma.de>
+% - Philipp Kempgen <pkempgen@uni-koblenz.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Installation Asterisk 1.4.x auf Mac OS X</title>
+
+  <indexterm>
+    <primary>Asterisk 1.4 Installation</primary>
+
+    <secondary>Mac OS X</secondary>
+  </indexterm>
+
+  <simpara>Für die Installation von Asterisk 1.4 gehen wir von einem aktuellen
+  Mac OS X aus, das ist z.Zt. 10.4.8 <quote>Tiger</quote>.</simpara>
+
+  <note>
+    <simpara>Ebenso wie für Asterisk 1.2 gilt auf Mac OS X dieser
+    Hinweis:</simpara>
+
+    <simpara>Unterstützung für PCI-Karten ist in Asterisk auf MacOS X bisher
+    noch nicht möglich. Will man also seinen Server direkt mit dem
+    öffentlichen Telefonnetz verbinden, muss man auf einen externen
+    Gateway-Provider zurückgreifen. <footnote>
+        <simpara>Eine Liste finden Sie auf <ulink
+        url="http://www.voip-info.org/wiki/index.php?page=VoIP+Gateways">http://www.voip-info.org/wiki/index.php?page=VoIP+Gateways</ulink>
+        oder auch <ulink
+        url="http://www.voip-info.org/wiki/index.php?page=VoiP+Service+Providers">http://www.voip-info.org/wiki/index.php?page=VoiP+Service+Providers</ulink>.</simpara>
+      </footnote>Das <quote>Unicall for MacOS X</quote>-Projekt arbeitet an
+    einer Lösung.</simpara>
+
+    <simpara>Asterisk ist für verschiedene Anwendungen (z.B.
+    MeetMe-Konferenzen) zu Timing-Zwecken auf Zaptel-Hardware angewiesen. Als
+    Alternative kann man den mitgelieferten <code>ztdummy</code>-Treiber
+    kompilieren - was aber auf MacOS X kaum möglich sein dürfte.</simpara>
+
+    <simpara>Es kann in Ausnahmefällen auch zu Problemen mit den Formaten WAV
+    und WAV49 kommen (GSM funktioniert).</simpara>
+
+    <simpara>Asterisk ist auf MacOS X insgesamt noch keine ganz
+    <quote>runde</quote> Lösung. Zu Testzwecken oder für den Heimgebrauch zwar
+    problemlos möglich, für größere Installationen aber (noch?) nicht
+    empfehlenswert, wenn man auf die genannten Funktionen angewiesen
+    ist.</simpara>
+  </note>
+
+  <simpara>Möglicherweise stehen bald unter <ulink
+  url="http://www.mactelephony.net/">http://www.mactelephony.net/</ulink>
+  (ehemals http://www.astmasters.net/, inzwischen nicht mehr erreichbar)
+  <quote>Binaries</quote>, also vorkompilierte Pakete, zum Download bereit.
+  Bezüglich der Aktualität der Software schadet es aber nicht, Asterisk neu zu
+  kompilieren.</simpara>
+
+  <para>Vorausetzung sind die bei MacOS X mitgelieferten oder im Internet von
+  Apple verfügbaren Developer Tools (<quote>Xcode</quote>).<tip>
+      <para>Falls Sie die DVD nicht greifbereit haben, können Sie Xcode auch
+      von der Apple-Webseite <ulink
+      url="http://developer.apple.com/tools/xcode/">http://developer.apple.com/tools/xcode/</ulink>
+      downloaden.</para>
+    </tip>Installieren Sie diese, falls Sie das noch nicht getan haben (dieses
+  Paket legt das Verzeichnis <filename>/Developer</filename> auf Ihrer
+  Festplatte an). Danach steht z.B. der Compiler <command>gcc</command> und
+  weitere Tools zur Verfügung.</para>
+
+  <important>
+    <para>Asterisk 1.4 wird weiter unten beim Installieren mit <command>make
+    install</command> weitere erforderliche Sprachpakete runterladen, wozu
+    <command>wget</command> verwendet wird, was allerdings auf einem frischen
+    Mac OS X nicht vorhanden ist (deshalb verwenden wir ansonsten
+    <command>curl</command>). Wenn Sie sowieso schon Fink<footnote>
+        <simpara><ulink
+        url="http://fink.sourceforge.net/">http://fink.sourceforge.net/</ulink></simpara>
+      </footnote> oder Darwinports<footnote>
+        <simpara><ulink
+        url="http://darwinports.opendarwin.org/">http://darwinports.opendarwin.org/</ulink></simpara>
+      </footnote> benutzen, können Sie damit ganz einfach
+    <command>wget</command> installieren. Ob <command>wget</command> bereits
+    installiert ist, kann man so rausfinden:<screen><prompt>$  </prompt>which wget
+no wget in /bin /sbin /usr/bin /usr/sbin</screen>Alternativ installiert man
+    <command>wget</command> <quote>von Hand</quote>:<screen><prompt>$  </prompt>curl -O ftp://ftp.gnu.org/pub/gnu/wget/wget-1.10.tar.gz
+<prompt>$  </prompt>tar -xvzf wget-1.10.tar.gz
+<prompt>$  </prompt>rm wget-1.10.tar.gz
+<prompt>$  </prompt>cd wget-1.10/
+<prompt>$  </prompt>./configure
+<prompt>$  </prompt>make
+<prompt>$  </prompt>sudo make install</screen>und man passt entweder seinen
+    PATH an oder macht einen Symlink:<screen><prompt>$  </prompt>sudo ln -s /usr/local/bin/wget /usr/bin/wget</screen>Jetzt
+    sollte folgendes möglich sein:<screen><prompt>$  </prompt>which wget
+/usr/bin/wget
+<prompt>$  </prompt>wget --version
+GNU Wget 1.10
+
+Copyright (C) 2005 Free Software Foundation, Inc.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+Originally written by Hrvoje Niksic &lt;hniksic@xemacs.org&gt;.</screen></para>
+  </important>
+
+  <para>Laden Sie von <ulink
+  url="http://www.asterisk.org/">http://www.asterisk.org/</ulink> (oder direkt
+  <ulink url="http://ftp.digium.com/pub/">http://ftp.digium.com/pub/</ulink>)
+  die Asterisk-Quellen (Sources) in der gewünschten Version herunter. Sie
+  können das im Browser machen oder auf der Kommandozeile (statt
+  <code>http://</code> ist auch <code>ftp://</code> möglich):<screen><prompt>$  </prompt>curl -O http://ftp.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz</screen></para>
+
+  <para>Danach wird das komprimierte Archiv entpackt:<screen><prompt>$  </prompt>tar -xvzf asterisk-1.4-current.tar.gz
+asterisk-1.4.0/
+asterisk-1.4.0/build_tools/
+asterisk-1.4.0/build_tools/mkpkgconfig
+asterisk-1.4.0/build_tools/get_moduleinfo
+asterisk-1.4.0/build_tools/get_makeopts
+<replaceable>[...]</replaceable></screen></para>
+
+  <para>Ab Asterisk 1.4 kommt der übliche autoconf-Mechanismus zum
+  Einsatz<footnote>
+      <simpara>wobei die Umstellung noch nicht ganz abgeschlossen zu sein
+      scheint</simpara>
+    </footnote>. Wir müssen also in das gerade entpackte Verzeichnis wechseln
+  und <command>./configure</command> ausführen, was eine Menge Informationen
+  ausspuckt:<screen><prompt>$  </prompt>cd asterisk-1.4.0/
+<prompt>$  </prompt>./configure
+checking build system type... i386-apple-darwin8.8.3
+checking host system type... i386-apple-darwin8.8.3
+checking for uname... /usr/bin/uname
+checking for gcc... gcc
+<replaceable>[...]</replaceable>
+configure: creating ./config.status
+config.status: creating build_tools/menuselect-deps
+config.status: creating makeopts
+config.status: creating channels/h323/Makefile
+config.status: creating include/asterisk/autoconfig.h
+
+               .$$$$$$$$$$$$$$$=..      
+            .$7$7..          .7$$7:.    
+          .$$:.                 ,$7.7   
+        .$7.     7$$$$           .$$77  
+     ..$$.       $$$$$            .$$$7 
+    ..7$   .?.   $$$$$   .?.       7$$$.
+   $.$.   .$$$7. $$$$7 .7$$$.      .$$$.
+ .777.   .$$$$$$77$$$77$$$$$7.      $$$,
+ $$$~      .7$$$$$$$$$$$$$7.       .$$$.
+.$$7          .7$$$$$$$7:          ?$$$.
+$$$          ?7$$$$$$$$$$I        .$$$7 
+$$$       .7$$$$$$$$$$$$$$$$      :$$$. 
+$$$       $$$$$$7$$$$$$$$$$$$    .$$$.  
+$$$        $$$   7$$$7  .$$$    .$$$.   
+$$$$             $$$$7         .$$$.    
+7$$$7            7$$$$        7$$$      
+ $$$$$                        $$$       
+  $$$$7.                       $$  (TM)     
+   $$$$$$$.           .7$$$$$$  $$      
+     $$$$$$$$$$$$7$$$$$$$$$.$$$$$$      
+       $$$$$$$$$$$$$$$$.                
+
+configure: Package configured for: 
+configure: OS type  : darwin8.8.3
+configure: Host CPU : i386</screen>Danach kompilieren wir Asterisk mit
+  <command>make</command>, was einige Zeit dauern kann, daher empfehle ich an
+  dieser Stelle eine Tasse Tee<footnote>
+      <simpara>Vorzugsweise einen Darjeeling First Flush FTGFOP von der <ulink
+      url="http://www.teekampagne.de/"><citetitle>Teekampagne</citetitle></ulink></simpara>
+    </footnote> oder Kaffee. <footnote>
+      <simpara>Jedes kleine Kind weiß, dass man Kaffee nicht unbeaufsichtigt
+      rumstehen lässt!</simpara>
+    </footnote><screen><prompt>$  </prompt>make
+gcc -O -Wall   -c mxml-attr.c
+gcc -O -Wall   -c mxml-entity.c
+gcc -O -Wall   -c mxml-file.c
+gcc -O -Wall   -c mxml-index.c
+gcc -O -Wall   -c mxml-node.c
+<replaceable>[...]</replaceable></screen>Der Testrechner war allerdings schon
+  nach etwa 2 bis 3 Minuten fertig, was sich in dieser erfreulichen Botschaft
+  ausdrückt:<screen><replaceable>[...]</replaceable>
+ +--------- Asterisk Build Complete ---------+
+ + Asterisk has successfully been built, and +
+ + can be installed by running:              +
+ +                                           +
+ +               make install                +
+ +-------------------------------------------+</screen></para>
+
+  <para>Die Software ist jetzt kompiliert. Der nächste Schritt muss mit
+  Root-Rechten ausgeführt werden. Hierzu bedienen wir uns des Programms <ulink
+  url="http://de.wikipedia.org/wiki/Sudo">sudo</ulink>.</para>
+
+  <para>Jetzt nur noch alle Dateien automatisch mit <command>sudo make
+  install</command> installieren, also in die richtigen Verzeichnisse kopieren
+  lassen<footnote>
+      <para>Wer noch nie <command>sudo</command> ausgeführt hat, erhält dabei
+      folgenden Hinweis:<screen>We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.</screen></para>
+    </footnote>:<screen><prompt>$  </prompt>sudo make install
+<replaceable>[...]</replaceable>
+ +---- Asterisk Installation Complete -------+
+ +                                           +
+ +    YOU MUST READ THE SECURITY DOCUMENT    +
+ +                                           +
+ + Asterisk has successfully been installed. +
+ + If you would like to install the sample   +
+ + configuration files (overwriting any      +
+ + existing config files), run:              +
+ +                                           +
+ +               make samples                +
+ +                                           +
+ +-----------------  or ---------------------+
+ +                                           +
+ + You can go ahead and install the asterisk +
+ + program documentation now or later run:   +
+ +                                           +
+ +              make progdocs                +
+ +                                           +
+ + **Note** This requires that you have      +
+ + doxygen installed on your local system    +
+ +-------------------------------------------+</screen></para>
+
+  <para>Und da wir sofort loslegen wollen, lassen wir auch noch mit
+  <command>sudo make samples</command> die Beispiel-Konfiguration
+  erstellen:<screen><prompt>$  </prompt>sudo make samples
+<replaceable>[...]</replaceable></screen></para>
+
+  <para>Fertig! Asterisk ist auf Ihrem System installiert. Mit dem Befehl
+  <command>asterisk -V</command> können Sie die installierte Version
+  herausfinden (bitte achten Sie auf das großgeschriebene V):<screen><prompt>$  </prompt>asterisk -V
+Asterisk 1.4.0</screen>Ihren Asterisk-Server können Sie mit <command>sudo
+  asterisk</command> starten und mit <command>sudo asterisk -rx "stop
+  now"</command> beenden.</para>
+
+  <para>In <xref linkend="installation-1.2-macosx-startupitem" /> finden Sie
+  eine Beschreibung, wie man für Asterisk ein Startup-Item anlegt, um Asterisk
+  automatisch beim Hochfahren zu starten.</para>
+</section>
