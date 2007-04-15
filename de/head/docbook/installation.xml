@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<chapter id="kapitel-installation" lang="de" revision="$Revision$">
-  <!--% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
+<chapter id="kapitel-installation" lang="de" revision="$Revision:473 $">
+  <!--% Copyright (c) 2006 - 2007 by
+% Stefan Wintermeyer <sw@amooma.de>
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
 % or any later version published by the Free Software Foundation;
@@ -79,8 +80,8 @@
       aktuellen PC mit genügend Speicher. Es geht auch mit älterer Hardware,
       allerdings kann ich dann mein 30-Minuten Versprechen nicht einlösen und
       es macht auch weniger Spaß, damit zu arbeiten. Konkret sollte es
-      mindestens ein 500 MHz Pentium-System mit 256 MByte Arbeitsspeicher
-      (RAM) und einer 10 GByte Festplatte sein. Asterisk läuft auf allen
+      mindestens ein 500 MHz Pentium-System mit 512 MByte Arbeitsspeicher
+      (RAM) und einer 20 GByte Festplatte sein. Asterisk läuft auf allen
       gängigen Linux-Distributionen. Diese können Sie entweder im Geschäft
       kaufen oder aus dem Internet herunterladen.<footnote>
           <para>Ein paar URLs zu im Internet frei verfügbaren
@@ -127,15 +128,11 @@
         <primary>Versionsempfehlung</primary>
       </indexterm>
 
-      <para>Für 99 Prozent aller Asterisk-Installationen wird es
-      wahrscheinlich vollkommen egal sein, ob man ein Asterisk 1.2.x oder ein
-      Asterisk 1.4.x verwendet. Deshalb lautet die persönliche Empfehlung des
-      Autors bis Mitte 2007 die Version 1.2.x und erst ab Mitte 2007 die
-      Version 1.4.x einzusetzen. Gerade bei derart zentralen Applikationen
-      sollte stets die Stabilität das wichtigste Entscheidungskriterium sein,
-      und die Version 1.4 wird der Einschätzung des Autors nach bis Mitte 2007
-      benötigen, um eine vergleichbar gute Stabiliät wie Version 1.2 zu
-      erhalten.</para>
+      <para>Die Asterisk Version 1.4 ist Ende 2006 veröffentlicht worden und
+      ist mittlerweile als stabil anzusehen. Dieses Buch beschäftigt sich
+      deshalb hauptsächlich der Version 1.4. Falls nicht anders geschrieben
+      können Sie aber auch die im Buch beschriebenen Befehle auf einer
+      Asterisk 1.2 anwenden.</para>
     </section>
 
     <section id="welche-linux-distribution">
@@ -144,177 +141,62 @@
 
       <para>Die Diskussion über die ideale Linux-Distribution bekommt immer
       sehr schnell technisch-religiöse Züge. Der Autor hat sich in diesem Buch
-      für ein Debian Linux (stable) entschieden. Dennoch haben wir gerade in
-      diesem Kapitel sehr viel Platz für Installationsanleitungen auf anderen
+      für ein Debian Linux (stable) entschieden. Dennoch haben wir im Anhang
+      sehr viel Platz für Installationsanleitungen auf anderen
       Linux-Distributionen und anderen Betriebssystemen eingeräumt, um ihnen
       hier auch eine alternative Wahl zu unterstützen. Bei späteren Kapiteln
       (z.B. ISDN) kann diese Vielfalt nicht in gleicher Weise aufrecht
       erhalten werden. Zum Teil gibt es für andere Betriebssysteme keine
-      passenden Treiber oder die Installation ist so kompliziert, dass der
-      Rahmen dieses Buches gesprengt werden würde. Aus diesem Grund gehen wir,
-      wenn nichts anders gesagt wird, immer von einem Debian Linux aus.</para>
-    </section>
+      passenden ISDN-Treiber. Aus diesem Grund gehen wir, wenn nichts anders
+      gesagt wird, immer von einem Debian Linux aus.</para>
 
-    <section id="warum-kein-rpm-oder-apt">
-      <title>Warum keine fertigen Asterisk-Pakete mit <command>rpm</command>
-      oder <command>apt-get</command> installieren?</title>
+      <section id="warum-kein-rpm-oder-apt">
+        <title>Warum keine fertigen Asterisk-Pakete mit <command>rpm</command>
+        oder <command>apt-get</command> installieren?</title>
 
-      <indexterm>
-        <primary>rpm</primary>
-      </indexterm>
+        <indexterm>
+          <primary>rpm</primary>
+        </indexterm>
 
-      <indexterm>
-        <primary>apt-get</primary>
-      </indexterm>
+        <indexterm>
+          <primary>apt-get</primary>
+        </indexterm>
 
-      <para>Es gibt einen ganz einfachen Grund, warum an dieser Stelle im Buch
-      bei den Installationsanleitungen für Asterisk nicht auf die in den
-      Distributionen bereits enthaltenen Asterisk-Pakete zurückgegriffen wird,
-      und der heißt: Aktualität!</para>
+        <para>Es gibt einen ganz einfachen Grund, warum an dieser Stelle im
+        Buch bei den Installationsanleitungen für Asterisk nicht auf die in
+        den Distributionen bereits enthaltenen Asterisk-Pakete zurückgegriffen
+        wird, und der heißt: Aktualität!</para>
 
-      <para>Keine Standard-Linux-Distribution hat auch nur halbwegs aktuelle
-      Asterisk-Pakete in ihren Stable-Zweigen. Da Asterisk ein sehr lebendiges
-      und wachsendes Softwareprojekt ist, ist es aber auch nicht sinnvoll,
-      eine 1.0-er Version zu installieren, wenn bereits eine 1.2-er lange auf
-      dem Markt und einfach viel besser ist.</para>
+        <para>Keine Standard-Linux-Distribution hat auch nur halbwegs aktuelle
+        Asterisk-Pakete in ihren Stable-Zweigen. Da Asterisk ein sehr
+        lebendiges und wachsendes Softwareprojekt ist, ist es aber auch nicht
+        sinnvoll, eine 1.0-er Version zu installieren, wenn bereits eine
+        1.4-er lange auf dem Markt und einfach viel besser ist.</para>
 
-      <note>
-        <para>Da von Distributionen gebaute Pakete einige Vorteile haben und
-        ein Update-Zyklus einfacher zu realisieren ist, hoffe ich darauf, dass
-        dieses Kapitel irgendwann einmal auf fertige Standardpakete aus den
-        Stable-Versionen zugreifen kann. Das liegt aber noch in der
-        Zukunft.</para>
-      </note>
+        <note>
+          <para>Da von Distributionen gebaute Pakete einige Vorteile haben und
+          ein Update-Zyklus einfacher zu realisieren ist, hoffe ich darauf,
+          dass dieses Kapitel irgendwann einmal auf fertige Standardpakete aus
+          den Stable-Versionen zugreifen kann. Das liegt aber noch in der
+          Zukunft.</para>
+        </note>
 
-      <para>Als Lohn für die Arbeit mit dem Übersetzen der Quellpakete winkt
-      Ihnen das Wissen, Ihr Asterisk-System auf dem neuesten Stand zu halten,
-      ohne dass Sie dafür auf aktuellere Pakete für Ihre Distribution warten
-      müssen.</para>
-    </section>
+        <para>Als Lohn für die Arbeit mit dem Übersetzen der Quellpakete winkt
+        Ihnen das Wissen, Ihr Asterisk-System auf dem neuesten Stand zu
+        halten, ohne dass Sie dafür auf aktuellere Pakete für Ihre
+        Distribution warten müssen.</para>
+      </section>
 
-    <section id="installation-asterisk-1.2">
-      <title>Asterisk 1.2</title>
+      <section>
+        <title>Die Installation</title>
 
-      <xi:include href="install-1.2-debian.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-      <xi:include href="install-1.2-ubuntu.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-      <xi:include href="install-1.2-opensuse.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-      <xi:include href="install-1.2-fedora.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-      <xi:include href="install-1.2-freebsd.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-      <xi:include href="install-1.2-macosx.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude" />
-    </section>
-
-    <section id="installation-asterisk-1.4">
-      <title>Asterisk 1.4</title>
-
-      <para></para>
-
-      <xi:include href="install-1.4-debian.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-      <xi:include href="install-1.4-ubuntu.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-      <xi:include href="install-1.4-fedora.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-      <xi:include href="install-1.4-Asterisk-NOW.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-      <xi:include href="install-1.4-macosx.xml"
-                  xmlns:xi="http://www.w3.org/2001/XInclude" />
-    </section>
-
-    <section id="weitere-voiceprompts">
-      <title>Weitere Sprachprompts</title>
-
-      <indexterm>
-        <primary>Sprachprompts</primary>
-
-        <secondary>Zusätzliche Sprachprompts von Digium.</secondary>
-      </indexterm>
-
-      <indexterm>
-        <primary>Allison</primary>
-      </indexterm>
-
-      <para>Da wir gerade dabei sind, bietet sich die Gelegenheit an noch ein
-      paar zusätzliche Sprachbausteine (Prompts) mit zu installieren. Diese
-      können mit <command>wget
-      http://ftp.digium.com/pub/asterisk/releases/asterisk-sounds-1.2.1.tar.gz</command>
-      downgeloadet werden (vorher noch mit <command>cd ..</command> ein
-      Verzeichnis rauf gehen):<screen>debian:/usr/src/asterisk-1.2.13# cd ..
-debian:/usr/src# wget http://ftp.digium.com/pub/asterisk/releases/asterisk-sounds-1.2.1.tar.gz
---11:38:17--  http://ftp.digium.com/pub/asterisk/releases/asterisk-sounds-1.2.1.tar.gz
-           =&gt; `asterisk-sounds-1.2.1.tar.gz'
-Auflösen des Hostnamen »ftp.digium.com«.... 69.16.138.164, 216.27.40.102
-Verbindungsaufbau zu ftp.digium.com[69.16.138.164]:80... verbunden.
-HTTP Anforderung gesendet, warte auf Antwort... 200 OK
-Länge: 3,249,876 [application/x-gzip]
-
-100%[====================================&gt;] 3,249,876    153.27K/s    ETA 00:00
-
-11:38:39 (149.37 KB/s) - »asterisk-sounds-1.2.1.tar.gz« gespeichert [3249876/3249876]
-
-debian:/usr/src#</screen></para>
-
-      <para>Jetzt in das mit <command>tar xvzf
-      asterisk-sounds-1.2.1.tar.gz</command> ausgepackte Verzeichnis wechseln
-      (<command>cd asterisk-sounds-1.2.1</command>) und dort mit <command>make
-      install</command> die Sprachbausteine installieren.<screen>debian:/usr/src# tar xvzf asterisk-sounds-1.2.1.tar.gz 
-asterisk-sounds-1.2.1/
-asterisk-sounds-1.2.1/sounds-extra.txt
-asterisk-sounds-1.2.1/README.txt
-asterisk-sounds-1.2.1/sounds/
-asterisk-sounds-1.2.1/sounds/call-fwd-parallel.gsm
-asterisk-sounds-1.2.1/sounds/accounts-payable.gsm
-asterisk-sounds-1.2.1/sounds/language.gsm
-
-[...]
-
-asterisk-sounds-1.2.1/sounds/research-and-development.gsm
-asterisk-sounds-1.2.1/sounds/distribution.gsm
-asterisk-sounds-1.2.1/sounds/login-fail.gsm
-asterisk-sounds-1.2.1/sounds/repair.gsm
-asterisk-sounds-1.2.1/sounds/T-to-enable-ancmnt.gsm
-asterisk-sounds-1.2.1/Makefile
-debian:/usr/src# cd asterisk-sounds-1.2.1
-debian:/usr/src/asterisk-sounds-1.2.1# make install
-mkdir -p /var/lib/asterisk/sounds
-mkdir -p /var/lib/asterisk/sounds/letters
-mkdir -p /var/lib/asterisk/sounds/phonetic
-mkdir -p /var/lib/asterisk/sounds/silence
-mkdir -p /var/lib/asterisk/sounds/wx
-mkdir -p /var/lib/asterisk/sounds/ha
-for x in sounds/letters/*.gsm; do \
-        if grep -q "^%`basename $x`%" sounds-extra.txt; then \
-                install -m 644 $x /var/lib/asterisk/sounds/letters ; \
-        else \
-                echo "No description for $x"; \
-                exit 1; \
-        fi; \
-
-[...]
-
-for x in sounds/*.gsm; do \
-        if grep -q "^%`basename $x`%" sounds-extra.txt; then \
-                install -m 644 $x /var/lib/asterisk/sounds ; \
-        else \
-                echo "No description for $x"; \
-                exit 1; \
-        fi; \
-done
-debian:/usr/src/asterisk-sounds-1.2.1# </screen></para>
+        <para>Bitte schauen Sie im Anhang des Buches nach der
+        Installationsanleitung für Ihr Lieblingsbetriebssystem und
+        installieren Sie nach dieser Anleitung einen Asterisk Server. Wir
+        gehen in diesem Buch immer von einer Installation auf einem Debian
+        Linux aus (siehe <xref
+        linkend="installation-1.4-debian-4.0" />).</para>
+      </section>
     </section>
 
     <section id="asterisk-konfigurieren">
@@ -533,10 +415,10 @@ format = wav
 
 [meine-telefone]
 exten =&gt; 2000,1,Dial(SIP/2000,20)
-exten =&gt; 2000,2,VoiceMail(2000)
+exten =&gt; 2000,2,VoiceMail(2000,u)
 
 exten =&gt; 2001,1,Dial(SIP/2001,20)
-exten =&gt; 2001,2,VoiceMail(2001)
+exten =&gt; 2001,2,VoiceMail(2001,u)
 
 exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)</programlisting>
 
@@ -642,7 +524,7 @@ host=dynamic</programlisting>
         Da wir dieses in diesem Beispiel nicht benötigen, ist sie
         leer.<programlisting>[meine-telefone]
 exten =&gt; 2000,1,Dial(SIP/2000,20)
-exten =&gt; 2000,2,VoiceMail(2000)
+exten =&gt; 2000,2,VoiceMail(2000,u)
 </programlisting>Der Context wird von Asterisk immer benutzt, wenn ein Telefon
         die Nummer eines anderen Telefons wählt. Der Name ist dabei beliebig.
         Wichtig ist, dass in der Datei
@@ -709,15 +591,17 @@ exten =&gt; 2000,2,VoiceMail(2000)
           </listitem>
 
           <listitem>
-            <para>Die Zeile <code>exten =&gt; 2000,2,VoiceMail(2000)</code>
+            <para>Die Zeile <code>exten =&gt; 2000,2,VoiceMail(2000,u)</code>
             ist also an der Reihe und startet das Programm
-            <application>Voicemail</application> mit dem Parameter
-            <parameter>2000</parameter>. Die <parameter>2000</parameter> steht
-            für die Nummer der Voicemailbox. Wie Sie sich sicherlich schon
-            denken können, ist auch hier die <parameter>2000</parameter> nur
-            der Einfachheit halber genommen worden. Die Voicemailbox könnte
-            auch <parameter>5555</parameter> oder
-            <parameter>Apfelmus</parameter> heißen.</para>
+            <application>Voicemail</application> mit dem Parametern
+            <parameter>2000</parameter> und <parameter>u</parameter>. Die
+            <parameter>2000</parameter> steht für die Nummer der Voicemailbox
+            und das <parameter>u</parameter> für die Sprachbausteine
+            <parameter>unavailable</parameter> (nicht erreichbar). Wie Sie
+            sich sicherlich schon denken können, ist auch hier die
+            <parameter>2000</parameter> nur der Einfachheit halber genommen
+            worden. Die Voicemailbox könnte auch <parameter>5555</parameter>
+            oder <parameter>Apfelmus</parameter> heißen.</para>
           </listitem>
         </itemizedlist>
 
@@ -829,10 +713,10 @@ nat=yes</programlisting>
 
 [meine-telefone]
 exten =&gt; 2000,1,Dial(SIP/2000,20)
-exten =&gt; 2000,2,VoiceMail(2000)
+exten =&gt; 2000,2,VoiceMail(2000,u)
 
 exten =&gt; 2001,1,Dial(SIP/2001,20)
-exten =&gt; 2001,2,VoiceMail(2001)
+exten =&gt; 2001,2,VoiceMail(2001,u)
 
 exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)
 
@@ -865,10 +749,10 @@ exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)</programlisting>
 
 [meine-telefone]
 exten =&gt; 2000,1,Dial(SIP/2000,20)
-exten =&gt; 2000,2,VoiceMail(2000)
+exten =&gt; 2000,2,VoiceMail(2000,u)
 
 exten =&gt; 2001,1,Dial(SIP/2001,20)
-exten =&gt; 2001,2,VoiceMail(2001)
+exten =&gt; 2001,2,VoiceMail(2001,u)
 
 exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)
 
@@ -890,10 +774,10 @@ exten =&gt; 5587572,1,Dial(SIP/2000)</programlisting></para>
 
 [meine-telefone]
 exten =&gt; 2000,1,Dial(SIP/2000,20)
-exten =&gt; 2000,2,VoiceMail(2000)
+exten =&gt; 2000,2,VoiceMail(2000,u)
 
 exten =&gt; 2001,1,Dial(SIP/2001,20)
-exten =&gt; 2001,2,VoiceMail(2001)
+exten =&gt; 2001,2,VoiceMail(2001,u)
 
 exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)
 
@@ -901,7 +785,7 @@ exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)
 
 [von-voip-provider]
 exten =&gt; 5587572,1,Dial(SIP/2000,20)
-exten =&gt; 5587572,2,VoiceMail(2000)</programlisting></para>
+exten =&gt; 5587572,2,VoiceMail(2000,u)</programlisting></para>
 
       <para>In diesem Einführungs-Kapitel wollte ich Ihnen zeigen, wie schnell
       und einfach man mit Asterisk eine funktionierende Telefonanlage aufbauen
