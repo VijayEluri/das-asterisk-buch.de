@@ -187,15 +187,16 @@
         Distribution warten müssen.</para>
       </section>
 
-      <section>
-        <title>Die Installation</title>
+      <section id="installation-aus-den-aktuellen-asterisk-sourcen">
+        <title>Die Installation aus den aktuellen Asterisk-Sourcen</title>
 
         <para>Bitte schauen Sie im Anhang des Buches nach der
-        Installationsanleitung für Ihr Lieblingsbetriebssystem und
-        installieren Sie nach dieser Anleitung einen Asterisk Server. Wir
-        gehen in diesem Buch immer von einer Installation auf einem Debian
-        Linux aus (siehe <xref
-        linkend="installation-1.4-debian-4.0" />).</para>
+        Installationsanleitung für Ihr Lieblingsbetriebssystem (siehe <xref
+        linkend="installationsanleitungen-asterisk-1.4" />) und installieren
+        Sie nach dieser Anleitung einen Asterisk Server. Wir gehen in diesem
+        Buch immer von einer Installation auf einem Debian Linux aus (siehe
+        <xref linkend="installation-1.4-debian-4.0" />). Bitte lesen Sie nach
+        der Installation wieder an dieser Stelle des Buches weiter.</para>
       </section>
     </section>
 
@@ -207,7 +208,7 @@
       jetzt alle Konfigurationsdateien in einer einfachen
       Standardausführung:</para>
 
-      <screen>debian:/usr/src/asterisk-sounds-1.2.1# cd /etc/asterisk 
+      <screen>debian:/usr/src# cd /etc/asterisk 
 debian:/etc/asterisk# ls
 adsi.conf           cdr_tds.conf     indications.conf  privacy.conf
 adtranvofr.conf     codecs.conf      logger.conf       queues.conf
@@ -225,21 +226,21 @@ debian:/etc/asterisk#</screen>
 
       <para>Dies ist jetzt eine recht umfangreiche Liste, aber -- keine Angst
       -- für unsere Mini-Telefonanlage müssen wir uns nur mit zwei Dateien
-      näher befassen. Die mit <command>make samples</command> erstellen
+      näher befassen. Einige mit <command>make samples</command> erstellen
       Defaultdateien verschieben wir dazu erst einmal nach
       <filename>/etc/asterisk/backup/</filename> (damit wir später bei Bedarf
       darauf zugreifen können):</para>
 
       <screen>debian:/etc/asterisk# mkdir backup
 debian:/etc/asterisk# mv sip.conf backup/
-debian:/etc/asterisk# mv extensions.ael backup/
+debian:/etc/asterisk# mv extensions.conf backup/
 debian:/etc/asterisk# </screen>
 
       <para>Legen Sie mit Ihrem Lieblingseditor<footnote>
           <para>Wenn Sie keinen Editor kennen, den Sie in einem
           Terminalfenster verwenden können, empfehle ich Ihnen
           <command>nano</command>. Unter Debian ist dieser einfach als
-          Benutzer root mit <command>apt-get install nano</command> zu
+          Benutzer root mit <command>apt-get -y install nano</command> zu
           installieren. Danach öffnen Sie mit <command>nano
           dateiname</command> die Datei. In Nano selbst sehen Sie im unteren
           Bereich des Bildschirms die wichtigsten Befehle.</para>
@@ -267,7 +268,7 @@ context=meine-telefone
 secret=1234
 host=dynamic</programlisting>
 
-      <para>In die Datei <filename>/etc/asterisk/extensions.ael</filename>
+      <para>In die Datei <filename>/etc/asterisk/extensions.conf</filename>
       schreiben wir einen einfachen Wählplan:</para>
 
       <programlisting>[sonstige]
@@ -282,7 +283,7 @@ exten =&gt; 2001,1,Dial(SIP/2001)</programlisting>
       Befehl <command>asterisk -c</command> starten Sie Asterisk:</para>
 
       <screen>debian:/etc/asterisk# asterisk -c
-Asterisk 1.2.13, Copyright (C) 1999 - 2005 Digium.
+Asterisk 1.4.2, Copyright (C) 1999 - 2005 Digium.
 Written by Mark Spencer &lt;markster@digium.com&gt;
 =========================================================================
 [ Booting...Nov 20 18:59:28 NOTICE[14937]: cdr.c:1185 do_reload: CDR 
@@ -296,8 +297,8 @@ Asterisk Ready.
       eine Konsole, auf der man mit dem laufenden Asterisk-Prozess
       kommunizieren kann. Vor uns sehen wir jetzt das Command Line Interface
       (CLI) von Asterisk. Hier können wir aktiv in das Geschehen eingreifen
-      und als erste Handlung die eben gestartete Telefonanlage wieder
-      herunterfahren:</para>
+      und als erste Handlung mit dem Befehl <command>stop now</command> die
+      eben gestartete Telefonanlage wieder herunterfahren:</para>
 
       <screen>*CLI&gt; stop now
 debian:/etc/asterisk#</screen>
@@ -327,30 +328,55 @@ debian:/etc/asterisk#</screen>
           Leider gibt es dafür keine allgemein gültige Hilfe. Da hilft nur
           Ausprobieren!</para>
         </tip> Die User-Daten können Sie der Datei
-      <filename>/etc/asterisk/sip.conf</filename> entnehmen. Falls Sie die
-      IP-Adresse Ihres Asterisk-Linux-Systems nicht kennen, finden Sie diese
-      mit folgendem Befehl heraus:</para>
+      <filename>/etc/asterisk/sip.conf</filename> entnehmen. Das SIP-Telefon
+      2000 muss dann folgende Konfiguration enthalten:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>User: 2000</para>
+        </listitem>
+
+        <listitem>
+          <para>Passwort: 1234</para>
+        </listitem>
+
+        <listitem>
+          <para>SIP-Registrar: IP-Adresse Ihres Asterisk-Servers</para>
+        </listitem>
+
+        <listitem>
+          <para>SIP-Proxy: IP-Adresse Ihres Asterisk-Servers</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Falls Sie die IP-Adresse Ihres Asterisk-Linux-Systems nicht
+      kennen, finden Sie diese auf einem System mit einer Netzwerkkarte und
+      einer IP-Adresse mit folgendem Befehl heraus:</para>
 
       <screen>debian:/etc/asterisk# ifconfig | grep Bcast | sed s/Bcast.*//
           inet addr:23.3.19.73</screen>
 
       <para>In diesem Fall ist es also die
-      <computeroutput>23.3.19.73</computeroutput>. Wir starten Asterisk
-      erneut, diesmal jedoch in einem ''gesprächigeren'' Modus, um mehr
-      Informationen über die laufenden Aktionen zu erhalten. Dies erreichen
-      wir, indem wir Asterisk mit dem Parameter -vvvvvc starten (die 5 v
-      stehen für den Verbose-Level 5'). Dann können wir verfolgen, wie sich
-      das SIP-Telefon an der Anlage anmeldet:</para>
+      <computeroutput>23.3.19.73</computeroutput>. </para>
+
+      <para>Wir starten Asterisk erneut, diesmal jedoch in einem
+      ''gesprächigeren'' Modus, um mehr Informationen über die laufenden
+      Aktionen zu erhalten. Dies erreichen wir, indem wir Asterisk mit dem
+      Parameter <parameter>-vvvvvc</parameter> starten (die 5 v stehen für den
+      Verbose-Level 5'). Dann können wir verfolgen, wie sich das SIP-Telefon
+      an der Anlage anmeldet:</para>
 
       <screen>debian:/etc/asterisk# asterisk -vvvvvc
 [...]
 Asterisk Ready.
 *CLI&gt;</screen>
 
-      <para>Nachdem Sie Ihre SIP-Telefone konfiguriert haben (Daten siehe
-      <filename>/etc/asterisk/sip.conf</filename>), können Sie jetzt den
-      Anmeldevorgang starten (einfach das Telefon einschalten). Der
-      Asterisk-Prozess teilt uns die Anmeldung der Telefone mit:</para>
+      <para>Nachdem Sie Ihre SIP-Telefone konfiguriert haben, können Sie jetzt
+      den Anmeldevorgang starten. Im Zweifelsfall einfach das Telefon aus- und
+      einschalten und dann etwas warten, da die SIP-Telefone teilweise sehr
+      langsame Hardware haben und zum Booten teilweise weit über eine Minute
+      brauchen. Der Asterisk-Prozess teilt uns die Anmeldung der Telefone
+      mit:</para>
 
       <screen>*CLI&gt;     -- Registered SIP '2000' at 87.143.3.144 port 5060 
 expires 120 -- Unregistered SIP '2000'
@@ -406,9 +432,9 @@ format = wav
 
       <para>Damit sind die Voicemailboxen grundsätzlich eingerichtet (ja, so
       einfach geht das!). Jetzt müssen wir aber noch in der
-      <filename>/etc/asterisk/extensions.ael</filename> ein paar weitere
+      <filename>/etc/asterisk/extensions.conf</filename> ein paar weitere
       Zeilen eintragen, um die Voicemail-Funktionalität unseren Telefonen
-      zuzuweisen. Bitte vergessen Sie dabei nicht den Eintrag
+      zuzuweisen. Bitte vergessen Sie dabei nicht den neuen Eintrag
       <parameter>",20"</parameter> bei der Dial-Applikation.</para>
 
       <programlisting>[sonstige]
@@ -432,10 +458,11 @@ exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)</programlisting>
       Gegenstelle besetzt, wird man direkt auf die VoiceMailbox 2000 geleitet.
       Sie können vom Telefon mit der Nummer 2000 die entsprechende Mailboxen
       abhören, indem Sie die Nummer 2999 anrufen. Dann bekommen Sie Ihre
-      Voicemailbox als Menü vorgespielt. Wenn Sie das Ganze noch mit einer
-      Passwortabfrage absichern wollen oder eine Auflistung des Menüs suchen,
-      finden Sie dazu in <xref linkend="kapitel-voicemail" /> die nötigen
-      Informationen.</para>
+      Voicemailbox als Menü vorgespielt. </para>
+
+      <para>Wenn Sie das Ganze noch mit einer Passwortabfrage absichern wollen
+      oder eine Auflistung des Menüs suchen, finden Sie dazu in <xref
+      linkend="kapitel-voicemail" /> die nötigen Informationen.</para>
     </section>
 
     <section id="min-anlage-erklaerung">
@@ -473,13 +500,14 @@ secret=1234
 host=dynamic</programlisting>
 
       <para>Im Abschnitt <code>[2001]</code> wird der SIP-Anschluss mit der
-      Kennung 2001 definiert. Dass hierbei eine Zahl (also 2001) verwendet
-      wurde, ist dabei eher der üblichen Erwartungshaltung geschuldet, da die
-      meisten Nutzer Telefone mit Nummern verbinden. Ein SIP-Anschluss kann
-      aber auch mit einem alphanumerischen Wert definiert werden, also
-      beispielsweise <code>[Rezeption-1]</code>. Der Parameter type=friend
-      bestimmt vereinfacht gesagt, dass dieser SIP-Anschluss sowohl
-      eingehende, als auch ausgehende Verbindungen aufbauen darf.<footnote>
+      Kennung <parameter>2001</parameter> definiert. Dass hierbei eine Zahl
+      (also 2001) verwendet wurde, ist dabei eher der üblichen
+      Erwartungshaltung geschuldet, da die meisten Nutzer Telefone mit Nummern
+      verbinden. Ein SIP-Anschluss kann aber auch mit einem alphanumerischen
+      Wert definiert werden, also beispielsweise <code>[Rezeption-1]</code>.
+      Der Parameter <parameter>type=friend</parameter> bestimmt vereinfacht
+      gesagt, dass dieser SIP-Anschluss sowohl eingehende, als auch ausgehende
+      Verbindungen aufbauen darf.<footnote>
           <para>Der Eintrag <code>type=</code> kennt drei verschiedene Werte
           (auf die in einem späteren Kapitel genau eingegangen wird):</para>
 
@@ -501,7 +529,7 @@ host=dynamic</programlisting>
 
       <para>Und wieder stoßen wir auf den ominösen <code>context</code>.
       Diesen werden wir gleich in der Datei
-      <filename>/etc/asterisk/extensions.ael</filename> aufgreifen und dann
+      <filename>/etc/asterisk/extensions.conf</filename> aufgreifen und dann
       wird das zugrundeliegende System in der Verwendung auch klarer.</para>
 
       <para>Mit <code>secret</code> wird das Passwort gesetzt. Wir benutzen an
@@ -510,9 +538,9 @@ host=dynamic</programlisting>
       Bedeutung ist, ob der SIP-Client wechselnde IP-Adressen hat.</para>
 
       <section id="min-anlage-extensions.conf">
-        <title id="extensions.conf">extensions.ael - der Dialplan</title>
+        <title id="extensions.conf">extensions.conf - der Dialplan</title>
 
-        <para>Die Datei <filename>/etc/asterisk/extensions.ael</filename> ist
+        <para>Die Datei <filename>/etc/asterisk/extensions.conf</filename> ist
         das Herz jeder Asterisk-Konfiguration (siehe auch <xref
         linkend="kapitel-programmieren" />). Sie ist vergleichbar mit einer
         Schaltzentrale bei frühen Telefonanlagen. In dieser
@@ -531,7 +559,7 @@ exten =&gt; 2000,2,VoiceMail(2000,u)
         <filename>/etc/asterisk/sip.conf</filename> bei der Definition eines
         SIP-Gerätes eine entsprechende Bezeichnung für den Context definiert
         wurde und dieselbe Bezeichnung in der Datei
-        <filename>/etc/asterisk/extensions.ael</filename> wieder als
+        <filename>/etc/asterisk/extensions.conf</filename> wieder als
         <code>context</code>-Bezeichnung verwendet wird (dann könnte er auch
         <code>Apfelmus</code> heißen). Dieser Context ist von entscheidender
         Bedeutung für die Konfiguration des Telefons! Einfach gesagt legen die
@@ -556,12 +584,12 @@ exten =&gt; 2000,2,VoiceMail(2000,u)
           <listitem>
             <para>Asterisk sieht in der Datei
             <filename>/etc/asterisk/sip.conf</filename> nach, welcher Context
-            der anrufenden Nummer (2001) zugewiesen wurde. In unserem Beispiel
-            haben wir der Nummer 2001 den Context <code>meine-telefone</code>
-            zugewiesen. Dadurch werden die Regeln gelesen, die in der
-            entsprechenden Context-Bezeichnung
+            der <emphasis>anrufenden</emphasis> Nummer (2001) zugewiesen
+            wurde. In unserem Beispiel haben wir der Nummer 2001 den Context
+            <code>meine-telefone</code> zugewiesen. Dadurch werden die Regeln
+            gelesen, die in der entsprechenden Context-Bezeichnung
             <code>context=meine-telefone</code> der Datei
-            <filename>/etc/asterisk/extensions.ael</filename> definiert
+            <filename>/etc/asterisk/extensions.conf</filename> definiert
             sind.</para>
           </listitem>
 
@@ -610,8 +638,8 @@ exten =&gt; 2000,2,VoiceMail(2000,u)
         für das Aufrufen der Voicemailbox definiert.<programlisting>exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)</programlisting></para>
 
         <para>Hierbei kommen wir zum ersten Mal mit der Benutzung von
-        Variablen in der <filename>/etc/asterisk/extensions.ael</filename> in
-        Berührung. Das aufgerufene Programm heißt
+        Funktionen in der <filename>/etc/asterisk/extensions.conf</filename>
+        in Berührung. Das aufgerufene Applikation heißt
         <application>VoiceMailMain</application> und ihm wird als erster
         Parameter die Ausgabe der Funktion
         <parameter>${CALLERID(num)}</parameter> übergeben.
@@ -706,7 +734,7 @@ nat=yes</programlisting>
       Passwort (im Beispiel <parameter>UHDZJD</parameter>) können Sie der
       SIP-Provider-Webseite entnehmen. Damit kann Asterisk diesen Account
       benutzen. Allerdings müssen wir jetzt noch in der
-      <filename>/etc/asterisk/extensions.ael</filename> eine Regel zum
+      <filename>/etc/asterisk/extensions.conf</filename> eine Regel zum
       Rauswählen einfügen:</para>
 
       <programlisting>[sonstige]
@@ -732,7 +760,7 @@ exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)</programlisting>
       telefonieren. Wie die obige Konfiguration genau funktioniert, wird an
       dieser Stelle noch nicht verraten.<footnote>
           <para>Nur so viel an dieser Stelle: Die Variable
-          <code>${EXTEN}</code> speichert die vom Benutzer gewählte Nummer ab
+          <code>${EXTEN}</code> enthält die vom Benutzer gewählte Nummer
           (siehe <xref linkend="kapitel-programmieren" />).</para>
         </footnote></para>
     </section>
@@ -744,7 +772,7 @@ exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)</programlisting>
       Rufnummer beim VoIP-Provider auf dem Telefon mit der Nummer
       <parameter>2000</parameter> angerufen werden können. Dazu müssen wir nur
       noch einen weiteren Context in die Konfigurationsdatei
-      <filename>/etc/asterisk/extensions.ael</filename>
+      <filename>/etc/asterisk/extensions.conf</filename>
       hinzufügen:<programlisting>[sonstige]
 
 [meine-telefone]
