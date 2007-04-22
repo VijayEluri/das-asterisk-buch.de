@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <chapter id="kapitel-installation" lang="de" revision="$Revision:473 $">
   <!--% Copyright (c) 2006 - 2007 by
 % Stefan Wintermeyer <sw@amooma.de>
@@ -270,7 +270,7 @@ host=dynamic</programlisting>
 exten =&gt; 2000,1,Dial(SIP/2000)
 exten =&gt; 2001,1,Dial(SIP/2001)</programlisting>
 
-      <para>Are we serious? These two lines are enough to configure a PBX? The
+      <para>Are we serious? These few lines are enough to configure a PBX? The
       conventional wisdom says that Asterisk is unfathomably complex. Let's
       give it a try! Start Asterisk with the shell command <command>asterisk
       -c</command>:</para>
@@ -343,8 +343,8 @@ debian:/etc/asterisk#</screen>
       </itemizedlist>
 
       <para>If you don't know the address of your Asterisk server (and
-      assuming it has a network card and an IP address) you can find it with
-      this command:</para>
+      assuming it has one network card and one IP address) you can find it
+      with this command:</para>
 
       <screen>debian:/etc/asterisk# ifconfig | grep Bcast | sed s/Bcast.*//
           inet addr:23.3.19.73</screen>
@@ -460,8 +460,8 @@ exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)</programlisting>
     <section id="min-anlage-erklaerung">
       <title id="zusammenfassung">Was haben wir gerade gemacht?</title>
 
-      <para>Nach unserem ersten Erfolg gehen wir nun Schritt fÃ¼r Schritt die
-      Konfigurationsdateien durch, um mehr Ã¼ber die Funktionsweise von
+      <para>Nach unserem ersten Erfolg gehen wir nun Schritt für Schritt die
+      Konfigurationsdateien durch, um mehr über die Funktionsweise von
       Asterisk zu erfahren. Fangen wir mit der Datei
       <filename>/etc/asterisk/sip.conf</filename> an.</para>
 
@@ -472,17 +472,17 @@ context = sonstige</programlisting>
 
       <para>In diesem ersten Abschnitt [general] werden allgemeine Variablen
       definiert. Der Standard-Port wird auf 5060 gesetzt, d.h. Asterisk
-      wickelt die Verbindungen Ã¼ber diese Portnummer ab. Mit bindaddr =
+      wickelt die Verbindungen über diese Portnummer ab. Mit bindaddr =
       0.0.0.0 beachtet Asterisk einkommenden IP-Pakete auf allen IP-Adressen
-      auf diesem System. Ãœblicherweise haben Rechner meist nur eine
+      auf diesem System. Üblicherweise haben Rechner meist nur eine
       IP-Adresse, falls Sie einem Rechner mehrere IP-Adressen zugewiesen haben
-      und vielleicht sogar mehrere Asterisk-Instanzen betreiben, kÃ¶nnen Sie
+      und vielleicht sogar mehrere Asterisk-Instanzen betreiben, können Sie
       hiermit eine bestimmte IP-Adresse einer jeweiligen Asterisk-Instanz
       zuordnen. Das Context-Konstrukt folgt nicht unbedingt einer intuitiven
       Logik bei der Konfiguration von Asterisk. Auf diesen
       Konfigurationsparameter werde ich noch an geeigneterer Stelle eingehen.
-      Im weiteren Verlauf der Anleitungen wird nach und nach das VerstÃ¤ndnis
-      dafÃ¼r geschaffen, was ein Context im Asterisk-Sinne bedeutet und wie er
+      Im weiteren Verlauf der Anleitungen wird nach und nach das Verständnis
+      dafür geschaffen, was ein Context im Asterisk-Sinne bedeutet und wie er
       eingesetzt wird.</para>
 
       <programlisting>[2001]
@@ -493,7 +493,7 @@ host=dynamic</programlisting>
 
       <para>Im Abschnitt <code>[2001]</code> wird der SIP-Anschluss mit der
       Kennung <parameter>2001</parameter> definiert. Dass hierbei eine Zahl
-      (also 2001) verwendet wurde, ist dabei eher der Ã¼blichen
+      (also 2001) verwendet wurde, ist dabei eher der üblichen
       Erwartungshaltung geschuldet, da die meisten Nutzer Telefone mit Nummern
       verbinden. Ein SIP-Anschluss kann aber auch mit einem alphanumerischen
       Wert definiert werden, also beispielsweise <code>[Rezeption-1]</code>.
@@ -501,7 +501,7 @@ host=dynamic</programlisting>
       gesagt, dass dieser SIP-Anschluss sowohl eingehende, als auch ausgehende
       Verbindungen aufbauen darf.<footnote>
           <para>Der Eintrag <code>type=</code> kennt drei verschiedene Werte
-          (auf die in einem spÃ¤teren Kapitel genau eingegangen wird):</para>
+          (auf die in einem späteren Kapitel genau eingegangen wird):</para>
 
           <itemizedlist>
             <listitem>
@@ -519,14 +519,14 @@ host=dynamic</programlisting>
           </itemizedlist>
         </footnote></para>
 
-      <para>Und wieder stoÃŸen wir auf den ominÃ¶sen <code>context</code>.
+      <para>Und wieder stoßen wir auf den ominösen <code>context</code>.
       Diesen werden wir gleich in der Datei
       <filename>/etc/asterisk/extensions.conf</filename> aufgreifen und dann
       wird das zugrundeliegende System in der Verwendung auch klarer.</para>
 
       <para>Mit <code>secret</code> wird das Passwort gesetzt. Wir benutzen an
       dieser Stelle Zahlen, da man diese mit einem Telefon leichter eintippen
-      kann. <code>host=dynamic</code> sagt aus, dass es fÃ¼r Asterisk ohne
+      kann. <code>host=dynamic</code> sagt aus, dass es für Asterisk ohne
       Bedeutung ist, ob der SIP-Client wechselnde IP-Adressen hat.</para>
 
       <section id="min-anlage-extensions.conf">
@@ -535,42 +535,42 @@ host=dynamic</programlisting>
         <para>Die Datei <filename>/etc/asterisk/extensions.conf</filename> ist
         das Herz jeder Asterisk-Konfiguration (siehe auch <xref
         linkend="kapitel-programmieren" />). Sie ist vergleichbar mit einer
-        Schaltzentrale bei frÃ¼hen Telefonanlagen. In dieser
+        Schaltzentrale bei frühen Telefonanlagen. In dieser
         Konfigurationsdatei wird bestimmt, welches Telefon mit welchem Telefon
         Kontakt aufnehmen darf.</para>
 
         <para><programlisting>[sonstige]</programlisting> Diese erste Sektion
-        der Konfiguration ist fÃ¼r den Context <code>sonstige</code> bestimmt.
-        Da wir dieses in diesem Beispiel nicht benÃ¶tigen, ist sie
+        der Konfiguration ist für den Context <code>sonstige</code> bestimmt.
+        Da wir dieses in diesem Beispiel nicht benötigen, ist sie
         leer.<programlisting>[meine-telefone]
 exten =&gt; 2000,1,Dial(SIP/2000,20)
 exten =&gt; 2000,2,VoiceMail(2000,u)
 </programlisting>Der Context wird von Asterisk immer benutzt, wenn ein Telefon
-        die Nummer eines anderen Telefons wÃ¤hlt. Der Name ist dabei beliebig.
+        die Nummer eines anderen Telefons wählt. Der Name ist dabei beliebig.
         Wichtig ist, dass in der Datei
         <filename>/etc/asterisk/sip.conf</filename> bei der Definition eines
-        SIP-GerÃ¤tes eine entsprechende Bezeichnung fÃ¼r den Context definiert
+        SIP-Gerätes eine entsprechende Bezeichnung für den Context definiert
         wurde und dieselbe Bezeichnung in der Datei
         <filename>/etc/asterisk/extensions.conf</filename> wieder als
-        <code>context</code>-Bezeichnung verwendet wird (dann kÃ¶nnte er auch
-        <code>Apfelmus</code> heiÃŸen). Dieser Context ist von entscheidender
-        Bedeutung fÃ¼r die Konfiguration des Telefons! Einfach gesagt legen die
+        <code>context</code>-Bezeichnung verwendet wird (dann könnte er auch
+        <code>Apfelmus</code> heißen). Dieser Context ist von entscheidender
+        Bedeutung für die Konfiguration des Telefons! Einfach gesagt legen die
         im Context definierten Regeln exakt fest, welche Nummern das Telefon
-        wÃ¤hlen darf und welche Aktionen dadurch gestattet werden. <important>
+        wählen darf und welche Aktionen dadurch gestattet werden. <important>
             <para>Der Context der angerufenen Nummer spielt keinerlei Rolle!
-            Merken Sie sich bitte diesen Zusammenhang, er ist wesentlich fÃ¼r
+            Merken Sie sich bitte diesen Zusammenhang, er ist wesentlich für
             einen erfolgreichen Umgang mit den Konfigurationsdateien.</para>
           </important></para>
 
-        <para>Die Syntax der EintrÃ¤ge ist immer wie folgt:<programlisting>exten =&gt; Nummer, Prioritaet, Applikation</programlisting></para>
+        <para>Die Syntax der Einträge ist immer wie folgt:<programlisting>exten =&gt; Nummer, Prioritaet, Applikation</programlisting></para>
 
-        <para>Wird eine Nummer gewÃ¤hlt, die einen entsprechenden Eintrag
+        <para>Wird eine Nummer gewählt, die einen entsprechenden Eintrag
         (Regel) in dieser Form aufweist, dann wird diese Regel gelesen und
-        Ã¼bernommen. Ist mehr als eine Regel fÃ¼r eine Nummer definiert, wird
-        als Erstes die Regel mit der PrioritÃ¤t 1 durchgefÃ¼hrt. Die mit einer
+        übernommen. Ist mehr als eine Regel für eine Nummer definiert, wird
+        als Erstes die Regel mit der Priorität 1 durchgeführt. Die mit einer
         Regel verbundene Aktion steht an dritter Stelle (''Applikation''). Auf
         der Grundlage unserer Konfigurationsdateien (s.o.) geschieht
-        Folgendes, wenn vom Telefon 2001 die Nummer 2000 gewÃ¤hlt wird:</para>
+        Folgendes, wenn vom Telefon 2001 die Nummer 2000 gewählt wird:</para>
 
         <itemizedlist>
           <listitem>
@@ -586,28 +586,28 @@ exten =&gt; 2000,2,VoiceMail(2000,u)
           </listitem>
 
           <listitem>
-            <para>Nachdem Asterisk die Regeln im Context fÃ¼r die anrufende
-            Nummer (2001) gelesen hat, fÃ¼hrt es die Regeln aus, die mit der
+            <para>Nachdem Asterisk die Regeln im Context für die anrufende
+            Nummer (2001) gelesen hat, führt es die Regeln aus, die mit der
             angerufenen Nummer (2000) definiert sind und zwar in der durch die
-            PrioritÃ¤t festgelegten Reihenfolge. (In unserem Beispiel sind im
-            Context der anrufenden Nummer (2001) fÃ¼r die angerufene Nummer
+            Priorität festgelegten Reihenfolge. (In unserem Beispiel sind im
+            Context der anrufenden Nummer (2001) für die angerufene Nummer
             (2000) zwei Regeln hinterlegt.)</para>
           </listitem>
 
           <listitem>
             <para>Da die Regel mit dem Befehl <code>Dial(SIP/2000,20)</code>
-            die PrioritÃ¤t 1 besitzt, kommt diese zur AusfÃ¼hrung. Dadurch wird
+            die Priorität 1 besitzt, kommt diese zur Ausführung. Dadurch wird
             das Programm <application>Dial</application> gestartet, welches
             wiederum in der Datei <filename>/etc/asterisk/sip.conf</filename>
             nach dem Eintrag 2000 sucht und diesen Apparat dann 20 Sekunden
-            lang anruft (dafÃ¼r die 20 als zweiter Parameter des
+            lang anruft (dafür die 20 als zweiter Parameter des
             Dial-Befehls).</para>
           </listitem>
 
           <listitem>
             <para>Wenn nach 20 Sekunden niemand den Anruf annimmt wird die
-            Dial() Applikation abgebrochen und die PrioritÃ¤t um 1
-            hochgezÃ¤hlt.</para>
+            Dial() Applikation abgebrochen und die Priorität um 1
+            hochgezählt.</para>
           </listitem>
 
           <listitem>
@@ -615,33 +615,33 @@ exten =&gt; 2000,2,VoiceMail(2000,u)
             ist also an der Reihe und startet das Programm
             <application>Voicemail</application> mit dem Parametern
             <parameter>2000</parameter> und <parameter>u</parameter>. Die
-            <parameter>2000</parameter> steht fÃ¼r die Nummer der Voicemailbox
-            und das <parameter>u</parameter> fÃ¼r die Sprachbausteine
+            <parameter>2000</parameter> steht für die Nummer der Voicemailbox
+            und das <parameter>u</parameter> für die Sprachbausteine
             <parameter>unavailable</parameter> (nicht erreichbar). Wie Sie
-            sich sicherlich schon denken kÃ¶nnen, ist auch hier die
+            sich sicherlich schon denken können, ist auch hier die
             <parameter>2000</parameter> nur der Einfachheit halber genommen
-            worden. Die Voicemailbox kÃ¶nnte auch <parameter>5555</parameter>
-            oder <parameter>Apfelmus</parameter> heiÃŸen.</para>
+            worden. Die Voicemailbox könnte auch <parameter>5555</parameter>
+            oder <parameter>Apfelmus</parameter> heißen.</para>
           </listitem>
         </itemizedlist>
 
-        <para>Damit wir spÃ¤ter vom jeweiligen Telefon auch an unsere
+        <para>Damit wir später vom jeweiligen Telefon auch an unsere
         Sprachnachrichten kommen, wird in der letzten Zeile die Nummer 2999
-        fÃ¼r das Aufrufen der Voicemailbox definiert.<programlisting>exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)</programlisting></para>
+        für das Aufrufen der Voicemailbox definiert.<programlisting>exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)</programlisting></para>
 
         <para>Hierbei kommen wir zum ersten Mal mit der Benutzung von
         Funktionen in der <filename>/etc/asterisk/extensions.conf</filename>
-        in BerÃ¼hrung. Das aufgerufene Applikation heiÃŸt
+        in Berührung. Das aufgerufene Applikation heißt
         <application>VoiceMailMain</application> und ihm wird als erster
         Parameter die Ausgabe der Funktion
-        <parameter>${CALLERID(num)}</parameter> Ã¼bergeben.
+        <parameter>${CALLERID(num)}</parameter> übergeben.
         <parameter>${CALLERID(num)}</parameter> gibt die Nummer des Anrufers
-        aus. Deshalb weiÃŸ das Programm
+        aus. Deshalb weiß das Programm
         <application>VoiceMailMain</application>, welche Voicemailbox gerade
         abgefragt wird. Wird dieser Parameter nicht angegeben, fragt
         <application>VoiceMailMain</application> als Erstes den Anrufer nach
         dem Namen der VoiceMailbox. Der Parameter <parameter>s</parameter>
-        sorgt dafÃ¼r, das der Benutzer kein Passwort eingeben muss.</para>
+        sorgt dafür, das der Benutzer kein Passwort eingeben muss.</para>
       </section>
 
       <section id="min-anlage-voicemail.conf">
@@ -652,7 +652,7 @@ exten =&gt; 2000,2,VoiceMail(2000,u)
         linkend="kapitel-voicemail" />) wird in der Datei
         <filename>/etc/asterisk/voicemail.conf</filename> konfiguriert und mit
         dem Wissen, das wir bisher bereits erworben haben, ist sie fast schon
-        selbsterklÃ¤rend:</para>
+        selbsterklärend:</para>
 
         <programlisting>[general]
 format = wav
@@ -664,27 +664,27 @@ format = wav
         <para>In der Sektion <code>[general]</code> wird das
         Aufzeichnungsformat definiert (hier WAV) und in der Sektion
         <code>[default]</code> werden die beiden Mailboxen 2000 und 2001 mit
-        den entsprechenden PasswÃ¶rtern (4711 und 0815) definiert. Hinter dem
-        Passwort findet sich dann noch ein Eintrag fÃ¼r den Namen des Benutzers
+        den entsprechenden Passwörtern (4711 und 0815) definiert. Hinter dem
+        Passwort findet sich dann noch ein Eintrag für den Namen des Benutzers
         und danach seine E-Mail-Adresse. Sprachnachrichten werden so
         automatisch als E-Mail-Attachments im WAV-Format zugestellt.</para>
       </section>
     </section>
 
     <section id="min-anlage-festnetz">
-      <title id="festnetz-outgoing">Ins Ã¶ffentliche Telefonnetz
+      <title id="festnetz-outgoing">Ins öffentliche Telefonnetz
       telefonieren</title>
 
       <para>Jetzt werden Sie vielleicht einwenden, dass Sie zwar eine fertige
-      Telefonanlage haben, was an und fÃ¼r sich spannend ist, aber ohne den
-      Anschluss an die groÃŸe weite Welt noch nicht wirklich nÃ¼tzlich. Wenn Sie
+      Telefonanlage haben, was an und für sich spannend ist, aber ohne den
+      Anschluss an die große weite Welt noch nicht wirklich nützlich. Wenn Sie
       mir weitere 10 Minuten Zeit geben und Ihre Mini-Telefonanlage eine
-      Internetverbindung besitzt, lÃ¤sst sich auch diese Aufgabe lÃ¶sen und Sie
-      erhalten in KÃ¼rze Anschluss ans Festnetz. Dazu benÃ¶tigen Sie einen
+      Internetverbindung besitzt, lässt sich auch diese Aufgabe lösen und Sie
+      erhalten in Kürze Anschluss ans Festnetz. Dazu benötigen Sie einen
       Account bei einem SIP-Provider.</para>
 
       <para>Jetzt konfigurieren wir Asterisk so, dass Sie mit den Telefonen
-      2000 und 2001 ins deutsche Festnetz telefonieren kÃ¶nnen. Als Erstes muss
+      2000 und 2001 ins deutsche Festnetz telefonieren können. Als Erstes muss
       der Provider-Account in der <filename>/etc/asterisk/sip.conf</filename>
       eingetragen werden:</para>
 
@@ -723,11 +723,11 @@ insecure=very
 nat=yes</programlisting>
 
       <para>Den Usernamen (im Beispiel <parameter>5587572</parameter>) und Ihr
-      Passwort (im Beispiel <parameter>UHDZJD</parameter>) kÃ¶nnen Sie der
+      Passwort (im Beispiel <parameter>UHDZJD</parameter>) können Sie der
       SIP-Provider-Webseite entnehmen. Damit kann Asterisk diesen Account
-      benutzen. Allerdings mÃ¼ssen wir jetzt noch in der
+      benutzen. Allerdings müssen wir jetzt noch in der
       <filename>/etc/asterisk/extensions.conf</filename> eine Regel zum
-      RauswÃ¤hlen einfÃ¼gen:</para>
+      Rauswählen einfügen:</para>
 
       <programlisting>[sonstige]
 
@@ -742,30 +742,30 @@ exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)
 
 exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)</programlisting>
 
-      <para>Nachdem die EintrÃ¤ge in den Konfigurationsdateien erstellt sind,
+      <para>Nachdem die Einträge in den Konfigurationsdateien erstellt sind,
       starten Sie Asterisk, wie bekannt, mit <command>asterisk
       -vvvvvc</command> in das CLI und warten ein paar Sekunden, bis sich
       eines der SIP-Telefone angemeldet hat. Danach einfach eine beliebige
-      Nummer im deutschen Festnetz (mit Vorwahl) wÃ¤hlen und warten (im CLI
-      kÃ¶nnen Sie beobachten, was passiert). Nach kurzer Zeit hÃ¶ren Sie auch
-      schon das Freizeichen und kÃ¶nnen mit einem Festnetz-Teilnehmer
+      Nummer im deutschen Festnetz (mit Vorwahl) wählen und warten (im CLI
+      können Sie beobachten, was passiert). Nach kurzer Zeit hören Sie auch
+      schon das Freizeichen und können mit einem Festnetz-Teilnehmer
       telefonieren. Wie die obige Konfiguration genau funktioniert, wird an
       dieser Stelle noch nicht verraten.<footnote>
           <para>Nur so viel an dieser Stelle: Die Variable
-          <code>${EXTEN}</code> enthÃ¤lt die vom Benutzer gewÃ¤hlte Nummer
+          <code>${EXTEN}</code> enthält die vom Benutzer gewählte Nummer
           (siehe <xref linkend="kapitel-programmieren" />).</para>
         </footnote></para>
     </section>
 
     <section id="festnetz-incoming">
-      <title>GesprÃ¤che vom Ã¶ffentlichen Netz entgegennehmen</title>
+      <title>Gespräche vom öffentlichen Netz entgegennehmen</title>
 
-      <para>Der letzte Schritt ist ein kleiner. Wir wollen Ã¼ber unsere
+      <para>Der letzte Schritt ist ein kleiner. Wir wollen über unsere
       Rufnummer beim VoIP-Provider auf dem Telefon mit der Nummer
-      <parameter>2000</parameter> angerufen werden kÃ¶nnen. Dazu mÃ¼ssen wir nur
+      <parameter>2000</parameter> angerufen werden können. Dazu müssen wir nur
       noch einen weiteren Context in die Konfigurationsdatei
       <filename>/etc/asterisk/extensions.conf</filename>
-      hinzufÃ¼gen:<programlisting>[sonstige]
+      hinzufügen:<programlisting>[sonstige]
 
 [meine-telefone]
 exten =&gt; 2000,1,Dial(SIP/2000,20)
@@ -788,8 +788,8 @@ exten =&gt; 5587572,1,Dial(SIP/2000)</programlisting></para>
       Ihren Kundendaten diese Nummer nach. Dass die Rufnummer hier dieselbe
       ist wie der Username, ist prinzipiell Zufall.</para>
 
-      <para>Wer will kann natÃ¼rlich ganz einfach mit der folgenden Variante
-      noch eine Voicemailbox fÃ¼r GesprÃ¤che die vom SIP-Provider kommen
+      <para>Wer will kann natürlich ganz einfach mit der folgenden Variante
+      noch eine Voicemailbox für Gespräche die vom SIP-Provider kommen
       aktivieren:<programlisting>[sonstige]
 
 [meine-telefone]
@@ -807,7 +807,7 @@ exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)
 exten =&gt; 5587572,1,Dial(SIP/2000,20)
 exten =&gt; 5587572,2,VoiceMail(2000,u)</programlisting></para>
 
-      <para>In diesem EinfÃ¼hrungs-Kapitel wollte ich Ihnen zeigen, wie schnell
+      <para>In diesem Einführungs-Kapitel wollte ich Ihnen zeigen, wie schnell
       und einfach man mit Asterisk eine funktionierende Telefonanlage aufbauen
       kann. Im verbleibenden Teil des Buches gehen wir tiefer in die Details
       und ich zeige Ihnen, was man mit Asterisk alles machen kann.</para>
