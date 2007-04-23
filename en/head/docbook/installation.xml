@@ -317,9 +317,9 @@ debian:/etc/asterisk#</screen>
           <para>Set both the Registrar and Proxy addresses in the SIP phones
           to the IP address of your Asterisk server. Some phones won't accept
           any blank fields, even if the fields aren't needed for your
-          situation. Set them to "bla" if necessary. Sadly, there's no hard
-          and fast rule here - sometimes a little trial and error is
-          unavoidable.</para>
+          situation. Set them to a meaningless value if necessary. Sadly,
+          there's no hard and fast rule here; it depends on the phone.
+          Sometimes a little trial and error is unavoidable.</para>
         </tip>For the user configuration on the phone, use the extension
       information we set in <filename>/etc/asterisk/sip.conf</filename>. SIP
       extension 2000 must be configured this way:</para>
@@ -352,12 +352,11 @@ debian:/etc/asterisk#</screen>
       <para>In this case, the IP address is
       <computeroutput>23.3.19.73</computeroutput>.</para>
 
-      <para>Now we start Asterisk again but, this time, with more verbose
-      console logging so that we can see what it is doing when we try to place
-      a call. We do this by adding the parameters
-      <parameter>-vvvvvc</parameter> after the command (the 5 v's mean
-      <quote>verbosity level 5</quote>). This will let us see when the SIP
-      phone registers with the PBX::</para>
+      <para>Now we start Asterisk again, this time with more verbose console
+      logging so that we can see what it is doing when we try to place a call.
+      We do this by adding the parameters <parameter>-vvvvvc</parameter> after
+      the command (the 5 v's mean <quote>verbosity level 5</quote>). This will
+      let us see when the SIP phone registers with the PBX:</para>
 
       <screen>debian:/etc/asterisk# asterisk -vvvvvc
 [...]
@@ -475,8 +474,8 @@ context = others</programlisting>
       <code>bindaddr = 0.0.0.0</code> value tells Asterisk to listen for
       connections on <emphasis>all</emphasis> the IP addresses configured on
       the system. Most systems will have only a single IP address. If you have
-      multiple physical or virtual interfaces configured or even multiple
-      instances of Asterisk running and you want to decide which IP addresses
+      multiple physical or virtual interfaces configured, or even multiple
+      instances of Asterisk running, and you want to decide which IP addresses
       Asterisk will accept connections on, you can specify those addresses
       with the <code>bindaddr</code> value.</para>
 
@@ -499,7 +498,7 @@ host=dynamic</programlisting>
       parameter <parameter>type=friend</parameter> simply means that this SIP
       extension can both accept and make calls.<footnote>
           <para>The entry <code>type=</code> has three possible values (we'll
-          address these in a later chapter):</para>
+          address these in more detail in a later chapter):</para>
 
           <itemizedlist>
             <listitem>
@@ -519,10 +518,11 @@ host=dynamic</programlisting>
       <para>Again we encounter that ominous value, <code>context</code>. We
       are calling the context <code>my-phones</code> in
       <filename>/etc/asterisk/extensions.conf</filename>; When we look at that
-      next, the application of contexts should become clearer.</para>
+      file in the next section, the application of contexts should become
+      clearer.</para>
 
-      <para>The <code>secret</code> value sets a password for the SIP
-      extension. We use this to prevent an unauthorized device from
+      <para>The <parameter>secret</parameter> value sets a password for the
+      SIP extension. We use this to prevent an unauthorized device from
       registering as extension 2001. It's best to use numbers here, since it's
       also easier to enter numbers with most telephone sets. The term
       <code>host=dynamic</code> tells Asterisk that it doesn't matter if the
@@ -549,11 +549,11 @@ exten =&gt; 2000,1,Dial(SIP/2000,20)
 exten =&gt; 2000,2,VoiceMail(2000,u)
 </programlisting>Asterisk <emphasis>always</emphasis> uses a context when
         handling a call from one phone to another. The context name is limited
-        only by your imagination but must be consistent across configuration
+        only by your imagination, but must be consistent across configuration
         files. This means that if you refer to a context
         <code>my-phones</code> in <filename>/etc/asterisk/sip.conf</filename>,
         you must use the same name <filename>in the relevant part of
-        /etc/asterisk/extensions.conf</filename>! This context is critical to
+        /etc/asterisk/extensions.conf</filename>. This context is critical to
         the operation of the phone! It determines what extension numbers can
         be dialled and which actions will be allowed.<important>
             <para>The context of the phone you are calling
@@ -562,7 +562,7 @@ exten =&gt; 2000,2,VoiceMail(2000,u)
           </important></para>
 
         <para>The syntax of a dialplan entry always follows this
-        convention:<programlisting>exten =&gt; Number,Priority,Application</programlisting></para>
+        convention:<programlisting>exten =&gt; <emphasis>Number,Priority,Application</emphasis></programlisting></para>
 
         <para>When a number is dialled, Asterisk checks to see if it matches a
         dialplan entry. If a match is found, that entry is read and executed.
@@ -666,7 +666,7 @@ format = wav
         complete with passwords (<code>4711</code> and <code>0815</code>).
         After the password, there is a field for the name of the mailbox owner
         and that person's e-mail address. Messages are attached as WAV-format
-        files to an e-mail and sent to the intended recipient..</para>
+        files to an e-mail and sent to the intended recipient.</para>
       </section>
     </section>
 
@@ -677,7 +677,7 @@ format = wav
       <para>Now, you're probably thinking <quote>It's nice that we have a
       working telephone system, but what good is it if you can't make calls to
       the big wide world?</quote> With your permission, an additional 10
-      minutes of your time and an Internet connection, we will solve that
+      minutes of your time, and an Internet connection, we will solve that
       problem too. You'll need an account with a SIP telephony
       provider.</para>
 
@@ -749,9 +749,9 @@ exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)</programlisting>
       simply dial a number. <tip>
           <para>When dialing through most VoIP providers, you need to dial the
           complete number, including predial digit (1 in North America) and
-          area or city code even if the call is a local call in your calling
+          area or city code, even if the call is a local call in your calling
           area. For North America, this means you would be dialling the
-          predial digit followed by the full 10 digit number including area
+          predial digit, followed by the full 10 digit number including area
           code, even in regions that do not already have 10 digit local
           dialing. (Later on, we'll show you some techniques that you can use
           in <filename>/etc/asterisk/extensions.conf</filename> so that you
@@ -823,9 +823,11 @@ exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)
 exten =&gt; 18885556266,1,Dial(SIP/2000,20)
 exten =&gt; 18885556266,2,VoiceMail(2000,u)</programlisting></para>
 
-      <para>This chapter was meant to show you how quickly you can build a
-      working Asterisk system. In the coming chapters, we'll fill in the gaps
-      and show you just how much you can really do with Asterisk.</para>
+      <para>If you were so inclined, you could just leave things like this and
+      start using your new mini-PBX, but what fun would that be? This chapter
+      was meant to show you how quickly you can build a working Asterisk
+      system. In the coming chapters, we'll fill in the gaps and show you just
+      how much you can really do with Asterisk.</para>
     </section>
   </section>
 </chapter>
