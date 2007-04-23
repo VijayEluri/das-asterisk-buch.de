@@ -124,7 +124,7 @@
 
             <entry>Management</entry>
 
-            <entry>The managers have 2XX extensions.</entry>
+            <entry>The executive offices have 2XX extensions.</entry>
           </row>
 
           <row>
@@ -132,7 +132,7 @@
 
             <entry>Reception</entry>
 
-            <entry>As reception will mostly be fielding calls to management,
+            <entry>As reception will be fielding calls mostly to management,
             they have numbers in the range 230-269. Numbers from 270-299 are
             kept in reserve.</entry>
           </row>
@@ -179,8 +179,8 @@
 
             <entry>Internal services</entry>
 
-            <entry>Special services and non-standard extensions, e.g.,
-            voicemail or teleconferencing.</entry>
+            <entry>Special services and non-standard extensions,
+            <emphasis>e.g.</emphasis>, voicemail or teleconferencing.</entry>
           </row>
         </tbody>
       </tgroup>
@@ -188,140 +188,163 @@
   </section>
 
   <section id="apfelmus-infrastruktur">
-    <title>Auswahl der Infrastruktur</title>
+    <title>Choice of infrastructure</title>
 
-    <para>Da in dem neuen Gebäude bereits eine strukturierte und moderne
-    Netzwerkverkabelung vorliegt, ist es eine naheliegende Idee, jeden
-    Arbeitsplatz mit einem SIP-Telefon auszustatten. So müssen nicht extra
-    Kabel für das Telefonnetz verlegt werden. Die Faxe und schnurlosen
-    Telefone werden über SIP-to-Analog-Adapter angeschlossen. Der
-    Asterisk-Server wird in einem ordentlich ausgestatteten Serverraum mit
-    entsprechender Klimatisierung untergebracht, mit Sicherheitseinrichtungen
-    und Zugangskonzept. Durch das Zugangskonzept und die
-    Sicherheitseinrichtungen haben auch nur diejenigen Personen Zugriff auf
-    die Anlage, die dazu berechtigt sind.<footnote>
-        <para>Noch vor 10 Jahren war es bei vielen Telefonanlagenherstellern
-        üblich, sich ''Hintertüren'' in große Anlagen einzubauen. So konnte
-        man ohne großen Aufwand bei Problemen schnell helfen, indem man sich
-        über einen offenen Port von außen in die Anlage einwählte. Böse
-        Geister nutzten diese Möglichkeit allerdings auch, um auf Kosten der
-        Eigentümer (meistens große Behörden, in denen die Übersicht fehlte)
-        Fern- oder Auslandsgespräche zu führen.</para>
+    <para>The new building is getting a modern structured cabling system, so
+    it makes sense to equip each workstation with a SIP phone. This saves us
+    the grief and extra expense of running telephone wiring in parallel to the
+    network wiring. Fax machines and cordless telephones can be connected to
+    the system using analog telephone adapter (ATA) devices.<warning>
+        <para>Faxing in Asterisk is nevertheless problematic. VoIP
+        connections, depending on how they are compressed, can have less
+        bandwidth available than a fax connection requires. This can result in
+        fax transmissions being only partially received, or worse, failing
+        completely. If you are only using VoIP internally, you must ensure
+        that the codecs you choose can adequately support fax. The better
+        option is to use an analog telephony card to provide internal analog
+        extensions purely for fax use, or, ideally, build fax server
+        functionality into Asterisk (see <xref
+        linkend="kapitel-fax" />).</para>
+      </warning>We install the Asterisk server in a climate-controlled server
+    room with controlled access. Only authorized personnel are to have access
+    to the server.<footnote>
+        <para>In the past it was common for PBX and key system manufacturers
+        to build secret backdoors into their systems, mainly for the purpose
+        of providing timely support in the event of an outage. It was
+        inevitable that clever but unscrupulous parties would figure out a way
+        to exploit these backdoors to make free long distance and
+        international calls, mostly at the expense of public institutions too
+        large to have a clear picture of how their systems were configured. In
+        today's world, the security of your systems, be they Asterisk or
+        anything else, should always be a paramount concern.</para>
       </footnote></para>
 
     <section id="apfelmus-netzwerk">
-      <title>Netzwerk</title>
+      <title>Network</title>
 
-      <para>Die wichtigste Regel, der man sich stets bewusst sein sollte, ist,
-      dass Telefonie ein synchrones Medium ist, d.h. die Informationen müssen
-      für den Sender und den Empfänger praktisch "gleichzeitig" vorliegen und
-      dies über die Dauer der gesamten Kommunikation. Während wir in einem
-      Telefongespräch Verzögerungen bis ca. 300 ms noch einigermaßen
-      tolerieren, werden Pausen von einer halben Sekunde und mehr als sehr
-      störend empfunden und kaum akzeptiert. Bei der IP-Telefonie wird ein
-      synchrones Kommunikationsmittel über eine asynchrone Technik
-      transportiert. Die Funktionsweise des TCP/IP-Protokolls des Internets
-      wurde auf Störfestigkeit und Robustheit hin ausgelegt und nicht auf
-      einen Datentransport in Echtzeit. Für den Transport von E-Mails zum
-      Beispiel ist es völlig unerheblich, ob im Datentransport mehrere
-      Unterbrechungen von einigen Sekunden liegen. Dass es überhaupt möglich
-      ist, Telefonie via IP unter diesen Bedingungen erfolgreich umzusetzen,
-      liegt an der Leistungsfähigkeit der heutigen Netzwerktechnologie.
-      Dadurch, dass die zu übertragene Datenmenge im Verhältnis zur
-      vorhandenen Übertragungskapazität deutlich geringer ist, können die
-      Anforderungen quasi in Echtzeit umgesetzt werden. Bei den meisten
-      Netzwerken liegen jedoch häufig unterschiedliche Lastzustände vor, d.h.
-      die zur Verfügung stehende Bandbreite wird zu unterschiedlichen Zeiten
-      mal stärker und mal weniger stark ausgenutzt. In fast allen Unternehmen
-      kann man beobachten, wie die Auslastung des Netzwerks dem Rhythmus des
-      Arbeitstages folgt. Zwischen 8 Uhr morgens und 18 Uhr abends steigt die
-      Auslastung in der Regel, da die Mitarbeiter zum Beispiel E-Mails
-      schreiben, im Web surfen, Daten herunterladen etc. Zu den Zeiten, in
-      denen die Mitarbeiter intensiv arbeiten, telefonieren sie aber auch,
-      d.h. unsere IP-Telefone konkurrieren mit dem restlichen Netzwerkverkehr
-      um die zur Verfügung stehende Bandbreite. Und während es für die
-      Zustellung einer E-Mail kein größeres Problem darstellt, wenn die
-      Verbindungsgeschwindigkeit sinkt -- es dauert halt etwas länger --, kann
-      es für unsere IP-Telefone kritisch werden, wenn die Bandbreite unter den
-      Mindestbedarf fällt. Die Sprachqualität leidet dann deutlich, es kommt
-      zu Aussetzern und Sprachfetzen. Wie störend das ist, kennt sicherlich
-      jeder von Telefonaten mit dem Mobiltelefon bei einer schlechten
-      Verbindung. Um mit den unterschiedlichen Anforderungen der jeweiligen
-      Verbindungsarten besser umgehen zu können, verfügen professionelle
-      Netzwerkrouter über die Möglichkeit, Netzwerkverkehr je nach Typ zu
-      priorisieren.<footnote>
+      <para>The network is such a significant aspect of Asterisk's
+      functionality that it demands a more thorough discussion.</para>
+
+      <para>Telephony is a synchronous medium, which means that the receiver
+      must receive the sender's transmission the instant it is sent. Human
+      beings can tolerate a delay (also known as <quote>latency</quote>) of up
+      to 300 ms (milliseconds), though the delay can be perceptible over 100
+      ms and distracting over 200 ms. Most people find anything over 500 ms
+      unacceptable. This is the principal challenge that IP telephony must
+      address; in IP telephony, we are attempting to carry a synchronous data
+      stream over an asynchronous medium. The TCP/IP protocol, developed with
+      funding from the US Defense Advanced Research Projects Agency (DARPA),
+      was designed to maximize stability and robustness, but it achieves this
+      at the expense of the kind of real-time performance we would expect of a
+      telephone connection.</para>
+
+      <para>When an e-mail suffers an occasional pause in transmission, it is
+      materially unaffected. A voice conversation, by contrast, is highly
+      time-dependent. If someone says <quote>Hi</quote> to us, we expect it to
+      be followed by something relevant and intelligble immediately (like
+      <quote>there!</quote> for example), because that is the way people speak
+      to each other in person. That we can even carry voice traffic on an IP
+      connection is owing to the high performance of modern network hardware.
+      The high bandwidth of modern networks coupled with the relatively small
+      bandwidth required by a single telephone-grade voice conversation means
+      that voice traffic can be carried in a pseudo-real-time fashion.</para>
+
+      <para>Nevertheless, network conditions vary, both by site and in time. A
+      big network with many endpoints will carry a lot of traffic; networks
+      also tend to be busier during normal business hours (say from 8 a.m. to
+      6 p.m.) while employees send and receive e-mail, surf the web, download
+      programs and documents, etc. This happens to be the time they make most
+      of their telephone calls, and things can reach a critical point very
+      quickly. If the available bandwidth drops below the minimum needed, we
+      will start to see packet delay or loss. When this happens, the effect on
+      voice conversations is drastic and immediate, resulting in dropouts,
+      clipped words, clicks, pops and other strange noises. Anybody who has
+      any experience with wireless telephone service knows how distracting
+      this can be.</para>
+
+      <para>To deal with these eventualities, commercial-grade routers and
+      most managed switches support some kind of traffic
+      classification.</para>
+
+      <para><footnote>
           <para>TOS - Type Of Service</para>
         </footnote></para>
 
-      <para>Diese Maßnahme ist zwar geeignet, den Netzwerkverkehr nach innen
-      und außerhalb des eigenen Netzwerkanschlusses zum Internet-Provider
-      entsprechend zu regeln, jedoch hat dies keinen Einfluss auf die
-      Lastsituation im Netz des Providers. Erst wenn der Provider
-      entsprechende Garantien für Übertragungskapazitäten für bestimmte
-      Verbindungstypen<footnote>
+      <para>By setting a TOS flag in voice packets, we can prioritize traffic
+      passing through the router or switch. This feature is useful for
+      managing traffic inside our network and across the network boundary, but
+      it has no impact once the packets are on the Internet service provider's
+      (ISP) network or on the public Internet. Only once the ISP guarantees
+      low latency and bandwidth for real-time traffic<footnote>
           <para>QOS - Quality Of Service</para>
-        </footnote> anbietet, kann die Kette lückenlos geschlossen werden.
-      Falls Sie also mehrere Standorte in Ihrem Unternehmen via IP-Telefonie
-      verbinden möchten, sollten Sie dies in Ihrer Planung berücksichtigen und
-      mit Ihrem Provider darüber sprechen. Die Telefonanlage der Apfelmus GmbH
-      bedient 78 Endgeräte. Das heißt, dass im schlimmsten Fall 39 zeitgleiche
-      interne Verbindungen zustande kommen können, wenn die Mitarbeiter sich
-      nur intern anrufen. Abhängig vom verwendeten Codec für die Kodierung des
-      Audiosignals ergibt sich ein Netzwerkverkehr von maximal 6.500
-      kbps<footnote>
+        </footnote>can we have an assurance of call quality. If you will be
+      supporting a multi-branch operation and plan to connect them with VoIP,
+      you should consider this requirement carefully and discuss it with your
+      ISP.</para>
+
+      <para>The Asterisk system for Widgets, Inc. has at least 78 physical
+      stations. In the worst case, we can expect 39 simultaneous conversations
+      if all the employees call each other. Depending on the codec used, we
+      can expect a maximum bandwidth of 6,500 kbps<footnote>
           <para>kbps = kilobits per second</para>
-        </footnote>, was für die heute gängigen 100 Mbps<footnote>
+        </footnote>, which should be no problem for a typical 100
+      Mbps<footnote>
           <para>Mbps = Megabits per second, also 1.024 kbps</para>
-        </footnote> an Netzwerkbandbreite in strukturierten
-      Inhouse-Verkabelungen keine Herausforderung darstellt. Dennoch sollten
-      Sie berücksichtigen, dass anderer Netzwerkverkehr ebenfalls übertragen
-      wird und die verfügbare Bandbreite rasch an Grenzen stoßen kann. Wie
-      kommt der Wert von 6.500 kbps zu Stande? Für die Inhouse-Verbindungen
-      greifen wir in unserem Beispiel auf den a-law<footnote>
-          <para>Eigentlich G.711, der in zwei Varianten auftritt als a-law und
-          u-law.</para>
-        </footnote> Codec zurück, der auch im ISDN-Netz zum Einsatz kommt. Er
-      bietet eine sehr gute Sprachqualität, benötigt dafür aber auch 64 kbps
-      Bandbreite. Jede Verbindung besteht aus einem eingehenden und einem
-      ausgehenden Kanal mit jeweils 64 kbps, die 39 Verbindungen summieren
-      sich auf: 2*39*64 kbps = 4.992 kbps. Zum Bandbreitenbedarf des Codecs
-      kommt noch ein Overhead durch das TCP/IP-Protokoll hinzu, so dass aus
-      den 64 kbps ca. 80 kbps an Netzwerkverkehr werden. Legt man der Rechnung
-      nun die 80 kbps zu Grunde, ergibt das 6.280 kbps, aufgerundet erhält man
-      die genannten 6.500 kbps. Dabei sind die 6.500 kbps natürlich nur ein
-      Worst-Case-Szenario. Trotzdem sollte man immer für genau dieses gerüstet
-      sein!<footnote>
-          <para>Auf der Webseite <ulink
+        </footnote>LAN on structured, twisted pair cable. All the same, this
+      network will be carrying other traffic, and a couple of big file
+      transfers can be enough to hit performance limits.</para>
+
+      <para>How do we get the 6,500 kbps value? The standard G.711 compression
+      standard includes two companding algorithms, u-law (used in North
+      American and Japan) and a-law (used in Europe).<footnote>
+          <para>These two algorithms are used for carrying voice traffic in
+          ISDN channels (such as those used in T1 and T3 connections; see
+          <xref linkend="kapitel-ISDN" />)</para>
+        </footnote>These provide excellent sound quality, but need at least 64
+      kbps bandwidth. A single connection consists of an incoming and outgoing
+      channel, each at 64 kbps; 39 connections add up as follows: 2 x 39 x 64
+      kbps = 4,992 kbps. In addition to the channel bandwidth required, there
+      will also be TCP/IP network overhead, so that each channel will use
+      about 80 kbps in total. Now our total is 6,280 kbps; round up, and we
+      have 6,500 kbps. While this is only a worst-case scenario, when it comes
+      to voice systems, it is better to be safe than sorry!<footnote>
+          <para>The website <ulink
           url="http://www.asteriskguru.com/tools/bandwidth_calculator.php">http://www.asteriskguru.com/tools/bandwidth_calculator.php</ulink>
-          finden Sie ein einfaches Online-Tool zur Bandbreitenberechnung
-          verschiedener Codecs.</para>
+          has an Asterisk bandwidth calculator with bandwidth values for
+          various codecs that can help you the planning process.</para>
         </footnote><tip>
-          <para>Wer sich am Anfang einer solchen Installation nicht sicher
-          ist, ob die Netzwerkbandbreite ausreicht, sollte lieber einen
-          verlustbehafteteren Codec wie GSM benutzen. Der benötigt mit 13-15
-          kbps nur ein Fünftel der Bandbreite vom a-law Codec und hat eine
-          akzeptable Sprachqualität. Später kann man dann einzelne Bereiche
-          Stück für Stück auf bessere Codecs umstellen und dabei beobachten,
-          ob es Netzwerkprobleme gibt. Sie sollten dabei jedoch die Auslastung
-          der CPU im Auge behalten, da die komprimierenden Codecs deutlich
-          mehr Rechenleistung in Anspruch nehmen.</para>
+          <para>If you have doubts over whether you have sufficient bandwidth
+          available to support all your extensions, consider starting with a
+          lossier codec such as GSM. At betwen 13 and 15 kbps per channel, it
+          needs only a fifth of the bandwidth of u-law and delivers adequate
+          sound quality for most applications. Once you've verified the
+          stability of your system, you can try switching groups of extensions
+          over to u-law and wait to see if you have network problems as a
+          result. Just remember highly compressive codecs like GSM are more
+          processor-intensive, so you need to ensure you have adequate CPU
+          resources available on your Asterisk server.</para>
         </tip></para>
     </section>
 
     <section id="apfelmus-server-hardware">
-      <title>Server-Hardware</title>
+      <title>Server hardware</title>
 
-      <para>Die Anforderungen, die ans Netzwerk gestellt werden, treffen im
-      Prinzip auch auf die verwendete Hardware des Rechners zu. Die
-      Notwendigkeit der synchronen Datenübertragung erfordert auch eine
-      entsprechend zeitnahe Abarbeitung der notwendigen Vorgänge durch den
-      verwendeten Rechner. Hierbei gibt die Kodierung und Dekodierung des
-      Sprachsignals den Leistungsbedarf vor, insbesondere dann, wenn die
-      beteiligten Endgeräte unterschiedliche Codecs verwenden und Asterisk die
-      ankommenden und ausgehenden Datenströme umkodieren muss. Aufgrund der
-      großen Bandbreite an verfügbarer Hardware und dem jeweils spezifischen
-      Leistungsvermögen gibt es keine einfache Regel für die Bemessung. Als
-      eine erste Orientierung soll folgende Staffelung dienen:</para>
+      <para>The choice of server hardware for the Asterisk server is subject
+      to many of the same considerations. The need for synchronous, real-time
+      data transfer requires timely handling of the necessary processes in
+      Asterisk. Most of the computing effort comes in the coding and decoding
+      of digital sound streams; this effort is even greater if you have
+      equipment that uses different codecs and Asterisk has to
+      transcode<footnote>
+          <para>Transcoding is the process by which an audio stream in one
+          codec is translated into another codec. For example, a connection
+          between a device supporting only GSM and one supporting only G.711
+          will have to be transcoded; this is normally done by
+          Asterisk.</para>
+        </footnote> between them. The tremendous variety and quantity of
+      hardware available means there is no hard and fast rule for calculating
+      processor requirements. As a guide, however, we can start with this
+      table:</para>
 
       <informaltable>
         <tgroup cols="3">
@@ -329,9 +352,9 @@
             <row>
               <entry>CPU</entry>
 
-              <entry>Anzahl der Verbindungen</entry>
+              <entry>Number of connections</entry>
 
-              <entry>Anzahl der Nebenstellen</entry>
+              <entry>Number of endpoints</entry>
             </row>
 
             <row>
@@ -361,17 +384,17 @@
         </tgroup>
       </informaltable>
 
-      <para>Mit CPU ist an dieser Stelle eine handelsübliche CPU eines IBM-PC
-      kompatiblen Rechners (z.B. von Intel, AMD) gemeint. Bei der Berechnung
-      der möglichen Anzahl von Nebenstellen gehen wir davon aus, dass nicht
-      alle Nutzer zur gleichen Zeit telefonieren, sondern im Mittel ein
-      Drittel bis die Hälfte. Bitte betrachten Sie die angegebenen Werte
-      lediglich als eine grobe Orientierung, die zudem eher konservativ
-      geschätzt wurde, d.h. mit deutlicher Reserve. Fallen wenig
-      Umkodierungen, Konferenzschaltungen und Echo-Unterdrückungen an, dann
-      können deutlich mehr gleichzeitige Verbindungen bewältigt werden. Die
-      genaue Zahl kann oftmals nur durch sinnvolles Ausprobieren ermittelt
-      werden.</para>
+      <para>By <quote>CPU</quote> we mean a typical off-the-shelfist an dieser
+      Stelle eine handelsübliche CPU eines IBM-PC kompatiblen Rechners (z.B.
+      von Intel, AMD) gemeint. Bei der Berechnung der möglichen Anzahl von
+      Nebenstellen gehen wir davon aus, dass nicht alle Nutzer zur gleichen
+      Zeit telefonieren, sondern im Mittel ein Drittel bis die Hälfte. Bitte
+      betrachten Sie die angegebenen Werte lediglich als eine grobe
+      Orientierung, die zudem eher konservativ geschätzt wurde, d.h. mit
+      deutlicher Reserve. Fallen wenig Umkodierungen, Konferenzschaltungen und
+      Echo-Unterdrückungen an, dann können deutlich mehr gleichzeitige
+      Verbindungen bewältigt werden. Die genaue Zahl kann oftmals nur durch
+      sinnvolles Ausprobieren ermittelt werden.</para>
 
       <tip>
         <para>Unter Linux gibt es mit <command>top</command> ein einfaches
