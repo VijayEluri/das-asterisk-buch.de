@@ -352,7 +352,7 @@
             <row>
               <entry>CPU</entry>
 
-              <entry>Number of connections</entry>
+              <entry>Number of simultaneous connections</entry>
 
               <entry>Number of endpoints</entry>
             </row>
@@ -384,81 +384,94 @@
         </tgroup>
       </informaltable>
 
-      <para>By <quote>CPU</quote> we mean a typical off-the-shelfist an dieser
-      Stelle eine handelsübliche CPU eines IBM-PC kompatiblen Rechners (z.B.
-      von Intel, AMD) gemeint. Bei der Berechnung der möglichen Anzahl von
-      Nebenstellen gehen wir davon aus, dass nicht alle Nutzer zur gleichen
-      Zeit telefonieren, sondern im Mittel ein Drittel bis die Hälfte. Bitte
-      betrachten Sie die angegebenen Werte lediglich als eine grobe
-      Orientierung, die zudem eher konservativ geschätzt wurde, d.h. mit
-      deutlicher Reserve. Fallen wenig Umkodierungen, Konferenzschaltungen und
-      Echo-Unterdrückungen an, dann können deutlich mehr gleichzeitige
-      Verbindungen bewältigt werden. Die genaue Zahl kann oftmals nur durch
-      sinnvolles Ausprobieren ermittelt werden.</para>
+      <para>By <quote>CPU</quote> we mean a typical CPU from an off-the-shelf
+      PC (<emphasis>e.g.</emphasis> <trademark>Intel</trademark> or
+      <trademark>AMD</trademark>). We've calculated the number of simultaneous
+      connections based on the reasonable assumption that not all the phones
+      will be active at one time, but rather between one-third and one-half.
+      It should be noted that this is just a coarse estimate with a
+      considerable margin of safety; If there is little transcoding,
+      conferencing or echo cancellation required, the number of simultaneous
+      connections supported would be higher. That said, the exact limits for
+      any given installation can only be reliably determined through direct
+      testing and experimentation.</para>
 
       <tip>
-        <para>Unter Linux gibt es mit <command>top</command> ein einfaches
-        Tool, um im laufenden Betrieb zu sehen, wie hoch die Last auf dem
-        Rechner ist. Allerdings gibt Ihnen das natürlich immer nur den
-        aktuellen Wert und reicht nicht für eine Langzeitanalyse. Dazu können
-        Sie leistungsstarke Tools wie Nagios <ulink
-        url="http://www.nagios.org">http://www.nagios.org</ulink> verwenden.
-        Wer sich mit "Bordmitteln" weiterhelfen will, kann auch einen cronjob
-        (siehe <command>man crontab</command>) mit folgendem Befehl
-        aufsetzen:<programlisting>w | head -n 1 | logger</programlisting></para>
+        <para>The Linux program <command>top</command> provides a simple tool
+        for monitoring processor loads on a running server, but only at the
+        current point in time. Processor and process loads are inherently
+        dynamic and change dramatically from one moment to the next, so point
+        measurements have limited usefulness. You can try monitoring the
+        performance of your Asterisk servers using monitoring tools like
+        Nagios <ulink
+        url="http://www.nagios.org">(http://www.nagios.org</ulink>). If you
+        prefer to use native Linux tools, you can do simple monitoring with a
+        <command>cron</command> job (see <command>man crontab</command>)
+        running a <command>bash</command> script with this
+        content:<programlisting>w | head -n 1 &gt;&gt; /var/log/serverloads</programlisting></para>
 
-        <para>Damit kann man sich (entsprechend in
-        <filename>/etc/cronjob</filename> eingestellt) jede Minute einmal die
-        aktuelle Systemlast in die Datei
-        <filename>/var/log/messages</filename> schreiben lassen und diese dann
-        am Monatsende auswerten.<footnote>
-            <para>Es sollte jedem Leser bewusst sein, dass dieser Cronjob
-            wirklich nur ein sehr einfaches Mittel zur Analyse ist.</para>
+        <para>By running this <command>cron</command> job every minute, you
+        will build up a set of data points over time which you can use to
+        evaluate server performance.<footnote>
+            <para>This cron script would indeed be a very simple analysis
+            tool. If you are comfortable with shell scripting, you can write
+            more comprehensive scripts which can give you more detailed
+            information by using output from tools like <command>top</command>
+            and <command>uptime</command> and dumping the output into a
+            comma-delimited text file which you can graph in a spreadsheet
+            program.</para>
           </footnote></para>
       </tip>
 
-      <para>In unserem Beispiel haben wir 78 Benutzer, bei denen im Mittel
-      nicht mehr als 40 gleichzeitige Verbindungen vorliegen sollten, somit
-      wäre ein Rechner mit einer halbwegs aktuellen CPU<footnote>
-          <para>Zum Beispiel Pentium 4, AMD Athlon</para>
+      <para>Widgets, Inc. has 78 employees and we can expect roughly a maximum
+      of 40 simultaneous connections, so a computer with a reasonably current
+      CPU<footnote>
+          <para>For example, Pentium 4, AMD Athlon</para>
         </footnote></para>
 
-      <para>mit 1,5 GHz Taktfrequenz geeignet. Je aktueller CPU und
-      Gesamtsystem sind, desto höher ist in der Regel die Leistung und es
-      können bei gleicher Taktfrequenz deutlich mehr Gespräche gleichzeitig
-      abgearbeitet werden. Ein Dual-CPU System verbessert hier den Wert
-      ebenfalls, da die Rechenleistung für notwendige Aufgaben des
-      Betriebssystems besser verteilt wird. Für die Voicemailboxen benötigt
-      man ca. 0,1 MByte pro aufgezeichneter Minute<footnote>
-          <para>Dies gilt für das Format wav49 oder GSM, wenn Sie hingegen das
-          unkomprimierte Format WAV verwenden, steigt der Platzbedarf um ein
-          Vielfaches.</para>
-        </footnote> an Speicherplatz. Stattet man jeden Nutzer mit 30 Minuten
-      aus, wären für unser Beispiel ca. 2 GByte an freiem Festplattenspeicher
-      ausreichend bemessen. Da die aufgezeichneten Daten denselben Stellenwert
-      wie Geschäftsdaten haben, sollten sie entsprechend gegen Ausfall und
-      Verlust abgesichert werden. Ein RAID-System<footnote>
-          <para>Bitte beachten Sie, dass ein Software-RAID die CPU
-          entsprechend zusätzlich belastet, was in unserem Fall eher
-          unerwünscht ist, deshalb ist eine vernünftige Lösung in Hardware
-          angeraten.</para>
-        </footnote> mit zwei Festplatten im Mirroring-Modus (Level 1) sollte
-      hierbei ausreichend Absicherung gewährleisten. Für unser Beispiel würden
-      zwei 18 GByte SCSI-Festplatten im RAID 1-Verbund ausreichend sein. Die
-      Anforderungen an den verfügbaren Arbeitsspeicher (RAM) sind sehr
-      moderat. Mit 512 MByte ist das System ausreichend bemessen und ab 1
-      GByte können selbst große Gruppen problemlos versorgt werden. Alle
-      zusätzlichen Maßnahmen, wie die Auswahl professioneller Hardware für den
-      Einsatz in Servern, die Ausstattung mit redundanten Netzteilen und mit
-      hochwertigen Komponenten erhöhen die Ausfallsicherheit und Betriebstreue
-      des Systems und damit in Folge die Akzeptanz durch die Nutzer - die es
-      eher gelassen nehmen, wenn der E-Mail-Server mal 10 Minuten offline ist,
-      aber das Telefon muss immer funktionieren.</para>
+      <para> at a clock speed of 1.5 GHz should suffice. In general, the newer
+      the CPU and system, the better the performance; processor clock speed is
+      no longer an accurate measure of CPU performance, particularly as
+      applied to the newer dual core processors, and your server will likely
+      be able to handle more calls with a newer processor at the same clock
+      speed. Dual processor machines will improve performance
+      correspondingly.</para>
+
+      <para>For the voice mailboxes, we will need about 0.1 MB (megabytes) of
+      disk space per minute of message time.<footnote>
+          <para>This is for wav49 or GSM format message files. If you decide
+          to use uncompressed WAV format files, you will use many times the
+          space. As disk space is cheap, this is not normally an issue, and
+          more installations are using uncompressed WAV because of the higher
+          sound quality. Be mindful, though, that more disk space used means
+          more storage required for backup.</para>
+        </footnote>If we allot 30 minutes of message storage to each user, we
+      can expect to use a total of about 2 GB (gigabytes) of disk space.
+      Because voice message data is valuable business data and can even be
+      critical, the storage should be redundant and backed-up regularly. A
+      RAID 1 array<footnote>
+          <para>Note that software RAID burdens the CPU significantly. A
+          professional installation should use hardware RAID.</para>
+        </footnote>(two disks or disk sets in a mirror configuration) will
+      provide the necessary redundancy.</para>
+
+      <para>Memory requirements for Asterisk are not onerous, and 512 MB RAM
+      would be adequate. With 1 GB RAM, Asterisk can handle very large
+      business units. Any additional steps taken to enhance the reliability
+      and performance of the server, such as the installation of redundant
+      network adapters, commercial-grade telephone interface cards, and
+      uninterruptible power supplies will go a long way to increasing user and
+      decision-maker confidence in the system. If your background is in IT
+      services, you are on a whole new level of user expectations. Users will
+      usually tolerate a brief e-mail outage; the phones, however, absolutely
+      must work <emphasis>always</emphasis>. Readers with a background in
+      circuit-switched telephony will know exactly what we are talking
+      about.</para>
     </section>
   </section>
 
   <section id="apfelmus-grundkonfiguration">
-    <title>Die Grundkonfiguration</title>
+    <title>Base configuration</title>
 
     <para>Als Erstes wird die Telefonanlage so konfiguriert, dass alle
     Teilnehmer intern miteinander telefonieren können und jeder eine
