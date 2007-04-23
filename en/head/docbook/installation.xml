@@ -674,26 +674,30 @@ format = wav
       <title id="festnetz-outgoing">Calling the public telephone
       network</title>
 
-      <para>Right now, you're probably thinking that it's nice that we have a
-      working telephone system but, what good is it if you can't make calls to
-      the big wide world? With your permission, an additional 10 minutes of
-      your time, and an Internet connection, we will solve that problem too.
-      You will need an account with a SIP telephony provider.</para>
+      <para>Now, you're probably thinking <quote>It's nice that we have a
+      working telephone system, but what good is it if you can't make calls to
+      the big wide world?</quote> With your permission, an additional 10
+      minutes of your time and an Internet connection, we will solve that
+      problem too. You'll need an account with a SIP telephony
+      provider.</para>
 
-      <para>Jetzt konfigurieren wir Asterisk so, dass Sie mit den Telefonen
-      2000 und 2001 ins deutsche Festnetz telefonieren können. Als Erstes muss
-      der Provider-Account in der <filename>/etc/asterisk/sip.conf</filename>
-      eingetragen werden:</para>
+      <para>The example below shows a sample configuration for a connection to
+      a SIP telephony provider. There are many SIP providers available; a
+      quick Google<superscript>tm</superscript> search will give you a
+      selection of providers you can try out. Once configured, this will allow
+      you to make calls to the PSTN (Public Switched Telephone Network) from
+      your Asterisk extensions. The SIP provider account information must
+      first be entered in <filename>/etc/asterisk/sip.conf</filename>:</para>
 
       <programlisting>[general]
 port = 5060
 bindaddr = 0.0.0.0
 context = others
 
-register =&gt; 5587572:UHDZJD@mein-voip-provider.de/5587572
+register =&gt; 5587572:UHDZJD@my-voip-provider.com/5587572
 ;              ^       ^       ^                    ^
 ;              |       |       |                    |
-;             User Passwort  Provider              User
+;             User Password  Provider              User
 
 [2000]
 type=friend
@@ -709,22 +713,22 @@ host=dynamic
 
 [ext-sip-account]
 type=friend
-context=von-voip-provider
+context=from-voip-provider
 username=5587572
 fromuser=5587572
 secret=UHDZJD
-host=mein-voip-provider.de
-fromdomain=mein-voip-provider.de
+host=my-voip-provider.com
+fromdomain=my-voip-provider.com
 qualify=yes
 insecure=very
 nat=yes</programlisting>
 
-      <para>Den Usernamen (im Beispiel <parameter>5587572</parameter>) und Ihr
-      Passwort (im Beispiel <parameter>UHDZJD</parameter>) können Sie der
-      SIP-Provider-Webseite entnehmen. Damit kann Asterisk diesen Account
-      benutzen. Allerdings müssen wir jetzt noch in der
-      <filename>/etc/asterisk/extensions.conf</filename> eine Regel zum
-      Rauswählen einfügen:</para>
+      <para>The SIP provider will provide you with a username
+      (<parameter>5587572</parameter> in our example) and password
+      (<parameter>UHDZJD</parameter> in our example) when you open your
+      account. Once the SIP account is configured, we still need to add an
+      entry to <filename>/etc/asterisk/extensions.conf</filename> to allow
+      outgoing calls:</para>
 
       <programlisting>[others]
 
@@ -739,30 +743,46 @@ exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)
 
 exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)</programlisting>
 
-      <para>Nachdem die Einträge in den Konfigurationsdateien erstellt sind,
-      starten Sie Asterisk, wie bekannt, mit <command>asterisk
-      -vvvvvc</command> in das CLI und warten ein paar Sekunden, bis sich
-      eines der SIP-Telefone angemeldet hat. Danach einfach eine beliebige
-      Nummer im deutschen Festnetz (mit Vorwahl) wählen und warten (im CLI
-      können Sie beobachten, was passiert). Nach kurzer Zeit hören Sie auch
-      schon das Freizeichen und können mit einem Festnetz-Teilnehmer
-      telefonieren. Wie die obige Konfiguration genau funktioniert, wird an
-      dieser Stelle noch nicht verraten.<footnote>
-          <para>Nur so viel an dieser Stelle: Die Variable
-          <code>${EXTEN}</code> enthält die vom Benutzer gewählte Nummer
-          (siehe <xref linkend="kapitel-programmieren" />).</para>
+      <para>Once these new entries have been entered, save the file and start
+      Asterisk as before, with <command>asterisk -vvvvvc</command> so that we
+      get the CLI. Wait a few seconds for the SIP phones to register. Now
+      simply dial a number. <tip>
+          <para>When dialing through most VoIP providers, you need to dial the
+          complete number, including predial digit (1 in North America) and
+          area or city code even if the call is a local call in your calling
+          area. For North America, this means you would be dialling the
+          predial digit followed by the full 10 digit number including area
+          code, even in regions that do not already have 10 digit local
+          dialing. (Later on, we'll show you some techniques that you can use
+          in <filename>/etc/asterisk/extensions.conf</filename> so that you
+          don't need to dial the full number for local calls in areas where it
+          is not normally required.)</para>
+        </tip><warning>
+          <para>Most SIP providers charge a per-minute rate for local calls
+          and many require pre-payment. An advantage is that there is no
+          monthly flat-rate for most SIP accounts.</para>
+        </warning>If everything is working as it should, you will hear the
+      remote line ringing and be able to observe the call progress in the
+      CLI.</para>
+
+      <para>It's a bit early to explain exactly how this works; more on that
+      later.</para>
+
+      <para><footnote>
+          <para>Not too much at once! For now, all you need to know is that
+          the <code>${EXTEN}</code> variable always contains the number
+          dialled by the caller for the specific instance (see <xref
+          linkend="kapitel-programmieren" />).</para>
         </footnote></para>
     </section>
 
     <section id="festnetz-incoming">
-      <title>Gespräche vom öffentlichen Netz entgegennehmen</title>
+      <title>Taking calls from the public telephone network</title>
 
-      <para>Der letzte Schritt ist ein kleiner. Wir wollen über unsere
-      Rufnummer beim VoIP-Provider auf dem Telefon mit der Nummer
-      <parameter>2000</parameter> angerufen werden können. Dazu müssen wir nur
-      noch einen weiteren Context in die Konfigurationsdatei
-      <filename>/etc/asterisk/extensions.conf</filename>
-      hinzufügen:<programlisting>[others]
+      <para>The last step is a small one: we want to be able to take incoming
+      calls via our SIP provider on extension 2000. To do this, we need to add
+      another context to
+      <filename>/etc/asterisk/extensions.conf</filename>:<programlisting>[others]
 
 [my-phones]
 exten =&gt; 2000,1,Dial(SIP/2000,20)
@@ -775,19 +795,18 @@ exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)
 
 exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)
 
-[von-voip-provider]
-exten =&gt; 5587572,1,Dial(SIP/2000)</programlisting></para>
+[from-voip-provider]
+exten =&gt; 18885556266,1,Dial(SIP/2000)
+</programlisting></para>
 
-      <para>Fertig! :-)</para>
+      <para>Done!</para>
 
-      <para>Die <parameter>5587572</parameter> ist Ihre interne Rufnummer bei
-      Ihrem VoIP-Provider. Bitte schauen Sie auf der Webseite des Providers in
-      Ihren Kundendaten diese Nummer nach. Dass die Rufnummer hier dieselbe
-      ist wie der Username, ist prinzipiell Zufall.</para>
+      <para>In our example, the number <parameter>18885556266</parameter> is
+      the PSTN number (also called a DID; more on that later) given to your
+      account by your SIP provider.</para>
 
-      <para>Wer will kann natürlich ganz einfach mit der folgenden Variante
-      noch eine Voicemailbox für Gespräche die vom SIP-Provider kommen
-      aktivieren:<programlisting>[others]
+      <para>You can, of course, configure voicemail for calls coming in from
+      the PSTN:<programlisting>[others]
 
 [my-phones]
 exten =&gt; 2000,1,Dial(SIP/2000,20)
@@ -800,14 +819,13 @@ exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)
 
 exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)
 
-[von-voip-provider]
-exten =&gt; 5587572,1,Dial(SIP/2000,20)
-exten =&gt; 5587572,2,VoiceMail(2000,u)</programlisting></para>
+[from-voip-provider]
+exten =&gt; 18885556266,1,Dial(SIP/2000,20)
+exten =&gt; 18885556266,2,VoiceMail(2000,u)</programlisting></para>
 
-      <para>In diesem Einführungs-Kapitel wollte ich Ihnen zeigen, wie schnell
-      und einfach man mit Asterisk eine funktionierende Telefonanlage aufbauen
-      kann. Im verbleibenden Teil des Buches gehen wir tiefer in die Details
-      und ich zeige Ihnen, was man mit Asterisk alles machen kann.</para>
+      <para>This chapter was meant to show you how quickly you can build a
+      working Asterisk system. In the coming chapters, we'll fill in the gaps
+      and show you just how much you can really do with Asterisk.</para>
     </section>
   </section>
 </chapter>
