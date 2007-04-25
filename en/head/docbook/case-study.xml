@@ -226,22 +226,22 @@
       functionality that it demands a more thorough discussion.</para>
 
       <para>Telephony is a synchronous medium, which means that the receiver
-      must receive the sender's transmission the instant it is sent. Human
+      must accept the sender's transmission the instant it is sent. Human
       beings can tolerate a delay (also known as <quote>latency</quote>) of up
-      to 300 ms (milliseconds), though the delay can be perceptible over 100
-      ms and distracting over 200 ms. Most people find anything over 500 ms
-      unacceptable. This is the principal challenge that IP telephony must
-      address; in IP telephony, we are attempting to carry a synchronous data
-      stream over an asynchronous medium. The TCP/IP protocol, developed with
-      funding from the US Defense Advanced Research Projects Agency (DARPA),
-      was designed to maximize stability and robustness, but it achieves this
-      at the expense of the kind of real-time performance we would expect of a
-      telephone connection.</para>
+      to 300 ms (milliseconds), though the delay can be perceptible when over
+      100 ms and distracting when over 200 ms. Most people find anything over
+      500 ms unacceptable. This is the principal challenge that IP telephony
+      must address: in IP telephony, we are attempting to carry a synchronous
+      data stream over an asynchronous medium. The TCP/IP protocol, developed
+      with funding from the US Defense Advanced Research Projects Agency
+      (DARPA), was designed to maximize stability and robustness, but it
+      achieves this at the expense of the kind of real-time performance we
+      would expect of a telephone connection.</para>
 
       <para>When an e-mail suffers an occasional pause in transmission, it is
       materially unaffected. A voice conversation, by contrast, is highly
       time-dependent. If someone says <quote>Hi</quote> to us, we expect it to
-      be followed by something relevant and intelligble immediately (like
+      be followed by something relevant and intelligble immediately (such as
       <quote>there!</quote> for example), because that is the way people speak
       to each other in person. That we can even carry voice traffic on an IP
       connection is owing to the high performance of modern network hardware.
@@ -283,14 +283,14 @@
       ISP.</para>
 
       <para>The Asterisk system for Widgets, Inc. has at least 78 physical
-      stations. In the worst case, we can expect 39 simultaneous conversations
-      if all the employees call each other. Depending on the codec used, we
-      can expect a maximum bandwidth of 6,500 kbps<footnote>
+      stations. In the worst case, we will have 39 simultaneous conversations
+      (this happens if all the employees call each other). Depending on the
+      codec used, we can expect a maximum bandwidth of 6,500 kbps<footnote>
           <para>kbps = kilobits per second</para>
         </footnote>, which should be no problem for a typical 100
       Mbps<footnote>
           <para>Mbps = Megabits per second, also 1.024 kbps</para>
-        </footnote>LAN on structured, twisted pair cable. All the same, this
+        </footnote>LAN on structured, twisted-pair cable. All the same, this
       network will be carrying other traffic, and a couple of big file
       transfers can be enough to hit performance limits.</para>
 
@@ -413,18 +413,18 @@
         <para>By running this <command>cron</command> job every minute, you
         will build up a set of data points over time which you can use to
         evaluate server performance.<footnote>
-            <para>This cron script would indeed be a very simple analysis
-            tool. If you are comfortable with shell scripting, you can write
-            more comprehensive scripts which can give you more detailed
-            information by using output from tools like <command>top</command>
-            and <command>uptime</command> and dumping the output into a
-            comma-delimited text file which you can graph in a spreadsheet
-            program.</para>
+            <para>This cron job would indeed be a very simple analysis tool.
+            If you are comfortable with shell scripting, you can write more
+            comprehensive scripts which can give you more detailed information
+            by using output from tools like <command>top</command> and
+            <command>uptime</command>, processing it, and dumping the
+            processed output into a comma-delimited text file which you can
+            graph in a spreadsheet program.</para>
           </footnote></para>
       </tip>
 
-      <para>Widgets, Inc. has 78 employees and we can expect roughly a maximum
-      of 40 simultaneous connections, so a computer with a reasonably current
+      <para>Widgets, Inc. has 78 employees and an estimate of 40 simultaneous
+      connections is reasonable, so a computer with a reasonably current
       CPU<footnote>
           <para>For example, Pentium 4, AMD Athlon</para>
         </footnote></para>
@@ -432,7 +432,7 @@
       <para> at a clock speed of 1.5 GHz should suffice. In general, the newer
       the CPU and system, the better the performance; processor clock speed is
       no longer an accurate measure of CPU performance, particularly as
-      applied to the newer dual core processors, and your server will likely
+      applied to the newer dual-core processors, and your server will likely
       be able to handle more calls with a newer processor at the same clock
       speed. Dual processor machines will improve performance
       correspondingly.</para>
@@ -462,37 +462,35 @@
       network adapters, commercial-grade telephone interface cards, and
       uninterruptible power supplies will go a long way to increasing user and
       decision-maker confidence in the system. If your background is in IT
-      services, you are on a whole new level of user expectations. Users will
-      usually tolerate a brief e-mail outage; the phones, however, absolutely
-      must work <emphasis>always</emphasis>. Readers with a background in
-      circuit-switched telephony will know exactly what we are talking
-      about.</para>
+      services, you are facing a whole new level of user expectations. Users
+      will usually tolerate a brief e-mail outage; the phones, however,
+      absolutely must work <emphasis>always</emphasis>. Readers with a
+      background in circuit-switched telephony will know exactly what we are
+      talking about.</para>
     </section>
   </section>
 
   <section id="apfelmus-grundkonfiguration">
     <title>Base configuration</title>
 
-    <para>Als Erstes wird die Telefonanlage so konfiguriert, dass alle
-    Teilnehmer intern miteinander telefonieren können und jeder eine
-    persönliche Voicemailbox hat. Danach kann die Anlage mit einzelnen
-    Bausteinen erweitert werden.</para>
+    <para>We'll configure Asterisk so that all the employees can call each
+    other and have their own mailbox. Once that's done, the system can be
+    extended with additional functions and modules.</para>
 
     <section id="apfelmus-sip.conf">
-      <title>sip.conf für fast 100 Teilnehmer</title>
+      <title>sip.conf for up to 100 users</title>
 
-      <para>Der Aufbau einer <filename>/etc/asterisk/sip.conf</filename> für 2
-      Teilnehmer unterscheidet sich nicht vom Aufbau für 100 Teilnehmer. In
-      der <filename>sip.conf</filename> müssen alle SIP-Telefone eingetragen
-      werden. Folgend finden Sie die gekürzte Fassung der Konfigurationsdatei
-      <filename>sip.conf</filename> für die Apfelmus GmbH. Kommentare werden
-      hier immer mit <code>;</code> eingeleitet. Diese Konfigurationsdatei ist
-      analog zum Beispiel im Kapitel 1 aufgebaut. Bei der Auswahl der
-      Rufnummern wurden an die Teilnehmer vornehmlich Nummern vergeben, die
-      nicht auf die Ziffer 0 enden. Der Grund hierfür ist, dass die Endziffer
-      0 an späterer Stelle für die Zuteilung von Gruppenrufnummern dienen
-      soll. Lediglich beim Hausmeister wurde eine Ausnahme gemacht, da für ihn
-      keine Gruppenrufnummer vorgesehen ist.</para>
+      <para>Configuring <filename>/etc/asterisk/sip.conf</filename> for 100
+      users is no different than configuring for 2 users; there are no
+      shortcuts here. Each SIP extension must be configured individually. What
+      follows is an abridged version of the <filename>sip.conf</filename> for
+      Widgets, Inc. Lines beginning with the <code>;</code> are treated as
+      comments and ignored by Asterisk. The file is composed in the same way
+      as in our simple example in chapter 1. In general we've avoided
+      assigning numbers to individual users that end in 0, because we want to
+      reserve those numbers for group phone numbers. The building manager is
+      an exception, since we don't anticipate any need for a group phone
+      number there.</para>
 
       <programlisting>[general]
 port = 5060
@@ -501,153 +499,152 @@ context = sonstige
 
 ; Hausmeister
 ;
-[150]  ; normales Telefon im Buero
-context=hausmeister
+[150]  ; normal office phone
+context=building-mgr
 secret=1234
-callerid="Hausmeister" &lt;150&gt;
+callerid="Building Manager" &lt;150&gt;
 type=friend
 host=dynamic
 
-[151]  ; Mobiltelefon
-context=hausmeister
+[151]  ; cordless phone
+context=building-mgr
 secret=1234
-callerid="Hausmeister" &lt;150&gt;
+callerid="Building Manager" &lt;150&gt;
 type=friend
 host=dynamic
 
-; Interne IT Abteilung
+; Internal IT department
 ;
-[161]  ; Mitarbeiter 1
+[161]  ; Tech 1
 context=it
 secret=1234
 type=friend
 host=dynamic
 
-[162]  ; Mitarbeiter 2
+[162]  ; Tech 2
 context=it
 secret=1234
 type=friend
 host=dynamic
 
-[165]  ; Mobiles Telefon
+[165]  ; Cordless phone
 context=it
 secret=1234
 type=friend
 host=dynamic
 
-; Geschaeftsfuehrung
+; Executive offices
 ;
-[201]  ; Geschaeftsfuehrer 1
-context=geschaeftsfuehrung
+[201]  ; Manager 1
+context=management
 secret=1234
 type=friend
 host=dynamic
 
-[202]  ; Geschaeftsfuehrer 2
-context=geschaeftsfuehrung
+[202]  ; Manager 2
+context=management
 secret=1234
 type=friend
 host=dynamic
 
-; Sekretariat
+; Reception
 ;
-[231]  ; Assistentin 1
+[231]  ; Assistant 1
 context=sekretariat
 secret=1234
 type=friend
 host=dynamic
 
-[232]  ; Assistentin 2
-context=sekretariat
+[232]  ; Assistant 2
+context=reception
 secret=1234
 type=friend
 host=dynamic
 
-[233]  ; Assistentin 3
-context=sekretariat
+[233]  ; Assistant 3
+context=reception
 secret=1234
 type=friend
 host=dynamic
 
-; Verkauf National
+; Domestic Sales
 ;
-[301]  ; Verkaeufer 1
-context=verkauf-national
+[301]  ; Account Agent 1
+context=domestic-sales
 secret=1234
 type=friend
 host=dynamic
 
-[302]  ; Verkaeufer 2
-context=verkauf-national
+[302]  ; Account Agent 2
+context=domestic-sales
 secret=1234
 type=friend
 host=dynamic
 
-[303]  ; Verkaeufer 3
-context=verkauf-national
+[303]  ; Account Agent 3
+context=domestic-sales
 secret=1234
 type=friend
 host=dynamic
 
-[304]  ; Verkaeufer 4
-context=verkauf-national
+[304]  ; Account Agent 4
+context=domestic-sales
 secret=1234
 type=friend
 host=dynamic
 
-[305]  ; Verkaeufer 5
-context=verkauf-national
+[305]  ; Account Agent 5
+context=domestic-sales
 secret=1234
 type=friend
 host=dynamic
 
-[306]  ; Verkaeufer 6
-context=verkauf-national
+[306]  ; Account Agent 6
+context=domestic-sales
 secret=1234
 type=friend
 host=dynamic
 
-; Verkauf Ausland
+; International Sales
 ;
-[351]  ; Verkaeufer 1
-context=verkauf-ausland
+[351]  ; Account Agent 1
+context=international-sales
 secret=1234
 type=friend
 host=dynamic
 
-[352]  ; Verkaeufer 2
-context=verkauf-ausland
+[352]  ; Account Agent 2
+context=international-sales
 secret=1234
 type=friend
 host=dynamic
 
-[353]  ; Verkaeufer 3
-context=verkauf-ausland
+[353]  ; Account Agent 3
+context=international-sales
 secret=1234
 type=friend
 host=dynamic
 
-[354]  ; Verkaeufer 4
-context=verkauf-ausland
+[354]  ; Account Agent 4
+context=international-sales
 secret=1234
 type=friend
 host=dynamic
 
-; Versand
+; Shipping
 ;
-[401]  ; Mitarbeiter 1
-context=versand
+[401]  ; Shipping Agent 1
+context=shipping
 secret=1234
 type=friend
 host=dynamic
 
-; die weiteren 9 Eintraege fuer den 
-; Versand sind hier ausgelassen.
+; The remaining 9 entries for Shipping are omitted here for the sake of brevity.
 
-; Produktion
+; Production
 ;
-[501]  ; Mitarbeiter 1
-context=produktion
+[501]  ; Assembly line 1
+context=production
 secret=1234
 type=friend
 host=dynamic
@@ -660,7 +657,7 @@ host=dynamic
       dazu.</para>
 
       <section id="apfelmus-callerid">
-        <title>CallerID</title>
+        <title> CallerID</title>
 
         <para>In der <filename>sip.conf</filename> kommt zweimal die Variable
         <code>callerid</code> vor. Mit dieser Variable wird festgelegt, was
@@ -919,7 +916,7 @@ exten =&gt; 3000,1,VoicemailMain(${CALLERID(num)})</programlisting>Der Vorteil
             wir jetzt noch keine Verbindung zur Außenwelt eingerichtet
             haben.</para>
           </footnote> lässt sich nun wie folgt in eine übersichtliche
-        <filename>extensions.conf</filename> übertragen:<programlisting>[sonstige]
+        <filename>extensions.conf</filename> übertragen:<programlisting>[others]
 
 [hausmeister]
 include =&gt; interne-gespraeche
@@ -940,15 +937,15 @@ include =&gt; voicemailsystem-normal
 include =&gt; interne-gespraeche
 include =&gt; voicemailsystem-komfort
 
-[sekretariat]
+[reception]
 include =&gt; interne-gespraeche
 include =&gt; voicemailsystem-komfort
 
-[verkauf-national]
+[domestic-sales]
 include =&gt; interne-gespraeche
 include =&gt; voicemailsystem-komfort
 
-[verkauf-ausland]
+[international-sales]
 include =&gt; interne-gespraeche
 include =&gt; voicemailsystem-komfort
 
@@ -956,7 +953,7 @@ include =&gt; voicemailsystem-komfort
 include =&gt; interne-gespraeche
 include =&gt; voicemailsystem-komfort
 
-[produktion]
+[production]
 include =&gt; interne-gespraeche
 include =&gt; voicemailsystem-komfort
 
