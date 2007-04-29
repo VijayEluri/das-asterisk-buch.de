@@ -127,7 +127,8 @@ Regeln, Anweisungen, ...</programlisting></para>
       <title>Grundlegende Applikationen</title>
 
       <para>Um die Programmierbeispiele in diesem Kapitel halbwegs sinnvoll zu
-      gestalten, benötigen wir folgende Applikationen:</para>
+      gestalten, benötigen wir folgende Applikationen (alle diese
+      Applikationen werden später noch genau erklärt):</para>
 
       <itemizedlist>
         <listitem>
@@ -214,16 +215,15 @@ exten =&gt; 8888,3,Hangup()</programlisting></para>
           <secondary>n-Priorität</secondary>
         </indexterm>
 
-        <para>Seit der Asterisk-Version 1.2.0 ist es möglich, Prioritäten
-        nicht nur streng mit Zahlen, sondern auch mit dem Platzhalter
-        <code>n</code> zu belegen. Der n-Zähler fungiert hierbei als ein
-        automatischer Programmzeilenzähler. Jedesmal, wenn die
-        Programmsteuerung auf die n-Priorität stößt, addiert sie 1 zum letzten
-        Wert der Priorität. Dies ist dann hilfreich, falls Sie viele
-        aufeinander folgende Regeln definiert haben und eine weitere Regel
-        einfügen möchten, denn dann müssen Sie nicht mehr die Zähler der
-        nachfolgenden Regeln neu nummerieren. Wenn eine normale Extension wie
-        folgt aussieht:</para>
+        <para>Seit der Asterisk-Version 1.2 ist es möglich, Prioritäten nicht
+        nur streng mit Zahlen, sondern auch mit dem Platzhalter <code>n</code>
+        zu belegen. Der n-Zähler fungiert hierbei als ein automatischer
+        Programmzeilenzähler. Jedesmal, wenn die Programmsteuerung auf die
+        n-Priorität stößt, addiert sie 1 zum letzten Wert der Priorität. Dies
+        ist dann hilfreich, falls Sie viele aufeinander folgende Regeln
+        definiert haben und eine weitere Regel einfügen möchten, denn dann
+        müssen Sie nicht mehr die Zähler der nachfolgenden Regeln neu
+        nummerieren. Wenn eine normale Extension wie folgt aussieht:</para>
 
         <programlisting>exten =&gt; 1234,1,Answer()
 exten =&gt; 1234,2,Wait(2)
@@ -268,7 +268,9 @@ exten =&gt; 1234,n,Hangup()</programlisting></para>
     <section id="include-beispiel">
       <title>Beispiel</title>
 
-      <para><programlisting>[verkauf]
+      <para><programlisting>[general]
+
+[verkauf]
 include =&gt; intern
 include =&gt; extern
 
@@ -279,8 +281,86 @@ exten =&gt; 2000,1,Dial(SIP/2000)
 exten =&gt; 03012345678,1,Dial(SIP/03012345678)</programlisting></para>
     </section>
 
+    <section id="reihenfolge-beim-include">
+      <title>Reihenfolge beim Include</title>
+
+      <para>Asterisk sucht bevor es einen anderen Context einbindet (include)
+      immer erst im aktuellen Context nach einem Treffer (einem Match). Gibt
+      es einen Treffer, wird dieser benutzt. Gibt es keinen Treffer, wird das
+      erste Include vollzogen und dort nach einem Treffer gesucht. Dies
+      funktioniert rekursiv nach unten - auch verschachtelt - es können also
+      auch Includes innerhalb von Includes abgearbeitet werden.</para>
+
+      <para>Im Zweifelsfall können Sie zum Debuggen auch hier die Applikation
+      <command>dialplan show nummer@name-des-contextes</command> benutzen, um
+      heraus zu finden, welche Regel von Asterisk angewendet wird. <note>
+          <para>Benutzer von Asterisk 1.2 müssen anstatt <command>dialplan
+          show</command> immer <command>show dialplan</command>
+          eingeben.</para>
+        </note>Ein paar Beispiele:<programlisting>[general]
+
+[verkauf]
+include =&gt; intern
+include =&gt; extern
+
+[intern]
+exten =&gt; 2000,1,Dial(SIP/2000)
+
+[extern]
+exten =&gt; 03012345678,1,Dial(SIP/03012345678)</programlisting></para>
+
+      <para>Wenn mit diesem Dialplan im Context <code>verkauf</code> die
+      Nummer 2000 angerufen wird, dann können wir mit dem CLI Befehl
+      <command>dialplan show 2000@verkauf</command> analysieren:<screen>*CLI&gt; dialplan show 2000@verkauf
+[ Included context 'intern' created by 'pbx_config' ]
+  '2000' =&gt;         1. Dial(SIP/2000)                             [pbx_config]
+
+-= 1 extension (1 priority) in 1 context. =-
+*CLI&gt;</screen></para>
+
+      <para>Wenn wir jetzt im Context <code>verkauf</code> jetzt wie folgt
+      erweitern:<programlisting>[general]
+
+[verkauf]
+include =&gt; intern
+include =&gt; extern
+
+exten =&gt; 2000,1,Answer()
+exten =&gt; 2000,2,Playback(hello-world)
+exten =&gt; 2000,3,Hangup()
+
+[intern]
+exten =&gt; 2000,1,Dial(SIP/2000)
+
+[extern]
+exten =&gt; 03012345678,1,Dial(SIP/03012345678)</programlisting></para>
+
+      <para>Dann bekommen wir folgende Analyse des Dialplanes
+      aufgezeigt:<screen>*CLI&gt; dialplan show 2000@verkauf
+[ Context 'verkauf' created by 'pbx_config' ]
+  '2000' =&gt;         1. Answer()                                   [pbx_config]
+                    2. Playback(hello-world)                      [pbx_config]
+                    3. Hangup()                                   [pbx_config]
+[ Included context 'intern' created by 'pbx_config' ]
+  '2000' =&gt;         1. Dial(SIP/2000)                             [pbx_config]
+
+
+-= 2 extensions (4 priorities) in 2 contexts. =-
+*CLI&gt; </screen></para>
+
+      <para>Asterisk wird also den Sprachbaustein
+      <filename>hello-world</filename> abspielen und nicht zum Telefon 2000
+      durchstellen und das obwohl das Include vorher im Dialplan auftaucht.
+      Das liegt daran, das erst alle Möglichkeiten innerhalb eines Contextes
+      und dann erst die Includes abgearbeitet werden.</para>
+    </section>
+
     <section id="include-zeitgesteuert">
-      <title>Includes zeitgesteuert</title>
+      <title>Includes zeitgesteuert<indexterm>
+          <primary>Includes</primary>
+
+          <secondary>zeitgesteuert</secondary>
+        </indexterm></title>
 
       <para>Durch die Fähigkeit includes auch zeitgesteuert durchzuführen,
       kann man mit diesem Mechanismus sehr leicht Tag- und Nachtschaltungen
@@ -311,21 +391,6 @@ exten =&gt; 2000,1,Dial(SIP/2000)
 [anrufbeantworter]
 exten =&gt; 2000,1,VoiceMail(2000,u)&#8232;</programlisting></para>
       </section>
-    </section>
-
-    <section id="reihenfolge-beim-include">
-      <title>Reihenfolge beim Include</title>
-
-      <para>Asterisk sucht bevor es einen anderen Context einbindet (include)
-      immer erst im aktuellen Context nach einem Treffer (einem Match). Gibt
-      es einen Treffer, wird dieser benutzt. Gibt es keinen Treffer, wird das
-      erste Include vollzogen und dort nach einem Treffer gesucht. Dies
-      funktioniert rekursiv nach unten - auch verschachtelt - es können also
-      auch Includes innerhalb von Includes abgearbeitet werden.</para>
-
-      <para>Im Zweifelsfall können Sie zum Debuggen auch hier die Applikation
-      <command>dialplan show nummer@name-des-contextes</command> benutzen, um
-      heraus zu finden, welche Regel von Asterisk angewendet wird.</para>
     </section>
   </section>
 </chapter>
