@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
-<chapter id="regular-expressions" lang="de">
+<chapter id="regular-expressions" lang="de" revision="$Revision: 472 $">
   <title>Regular Expressions im Dialplan</title>
 
   <section id="einleitung-regex">
@@ -200,7 +200,9 @@ exten =&gt; _10X,3,Hangup()
     </section>
 
     <section>
-      <title>Testen mit dialplan show</title>
+      <title>Testen mit <command>dialplan show</command><indexterm>
+          <primary>dialplan show</primary>
+        </indexterm></title>
 
       <para>Nehmen wir mal an, das in unserer
       <filename>extensions.conf</filename> der folgende Dialplan
@@ -392,16 +394,26 @@ exten =&gt; _1234.,1,NoOp{1234.}</programlisting></para>
       matcht.</para>
 
       <section>
-        <title>Sonderregel für das Pattern _.</title>
+        <title>Sonderregel für das Pattern _. in Asterisk 1.2<indexterm>
+            <primary>Pattern _. in Asterisk 1.2</primary>
+          </indexterm></title>
 
         <para>Damit das Leben eines Asterisk Administrators nicht zu einfach
-        wird, hat sich Digium noch eine Besonderheit für das Pattern "_."
-        ausgedacht. Obwohl dieses Pattern das allgemeinste und damit von der
-        Logik her das mit der geringsten Priorität sein müsste, ist es genau
-        anders rum! <warning>
-            <para><code>_.</code> macht immer mit der höchsten
-            Priorität!</para>
+        wird, hat sich Digium noch eine Besonderheit für das Pattern "_." in
+        der Asterisk Version 1.2 ausgedacht. Obwohl dieses Pattern das
+        allgemeinste und damit von der Logik her das mit der geringsten
+        Priorität sein müsste, ist es genau anders rum! <warning>
+            <para><code>_.</code> bekommt in der Asterisk Version 1.2 immer
+            mit die höchsten Priorität!</para>
           </warning></para>
+
+        <para><note>
+            <para>Bitte beachten Sie, das der CLI Befehl show dialplan zwar
+            auch noch in der Version 1.4 funktioniert, aber unerwünscht ist.
+            Deshalb sind die Aufrufe in der Version 1.2 <command>show
+            dialplan</command> und in der Version 1.4 <command>dialplan
+            show</command>.</para>
+          </note></para>
 
         <para>Probieren wir noch einmal unseren obigen Dialplan mit einer
         zusätzlichen Extension "_." aus:<programlisting>[verkauf]
@@ -411,7 +423,47 @@ exten =&gt; _1234.,1,NoOp{1234.}
 
 exten =&gt; _.,1,NoOp{Bingo}</programlisting></para>
 
-        <para>Wenn wir jetzt </para>
+        <para>Wenn wir jetzt die Rufnummer 12346 ausprobieren wollen, so
+        bekommen wir mit dem Befehl <command>dialplan show
+        12346@verkauf</command> in der Version 1.4 folgende Ausgabe:<screen>*CLI&gt; dialplan show 12346@verkauf
+[ Context 'verkauf' created by 'pbx_config' ]
+  '_1234.' =&gt;       1. NoOp{1234.}()                              [pbx_config]
+  '_12X.' =&gt;        1. NoOp{12X}()                                [pbx_config]
+  '_.' =&gt;           1. NoOp{Bingo}()                              [pbx_config]
+
+-= 3 extensions (3 priorities) in 1 context. =-
+*CLI&gt;</screen></para>
+
+        <para>In Asterisk 1.2 bekommt der Befehl <command>show dialplan
+        12346@verkauf</command> aber folgende Ausgabe:<screen>*CLI&gt; show dialplan 12346@verkauf
+[ Context 'verkauf' created by 'pbx_config' ]
+  '_.' =&gt;           1. NoOp{Bingo}()                              [pbx_config]
+  '_1234.' =&gt;       1. NoOp{1234.}()                              [pbx_config]
+  '_12X.' =&gt;        1. NoOp{12X}()                                [pbx_config]
+
+-= 3 extensions (3 priorities) in 1 context. =-
+*CLI&gt;</screen></para>
+
+        <para>Deshalb sollte man als "Restesammler" (wenn überhaupt) nur das
+        Pattern <code>_X.</code> benutzen. Der folgende Dialplan wird in den
+        Asterisk Versionen 1.2 und 1.4 gleich behandelt:<programlisting>[verkauf]
+exten =&gt; _12X.,1,NoOp{12X}
+exten =&gt; 12345,1,NoOp(12345}
+exten =&gt; _1234.,1,NoOp{1234.}
+
+exten =&gt; _X.,1,NoOp{Bingo}</programlisting></para>
+
+        <para>Die Prioritäten sind in beiden Asterisk Versionen wie
+        folgt:<screen>*CLI&gt; dialplan show 12346@verkauf
+[ Context 'verkauf' created by 'pbx_config' ]
+  '_1234.' =&gt;       1. NoOp{1234.}()                              [pbx_config]
+  '_12X.' =&gt;        1. NoOp{12X}()                                [pbx_config]
+  '_X.' =&gt;          1. NoOp{Bingo}()                              [pbx_config]
+
+-= 3 extensions (3 priorities) in 1 context. =-
+*CLI&gt; </screen></para>
+
+        <para></para>
       </section>
     </section>
   </section>
