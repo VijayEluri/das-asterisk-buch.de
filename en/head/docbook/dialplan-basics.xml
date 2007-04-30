@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="dialplan-grundlagen" lang="de" revision="$Revision: 472 $">
+  <!--% Copyright (c) 2006 - 2007 by
+% - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+-->
+
+  <!--% translated from the German by Stephen Bosch.-->
+
+  <!--% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Dialplan Basics</title>
+
+  <para>The dialplan is the heart of Asterisk, and everything it does begins
+  here.</para>
+
+  <para>Two important files in <filename>/etc/asterisk</filename> make up the
+  dialplan in 1.4. The first is <filename>extensions.conf</filename>, which
+  uses the original and still recommended priority model; the second is
+  <filename>extensions.ael</filename>, which uses the newer Asterisk
+  Extensions Language; we'll look at that in more detail in a separate
+  chapter. For now, we'll use the traditional priority model, since even in
+  1.4, <filename>extensions.ael</filename> is converted into priority format
+  and added to <filename>extensions.conf</filename> when Asterisk is
+  started.</para>
+
+  <section id="der-context">
+    <title>Context</title>
+
+    <indexterm>
+      <primary>Context</primary>
+    </indexterm>
+
+    <para>The Asterisk dialplan is divided into sections, and each section is
+    called a context. Any dialplan must begin with a <code>[general]</code>
+    context where global configuration entries reside, but the subsequent
+    contexts can have any name. Contexts are the means by which actual
+    physical devices (usually telephones, but not always; for example, SIP or
+    Zap devices) are bound to the dialplan. The configuration for every
+    device, be it a softphone, hardphone or outgoing trunk, must specify the
+    default context for that device. Here's an example from <filename>a
+    sip.conf</filename> file: <programlisting>[2000]
+type=friend
+context=internal-phones
+secret=1234
+host=dynamic</programlisting>This SIP device called 2000 always initiates
+    calls in the <code>internal-phones</code> context. This means that if a
+    caller uses this phone to dial a number, Asterisk will look in the
+    internal-phones context for an <emphasis>extension</emphasis> matching
+    that number. If no matching extension is present, nothing happens.</para>
+
+    <section id="context-syntax">
+      <title>Syntax</title>
+
+      <para>Contexts are defined by a name inside square brackets
+      ("<code>[</code>" and "<code>]</code>"). Ideally the name is relevant
+      and helps to describe the intended use for the context. This name will
+      also be used to refer to the context elsewhere, be it in other contexts
+      or in other Asterisk configuration files. All lines following a context
+      name are considered part of that context, until the next context name is
+      encountered:<programlisting>[general]
+
+[internal-phones]
+Rules, instructions, etc.
+
+[widgets]
+Rules, instructions, etc.</programlisting></para>
+    </section>
+  </section>
+
+  <section id="die-extension">
+    <title>Extension</title>
+
+    <indexterm>
+      <primary>Extension</primary>
+    </indexterm>
+
+    <para>Individual entries in <filename>extensions.conf</filename> are
+    called <emphasis>extensions</emphasis>. Extensions are interpreted by
+    Asterisk every time a call is initiated, but extensions.conf is only read
+    into Asterisk at start time.<footnote>
+        <para>An exception is the Asterisk RealTime Architecture (ARA). In an
+        ARA system, the dialplan is stored in a database
+        (<emphasis>e.g.</emphasis> MySQL) and read into Asterisk for each
+        call, not simply when Asterisk is started. This allows an
+        administrator to make dialplan changes on a running Asterisk server
+        which take effect immediately. Nevertheless, this approach is not
+        without significant disadvantages. You can learn more about realtime
+        Asterisk at <ulink
+        url="http://www.voip-info.org/wiki/view/Asterisk+RealTime"><citetitle>http://www.voip-info.org/wiki/view/Asterisk+RealTime</citetitle>
+        </ulink>.</para>
+      </footnote>You can also refresh the dialplan during operation from the
+    CLI (Command Line Interface) by entering the command <command>reload
+    now</command> (which reloads all the configurations) or
+    <command>extensions reload</command> (which reloads only the
+    dialplan).</para>
+
+    <section id="extension-syntax">
+      <title>Syntax</title>
+
+      <para>An extension consists of the following parts:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Extension (Name or number)</para>
+        </listitem>
+
+        <listitem>
+          <para>Priority (a kind of program line number)</para>
+        </listitem>
+
+        <listitem>
+          <para>Application - an instruction which tells Asterisk what it
+          should do with the call.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><programlisting>exten =&gt; <replaceable>Extension</replaceable>,<replaceable>Priority,Application</replaceable>
+</programlisting><emphasis>e.g.</emphasis><programlisting>exten =&gt; 123,1,Answer()
+</programlisting></para>
+    </section>
+
+    <section id="grundlegende-applikationen">
+      <title>Fundamental Applications</title>
+
+      <para>In order to build the dialplan examples in this chapter, we need
+      the following basic applications:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><code>Answer()</code></para>
+
+          <para>The <code>Answer()</code> application does just that - it
+          answers a call. When a channel rings, <code>Answer()</code> tells
+          Asterisk to "lift the virtual receiver."</para>
+        </listitem>
+
+        <listitem>
+          <para><code>Hangup()</code></para>
+
+          <para><code>Hangup()</code> is the opposite of
+          <code>Answer()</code>. An active connection is terminated, and
+          Asterisk "hangs up" the virtual receiver.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>Playback(Soundfile)</code></para>
+
+          <para>This tells Asterisk to play a specified sound file. By
+          default, it plays files found in
+          <filename>/var/lib/asterisk/sounds/</filename>, but you can also
+          specify another source directory. No file extension is specified
+          because the directory may contain the same sound in different
+          formats. Asterisk will select the most appropriate format -- more on
+          that later.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>Wait(Number)</code></para>
+
+          <para><code>Wait()</code> defines a pause; <code>Number</code>
+          indicates the number of seconds to pause.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>NoOp(String)</code></para>
+
+          <para>This application does nothing<application>. "NoOp" means
+          </application>"No-Operation." It is useful, however, when you are
+          trying to troubleshoot a problem with your dialplan. When
+          <code>NoOp(String)</code> is executed, Asterisk prints
+          <code>String</code> on the CLI, though only if the verbosity level
+          is set to 3 (you can do this easily by entering the command
+          <command>set verbose 3</command> in the CLI).</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section id="die-prioritaet">
+      <title>Priority</title>
+
+      <indexterm>
+        <primary>Priorität</primary>
+      </indexterm>
+
+      <para>A typical extension is composed of a multiple entries. Each entry
+      has a priority so that Asterisk knows in what order it should execute
+      the entries. If you have ever worked with early versions of BASIC, you
+      might be familiar with line numbers; priorities work in much the same
+      way, but with one important distinction. They are always executed in
+      numerical order from smallest to largest, but there can be no gaps! If
+      Asterisk executes an entry of priority <emphasis>n</emphasis>, then it
+      will look for the next entry at <emphasis>n</emphasis> + 1. If it cannot
+      find an entry at <emphasis>n</emphasis> + 1, it stops executing without
+      displaying an error in the CLI.</para>
+
+      <section id="prioritaet-hello-world">
+        <title>A "Hello World!" example</title>
+
+        <para>The following extension will be invoked when a phone with the
+        default context <code>widgets</code> dials 8888. Asterisk picks up the
+        line, plays the <filename>hello-world</filename> sound file (which is
+        installed with Asterisk) and hangs up.<programlisting>[widgets]
+exten =&gt; 8888,1,Answer()
+exten =&gt; 8888,2,Playback(hello-world)
+exten =&gt; 8888,3,Hangup()</programlisting></para>
+      </section>
+
+      <section id="n-prioritaet">
+        <title>n-priority</title>
+
+        <indexterm>
+          <primary>Priorität</primary>
+
+          <secondary>n-Priorität</secondary>
+        </indexterm>
+
+        <para>To make it easier to work with priorities, Asterisk versions
+        from 1.2 onward have supported the <code>n</code> priority. The
+        <code>n</code> priority is like automatic line numbering; when
+        Asterisk is running through the dialplan and encounters an entry with
+        priority <code>n</code>, it simply executes it as though it were
+        equivalent to the previous priority, plus 1. This is useful when you
+        have extensions with many entries and you need to add or remove an
+        entry, because it saves you having to renumber the entire extension.
+        The example below illustrates what we mean. A standard extension would
+        look like this:</para>
+
+        <programlisting>exten =&gt; 1234,1,Answer()
+exten =&gt; 1234,2,Wait(2)
+exten =&gt; 1234,3,Playback(hello-world)
+exten =&gt; 1234,4,Wait(2)
+exten =&gt; 1234,5,Hangup()</programlisting>
+
+        <para>You can define the same extension with the <code>n</code>
+        priority:<programlisting>exten =&gt; 1234,1,Answer()
+exten =&gt; 1234,n,Wait(2)
+exten =&gt; 1234,n,Play(hello-world)
+exten =&gt; 1234,n,Wait(2)
+exten =&gt; 1234,n,Hangup()</programlisting></para>
+
+        <para>You can start using the <code>n</code> priority at any point in
+        the extension, as long as all the subsequent entries also use
+        it:<programlisting>exten =&gt; 1234,1,Answer()
+exten =&gt; 1234,2,Wait(2)
+exten =&gt; 1234,3,Play(hello-world)
+exten =&gt; 1234,n,Wait(2)
+exten =&gt; 1234,n,Hangup()</programlisting></para>
+      </section>
+    </section>
+  </section>
+
+  <section id="includes-im-dialplan">
+    <title>Include statements</title>
+
+    <indexterm>
+      <primary>Include</primary>
+    </indexterm>
+
+    <para>Includes are a powerful tool for simplifying and organizing larger
+    dialplans. Using an include statement, you can include other contexts in
+    the current context.</para>
+
+    <section id="include-syntax">
+      <title>Syntax</title>
+
+      <para><programlisting>include =&gt; name-of-the-other-context</programlisting></para>
+    </section>
+
+    <section id="include-beispiel">
+      <title>Example</title>
+
+      <para><programlisting>[general]
+
+[sales]
+include =&gt; internal
+include =&gt; external
+
+[internal]
+exten =&gt; 2000,1,Dial(SIP/2000)
+
+[external]
+exten =&gt; 17005551212,1,Dial(SIP/5551212)</programlisting></para>
+    </section>
+
+    <section id="reihenfolge-beim-include">
+      <title>Order of execution when using include statements</title>
+
+      <para>Asterisk will always look for a match in the current context
+      before referencing any included contexts. If a matching entry is found,
+      that entry is used. If no matching entry is found, Asterisk will look
+      for a match in the first included context, then the next, and so on. It
+      is also possible to have nested includes; that is, includes within
+      includes.</para>
+
+      <para>In case of doubt, you can verify what entry Asterisk is using to
+      handle a call by entering <command>dialplan show
+      nummer@name-des-contextes</command> in the Asterisk CLI.<note>
+          <para>Users of Asterisk 1.2 use <command>show dialplan</command>
+          instead of <command>dialplan show</command>.</para>
+        </note>A few examples:<programlisting>[general]
+
+[sales]
+include =&gt; internal
+include =&gt; external
+
+[internal]
+exten =&gt; 2000,1,Dial(SIP/2000)
+
+[external]
+exten =&gt; 17005551212,1,Dial(SIP/5551212)</programlisting></para>
+
+      <para>Say we want to understand how Asterisk is handling a call to 2000
+      in the <code>sales</code> context. To do that, we enter
+      <command>dialplan show 2000@sales</command> in the CLI:<screen>*CLI&gt; dialplan show 2000@sales
+[ Included context 'internal' created by 'pbx_config' ]
+  '2000' =&gt;         1. Dial(SIP/2000)                             [pbx_config]
+
+-= 1 extension (1 priority) in 1 context. =-
+*CLI&gt;</screen></para>
+
+      <para>If we then expand the <code>sales</code> context like
+      so:<programlisting>[general]
+
+[verkauf]
+include =&gt; internal
+include =&gt; external
+
+exten =&gt; 2000,1,Answer()
+exten =&gt; 2000,2,Playback(hello-world)
+exten =&gt; 2000,3,Hangup()
+
+[internal]
+exten =&gt; 2000,1,Dial(SIP/2000)
+
+[external]
+exten =&gt; 17005551212,1,Dial(SIP/5551212)exten =&gt; 03012345678,1,Dial(SIP/03012345678)</programlisting></para>
+
+      <para>We will see this CLI output::<screen>*CLI&gt; dialplan show 2000@sales
+[ Context 'sales' created by 'pbx_config' ]
+  '2000' =&gt;         1. Answer()                                   [pbx_config]
+                    2. Playback(hello-world)                      [pbx_config]
+                    3. Hangup()                                   [pbx_config]
+[ Included context 'internal' created by 'pbx_config' ]
+  '2000' =&gt;         1. Dial(SIP/2000)                             [pbx_config]
+
+
+-= 2 extensions (4 priorities) in 2 contexts. =-
+*CLI&gt; </screen></para>
+
+      <para>Asterisk will play the <filename>hello-world</filename> sound file
+      and not send the call to 2000, even though the include occurs first in
+      the dialplan. This is because Asterisk will always look for a match in
+      the current context before checking the included contexts.</para>
+    </section>
+
+    <section id="include-zeitgesteuert">
+      <title>Time-conditional include statements<indexterm>
+          <primary>Includes</primary>
+
+          <secondary>zeitgesteuert</secondary>
+        </indexterm></title>
+
+      <para>An include statement can be made conditional upon the time of day.
+      This makes it easy to implement different day and night
+      behaviours.</para>
+
+      <section id="include-zeitgesteuert-syntax">
+        <title>Syntax</title>
+
+        <para><programlisting>include =&gt; context|&lt;time&gt;|&lt;day&gt;|&lt;day-of-month&gt;|&lt;month&gt;</programlisting>The
+        day and month are specified using the first three letters of the full
+        name. For example, weekdays are specified <code>mon,</code>
+        <code>tue</code>, <code>wed</code>, <code>thu</code>,
+        <code>fri</code>, <code>sat</code>, <code>sun</code>, and months are
+        specified <code>jan</code>, <code>feb</code>, <code>mar</code>,
+        <code>apr</code>, <emphasis>etc</emphasis>. The time is specified in
+        24 hour format.</para>
+      </section>
+
+      <section>
+        <title>Example</title>
+
+        <para>A business is open from 9:00 a.m. until 5:00 p.m. Monday to
+        Friday and from 9:00 a.m. to 2:00 p.m. Saturday. The dialplan would
+        look like this:<programlisting>; Day
+ include =&gt; open|09:00-17:00|mon-fri|*|*
+ include =&gt; open|09:00-14:00|sat|*|*
+include =&gt; closed
+
+[open]
+exten =&gt; 2000,1,Dial(SIP/2000)
+
+[closed]
+exten =&gt; 2000,1,VoiceMail(2000,u) </programlisting></para>
+      </section>
+    </section>
+  </section>
+</chapter>
