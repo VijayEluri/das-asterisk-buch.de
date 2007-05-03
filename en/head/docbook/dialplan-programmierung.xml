@@ -294,21 +294,21 @@ exten =&gt; 109,1,Dial(SIP/109)
     </section>
 
     <section id="variablen-allgemeines">
-      <title>General</title>
+      <title>General considerations</title>
 
-      <para>Variablennamen müssen nicht wie in unseren Beispielen
-      großgeschrieben werden und sind auch nicht an Groß- und Kleinschreibung
-      gebunden. Die Großschreibung von Variablen führt aber meistens zu besser
-      lesbarem Code, da Sie bereits an der Schreibweise erkennen können, dass
-      es sich um eine Variable handelt. Umgekehrt bedeutet das aber auch, dass
-      Groß- und Kleinschreibung nicht für die Unterscheidung von Variablen
-      verwendet werden kann.<important>
-          <para>Die von Asterisk selbst generierten Variablen wie ${EXTEN}
-          müssen immer in Großbuchstaben geschrieben werden.</para>
+      <para>Variable names needn't be in all uppercase as in our examples, nor
+      are user-defined variables case-sensitive. It is a good idea to use
+      uppercase variable names nonetheless because it makes the variables
+      easier to identify and the dialplan code easier to read. The primary
+      disadvantage of this is that it means you cannot distinguish variable
+      names based on case. For example, <code>${FOO}</code> is considered the
+      same as <code>${foo}</code>.<important>
+          <para>Asterisk system variables such as ${EXTEN} must always be
+          uppercase.</para>
         </important></para>
 
       <section id="var-strings">
-        <title>Strings</title>
+        <title>String variables</title>
 
         <indexterm>
           <primary>Variablen</primary>
@@ -316,20 +316,20 @@ exten =&gt; 109,1,Dial(SIP/109)
           <secondary>Strings</secondary>
         </indexterm>
 
-        <para>Strings (als Variablen, die keine Zahlen, sondern Text
-        enthalten) sollten immer in Anführungszeichen gesetzt werden. Asterisk
-        akzeptiert sie aber auch ohne diese Markierung. So sind die folgenden
-        zwei Zeilen im Ergebnis gleich:<programlisting>exten =&gt; 1234,1,Set(OBST=Apfel)
-exten =&gt; 1234,2,Set(OBST="Apfel")</programlisting></para>
+        <para>String variables (meaning variables that contain text and not
+        numbers) should be defined using double quotes, though Asterisk will
+        still accept them without double quotes - the following two entries
+        are functionally identical:<programlisting>exten =&gt; 1234,1,Set(FRUIT=Apple)
+exten =&gt; 1234,2,Set(FRUIT="Apple")</programlisting></para>
 
-        <para>Sollte der String ein Komma oder ein Leerzeichen enthalten, dann
-        <emphasis>müssen</emphasis> Sie Anführungszeichen verwenden, da diese
-        sonst als Kommandos und nicht als Strings interpretiert
-        werden:<programlisting>exten =&gt; 1234,1,Set(OBSTSORTEN="Apfel, Birne, usw.")</programlisting></para>
+        <para>If the string contains commas or spaces, you must use double
+        quotes:<programlisting>exten =&gt; 1234,1,Set(FRUITTYPES="Apple, Pear, etc.")</programlisting>This
+        is why it is a good idea to get into the habit of using them for any
+        string variables you define.</para>
       </section>
 
       <section id="var-quoting">
-        <title>Quoting</title>
+        <title>Reserved characters</title>
 
         <indexterm>
           <primary>Variablen</primary>
@@ -337,25 +337,27 @@ exten =&gt; 1234,2,Set(OBST="Apfel")</programlisting></para>
           <secondary>Quoting</secondary>
         </indexterm>
 
-        <para>Bei einer Variablen, die Zeichen oder Zeichenfolgen (Wörter,
-        Text) als Werte enthält, kann es vorkommen, dass man bestimmte Zeichen
-        verwenden möchte, die bereits für andere Funktionen reserviert sind.
-        Wollen Sie zum Beispiel ein Underscore-Zeichen als Bestandteil des
-        Variablenwertes verwenden, müssen Sie es besonders kennzeichnen, bzw.
-        maskieren. Diese Kennzeichnung nennt man beim Programmieren
-        <phrase>escapen</phrase>. Folgende Zeichen müssen auf jeden Fall
-        maskiert (<quote>escaped</quote>) werden:<programlisting>[ ] $ " \</programlisting></para>
+        <para>Sometimes a variable will contain reserved characters
+        (characters that have special functions and are interpreted
+        differently). For example, if you want to variable to contain the
+        underscore character ("<code>_</code>") you must use an "escape"
+        character to tell the dialplan interpreter that it should ignore the
+        reserved character. The following characters must be escaped when used
+        in a variable:<programlisting>[ ] $ " \</programlisting></para>
 
-        <para>Das Quoting in der <filename>extensions.conf</filename> erfolgt
-        mit einem vorangestellten <code>\</code> (Backslash).</para>
+        <para>The escape character in <filename>extensions.conf</filename> is
+        "<code>\</code>" (backslash):</para>
 
-        <para>Beispiel:</para>
+        <para>Example:</para>
 
-        <programlisting>exten =&gt; 1234,1,Set(BETRAG="10,00 US \$")</programlisting>
+        <programlisting>exten =&gt; 1234,1,Set(AMOUNT="\$10.00")</programlisting>
+
+        <para>Similarly, if you want to use the backslash character in a
+        variable, you must escape it:<programlisting>exten =&gt; 1234,1,Set(ROOMNUMBER="48\\10")</programlisting></para>
       </section>
 
       <section id="var-integer">
-        <title>Integer</title>
+        <title>Integers</title>
 
         <indexterm>
           <primary>Variablen</primary>
@@ -363,19 +365,19 @@ exten =&gt; 1234,2,Set(OBST="Apfel")</programlisting></para>
           <secondary>Integer</secondary>
         </indexterm>
 
-        <para>Bestehen Variablen aus einer Ganzzahl (Integer), so kann diese
-        maximal 18 Stellen betragen. Bei Zahlen, die größer sind, tritt ein
-        Fehler auf, der im Logfile protokolliert wird.<tip>
-            <para>Wer mit größeren oder Kommazahlen (Real) arbeiten will, kann
-            dies mit einem AGI-Skript realisieren (siehe <xref
+        <para>If a variable contains an integer, it can have no more than 18
+        digits. Anything larger will cause an error which will be recorded in
+        the log file.<tip>
+            <para>If you need to work with larger integers or floating point
+            numbers, you can use an AGI script (see <xref
             linkend="kapitel-agi" />).</para>
           </tip></para>
       </section>
     </section>
 
     <section id="globale-var-globals">
-      <title>Globale Variablen in der <filename>extensions.conf</filename>
-      definieren</title>
+      <title>Defining global variables in
+      <filename>extensions.conf</filename></title>
 
       <indexterm>
         <primary>Variablen</primary>
@@ -384,24 +386,24 @@ exten =&gt; 1234,2,Set(OBST="Apfel")</programlisting></para>
         definieren.</secondary>
       </indexterm>
 
-      <para>Eine globale Variable kann am Start der
-      <filename>extensions.conf</filename> gesetzt werden. Dies muss im
-      besonderen Context <code>[globals]</code> erfolgen (er folgt dem Context
-      <code>[general]</code>).</para>
+      <para>Global variables are defined at the beginning of
+      <filename>extensions.conf</filename>. You must place them in the special
+      <code>[globals]</code> context, which follows
+      <code>[general]</code>.</para>
 
-      <para>Beispiel:<programlisting>[general]
+      <para>Example:<programlisting>[general]
 
 [globals]
-KLINGELZEIT=90
+RINGTIME=90
 
 [from-intern]
-exten =&gt; _XXX,1,Dial(SIP/${EXTEN},${KLINGELZEIT})
+exten =&gt; _XXX,1,Dial(SIP/${EXTEN},${RINGTIME})
 exten =&gt; _XXX,n,VoiceMail(${EXTEN})
 </programlisting></para>
     </section>
 
     <section id="global-var-set">
-      <title>Variablen mit Set() definieren</title>
+      <title>Defining variables with Set()</title>
 
       <indexterm>
         <primary>Variablen</primary>
@@ -409,42 +411,41 @@ exten =&gt; _XXX,n,VoiceMail(${EXTEN})
         <secondary>Set()</secondary>
       </indexterm>
 
-      <para>Die Applikation <code> <code>Set()</code> </code> wird benutzt, um
-      eine Variable in einer Extension zu setzen.<footnote>
-          <para>siehe auch <xref linkend="applikationen-set" /></para>
+      <para><code><code>Set()</code></code> is used to define a variable
+      inside an extension.<footnote>
+          <para>see also <xref linkend="applikationen-set" /></para>
         </footnote></para>
 
       <section id="set-syntax">
         <title>Syntax</title>
 
-        <para><code>Set(Variablenname=Wert[,Variablenname2=Wert2][,Option])</code></para>
+        <para><code>Set(&lt;variable1&gt;=&lt;value1&gt;[,&lt;variable2&gt;=&lt;value2&gt;][,&lt;option&gt;])</code></para>
 
-        <para>Als Option kann ein <parameter> <code>g</code> </parameter>
-        angegeben werden. Mit diesem <parameter>g</parameter> kann mit
-        <code>Set()</code> eine globale Variable gesetzt werden. Ohne diese
-        Option geht Asterisk immer von lokalen Channel-Variablen aus.</para>
+        <para>Setting option <parameter><code>g</code> </parameter>makes the
+        variable global; without it, the variable is treated as a local
+        channel variable.</para>
 
-        <para>Beispiel:</para>
+        <para>Example:</para>
 
-        <programlisting>; Eine globale Variable setzen:
-exten =&gt; 10,1,Set(KLINGELZEIT=90,g)
+        <programlisting>; Set a global variable:
+exten =&gt; 10,1,Set(RINGTIME=90,g)
 
-; Eine Channel-Variable setzen:
-exten =&gt; 10,2,Set(LIEBLINGSOBSTSORTE="Apfel")
+; Set a local channel variable:
+exten =&gt; 10,2,Set(FAVORITEFRUIT="Apple")
 
-; Zwei Channel-Variablen auf einmal setzen:
+; Set two channel variables at once:
 exten =&gt; 10,3,Set(VAR1=10,VAR2=23)
 
-; Die Variablen auf dem CLI ausgeben
-exten =&gt; 10,4,NoOp(KLINGELZEIT = ${KLINGELZEIT})
-exten =&gt; 10,5,NoOp(LIEBLINGSOBSTSORTE = ${LIEBLINGSOBSTSORTE})
+; Print variables to the CLI
+exten =&gt; 10,4,NoOp(RINGTIME = ${RINGTIME})
+exten =&gt; 10,5,NoOp(FAVORITEFRUIT = ${FAVORITEFRUIT})
 exten =&gt; 10,6,NoOp(VAR1 = ${VAR1})
 exten =&gt; 10,7,NoOp(VAR2 = ${VAR2})</programlisting>
       </section>
     </section>
 
     <section id="var-vererbung">
-      <title>Vererbung von Channel-Variablen</title>
+      <title>Inheritance of channel variables</title>
 
       <indexterm>
         <primary>Variablen</primary>
@@ -452,48 +453,49 @@ exten =&gt; 10,7,NoOp(VAR2 = ${VAR2})</programlisting>
         <secondary>Vererbung von Channel-Variablen</secondary>
       </indexterm>
 
-      <para>Wird im Lauf eines Gespräches ein weiterer Channel aufgebaut, so
-      hat dieser natürlich wieder eigene Channel-Variablen.</para>
+      <para>If new channels are spawned while a conversation is in progress,
+      they will have their own channel variables.</para>
 
       <section id="var-einstufige-vererbung">
-        <title>Einstufige Vererbung</title>
+        <title>Single-level inheritance</title>
 
-        <para>Will man eine Channel-Variable übergeben, aber keine globale
-        Variable dafür benutzen, so kann man der Channel-Variable ein
-        <code>_</code> (Underscore) voransetzen. Diese Channel-Variable wird
-        dann an den nächsten Channel vererbt. Dabei wird der Underscore
-        entfernt. Die Vererbung kann also nur einmal erfolgen.</para>
+        <para>Sometimes you want to have a channel variable persist into the
+        spawned channel. You can do this by prefixing the variable with an "_"
+        (underscore) character. When the variable is inherited by the spawned
+        channel, Asterisk automatically removes the prefix. This ensures that
+        the variable is inherited only once.</para>
 
-        <para>Beispiel:<programlisting>exten =&gt; 1234,1,Set(_KUCHENSORTE="Marmorkuchen")</programlisting></para>
+        <para>Example:<programlisting>exten =&gt; 1234,1,Set(_CAKE="Marble cake")</programlisting></para>
       </section>
 
       <section id="var-mehrstufige-vererbung">
-        <title>Mehrstufige Vererbung</title>
+        <title>Multi-level inheritance</title>
 
-        <para>Will man eine Channel-Variable beliebig oft vererben, so muss
-        man zwei <code>__</code> (Underscore)-Zeichen vor die Variable setzen.
-        Die zwei Underscore-Zeichen werden dann immer mitvererbt.</para>
+        <para>If you need unlimited inheritance of a channel variable, you can
+        do this by prefixing the variable with two "_" (underscore)
+        characters. Variables prefixed in this way will always be inherited by
+        spawned channels.</para>
 
         <warning>
-          <para>Asterisk unterscheidet die Namen von Variablen, die mit einem
-          Underscore anfangen, nicht von Variablen, die keinen Underscore
-          haben. So wird im folgenden Beispiel aus der vererbbaren
-          Channel-Variable <code>KUCHENSORTE</code> eine normale (nicht
-          vererbbare) Channel-Variable:<programlisting>exten =&gt; 1234,1,Set(__KUCHENSORTE="Marmorkuchen")
-exten =&gt; 1234,n,Set(KUCHENSORTE="Marmorkuchen")</programlisting></para>
+          <para>Asterisk makes no distinction between variable names that are
+          preceded with an underscore and those that are not. In the example
+          below, a variable with multi-level inheritance
+          ("<code>__CAKE</code>") is rendered uninheritable by the subsequent
+          entry:<programlisting>exten =&gt; 1234,1,Set(__CAKE="Marble cake")
+exten =&gt; 1234,n,Set(CAKE="Marble cake")</programlisting></para>
         </warning>
 
-        <para>Beispiel:<programlisting>exten =&gt; 1234,1,Set(__KUCHENSORTE="Nusskuchen")</programlisting></para>
+        <para>Example:<programlisting>exten =&gt; 1234,1,Set(__CAKE="Sponge cake")</programlisting></para>
 
-        <para>Bei einem Abruf einer vererbten Channel-Variable ist es egal, ob
-        man die Unterstriche voranstellt oder nicht. Die beiden folgenden
-        Zeilen geben zweimal den gleichen Wert im CLI aus:<programlisting>exten =&gt; 1234,1,NoOp(${__KUCHENSORTE})
-exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
+        <para>When calling an inherited variable, it doesn't matter if it is
+        called with a prefix or not. These entries will give the same output
+        in the CLI:<programlisting>exten =&gt; 1234,1,NoOp(${__CAKE})
+exten =&gt; 1234,n,NoOp(${CAKE})</programlisting></para>
       </section>
     </section>
 
     <section id="feste-channel-var">
-      <title>Feste Channel-Variablen</title>
+      <title>System channel variables</title>
 
       <indexterm>
         <primary>Variablen</primary>
@@ -501,26 +503,33 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
         <secondary>Feste Channel-Variablen</secondary>
       </indexterm>
 
-      <para>Die folgende Liste enthält die wichtigsten fest einprogrammierten
-      Channel-Variablen, die nicht in der <filename>extensions.conf</filename>
-      überschrieben, aber ausgelesen werden können.<warning>
-          <para>Eine komplette Liste aller vordefinierten Variablen finden Sie
-          in der Datei <filename>doc/README.variables</filename> (Asterisk
-          1.2) und <filename>doc/channelvariables.txt</filename> (Asterisk
-          1.4). In dieser Liste werden nur nicht DEPRECATED Variablen
-          aufgelistet. So finden Sie z.B. ein ${CALLERIDNUM} nicht in dieser
-          Liste, weil dies deprecated ist (man soll anstatt die Funktion
-          ${CALLERID(num)} benutzen).</para>
-        </warning>Die für das jeweilige Thema relevanten Variablen werden aber
-      im Buch immer in jedem Kapitel extra aufgeführt.<footnote>
-          <para>Ein klassisches Henne-Ei-Problem</para>
+      <para>The following list describes the more important system channel
+      variables. These variables may be read but not overwritten by entries in
+      <filename>extensions.conf</filename>, as they are pre-defined by
+      Asterisk.<warning>
+          <para>A complete list of all the pre-defined variables may be found
+          in <filename>doc/README.variables</filename> (Asterisk 1.2) and
+          <filename>doc/channelvariables.txt</filename> (Asterisk 1.4).
+          Deprecated variables are not included in this list. For example, the
+          variable ${CALLERIDNUM} (previously commonly used) is not in this
+          list; it is preferable to use the Asterisk function ${CALLERID(num)}
+          instead.</para>
+        </warning><tip>
+          <para>It is a good practice to replace dialplan code that depends on
+          deprecated variables or functions with code that uses the
+          recommended replacements. This will reduce the chance of an
+          installation breaking when you upgrade Asterisk.</para>
+        </tip>System variables relevant to specific Asterisk functions are
+      covered again in their respective chapters.<footnote>
+          <para>A classic "Which comes first, the chicken or the egg?"
+          problem!</para>
         </footnote></para>
 
       <note>
-        <para>Bei einigen der hier aufgeführten Variablen handelt es sich gar
-        nicht um Variblen, sondern um eingebaute Funktionen. Da dies in der
-        Praxis aber oft verschwimmt, werden sie hier trotzdem
-        aufgelistet.</para>
+        <para>Some of the "variables" described here are not really variables
+        but in fact built-in <emphasis>functions</emphasis>. In practice, they
+        often play a similar role, so they are listed here for
+        convenience.</para>
       </note>
 
       <para><variablelist termlength="10">
@@ -532,8 +541,9 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${ANSWEREDTIME}</code></term>
 
             <listitem>
-              <para>Die Gesamtzeit (in Sekunden) seitdem das Gespräch zustande
-              gekommen ist.</para>
+              <para>The total elapsed time for the active connection (in other
+              words, the number of seconds since the conversation
+              started).</para>
             </listitem>
           </varlistentry>
 
@@ -541,8 +551,8 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${BLINDTRANSFER}</code></term>
 
             <listitem>
-              <para>Der Name des Channels auf der anderen Seite eines
-              Blind-Transfers.</para>
+              <para>The name of the channel on the other side of a blind
+              transfer.</para>
             </listitem>
           </varlistentry>
 
@@ -550,7 +560,7 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${CHANNEL}</code></term>
 
             <listitem>
-              <para>Name des aktuellen Channels</para>
+              <para>Name of the current channel.</para>
             </listitem>
           </varlistentry>
 
@@ -558,7 +568,7 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${CONTEXT}</code></term>
 
             <listitem>
-              <para>Name des aktuellen Contextes</para>
+              <para>Name of the current context.</para>
             </listitem>
           </varlistentry>
 
@@ -566,7 +576,9 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${EPOCH}</code></term>
 
             <listitem>
-              <para>Aktueller Unix Style Epoch.</para>
+              <para>Current Unix time (total number of seconds elapsed since
+              the beginning of the Unix "epoch", which began at midnight UTC,
+              January 1st, 1970)</para>
             </listitem>
           </varlistentry>
 
@@ -574,15 +586,15 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${EXTEN}</code></term>
 
             <listitem>
-              <para>Aktuell gewählte Extension</para>
+              <para>Currently dialed extension.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term><code>${ENV(VARIABLENNAME)}</code></term>
+            <term><code>${ENV(VARIABLENAME)}</code></term>
 
             <listitem>
-              <para>Umgebungsvariable <code>VARIABLENNAME</code></para>
+              <para>Environment variable <code>VARIABLENAME</code></para>
             </listitem>
           </varlistentry>
 
@@ -590,7 +602,7 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${HANGUPCAUSE}</code></term>
 
             <listitem>
-              <para>Grund für das Beenden (hangup) eines Gespräches</para>
+              <para>Cause of connection hang-up.</para>
             </listitem>
           </varlistentry>
 
@@ -598,8 +610,8 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${INVALID_EXTEN}</code></term>
 
             <listitem>
-              <para>Wird in der <code>i</code>-Extension benutzt und enthält
-              die gewählte Extension.</para>
+              <para>Used in the <code>i</code>-extension and contains the
+              dialed extension.</para>
             </listitem>
           </varlistentry>
 
@@ -607,7 +619,7 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${PRIORITY}</code></term>
 
             <listitem>
-              <para>Aktuelle Priorität innerhalb der Extension</para>
+              <para>Current priority in the current extension.</para>
             </listitem>
           </varlistentry>
 
@@ -615,7 +627,7 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${TRANSFER_CONTEXT}</code></term>
 
             <listitem>
-              <para>Context eines weiterverbundenen Gespräches</para>
+              <para>Context of a transferred call.</para>
             </listitem>
           </varlistentry>
 
@@ -623,8 +635,7 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${UNIQUEID}</code></term>
 
             <listitem>
-              <para>Im System einzigartige (unique) ID für das aktuelle
-              Gespräch</para>
+              <para>The unique ID for the current connection.</para>
             </listitem>
           </varlistentry>
 
@@ -632,16 +643,15 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
             <term><code>${SYSTEMNAME}</code></term>
 
             <listitem>
-              <para>In der <filename>/etc/asterisk/asterisk.conf</filename>
-              Datei eingetragener <parameter>systemname</parameter>
-              Parameter.</para>
+              <para>The system name as defined by <code>systemname</code> in
+              <filename>/etc/asterisk/asterisk.conf</filename>.</para>
             </listitem>
           </varlistentry>
         </variablelist></para>
     </section>
 
     <section id="variablenmanipulation">
-      <title>Variablenmanipulation</title>
+      <title>Manipulating variables</title>
 
       <indexterm>
         <primary>Variablen</primary>
@@ -649,94 +659,91 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
         <secondary>Manipulation</secondary>
       </indexterm>
 
-      <para>Variablen an sich eröffnen ihren Nutzen erst dann, wenn man sie
-      zur Laufzeit verändern kann. Mit Hilfe dieser Variabilität lassen sich
-      komplexe Verhaltensweisen steuern und vorsehen.</para>
+      <para>Variables are most useful when we can change their contents at
+      execution time. This gives us the flexibility to impart complex and
+      powerful behavior to our Asterisk system.</para>
 
       <section id="var-substring">
         <title>Substring</title>
 
-        <para>In der Regel bezeichnen Strings eine Aneinanderreihung einzelner
-        Zeichen (character). Die Größe eines Strings bestimmt sich durch die
-        Anzahl der identifizierbaren einzelnen Zeichen. Zum Beispiel besteht
-        der String <quote>Apfelbaum</quote> aus 9 Zeichen. Ein String kann
-        grundsätzlich in so genannte Teilstrings zerlegt werden, also Strings,
-        die, wenn man sie wieder aneinanderreiht, den ursprünglichen String
-        ergeben. Im genannten Beispiel könnten wir den String
-        <quote>Apfelbaum</quote> in die Teilstrings <quote>Apfel</quote> und
-        <quote>baum</quote> zerlegen, aber auch <quote>Apf</quote> und
-        <quote>elbaum</quote> sind echte Teilstrings. Ein String hat
-        theoretisch keine begrenzte Größe, er kann beliebig viele Zeichen
-        enthalten, der gesamte Text dieses Buches könnte so als ein String
-        aufgefasst werden. Natürlich wäre das dann nicht mehr sehr handlich,
-        dennoch ist der Vorgang des Zerlegens eines Strings in Teilstrings
-        eine Standardprozedur beim Programmieren von Anwendungen. In vielen
-        Programmiersprachen heißt die hier beschriebene Funktionalität
-        <emphasis>Substring</emphasis>. Mit einer Substring-Funktion kann man
-        Teile eines Strings ausschneiden und das Ergebnis in einer anderen
-        Variablen abspeichern. In Asterisk gibt es keine eigenständige Routine
-        für diese Substring-Funktion, sondern hierfür wird ein <code>:</code>
-        (Doppelpunkt) nach dem Variablennamen eingesetzt. Vom Inhalt der
-        Variablen, also dem String, wird dann eine vorgegebene Anzahl von
-        Zeichen (Länge) als Teilstring abgetrennt.</para>
+        <para>In general, a string consistes of a sequence of individual
+        characters. The size of a string is determined by the number of
+        characters contained in it. For example, the string "apple tree" has
+        10 characters (we must include the space). Any string can be broken
+        into substrings. For example, "apple", "tree", "app" and "le tre" are
+        all valid substrings of "apple tree". In theory, a string can be of
+        any length; this entire book could be contained in a single string,
+        though it would be impractical. Manipulation of strings is an
+        important technique in programming applications. Asterisk lets you
+        manipulate strings and substrings using the <code>:</code> (colon)
+        character. Using the <code>:</code> character, you can extract a
+        specified portion of an existing string variable.</para>
 
         <section id="var-substring-syntax">
           <title>Syntax</title>
 
-          <para><synopsis>${<replaceable>VARIABLENNAME</replaceable>[:<replaceable>Start</replaceable>[:<replaceable>Laenge</replaceable>]]}</synopsis></para>
+          <para><synopsis>${<replaceable>VARIABLENAME</replaceable>[:<replaceable>start</replaceable>[:<replaceable>length</replaceable>]]}</synopsis></para>
         </section>
 
         <section id="var-substring-beispiel">
-          <title>Beispiele</title>
+          <title>Examples</title>
 
-          <para>Bei einer Telefonanlage wird traditionell eine führende 0
-          (Null) gewählt, um eine Amtsleitung zu bekommen. Die zu wählende
-          Telefonnummer darf diese 0 aber nicht enthalten. Wird die Nummer
-          <code>0030 227 32320</code> gewählt, so kann man mit folgender Zeile
-          die eigentliche Rufnummer in die Variable
-          <varname>${RUFNUMMER}</varname> abspeichern.<footnote>
-              <para>Für alle neugierigen Leser: Das ist die Telefonnummer des
-              Parlamentsarchives des Deutschen Bundestages in Berlin.</para>
-            </footnote> <programlisting>exten =&gt; _0X.,1,Set(RUFNUMMER=${EXTEN:1})</programlisting></para>
+          <para>Many telephone systems require that a prefix digit be dialled
+          in order to get an outside line (In North America, this is usually
+          "9"). The target number, however, cannot include this prefix digit.
+          If we dial <code>9-1-202-7075000</code>, we can store the actual
+          outside number in the <varname>${OUTGOINGNUMBER}</varname> using the
+          following dialplan entry.<footnote>
+              <para>For our curious readers: this is the general information
+              number for the Library of Congress in Washington, D.C.</para>
+            </footnote> <programlisting>exten =&gt; _0X.,1,Set(OUTGOINGNUMBER=${EXTEN:1})</programlisting></para>
 
-          <para>Wenn die Angabe der Länge fehlt, wird automatisch der Rest des
-          Strings genommen.</para>
+          <para>If the <emphasis>length</emphasis> option is omitted, the rest
+          of the string is taking automatically.</para>
 
-          <para>Wenn wir die letzten 5 Ziffern der gewählten Nummer benötigen,
-          dann erreichen wir das mit einer negativen Zahl. Bei der oben
-          gewählten Nummer würde die folgende Zeile den Wert 32320 in der
-          Variablen <varname>${DURCHWAHL}</varname>
-          abspeichern.<programlisting>exten =&gt; _0X.,1,Set(DURCHWAHL=${EXTEN:-5})</programlisting></para>
+          <para>What if we only need the last seven digits of the dialed
+          number? I this case we use a negative number for the start
+          parameter. The following entry would store 7075000 from our example
+          above in the variable <code>${LOCALNUMBER}</code>.<footnote>
+              <para>Under the original rules of the NANP (North American
+              Numbering Plan) the last seven digits of a number constituted
+              the local portion of the number. That is, if your telephone
+              number was in the same area code as the dialed number, you
+              needed only to dial seven digits. Population growth and density
+              means that the number spaces of many area codes are becoming
+              depleted. To minimize disruption, the NANP has been extended
+              with <emphasis>overlay dialplans</emphasis>. In areas with
+              overlay plans, two telephone lines on the same street, or even
+              in the same building, may have different area codes. You are in
+              an overlay area if you are required to dial 10 digits for local
+              calls. In this case, a local number filter as depicted above
+              will not be appropriate. Also, many area codes covering larger
+              areas still have portions of the number space that are treated
+              as long distance. You can read more about this at
+              <citetitle><ulink
+              url="???">http://en.wikipedia.org/wiki/Overlay_plan</ulink></citetitle>.</para>
+            </footnote><programlisting>exten =&gt; _0X.,1,Set(LOCALNUMBER=${EXTEN:-7})</programlisting></para>
 
-          <para>Möchten wir die Vorwahl in einer separaten Variable
-          abspeichern, so erreichen wir dies durch:<programlisting>exten =&gt; _0X.,1,Set(VORWAHL=${EXTEN:1:3})</programlisting>Diese
-          Zeile geht davon aus, dass die Vorwahl 3-stellig ist und speichert
-          sie in der Variable <varname>${VORWAHL}</varname>.<footnote>
-              <para>Leider macht diese Variante in Deutschland wenig Sinn, da
-              es unterschiedlich lange Vorwahlen gibt. Mehr Informationen zur
-              deutschen Vorwahl finden Sie unter <ulink
-              url="http://de.wikipedia.org/wiki/Telefonvorwahl_%28Deutschland%29">
-              <citetitle>http://de.wikipedia.org/wiki/Telefonvorwahl_%28Deutschland%29.</citetitle>
-              </ulink></para>
-            </footnote></para>
+          <para>We can also capture just the area code:<programlisting>exten =&gt; _0X.,1,Set(AREACODE=${EXTEN:2:3})</programlisting><note>
+              <para>Obviously, readers in other parts of the world
+              (<emphasis>e.g.</emphasis> the United Kingdom, Australia, or
+              elsewhere) will have different national dialplans which impact
+              how outside numbers should be processed. Some countries have
+              area and city codes which are variable in length; in those
+              cases, this kind of number filtering will not be
+              practical.</para>
+            </note></para>
 
-          <para>Nehmen wir an, wir möchten bei Telefonaten zur Nummer
-          <code>00012024562121</code> nach Amerika die einzelnen Bestandteile
-          herausfiltern:<footnote>
-              <para>Um Ihnen das Gespräch nach Amerika zu sparen: Dies ist die
-              Nummer der Besucherzentrale des Weißen Hauses in Washington DC.
-              ;-)</para>
-            </footnote><programlisting>exten =&gt; _0001X.,1,Set(INTERNATIONALEVORWAHL=${EXTEN:3:1})
-exten =&gt; _0001X.,n,Set(ORTSVORWAHL=${EXTEN:4:3})
-exten =&gt; _0001X.,n,Set(RUFNUMMER=${EXTEN:7})
-exten =&gt; _0001X.,n,Set(DURCHWAHL=${EXTEN:-4}</programlisting></para>
+          <para>Here, then, is how we might extract useful information from a
+          dialed number:<programlisting>exten =&gt; _9X.,1,Set(AREACODE=${EXTEN:2:3})
+exten =&gt; _9X.,n,Set(LOCALNUMBER=${EXTEN:5})</programlisting></para>
         </section>
       </section>
     </section>
   </section>
 
   <section id="besondere-extensions">
-    <title>Besondere Extensions</title>
+    <title>Special extensions</title>
 
     <indexterm>
       <primary>Extensions</primary>
@@ -744,12 +751,11 @@ exten =&gt; _0001X.,n,Set(DURCHWAHL=${EXTEN:-4}</programlisting></para>
       <secondary>Besondere Extensions</secondary>
     </indexterm>
 
-    <para>Da sämtliche Programmierlogik über Extensions programmiert werden
-    muss, benötigen wir noch eine Reihe von besonderen und vom System
-    vorbelegte Extensions.</para>
+    <para>Because all the programming logic must occur via extensions, we need
+    some additional system-defined extensions.</para>
 
     <section id="h-extension">
-      <title>Die h-Extension</title>
+      <title>The <code>h</code> extension</title>
 
       <indexterm>
         <primary>Extensions</primary>
@@ -757,32 +763,32 @@ exten =&gt; _0001X.,n,Set(DURCHWAHL=${EXTEN:-4}</programlisting></para>
         <secondary>h-Extension</secondary>
       </indexterm>
 
-      <para>Das <code>h</code> steht bei dieser Standard-Extension für Hangup
-      (Auflegen). Sie wird aufgerufen, sobald ein Gespräch beendet wurde.
-      Dabei muss berücksichtig werden, dass dann logischerweise der Wert der
-      Variable <varname>${EXTEN}</varname> nicht mehr die ursprüngliche
-      Extension, sondern den Wert <code>h</code> enthält.</para>
+      <para>The <code>h</code> is the standard "hang-up" extension. The
+      <code>h</code> extension, if it is configured, is called when a caller
+      hangs up the phone. Note that as soon as this happens, the content of
+      <varname>${EXTEN}</varname> changes to <code>h</code>.</para>
 
       <section id="h-extension-beispiel">
-        <title>Beispiel</title>
+        <title>Example</title>
 
-        <para>Sollen in der globalen Variable GESPRAECHE immer die Anzahl der
-        aktuell geführten Gespräche gespeichert werden, so muss diese beim
-        Aufbau eines Gesprächs um 1 erhöht und beim Abbau eines Gesprächs
-        (also beim Auflegen) wieder um 1 vermindert werden. Der folgende
-        Dialplan zeigt die Grundidee:<programlisting>[global]
-GESPRAECHE=0
+        <para>Say we want the global variable <code>CONNECTIONS</code> to
+        reflect the number of currently active conversations at any given
+        time. This means we need the value of <code>CONNECTIONS</code> to
+        increase by one every time a connection is initiated and decrease by
+        one every time someone hangs up. The following dialplan illustrates
+        the basic idea:<programlisting>[global]
+CONNECTIONS=0
 
-[from-intern]
-exten =&gt; _X.,1,Set(GESPRAECHE=$[${GESPRAECHE} + 1]|g)
+[from-internal]
+exten =&gt; _X.,1,Set(CONNECTIONS=$[${CONNECTIONS} + 1]|g)
 exten =&gt; _X.,2,Dial(SIP/${EXTEN})
 
-exten =&gt; h,1,Set(GESPRAECHE=$[${GESPRAECHE} - 1]|g)</programlisting></para>
+exten =&gt; h,1,Set(CONNECTIONS=$[${CONNECTIONS} - 1]|g)</programlisting></para>
       </section>
     </section>
 
     <section id="i-extension">
-      <title>Die i-Extension</title>
+      <title>The <code>i</code> extension</title>
 
       <indexterm>
         <primary>Extensions</primary>
@@ -790,24 +796,22 @@ exten =&gt; h,1,Set(GESPRAECHE=$[${GESPRAECHE} - 1]|g)</programlisting></para>
         <secondary>i-Extension</secondary>
       </indexterm>
 
-      <para>Um einen Context "wasserdicht" zu machen, wird die
-      <code>i</code>-Extension benutzt. Das <code>i</code> steht dabei für
-      invalid (ungültig) und behandelt alle im entsprechenden Context nicht
-      definierten Zielrufnummern. Auch hier wird in der Variable
-      <code>EXTEN</code> natürlich nicht mehr die angewählte Nummer
-      abgebildet, diese ist mit der Variable <code>INVALID_EXTEN</code>
-      abrufbar.</para>
+      <para>To make a context gracefully handle every conceivable
+      circumstance, we use the special extension<code> i</code> ("i" stands
+      for invalid) which handles all dialed numbers which are not explicitly
+      handled handled within the context. Again, as with the <code>h</code>
+      extension, once the <code>i</code> extension is invoked the
+      <code>${EXTEN}</code> will no longer contain the dialed number. To get
+      the dialed number while in the <code>i</code> extension, use
+      <code>${INVALID_EXTEN}</code>.</para>
 
       <section id="i-extension-beispiel">
-        <title>Beispiel</title>
+        <title>Example</title>
 
-        <para>In der Apfelmus GmbH können aus der Abteilung B nur die
-        Rufnummern 100 bis 199 angerufen werden. Alle anderen Gespräche führen
-        zur Ansage des Bausteines that-is-not-rec-phn-num.<footnote>
-            <para>Der Sprachbaustein in der Datei
-            <filename>that-is-not-rec-phn-num.gsm</filename> enthält den
-            folgenden Text: "That is not a recognized phone number".</para>
-          </footnote><programlisting>[abteilung-b]
+        <para>In our example business, Widgets, Inc., employees in department
+        B can only dial extensions 100 to 199. Callers dialing any other
+        numbers hear the message, "I'm sorry. That is not a valid extension.
+        Please try again."<programlisting>[department-b]
 exten =&gt; _1XX,1,Dial(${EXTEN})
 
 exten =&gt; i,1,NoOp(Undefinierte Nummer ${INVALID_EXTEN} wurde gewaehlt.)
