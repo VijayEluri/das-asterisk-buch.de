@@ -814,15 +814,15 @@ exten =&gt; h,1,Set(CONNECTIONS=$[${CONNECTIONS} - 1]|g)</programlisting></para>
         Please try again."<programlisting>[department-b]
 exten =&gt; _1XX,1,Dial(${EXTEN})
 
-exten =&gt; i,1,NoOp(Undefinierte Nummer ${INVALID_EXTEN} wurde gewaehlt.)
+exten =&gt; i,1,NoOp(An invalid number ${INVALID_EXTEN} was dialed.)
 exten =&gt; i,2,Answer()
-exten =&gt; i,3,Playback(that-is-not-rec-phn-num)
+exten =&gt; i,3,Playback(invalid)
 exten =&gt; i,4,Hangup()</programlisting></para>
       </section>
     </section>
 
     <section id="o-und-a-extension">
-      <title>Die o- und a-Extension</title>
+      <title>The <code>o</code> and <code>a</code> extensions</title>
 
       <indexterm>
         <primary>Extensions</primary>
@@ -836,18 +836,17 @@ exten =&gt; i,4,Hangup()</programlisting></para>
         <secondary>a-Extension</secondary>
       </indexterm>
 
-      <para>Wurde in der Konfigurationsdatei
-      <filename>voicemail.conf</filename> der Eintrag
-      <code>operator=yes</code> gesetzt, so kann innerhalb der Voicemailbox
-      durch Drücken der <code>0</code> (Null) die <code>o</code>-Extension
-      aufgerufen werden (<code>o</code> für Operator).</para>
+      <para>If <code>operator=yes</code> is set in
+      <filename>voicemail.conf</filename>, the call will be directed to the o
+      extension (o is for operator, kids!) if the caller presses
+      "<code>0</code>".</para>
 
-      <para>Durch Drücken der Stern-Taste (<code>*</code>) kommt man hingegen
-      in die <code>a</code>-Extension (abort, Abbruch).</para>
+      <para>Pressing <code>*</code> (asterisk) will direct the call to the
+      <code>a</code> extension (abort).</para>
     </section>
 
     <section id="t-extension">
-      <title>Die t- und T-Extension</title>
+      <title>The <code>t</code> and <code>T</code> extensions</title>
 
       <indexterm>
         <primary>Extensions</primary>
@@ -861,43 +860,43 @@ exten =&gt; i,4,Hangup()</programlisting></para>
         <secondary>T-Extension</secondary>
       </indexterm>
 
-      <para>Bei den <code>t</code>- und <code>T</code>-Extensions handelt es
-      sich jeweils um Timeout-Extensions, also Zeitüberschreitungen.</para>
+      <para>The <code>t</code> and <code>T</code> extensions are for handling
+      timeouts in the context.</para>
 
       <section id="klein-t-extension">
-        <title>t-Extension</title>
+        <title><code>t</code> extension</title>
 
-        <para>Erfolgt nach einer bestimmten Zeit in einem IVR-Menü keine
-        Eingabe, so wird die <code>t</code>-Extension aufgerufen.</para>
+        <para>If there is no input in an IVR menu within a certain time, the
+        <code>t</code> extension is called.</para>
 
-        <para>Beispiel:<programlisting>[hauptmenue]
+        <para>Example:<programlisting>[mainmenu]
 exten =&gt; 10,1,Answer()
-exten =&gt; 10,n,Background(marryme)             ; "Heiraten? 1 für ja, 2 für nein"
+exten =&gt; 10,n,Background(marryme)             ; "Marry me? Press 1 for yes, 2 for no."
 
-exten =&gt; 1,1,Playback(thank-you-cooperation)  ; 1 =&gt; "Danke"
+exten =&gt; 1,1,Playback(thank-you-cooperation)  ; 1 =&gt; "Thank you."
 exten =&gt; 1,n,Hangup()
 
-exten =&gt; 2,1,Playback(hangup-try-again)       ; 2 =&gt; "Nochmal probieren"
+exten =&gt; 2,1,Playback(hangup-try-again)       ; 2 =&gt; "Hang up and try again."
 exten =&gt; 2,n,Hangup()
 
-exten =&gt; t,1,Hangup()                         ; keine Eingabe =&gt; auflegen</programlisting></para>
+exten =&gt; t,1,Hangup()                         ; no input =&gt; hang up</programlisting></para>
       </section>
 
       <section id="gross-t-extension">
-        <title>T-Extension</title>
+        <title><code>T</code> extension</title>
 
-        <para>Die <code>T</code>-Extension wird nach einem Absolute Timeout
-        aufgerufen. Dieser kann mit
-        <code>Set(TIMEOUT(absolute)=&lt;Sekunden&gt;)</code> gesetzt
-        werden.<warning>
-            <para>Bitte achten Sie darauf, das vor und nach dem "=" Zeichen
-            kein Leerzeichen stehen darf.</para>
-          </warning> Der Timeout wird immer dann gestartet, wenn der Zähler
-        neu gesetzt wird (es wird also nicht automatisch vom Start des
-        Gespräches gezählt). Mit <code>Set(TIMEOUT(absolute)=0)</code> wird
-        dieser Timeout wieder deaktiviert.</para>
+        <para>The <code>T</code> extension is called after the absolute
+        timeout has been exceeded. You can set this timeout value with
+        <code>Set(TIMEOUT(absolute)=&lt;seconds&gt;)</code>.<warning>
+            <para>Be careful not to have any spaces before and after the "="
+            character.</para>
+          </warning>The timer starts whenever the timeout value is set (in
+        other words, it does not automatically start with the connection, it
+        must be started explicitly with the <code>Set()</code> command).
+        <code>Set(TIMEOUT(absolute)=0)</code> deactivates the absolute
+        timeout.</para>
 
-        <para>Beispiel:<programlisting>exten =&gt; 20,1,Answer()
+        <para>Example:<programlisting>exten =&gt; 20,1,Answer()
 exten =&gt; 20,2,Set(TIMEOUT(absolute)=120)
 exten =&gt; 20,3,Playback(hello-world)
 exten =&gt; 20,4,Wait(1)
@@ -911,7 +910,7 @@ exten =&gt; T,4,Hangup()</programlisting></para>
     </section>
 
     <section id="s-extension">
-      <title>Die s-Extension</title>
+      <title>The <code>s</code> extension</title>
 
       <indexterm>
         <primary>Extensions</primary>
@@ -919,104 +918,100 @@ exten =&gt; T,4,Hangup()</programlisting></para>
         <secondary>s-Extension</secondary>
       </indexterm>
 
-      <para>Der erste Parameter einer Regel (Extension) ist immer der Name
-      bzw. die Nummer. Was passiert aber, falls der Anruf auf einer
-      klassischen analogen Leitung eintrifft und Asterisk gar nicht wissen
-      kann, an wen der Anruf gerichtet ist? Dies ist dann der Fall, wenn Sie
-      Asterisk mittels eines analogen Anschlusses an das Festnetz anschließen
-      und die Rufnummerweitergabe aus dem Festnetz an den analogen
-      Teilnehmeranschluss nicht erfolgt. Für dieses und alle anderern
-      Szenarien, in denen der eingehende Anruf ohne eine Zielrufnummer
-      ankommt, gibt es die <code>s</code>-Extension.<warning>
-          <para>Wenn Sie ein ATA-Device, also einen Analog to VoIP-Adapter
-          benutzen, so benötigen Sie dafür keine <code>s</code>-Extension. Die
-          Zielrufnummer müssen Sie hierbei im Adapter (meist über ein
-          Webinterface) konfigurieren.</para>
+      <para>The first entry in any extension is always the name or number
+      dialed by the caller. When a call comes in from the PSTN, however,
+      Asterisk doesn't know what was dialed or whom the caller is trying to
+      reach. For any scenario in which we cannot determine the number dialed,
+      we use the <code>s</code> extension. <warning>
+          <para>If you are using an ATA device (<emphasis>analog telephone
+          adapter</emphasis>) you don't need the <code>s</code> extension. You
+          can configured the dialled number in the configuration interface
+          (often a web interface) for the ATA.</para>
         </warning></para>
 
-      <para>Beispiel:</para>
+      <para>Example:</para>
 
       <programlisting>exten =&gt; s,1,Answer()
 exten =&gt; s,2,Wait(1)
-exten =&gt; s,3,Play(carried-away-by-monkeys)
+exten =&gt; s,3,Play(tt-monkeys)
 exten =&gt; s,4,Wait(1)
 exten =&gt; s,5,Hangup()</programlisting>
     </section>
   </section>
 
   <section id="macro">
-    <title>Macro</title>
+    <title>Macros</title>
 
-    <para>Ein Macro ist eine Art Unterprogramm. Es kann komplexe Workflows
-    enthalten und dann im restlichen Dialplan immer mit einer einzigen Zeile
-    aufgerufen werden. Ein einfaches Beispiel kann so
-    aussehen:<programlisting>[macro-anruf]
+    <para>A macro is a kind of subroutine. It can contain complex workflows
+    but is called through a single entry. This reduces repetition in the
+    dialplan and makes it cleaner and smaller. A simple example might look
+    like this:<programlisting>[macro-incoming]
 exten =&gt; s,1,Dial(SIP/${MACRO_EXTEN},10)
 exten =&gt; s,n,VoiceMail(${MACRO_EXTEN})</programlisting></para>
 
     <para>Ein solches Macro würde im rest des Dialplanes dann wie folgt
     aufgerufen werden:<programlisting>[sales]
-exten =&gt; _2XXX,1,Macro(anruf)
+exten =&gt; _2XXX,1,Macro(incoming)
 
-[hausmeister]
-exten =&gt; _2XXX,1,Macro(anruf)</programlisting></para>
+[building-mgr]
+exten =&gt; _2XXX,1,Macro(incoming)</programlisting></para>
 
-    <para>Bei einem zweizeiligen Macro ist der Effekt natürlich nicht so groß
-    wie bei einem langen Macro, aber es ist klar, worum es geht.</para>
+    <para>The effect is not quite so impressive with a two-line macro as it
+    would be with a much longer macro, but the advantages of such an approach
+    should be clear.</para>
 
-    <para>Die Benutzung oder nicht Benutzung von Macros spaltet die Asterisk
-    Entwicklergemeinde in zwei Lager. Für die eine Hälfte machen sie den
-    Dialplan übersichtlicher und für die andere Hälfte machen sie ihn total
-    unübersichtlich. Entscheiden Sie selber, zu welcher Gruppierung Sie
-    gehören!</para>
+    <para>The use of macros tends to divide the Asterisk user community into
+    two groups. One feels that macros make the dialplan easier to understand,
+    the other feels that they make the dialplan confusing. We encourage you to
+    draw your own conclusions!</para>
 
     <section id="macro-basics">
-      <title>Macro Basics</title>
+      <title>Macro basics</title>
 
-      <para>Bei der Definition eines Macros sind folgende Punkte zu
-      beachten:</para>
+      <para>When defining macros, take care to note the following
+      points:</para>
 
       <itemizedlist>
         <listitem>
-          <para>Bei der Definition eines Macros gibt es nur eine Extension
-          (die s-Extension).</para>
+          <para>When defining a macro, only one extension - the s extension -
+          is allowed.</para>
         </listitem>
 
         <listitem>
-          <para>Auf die ursprünglichen Variablen
-          <parameter>${EXTEN}</parameter> und
-          <parameter>${CONTEXT}</parameter> kann innerhalb des Macros nicht
-          direkt zugegriffen werden. Das geschieht über die Variablen
-          <parameter>${MACRO_EXTEN}</parameter> und
-          <parameter>${MACRO_CONTEXT}</parameter>.</para>
+          <para>The original <parameter>${EXTEN}</parameter> and
+          <parameter>${CONTEXT}</parameter> variables cannot be used inside a
+          macro. We must use <parameter>${MACRO_EXTEN}</parameter> and
+          <parameter>${MACRO_CONTEXT}</parameter> instead.</para>
         </listitem>
 
         <listitem>
-          <para>Beim Aufruf eines Macros können zusätzliche Argumente
-          übergeben werden (mit Komma oder Pipe abgetrennt). Diese können im
-          Macro mit <parameter>${ARGn}</parameter> (n ist dabei eine
-          natürliche Zahl) abgerufen werden.</para>
+          <para>When calling a macro, additional comma- (",") or
+          pipe-separated ("|") arguments can be supplied. These arguments are
+          called within the macro with <parameter>${ARGn}</parameter> (where
+          <emphasis>n</emphasis> is a positive integer indicating which
+          argument in the sequence).</para>
         </listitem>
 
         <listitem>
-          <para>Ein Macro wird durch <code>[macro-macroname]</code> definiert
-          und mit der Applikation <command>Macro()</command> im Dialplan
-          aufgerufen.</para>
+          <para>A macro is defined in square brackets
+          (<code>[macro-macroname]</code>) and is called with the
+          <command>Macro()</command> application in an extension.</para>
         </listitem>
       </itemizedlist>
 
-      <para>Weitere Informationen zu Macros finden Sie unter <xref
+      <para>More information on macros may be found at <xref
       linkend="applikationen-macro" />.<tip>
-          <para>Mit der Applikation <command>MacroExclusive()</command> kann
-          man sicherstellen, das das konkrete Macro immer nur einmal zu einem
-          gegebenen Zeitpunkt aufgerufen wird (siehe <xref
+          <para>The application <command>MacroExclusive()</command> ensures
+          that the specific macro can only be called once at any given time.
+          If another channel is calling the macro, no other channel can call
+          it until it completes (see <xref
           linkend="applikationen-macroexclusive" />).</para>
         </tip></para>
     </section>
   </section>
 
   <section id="priority-jumping">
-    <title>Priority Jumping ist deprecated</title>
+    <title>Priority jumping is deprecated</title>
 
     <indexterm>
       <primary>Priority Jumping</primary>
@@ -1024,26 +1019,23 @@ exten =&gt; _2XXX,1,Macro(anruf)</programlisting></para>
       <secondary>+101</secondary>
     </indexterm>
 
-    <para>Lange Zeit wurde in Asterisk Dialplänen hauptsächlich mit Priority
-    Jumping gearbeitet. Dazu wurde von bestimmten Applikationen (z.B.
-    <code>Dial()</code>) die Priorität bei bestimmten Ereignissen um 101
-    hochgesetzt. Diese Funktionalität ist aber mittlerweile offiziell
-    <emphasis>deprecated</emphasis> (also im Sinne von "überholt")) und wird
-    zwar teilweise noch unterstützt, sollte jedoch nicht mehr benutzt werden.
-    Die Klassifizierung "deprecated" bezeichnet zumeist Funktionen und
-    Funktionsaufrufe, für die mittlerweile entsprechende Nachfolger oder
-    Folgekonstrukte existieren und künftig durch diese neuen ersetzt werden
-    sollen. Beim Suchen nach Lösungen und Anregungen im Internet oder auch in
-    anderen Asteriskbüchern werden Sie ebenfalls immer wieder auf
-    Lösungsvorschläge stoßen, die dieses überholte Konstrukt mit den
-    Prioritäten verwenden. Auch wenn die Unterstützung für derart erstellte
-    Dialpläne sicher nicht morgen eingestellt wird, so werden sie doch
-    mittelfristig schlechter unterstützt werden und man kann dann nicht sicher
-    sein, dass es eine Lösung in der alten Notation geben wird. Es hat auch
-    Vorteile sich aktiv mit einer Umstellung frühzeitig zu beschäftigen, da
-    sie bei künftigen Updates der Asterisk-Software deutlich weniger Gefahr
-    laufen werden, dass ihr Dialplan nicht mehr so funktioniert, wie sie das
-    gewohnt sind.</para>
+    <para>For a long time, priority jumping was a standard way of moving a
+    call about the dialplan. Specific applications (<emphasis>e.g.</emphasis>
+    <code>Dial()</code>) would elevate the priority by 101 under certain
+    circumstances. This feature is now officially deprecated. Basically, this
+    means that while it is currently still supported, eventually it
+    <emphasis>will</emphasis> be removed. Anyone who continues to use it is
+    making their dialplans vulnerable to failure after an upgrade.</para>
+
+    <para>In working with Asterisk you will encounter dialplan configuration
+    examples on the Internet; it is not uncommon to stumble upon grossly
+    outdated examples that use deprecated constructs. In professional practice
+    you should use the most current code constructions and versions of
+    Asterisk. The software is always being updated, but deprecated features
+    are not maintained.</para>
+
+    <para>In summary: if you want the operation of your Asterisk systems to be
+    as predictable as possible, keep your code current!</para>
   </section>
 
   <xi:include href="applikationen.xml"
