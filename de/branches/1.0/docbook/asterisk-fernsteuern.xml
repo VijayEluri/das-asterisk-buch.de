@@ -240,15 +240,15 @@ Extension: 10</programlisting></para>
       Servicerufnummer *77* aktivieren können. Nach der *77* soll das genaue
       Datum und die Weckuhrzeit gewählt werden.<programlisting>[hotel-intern]
 exten =&gt; _*77*XXXXXXXXXXXX,1,Answer()
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Jahr = ${EXTEN:4:4})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Monat = ${EXTEN:8:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Tag = ${EXTEN:10:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Stunden = ${EXTEN:12:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Minuten = ${EXTEN:14:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Jahr=${EXTEN:4:4})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Monat=${EXTEN:8:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Tag=${EXTEN:10:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Stunden=${EXTEN:12:2})
+exten =&gt; _*77*XXXXXXXXXXXX,n,Set(Minuten=${EXTEN:14:2})
 exten =&gt; _*77*XXXXXXXXXXXX,n,NoOp(Weckruf soll fuer die Rufnummer ${CALLERID(num)} soll um ${Stunden}:${Minuten} Uhr am ${Tag}.${Monat}.${Jahr} erfolgen.)
 exten =&gt; _*77*XXXXXXXXXXXX,n,System(echo 'Channel: SIP/${CALLERID(num)}\nContext: Weckruf\nExtension: 23' &amp;gt; /tmp/${UNIQUEID}.call)
 exten =&gt; _*77*XXXXXXXXXXXX,n,System(touch -t ${Jahr}${Monat}${Tag}${Stunden}${Minuten} /tmp/${UNIQUEID}.call)
-exten =&gt; _*77*XXXXXXXXXXXX,n,System(mv /tmp/${UNIQUEID}.call /var/spool/asterisk/outgoing/
+exten =&gt; _*77*XXXXXXXXXXXX,n,System(mv /tmp/${UNIQUEID}.call /var/spool/asterisk/outgoing/)
 exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(rqsted-wakeup-for)
 exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Stunden})
 exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${Minuten})
