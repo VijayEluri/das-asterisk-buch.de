@@ -373,7 +373,7 @@
       the outgoing calls of a call agent</member>
 
       <member><xref linkend="applikationen-changemonitor" /> - Changes the
-      base filename of a specific channel for<code>
+      filename prefix of a specific channel for<code>
       </code><command><code>Monitor()</code></command></member>
 
       <member><xref linkend="applikationen-chanspy" /> - Eavesdrop on an
@@ -888,12 +888,15 @@ The option string may contain zero or more of the following characters:
     <simpara>By default, recordings are saved in
     <filename>/var/spool/asterisk/monitor/</filename>. You can override this
     behavior with the parameter <code>savecallsin</code> in
-    <filename>agents.conf</filename>. Be aware that recording of calls may be
-    subject to freedom of information and privacy legislation in your
-    jurisdiction. As a matter of professional practice you should know the
-    terms under which it is lawful to record telephone calls. In most
-    jurisdictions it is illegal to record a call without the knowledge of the
-    participants.</simpara>
+    <filename>agents.conf</filename>.</simpara>
+
+    <warning>
+      <para>Be aware that recording of calls may be subject to freedom of
+      information and privacy legislation in your jurisdiction. As a matter of
+      professional practice you should know the terms under which it is lawful
+      to record telephone calls. In most jurisdictions it is illegal to record
+      a call without the knowledge of the participants.</para>
+    </warning>
 
     <simpara>If the caller ID and/or agent id for the agent cannot be
     determined, the call jumps to priority <emphasis>n</emphasis>+101, if it
@@ -994,47 +997,46 @@ Options:
       <secondary><code>AGI()</code></secondary>
     </indexterm>
 
-    <simpara>Ruft eine AGI-konforme Anwendung auf</simpara>
+    <simpara>Runs an AGI compliant application.</simpara>
 
-    <synopsis>AGI(<replaceable>Programm</replaceable>[,<replaceable>Argumente</replaceable>])</synopsis>
+    <synopsis><command>AGI(<replaceable>program</replaceable>[,<replaceable>arguments</replaceable>])</command></synopsis>
 
-    <simpara>(Analog auch <code>EAGI()</code>, <code>FastAGI()</code>,
-    <code>DeadAGI()</code>)</simpara>
+    <simpara>(Analog auch <command><code>EAGI()</code></command>,
+    <command><code>FastAGI()</code></command>,
+    <code><command>DeadAGI()</command></code>)</simpara>
 
-    <simpara>Führt ein Asterisk-Gateway-Interface-kompatibles Programm
-    <code>Programm</code> auf dem aktuellen Channel aus. Solche externen
-    Programme (die in fast jeder beliebigen Sprache vorliegen können - z.B.
-    Perl, PHP, ...), können den Telefonkanal steuern, Audiodateien abspielen,
-    DTMF-Ziffern auslesen und so weiter. Asterisk kommuniziert dabei mit dem
-    AGI-Program über <code>STDIN</code> und <code>STDOUT</code>. Die
-    spezifizierten <code>Argumente</code> werden an das AGI-Programm
-    durchgereicht.</simpara>
+    <simpara>Runs an Asterisk Gateway Interface compliant program called
+    <code>program</code> on the current channel. AGI scripts or programs can
+    be implemented in almost any conceivable language (e.g. Perl, PHP) and may
+    be used to manipulate the channel, play sound files, interpret DTMF tones,
+    and so on. Asterisk communicates with the AGI program over
+    <filename>stdin</filename> and <filename>stdout</filename>. The arguments
+    are passed directly to the AGI program at execution time.</simpara>
 
-    <simpara>Das <code>Programm</code> muss im zugrundeliegenden Dateisystem
-    als executable (ausführbar) gekennzeichnet sein. Der Pfad zum Programm ist
-    relativ zum Asterisk-AGI-Verzeichnis, standardmäßig
-    <filename>/var/lib/asterisk/agi-bin/</filename>.</simpara>
+    <simpara>The AGI program must be flagged as executable in the filesystem.
+    The path is relative to the Asterisk AGI directory, which is at
+    <filename>/var/lib/asterisk/agi-bin/</filename> by default.</simpara>
 
-    <simpara>Soll ein AGI-Programm laufen, ohne dass ein Channel offen ist
-    (wie in einer <code>h</code>-Extension, aufgelegt), muss statt dieser die
-    <code>DeadAGI()</code>-Anwendung verwendet werden. Falls AGI über ein
-    Netzwerk laufen soll, benutzen Sie <code>FastAGI()</code>.</simpara>
+    <simpara>To run AGI programs on inactive channels (as in the case of an
+    <code>h</code>-extension, where the channel is on-hook), used
+    <code><command>DeadAGI()</command></code> instead. To run AGI programs on
+    another server in the network, use
+    <code><command>FastAGI()</command></code>.</simpara>
 
-    <simpara>Benötigen Sie aus Ihrem AGI-Programm heraus Zugriff auf den
-    eingehenden Audiostream, benutzen Sie <code>EAGI()</code> (Extended AGI)
-    an Stelle von <code>AGI()</code>. Das eingehende Audio-Signal kann dann
-    unter File Descriptor 3<footnote>
-        <para>zu Erinnerung: 0: stdin, 1: stdout, 2:stderr. 3 ist ein frei
-        definierter File descriptor</para>
-      </footnote> eingelesen werden.</simpara>
+    <simpara>Should your AGI program need access to the incoming audio stream,
+    use <code><command>EAGI()</command></code> instead of
+    <code><command>AGI()</command></code>. The incoming audio stream is
+    provided on file descriptor 3<footnote>
+        <para>a reminder: 0: stdin, 1: stdout, 2:stderr. File descriptor 3 is
+        freely assignable.</para>
+      </footnote></simpara>
 
-    <simpara>Liefert -1 mit dem Auflegen oder falls ein Auflegen durch das
-    Programm verlangt wurde oder 0, falls nicht aufgelegt werden
-    soll.</simpara>
+    <simpara>Returns -1 on hang-up or if the program requests a hang-up;
+    returns 0 if not.</simpara>
 
-    <programlisting>; mein AGI-Skript aufrufen:
-exten =&gt; 123,1,AGI(agi-skript)
-exten =&gt; 123,n,EAGI(eagi-skript)</programlisting>
+    <programlisting>; call my AGI application:
+exten =&gt; 123,1,AGI(agi-app)
+exten =&gt; 123,n,EAGI(eagi-app)</programlisting>
 
     <note>
       <formalpara>
@@ -1108,35 +1110,33 @@ on file descriptor 3
       <secondary><code>AlarmReceiver()</code></secondary>
     </indexterm>
 
-    <simpara>Bietet Unterstützung für den Empfang von Alarm-Reporten von einem
-    Einbrecher- oder Feueralarm-Bedienfeld.</simpara>
+    <simpara>Receives alarm reports from a burglar or fire alarm
+    panel.</simpara>
 
-    <synopsis>AlarmReceiver()</synopsis>
+    <synopsis><command>AlarmReceiver()</command></synopsis>
 
-    <simpara>Emuliert einen Alarm-Empfänger und ermöglicht Asterisk, spezielle
-    Daten von Einbrecher- und/oder Feueralarm-Bedienfeldern zu empfangen und
-    zu dekodieren. Zum jetzigen Zeitpunkt wird ausschließlich das Ademco
-    Contact ID Format unterstützt.</simpara>
+    <simpara>Emulates an alarm receiver and allows Asterisk to receive and
+    process alarm reports in proprietary alarm panel signalling formats from
+    burglar and fire alarm panels. Only Ademco Contact ID formatted alarm
+    reports are supported at this time.</simpara>
 
-    <simpara>Nachdem <code>AlarmReceiver()</code> aufgerufen worden ist, wird
-    ein Handshake mit dem Alarm-Bedienfeld durchgeführt, Events empfangen und
-    validiert und anschließend gespeichert, bis das Bedienfeld die Verbindung
-    beendet. Nachdem das Bedienfeld die Verbindung beendet hat, wird die in
-    der <code>eventsmd</code>-Einstellung der Datei
-    <filename>alarmreceiver.conf</filename> spezifizierte Befehlskette von der
-    Anwendung ausgeführt, und die Events auf die Standardeingabe der Anwendung
-    umgeleitet. Die Datei <filename>alarmreceiver.conf</filename> enthält
-    ebenfalls Einstellungen zum DTMF-Timing und für die Lautstärke der
-    Meldetöne.</simpara>
+    <simpara>Once <command><code>AlarmReceiver()</code></command> is called,
+    Asterisk performs a handshake with the connected alarm panel, waits for it
+    to transmit events, then validates and stores them. When the panel has
+    hung up, <command>AlarmReceiver()</command> runs the system command
+    specified in the <code>eventcmd</code> of
+    <filename>alarmreceiver.conf</filename>. The
+    <filename>alarmreceiver.conf</filename> also contains DTMF timing settings
+    and acknowledgement tone volume.</simpara>
 
-    <simpara>Für die zuverlässige Funktion dieser Anwendung kann keine
-    Garantie übernommen werden. Verlassen Sie sich also nicht ausschließlich
-    auf diese Anwendung, wenn Sie sie nicht bereits ausgiebig getestet
-    haben!</simpara>
+    <simpara>This application has not been certified for use in critical
+    environments where it is the only means of polling alarm events. Use it at
+    your own risk! Before implementing, be sure to test it
+    thoroughly.</simpara>
 
-    <simpara>Diese Applikation gibt immer 0 zurück.</simpara>
+    <simpara>Always returns 0.</simpara>
 
-    <programlisting>; Asterisk soll Meldungen eines Feueralarm-Knopfes empfangen:
+    <programlisting>; Process alarm events:
 exten =&gt; s,1,AlarmReceiver()</programlisting>
 
     <note>
@@ -1186,25 +1186,23 @@ tones.</screen></para>
       <secondary><code>AMD()</code></secondary>
     </indexterm>
 
-    <simpara>Versucht bei ausgehenden Telefonaten Anrufbeantworter bei der
-    Gegenstelle zu erkennen (Answering Machine Detection).</simpara>
+    <simpara>Answering machine detection. Attempts to detect an answering
+    machine at the remote end of a call.</simpara>
 
-    <synopsis>AMD([<replaceable>initialSilence</replaceable>[,<replaceable>greeting</replaceable>[,<replaceable>afterGreetingSilence</replaceable>[,<replaceable>totalAnalysisTime</replaceable>[,<replaceable>minWordLength</replaceable>[,<replaceable>betweenWordsSilence</replaceable>[,<replaceable>maxNumberOfWords</replaceable>[,<replaceable>silenceThreshold</replaceable>]]]]]]]])</synopsis>
+    <synopsis><command>AMD([<replaceable>initialSilence</replaceable>[,<replaceable>greeting</replaceable>[,<replaceable>afterGreetingSilence</replaceable>[,<replaceable>totalAnalysisTime</replaceable>[,<replaceable>minWordLength</replaceable>[,<replaceable>betweenWordsSilence</replaceable>[,<replaceable>maxNumberOfWords</replaceable>[,<replaceable>silenceThreshold</replaceable>]]]]]]]])</command></synopsis>
 
-    <simpara>Wird z.B. über ein CallFile ein ausgehender Anruf initiiert, so
-    kann in der aufgerufenen Extension die Applikation <code>AMD()</code>
-    benutzt werden, um bei der Gegenstelle einen Anrufbeantworter zu erkennen.
-    Default-Parameter können in der Datei <filename>amd.conf</filename>
-    eingestellt werden.</simpara>
+    <simpara>If a call is initiated through a <filename>.call</filename> file,
+    you can use <code>AMD()</code> to sense an answering machine at the remote
+    end. Defaults are set in <filename>amd.conf</filename>.</simpara>
 
     <variablelist termlength="22">
       <varlistentry>
         <term><code>initialSilence</code></term>
 
         <listitem>
-          <simpara>Maximale Länge der Stille vor einer Ansage. Wenn länger,
-          dann wird <code>${AMDSTATUS}</code> auf <code>MACHINE</code>
-          gesetzt.</simpara>
+          <simpara>Maximum duration of silence preceding the remote
+          announcement. If this is exceeded, sets <code>${AMDSTATUS}</code> to
+          <code>MACHINE</code>.</simpara>
         </listitem>
       </varlistentry>
 
@@ -1212,9 +1210,8 @@ tones.</screen></para>
         <term><code>greeting</code></term>
 
         <listitem>
-          <simpara>Maximale Länge einer Ansage. Wenn länger, dann wird
-          <code>${AMDSTATUS}</code> auf <code>MACHINE</code>
-          gesetzt.</simpara>
+          <simpara>Maximum duration of an announcement. If this is exceeded,
+          sets <code>${AMDSTATUS}</code> to <code>MACHINE</code>.</simpara>
         </listitem>
       </varlistentry>
 
@@ -1222,9 +1219,9 @@ tones.</screen></para>
         <term><code>afterGreetingSilence</code></term>
 
         <listitem>
-          <simpara>Maximale Länge der Stille nach der Ansage. Wenn länger,
-          dann wird <code>${AMDSTATUS}</code> auf <code>HUMAN</code>
-          gesetzt.</simpara>
+          <simpara>Maximum duration of silence following the remote
+          announcement. If this is exceeded, sets <code>${AMDSTATUS}</code> to
+          <code>HUMAN</code>.</simpara>
         </listitem>
       </varlistentry>
 
@@ -1232,9 +1229,8 @@ tones.</screen></para>
         <term><code>totalAnalysisTime</code></term>
 
         <listitem>
-          <simpara>Maximale Zeit die der AMD Algorithmus bekommt, um die
-          Entscheidung <code>HUMAN</code> oder <code>MACHINE</code> zu
-          treffen.</simpara>
+          <simpara>Maximum duration AMD() is allowed to determine whether
+          remote end is <code>HUMAN</code> or <code>MACHINE</code>.</simpara>
         </listitem>
       </varlistentry>
 
@@ -1242,8 +1238,8 @@ tones.</screen></para>
         <term><code>minWordsSilence</code></term>
 
         <listitem>
-          <simpara>Die minimale Länge eines Geräusches, um es als Wort zu
-          registrieren.</simpara>
+          <simpara>Minimum allowed duration of a sound for it to be considered
+          a word.</simpara>
         </listitem>
       </varlistentry>
 
@@ -1251,8 +1247,8 @@ tones.</screen></para>
         <term><code>betweenWordsSilence</code></term>
 
         <listitem>
-          <simpara>Die minimale Länge von Stille nach einem Wort, damit ein
-          neues Wort beginnen kann.</simpara>
+          <simpara>Minimum allowed duration of silence between
+          words.</simpara>
         </listitem>
       </varlistentry>
 
@@ -1260,9 +1256,9 @@ tones.</screen></para>
         <term><code>maxNumberOfWords</code></term>
 
         <listitem>
-          <simpara>Maximale Anzahl von Wörter in der Ansage. Wenn mehr, dann
-          wird <code>${AMDSTATUS}</code> auf <code>MACHINE</code>
-          gesetzt.</simpara>
+          <simpara>Maximum number of words in the announcement. If this is
+          exceeded, sets <code>${AMDSTATUS}</code> to
+          <code>MACHINE</code>.</simpara>
         </listitem>
       </varlistentry>
 
@@ -1270,45 +1266,45 @@ tones.</screen></para>
         <term><code>silenceThreshold</code></term>
 
         <listitem>
-          <simpara>Schwellenwert der Definition von Stille.</simpara>
+          <simpara>The silence threshold.</simpara>
         </listitem>
       </varlistentry>
     </variablelist>
 
-    <simpara>Diese Applikation setzt als Ergebnis die Channel-Variablen
-    <code>AMDSTATUS</code> und <code>AMDCAUSE</code>.</simpara>
+    <simpara>This application delivers its output in the channel variables
+    <code>AMDSTATUS</code> and <code>AMDCAUSE</code>.</simpara>
 
-    <simpara><code>AMDSTATUS</code> kann die folgenden Werte
-    bekommen:</simpara>
+    <simpara><code>AMDSTATUS</code> can be assigned the following
+    values:</simpara>
 
     <itemizedlist>
       <listitem>
         <simpara><code>MACHINE</code></simpara>
 
-        <simpara>Auf der Gegenseite ist ein Anrufbeantworter.</simpara>
+        <simpara>The remote end is a machine.</simpara>
       </listitem>
 
       <listitem>
         <simpara><code>HUMAN</code></simpara>
 
-        <simpara>Auf der Gegenseite ist ein Mensch.</simpara>
+        <simpara>The remote end is a human.</simpara>
       </listitem>
 
       <listitem>
         <simpara><code>NOTSURE</code></simpara>
 
-        <simpara>Es kann keine genaue Aussage getroffen werden.</simpara>
+        <simpara>Threshold cases are indicated with NOTSURE.</simpara>
       </listitem>
 
       <listitem>
         <simpara><code>HANGUP</code></simpara>
 
-        <simpara>Die Gegenseite hat aufgelegt.</simpara>
+        <simpara>The remote end has hung up.</simpara>
       </listitem>
     </itemizedlist>
 
-    <simpara><code>AMDCAUSE</code> kann die folgenden Werte
-    bekommen:</simpara>
+    <simpara><code>AMDCAUSE</code> can be assigned the following
+    values:</simpara>
 
     <itemizedlist>
       <listitem>
@@ -1341,10 +1337,10 @@ tones.</screen></para>
       </listitem>
     </itemizedlist>
 
-    <programlisting>; Von einem CallFile wird diese Extension aufgerufen:
+    <programlisting>; This extension is called through a .call file:
 exten =&gt; 10,1,AMD()
 exten =&gt; 10,n,Goto(Status-${AMDSTATUS})
-exten =&gt; 10,n(Status-HUMAN),Playback(spam)
+exten =&gt; 10,n(Status-HUMAN),Playback(message)
 exten =&gt; 10,n,Hangup()
 exten =&gt; 10,n(Status-MACHINE),Hangup()
 exten =&gt; 10,n(Status-NOTSURE),Hangup()
@@ -1419,29 +1415,27 @@ This application sets the following channel variable upon completion:
       <secondary><code>Answer()</code></secondary>
     </indexterm>
 
-    <simpara>Antwortet auf einen klingelnden Channel.</simpara>
+    <simpara>Answers a ringing channel.</simpara>
 
-    <synopsis>Answer([<replaceable>Verzögerung</replaceable>])</synopsis>
+    <synopsis><command>Answer([<replaceable>delay</replaceable>])</command></synopsis>
 
-    <simpara>Veranlasst Asterisk zum Beantworten eines Channels, wenn er
-    gerade klingelt. Falls der aktuelle Channel nicht klingelt, tut diese
-    Anwendung nichts.</simpara>
+    <simpara>Instructs Asterisk to answer the channel if it is ringing. If the
+    channel is not ringing, this application has no effect.</simpara>
 
-    <simpara>Es ist generell empfehlenswert, <code>Answer()</code> vor dem
-    Aufrufen irgendwelcher anderen Anwendungen auf dem Channel aufzurufen,
-    außer es besteht ein guter Grund, das nicht zu tun. Die meisten
-    Anwendungen verlangen, dass der Channel beantwortet wird, bevor sie
-    aufgerufen werden, und werden andernfalls eventuell nicht in der Lage
-    sein, ihre Arbeit korrekt zu verrichten.</simpara>
+    <simpara>It is generally recommended that the channel be answered before
+    other applications are called, unless there is a specific reason for not
+    doing so. Most applications require that the channel be answered before
+    they are run; if this is not done, the behavior may be
+    unexpected.</simpara>
 
-    <simpara>Die optionale <code>Verzögerung</code> weist Asterisk an, soviele
-    Millisekunden vor dem Antworten zu warten.</simpara>
+    <simpara>The optional delay parameter specifies how long Asterisk should
+    wait, in milliseconds, before answering the channel.</simpara>
 
-    <simpara>Gibt bei Erfolg 0 zurück.</simpara>
+    <simpara>Returns 0 upon success.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Wait(1)
-exten =&gt; 123,n,Playback(hallo)
+exten =&gt; 123,n,Playback(hello)
 exten =&gt; 123,n,Hangup()</programlisting>
 
     <note>
@@ -1482,9 +1476,9 @@ Asterisk will wait this number of milliseconds before answering the call.</scree
       <secondary><code>AppendCDRUserField()</code></secondary>
     </indexterm>
 
-    <simpara>Hängt einen String an das CDR-User-Feld an.</simpara>
+    <simpara>Appends a string to the user field in the CDR.</simpara>
 
-    <synopsis>AppendCDRUserField(<replaceable>String</replaceable>)</synopsis>
+    <synopsis><command>AppendCDRUserField(<replaceable>string</replaceable>)</command></synopsis>
 
     <simpara>Hängt den übergebenen String an das CDR-User-Feld an.</simpara>
 
@@ -1518,10 +1512,9 @@ AppendCDRUserField(value): Append value to the CDR user field
     </note>
 
     <important>
-      <para>Obwohl in der internen Hilfe noch kein Hinweis darauf steht, ist
-      diese Applikation deprecated. Im Source-Code wird man
-      fündig:<programlisting>ast_log(LOG_WARNING, "AppendCDRUserField is deprecated.  Please use CDR(userfield) instead.\n");</programlisting>Bitte
-      verwenden Sie also die Funktion <code>CDR(userfield)</code>.</para>
+      <para>Though it is not mentioned in the internal help, this application
+      is deprecated. The source code gives a hint:<programlisting>ast_log(LOG_WARNING, "AppendCDRUserField is deprecated.  Please use CDR(userfield) instead.\n");</programlisting>Use
+      the <code>CDR(userfield)</code> function instead.</para>
     </important>
 
     <formalpara>
@@ -1540,33 +1533,32 @@ AppendCDRUserField(value): Append value to the CDR user field
       <secondary><code>Authenticate()</code></secondary>
     </indexterm>
 
-    <simpara>Verlangt zur Fortsetzung eines Vorgangs die Eingabe eines
-    Passworts vom Anrufer.</simpara>
+    <simpara>Requires that the caller enter a password before proceeding to
+    the next priority.</simpara>
 
-    <synopsis>Authenticate(<replaceable>Passwort</replaceable>[,<replaceable>Optionen</replaceable>[,maxZiffern]])</synopsis>
+    <synopsis><command>Authenticate(<replaceable>password</replaceable>[,<replaceable>options</replaceable>[,maxDigits]])</command></synopsis>
 
-    <simpara>Verlangt, dass der Anrufer ein gegebenes Passwort korrekt
-    eingibt, um dann mit der Ausführung der nächsten Priorität im Dialplan
-    fortzufahren. <code>Authenticate()</code> gibt dem Anrufer drei Versuche,
-    das Passwort korrekt einzugeben. Andernfalls wird die Verbindung
-    beendet.</simpara>
+    <simpara>Requires that the caller enters the specified password correctly
+    before proceeding to the next priority. Allows three the caller three
+    chances to enter the password correctly before hanging up.</simpara>
 
-    <simpara>Falls <code>Passwort</code> mit dem <code>/</code>-Zeichen
-    beginnt, wird es als Datei interpretiert, die eine Liste gültiger
-    Passwörter (genau eins pro Zeile) enthält. Passwörter können auch in der
-    Asterisk-Datenbank (AstDB) gespeichert sein, siehe dazu die Option
-    <code>d</code> weiter unten.</simpara>
+    <simpara>If <code>password</code> begins with <code>"/"
+    </code>(forward-slash), Asterisk will assume it is a filename to a file
+    containing a list of valid passwords (exactly one per line). Passwords may
+    also be stored in the Asterisk database (AstDB); see option <code>d</code>
+    below.</simpara>
 
-    <simpara>Folgende Optionen sind möglich (auch in Kombination):</simpara>
+    <simpara>The following options are allowed (also in
+    combination):</simpara>
 
     <variablelist termlength="2">
       <varlistentry>
         <term><code>a</code></term>
 
         <listitem>
-          <simpara>(accountcode) Setzt den Namen des CDR-Felds
-          <code>accountcode</code> und die Variable für den Channel,
-          <code>ACCOUNTCODE</code>, auf das eingegebene Passwort.</simpara>
+          <simpara>(accountcode) Sets the CDR <code>accountcode</code> field
+          and the channel variable <code>ACCOUNTCODE</code> to the entered
+          password.</simpara>
         </listitem>
       </varlistentry>
 
@@ -1574,10 +1566,9 @@ AppendCDRUserField(value): Append value to the CDR user field
         <term><code>d</code></term>
 
         <listitem>
-          <simpara>(database) Interpretiert <code>Passwort</code> als
-          Schlüssel der Asterisk-Datenbank. Wenn ein Datenbankschlüssel
-          benutzt wird, kann der mit dem Schlüssel assoziierte Wert beliebig
-          sein.</simpara>
+          <simpara>(database) Interprets the entered password as a key in the
+          Asterisk database. If a database key is used, the value in the
+          associated record is ignored and can be arbitrary.</simpara>
         </listitem>
       </varlistentry>
 
@@ -1585,9 +1576,8 @@ AppendCDRUserField(value): Append value to the CDR user field
         <term><code>r</code></term>
 
         <listitem>
-          <simpara>(remove) Entfernt den Datenbankschlüssel nach erfolgreicher
-          Verbindung und Eintreten in die Datenbank (nur möglich mit Option
-          <code>d</code>).</simpara>
+          <simpara>(remove) Removes the database key after successful password
+          entry (valid only with option <code>d</code>).</simpara>
         </listitem>
       </varlistentry>
 
@@ -1595,35 +1585,33 @@ AppendCDRUserField(value): Append value to the CDR user field
         <term><code>j</code></term>
 
         <listitem>
-          <simpara>(jump) Bei falschem Passwort statt aufzulegen zur Priorität
-          n+101 springen, falls diese existiert.</simpara>
+          <simpara>(jump) In the event of three failed attempts, jump to
+          priority <emphasis>n</emphasis>+101 (if it exists) instead of
+          hanging up.</simpara>
         </listitem>
       </varlistentry>
     </variablelist>
 
     <important>
-      <para>Beachten Sie bei der Option <code>d</code>, dass - wenig
-      nachvollziehbar! - als Parameter
-      <code>/<replaceable>passwoerter</replaceable>/<replaceable>1234</replaceable></code>
-      verlangt wird, wobei <code>passwoerter</code> die Familie ist und
-      <code>1234</code> das Passwort; der unter diesem Schlüssel gespeicherte
-      Wert ist irrelevant. Der gesunde Menschenverstand würde einen
-      Datenbank-Eintrag wie /passwoerter/art =&gt; 1234 erwarten.</para>
+      <para>When using option <code>d</code>, note that Asterisk looks for a
+      <emphasis>key</emphasis> with a name equivalent to the password: as in
+      <code>/<replaceable>passwords</replaceable>/<replaceable>1234</replaceable></code>.
+      The value in the record itself is irrelevant. A more logical
+      implementation would be to place the password as a value in the record,
+      as in /passwords/type =&gt; 1234.</para>
     </important>
 
-    <simpara>Mit Angabe von <code>maxZiffern</code> wird die Eingabe
-    automatisch nach sovielen Ziffern beendet, ohne dass der User
-    <code>#</code> drücken muss (Default: 0 für keine Begrenzung).</simpara>
+    <simpara>If <code>maxDigits</code> is set, input is ended as soon as the
+    user has entered enough digits; this saves having to enter
+    <code>"#"</code>. (Default: 0; no limits on input).</simpara>
 
-    <simpara>Liefert 0 zurück, falls der Benutzer nach maximal drei Versuchen
-    ein gültiges Passwort eingegeben hat, sonst -1 (auch nach
-    Auflegen).</simpara>
+    <simpara>Returns 0 if the user enters the correct password within three
+    attempts, otherwise hangs up the channel and returns -1.</simpara>
 
     <programlisting>; Passwort 1234 verlangen:
 exten =&gt; 123,1,Answer()
-exten =&gt; 123,2,Authenticate(1234,j,4)           ; hier ausnahmsweise mit Priority-Jumping
-                                                ; weil wir dem Anrufer noch sagen wollen
-                                                ; dass sein Passwort falsch ist
+exten =&gt; 123,2,Authenticate(1234,j,4)           ; an exceptional use of priority jumping because we want to tell the caller
+                                                ; that she has entered the wrong password
 exten =&gt; 123,3,Playback(pin-nummer-akzeptiert)
 exten =&gt; 123,103,Playback(pin-nummer-falsch)</programlisting>
 
@@ -1695,31 +1683,27 @@ dialplan execution will continnue at this location.
       <secondary><code>Background()</code></secondary>
     </indexterm>
 
-    <simpara>Spielt eine Audiodatei, während Touch-Tone-Ziffern (DTMF-Töne)
-    akzeptiert werden.</simpara>
+    <simpara>Plays a sound file while listening for DTMF input from the
+    caller.</simpara>
 
-    <synopsis>Background(<replaceable>Datei1</replaceable>[&amp;<replaceable>Datei2</replaceable>...][,<replaceable>Optionen</replaceable>[,<replaceable>Sprache</replaceable>]])</synopsis>
+    <synopsis><command>Background(<replaceable>soundfile1</replaceable>[&amp;<replaceable>soundfile2</replaceable>...][,<replaceable>options</replaceable>[,<replaceable>language</replaceable>]])</command></synopsis>
 
-    <simpara>Spielt die angegebene(n) Audiodatei(en), während auf den Start
-    der Eingabe einer Extension durch den Benutzer gewartet wird. Sobald der
-    Benutzer mit der Eingabe einer Extension begonnen hat, wird die Wiedergabe
-    beendet. Der Dateiname sollte ohne Dateiendung angegeben werden, da
-    Asterisk dann automatisch das Dateiformat mit den geringsten
-    Übersetzungskosten auswählt.</simpara>
+    <simpara>Plays the specified sound files while waiting for the caller to
+    dial an extension. Playback stops the moment the first digit is pressed.
+    Filenames must be provided without file extensions; Asterisk chooses the
+    file format with the minimum transcoding cost.</simpara>
 
-    <simpara><code>Optionen</code> ist einer der folgenden Werte (nicht
-    kombinierbar):</simpara>
+    <simpara>Allowed options may not be combined:</simpara>
 
     <variablelist termlength="2">
       <varlistentry>
         <term><code>skip</code></term>
 
         <listitem>
-          <simpara>Die Wiedergabe der Nachricht wird übersprungen, falls sich
-          der Channel gegenwärtig nicht im <code>up</code>-Status befindet
-          (z.B., weil er bisher nicht beantwortet wurde). Ist
-          <code>skip</code> angegeben, wird die Anwendung unverzüglich
-          beendet, falls der Channel aufgelegt ist.</simpara>
+          <simpara>Playback is skipped if the channel is not in the
+          <code>up</code> state when the application is run. If skip is
+          specified, the application ends immediately when the channel is hung
+          up.</simpara>
         </listitem>
       </varlistentry>
 
@@ -1727,26 +1711,24 @@ dialplan execution will continnue at this location.
         <term><code>noanswer</code></term>
 
         <listitem>
-          <simpara>Der Channel kann erst beantwortet werden, nachdem die
-          angegebene Audiodatei abgespielt wurde. Ist diese Option nicht
-          angegeben, wird der Channel automatisch beantwortet, bevor die
-          Audiodatei abgespielt wird. Es gilt zu beachten, dass nicht alle
-          Kanäle erlauben, vor ihrer Beantwortung eine Nachricht
-          abzuspielen.</simpara>
+          <simpara>The channel is only answered after the specified sound file
+          has been played. The default behavior is to answer the channel
+          automatically before playing the sound file. Note that not all
+          channel types allow playback of a message before being
+          answered.</simpara>
         </listitem>
       </varlistentry>
     </variablelist>
 
-    <simpara>Der Parameter <code>Sprache</code> kann verwendet werden, um eine
-    bestimmte Sprache zu definieren, in der Nachrichten abgespielt werden
-    sollen, falls diese nicht der für diesen Channel aktuell eingestellten
-    Sprache entspricht.</simpara>
+    <simpara>The <code>language</code> parameter can be used to specify a
+    language for the sound file(s) played, in the event this should be
+    different than the language currently specified for the channel.</simpara>
 
-    <simpara>Liefert -1 zurück, wenn aufgelegt wurde oder falls der angegebene
-    Dateiname nicht existiert, sonst 0.</simpara>
+    <simpara>Returns -1 if hung up or if the specified sound file does not
+    exist, otherwise returns 0.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Background(bitte-extension-eingeben)</programlisting>
+exten =&gt; 123,n,Background(please-enter-extension)</programlisting>
 
     <note>
       <formalpara>
@@ -1825,33 +1807,32 @@ terminated.
       <secondary><code>BackgroundDetect()</code></secondary>
     </indexterm>
 
-    <simpara>Spielt eine Audiodatei im Hintergrund und erkennt
-    Sprechen.</simpara>
+    <simpara>Plays a sound file while listening for sound from the
+    caller.</simpara>
 
-    <synopsis>BackgroundDetect(<replaceable>SoundDatei</replaceable>[,<replaceable>Stille</replaceable>[,<replaceable>Min</replaceable>[,<replaceable>Max</replaceable>]]])</synopsis>
+    <synopsis><command>BackgroundDetect(<replaceable>soundfile</replaceable>[,<replaceable>silence</replaceable>[,<replaceable>min</replaceable>[,<replaceable>max</replaceable>]]])</command></synopsis>
 
-    <simpara>Ähnlich <code>Background()</code>, versucht jedoch Sprechen zu
-    erkennen.</simpara>
+    <simpara>Similar to <command><code>Background()</code></command>, but
+    listens for sound also.</simpara>
 
-    <simpara>Während der Wiedergabe der Datei wird Eingang von Audio in
-    Empfangsrichtung überwacht. Wird eine Geräuschphase von mehr als
-    <code>Min</code> Millisekunden Dauer und weniger als <code>Max</code>
-    Millisekunden registriert, und darauf folgend eine geräuschlose Phase von
-    wenigstens <code>Stille</code> Millisekunden, wird die Audiowiedergabe
-    abgebrochen und die Ausführung an die Extension <code>talk</code>
-    delegiert, falls diese existiert.</simpara>
+    <simpara>During playback of the sound file, the application monitors audio
+    on the incoming audio channel. If it detects a sound longer than
+    <emphasis>min</emphasis> milliseconds in duration but shorter than
+    <emphasis>max</emphasis> milliseconds, followed by a period of silence of
+    at least <emphasis>silence</emphasis> milliseconds, it stops playback and
+    passes the call to the <code>talk</code> extension, if it
+    exists.</simpara>
 
-    <simpara>Sind <code>Stille</code>, <code>Min</code> und <code>Max</code>
-    nicht spezifiziert, werden jeweils die Standardwerte 1000 ms, 100 ms und
-    unendlich angenommen.</simpara>
+    <simpara>If <emphasis>silence</emphasis>, <emphasis>min</emphasis> and
+    <emphasis>max</emphasis> are not specified, the defaults are used: 1000
+    ms, 100 ms and unlimited, respectively.</simpara>
 
-    <simpara>Wenn aufgelegt wird, liefert die Anwendung -1 zurück, nach
-    abgeschossener Wiedergabe ohne vorhandene Ausstiegsbedingungen
-    0.</simpara>
+    <simpara>Returns -1 on hangup, otherwise returns 0 (such as when playback
+    is interrupted due to input).</simpara>
 
-    <programlisting>exten =&gt; 123,1,BackgroundDetect(sinfonie)
+    <programlisting>exten =&gt; 123,1,BackgroundDetect(symphony)
 exten =&gt; 123,n,Playback(vm-sorry)
-exten =&gt; talk,1,Playback(ja-bitte)</programlisting>
+exten =&gt; talk,1,Playback(yes-please)</programlisting>
 
     <note>
       <formalpara>
@@ -1898,22 +1879,20 @@ infinity respectively.</screen></para>
       <secondary><code>Busy()</code></secondary>
     </indexterm>
 
-    <simpara>Zeigt dem Channel besetzt an.</simpara>
+    <simpara>Sets the channel as "busy".</simpara>
 
-    <synopsis>Busy([<replaceable>Timeout</replaceable>])</synopsis>
+    <synopsis><command>Busy([<replaceable>timeout</replaceable>])</command></synopsis>
 
-    <simpara>Fordert den Channel auf, ein Besetzt-Zeichen zu signalisieren und
-    wartet dann, bis der Benutzer auflegt oder auf den Ablauf der optional
-    anzugebenden zeitlichen Frist (<code>Timeout</code>, in
-    Sekunden).</simpara>
+    <simpara>Instructs the channel to indicate busy and waits until the caller
+    hangs up or the timeout expires (<emphasis>timeout</emphasis>, in
+    seconds).</simpara>
 
-    <simpara>Diese Anwendung signalisiert einen Besetzt-Zustand nur dem
-    überbrückten Channel (bridged channel). Jeder spezielle Channeltyp hat
-    seine eigene Art, dem Anrufer besetzt mitzuteilen. Sie können
-    <code>Playtones(busy)</code> verwenden, um dem Anrufer ein Besetztzeichen
-    vorzuspielen.</simpara>
+    <simpara>This application indicates a busy state only on the bridged
+    channel. Every channel type has its own way of indicating that a device is
+    busy. To play an actual busy tone, use
+    <code><command>Playtones(busy)</command></code>.</simpara>
 
-    <simpara>Gibt immer -1 zurück.</simpara>
+    <simpara>Always returns -1.</simpara>
 
     <programlisting>exten =&gt; 123,1,Playback(vm-sorry)
 exten =&gt; 123,n,Playtones(busy)
@@ -1960,29 +1939,27 @@ application will wait until the calling channel hangs up.</screen></para>
       <secondary><code>CallingPres()</code></secondary>
     </indexterm>
 
-    <simpara>Ändert die Präsentation der Anrufer-ID (Caller-ID).</simpara>
+    <simpara>Changes the caller ID on an ISDN-PRI channel.</simpara>
 
-    <synopsis>CallingPres(<replaceable>presentation</replaceable>)</synopsis>
+    <synopsis><command>CallingPres(<replaceable>presentation</replaceable>)</command></synopsis>
 
-    <simpara>Ändert die Präsentations-Parameter für die Anrufer ID auf einer
-    Q.931 PRI-Verbindung. Diese Parameter sollten gesetzt sein, bevor ein
-    ausgehender Anruf getätigt wird. Der Präsentations-Parameter
-    <code>presentation</code> bestimmt zum ersten, ob der angerufene
-    Teilnehmer die Caller-ID-Information angezeigt bekommt oder nicht, und zum
-    zweiten, ob die Caller-ID-Information von verlässlicher Quelle auf
-    verifiziert geprüft wurde oder nicht (engl.: screening).</simpara>
+    <simpara>Changes the presentation parameter in the caller ID for calls
+    using Q.931 PRI connections. These parameters should be set before the
+    call is initiated. The presentation parameter
+    <emphasis>presentation</emphasis> defines first whether the called party
+    will be sent caller ID information in the first place, and second, whether
+    it was verified against a reliable source (screening).</simpara>
 
-    <simpara>Diese Anwendung wurde durch <code>SetCallerPres()</code> ersetzt,
-    welche einfacher handzuhaben und weniger abhängig von Zaptel
-    ist.</simpara>
+    <simpara>This application has been superceded by
+    <code>SetCallerPres()</code>, which is easier to use and less dependent on
+    Zaptel.</simpara>
 
-    <simpara>Diese Anwendung generiert aus der Kombination von
-    Anrufpräsentations-Einstellungen und Screening-Einstellungen eine Zahl.
-    Die Werte selbst sind im ITU Q.931-Standard wie in den folgenden Tabellen
-    definiert.</simpara>
+    <simpara>This application generates a number based on the presentation and
+    screening settings. The meaning of the values themselves is defined in the
+    ITU Q.931-Standard as described in the following tables.</simpara>
 
-    <para>Screening wird durch die Bits 1 und 2 gesteuert: <informaltable
-        colsep="0" frame="none" rowsep="0">
+    <para>Screening is set by bits 1 and 2:<informaltable colsep="0"
+        frame="none" rowsep="0">
         <tgroup cols="3">
           <colspec colnum="1" colwidth="30pt" />
 
@@ -1994,7 +1971,7 @@ application will wait until the calling channel hangs up.</screen></para>
 
               <entry>Bit2</entry>
 
-              <entry>Erläuterung</entry>
+              <entry>Description</entry>
             </row>
           </thead>
 
@@ -2004,8 +1981,8 @@ application will wait until the calling channel hangs up.</screen></para>
 
               <entry>0</entry>
 
-              <entry>Die Caller-ID-Information liefert der Teilnehmer, sie ist
-              nicht verifiziert.</entry>
+              <entry>The caller ID information was provided by the endpoint
+              and no verification was attempted.</entry>
             </row>
 
             <row>
@@ -2013,8 +1990,8 @@ application will wait until the calling channel hangs up.</screen></para>
 
               <entry>1</entry>
 
-              <entry>Die Caller-ID-Information liefert der Teilnehmer, sie ist
-              erfolgreich verifiziert.</entry>
+              <entry>The caller ID information was provided by the endpoint
+              and was successfully verified.</entry>
             </row>
 
             <row>
@@ -2022,8 +1999,8 @@ application will wait until the calling channel hangs up.</screen></para>
 
               <entry>0</entry>
 
-              <entry>Die Caller-ID-Information liefert der Teilnehmer, die
-              Verifizierung war nicht erfolgreich.</entry>
+              <entry>The caller ID information was provided by the endpoint
+              but verification was unsuccessful.</entry>
             </row>
 
             <row>
@@ -2031,14 +2008,15 @@ application will wait until the calling channel hangs up.</screen></para>
 
               <entry>1</entry>
 
-              <entry>Die Caller-ID-Information liefert das Netzwerk.</entry>
+              <entry>The caller ID information was provided by the
+              network.</entry>
             </row>
           </tbody>
         </tgroup>
       </informaltable></para>
 
-    <para>Präsentation wird durch die Bits 6 und 7 gesteuert: <informaltable
-        colsep="0" frame="none" rowsep="0">
+    <para>Presentation is set by bits 6 and 7:<informaltable colsep="0"
+        frame="none" rowsep="0">
         <tgroup cols="3">
           <colspec colnum="1" colwidth="30pt" />
 
@@ -2050,7 +2028,7 @@ application will wait until the calling channel hangs up.</screen></para>
 
               <entry>Bit7</entry>
 
-              <entry>Erläuterung</entry>
+              <entry>Description</entry>
             </row>
           </thead>
 
@@ -2060,7 +2038,7 @@ application will wait until the calling channel hangs up.</screen></para>
 
               <entry>0</entry>
 
-              <entry>Anzeige der Caller-ID-Information ist erlaubt.</entry>
+              <entry>Display of caller ID is allowed.</entry>
             </row>
 
             <row>
@@ -2068,8 +2046,7 @@ application will wait until the calling channel hangs up.</screen></para>
 
               <entry>1</entry>
 
-              <entry>Anzeige der Caller-ID-Information ist nicht
-              erlaubt.</entry>
+              <entry>Display of caller ID is not allowed.</entry>
             </row>
 
             <row>
@@ -2077,8 +2054,8 @@ application will wait until the calling channel hangs up.</screen></para>
 
               <entry>0</entry>
 
-              <entry>Die Nummer ist aufgrund von Zwischenstationen nicht
-              verfügbar.</entry>
+              <entry>The number is not available because it was not passed by
+              an intermediate station.</entry>
             </row>
 
             <row>
@@ -2086,28 +2063,28 @@ application will wait until the calling channel hangs up.</screen></para>
 
               <entry>1</entry>
 
-              <entry>Reserviert</entry>
+              <entry>Reserved</entry>
             </row>
           </tbody>
         </tgroup>
       </informaltable></para>
 
-    <simpara>Die Bits 3, 4, 5 und 8 sollten alle auf Null (0) gesetzt werden.
-    Beachten Sie, dass die Bits in der Folge vom höchstwertigsten zum
-    niederwertigsten nummeriert sind in der Form 87654321.</simpara>
+    <simpara>The bits 3, 4, 5 and 8 should be zero (0). Note that the bits are
+    numbered in descending order, <emphasis>i.e.</emphasis>
+    87654321.</simpara>
 
-    <programlisting>; presentation setzen auf:
-; presentation erlaubt                (00000000)
-; Netzwerk angegeben                  (00000011)
-; ------------------                  ----------
-; Ergebnis: 3 (bitweises UND)         (00000011)
+    <programlisting>; set presentation to:
+; presentation allowed                                                    (00000000)
+; provided by the network                                                 (00000011)
+; ------------------                                                      ----------
+; Result: 3 (bitwise AND)                                                 (00000011)
 exten =&gt; 123,1,CallingPres(3)
 exten =&gt; 123,2,Dial(Zap/g1/1234567)
-; presentation setzen auf:
-; presentation nicht erlaubt          (00100000)
-; vom User, verifiziert               (00000001)
-; ------------------                  ----------
-; Ergebnis: 33 (bitweises UND)        (00100001)
+; set presentation to:
+; presentation restricted, blocked by intermediate station                (00100000)
+; user provided ID, verified                                              (00000001)
+; ------------------                                                      ----------
+; Ergebnis: 33 (bitwise AND)          (00100001)
 exten =&gt; 124,1,CallingPres(33)
 exten =&gt; 124,2,Dial(Zap/g1/1234568)</programlisting>
 
@@ -2127,20 +2104,19 @@ exten =&gt; 124,2,Dial(Zap/g1/1234568)</programlisting>
       <secondary><code>ChangeMonitor()</code></secondary>
     </indexterm>
 
-    <simpara>Ändert den Dateinamen der Protokolldatei für einen
-    Channel.</simpara>
+    <simpara>Changes the monitoring filename of a channel.</simpara>
 
-    <synopsis>ChangeMonitor(<replaceable>Basis-Dateiname</replaceable>)</synopsis>
+    <synopsis><command>ChangeMonitor(<replaceable>filename-prefix</replaceable>)</command></synopsis>
 
-    <simpara>Ändert den Namen der bei der Überwachung eines Channels mit
-    <code>Monitor()</code> aufgezeichneten Datei. Diese Anwendungen hat
-    keinerlei Auswirkungen, wenn der fragliche Channel nicht überwacht
-    wird.</simpara>
+    <simpara>Changes the filename prefix for sound files written while
+    recording the channel with <code><command>Monitor()</command></code>. This
+    application has no effect if the affected channel is not being
+    monitored.</simpara>
 
-    <programlisting>; Channel mitschneiden mit Datei-Basisname 'mitschnitt'
-exten =&gt; 123,1,Monitor(mitschnitt)
-; Datei-Basisnamen auf 'mitschnitt2' ändern
-exten =&gt; 123,n,ChangeMonitor(mitschnitt2)</programlisting>
+    <programlisting>; Monitor channel with a filename prefix of 'audioclip'
+exten =&gt; 123,1,Monitor(audioclip)
+; Change filename prefix to 'audioclip2'
+exten =&gt; 123,n,ChangeMonitor(audioclip2)</programlisting>
 
     <note>
       <formalpara>
@@ -2181,36 +2157,34 @@ The argument is the new filename base to use for monitoring this channel.</scree
       <secondary><code>ChanIsAvail()</code></secondary>
     </indexterm>
 
-    <simpara>Ermittelt, ob ein bestimmter Channel momentan verfügbar
-    ist.</simpara>
+    <simpara>Indicates whether the specified channel is available.</simpara>
 
-    <synopsis>ChanIsAvail(<replaceable>Technology1</replaceable>/<replaceable>Resource1</replaceable>[&amp;<replaceable>Technology2</replaceable>/<replaceable>Resource2</replaceable>...][,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis><command>ChanIsAvail(<replaceable>technology1</replaceable>/<replaceable>resource1</replaceable>[&amp;<replaceable>technology2</replaceable>/<replaceable>resource2</replaceable>...][,<replaceable>options</replaceable>])</command></synopsis>
 
-    <simpara>Prüft, ob irgendeiner der angeforderten Kanäle verfügbar ist (in
-    der angegebenen Reihenfolge). Liefert 0 zurück bei Erfolg oder -1, falls
-    kein Kanal verfügbar ist.</simpara>
+    <simpara>Verifies that the one or more of the queried channels is
+    available, in the order specified. Returns 0 on success or -1 on
+    failure.</simpara>
 
-    <simpara>Ist die Option <code>s</code> (für state) angegeben, wird
-    Asterisk den Channel als nicht verfügbar betrachten, wenn er in Gebrauch
-    ist, sogar falls er einen weiteren anderen Anruf aufnehmen kann. Mit der
-    Option <code>j</code> wird, falls der Channel nicht verfügbar ist, zur
-    Priorität n+101 gesprungen.</simpara>
+    <simpara>If the <code>s</code> (state) option is given, Asterisk will
+    treat the channel as unavailable if it is in use, even if it is capable of
+    taking another call. Option <code>j</code> sets priority jumping to
+    <emphasis>n</emphasis>+101 if the channel is unavailable.</simpara>
 
     <note>
-      <simpara>Dass ein Kanal verfügbar ist, bedeutet aber nicht automatisch,
-      dass er auch frei ist oder dass das Endgerät einen Anruf akzeptieren
-      würde. Das erfährt man durch ein <code>Dial()</code> zum
-      Kanal.</simpara>
+      <simpara>The mere fact of a channel being available does not
+      automatically mean that it is free for use or that the device on the
+      channel will accept a call. That is determined using a
+      <code><command>Dial()</command></code> to the channel.</simpara>
     </note>
 
-    <para><code>ChanIsAvail()</code> setzt die folgenden Channelvariablen:
-    <variablelist termlength="18">
+    <para><code><command>ChanIsAvail()</command></code> sets the following
+    channel variables: <variablelist termlength="18">
         <varlistentry>
           <term><code>${AVAILCHAN}</code></term>
 
           <listitem>
-            <simpara>Der Name des verfügbaren Channels, inklusive der
-            Session-Nummer des Anrufs.</simpara>
+            <simpara>The name of the accessible channel, including the session
+            number of the call.</simpara>
           </listitem>
         </varlistentry>
 
@@ -2218,9 +2192,8 @@ The argument is the new filename base to use for monitoring this channel.</scree
           <term><code>${AVAILORIGCHAN}</code></term>
 
           <listitem>
-            <simpara>Der kanonische Channelname, der benutzt wurde um den
-            Channel zu erstellen, d.h. der Channelname ohne eine
-            Session-Nummer.</simpara>
+            <simpara>The canonical channel name (<emphasis>i.e.</emphasis>,
+            the channel name without session number).</simpara>
           </listitem>
         </varlistentry>
 
@@ -2228,13 +2201,13 @@ The argument is the new filename base to use for monitoring this channel.</scree
           <term><code>${AVAILSTATUS}</code></term>
 
           <listitem>
-            <para>Der Status-Code des Channels:<variablelist termlength="24">
+            <para>Status code of the channel:<variablelist termlength="24">
                 <varlistentry>
                   <term><code>AST_DEVICE_UNKNOWN</code> (0)</term>
 
                   <listitem>
-                    <simpara>Unbekannt. Der Channel ist gültig, aber in
-                    unbekanntem Zustand.</simpara>
+                    <simpara>Status of the channel is unknown. It is a valid
+                    channel, but we don't know about its state.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2242,7 +2215,7 @@ The argument is the new filename base to use for monitoring this channel.</scree
                   <term><code>AST_DEVICE_NOT_INUSE</code> (1)</term>
 
                   <listitem>
-                    <simpara>Channel wird nicht verwendet.</simpara>
+                    <simpara>The channel is not in use.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2250,7 +2223,7 @@ The argument is the new filename base to use for monitoring this channel.</scree
                   <term><code>AST_DEVICE_IN_USE</code> (2)</term>
 
                   <listitem>
-                    <simpara>Der Channel ist in Gebrauch.</simpara>
+                    <simpara>The channel is in use.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2258,7 +2231,7 @@ The argument is the new filename base to use for monitoring this channel.</scree
                   <term><code>AST_DEVICE_BUSY</code> (3)</term>
 
                   <listitem>
-                    <simpara>Besetzt.</simpara>
+                    <simpara>The channel is busy.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2266,7 +2239,7 @@ The argument is the new filename base to use for monitoring this channel.</scree
                   <term><code>AST_DEVICE_INVALID</code> (4)</term>
 
                   <listitem>
-                    <simpara>Ungültig. Unbekannter Channel.</simpara>
+                    <simpara>The channel is unknown.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2274,8 +2247,8 @@ The argument is the new filename base to use for monitoring this channel.</scree
                   <term><code>AST_DEVICE_UNAVAILABLE</code> (5)</term>
 
                   <listitem>
-                    <simpara>Nicht verfügbar. Channel ist nicht
-                    registriert.</simpara>
+                    <simpara>The channel is not available and not
+                    registered.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2283,7 +2256,7 @@ The argument is the new filename base to use for monitoring this channel.</scree
                   <term><code>AST_DEVICE_RINGING</code> (6)</term>
 
                   <listitem>
-                    <simpara>Channel klingelt.</simpara>
+                    <simpara>The channel is ringing.</simpara>
                   </listitem>
                 </varlistentry>
               </variablelist></para>
@@ -2292,21 +2265,21 @@ The argument is the new filename base to use for monitoring this channel.</scree
       </variablelist></para>
 
     <note>
-      <simpara>Diese Anwendung arbeitet auf MGCP-Kanälen nicht
-      ordnungsgemäß.</simpara>
+      <simpara>This application does not behave as expected on MGCP
+      channels.</simpara>
     </note>
 
-    <programlisting>; Zap/1 und Zap/2 auf Verfügbarkeit prüfen:
+    <programlisting>; Check the availability of Zap/1 and Zap/2:
 exten =&gt; 123,1,ChanIsAvail(Zap/1&amp;Zap/2,j)
-; hier ausnahmsweise mit Priority jumping, da wir, falls kein Kanal
-; frei ist, noch eine Ansage machen wollen
+; As an exception, using priority jumping, because we want to announce
+; something to the caller if no channel is available
 
-; mindestens einer der Kanäle verfügbar, auf diesem wählen:
-exten =&gt; 123,2,NoOp(${AVAILORIGCHAN} ist verfuegbar)
+; at least one channel is available - dial this channel:
+exten =&gt; 123,2,NoOp(${AVAILORIGCHAN} is available)
 exten =&gt; 123,3,Dial(${AVAILORIGCHAN}/123456)
 
-; wenn wir bei Prio. 102 landen, ist weder Zap/1 noch Zap/2 verfügbar
-exten =&gt; 123,102,Playback(alle-kanaele-belegt)</programlisting>
+; if the call goes to priority 102 landen, neither Zap/1 nor Zap/2 is available
+exten =&gt; 123,102,Playback(all-channels-busy)</programlisting>
 
     <note>
       <formalpara>
@@ -2346,19 +2319,19 @@ available. The following variables will be set by this application:
       <secondary><code>ChannelRedirect()</code></secondary>
     </indexterm>
 
-    <simpara>Leitet einen Channel auf eine andere Priorität.</simpara>
+    <simpara>Redirects a channel to another extension and priority.</simpara>
 
-    <synopsis>ChannelRedirect(<replaceable>Channel</replaceable>,[<replaceable>Context</replaceable>,]<replaceable>Extension</replaceable>,<replaceable>Priorität</replaceable>)</synopsis>
+    <synopsis><command>ChannelRedirect(<replaceable>channel</replaceable>,[<replaceable>context</replaceable>,]<replaceable>extension</replaceable>,<replaceable>priority</replaceable>)</command></synopsis>
 
-    <simpara>Leitet den angegebenen Channel auf eine andere Extension im
-    Dialplan um.</simpara>
+    <simpara>Redirects the specified channel to another extension and
+    priority.</simpara>
 
     <para><variablelist termlength="11">
         <varlistentry>
           <term><code>Channel</code></term>
 
           <listitem>
-            <simpara>Name des Channels der umgeleitet werden soll</simpara>
+            <simpara>Name of the channel to be redirected.</simpara>
           </listitem>
         </varlistentry>
 
@@ -2366,7 +2339,8 @@ available. The following variables will be set by this application:
           <term><code>Context</code></term>
 
           <listitem>
-            <simpara>Ziel-Context zu dem gesprungen werden soll</simpara>
+            <simpara>Context to which the channel should be
+            redirected.</simpara>
           </listitem>
         </varlistentry>
 
@@ -2374,7 +2348,8 @@ available. The following variables will be set by this application:
           <term><code>Extension</code></term>
 
           <listitem>
-            <simpara>Ziel-Extension zu der gesprungen werden soll</simpara>
+            <simpara>Extension to which the channel should be
+            redirected.</simpara>
           </listitem>
         </varlistentry>
 
@@ -2382,7 +2357,7 @@ available. The following variables will be set by this application:
           <term><code>priority</code></term>
 
           <listitem>
-            <simpara>Ziel-Priorität in der neuen Extension</simpara>
+            <simpara>Priority in the new extension.</simpara>
           </listitem>
         </varlistentry>
       </variablelist></para>
@@ -2425,31 +2400,36 @@ ChannelRedirect(channel|[[context|]extension|]priority):
       <secondary><code>ChanSpy()</code></secondary>
     </indexterm>
 
-    <simpara>Einen Channel belauschen</simpara>
+    <simpara>Enables eavesdropping on a channel.</simpara>
 
-    <synopsis>ChanSpy([<replaceable>Channelpräfix</replaceable>[,<replaceable>Optionen</replaceable>]])</synopsis>
+    <synopsis><command>ChanSpy([<replaceable>channelprefix</replaceable>[,<replaceable>options</replaceable>]])</command></synopsis>
 
-    <simpara>Erlaubt es, das Gespräch auf beliebigen Kanälen mitzuhören. (Ist
-    also nicht wie <code>ZapBarge()</code>/<code>ZapScan()</code> an
-    Zap-Kanäle gebunden.) Für das Verständnis einiger Optionen ist zu
-    beachten, dass diese Applikation einzelne Kanäle abhört, aber nicht
-    Gespräche im eigentlichen Sinn (min. 2 Teilnehmer), obwohl Sie natürlich
-    das ein- und ausgehende Audio auf dem abgehörten Channel hören können.
-    Bitte achten sie die Persönlichkeitsrechte anderer! Falls sie Gespräche
-    unaufgefordert und ohne Wissen der Teilnehmer mithören machen sie sich
-    strafbar.</simpara>
+    <simpara>Allows eavesdropping on a conversation on any specified channel
+    (this is different from <code>ZapBarge()</code>/<code>ZapScan()</code>
+    which are bound to Zap channels only). Note that this application only
+    listens on single channels, rather than the conversation <emphasis>per
+    se</emphasis>, even though it does capture incoming and outgoing audio on
+    the channel.</simpara>
 
-    <simpara>Wenn <code>Channelpräfix</code> angegeben ist, stehen nur Kanäle,
-    die mit diesem String beginnen, zur Auswahl.</simpara>
+    <warning>
+      <para>Be aware that listening to calls may be subject to freedom of
+      information and privacy legislation in your jurisdiction. As a matter of
+      professional practice you should know the terms under which it is lawful
+      to eavesdrop on telephone calls. In most jurisdictions it is illegal to
+      eavesdrop on a call without the knowledge of the participants.</para>
+    </warning>
 
-    <para><code>Optionen</code> (auch in Kombination):<variablelist
-        termlength="11">
+    <simpara>If <emphasis>channelprefix</emphasis> is specified, only channels
+    with a name beginning with that string are available for
+    listening.</simpara>
+
+    <para><code>Options</code> may be combined:<variablelist termlength="11">
         <varlistentry>
           <term><code>b</code></term>
 
           <listitem>
-            <simpara>(bridged) Auswahl nur auf verbundene Kanäle
-            beschränken.</simpara>
+            <simpara>(bridged) Restrict to bridged (<emphasis>i.e.</emphasis>
+            connected) channels.</simpara>
           </listitem>
         </varlistentry>
 
@@ -2457,10 +2437,10 @@ ChannelRedirect(channel|[[context|]extension|]priority):
           <term><code>g(<replaceable>grp</replaceable>)</code></term>
 
           <listitem>
-            <simpara>(group) Auswahl auf Kanäle beschränken, auf denen
-            <code>grp</code> in der durch Doppelpunkt (<code>:</code>)
-            getrennten Liste <code>${SPYGROUP}</code> (Channelvariable)
-            enthalten ist.</simpara>
+            <simpara>(group) Restrict to channels whose ${SPYGROUP} channel
+            variable contains the value
+            <code><replaceable>grp</replaceable></code> in a "<code>:</code>"
+            (colon) delimited list.</simpara>
           </listitem>
         </varlistentry>
 
@@ -2468,29 +2448,27 @@ ChannelRedirect(channel|[[context|]extension|]priority):
           <term>q</term>
 
           <listitem>
-            <simpara>(quiet) Keine Piep-Töne beim Umschalten von Kanälen
-            spielen und Channelname nicht ankündigen.</simpara>
+            <simpara>(quiet) Do not play beep tones (nor announce the channel
+            name) when switching channels.</simpara>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><code>r([<replaceable>Name</replaceable>])</code></term>
+          <term><code>r([<replaceable>name</replaceable>])</code></term>
 
           <listitem>
-            <para>(record) Die Sitzung in einer Datei im Verzeichnis
-            <filename>/var/spool/asterisk/monitor/</filename> aufzeichnen.
-            Default-Basis-Dateiname (also ohne Endung) ist
-            <filename>chanspy</filename>.</para>
+            <para>(record) Record the spying session in a file in the
+            <filename>/var/spool/asterisk/monitor/</filename> directory. The
+            default filename prefix is <filename>chanspy</filename>.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><code>v[(<replaceable>Wert</replaceable>)]</code></term>
+          <term><code>v[(<replaceable>value</replaceable>)]</code></term>
 
           <listitem>
-            <para>(volume) Die anfängliche Lautstärkeeinstellung von
-            <code>-4</code> (leise) bis <code>4</code> (laut)
-            verändern.</para>
+            <para>(volume) Set the initial volume. The range of allowed values
+            is <code>from -4</code> (quiet) bis <code>4</code> (loud).</para>
           </listitem>
         </varlistentry>
 
@@ -2498,10 +2476,10 @@ ChannelRedirect(channel|[[context|]extension|]priority):
           <term><code>w</code></term>
 
           <listitem>
-            <simpara>(whisper) Flüster-Modus aktivieren. Damit kann der
-            lauschende Channel mit dem belauschten sprechen, wobei dies nur
-            der belauschte Channel hört, nicht dessen Gesprächspartner. (Diese
-            Option ist seit Asterisk 1.4 verfügbar.)</simpara>
+            <simpara>(whisper) Activate whisper mode. Allows the user on the
+            spying channel to speak to the channel user on the spied-on
+            channel, without the remote user hearing. (This option is
+            available as of Asterisk 1.4.)</simpara>
           </listitem>
         </varlistentry>
 
@@ -2509,21 +2487,21 @@ ChannelRedirect(channel|[[context|]extension|]priority):
           <term><code>W</code></term>
 
           <listitem>
-            <simpara>(private whisper) Privater Flüster-Modus. Wie
-            <code>w</code>, aber der lauschende Channel kann den belauschten
-            nicht hören. (sinnvoll?)</simpara>
+            <simpara>(private whisper) Private whisper mode. Like
+            <code>w</code>, except that the spying channel cannot hear the
+            spied-on channel (it's not immediately clear where this would be
+            useful, but Asterisk has found myriad applications!)</simpara>
           </listitem>
         </varlistentry>
       </variablelist></para>
 
-    <para>Während des Abhörens können folgende Tastenbefehle gegeben
-    werden:<variablelist termlength="6">
+    <para>While listening, the following keypad input is
+    accepted:<variablelist termlength="6">
         <varlistentry>
           <term><code>#</code></term>
 
           <listitem>
-            <simpara>Schaltet durch die Lautstärkeeinstellung (-4 bis
-            4)</simpara>
+            <simpara>Increases volume stepwise (from -4 to 4)</simpara>
           </listitem>
         </varlistentry>
 
@@ -2531,32 +2509,34 @@ ChannelRedirect(channel|[[context|]extension|]priority):
           <term><code>*</code></term>
 
           <listitem>
-            <simpara>Schaltet zu einem anderen Channel</simpara>
+            <simpara>Switches to another channel</simpara>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><code><replaceable>...</replaceable>#</code></term>
+          <term><code><replaceable>X..X</replaceable>#</code></term>
 
           <listitem>
-            <simpara>Eine Reihe von Ziffern, abgeschlossen durch
-            <code>#</code>, wird an <code>Channelpräfix</code> angehängt. Wenn
-            Sie z.B. <code>ChanSpy(Agent)</code> ausführen und
-            <code>1234#</code> eingeben, werden Sie auf dem Channel
-            <code>Agent/1234</code> lauschen.</simpara>
+            <simpara>A set of digits of arbitrary length, ended with
+            <code>#</code>, is attached to
+            <code><replaceable>channelprefix</replaceable></code>. For
+            example, if the extension invokes <code>ChanSpy(Agent)</code> and
+            the user on the spying channel dials <code>1234#</code>, the
+            spying channel will begin spying on the channel
+            <code>Agent/1234</code>.</simpara>
           </listitem>
         </varlistentry>
       </variablelist></para>
 
-    <programlisting>; Agenten belauschen:
+    <programlisting>; Eavesdrop on an agent:
 exten =&gt; 123,1,ChanSpy(Agent)
 exten =&gt; 123,n,Hangup()
 
-; Beispiel für die Option g:
-; auf Anrufen auf 0... SPYGROUP 10005 setzen:
+; Example using g:
+; for calls to 0, set SPYGROUP 10005:
 exten =&gt; _0.,1,Set(SPYGROUP=10005)
 ;...
-; Kanäle der SPYGROUP 10005 belauschen:
+; Listen to channels in SPYGROUP 10005:
 exten =&gt; 123,1,ChanSpy(,g(10005))
 exten =&gt; 123,n,Hangup()</programlisting>
 
@@ -2663,23 +2643,23 @@ only channels beginning with this string will be spied upon.
       <secondary><code>Congestion()</code></secondary>
     </indexterm>
 
-    <simpara>Zeigt Stau (Überlastung) auf dem Channel an.</simpara>
+    <simpara>Indicates congestion (insufficient resources available) on the
+    channel.</simpara>
 
-    <synopsis>Congestion([<replaceable>Timeout</replaceable>])</synopsis>
+    <synopsis><command>Congestion([<replaceable>timeout</replaceable>])</command></synopsis>
 
-    <simpara>Zeigt auf dem Channel Stau an und wartet dann, bis der Teilnehmer
-    auflegt, oder bis die optional spezifizierbare Frist
-    (<code>Timeout</code>, in Sekunden) abgelaufen ist.</simpara>
+    <simpara>Indicates congestion on the channel and waits until the caller
+    hangs up or until the specified timeout <replaceable>timeout</replaceable>
+    has expired.</simpara>
 
-    <simpara>Diese Anwendung signalisiert Stau lediglich, sie spielt aber dem
-    Teilnehmer keinen Stau-Ton vor. Um einem Anrufer einen Stau-Ton
-    vorzuspielen, kann <code>Playtones(congestion)</code> verwendet
-    werden.</simpara>
+    <simpara>This application indicates congestion in the system but does not
+    indicate this to the caller. Should you wish to notify the caller, use
+    <command><code>Playtones(congestion)</code></command>.</simpara>
 
-    <simpara>Liefert stets -1 zurück.</simpara>
+    <simpara>Returns -1.</simpara>
 
-    <programlisting>; bei Caller ID is 0123-123456 immer Stau-Signal spielen:
-exten =&gt; 123,1,GotoIf($[${CALLERID(num)} = 0123123456]?10)
+    <programlisting>; for Caller ID is 888-555-8701, always signal congestion:
+exten =&gt; 123,1,GotoIf($[${CALLERID(num)} = 8885558701]?10)
 exten =&gt; 123,n,Playtones(congestion)
 exten =&gt; 123,n,Congestion(5)
 exten =&gt; 123,n,Hangup()
@@ -2729,15 +2709,13 @@ Otherwise, this application will wait until the calling channel hangs up.</scree
       <secondary><code>ContinueWhile()</code></secondary>
     </indexterm>
 
-    <simpara>Springt während der Ausführung einer While-Schleife wieder zum
-    Anfang.</simpara>
+    <simpara>Returns to the beginning of a while loop.</simpara>
 
-    <synopsis>ContinueWhile()</synopsis>
+    <synopsis><command>ContinueWhile()</command></synopsis>
 
-    <simpara>Mit <code>ContinueWhile()</code> kann die Ausführung einer
-    While-Schleife im Dialplan unterbrochen werden. Es wird dann direkt zum
-    Beginn der While-Schleife gesprungen und die Bedingung erneut
-    geprüft.</simpara>
+    <simpara>The <command><code>ContinueWhile()</code></command> application
+    can interrupt a while loop while in progress. Asterisk returns to the
+    beginning of the loop and evaluates the condition.</simpara>
 
     <note>
       <formalpara>
@@ -2777,34 +2755,33 @@ Returns to the top of the while loop and re-evaluates the conditional.</screen><
       <secondary><code>ControlPlayback()</code></secondary>
     </indexterm>
 
-    <simpara>Spielt eine Datei ab und kann diese auch schnell vor- und
-    zurückspulen.</simpara>
+    <simpara>Plays a sound file with fast forward and rewind
+    controls.</simpara>
 
-    <synopsis>ControlPlayback(<replaceable>Datei</replaceable>[,<replaceable>skipms</replaceable>[,<replaceable>ffchar</replaceable>[,<replaceable>rewchar</replaceable>[,<replaceable>stopchar</replaceable>[,<replaceable>pausechar</replaceable>]]]]])</synopsis>
+    <synopsis><command>ControlPlayback(<replaceable>soundfile</replaceable>[,<replaceable>skipms</replaceable>[,<replaceable>ffchar</replaceable>[,<replaceable>rewchar</replaceable>[,<replaceable>stopchar</replaceable>[,<replaceable>pausechar</replaceable>]]]]])</command></synopsis>
 
-    <simpara>Spielt die angegebene Datei ab und ermöglicht es dem Anrufer,
-    sich durch Betätigen der Tasten <code>ffchar</code> und
-    <code>rewchar</code> in dieser Datei vorwärts und rückwärts zu bewegen.
-    Als Standardeinstellung können die Tasten <code>#</code> und * zum Vor-
-    und Zurückspulen der Datei verwendet werden. Ist <code>stopchar</code>
-    spezifiziert, hält die Anwendung die Wiedergabe an, wenn die
-    stopchar-Taste gedrückt wird. Existiert die Datei nicht, geht die
-    Anwendung zu Priorität n+101 über, falls vorhanden.</simpara>
+    <simpara>Plays the specified file; the caller can manipulate playback by
+    pressing the defined keys<code> <replaceable>ffchar</replaceable></code>
+    and <code><replaceable>rewchar</replaceable></code>. The defaults are
+    "<code>#"</code> (forward) and "*" (backward). Playback is stopped when
+    <code><replaceable>stopchar</replaceable></code> is pressed (if it is
+    defined). If the file does not exist, the application jumps to priority
+    <replaceable>n</replaceable>+101, if it exists.</simpara>
 
-    <simpara>Die <code>skipms</code>-Option gibt an, wie weit mit jedem
-    Drücken von <code>ffchar</code> oder <code>rewchar</code> in der Datei
-    vor- bzw. zurückgesprungen wird.</simpara>
+    <simpara>The <replaceable>pausechar</replaceable> option is similar in
+    behavior to <replaceable>stopchar</replaceable> except that playback can
+    be resumed by pressing <replaceable>pausechar</replaceable> a second
+    time.</simpara>
 
-    <simpara>Die <code>pausechar-Option</code> kann ebenfalls spezifiziert
-    werden, sie erlaubt es, die Wiedergabe der Datei vorübergehend anzuhalten
-    (Pause). Erneutes Drücken von <code>pausechar</code> setzt die Wiedergabe
-    der Datei dann fort.</simpara>
+    <simpara>The <code><replaceable>skipms</replaceable></code> defines how
+    far forward or backward <command>ControlPlayback()</command> will skip in
+    the file when <code><replaceable>ffchar</replaceable></code> or
+    <code><replaceable>rewchar</replaceable></code> is pressed.</simpara>
 
-    <simpara>Gibt -1 zurück, falls der Channel während der Wiedergabe
-    aufgelegt wurde.</simpara>
+    <simpara>Returns -1 if the caller hangs up during playback.</simpara>
 
-    <programlisting>; dem Anrufer "sinfonie" vorspielen mit Steuerungsmöglichkeit:
-exten =&gt; 123,1,ControlPlayback(sinfonie,5000,#,*,5,0)</programlisting>
+    <programlisting>; play "symphony" to the caller with playback control:
+exten =&gt; 123,1,ControlPlayback(symphony,5000,#,*,5,0)</programlisting>
 
     <note>
       <formalpara>
@@ -2858,14 +2835,13 @@ This application sets the following channel variable upon completion:
       <secondary><code>DateTime()</code></secondary>
     </indexterm>
 
-    <simpara>Sagt die angegebene Uhrzeit.</simpara>
+    <simpara>Say the current time.</simpara>
 
-    <synopsis>DateTime([Unix-Zeit[,timezone[,Format]]])</synopsis>
+    <synopsis><command>DateTime([unixtime[,timezone[,format]]])</command></synopsis>
 
-    <simpara>Sagt die angegebene Uhrzeit an. <code>DateTime()</code> ist zwar
-    (noch?) nicht deprecated, ist aber intern nur noch ein Alias auf
-    <code>SayUnixTime()</code>, siehe dort für Aufruf und
-    Funktionsweise.</simpara>
+    <simpara>Says the current time. It is not yet deprecated but is now only
+    an alias to <code>SayUnixTime()</code>; see the description there for use
+    instructions.</simpara>
 
     <formalpara>
       <title>See also</title>
@@ -2883,23 +2859,21 @@ This application sets the following channel variable upon completion:
       <secondary><code>DBdel()</code></secondary>
     </indexterm>
 
-    <simpara>Löscht einen Schlüssel aus der AstDB.</simpara>
+    <simpara>Deletes a key from the Asterisk database (AstDB).</simpara>
 
-    <synopsis>DBdel(<replaceable>Familie/Schlüssel</replaceable>)</synopsis>
+    <synopsis><command>DBdel(<replaceable>family/key</replaceable>)</command></synopsis>
 
-    <simpara>Löscht den durch <code>key</code> spezifizierten Schlüssel aus
-    der Schlüsselfamilie <code>Familie</code> aus der AstDB.</simpara>
+    <simpara>Deletes the specified key from the Asterisk database.</simpara>
 
-    <simpara>Liefert stets 0 zurück.</simpara>
+    <simpara>Returns 0.</simpara>
 
-    <programlisting>exten =&gt; 123,1,Set(DB(test/name)=Peter)    ; in AstDB speichern
-exten =&gt; 123,n,Set(name=${DB(test/name)})  ; abfragen
-exten =&gt; 123,n,DBdel(test/name)            ; löschen</programlisting>
+    <programlisting>exten =&gt; 123,1,Set(DB(test/name)=Richard)    ; save key in AstDB
+exten =&gt; 123,n,Set(name=${DB(test/name)})  ; retrieve key
+exten =&gt; 123,n,DBdel(test/name)            ; delete key</programlisting>
 
     <important>
-      <simpara>Die Applikation <code>DBdel()</code> ist seit 1.4
-      <quote>deprecated</quote> und wird durch die Funktion
-      <code>DB_DELETE()</code> ersetzt.</simpara>
+      <simpara><code>DBdel()</code> is deprecated as of Asterisk 1.4; use the
+      <code>DB_DELETE()</code> function instead.</simpara>
     </important>
 
     <note>
@@ -2943,20 +2917,20 @@ database.
       <secondary><code>DBdeltree()</code></secondary>
     </indexterm>
 
-    <simpara>Löscht eine Familie oder einen Schlüsselbaum aus der
-    AstDB.</simpara>
+    <simpara>Deletes a family or branch from the Asterisk database.</simpara>
 
-    <synopsis>DBdeltree(<replaceable>Familie</replaceable>[/<replaceable>Schlüsselzweig</replaceable>])</synopsis>
+    <synopsis>DBdeltree(<replaceable>family</replaceable>[/<replaceable>branch</replaceable>])</synopsis>
 
-    <simpara>Löscht den angegebenen Schlüsselzweig aus der AstDB.</simpara>
+    <simpara>Deletes the specified branch from the Asterisk
+    database.</simpara>
 
-    <simpara>Liefert immer 0 zurück.</simpara>
+    <simpara>Returns 0.</simpara>
 
-    <programlisting>; Einträge in der AstDB anlegen:
-exten =&gt; 123,1,Set(DB(farben/eins)=rot)
-exten =&gt; 123,n,Set(DB(farben/zwei)=blau)
+    <programlisting>; save entries in AstDB:
+exten =&gt; 123,1,Set(DB(colors/one)=red)
+exten =&gt; 123,n,Set(DB(colors/two)=blue)
 ; now delete the key family named test
-exten =&gt; 123,n,DBdeltree(farben)</programlisting>
+exten =&gt; 123,n,DBdeltree(colors)</programlisting>
 
     <note>
       <formalpara>
@@ -2996,42 +2970,39 @@ from the Asterisk database</screen></para>
       <secondary><code>DeadAGI()</code></secondary>
     </indexterm>
 
-    <simpara>Führt ein AGI-konformes Skript auf einem toten (aufgelegten)
-    Channel aus.</simpara>
+    <simpara>Runs an AGI compliant program on an inactive channel.</simpara>
 
-    <synopsis>DeadAGI(<replaceable>Programm</replaceable>,<replaceable>Argumente</replaceable>)</synopsis>
+    <synopsis><command>DeadAGI(<replaceable>program</replaceable>,<replaceable>argumente</replaceable>)</command></synopsis>
 
-    <simpara>Führt ein AGI-konformes Skript auf einem toten (aufgelegten)
-    Channel aus. Mit Hilfe von AGI kann Asterisk externe Programme in nahezu
-    jeder beliebigen Sprache ausführen (starten), um einen Telefonkanal zu
-    steuern, Audio abzuspielen, DTMF-Ziffern auszulesen usw., indem es nach
-    dem AGI-Protokoll auf <code>STDIN</code> und <code>STDOUT</code> mit
-    diesen kommuniziert. Die übergebenen <code>Argumente</code> werden an das
-    AGI-Programm durchgereicht.</simpara>
+    <simpara>Runs an AGI compliant program on an inactive (on hook) channel.
+    With AGI (Asterisk Gateway Interface), you can manipulate channels with
+    programs written in practically any conceivable language. AGI programs can
+    control a channel, play audio, interpret and store DTMF tones; AGI
+    programs exchange data with Asterisk on <code>STDIN</code> und
+    <code>STDOUT</code>. The specified arguments are passed unadulterated to
+    the AGI program.</simpara>
 
-    <simpara>Diese Anwendung wurde speziell für tote Kanäle entwickelt, weil
-    das Standard AGI-Interface nicht funktioniert, nachdem der Channel
-    aufgelegt wurde. Dass der Channel <quote>tot</quote> ist, ist allerdings
-    keine Voraussetzung für den Start eines DeadAGI-Skripts!</simpara>
+    <simpara>This application was developed for use on inactive (on hook)
+    channels, because the standard AGI interface will not work on a channel
+    after it is hung up. It is not necessary for the channel to be "dead" at
+    the time of execution, however!</simpara>
 
-    <simpara>Benutzen Sie den Befehl <code>show agi</code> auf der
-    Kommandozeilen-Schnittstelle, um eine Liste aller verfügbaren AGI-Befehle
-    zu erhalten.</simpara>
+    <simpara>The command <code><command>show agi</command></code>, entered on
+    the CLI, will give a list of the available AGI commands.</simpara>
 
-    <simpara>Liefert -1 zurück, falls die Anwendung ein Auflegen angefordert
-    hat, oder 0 beim Austritt ohne Auflegen.</simpara>
+    <simpara>Returns -1 if the application causes a hang-up, or returns 0 on
+    exit without hang-up.</simpara>
 
-    <programlisting>; mit einem bereits aufgelegten (h) Kanal noch ein AGI-Skript ausführen:
+    <programlisting>; run AGI on a hung-up channel:
 exten =&gt; h,1,DeadAGI(agi-test)</programlisting>
 
     <important>
-      <simpara>Der Channel wird solange als aktiv angesehen wird, bis das
-      Skript beendet wird, was z.B. für CDRs von Bedeutung sein
-      kann.</simpara>
+      <simpara>The channel will be treated as active as long as the AGI
+      program is running. This can have implications for CDRs.</simpara>
 
-      <para>Beachten Sie, dass auch DeadAGI-Skripte beim Auflegen des Channels
-      ein <code>SIGHUP</code>-Signal erhalten, was ggf. ignoriert werden
-      muss:<informaltable colsep="none" rowsep="none">
+      <para>Note also that DeadAGI applications receive a <code>SIGHUP</code>
+      signal when the channel is hung up, and it may need to be explicitly
+      ignored in your AGI program:<informaltable colsep="none" rowsep="none">
           <tgroup cols="2">
             <colspec colnum="1" colwidth="50pt" />
 
@@ -3046,8 +3017,8 @@ exten =&gt; h,1,DeadAGI(agi-test)</programlisting>
                 <entry>PHP</entry>
 
                 <entry><programlisting>pcntl_signal(SIGHUP, SIG_IGN);</programlisting>(PHP
-                muss mit <code>--enable-pcntl</code> kompiliert worden sein,
-                was per Default nicht der Fall ist!)</entry>
+                must be compiled with <code>--enable-pcntl</code>; it is not
+                by default!)</entry>
               </row>
 
               <row>
@@ -3059,10 +3030,10 @@ exten =&gt; h,1,DeadAGI(agi-test)</programlisting>
           </tgroup>
         </informaltable></para>
 
-      <simpara>Es ist auch wichtig, dass Sie nach dem Auflegen nicht mehr mit
-      Asterisk kommunizieren, sonst erhält das Skript ein
-      <code>SIGPIPE</code>, was das Skript beendet, sofern Sie es nicht
-      ignorieren.</simpara>
+      <simpara>It is also important for the AGI program to stop communicating
+      after the hang-up, or it will receive a <code>SIGPIPE</code> signal and
+      end (unless the signal is explicitly ignored as in the example
+      above).</simpara>
     </important>
 
     <note>
@@ -3137,56 +3108,56 @@ on file descriptor 3
       <secondary><code>Dial()</code></secondary>
     </indexterm>
 
-    <simpara>Verbindet Kanäle.</simpara>
+    <simpara>Connects channels.</simpara>
 
-    <synopsis>Dial(<replaceable>Tech</replaceable>/<replaceable>Resource</replaceable>,<replaceable>Timeout</replaceable>,<replaceable>Optionen</replaceable>,<replaceable>URL</replaceable>)</synopsis>
+    <synopsis><command>Dial(<replaceable>technology</replaceable>/<replaceable>resource</replaceable>,<replaceable>timeout</replaceable>,<replaceable>options</replaceable>,<replaceable>URL</replaceable>)</command></synopsis>
 
-    <synopsis>Dial(<replaceable>Tech1</replaceable>/<replaceable>Resource1</replaceable>[&amp;<replaceable>Tech2</replaceable>/<replaceable>Resource2</replaceable>[&amp;<replaceable>...</replaceable>]],<replaceable>Timeout</replaceable>,<replaceable>Optionen</replaceable>,<replaceable>URL</replaceable>)</synopsis>
+    <synopsis><command>Dial(<replaceable>technology1</replaceable>/<replaceable>resource1</replaceable>[&amp;<replaceable>tech2</replaceable>/<replaceable>resource2</replaceable>[&amp;<replaceable>...</replaceable>]],<replaceable>timeout</replaceable>,<replaceable>options</replaceable>,<replaceable>URL</replaceable>)</command></synopsis>
 
-    <synopsis>Dial(<replaceable>Tech</replaceable>/<replaceable>User</replaceable>:<replaceable>Passwort</replaceable>@<replaceable>Host</replaceable>/<replaceable>Extension</replaceable>,<replaceable>Timeout</replaceable>,<replaceable>Optionen</replaceable>)</synopsis>
+    <synopsis><command>Dial(<replaceable>technology</replaceable>/<replaceable>user</replaceable>:<replaceable>password</replaceable>@<replaceable>host</replaceable>/<replaceable>extension</replaceable>,<replaceable>timeout</replaceable>,<replaceable>options</replaceable>)</command></synopsis>
 
-    <simpara>Ermöglicht es, zwei Kanäle miteinander zu verbinden.<footnote>
-        <simpara>Zum Beispiel IAX, SIP, H.323, Skinny, PRI, FXO, FXS, Local
+    <simpara>Connects two channels together.<footnote>
+        <simpara>Generally, channels of any type supported by Asterisk may be
+        connected - for example, IAX, SIP, H.323, Skinny, PRI, FXO, FXS, Local
         ...</simpara>
-      </footnote> <code>Dial()</code> ist eine der wichtigsten Anwendungen in
-    Asterisk, lesen Sie diesen Ausschnitt deshalb bitte aufmerksam und
-    eventuell mehrmals durch.</simpara>
+      </footnote> <code><command>Dial()</command></code> is perhaps the most
+    important application in Asterisk. We recommend you read this section
+    carefully and more than once if necessary.</simpara>
 
-    <simpara>Jeder gültige Channeltyp (wie z.B. SIP, IAX2, H.323, MGCP, Local
-    oder Zap) wird von <code>Dial()</code> akzeptiert, aber die Parameter, die
-    jedem Channel übergeben werden müssen, hängen von denjenigen Informationen
-    ab, die der entsprechende Channeltyp benötigt, um seine Arbeit zu
-    verrichten. So wird zum Beispiel ein SIP-Channel eine Netzwerkadresse und
-    einen Benutzer benötigen, zu dem die Verbindung hergestellt werden soll,
-    während ein ZAP-Channel irgendeine Art von Telefonnummer
-    verlangt.</simpara>
+    <simpara><command>Dial()</command> accepts every valid channel type
+    (<emphasis>e.g.</emphasis> SIP, IAX2, H.323, MGCP, Local oder Zap) but the
+    allowable parameters are channel-specific; <emphasis>i.e.</emphasis>, what
+    parameters a channel requires or will accept depends on the nature of the
+    channel technology. For example, a SIP channel will require an IP address
+    and user information, whereas a ZAP channel requires a telephone
+    number.</simpara>
 
-    <simpara>Wenn ein Netzwerk-basierter Channeltyp spezifiziert wird, können
-    Zielhost (Name oder IP-Adresse), Benutzername, Passwort und
-    Fernsteuerungs-Extension als Teil der Optionen an <code>Dial()</code>
-    übergeben werden, oder man kann auf den Namen eines Channeleintrags in der
-    entsprechenden Konfigurationsdatei (<filename>.conf</filename>-Datei)
-    verweisen - alle notwendigen Informationen müssen dann in dieser Datei
-    vorhanden sein. Benutzername und Passwort können durch den Namen der
-    Channelkonfigurationsdatei, umgeben von eckigen Klammern (<code>[]</code>)
-    ersetzt werden. Die Angabe des Hostnamens ist optional.</simpara>
+    <simpara>When a network-based channel type is specified, the parameters
+    (such as IP address, user name, password and remote extension) can be
+    supplied as options to <command>Dial()</command> or, alternatively, be
+    included in a host configuration section in the appropriate
+    <filename>.conf</filename> file. If this second approach is used, all the
+    required configuration information must be present.</simpara>
 
-    <para>Ein Beispiel für einen gültigen Aufruf: <programlisting>exten =&gt; s,1,Dial(SIP/peter:geheim@meier.tld)</programlisting>
-    Das Gleiche würde auch der folgende Aufruf bewirken: <programlisting>exten =&gt; s,1,Dial(SIP/ein_SIP_friend)</programlisting>wenn
-    in <filename>sip.conf</filename> ein entsprechender Channel definiert ist:
-    <programlisting>[ein_SIP_friend]
-fromuser=peter
-password=geheim
-host=meier.tld</programlisting></para>
+    <para>Here's an example:<programlisting>exten =&gt; s,1,Dial(SIP/richard:secret@widgets.biz)</programlisting>This
+    extension would accomplish the same thing:<programlisting>exten =&gt; s,1,Dial(SIP/a_SIP_friend)</programlisting>...
+    as long as "a_SIP_friend" is defined as a channel in
+    <filename>sip.conf</filename>: <programlisting>[a_SIP_friend]
+fromuser=richard
+password=secret
+host=widgets.biz</programlisting></para>
 
-    <para>Oft ist eine Extension wie folgt an die Adressinformation angehängt:
-    <programlisting>exten =&gt; s,1,Dial(IAX2/benutzer:passwort@beispiel.de/500)</programlisting>
-    Dadurch wird das entfernte Ende aufgefordert, den Anruf mit Extension 500
-    zu verbinden, und zwar in dem Context, in der der Channel eingegangen ist.
-    Diese Extension wird von <code>Dial()</code> nicht benötigt, weil die in
-    der Channelkonfiguration des entfernten Endes vorliegenden Daten verwendet
-    werden oder der Remoteserver den Anruf zur <code>s</code>-Extension in dem
-    Context, in dem der Anruf eingegangen ist, weiterleitet.</para>
+    <para>Sometimes an extension is attached to the address information, as in
+    this example:<programlisting>exten =&gt; s,1,Dial(IAX2/benutzer:passwort@beispiel.de/500)</programlisting>The
+    remote system is asked to connect the call to extension 500 in the
+    incoming channel. This extension is not required because the channel
+    configuration on the remote system is used Dadurch wird das entfernte Ende
+    aufgefordert, den Anruf mit Extension 500 zu verbinden, und zwar in dem
+    Context, in der der Channel eingegangen ist. Diese Extension wird von
+    <code>Dial()</code> nicht benötigt, weil die in der Channelkonfiguration
+    des entfernten Endes vorliegenden Daten verwendet werden oder der
+    Remoteserver den Anruf zur <code>s</code>-Extension in dem Context, in dem
+    der Anruf eingegangen ist, weiterleitet.</para>
 
     <simpara>Schlussendlich kontrolliert das entfernte Ende, was mit dem Anruf
     geschehen soll - Sie können lediglich eine spezielle Behandlung
