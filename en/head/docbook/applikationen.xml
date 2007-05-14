@@ -2972,7 +2972,7 @@ from the Asterisk database</screen></para>
 
     <simpara>Runs an AGI compliant program on an inactive channel.</simpara>
 
-    <synopsis><command>DeadAGI(<replaceable>program</replaceable>,<replaceable>argumente</replaceable>)</command></synopsis>
+    <synopsis><command>DeadAGI(<replaceable>program</replaceable>,<replaceable>arguments</replaceable>)</command></synopsis>
 
     <simpara>Runs an AGI compliant program on an inactive (on hook) channel.
     With AGI (Asterisk Gateway Interface), you can manipulate channels with
@@ -3148,48 +3148,42 @@ password=secret
 host=widgets.biz</programlisting></para>
 
     <para>Sometimes an extension is attached to the address information, as in
-    this example:<programlisting>exten =&gt; s,1,Dial(IAX2/benutzer:passwort@beispiel.de/500)</programlisting>The
+    this example:<programlisting>exten =&gt; s,1,Dial(IAX2/user:secret@widgets.biz/500)</programlisting>The
     remote system is asked to connect the call to extension 500 in the
     incoming channel. This extension is not required because the channel
-    configuration on the remote system is used Dadurch wird das entfernte Ende
-    aufgefordert, den Anruf mit Extension 500 zu verbinden, und zwar in dem
-    Context, in der der Channel eingegangen ist. Diese Extension wird von
-    <code>Dial()</code> nicht benötigt, weil die in der Channelkonfiguration
-    des entfernten Endes vorliegenden Daten verwendet werden oder der
-    Remoteserver den Anruf zur <code>s</code>-Extension in dem Context, in dem
-    der Anruf eingegangen ist, weiterleitet.</para>
+    configuration on the remote system is used, or, alternatively, the call is
+    passed to the default <code>s</code> extension in the incoming
+    context.</para>
 
-    <simpara>Schlussendlich kontrolliert das entfernte Ende, was mit dem Anruf
-    geschehen soll - Sie können lediglich eine spezielle Behandlung
-    anfragen.</simpara>
+    <simpara>In the end, the remote host decides how the call will be
+    processed; all you can do is request special call handling.</simpara>
 
-    <para>Wenn kein <code>Timeout</code> spezifiziert ist, wird der Channel
-    unendlich klingeln. Dieses Verhalten muss nicht immer schlecht sein, es
-    besteht keine Veranlassung, ihn immer zu setzen - man muss sich nur
-    vergegenwärtigen, dass unendlich evtl. eine sehr lange Zeit bedeuten
-    kann.<footnote>
+    <para>If no <code>timeout</code> is specified, the channel will ring
+    indefinitely. This behavior is not necessarily undesirable and so it's not
+    automatically necessary to set this parameter. Just be aware that
+    "indefinite" can end up being a very long time.<footnote>
         <simpara>:-)</simpara>
-      </footnote> <code>Timeout</code> wird in Sekunden angegeben. Der
-    Klingel-Timeout folgt immer der Adressinformation, wie folgt:
-    <programlisting>exten =&gt; s,1,Dial(IAX2/user:pass@beispiel.de/500,20)</programlisting></para>
+      </footnote> The <code>timeout</code> is specified in seconds. It always
+    follows the device information:<programlisting>exten =&gt; s,1,Dial(IAX2/user:secret@widgets.biz/500,20)</programlisting></para>
 
-    <para>Mit <code>Dial()</code> können auch mehrere Channels parallel
-    angerufen werden. Dabei gilt das Prinzip <quote>Wer zuerst kommt, mahlt
-    zuerst</quote>. Welcher Angerufene als erstes abhebt, bekommt das
-    Gespräch:<programlisting>exten =&gt; s,1,Dial(SIP/2000&amp;SIP/2001&amp;SIP/2303)</programlisting></para>
+    <para>With <code><command>Dial()</command></code>, you can ring multiple
+    channels simultaneously. The call is handled on a "first come, first
+    served" basis; the first extension to pick up answers the call, and all
+    the other extensions stop ringing and become available:<programlisting>exten =&gt; s,1,Dial(SIP/2000&amp;SIP/2001&amp;SIP/2303)</programlisting></para>
 
-    <para>Ein großer Teil der Mächtigkeit der <code>Dial()</code>-Anwendung
-    liegt in den Optionen oder Flags. Diese werden nach der Adress- und
-    Timeout-Information angegeben, und zwar so: <programlisting>exten =&gt; s,1,Dial(IAX2/user:pass@beispiel.de/500,60,<replaceable>Flags</replaceable>)</programlisting></para>
+    <para>A big part of the power in the
+    <command><code>Dial()</code></command> application is in the options,
+    which always follow the device and timeout information, like
+    so:<programlisting>exten =&gt; s,1,Dial(IAX2/user:secret@widgets.biz/500,60,<replaceable>options</replaceable>)</programlisting></para>
 
-    <para>Wichtig! Es gilt zu beachten, dass, wenn Sie Flags hinzufügen
-    möchten, aber kein Timeout spezifiert ist, dennoch der Ort für den Timeout
-    nicht fehlen darf. D. h., ein zusätzliches Komma muss an der Stelle
-    eingefügt werden, an der normalerweise der Wert für den Timeout stehen
-    würde, also so: <programlisting>exten =&gt; s,1,Dial(IAX2/user:pass@beispiel.de/500,,<replaceable>Flags</replaceable>)</programlisting></para>
+    <para><important>
+        <para>If you want to provide options, you still need to provide a
+        comma-delimited space for the timeout value even if it is
+        empty:</para>
+      </important><programlisting>exten =&gt; s,1,Dial(IAX2/user:secret@widgets.biz/500,,<replaceable>Flags</replaceable>)</programlisting></para>
 
-    <para>Die gültigen Flags, die mit der <code>Dial()</code>-Anwendung
-    benutzt werden können, sind: <variablelist>
+    <para>Here are the valid options to the
+    <code><command>Dial()</command></code> application: <variablelist>
         <?dbfo list-presentation="blocks"?>
 
         <?dbhtml list-presentation="list"?>
@@ -3198,12 +3192,12 @@ host=widgets.biz</programlisting></para>
           <term><code>d</code></term>
 
           <listitem>
-            <simpara>Erlaubt es dem Teilnehmer, während des Wartens auf die
-            Beantwortung eines Anrufs eine einziffrige Extension zu wählen.
-            Der Anruf wird dann zu dieser Extension umgeleitet (d.h. der Anruf
-            wird zugunsten dieser Extension beendet) (entweder im aktuellen
-            Context oder, falls er spezifiziert wurde, im Context
-            <code>${EXITCONTEXT}</code>).</simpara>
+            <simpara>Allows the caller to dial another single-digit extension
+            while waiting for the current extension to answer (e.g., a caller
+            dials "4" while the phone is ringing and the call is immediately
+            passed to the <code>4</code> extension. The extension is in the
+            current context unless <code>${EXITCONTEXT}</code> is
+            set).</simpara>
           </listitem>
         </varlistentry>
 
@@ -3211,12 +3205,12 @@ host=widgets.biz</programlisting></para>
           <term><code>t</code></term>
 
           <listitem>
-            <simpara>Erlaubt es dem angerufenen Teilnehmer, einen verbundenen
-            Anruf durch Drücken der <code>#</code>-Taste zu übertragen. Es
-            gilt zu beachten, dass Neueinladungen nicht möglich sind, wenn
-            diese Option benutzt wird, weil Asterisk den Anruf überwachen
-            muss, um zu erkennen, wenn die angerufene Seite die
-            <code>#</code>-Taste drückt.</simpara>
+            <simpara>Blind transfer initiated by the
+            <emphasis>called</emphasis> party. Allows the called party to
+            transfer the call by pressing the blind transfer key (normally
+            "#"). CHECKME REINVITES? New invites? are not possible when this
+            option is selected because Asterisk must monitor the connection to
+            detect when the called party presses the "#" key.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3224,12 +3218,16 @@ host=widgets.biz</programlisting></para>
           <term><code>T</code></term>
 
           <listitem>
-            <simpara>Erlaubt es dem Anrufer, einen verbundenen Anruf durch
-            Drücken der <code>#</code>-Taste zu übertragen. Auch hier beachten
-            Sie bitte, dass Neueinladungen bei Benutzung dieser Option nicht
-            möglich sind, weil Asterisk den Anruf überwachen muss, um zu
-            erkennen, wenn die angerufene Seite die <code>#</code>-Taste
-            drückt.</simpara>
+            <simpara>Blind transfer initiated by the
+            <emphasis>calling</emphasis> party. Allows the calling party to
+            transfer the call by pressing the blind transfer key (normally
+            "#"). CHECKME REINVITES? New invites? are not possible when this
+            option is selected because Asterisk must monitor the connection to
+            detect when the called party presses the "#" key. "Auch hier
+            beachten Sie bitte, dass Neueinladungen bei Benutzung dieser
+            Option nicht möglich sind, weil Asterisk den Anruf überwachen
+            muss, um zu erkennen, wenn die angerufene Seite die
+            <code>#</code>-Taste drückt." - is this correct?</simpara>
           </listitem>
         </varlistentry>
 
@@ -3237,14 +3235,13 @@ host=widgets.biz</programlisting></para>
           <term><code>w</code></term>
 
           <listitem>
-            <simpara>Ermöglicht es dem angerufenen Teilnehmer den Anruf durch
-            Eintippen der <code>automon</code>-Sequenz (wie in
-            <filename>features.conf</filename> konfiguriert) aufzunehmen
-            (Audio to disk). Falls die Variable <code>TOUCH_MONITOR</code>
-            gesetzt ist, wird ihr Wert als Parameter der
-            <code>Monitor()</code>-Anwendung weitergeleitet, wenn die Aufnahme
-            startet. Ist sie nicht gesetzt, wird <code>Monitor()</code> die
-            Vorgabe <code>WAV,,m</code> übergeben.</simpara>
+            <simpara>Allows the <emphasis>called</emphasis> party to start
+            recording the call by pressing the <code>automon</code> key
+            sequence (as defined in <filename>features.conf</filename>). If
+            the <code>TOUCH_MONITOR</code> variable is set, its value is
+            passed to <code><command>Monitor()</command></code> as a parameter
+            when recording starts. If it is not set, <code>WAV,,m</code> is
+            passed to <code><command>Monitor()</command></code>.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3252,10 +3249,10 @@ host=widgets.biz</programlisting></para>
           <term><code>W</code></term>
 
           <listitem>
-            <simpara>Ermöglicht es dem Anrufer den Anruf durch Eintippen der
-            <code>automon</code>-Sequenz (wie in
-            <filename>features.conf</filename> konfiguriert) aufzunehmen
-            (Audio to disk).</simpara>
+            <simpara>Allows the <emphasis>calling</emphasis> party to start
+            recording the call by pressing the <code>automon</code> key
+            sequence (as defined in
+            <filename>features.conf</filename>).</simpara>
           </listitem>
         </varlistentry>
 
@@ -3263,14 +3260,12 @@ host=widgets.biz</programlisting></para>
           <term><code>f</code></term>
 
           <listitem>
-            <simpara>Durch dieses Flag muss die Caller-ID als die Extension
-            der Leitung gesetzt werden, die den ausgehenden Anruf erstellt
-            oder umleitet. Das wird so gemacht, weil einige
-            PSTN-Diensteanbieter es nicht erlauben, die Caller-ID auf
-            irgendeinen anderen als den Ihnen zugewiesenen Wert zu setzen. Zum
-            Beispiel würden Sie, wenn Sie einen PRI hatten, das Flag
-            <code>f</code> verwenden, um irgendeine lokal im SIP-Telefon
-            gespeicherte Caller-ID zu überscheiben.</simpara>
+            <simpara>Sets the caller ID as the number of the line making or
+            redirecting the outgoing call. Some PSTNs don't allow IDs from
+            extensions other than those assigned to you. For example, if you
+            have a PRI, you would use <code>f</code> to overwrite the caller
+            ID provided by a SIP extension to that belonging to the outgoing
+            Zap channel on the PRI.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3278,13 +3273,15 @@ host=widgets.biz</programlisting></para>
           <term><code>o</code></term>
 
           <listitem>
-            <simpara>Benutzt die auf der eingehenden Strecke des Anrufs
-            empfangene Caller ID als die Caller ID auf der ausgehenden
-            Richtung des Anrufs. Das ist nützlich, falls ein Anruf akzeptiert
-            und dann zu einem anderen Ziel weitergeleitet wird, wobei die
-            Caller ID der eingehenden Richtung des Anrufs weitergeben wird,
-            statt diese zunächst mit den lokalen Caller ID-Einstellungen zu
-            überschreiben.</simpara>
+            <simpara>Uses the caller ID received on the incoming leg of a call
+            as the caller ID for the outgoing leg. This is useful if a call is
+            accepted and then transferred; in the normal case, the caller ID
+            of the initial recipient is used for the outgoing leg, which can
+            be confusing to the ultimate recipient. For example, say Joe calls
+            Mary; Mary decides that Joe really needs to speak to Don and
+            transfers the call. If option <code>o</code> is set, Don will see
+            Joe's number on his display when Mary transfers him, instead of
+            Mary's number.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3292,21 +3289,24 @@ host=widgets.biz</programlisting></para>
           <term><code>r</code></term>
 
           <listitem>
-            <simpara>Signalisiert dem Anrufer Klingeln, ohne dass Audio
-            weitergeleitet wird, bevor der Anruf beantwortet wird. Dieses Flag
-            wird für gewöhnlich nicht benötigt, um Klingeln zu signalisiern,
-            da Asterisk Klingeln signalisiert, wenn ein Channel angerufen
-            wird.</simpara>
+            <simpara>Generate a ringing tone for the
+            <emphasis><emphasis>calling</emphasis></emphasis> party. Normally
+            Asterisk will generate a ringing tone when it is appropriate.
+            Option <code>r</code> forces it to do so no matter the
+            circumstance. Sometimes called devices don't provide useful call
+            progress information (or none at all) and <code>r</code> is
+            needed; however, this can also lead to strange behavior, such as
+            initial ringing interrupted by a busy signal.</simpara>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><code>m[<replaceable>Klasse</replaceable>]</code></term>
+          <term><code>m[<replaceable>class</replaceable>]</code></term>
 
           <listitem>
-            <simpara>Beliefert den Anruf mit Musik, bis der Anruf beantwortet
-            wird. Optional können Sie auch die Music-on-Hold-Klasse (z.B.
-            Musikrichtung) angeben.</simpara>
+            <simpara>Plays music to the caller until the call is answered.
+            Optionally you can provide the Music-on-Hold class (as defined in
+            <filename>musiconhold.conf</filename>).</simpara>
           </listitem>
         </varlistentry>
 
@@ -3314,16 +3314,15 @@ host=widgets.biz</programlisting></para>
           <term><code>M(<replaceable>x</replaceable>[^<replaceable>arg</replaceable>])</code></term>
 
           <listitem>
-            <para>Führt auf die Verbindung eines Anrufs hin das Makro
-            <code>x</code> aus, und leitet dabei optional Parameter, getrennt
-            durch <code>^</code>, weiter. Das Makro kann auch die
-            <code>MACRO_RESULT</code>-Channelvariable auf einen der folgenden
-            Werte setzen:<variablelist termlength="12">
+            <para>Runs the macro x when the call is answered, optionally
+            passing ^ (caret) separated arguments. The macro may set the
+            <code>MACRO_RESULT</code> channel variable to one of the following
+            values:<variablelist termlength="12">
                 <varlistentry>
                   <term><code>ABORT</code></term>
 
                   <listitem>
-                    <simpara>Legt bei beiden Enden des Anrufs auf.</simpara>
+                    <simpara>Hangs up both ends of the call.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -3331,7 +3330,7 @@ host=widgets.biz</programlisting></para>
                   <term><code>CONGESTION</code></term>
 
                   <listitem>
-                    <simpara>Wirkt, als wäre Stau auf der Leitung.</simpara>
+                    <simpara>Indicates congestion on the line.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -3339,8 +3338,8 @@ host=widgets.biz</programlisting></para>
                   <term><code>BUSY</code></term>
 
                   <listitem>
-                    <simpara>Wirkt, als wäre die Leitung besetzt (geht zur
-                    Priorität n+101).</simpara>
+                    <simpara>Indicates that the line is busy (and jumps to
+                    <replaceable>n</replaceable>+101).</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -3348,8 +3347,8 @@ host=widgets.biz</programlisting></para>
                   <term><code>CONTINUE</code></term>
 
                   <listitem>
-                    <simpara>Legt die Seite des Angerufenen auf und fährt im
-                    Wählplan fort.</simpara>
+                    <simpara>Hangs the called end up and continues in the
+                    dialplan.</simpara>
                   </listitem>
                 </varlistentry>
               </variablelist></para>
@@ -3357,11 +3356,10 @@ host=widgets.biz</programlisting></para>
         </varlistentry>
 
         <varlistentry>
-          <term><code>GOTO:&lt;<replaceable>Context</replaceable>&gt;^&lt;<replaceable>Extension</replaceable>&gt;^&lt;<replaceable>Priorität</replaceable>&gt;</code></term>
+          <term><code>GOTO:&lt;<replaceable>context</replaceable>&gt;^&lt;<replaceable>extension</replaceable>&gt;^&lt;<replaceable>priority</replaceable>&gt;</code></term>
 
           <listitem>
-            <simpara>Springt zu der angegebenen Position im
-            Wählplan.</simpara>
+            <simpara>Jumps to the specified point in the dialplan.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3369,8 +3367,8 @@ host=widgets.biz</programlisting></para>
           <term><code>h</code></term>
 
           <listitem>
-            <simpara>Erlaubt es dem angerufenen Teilnehmer, die Leitung durch
-            Drücken von <code>*</code> aufzulegen.</simpara>
+            <simpara>Allows the <emphasis>called</emphasis> party to hang up
+            by pressing "*".</simpara>
           </listitem>
         </varlistentry>
 
@@ -3378,8 +3376,8 @@ host=widgets.biz</programlisting></para>
           <term><code>H</code></term>
 
           <listitem>
-            <simpara>Erlaubt es dem anrufenden Teilnehmer, die Leitung durch
-            Drücken von <code>*</code> aufzulegen.</simpara>
+            <simpara>Allows the <emphasis>calling</emphasis> party to hang up
+            by pressing "*".</simpara>
           </listitem>
         </varlistentry>
 
@@ -3387,11 +3385,11 @@ host=widgets.biz</programlisting></para>
           <term><code>C</code></term>
 
           <listitem>
-            <simpara>Setzt das Call Detail Record (Anrufprotokoll) zurück. Da
-            die CDR-Zeit zum Zeitpunkt der Beantwortung des Anrufs gesetzt
-            wird, ist es sinnvoll, CDR ebenfalls zurückzusetzen, damit dem
-            Teilnehmer nicht die Zeit vor dem Aufruf der Call()-Anwendung in
-            Rechnung gestellt wird.</simpara>
+            <simpara>Resets the Call Detail Record (CDR) for this call. The
+            CDR clock is reset from the moment the call is answered by
+            Asterisk; if CDRs are being used for billing purposes, sometimes
+            it's appropriate to reset the timer when the connection between
+            two parties is actually established.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3623,8 +3621,8 @@ exten =&gt; 123,1,Dial(Zap/2/1234567,10,tTm)
 exten =&gt; 123,n,Playback(tut-uns-leid)
 exten =&gt; 123,n,Hangup()
 
-; über IAX die Extension 500 auf dem Host beispiel.de wählen:
-exten =&gt; 123,1,Dial(IAX/username:password@beispiel.de/500)</programlisting>
+; über IAX die Extension 500 auf dem Host widgets.biz wählen:
+exten =&gt; 123,1,Dial(IAX/username:password@widgets.biz/500)</programlisting>
 
     <note>
       <formalpara>
@@ -5911,7 +5909,7 @@ exten =&gt; black,n,Hangup()</programlisting>
 
     <para>Die Applikation <code>LookupBlacklist()</code> könnte folgendermaßen
     ersetzt werden:<programlisting>exten =&gt; 123,1,Macro(blacklist,${CALLERID(num)})
-exten =&gt; 123,n,Dial(IAX2/benutzer:passwort@beispiel.de/500)
+exten =&gt; 123,n,Dial(IAX2/user:secret@widgets.biz/500)
 
 [macro-blacklist]
 ; Aufruf: Macro(blacklist,${CALLERID(num)})
