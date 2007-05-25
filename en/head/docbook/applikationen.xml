@@ -823,7 +823,7 @@ The option string may contain zero or more of the following characters:
     agent can take calls with the phone off-hook; each call is preceded by a
     warning tone. Calls are ended by pressing the "*" key.</simpara>
 
-    <simpara>The option<code> s</code> makes the login silent; </simpara>
+    <simpara>The option<code> s</code> makes the login silent;</simpara>
 
     <programlisting>; logs in Agent 33 silently.
 exten =&gt; 123,1,AgentLogin(33,s)</programlisting>
@@ -3180,7 +3180,7 @@ host=widgets.biz</programlisting></para>
         <para>If you want to provide options, you still need to provide a
         comma-delimited space for the timeout value even if it is
         empty:</para>
-      </important><programlisting>exten =&gt; s,1,Dial(IAX2/user:secret@widgets.biz/500,,<replaceable>Flags</replaceable>)</programlisting></para>
+      </important><programlisting>exten =&gt; s,1,Dial(IAX2/user:secret@widgets.biz/500,,<replaceable>options</replaceable>)</programlisting></para>
 
     <para>Here are the valid options to the
     <code><command>Dial()</command></code> application: <variablelist>
@@ -3193,11 +3193,11 @@ host=widgets.biz</programlisting></para>
 
           <listitem>
             <simpara>Allows the caller to dial another single-digit extension
-            while waiting for the current extension to answer (e.g., a caller
-            dials "4" while the phone is ringing and the call is immediately
-            passed to the <code>4</code> extension. The extension is in the
-            current context unless <code>${EXITCONTEXT}</code> is
-            set).</simpara>
+            while waiting for the current extension to answer
+            (<emphasis>e.g.</emphasis>, a caller dials "4" while the phone is
+            ringing and the call is immediately passed to the <code>4</code>
+            extension. The extension is in the current context unless
+            <code>${EXITCONTEXT}</code> is set).</simpara>
           </listitem>
         </varlistentry>
 
@@ -3208,9 +3208,9 @@ host=widgets.biz</programlisting></para>
             <simpara>Blind transfer initiated by the
             <emphasis>called</emphasis> party. Allows the called party to
             transfer the call by pressing the blind transfer key (normally
-            "#"). CHECKME REINVITES? New invites? are not possible when this
-            option is selected because Asterisk must monitor the connection to
-            detect when the called party presses the "#" key.</simpara>
+            "#"). Reinvites are not possible when this option is selected
+            because Asterisk must monitor the connection to detect when the
+            called party presses the "#" key.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3221,13 +3221,9 @@ host=widgets.biz</programlisting></para>
             <simpara>Blind transfer initiated by the
             <emphasis>calling</emphasis> party. Allows the calling party to
             transfer the call by pressing the blind transfer key (normally
-            "#"). CHECKME REINVITES? New invites? are not possible when this
-            option is selected because Asterisk must monitor the connection to
-            detect when the called party presses the "#" key. "Auch hier
-            beachten Sie bitte, dass Neueinladungen bei Benutzung dieser
-            Option nicht möglich sind, weil Asterisk den Anruf überwachen
-            muss, um zu erkennen, wenn die angerufene Seite die
-            <code>#</code>-Taste drückt." - is this correct?</simpara>
+            "#"). Reinvites are not possible when this option is selected
+            because Asterisk must monitor the connection to detect when the
+            called party presses the "#" key.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3385,11 +3381,11 @@ host=widgets.biz</programlisting></para>
           <term><code>C</code></term>
 
           <listitem>
-            <simpara>Resets the Call Detail Record (CDR) for this call. The
-            CDR clock is reset from the moment the call is answered by
-            Asterisk; if CDRs are being used for billing purposes, sometimes
-            it's appropriate to reset the timer when the connection between
-            two parties is actually established.</simpara>
+            <simpara>Resets the Call Detail Record (CDR) for this call.
+            Normally, the CDR clock is reset from the moment the call is
+            answered by Asterisk; if CDRs are being used for billing purposes,
+            sometimes it's appropriate to reset the timer when the connection
+            between two parties is actually established.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3397,13 +3393,13 @@ host=widgets.biz</programlisting></para>
           <term><code>P[(<replaceable>x</replaceable>)]</code></term>
 
           <listitem>
-            <simpara>Aktiviert den Geheimhaltungs-Modus, wobei optional
-            <code>x</code> als Familie/Schlüssel-Wert in der AstDB
-            spezifiziert werden kann. Dieser Modus ist beispielsweise
-            nützlich, wenn Anrufe aus einer Blacklist (Anrufe von Nummern aus
-            der Blacklist werden explizit abgelehnt) oder Whitelist (Anrufe
-            von den gelisteten Nummern werden explizit akzeptiert) angenommen
-            werden. See also <code>LookupBlacklist()</code>.</simpara>
+            <simpara>Uses the Privacy Manager (sollte verkettet sein) if no
+            caller ID is present, where the optional variable
+            <code><replaceable>x</replaceable></code> is a family in the
+            AstDB. The Privacy Manager asks the caller to enter a 10 digit
+            telephone number if no caller ID is provided, providing a simple
+            way to screen for telemarketers and solicitors blocking their
+            caller ID. See also <code>LookupBlacklist()</code>.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3411,8 +3407,8 @@ host=widgets.biz</programlisting></para>
           <term><code>g</code></term>
 
           <listitem>
-            <simpara>Geht weiter im Context, wenn der Zielkanal aufgelegt
-            wird.</simpara>
+            <simpara>Proceeds in the context when the target channel has been
+            hung up.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3420,8 +3416,11 @@ host=widgets.biz</programlisting></para>
           <term><code>G(<replaceable>context</replaceable>^<replaceable>extension</replaceable>^<replaceable>priority</replaceable>)</code></term>
 
           <listitem>
-            <simpara>Übermittelt beide Seiten zum spezifizierten Ziel, wenn
-            der Anruf beantwortet wird.</simpara>
+            <simpara>Drops both channels into the specified
+            <replaceable>context</replaceable>,
+            <replaceable>extension</replaceable> and
+            <replaceable>priority</replaceable> when the call is
+            answered.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3429,9 +3428,12 @@ host=widgets.biz</programlisting></para>
           <term><code>A(<replaceable>x</replaceable>)</code></term>
 
           <listitem>
-            <simpara>Spielt dem angerufenen Teilnehmer eine Ankündigung vor.
-            <code>x</code> ist der Dateiname der Audiodatei, die als
-            Ankündigung abzuspielen ist.</simpara>
+            <simpara>Plays an announcement to the called party, where
+            <replaceable>x</replaceable> is the sound file prefix. For
+            example, A(confirm) would play the most efficient version of
+            confirm (such as <filename>confirm.gsm</filename>, or
+            <filename>confirm.wav</filename>) that can be found in the
+            <filename>/var/lib/asterisk/sounds</filename> directory.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3439,11 +3441,10 @@ host=widgets.biz</programlisting></para>
           <term><code>D([<replaceable>called</replaceable>][:<replaceable>calling</replaceable>])</code></term>
 
           <listitem>
-            <simpara>Sendet DTMF-Ziffern, nachdem der Anruf beantwortet wurde,
-            aber bevor der Anruf überbrückt wird. Der Parameter
-            <code>called</code> wird an die angerufene Seite weitergegeben,
-            und der Parameter <code>calling</code> an die anrufende Seite.
-            Beide Parameter können individuell eingesetzt werden.</simpara>
+            <simpara>Sends DTMF digits after the call is answered but before
+            it is bridged. The <code>called</code> digits are transmitted to
+            the called party, the <code>calling</code> digits to the calling
+            party. One or both parameters may be set.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3451,14 +3452,15 @@ host=widgets.biz</programlisting></para>
           <term><code>L(<replaceable>x</replaceable>[:<replaceable>y</replaceable>][:<replaceable>z</replaceable>])</code></term>
 
           <listitem>
-            <para>Begrenzt die Dauer des Anrufs auf <code>x</code>
-            Millisekunden, wobei <code>y</code> Millisekunden vor Ablauf der
-            festgesetzten Dauer und danach wiederholt alle <code>z</code>
-            Millisekunden bis zum Anlauf der Frist eine Warnung signalisiert
-            wird. Der <code>x</code>-Parameter muss angegeben werden,
-            <code>y</code> und <code>z</code> sind optional. Die folgenden
-            speziellen Variablen können ebenfalls gesetzt werden und stellen
-            zusätzliche Kontrollmöglichkeiten zur Verfügung:<variablelist
+            <para>Limits call duration to
+            <code><replaceable>x</replaceable></code> milliseconds. At
+            <code><replaceable>y</replaceable></code> ms before the maximum
+            allowed duration, and thereafter every
+            <code><replaceable>z</replaceable></code> ms until the end of the
+            call, a warning is given. The <replaceable>x</replaceable> must be
+            defined, <replaceable>y</replaceable> and
+            <replaceable>z</replaceable> are optional. The behavior can be
+            further controlled with the following variables:<variablelist
                 termlength="31">
                 <?dbfo list-presentation="blocks"?>
 
@@ -3468,8 +3470,8 @@ host=widgets.biz</programlisting></para>
                   <term><code>LIMIT_PLAYAUDIO_CALLER=<replaceable>yes|no</replaceable></code></term>
 
                   <listitem>
-                    <simpara>Gibt an, ob dem Anrufer Audiodateien vorgespielt
-                    werden sollen.</simpara>
+                    <simpara>Sets whether the calling party should hear
+                    announcements.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -3477,8 +3479,8 @@ host=widgets.biz</programlisting></para>
                   <term><code>LIMIT_PLAYAUDIO_CALLEE=<replaceable>yes|no</replaceable></code></term>
 
                   <listitem>
-                    <simpara>Gibt an, ob dem Angerufenen Audiodateien
-                    vorgespielt werden sollen.</simpara>
+                    <simpara>Sets whether the called party should hear
+                    announcements.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -3486,8 +3488,9 @@ host=widgets.biz</programlisting></para>
                   <term><code>LIMIT_TIMEOUT_FILE=<replaceable>filename</replaceable></code></term>
 
                   <listitem>
-                    <simpara>Gibt an, welche Datei abgespielt werden soll,
-                    nachdem die Zeit abgelaufen ist.</simpara>
+                    <simpara>Specifies the sound file to be played after the
+                    maximum duration is reached and the call is
+                    ended.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -3495,8 +3498,8 @@ host=widgets.biz</programlisting></para>
                   <term><code>LIMIT_CONNECT_FILE=<replaceable>filename</replaceable></code></term>
 
                   <listitem>
-                    <simpara>Gibt an, welche Datei zu Beginn des Anrufs
-                    abgespielt werden soll.</simpara>
+                    <simpara>Specifies the sound file to be played when the
+                    call is connected.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -3504,8 +3507,9 @@ host=widgets.biz</programlisting></para>
                   <term><code>LIMIT_WARNING_FILE=<replaceable>filename</replaceable></code></term>
 
                   <listitem>
-                    <simpara>Gibt an, welche Datei gespielt werden soll, wenn
-                    der Parameter <code>y</code> angegeben ist.</simpara>
+                    <simpara>Specifies the sound file to be played for the
+                    warning signal when <replaceable>y</replaceable> is
+                    set.</simpara>
                   </listitem>
                 </varlistentry>
               </variablelist></para>
@@ -3513,115 +3517,195 @@ host=widgets.biz</programlisting></para>
         </varlistentry>
 
         <varlistentry>
-          <term><code>n</code></term>
+          <term><code>j</code></term>
 
           <listitem>
-            <simpara>Verhindert, dass zu Priorität n+101 übergegangen wird
-            (<code>n</code>: aktuelle Priorität), falls alle Kanäle als
-            besetzt erachtet werden.</simpara>
+            <simpara>Turns priority jumping on (<emphasis>i.e.</emphasis>, the
+            call jumps to priority <replaceable>n</replaceable>+101 (where n
+            is the current priority) if all the channels respond
+            busy).</simpara>
 
-            <simpara>Ein Anruf kann auch geparkt werden, statt übermittelt zu
-            werden (was mit <code>t</code> oder <code>T</code>-Flag der Fall
-            ist). Anrufe werden gewöhnlich geparkt, indem man sie der
-            Extension 700 übermittelt, aber dieses Verhalten ist in
+            <simpara>A call may be parked instead of transferred Ein Anruf
+            kann auch geparkt werden, statt übermittelt zu werden (was mit
+            <code>t</code> oder <code>T</code>-Flag der Fall ist). Anrufe
+            werden gewöhnlich geparkt, indem man sie der Extension 700
+            übermittelt, aber dieses Verhalten ist in
             <filename>features.conf</filename> konfigurierbar.</simpara>
 
-            <para>Mit dem Enden der <code>Dial()</code>-Anwendung werden die
-            folgenden Variablen gesetzt:<variablelist termlength="13">
-                <varlistentry>
-                  <term><code>DIALEDTIME</code></term>
-
-                  <listitem>
-                    <simpara>Die gesamte Zeit, die von der Ausführung der
-                    <code>Dial()</code>-Anwendung an bis zu ihrer Beendigung
-                    verstrichen ist.</simpara>
-                  </listitem>
-                </varlistentry>
-
-                <varlistentry>
-                  <term><code>ANSWEREDTIME</code></term>
-
-                  <listitem>
-                    <simpara>Die gesamte Zeit, die während des Anrufs
-                    vergangen ist.</simpara>
-                  </listitem>
-                </varlistentry>
-
-                <varlistentry>
-                  <term><code>DIALSTATUS</code></term>
-
-                  <listitem>
-                    <para>Der Status des Anrufs, ausgedrückt durch einen der
-                    folgenden Werte:<variablelist termlength="13">
-                        <varlistentry>
-                          <term><code>CHANUNAVAIL</code></term>
-
-                          <listitem>
-                            <simpara>Der Channel ist nicht verfügbar.</simpara>
-                          </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                          <term><code>CONGESTION</code></term>
-
-                          <listitem>
-                            <simpara>Der Channel hat ein Stau-Signal
-                            zurückgeliefert, was gewöhnlich die Unfähigkeit der
-                            Fertigstellung der Verbindung
-                            kennzeichnet.</simpara>
-                          </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                          <term><code>NOANSWER</code></term>
-
-                          <listitem>
-                            <simpara>Der Channel hat in der durch die
-                            Klingel-Timeout-Option gesetzten Frist nicht
-                            geantwortet.</simpara>
-                          </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                          <term><code>BUSY</code></term>
-
-                          <listitem>
-                            <simpara>Der angerufene Channel ist momentan
-                            belegt.</simpara>
-                          </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                          <term><code>ANSWER</code></term>
-
-                          <listitem>
-                            <simpara>Der Channel hat den Anruf
-                            beantwortet.</simpara>
-                          </listitem>
-                        </varlistentry>
-
-                        <varlistentry>
-                          <term><code>CANCEL</code></term>
-
-                          <listitem>
-                            <simpara>Der Anruf wurde abgebrochen.</simpara>
-                          </listitem>
-                        </varlistentry>
-                      </variablelist></para>
-                  </listitem>
-                </varlistentry>
-              </variablelist></para>
+            <para></para>
           </listitem>
         </varlistentry>
       </variablelist></para>
 
-    <programlisting>; eine Nummer auf Zap-Channel 2 wählen, max. 10 Sekunden klingeln:
+    <variablelist>
+      <varlistentry>
+        <term>n</term>
+
+        <listitem>
+          <para>Privacy Manager setting. Caller introductions are not to be
+          saved in the priv-callerintros directory.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <variablelist>
+      <varlistentry>
+        <term>N</term>
+
+        <listitem>
+          <para>Privacy Manager setting. Calls are not screened if caller ID
+          information is provided.</para>
+
+          <para>Mit dem Enden der <code>Dial()</code>-Anwendung werden die
+          folgenden Variablen gesetzt:<variablelist termlength="13">
+              <varlistentry>
+                <term><code>DIALEDTIME</code></term>
+
+                <listitem>
+                  <simpara>Die gesamte Zeit, die von der Ausführung der
+                  <code>Dial()</code>-Anwendung an bis zu ihrer Beendigung
+                  verstrichen ist.</simpara>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><code>ANSWEREDTIME</code></term>
+
+                <listitem>
+                  <simpara>Die gesamte Zeit, die während des Anrufs vergangen
+                  ist.</simpara>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><code>DIALSTATUS</code></term>
+
+                <listitem>
+                  <para>Der Status des Anrufs, ausgedrückt durch einen der
+                  folgenden Werte:<variablelist termlength="13">
+                      <varlistentry>
+                        <term><code>CHANUNAVAIL</code></term>
+
+                        <listitem>
+                          <simpara>Der Channel ist nicht verfügbar.</simpara>
+                        </listitem>
+                      </varlistentry>
+
+                      <varlistentry>
+                        <term><code>CONGESTION</code></term>
+
+                        <listitem>
+                          <simpara>Der Channel hat ein Stau-Signal
+                          zurückgeliefert, was gewöhnlich die Unfähigkeit der
+                          Fertigstellung der Verbindung
+                          kennzeichnet.</simpara>
+                        </listitem>
+                      </varlistentry>
+
+                      <varlistentry>
+                        <term><code>NOANSWER</code></term>
+
+                        <listitem>
+                          <simpara>Der Channel hat in der durch die
+                          Klingel-Timeout-Option gesetzten Frist nicht
+                          geantwortet.</simpara>
+                        </listitem>
+                      </varlistentry>
+
+                      <varlistentry>
+                        <term><code>BUSY</code></term>
+
+                        <listitem>
+                          <simpara>Der angerufene Channel ist momentan
+                          belegt.</simpara>
+                        </listitem>
+                      </varlistentry>
+
+                      <varlistentry>
+                        <term><code>ANSWER</code></term>
+
+                        <listitem>
+                          <simpara>Der Channel hat den Anruf
+                          beantwortet.</simpara>
+                        </listitem>
+                      </varlistentry>
+
+                      <varlistentry>
+                        <term><code>CANCEL</code></term>
+
+                        <listitem>
+                          <simpara>Der Anruf wurde abgebrochen.</simpara>
+                        </listitem>
+                      </varlistentry>
+                    </variablelist></para>
+                </listitem>
+              </varlistentry>
+            </variablelist></para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <simpara>When Dial() completes, the following variables are set:</simpara>
+
+    <variablelist>
+      <varlistentry>
+        <term>DIALEDTIME</term>
+
+        <listitem>
+          <para>The total elapsed time from the time the Dial() command is
+          executed until its completion.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ANSWEREDTIME</term>
+
+        <listitem>
+          <para>The time elapsed during conversation.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>NOANSWER</term>
+
+        <listitem>
+          <para>The channel was not answered before the ring timeout had
+          expired.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>BUSY</term>
+
+        <listitem>
+          <para>The called channel is currently busy.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>ANSWER</term>
+
+        <listitem>
+          <para>The called channel was answered.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>CANCEL</term>
+
+        <listitem>
+          <para>The call was interrupted before it could be completed.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <programlisting>; dial a number on Zap channel 2, let it ring a maximum of 10 seconds:
 exten =&gt; 123,1,Dial(Zap/2/1234567,10,tTm)
-; sonst weiter im Dialplan:
-exten =&gt; 123,n,Playback(tut-uns-leid)
+; otherwise proceed in the dialplan:
+exten =&gt; 123,n,Playback(sorry)
 exten =&gt; 123,n,Hangup()
 
-; über IAX die Extension 500 auf dem Host widgets.biz wählen:
+; dial extension 500 over IAX on host widgets.biz:
 exten =&gt; 123,1,Dial(IAX/username:password@widgets.biz/500)</programlisting>
 
     <note>
