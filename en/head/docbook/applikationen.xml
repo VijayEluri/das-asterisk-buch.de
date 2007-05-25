@@ -1001,7 +1001,7 @@ Options:
 
     <synopsis><command>AGI(<replaceable>program</replaceable>[,<replaceable>arguments</replaceable>])</command></synopsis>
 
-    <simpara>(Analog auch <command><code>EAGI()</code></command>,
+    <simpara>(Same as <command><code>EAGI()</code></command>,
     <command><code>FastAGI()</code></command>,
     <code><command>DeadAGI()</command></code>)</simpara>
 
@@ -3645,7 +3645,8 @@ host=widgets.biz</programlisting></para>
       </varlistentry>
     </variablelist>
 
-    <simpara>When Dial() completes, the following variables are set:</simpara>
+    <simpara>When <command>Dial()</command> completes, the following variables
+    are set:</simpara>
 
     <variablelist>
       <varlistentry>
@@ -3894,23 +3895,22 @@ application will be put into that group (as in Set(GROUP()=...).
       <secondary><code>Dictate()</code></secondary>
     </indexterm>
 
-    <simpara>Virtuelles Diktiergerät</simpara>
+    <simpara>Virtual dictation machine</simpara>
 
-    <synopsis>Dictate([<replaceable>Verzeichnis</replaceable>[,<replaceable>Dateiname</replaceable>]])</synopsis>
+    <synopsis><command>Dictate([<replaceable>path</replaceable>[,<replaceable>filename</replaceable>]])</command></synopsis>
 
-    <simpara>Startet ein virtuelles Diktiergerät. Mit den Parametern lassen
-    sich das Verzeichnis für die Aufzeichnungen (Default:
-    <filename>/var/spool/asterisk/dictate/</filename>) und der Dateiname
-    (numerisch!) bestimmen. Aufgezeichnet wird im Format
-    <code>raw</code>.</simpara>
+    <simpara>Starts a virtual dictation machine. The options define the base
+    directory (default: <filename>/var/spool/asterisk/dictate/</filename>) and
+    (numerical) filename. The files are recorded in <code>raw</code>
+    format.</simpara>
 
-    <para>Der User kann das Diktiergerät mit folgenden Tasten
-    steuern:<variablelist termlength="3">
+    <para>The user can control dictation with these keys:<variablelist
+        termlength="3">
         <varlistentry>
           <term><code>0</code></term>
 
           <listitem>
-            <simpara>Hilfe</simpara>
+            <simpara>Help</simpara>
           </listitem>
         </varlistentry>
 
@@ -3918,8 +3918,7 @@ application will be put into that group (as in Set(GROUP()=...).
           <term><code>1</code></term>
 
           <listitem>
-            <simpara>Schaltet zwischen Aufnahme- und Abspielmodus hin und
-            her.</simpara>
+            <simpara>Switches between playback and record modes</simpara>
           </listitem>
         </varlistentry>
 
@@ -3927,7 +3926,7 @@ application will be put into that group (as in Set(GROUP()=...).
           <term><code>*</code></term>
 
           <listitem>
-            <simpara>Pause / weiter</simpara>
+            <simpara>Pause / continue</simpara>
           </listitem>
         </varlistentry>
 
@@ -3935,16 +3934,16 @@ application will be put into that group (as in Set(GROUP()=...).
           <term><code>#</code></term>
 
           <listitem>
-            <simpara>Datei wählen / neuen Dateinamen eingeben (z.B.
-            <code>1234#</code>)</simpara>
+            <simpara>Select file / enter new file name
+            (<emphasis>e.g.</emphasis> <code>1234#</code>)</simpara>
           </listitem>
         </varlistentry>
-      </variablelist>Im Abspielmodus:<variablelist termlength="3">
+      </variablelist>In playback mode:<variablelist termlength="3">
         <varlistentry>
           <term><code>2</code></term>
 
           <listitem>
-            <simpara>Schaltet die Abspielgeschwindigkeit um (1x, 2x, 3x,
+            <simpara>Switches the playback speed by increments (1x, 2x, 3x,
             4x)</simpara>
           </listitem>
         </varlistentry>
@@ -3953,7 +3952,7 @@ application will be put into that group (as in Set(GROUP()=...).
           <term><code>7</code></term>
 
           <listitem>
-            <simpara>Ein Stück zurück springen</simpara>
+            <simpara>Jumps back a set time interval</simpara>
           </listitem>
         </varlistentry>
 
@@ -3961,25 +3960,25 @@ application will be put into that group (as in Set(GROUP()=...).
           <term><code>8</code></term>
 
           <listitem>
-            <simpara>Ein Stück weiter springen</simpara>
+            <simpara>Jumps forward a set time interval</simpara>
           </listitem>
         </varlistentry>
-      </variablelist>Im Aufnahmemodus:<variablelist termlength="3">
+      </variablelist>In record mode:<variablelist termlength="3">
         <varlistentry>
           <term><code>8</code></term>
 
           <listitem>
-            <simpara>Aufnahme löschen und neu anfangen</simpara>
+            <simpara>Erase recording and start over</simpara>
           </listitem>
         </varlistentry>
       </variablelist></para>
 
-    <programlisting>; Diktiergerät starten:
+    <programlisting>; Take dictation:
 exten =&gt; 123,1,Dictate()</programlisting>
 
-    <simpara>Um jedem User sein eigenes Diktiergerät zu geben, könnte man z.B.
-    als Pfad <filename>/var/spool/asterisk/dictate/${EXTEN}</filename>
-    angeben.</simpara>
+    <simpara>To provide very system user her own dictation machine, you might
+    set the path to
+    <filename>/var/spool/asterisk/dictate/${EXTEN}</filename>.</simpara>
 
     <note>
       <formalpara>
@@ -4021,32 +4020,28 @@ Start dictation machine using optional base dir for files.</screen></para>
       <secondary><code>Directory()</code></secondary>
     </indexterm>
 
-    <simpara>Stellt ein Verzeichnis anwählbarer (Voicemail-)Extensions bereit
-    (internes Telefonbuch, Dial-by-name, siehe <xref
+    <simpara>Provides a directory of users or user voicemail box numbers (for
+    more on system directories and Dial-by-Name, see <xref
     linkend="voicemail-telefonbuch" />).</simpara>
 
-    <synopsis>Directory(<replaceable>VM-Context</replaceable>[,<replaceable>Wähl-Context</replaceable>[,<replaceable>Optionen</replaceable>]])</synopsis>
+    <synopsis><command>Directory(<replaceable>voicemail-context</replaceable>[,<replaceable>dialplan-context</replaceable>[,<replaceable>options</replaceable>]])</command></synopsis>
 
-    <simpara>Liefert Benutzern ein Verzeichnis mit Extensionen, aus dem anhand
-    des Namens ausgewählt werden kann. Die Liste von Namen und Extensionen
-    findet sich in <filename>voicemail.conf</filename>. Der
-    <code>VM-Context</code> muss angegeben werden, er bestimmt den zu
-    benutzenden Context aus <filename>voicemail.conf</filename>.</simpara>
+    <simpara>Lets callers search a directory by the user's name. The list of
+    names and extensions is configured in <filename>voicemail.conf</filename>.
+    The <emphasis>voicemail-context</emphasis> parameter is
+    required.</simpara>
 
-    <simpara>Der <code>Wähl-Context</code> bestimmt den zum Anrufen der
-    Benutzer zu verwendenden Context. Falls er nicht angegeben ist, wird
-    <code>VM-Context</code> angenommen. Momentan ist die einzige mögliche
-    Option, die im <code>Optionen</code>-Parameter Verwendung finden kann,
-    <code>f</code> (wie first name), die das Verzeichnis veranlasst, die
-    Eingabe anhand des Vornamens statt des Nachnamens abzugleichen.</simpara>
+    <simpara>The dialplan-context defines the context to be used when dialing
+    the user's extension. If this is not provided, voicemail-context is
+    assumed. The only option currently accepted is <code>f</code>, which
+    allows dialing by first name.</simpara>
 
-    <simpara>Gibt der Benutzer <code>0</code> (Null) ein, und es existiert
-    eine Extension o (kleiner Buchstabe o) im aktuellen Context, geht die
-    Steuerung des Anrufs an diese Extension über. Durch Drücken der Taste *
-    wird analog dazu zur <code>a</code>-Extension übergegangen. Diese
-    Verhalten ähnelt dem von <code>Voicemail()</code>.</simpara>
+    <simpara>If the user dials "0" (zero) and the extension <code>o</code>
+    exists in the current context, the call goes to this extension. Likewise,
+    pressing "*" sends the call to the extension a, if it exists. This
+    behavior is similar to that found in <code>Voicemail()</code>.</simpara>
 
-    <simpara>Gibt 0 zurück, es sei denn, der Teilnehmer legt auf.</simpara>
+    <simpara>Returns 0 unless the caller hangs up.</simpara>
 
     <programlisting>exten =&gt; *,1,Directory(default,incoming)
 exten =&gt; #,1,Directory(default,incoming,f)</programlisting>
@@ -4109,62 +4104,57 @@ received and the extension to jump to exists:
       <secondary><code>DISA()</code></secondary>
     </indexterm>
 
-    <simpara>Direct Inward System Access erlaubt auswärtigen Anrufern Anrufe
-    mit internem System-Wählton.</simpara>
+    <simpara>Direct Inward System Access lets outside callers enter the system
+    and provides them with an internal dial tone.</simpara>
 
-    <synopsis>DISA(<replaceable>Passwort</replaceable>[,<replaceable>Context</replaceable>[,<replaceable>CallerID</replaceable>[,<replaceable>Mailbox</replaceable>[@<replaceable>VM-Context</replaceable>]]]])</synopsis>
+    <synopsis>DISA(<replaceable>password</replaceable>[,<replaceable>context</replaceable>[,<replaceable>callerid</replaceable>[,<replaceable>mailbox</replaceable>[@<replaceable>voicemail-context</replaceable>]]]])</synopsis>
 
-    <synopsis>DISA(<replaceable>Passwort-Datei</replaceable>[,<replaceable>CallerID</replaceable>[,<replaceable>Mailbox</replaceable>[@<replaceable>VM-Context</replaceable>]]])</synopsis>
+    <synopsis>DISA(<replaceable>password-file</replaceable>[,<replaceable>callerid</replaceable>[,<replaceable>mailbox</replaceable>[@<replaceable>voicemail-context</replaceable>]]])</synopsis>
 
-    <simpara>Erlaubt Anrufern von außen einen internen System-Wählton zu
-    erhalten und entsprechend Anrufe zu tätigen, als würden diese von
-    innerhalb des Switches aus getätigt. Dem Teilnehmer wird ein Wählton zur
-    Verfügung gestellt, nach dem er einen Zugangskode eingeben muss gefolgt
-    von der Rautetaste (<code>#</code>). Ist der Zugangskode korrekt, erhält
-    er einen System-Wählton, auf dem er einen Anruf tätigen kann.</simpara>
+    <simpara>Provides an internal dial tone to outside callers such that they
+    can make calls as though calling from an internal extension. Upon hearing
+    the dial tone, an access code must be entered followed by the "#" key. If
+    it is correct, the caller hears another dial tone; this is the system dial
+    tone and the caller can now dial and initiate calls.</simpara>
 
     <caution>
-      <para>Diese Art von Zugang kann ein ernstes Sicherheitsrisiko sein und
-      sollte sorgfältig überlegt werden, damit die Sicherheit Ihres Systems
-      nicht gefährdet ist!</para>
+      <para>This type of access represents a serious and real security risk
+      and should be planned and considered carefully before use, if it must be
+      used at all!</para>
     </caution>
 
-    <simpara>Der <code>Passwort</code>-Parameter ist ein numerischer
-    Zugangskode, den der Benutzer eingeben muss, um Anrufe tätigen zu können.
-    Mit dieser Syntax werden alle Benutzer dieser Extension das gleiche
-    Passwort benutzen. Möchten Sie Benutzern erlauben, <code>DISA()</code>
-    ohne Passwort zu verwenden, übergeben Sie die Zeichenkette
-    <code>no-password</code> an der Stelle des Passwortes.</simpara>
+    <simpara>The <replaceable>password</replaceable> option is a numeric
+    access code that must be entered in order for the caller to be able to
+    make calls out. Following this particular syntax, all the users that call
+    in will use the same access code. If you want to allow unsecured access,
+    enter the string "<code>no-password</code>" instead of an actual
+    password.</simpara>
 
-    <simpara>Der <code>Context</code>-Parameter spezifiziert den Context, in
-    dem sich ein Benutzer einwählen wird. Wird kein Context spezifiziert,
-    nimmt die <code>DISA()</code>-Anwendung den Context <code>disa</code>
-    an.</simpara>
+    <simpara>The <replaceable>context</replaceable> option specifies the
+    context in which the initiated call will be placed. If it is not provided,
+    <code><command>DISA()</command></code> assumes the context named
+    <code>disa</code>.</simpara>
 
-    <simpara>Die <code>CallerID</code> ist die Mailbox-Nummer (und optional
-    Voicemail-Context <code>VM-Context</code>) einer Voicemailbox. Der Anrufer
-    wird einen so genannten <quote>stuttered dial-tone</quote> (das ist ein
-    regelmäßig kurz unterbrochener, <quote>stotternder</quote> Wählton) hören,
-    falls neue Nachrichten in der angegebenen Voicemailbox
-    vorliegen.</simpara>
+    <simpara>The <emphasis>callerid</emphasis> option sets the mailbox number
+    (and the optional <emphasis>voicemail-context</emphasis>) of a mailbox. If
+    the mailbox contains new messages the caller will hear a stuttered dial
+    tone to indicate this.</simpara>
 
-    <simpara>Außerdem können Sie eine alternative Syntax benutzen und den
-    Namen einer global verfügbaren Passwortdatei statt der Parameter
-    <code>Passwort</code> und <code>Context</code> übergeben. In jeder Zeile
-    kann diese Datei entweder einen Zugangskode oder eine Kombination aus
-    Zugangskode und Context, getrennt durch das Zeichen <code>|</code>,
-    enthalten. Ist kein Context mit angegeben, wird standardmäßig der Context
-    <code>disa</code> verwendet.</simpara>
+    <simpara>Alternatively, you may use password-file to define multiple
+    access passwords. Each line of this file can contain either an access code
+    or a combination of an access code and a context, separated by the "|"
+    (pipe) character. If no context is specified, <code>disa</code> is
+    assumed.</simpara>
 
-    <simpara>Ist das Einloggen des Teilnehmers erfolgreich, wird die Anwendung
-    die gewählte Nummer in dem spezifizierten Context
-    interpretieren.</simpara>
+    <simpara>If the caller successfully authenticates with a valid access
+    code, <command>DISA()</command> will start the call in the specified
+    context.</simpara>
 
-    <programlisting>; Anrufern von außen erlauben, 0800er-Nummern zu wählen, sofern sie
-; das Passwort (1234) wissen. Dabei ihre Caller-ID so setzen, dass
-; es aussieht, als riefen sie von innerhalb der Firma an:
+    <programlisting>; Allow outside callers to dial 800 numbers, provided they know the
+; password (1234). Set the caller ID so that the call appears to be
+; coming from inside the company:
 [incoming]
-exten =&gt; 123,1,DISA(1234,disa,Apfelmus GmbH &lt;(0261) 1234567&gt;)
+exten =&gt; 123,1,DISA(1234,disa,Widgets, Inc &lt;(212) 5553412&gt;)
 [disa]
 exten =&gt; _0800XXXXXXXX,1,Dial(Zap/4/${EXTEN})</programlisting>
 
@@ -4255,17 +4245,17 @@ to 'NOANSWER', the DISA application will not answer initially.</screen></para>
       <secondary><code>DumpChan()</code></secondary>
     </indexterm>
 
-    <simpara>Gibt Informationen über den anrufenden Channel auf der Konsole
-    aus.</simpara>
+    <simpara>Prints information about the calling channel on the
+    console.</simpara>
 
-    <synopsis>DumpChan([<replaceable>min_verbose_level</replaceable>])</synopsis>
+    <synopsis><command>DumpChan([<replaceable>min_verbose_level</replaceable>])</command></synopsis>
 
-    <simpara>Zeigt Informationen über den anrufenden Channel an und auch eine
-    Auflistung aller Channelvariablen. Falls <code>min_verbose_level</code>
-    angegeben ist, werden Ausgaben nur im Falle eines aktuell gleich hoch oder
-    höher gesetzten Verbosity-Levels angezeigt.</simpara>
+    <simpara>Shows information about the calling channel and the contents of
+    all the channel variables. If <replaceable>min_verbose_level</replaceable>
+    is set, only messages at the same or higher verbosity level are
+    printed.</simpara>
 
-    <simpara>Gibt stets 0 zurück.</simpara>
+    <simpara>Returns 0.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,DumpChan()
@@ -4313,41 +4303,45 @@ or greater.</screen></para>
       <secondary><code>EAGI()</code></secondary>
     </indexterm>
 
-    <simpara>Ruft eine AGI-konforme Anwendung auf</simpara>
+    <simpara>Calls an AGI-compliant application.</simpara>
 
-    <synopsis>EAGI(<replaceable>Programm</replaceable>[,<replaceable>Argumente</replaceable>])</synopsis>
+    <synopsis><command>EAGI(<replaceable>program</replaceable>[,<replaceable>arguments</replaceable>])</command></synopsis>
 
-    <simpara>(Analog auch <code>AGI()</code>, <code>FastAGI()</code>,
-    <code>DeadAGI()</code>)</simpara>
+    <simpara>(Same as <code><command>AGI()</command></code>,
+    <command><code>FastAGI()</code></command>,
+    <command><code>DeadAGI()</code></command>)</simpara>
 
-    <simpara>Führt ein Asterisk-Gateway-Interface-kompatibles Programm
-    <code>Programm</code> auf dem aktuellen Channel aus. Solche externen
-    Programme (die in fast jeder beliebigen Sprache vorliegen können - z.B.
-    Perl, PHP, ...), können den Telefonkanal steuern, Audiodateien abspielen,
-    DTMF-Ziffern auslesen und so weiter. Asterisk kommuniziert dabei mit dem
-    AGI-Program über <code>STDIN</code> und <code>STDOUT</code>. Die
-    spezifizierten <code>Argumente</code> werden an das AGI-Programm
-    durchgereicht.</simpara>
+    <simpara>Runs an Asterisk Gateway Interface compliant program called
+    <code>program</code> on the current channel. AGI scripts or programs can
+    be implemented in almost any conceivable language (e.g. Perl, PHP) and may
+    be used to manipulate the channel, play sound files, interpret DTMF tones,
+    and so on. Asterisk communicates with the AGI program over
+    <filename>stdin</filename> and <filename>stdout</filename>. The arguments
+    are passed directly to the AGI program at execution time.</simpara>
 
-    <simpara>Das <code>Programm</code> muss im zugrundeliegenden Dateisystem
-    als executable (ausführbar) gekennzeichnet sein. Der Pfad zum Programm ist
-    relativ zum Asterisk-AGI-Verzeichnis, standardmäßig
-    <filename>/var/lib/asterisk/agi-bin/</filename>.</simpara>
+    <simpara>The AGI program must be flagged as executable in the filesystem.
+    The path is relative to the Asterisk AGI directory, which is at
+    <filename>/var/lib/asterisk/agi-bin/</filename> by default.</simpara>
 
-    <simpara>EAGI() bietet im Gegensatz zu den anderen AGI() Befehlen Zugriff
-    auf den eingehenden Audiostream. Das eingehende Audio-Signal kann dann
-    unter File Descriptor 3<footnote>
-        <para>zu Erinnerung: 0: stdin, 1: stdout, 2:stderr. 3 ist ein frei
-        definierter File descriptor</para>
-      </footnote> eingelesen werden.</simpara>
+    <simpara>To run AGI programs on inactive channels (as in the case of an
+    <code>h</code>-extension, where the channel is on-hook), used
+    <code><command>DeadAGI()</command></code> instead. To run AGI programs on
+    another server in the network, use
+    <code><command>FastAGI()</command></code>.</simpara>
 
-    <simpara>Liefert -1 mit dem Auflegen oder falls ein Auflegen durch das
-    Programm verlangt wurde oder 0, falls nicht aufgelegt werden
-    soll.</simpara>
+    <simpara>Use <code><command>EAGI()</command></code> when you need access
+    to the incoming audio stream. The incoming audio stream is provided on
+    file descriptor 3.</simpara>
 
-    <programlisting>; mein AGI-Skript aufrufen:
-exten =&gt; 123,1,AGI(agi-skript)
-exten =&gt; 123,n,EAGI(eagi-skript)</programlisting>
+    <simpara><footnote>
+        <para>a reminder: 0: stdin, 1: stdout, 2:stderr. File descriptor 3 is
+        freely assignable.</para>
+      </footnote>Returns -1 on hang-up or if the AGI program requests a
+    hang-up; returns 0 if no hang-up is requested.</simpara>
+
+    <programlisting>; call my AGI script:
+exten =&gt; 123,1,AGI(agi-script)
+exten =&gt; 123,n,EAGI(eagi-script)</programlisting>
 
     <note>
       <formalpara>
@@ -4420,17 +4414,17 @@ on file descriptor 3
       <secondary><code>Echo()</code></secondary>
     </indexterm>
 
-    <simpara>Wiederholt inwärtiges Audio für den Anrufer.</simpara>
+    <simpara>Repeats incoming audio to the caller.</simpara>
 
-    <synopsis>Echo()</synopsis>
+    <synopsis><command>Echo()</command></synopsis>
 
-    <simpara>Gibt auf dem Channel eingehendes Audio direkt wieder auf diesem
-    Channel aus. Diese Anwendung findet häufig zum Testen der Verzögerung
-    (Latenz) und Sprachqualität einer VoIP-Verbindung Verwendung. Der Anrufer
-    kann zum Beenden die <code>#</code>-Taste drücken.</simpara>
+    <simpara>Takes any incoming audio and returns it on the same channel. This
+    application is used primarily for troubleshooting and testing of delay
+    (latency) and sound quality on VoIP connections. The caller can end the
+    call by pressing "#".</simpara>
 
-    <simpara>Gibt 0 zurück, falls der Benutzer durch die <code>#</code>-Taste
-    beendet, oder -1, falls der Benutzer auflegt.</simpara>
+    <simpara>Returns 0 if the caller ends the call with <code>"#"</code> or -1
+    if the caller hangs up.</simpara>
 
     <programlisting>exten =&gt; 123,1,Echo()
 exten =&gt; 123,n,Playback(vm-goodbye)</programlisting>
@@ -4484,13 +4478,14 @@ application will exit.</screen></para>
       <secondary><code>EndWhile()</code></secondary>
     </indexterm>
 
-    <simpara>Beendet eine While-Schleife.</simpara>
+    <simpara>Ends a while loop.</simpara>
 
-    <synopsis>EndWhile()</synopsis>
+    <synopsis><command>EndWhile()</command></synopsis>
 
-    <simpara>Kehrt zur vorangehend aufgerufenen <code>While()</code>-Anwendung
-    zurück. Für eine vollständige Beschreibung zur Benutzung einer
-    While-Schleife siehe <xref linkend="applikationen-while" />.</simpara>
+    <simpara>Returns to the previously called
+    <command><code>While()</code></command> statement. For a complete
+    description of while loops in Asterisk, see <xref
+    linkend="applikationen-while" />.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Set(i=1)
@@ -4545,24 +4540,24 @@ Return to the previous called While</screen></para>
 
     <simpara>Führt eine Asterisk-Anwendung dynamisch aus.</simpara>
 
-    <synopsis>Exec(<replaceable>Applikationsname</replaceable>(<replaceable>Argumente</replaceable>))</synopsis>
+    <synopsis>Exec(<replaceable>application</replaceable>(<replaceable>arguments</replaceable>))</synopsis>
 
-    <simpara>Erlaubt den Aufruf einer beliebigen Anwendung, selbst wenn er
-    nicht fest im Wählplan einprogrammiert ist. Liefert den Wert zurück, den
-    diese Asterisk-Anwendung zurückliefert, oder -2, wenn die aufgerufene
-    Anwendung nicht gefunden werden kann. Die <code>Argumente</code> werden an
-    die aufgerufene Anwendung durchgereicht.</simpara>
+    <simpara>Allows the execution of an arbitrary dialplan application, even
+    if this application is not hardcoded into the dialplan. Returns the value
+    returned by the application or -2 if the application cannot be found. The
+    <replaceable>arguments</replaceable> are passed to the called
+    application.</simpara>
 
-    <simpara>Diese Anwendung erlaubt den dynamischen Aufruf von Anwendungen,
-    die aus einer Datenbank oder externen Quelle gelesen werden.</simpara>
+    <simpara>This applications enables the calling of applications out of a
+    database or other external source.</simpara>
 
     <programlisting>exten =&gt; 123,1,Set(app=SayDigits(12345))
 exten =&gt; 123,2,Exec(${app})</programlisting>
 
     <important>
-      <para>Bei einem negativen Rückgabewert wird die Ausführung des Dialplans
-      beendet. Will man das nicht, verwendet man
-      <code>TryExec()</code>.</para>
+      <para>A negative return value will mean that execution of the dialplan
+      ends. If this is not desired, <code>use
+      <command>TryExec()</command></code>.</para>
     </important>
 
     <note>
@@ -4622,20 +4617,20 @@ Exec will terminate the dialplan.
       <secondary><code>ExecIf()</code></secondary>
     </indexterm>
 
-    <simpara>Führt eine Asterisk-Anwendung unter bestimmten Bedingungen
-    aus.</simpara>
+    <simpara>Executes an Asterisk application under specific
+    conditions.</simpara>
 
-    <synopsis>ExecIf(<replaceable>Ausdruck</replaceable>,<replaceable>Applikation</replaceable>,<replaceable>Argumente</replaceable>)</synopsis>
+    <synopsis><command>ExecIf(<replaceable>expression</replaceable>,<replaceable>application</replaceable>,<replaceable>arguments</replaceable>)</command></synopsis>
 
-    <simpara>Ist <code>Ausdruck</code> wahr, wird die angegebene
-    <code>Applikation</code> mit den Parametern <code>Argumente</code>
-    ausgeführt, und deren Ergebnis zurückgeliefert. Siehe
-    <filename>doc/README.variables</filename> (1.2) /
-    <filename>doc/channelvariables.txt</filename> (1.4) für weiterführende
-    Informationen über Standard-Asterisk-Ausdrücke.</simpara>
+    <simpara>If <replaceable>expression</replaceable> evaluates to
+    <code>true</code>, the defined <replaceable>application</replaceable> is
+    executed with the provided <replaceable>arguments</replaceable>, and the
+    return value is returned. See <filename>doc/README.variables</filename>
+    (1.2) / <filename>doc/channelvariables.txt</filename> (1.4) for more
+    information about standard expressions for Asterisk.</simpara>
 
-    <simpara>Ist der <code>Ausdruck</code> nicht wahr (also false), wird die
-    Ausführung mit der nächsten Priorität fortgesetzt.</simpara>
+    <simpara>If expression evaluates to <code>false</code>, execution moves to
+    the next priority in the extension.</simpara>
 
     <programlisting>exten =&gt; 123,1,ExecIf($[${CALLERID(num)} = 101],SayDigits,123)
 exten =&gt; 123,n,SayDigits(678)</programlisting>
@@ -4684,18 +4679,17 @@ will return a non-zero value.</screen></para>
       <secondary><code>ExecIfTime()</code></secondary>
     </indexterm>
 
-    <simpara>Führt eine Applikation unter bestimmten zeitlichen Bedingungen
-    aus.</simpara>
+    <simpara>Executes an application based on the current time.</simpara>
 
-    <synopsis>ExecIf(<replaceable>Uhrzeit</replaceable>|<replaceable>Wochentag</replaceable>|<replaceable>Monatstag</replaceable>|<replaceable>Monat</replaceable>?<replaceable>Applikation</replaceable>[,<replaceable>Argumente</replaceable>])</synopsis>
+    <synopsis>ExecIf(<replaceable>time</replaceable>|<replaceable>dayofweek</replaceable>|<replaceable>dayofmonth</replaceable>|<replaceable>month</replaceable>?<replaceable>application</replaceable>[,<replaceable>arguments</replaceable>])</synopsis>
 
-    <simpara>Ist das angegebene Zeitmuster zutreffend, wird die angegebene
-    <code>Applikation</code> mit den Parametern <code>Argumente</code>
-    ausgeführt, und deren Ergebnis zurückgeliefert. Die Uhrzeit wird wie bei
-    <code>include</code> (siehe <xref linkend="include-zeitgesteuert" />),
-    <code>GotoIfTime()</code> (siehe <xref
-    linkend="applikationen-gotoiftime" />) oder <code>IFTIME()</code> (siehe
-    <xref linkend="funktionen-iftime" />) angegeben.</simpara>
+    <simpara>If the Ist das angegebene Zeitmuster zutreffend, wird die
+    angegebene <code>Applikation</code> mit den Parametern
+    <code>Argumente</code> ausgeführt, und deren Ergebnis zurückgeliefert. Die
+    Uhrzeit wird wie bei <code>include</code> (siehe <xref
+    linkend="include-zeitgesteuert" />), <code>GotoIfTime()</code> (siehe
+    <xref linkend="applikationen-gotoiftime" />) oder <code>IFTIME()</code>
+    (siehe <xref linkend="funktionen-iftime" />) angegeben.</simpara>
 
     <simpara>Trifft der <code>Ausdruck</code> nicht zu, wird die Ausführung
     mit der nächsten Priorität fortgesetzt.</simpara>
@@ -4795,7 +4789,7 @@ Exits a While loop, whether or not the conditional has been satisfied.</screen><
 
     <simpara>Einen Kanal belauschen und bei Bedarf reinflüstern.</simpara>
 
-    <synopsis>ExtenSpy(<replaceable>Extension</replaceable>[@<replaceable>Context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis>ExtenSpy(<replaceable>Extension</replaceable>[@<replaceable>context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
 
     <simpara><code>ExtenSpy()</code> kann auf Channels zu der angegebenen
     Extension geschaltet werden um das ein- und ausgehende Audio mitzuhören.
@@ -5346,9 +5340,9 @@ to properly setup zapata.conf for on-hook operations.</screen></para>
     </indexterm>
 
     <simpara>Springt zu einer bestimmten Priorität, Extension und einem
-    bestimmten Context (mit der Möglichkeit der Rückkehr).</simpara>
+    bestimmten context (mit der Möglichkeit der Rückkehr).</simpara>
 
-    <synopsis>Gosub([[<replaceable>Context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Priorität</replaceable>)</synopsis>
+    <synopsis>Gosub([[<replaceable>context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Priorität</replaceable>)</synopsis>
 
     <synopsis>Gosub(<replaceable>benannte_Priorität</replaceable>)</synopsis>
 
@@ -5472,22 +5466,22 @@ in the dialplan, to be returned to with a Return.</screen></para>
     </indexterm>
 
     <simpara>Springt zu einer bestimmten Priorität, Extension und einem
-    bestimmten Context.</simpara>
+    bestimmten context.</simpara>
 
-    <synopsis>Goto([[<replaceable>Context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Priorität</replaceable>)</synopsis>
+    <synopsis>Goto([[<replaceable>context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Priorität</replaceable>)</synopsis>
 
     <synopsis>Goto(<replaceable>benannte_Priorität</replaceable>)</synopsis>
 
     <simpara>Übergibt die Kontrolle des aktuellen Channels ohne Möglichkeit
     der Rückkehr an die spezifizierte Priorität und setzt optional Extension
-    und Context des Ziels.</simpara>
+    und context des Ziels.</simpara>
 
     <simpara>Optional können Sie die Anwendung dazu benutzen, zu der durch den
     Parameter <code>benannte_Priorität</code> angegebenen Priorität (also
     Priorität mit Label) zu gelangen. Benannte Prioritäten funktionieren
     ausschließlich in der aktuellen Extension.</simpara>
 
-    <simpara>Liefert immer 0 zurück, auch falls der gegebene Context, die geg.
+    <simpara>Liefert immer 0 zurück, auch falls der gegebene context, die geg.
     Extension oder Priorität nicht gültig sind.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
@@ -5570,7 +5564,7 @@ then the channel will continue at the next priority of the current extension.</s
         </listitem>
 
         <listitem>
-          <simpara>Context, Extension und Priorität, z.B.
+          <simpara>context, Extension und Priorität, z.B.
           <code>incoming,123,10</code></simpara>
         </listitem>
 
@@ -5632,7 +5626,7 @@ performed, but execution continues with the next priority in the dialplan.</scre
 
     <simpara>Verzweigt bedingt, abhängig von Zeit und Tag.</simpara>
 
-    <synopsis>GotoIfTime(<replaceable>Zeit</replaceable>,<replaceable>Wochentag</replaceable>,<replaceable>Monatstag</replaceable>,<replaceable>Monat</replaceable>?[[<replaceable>Context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Pri</replaceable>o)</synopsis>
+    <synopsis>GotoIfTime(<replaceable>Zeit</replaceable>,<replaceable>Wochentag</replaceable>,<replaceable>Monatstag</replaceable>,<replaceable>Monat</replaceable>?[[<replaceable>context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Pri</replaceable>o)</synopsis>
 
     <simpara>Verzweigt zu der angegebenen Priorität, falls die aktuelle Zeit
     in das angegebene Muster fällt. Jedes Element kann auch als * (für immer)
@@ -5681,12 +5675,12 @@ performed, but execution continues with the next priority in the dialplan.</scre
         </varlistentry>
       </variablelist></para>
 
-    <programlisting>; Während der Öffnungszeiten zum Context incoming-geoeffnet springen.
+    <programlisting>; Während der Öffnungszeiten zum context incoming-geoeffnet springen.
 ; Wir haben montags-freitags von 9 bis 18 Uhr geöffnet:
 exten =&gt; s,1,GotoIfTime(09:00-17:59,mon-fri,*,*?incoming-geoeffnet,s,1)
 ; außerdem samstags von 9 bis 12:
 exten =&gt; s,n,GotoIfTime(09:00-11:59,sat,*,*?incoming-geoeffnet,s,1)
-; Außerhalb der Öffnungszeiten zum Context incoming-geschlossen:
+; Außerhalb der Öffnungszeiten zum context incoming-geschlossen:
 exten =&gt; s,n,Goto(incoming-geschlossen,s,1)</programlisting>
 
     <note>
@@ -6101,15 +6095,15 @@ calls.</screen></para>
 
     <synopsis>Macro(<replaceable>macroname</replaceable>[,<replaceable>Arg1</replaceable>[,<replaceable>Arg2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
 
-    <simpara>Führt ein im Context
+    <simpara>Führt ein im context
     <code>macro-<replaceable>macroname</replaceable></code> definiertes Makro
-    aus, indem es zur <code>s</code>-Extension dieses Contextes springt und
+    aus, indem es zur <code>s</code>-Extension dieses contextes springt und
     nach der Ausführung des Makros zurückkehrt.</simpara>
 
-    <simpara>Die angerufene Extension, Context und Priorität sind innerhalb
+    <simpara>Die angerufene Extension, context und Priorität sind innerhalb
     des Makros in<code> ${MACRO_EXTEN}</code>, <code>${MACRO_CONTEXT}</code>
     und <code>${MACRO_PRIORITY}</code> verfügbar. Die Parameter
-    <code>Arg1</code>, <code>Arg2</code> ... werden im MakroContext zu
+    <code>Arg1</code>, <code>Arg2</code> ... werden im Makrocontext zu
     <code>${ARG1}</code>, <code>${ARG2}</code> usw.</simpara>
 
     <simpara><code>Macro()</code> liefert -1 zurück, falls irgendein Schritt
@@ -6196,18 +6190,18 @@ WARNING: Because of the way Macro is implemented (it executes the priorities
 
     <synopsis>MacroExclusive(<replaceable>macroname</replaceable>[,<replaceable>Arg1</replaceable>[,<replaceable>Arg2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
 
-    <simpara>Führt - wie <code>Macro()</code> - ein im Context
+    <simpara>Führt - wie <code>Macro()</code> - ein im context
     <code>macro-<replaceable>macroname</replaceable></code> definiertes Makro
     aus (und nur das eine!), indem es zur <code>s</code>-Extension dieses
-    Contextes springt und nach der Ausführung des Makros zurückkehrt. Wird das
+    contextes springt und nach der Ausführung des Makros zurückkehrt. Wird das
     Macro während es bereits läuft an einer anderen Stelle des Dialplanes noch
     einmal aufgerufen, so muss diese Instanz warten, bis das erste Macro
     fertig abgearbeitet ist.</simpara>
 
-    <simpara>Die angerufene Extension, Context und Priorität sind innerhalb
+    <simpara>Die angerufene Extension, context und Priorität sind innerhalb
     des Makros in <code>${MACRO_EXTEN}</code>, <code>${MACRO_CONTEXT}</code>
     und <code>${MACRO_PRIORITY}</code> verfügbar. Die Parameter
-    <code>Arg1</code>, <code>Arg2</code> ... werden im MakroContext zu
+    <code>Arg1</code>, <code>Arg2</code> ... werden im Makrocontext zu
     <code>${ARG1}</code>, <code>${ARG2}</code> usw.</simpara>
 
     <simpara><code>Macro()</code> liefert -1 zurück, falls irgendein Schritt
@@ -6362,33 +6356,33 @@ Arguments and return values as in application macro()</screen></para>
   </section>
 
   <section id="applikationen-mailboxexists">
-    <title><code>MailboxExists()</code></title>
+    <title><code>mailboxExists()</code></title>
 
     <indexterm significance="preferred">
       <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>MailboxExists()</code></secondary>
+      <secondary><code>mailboxExists()</code></secondary>
     </indexterm>
 
     <simpara>Verzweigt bedingt, falls die angegebene Voicemailbox
     existiert.</simpara>
 
-    <synopsis>MailboxExists(<replaceable>Mailbox</replaceable>[@<replaceable>Context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis>mailboxExists(<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
 
-    <simpara>Prüft, ob die durch <code>Mailbox</code> angegebene Voicemailbox
-    existiert. Sie können zusätzlich einen Voicemail-Context
-    <code>Context</code> übergeben, wenn die Mailbox nicht zum
-    Standard-Voicemail-Context gehört.</simpara>
+    <simpara>Prüft, ob die durch <code>mailbox</code> angegebene Voicemailbox
+    existiert. Sie können zusätzlich einen Voicemail-context
+    <code>context</code> übergeben, wenn die mailbox nicht zum
+    Standard-Voicemail-context gehört.</simpara>
 
     <simpara>Setzt die Channelvariable <code>VMBOXEXISTSSTATUS</code> auf
-    <code>SUCCESS</code> (Erfolg, Mailbox vorhanden) oder <code>FAILED</code>
-    (fehlgeschlagen, Mailbox nicht vorhanden).</simpara>
+    <code>SUCCESS</code> (Erfolg, mailbox vorhanden) oder <code>FAILED</code>
+    (fehlgeschlagen, mailbox nicht vorhanden).</simpara>
 
-    <simpara>Mit der Option <code>j</code> wird bei vorhandener Mailbox zur
+    <simpara>Mit der Option <code>j</code> wird bei vorhandener mailbox zur
     Priorität n+101 gesprungen.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,MailboxExists(123@default)
+exten =&gt; 123,n,mailboxExists(123@default)
 exten =&gt; 123,n,Goto(box-${VMBOXEXISTSSTATUS})
 exten =&gt; 123,10(box-SUCCESS),Voicemail(123,u)
 exten =&gt; 123,20(box-FAILED),Playback(tut-uns-leid)</programlisting>
@@ -6397,18 +6391,18 @@ exten =&gt; 123,20(box-FAILED),Playback(tut-uns-leid)</programlisting>
       <formalpara>
         <title>Internal help for this application in Asterisk 1.4:</title>
 
-        <para><screen>  -= Info about application 'MailboxExists' =- 
+        <para><screen>  -= Info about application 'mailboxExists' =- 
 
 [Synopsis]
 Check to see if Voicemail mailbox exists
 
 [Description]
-  MailboxExists(mailbox[@context][|options]): Check to see if the specified
+  mailboxExists(mailbox[@context][|options]): Check to see if the specified
 mailbox exists. If no voicemail context is specified, the 'default' context
 will be used.
   This application will set the following channel variable upon completion:
     VMBOXEXISTSSTATUS - This will contain the status of the execution of the
-                        MailboxExists application. Possible values include:
+                        mailboxExists application. Possible values include:
                         SUCCESS | FAILED
 
   Options:
@@ -6673,9 +6667,9 @@ will be used.
 
         <listitem>
           <simpara>Ermöglicht es dem Teilnehmer, die Konferenz durch Eingabe
-          einer einziffrigen Extension im Context
+          einer einziffrigen Extension im context
           <code>${MEETME_EXIT_CONTEXT}</code> zu verlassen, oder durch Eingabe
-          der Nummer einer Extension des aktuellen Contexts, falls diese
+          der Nummer einer Extension des aktuellen contexts, falls diese
           Variable nicht definiert ist.</simpara>
         </listitem>
       </varlistentry>
@@ -7901,7 +7895,7 @@ destroyed when the original caller leaves.  Valid options are:
     einer beaufsichtigten Übertragung, um die <quote>Parkplatznummer</quote>
     zu bestimmen). Diese Anwendung ist intern stets registriert und muss nicht
     explizit im Wählplan eingefügt werden, jedoch müssen Sie den
-    <code>parkedcalls</code>-Context mit der Zeile <code>include =&gt;
+    <code>parkedcalls</code>-context mit der Zeile <code>include =&gt;
     parkedcalls</code> einbinden. Die Parkkonfiguration wird in
     <filename>features.conf</filename> vorgenommen.</simpara>
 
@@ -7967,7 +7961,7 @@ priority.</screen></para>
     <simpara>Parkt den aktuellen Anruf und macht ihn über den spezifizierten
     Channel bekannt.</simpara>
 
-    <synopsis>ParkAndAnnounce(<replaceable>Template</replaceable>,<replaceable>Timeout</replaceable>,<replaceable>Channel</replaceable>[,<replaceable>Return-Context</replaceable>])</synopsis>
+    <synopsis>ParkAndAnnounce(<replaceable>Template</replaceable>,<replaceable>Timeout</replaceable>,<replaceable>Channel</replaceable>[,<replaceable>Return-context</replaceable>])</synopsis>
 
     <simpara>Parkt den aktuellen Anruf in dem dafür vorgesehenen Bereich (auf
     dem Parkplatz) und meldet ihn über den spezifizierten Channel.
@@ -7975,12 +7969,12 @@ priority.</screen></para>
     getrennten Dateien, die anzukündigen sind; das Wort <code>PARKED</code>
     wird durch die Parkplatznummer des Anrufs ersetzt. Der Parameter
     <code>Timeout</code> bestimmt die Zeit in Sekunden, nach deren Ablauf der
-    Anruf zum <code>Return-Context</code> zurückkehrt. <code>Channel</code>
+    Anruf zum <code>Return-context</code> zurückkehrt. <code>Channel</code>
     bezeichnet den Channel, der anzurufen ist, um die Ankündigung zu machen
     (<code>Console/dsp</code> ruft die Konsole auf).
-    <code>Return-Context</code> ist ein Label im <code>GoTo()</code>-Stil, um
+    <code>Return-context</code> ist ein Label im <code>GoTo()</code>-Stil, um
     den Anruf nach der Beendigung zurückzubringen. Standardeinstellung hierfür
-    ist n+1 im Context <code>Return-Context</code>.</simpara>
+    ist n+1 im context <code>Return-context</code>.</simpara>
 
     <programlisting>include =&gt; parkedcalls
 exten =&gt; 123,1,Answer()
@@ -8071,7 +8065,7 @@ use of this information.</screen></para>
     <code>Extension</code> identifizierten Parkplatz geparkten Anruf. Diese
     Anwendung ist intern ständig registriert und muss daher dem Wählplan nicht
     explizit hinzugefügt werden. Sie sollten jedoch den
-    <code>parkedcalls</code>-Context einbinden.</simpara>
+    <code>parkedcalls</code>-context einbinden.</simpara>
 
     <programlisting>; den Anruf auf "Parkplatz" 701 wiederaufnehmen:
 exten =&gt; 123,1,Answer()
@@ -8341,7 +8335,7 @@ Example: PauseQueueMember(|SIP/3000)</screen></para>
 
     <simpara>Einen Anruf an eine andere Extension entgegennehmen.</simpara>
 
-    <synopsis>Pickup(<replaceable>Extension</replaceable>[@<replaceable>Context</replaceable>][&amp;<replaceable>Extension2</replaceable>@<replaceable>Context2</replaceable>[&amp;<replaceable>...</replaceable>]])</synopsis>
+    <synopsis>Pickup(<replaceable>Extension</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>Extension2</replaceable>@<replaceable>context2</replaceable>[&amp;<replaceable>...</replaceable>]])</synopsis>
 
     <simpara>Mit <code>Pickup()</code> kann ein Gespräch, das an einem anderen
     Telefon auf Entgegennahme wartet übernommen werden.
@@ -8920,10 +8914,10 @@ Example: QueueLog(101|${UNIQUEID}|${AGENT}|WENTONBREAK|600)</screen></para>
 
     <simpara>Springt zu einer zufälligen Priorität.</simpara>
 
-    <synopsis>Random([<replaceable>Wahrscheinlichkeit</replaceable>]:[[<replaceable>Context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Priorität</replaceable>)</synopsis>
+    <synopsis>Random([<replaceable>Wahrscheinlichkeit</replaceable>]:[[<replaceable>context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Priorität</replaceable>)</synopsis>
 
     <simpara>Springt bedingt zu der spezifizierten Priorität (und optional
-    Extension und Context), basierend auf der angegebenen Wahrscheinlichkeit,
+    Extension und context), basierend auf der angegebenen Wahrscheinlichkeit,
     die ein ganze Zahl zwischen 1 und 100 sein muss. Die Anwendung springt in
     <code>Wahrscheinlichkeit</code> Prozent der Fälle zu dem angegebenen
     Ziel.</simpara>
@@ -9600,7 +9594,7 @@ reset.
 
     <simpara>In der Wartezeit kann eine einziffrige Extension gewählt werden.
     Existiert diese Extensions im durch <code>${EXITCONTEXT}</code>
-    spezifizierten Context (oder im aktuellen), wird der Anruf unmittelbar an
+    spezifizierten context (oder im aktuellen), wird der Anruf unmittelbar an
     diese Extension weitergeleitet.</simpara>
 
     <simpara>Alle Parameter nach <code>Versuche</code> werden direkt an die
@@ -11918,25 +11912,25 @@ Verbose([&lt;level&gt;|]&lt;message&gt;)
     </indexterm>
 
     <simpara>Authentifiziert den Anrufer über ein
-    Voicemail-Passwort.</simpara>
+    Voicemail-password.</simpara>
 
-    <synopsis>VMAuthenticate([<replaceable>Mailbox</replaceable>][@<replaceable>Context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis>VMAuthenticate([<replaceable>mailbox</replaceable>][@<replaceable>context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
 
     <simpara>Verhält sich wie die <code>Authenticate()</code>-Anwendung, mit
     dem Unterschied, dass die Passwörter aus
-    <filename>voicemail.conf</filename> (im optionalen VM-Context
-    <code>Context</code>) gelesen werden.</simpara>
+    <filename>voicemail.conf</filename> (im optionalen VM-context
+    <code>context</code>) gelesen werden.</simpara>
 
-    <simpara>Ist eine Mailbox angegeben, wird nur das Passwort dieser Mailbox
+    <simpara>Ist eine mailbox angegeben, wird nur das password dieser mailbox
     als gültig betrachtet. Ohne Angabe kann sich der Anrufer mit jedem(!)
-    VM-Passwort authentifizieren; die Channelvariable
-    <code>${AUTH_MAILBOX}</code> wird dann mit der authentifizierten Mailbox
+    VM-password authentifizieren; die Channelvariable
+    <code>${AUTH_MAILBOX}</code> wird dann mit der authentifizierten mailbox
     belegt.</simpara>
 
     <simpara>Mit der Option <code>s</code> wird die Ansage der Aufforderung
     unterdrückt.</simpara>
 
-    <programlisting>; als Mailbox die Extension annehmen und authentifizieren:
+    <programlisting>; als mailbox die Extension annehmen und authentifizieren:
 exten =&gt; 123,1,VMAuthenticate(${EXTEN}@verkauf)
 exten =&gt; 123,n,SayDigits(${AUTH_MAILBOX})</programlisting>
 
@@ -11986,17 +11980,17 @@ be set with the authenticated mailbox.
     </indexterm>
 
     <simpara>Hinterlässt eine Voicemail-Nachricht in der angegebenen
-    Mailbox.</simpara>
+    mailbox.</simpara>
 
-    <synopsis>VoiceMail(<replaceable>Mailbox</replaceable>[@<replaceable>Context</replaceable>][&amp;<replaceable>Mailbox</replaceable>[@<replaceable>Context</replaceable>][&amp;<replaceable>...</replaceable>]],<replaceable>Optionen</replaceable>)</synopsis>
+    <synopsis>VoiceMail(<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>...</replaceable>]],<replaceable>Optionen</replaceable>)</synopsis>
 
-    <para>alte Syntax:<synopsis>VoiceMail([s|u|b]<replaceable>Mailbox</replaceable>[@<replaceable>Context</replaceable>][&amp;<replaceable>Mailbox</replaceable>[@<replaceable>Context</replaceable>][&amp;<replaceable>...</replaceable>]])</synopsis></para>
+    <para>alte Syntax:<synopsis>VoiceMail([s|u|b]<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>...</replaceable>]])</synopsis></para>
 
-    <simpara>Erlaubt dem Anrufer, in der angegebenen Mailbox eine
-    Voicemail-Nachricht zu hinterlassen. Die Mailbox muss in
+    <simpara>Erlaubt dem Anrufer, in der angegebenen mailbox eine
+    Voicemail-Nachricht zu hinterlassen. Die mailbox muss in
     <filename>voicemail.conf</filename> konfiguriert sein. Sind mehrere
-    Mailboxen aufgelistet, wird die Begrüßung der ersten gespielt. Wenn die
-    Mailbox nicht existiert, wird die Ausführung des Dialplans
+    mailboxen aufgelistet, wird die Begrüßung der ersten gespielt. Wenn die
+    mailbox nicht existiert, wird die Ausführung des Dialplans
     abgebrochen.</simpara>
 
     <simpara>Mit der Option <code>s</code> (silent) werden die Anweisungen zum
@@ -12010,19 +12004,19 @@ be set with the authenticated mailbox.
 
     <simpara>Drückt der Teilnehmer während der Eingabeaufforderung
     <code>0</code> (Null), geht der Anruf zur Extension <code>o</code>
-    (kleiner Buchstabe o, Operator) im aktuellen Context über.</simpara>
+    (kleiner Buchstabe o, Operator) im aktuellen context über.</simpara>
 
     <simpara>Drückt der Teilnehmer während der Eingabeaufforderung
     <code>*</code>, geht der Anruf zur Extension <code>a</code> (Assistant) im
-    aktuellen Context über.</simpara>
+    aktuellen context über.</simpara>
 
-    <simpara>Gibt im Falle eines Fehlers, falls die Mailbox nicht gefunden
+    <simpara>Gibt im Falle eines Fehlers, falls die mailbox nicht gefunden
     wird oder der Teilnehmer auflegt -1 zurück, sonst 0. Setzt die
     Channelvariable <code>VMSTATUS</code> auf <code>SUCCESS</code> (Erfolg),
     <code>USEREXIT</code> (Abbruch durch Anrufer) oder <code>FAILED</code>
     (Fehler).</simpara>
 
-    <programlisting>; den Anrufer zur Mailbox 123 leiten, mit Nicht-erreichbar-Nachricht:
+    <programlisting>; den Anrufer zur mailbox 123 leiten, mit Nicht-erreichbar-Nachricht:
 exten =&gt; 123,1,VoiceMail(123,u)</programlisting>
 
     <note>
@@ -12089,29 +12083,29 @@ received:
 
     <simpara>Betritt das Voicemailsystem.</simpara>
 
-    <synopsis>VoiceMailMain([<replaceable>Mailbox</replaceable>][@<replaceable>Context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis>VoiceMailMain([<replaceable>mailbox</replaceable>][@<replaceable>context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
 
-    <para>alte Syntax:<synopsis>VoiceMailMain([[s|p]<replaceable>Mailbox</replaceable>][@<replaceable>Context</replaceable>])</synopsis></para>
+    <para>alte Syntax:<synopsis>VoiceMailMain([[s|p]<replaceable>mailbox</replaceable>][@<replaceable>context</replaceable>])</synopsis></para>
 
     <simpara>Tritt zum Abrufen von Voicemail-Nachrichten in das
-    Voicemail-System ein. Ohne Angabe der Mailbox wird der Anrufer zur Eingabe
-    der Mailboxnummer aufgefordert.</simpara>
+    Voicemail-System ein. Ohne Angabe der mailbox wird der Anrufer zur Eingabe
+    der mailboxnummer aufgefordert.</simpara>
 
-    <simpara>Mit der Option <code>s</code> wird die Überprüfung des Passworts
+    <simpara>Mit der Option <code>s</code> wird die Überprüfung des passwords
     übersprungen. Mit der Option <code>p</code> wird der Benutzer zur Eingabe
-    einer Mailboxnummer aufgefordert, die angegebene Nummer der Eingabe
-    vorangestellt und der daraus resultierende String als Mailboxnummer
+    einer mailboxnummer aufgefordert, die angegebene Nummer der Eingabe
+    vorangestellt und der daraus resultierende String als mailboxnummer
     verwendet. Das ist nützlich bei der Bereitstellung virtueller
     Voicemailboxen (Virtual Hosting). Mit
     <code>a(<replaceable>Ordner</replaceable>)</code> wird direkt zum
     angegebenen Ordner (Default: <code>INBOX</code>) gesprungen.</simpara>
 
-    <simpara>Ist ein Context spezifiziert, werden nur Mailboxen in diesem
-    Voicemail-Context berücksichtigt.</simpara>
+    <simpara>Ist ein context spezifiziert, werden nur mailboxen in diesem
+    Voicemail-context berücksichtigt.</simpara>
 
     <simpara>Liefert -1 zurück, wenn der Benutzer auflegt, sonst 0.</simpara>
 
-    <programlisting>; zum Voicemail-Menü der Mailbox 123 im Voicemail-Context default gehen:
+    <programlisting>; zum Voicemail-Menü der mailbox 123 im Voicemail-context default gehen:
 exten =&gt; 123,1,VoiceMailMain(123@default)</programlisting>
 
     <note>
@@ -12567,7 +12561,7 @@ EndWhile is called until expr is no longer true.</screen></para>
       </variablelist></para>
 
     <programlisting>[incoming]
-; im Context incoming die SIT-Töne spielen, wenn keine Caller-ID vorhanden ist:
+; im context incoming die SIT-Töne spielen, wenn keine Caller-ID vorhanden ist:
 exten =&gt; s,1,Zapateller(nocallerid)
 exten =&gt; s,n,Wait(3)
 exten =&gt; s,n,Answer()</programlisting>
