@@ -1001,7 +1001,7 @@ Options:
 
     <synopsis><command>AGI(<replaceable>program</replaceable>[,<replaceable>arguments</replaceable>])</command></synopsis>
 
-    <simpara>(Same as <command><code>EAGI()</code></command>,
+    <simpara>(Similar to <command><code>EAGI()</code></command>,
     <command><code>FastAGI()</code></command>,
     <code><command>DeadAGI()</command></code>)</simpara>
 
@@ -4307,7 +4307,7 @@ or greater.</screen></para>
 
     <synopsis><command>EAGI(<replaceable>program</replaceable>[,<replaceable>arguments</replaceable>])</command></synopsis>
 
-    <simpara>(Same as <code><command>AGI()</command></code>,
+    <simpara>(Similar to <code><command>AGI()</command></code>,
     <command><code>FastAGI()</code></command>,
     <command><code>DeadAGI()</code></command>)</simpara>
 
@@ -4681,18 +4681,18 @@ will return a non-zero value.</screen></para>
 
     <simpara>Executes an application based on the current time.</simpara>
 
-    <synopsis>ExecIf(<replaceable>time</replaceable>|<replaceable>dayofweek</replaceable>|<replaceable>dayofmonth</replaceable>|<replaceable>month</replaceable>?<replaceable>application</replaceable>[,<replaceable>arguments</replaceable>])</synopsis>
+    <synopsis><command>ExecIf(<replaceable>times</replaceable>|<replaceable>daysofweek</replaceable>|<replaceable>daysofmonth</replaceable>|<replaceable>months</replaceable>?<replaceable>application</replaceable>[,<replaceable>arguments</replaceable>])</command></synopsis>
 
-    <simpara>If the Ist das angegebene Zeitmuster zutreffend, wird die
-    angegebene <code>Applikation</code> mit den Parametern
-    <code>Argumente</code> ausgeführt, und deren Ergebnis zurückgeliefert. Die
-    Uhrzeit wird wie bei <code>include</code> (siehe <xref
-    linkend="include-zeitgesteuert" />), <code>GotoIfTime()</code> (siehe
-    <xref linkend="applikationen-gotoiftime" />) oder <code>IFTIME()</code>
-    (siehe <xref linkend="funktionen-iftime" />) angegeben.</simpara>
+    <simpara>If the current time is in the time window defined,
+    <replaceable>application</replaceable> is executed with
+    <replaceable>arguments</replaceable> and the result returned. The time
+    window is defined the same way as it is for <code>include</code> (see
+    <xref linkend="include-zeitgesteuert" />), <code>GotoIfTime()</code> (see
+    <xref linkend="applikationen-gotoiftime" />) or <code>IFTIME()</code> (see
+    <xref linkend="funktionen-iftime" />).</simpara>
 
-    <simpara>Trifft der <code>Ausdruck</code> nicht zu, wird die Ausführung
-    mit der nächsten Priorität fortgesetzt.</simpara>
+    <simpara>If the current time is not in the time window defined, execution
+    continues in the next priority.</simpara>
 
     <note>
       <formalpara>
@@ -4740,14 +4740,14 @@ arguments, if the current time matches the given time specification.</screen></p
       <secondary><code>ExitWhile()</code></secondary>
     </indexterm>
 
-    <simpara>Beendet innerhalb einer While-Schleife deren
-    Ausführung.</simpara>
+    <simpara>Exits a while loop, irrespective of whether its condition has
+    been satisfied.</simpara>
 
-    <synopsis>ExitWhile()</synopsis>
+    <synopsis><command>ExitWhile()</command></synopsis>
 
-    <simpara>Mit <code>ExitWhile()</code> kann innerhalb einer While-Schleife
-    die weitere Ausführung abgebrochen werden, unabhängig davon, ob die
-    While-Kondition erfüllt ist oder nicht.</simpara>
+    <simpara>With <code><command>ExitWhile()</command></code> you can
+    interrupt further execution whether or not the while condition has been
+    satisfied.</simpara>
 
     <note>
       <formalpara>
@@ -4787,21 +4787,21 @@ Exits a While loop, whether or not the conditional has been satisfied.</screen><
       <secondary><code>ExtenSpy()</code></secondary>
     </indexterm>
 
-    <simpara>Einen Kanal belauschen und bei Bedarf reinflüstern.</simpara>
+    <simpara>Eavesdrop on a channel attached to a specific extension and
+    whisper to it if desired.</simpara>
 
-    <synopsis>ExtenSpy(<replaceable>Extension</replaceable>[@<replaceable>context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis>ExtenSpy(<replaceable>extension</replaceable>[@<replaceable>context</replaceable>][,<replaceable>options</replaceable>])</synopsis>
 
-    <simpara><code>ExtenSpy()</code> kann auf Channels zu der angegebenen
-    Extension geschaltet werden um das ein- und ausgehende Audio mitzuhören.
-    Optionen:</simpara>
+    <simpara><code>ExtenSpy()</code> can listen to incoming and outgoing audio
+    on channels used by the specified extension. The options:</simpara>
 
     <variablelist termlength="11">
       <varlistentry>
         <term><code>b</code></term>
 
         <listitem>
-          <simpara>Nur Channels abhören, die zu einem verbundenen Anruf
-          gehören.</simpara>
+          <simpara>Only listens to channels which belong to a bridged
+          call.</simpara>
         </listitem>
       </varlistentry>
 
@@ -4809,10 +4809,10 @@ Exits a While loop, whether or not the conditional has been satisfied.</screen><
         <term><code>g(<replaceable>grp</replaceable>)</code></term>
 
         <listitem>
-          <simpara>Nur Channels abhören, bei denen in deren Kanal-Variable
-          <code>${SPYGROUP}</code> die Gruppe <code>grp</code> enthalten ist.
-          <code>${SPYGROUP}</code> kann eine durch <code>:</code> getrennt
-          Liste von Werten sein.</simpara>
+          <simpara>Only listens to channels where the channel variable
+          <code>${SPYGROUP}</code> is set to <code>grp</code>.
+          <code>${SPYGROUP}</code> can contain a <code>:</code> separated list
+          of values.</simpara>
         </listitem>
       </varlistentry>
 
@@ -4820,7 +4820,8 @@ Exits a While loop, whether or not the conditional has been satisfied.</screen><
         <term><code>q</code></term>
 
         <listitem>
-          <simpara>Keinen Ton beim Beginn abspielen.</simpara>
+          <simpara>Do not play a tone or say the channel name when listening
+          starts on a channel.</simpara>
         </listitem>
       </varlistentry>
 
@@ -4828,19 +4829,18 @@ Exits a While loop, whether or not the conditional has been satisfied.</screen><
         <term><code>r([<replaceable>name</replaceable>])</code></term>
 
         <listitem>
-          <simpara>Abgehörte Gespräche werde im Spool-Verzeichnis
-          aufgezeichnet. Bei Bedarf kann mit <code>name</code> ein Dateiname
-          (ohne Erweiterung) eingestellt werden, Default ist
-          <filename>chanspy</filename>.</simpara>
+          <simpara>Records the listening session to the spool directory. A
+          filename may be specified if desired; <filename>chanspy</filename>
+          is the default.</simpara>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term><code>v([<replaceable>wert</replaceable>])</code></term>
+        <term><code>v([<replaceable>value</replaceable>])</code></term>
 
         <listitem>
-          <simpara>Verändert die anfängliche Lautstärke. Die Werte reichen von
-          -4 bis 4.</simpara>
+          <simpara>Sets the initial volume. The value may be between -4 and
+          4.</simpara>
         </listitem>
       </varlistentry>
 
@@ -4848,8 +4848,8 @@ Exits a While loop, whether or not the conditional has been satisfied.</screen><
         <term><code>w</code></term>
 
         <listitem>
-          <simpara>Aktiviert den Flüster-Modus (whisper mode). So kann man in
-          den abgehörten Channel reinflüstern.</simpara>
+          <simpara>Enables "whisper" mode. Lets the spying channel talk to the
+          spyed-on channel.</simpara>
         </listitem>
       </varlistentry>
 
@@ -4857,21 +4857,19 @@ Exits a While loop, whether or not the conditional has been satisfied.</screen><
         <term><code>W</code></term>
 
         <listitem>
-          <simpara>Aktiviert <quote>private whisper mode</quote>. So kann man
-          zwar in den abgehörten Channel sprechen, diesen aber nicht
-          hören.</simpara>
+          <simpara>Enables "private whisper mode". The "spying" channel can
+          whisper to the spyed-on channel, but cannot listen.</simpara>
         </listitem>
       </varlistentry>
     </variablelist>
 
-    <para>Während des Abhörens können folgende Tastenbefehle gegeben
-    werden:<variablelist termlength="6">
+    <para>The following key controls are available while
+    listening:<variablelist termlength="6">
         <varlistentry>
           <term><code>#</code></term>
 
           <listitem>
-            <simpara>Schaltet durch die Lautstärkeeinstellung (-4 bis
-            4)</simpara>
+            <simpara>Stepwise volume adjustment (-4 to 4)</simpara>
           </listitem>
         </varlistentry>
 
@@ -4879,7 +4877,7 @@ Exits a While loop, whether or not the conditional has been satisfied.</screen><
           <term><code>*</code></term>
 
           <listitem>
-            <simpara>Schaltet zu einem anderen Channel</simpara>
+            <simpara>Switch to another channel</simpara>
           </listitem>
         </varlistentry>
       </variablelist></para>
@@ -4946,17 +4944,17 @@ supplied, the current channel's context will be used.
       <secondary><code>ExternalIVR()</code></secondary>
     </indexterm>
 
-    <simpara>Startet eine externe IVR-Applikation.</simpara>
+    <simpara>Start an external IVR application.</simpara>
 
-    <synopsis>ExternalIVR(<replaceable>Shell-Befehl</replaceable>[,<replaceable>Arg1</replaceable>[,<replaceable>Arg2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
+    <synopsis><command>ExternalIVR(<replaceable>shell-command</replaceable>[,<replaceable>arg1</replaceable>[,<replaceable>arg2</replaceable>[,<replaceable>...</replaceable>]]])</command></synopsis>
 
-    <simpara>Forkt den Prozess und startet eine externe IVR<footnote>
+    <simpara>Forks a process and starts an external IVR<footnote>
         <simpara>Interactive Voice Response</simpara>
-      </footnote>-Applikation. Diese Applikation erhält alle DTMF-Ereignisse
-    um darauf reagieren zu können. Sie wird beim Auflegen des Kanals
-    benachrichtigt, muss sich aber selber beenden. Das
-    Kommunikations-Protokoll zwischen Asterisk und der Applikation wird in
-    <filename>doc/externalivr.txt</filename> beschrieben.</simpara>
+      </footnote> application. This application then receives all DTMF events
+    and responds accordingly. The application receives notification if the
+    channel is hung up but must shutdown on its own. The protocol for this
+    interface is described in
+    <filename>doc/externalivr.txt</filename>.</simpara>
 
     <note>
       <formalpara>
@@ -4998,42 +4996,44 @@ See doc/externalivr.txt for a protocol specification.</screen></para>
       <secondary><code>FastAGI()</code></secondary>
     </indexterm>
 
-    <simpara>Führt ein AGI-konformes Skript über eine Netzwerkverbindung
-    aus.</simpara>
+    <simpara>Calls an AGI-compliant application over a network
+    connection.</simpara>
 
-    <synopsis>FastAGI(agi://<replaceable>hostname</replaceable>[:<replaceable>Port</replaceable>][/<replaceable>script</replaceable>],<replaceable>Argumente</replaceable>)</synopsis>
+    <synopsis><command>FastAGI(agi://<replaceable>hostname</replaceable>[:<replaceable>port</replaceable>][/<replaceable>script</replaceable>],<replaceable>arguments</replaceable>)</command></synopsis>
 
-    <simpara>Führt ein AGI-konformes Skript über das Netzwerk aus. Diese
-    Anwendung ist <code>AGI()</code> sehr ähnlich, außer dass sie ein
-    FastAGI-Skript über eine Netzwerkverbindung ausführt. Der wichtigste
-    Verwendungszweck ist, rechenintensive AGI-Skripte von Remote-Servern
-    ausführen zu lassen und die Startzeiten von AGI-Skripten zu reduzieren
-    (ein FastAGI Skript läuft bereits bevor Asterisk sich mit ihm verbindet,
-    ähnlich FastCGI bei Web-Servern).</simpara>
+    <simpara>(Similar to <command>AGI()</command>,
+    <command>DeadAGI()</command>, <command>EAGI()</command>)</simpara>
 
-    <simpara><code>FastAGI()</code> versucht, sich direkt zu einem laufenden
-    FastAGI-Programm zu verbinden, welches auf einem spezifizierten
-    <code>Port</code> des Servers <code>hostname</code> bereits auf
-    Verbindungen wartet. Als Standardport wird 4573 benutzt, falls kein
-    anderer angegeben ist. Ist <code>script</code> angegeben, wird es als
-    <code>agi_network_script</code>-Variable an das FastAGI-Programm
-    übergeben. Die in <code>Argumente</code> stehenden Parameter werden an das
-    Programm weitergegeben.</simpara>
+    <simpara>Runs an Asterisk Gateway Interface compliant program on the
+    current channel, but calls the application from another host on the
+    network. The intent is to help distribute the load of processor-intensive
+    AGI scripts or programs to remote servers and reduce start-up latency of
+    those programs (a FastAGI script can be started before it is actually
+    needed, much like a FastCGI script on a web server). </simpara>
 
-    <simpara>Im Verzeichnis <filename>agi/fastagi-test</filename> befindet
-    sich ein Beispiel-FastAGI-Skript. Verwenden Sie es als Ansatzpunkt für
-    Ihre eigenen FastAGI-Programme.</simpara>
+    <simpara><code>FastAGI()</code> attempts to connect directly to a running
+    FastAGI program listening for connections on the specified
+    <replaceable>port</replaceable> on the server
+    <replaceable>hostname</replaceable>. The default port is 4573 if it is not
+    specified. If <replaceable>script</replaceable> is defined, it is used to
+    populate the variable <code>agi_network_script</code> and passed to the
+    FastAGI program. The <replaceable>arguments </replaceable>are also passed
+    to the program.</simpara>
 
-    <simpara>Liefert -1, falls die Anwendung ein Auflegen verlangt, oder 0 bei
-    Beendigung ohne Auflegen.</simpara>
+    <simpara>A sample FastAGI script can be found at
+    <filename>agi/fastagi-test</filename>. Use this is a starting point for
+    writing your own FastAGI applications.</simpara>
 
-    <programlisting>; mit dem Beispiel-FastAGI-Programm "fastagi-test" verbinden, das
-; bereits auf dem lokalen Rechner laufen muss:
+    <simpara>Returns -1, if the application ends and requests a hang-up;
+    returns 0 if it ends without requesting a hang-up.</simpara>
+
+    <programlisting>; Connect to the sample FastAGI program "fastagi-test",
+; which must nevertheless be running on the local machine:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,FastAGI(agi://localhost/fastagi-test)
 
-; mit dem FastAGI-Skript "test" auf einem Host namens "testbox" auf
-; Port 9000 verbinden und als Parameter "123" übergeben:
+; Connect to the FastAGI script "test" on the host "testbox"
+; at port 9000 and pass parameter "123":
 exten =&gt; 124,1,Answer()
 exten =&gt; 124,n,FastAGI(agi://testbox:9000/test,123)</programlisting>
 
@@ -5054,33 +5054,35 @@ exten =&gt; 124,n,FastAGI(agi://testbox:9000/test,123)</programlisting>
       <secondary><code>Festival()</code></secondary>
     </indexterm>
 
-    <simpara>Verwendet das Sprachsynthese-System (Text-to-speech) Festival, um
-    dem Anrufer Text vorzulesen.</simpara>
+    <simpara>Uses the free Festival text-to-speech (TTS) engine to read text
+    to the caller.</simpara>
 
-    <synopsis>Festival(<replaceable>Text</replaceable>[,<replaceable>Tasten</replaceable>])</synopsis>
+    <synopsis><command>Festival(<replaceable>text</replaceable>[,<replaceable>keys</replaceable>])</command></synopsis>
 
-    <simpara>Verbindet sich zum lokal laufenden Festival-Server (muss
-    installiert sein), sendet ihm den angegebenen <code>Text</code> und spielt
-    dem Teilnehmer die resultierende Audiodatei vor. Wenn <code>Tasten</code>
-    angegeben wurden und der Anrufer während des Abspielens eine davon drückt,
-    wird der Abspielvorgang beendet und die entsprechende Taste zurückgegeben.
-    Falls als <code>Tasten</code> der Wert <code>any</code> angegeben ist,
-    wird jede Taste erkannt (und an die entsprechende Extension
-    weitergeleitet).</simpara>
+    <simpara>Connects to the locally running Festival server (which must be
+    installed separately), sends it the specified text and plays the resulting
+    audio back to the caller. If <replaceable>keys</replaceable> are defined,
+    pressing of the defined keys will interrupt playback and return the value
+    of the key depressed; if <code>any</code> is provided as the value to
+    <replaceable>keys</replaceable>, all keys will be recognized and the call
+    will be passed to the appropriate extension in the dialplan.</simpara>
 
-    <simpara>Sie müssen den Festival-Server <emphasis>vor</emphasis> Asterisk
-    starten und die <code>Answer()</code>-Anwendung zum Beantworten des
-    Channels verwenden, bevor Sie <code>Festival()</code> aufrufen.</simpara>
+    <simpara>Festival must be started <emphasis>before</emphasis> Asterisk,
+    and the channel must be answered with
+    <code><command>Answer()</command></code>, in order for this application to
+    work..</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Festival('Hallo Welt',#)</programlisting>
+exten =&gt; 123,n,Festival('Hello World',#)</programlisting>
 
-    <para>Alternativ zu der Applikation <code>Festival()</code> kann man auch
-    mit dem <code>System()</code>-Befehl Festivals Programm
-    <command>text2wave</command> aufrufen und die resultierende Audiodatei mit
-    <code>Background()</code> oder <code>Playback()</code> abspielen, etwa so
-    (nur als Beispiel, Verzeichnisse beachten!):<programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,System(echo 'Hallo Welt' | text2wave -o sound.wav -otype wav -)
+    <para>As an alternative to the application
+    <command><code>Festival()</code></command>, you may also use the
+    <code><command>System()</command></code> command to call Festival's
+    command-line program<command> text2wave</command> and play back the
+    resulting audio stream with <command><code>Background()</code></command>
+    or <command><code>Playback()</code></command>, like so (for example only;
+    pay attention to pathnames!):<programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,System(echo 'Hello World' | text2wave -o sound.wav -otype wav -)
 exten =&gt; 123,n,Background(sound)</programlisting></para>
 
     <note>
@@ -5120,30 +5122,28 @@ the value, or 'any' to allow any number back (useful in dialplan)</screen></para
       <secondary><code>Flash()</code></secondary>
     </indexterm>
 
-    <simpara>Flasht einen Zap-Channel.</simpara>
+    <simpara>Performs a "flash hook" on a Zap channel.</simpara>
 
-    <synopsis>Flash()</synopsis>
+    <synopsis><command>Flash()</command></synopsis>
 
-    <simpara>Sendet einen Flash auf einen Zap-Channel. Dies ist nichts weiter
-    als ein Hack für Leute, die Übermittlungen und andere Aktionen, die einen
-    Flash durch ein AGI-Skript benötigen, durchführen möchten.</simpara>
+    <simpara>Performs a flash on a Zap channel.</simpara>
 
     <sidebar>
-      <simpara>Ein Flash (auch Switch-Hook-Flash oder Link genannt) entspricht
-      dem ganz kurzen Drücken der Gabel für 80 - 500 Millisekunden (je nach
-      Anbieter) an einem analogen Telefon (manche Apparate haben dafür eine
-      eigene Taste), wodurch z.B. Rückfrage-Gespräche o.ä. eingeleitet werden,
-      ohne den aktuellen Anruf aufzulegen.</simpara>
+      <simpara>A "flash" (also called a "switch-hook-flash", "flash hook" or
+      "link") is simply a short depressing of the hook switch on an analog
+      telephone for between 80 and 500 milliseconds (depending on the
+      carrier), used primarily as a signalling method to provide feature
+      control for simple analog telephone sets (such as for call waiting,
+      three-way calling, call transfer and similar services).</simpara>
     </sidebar>
 
-    <simpara>Liefert bei Erfolg 0 zurück, oder -1, falls der Channel kein
-    Zap-Channel ist.</simpara>
+    <simpara>Returns 0 upon success, or -1 if the channel is not a
+    Zap-Channel.</simpara>
 
     <programlisting>exten =&gt; 123,1,Flash()</programlisting>
 
-    <para>Falls Ihnen auf Ihrer Leitung Link-Transfer bereitgestellt wird
-    (typischerweise ein Zusatzdienst), könnten Sie so einen Anruf auf eine
-    andere externe Nummer umleiten:<programlisting>[macro-link-umleitung]
+    <para>If an outgoing line supports flash-transfer (usually an extra
+    service), you might use it on a Zap channel like so:<programlisting>[macro-flash-transfer]
 exten =&gt; s,1,Playback(transfer)
 exten =&gt; s,n,Flash()
 exten =&gt; s,n,Wait(1)
@@ -5151,12 +5151,14 @@ exten =&gt; s,n,SendDTMF(${ARG1})
 exten =&gt; s,n,Wait(1)
 exten =&gt; s,n,Hangup()
 
-[externe-apparate]
-; eingehende Anrufe auf 6001 auf die externe Nummer 0261123456 umleiten:
-exten =&gt; 6001,1,Macro(link-umleitung,0261123456)</programlisting>Es kann
-    dazu nötig sein, die Flash-Dauer (Einstellung <code>flash</code>) in der
-    <filename>zapata.conf</filename> auf die Vorgabe Ihres Anbieters zu
-    setzen, z.B. <code>flash=200</code>.</para>
+[outside-extensions]
+; Transfer incoming calls on extension 6001 to the outside number (514)5554138:
+exten =&gt; 6001,1,Macro(flash-transfer,5145554138)</programlisting>Sometimes
+    it is necessary to adjust the flash duration; ask your carrier for the
+    specification in your area. This can be done in
+    <filename>zapata.conf</filename> with a parameter,
+    <emphasis>e.g.</emphasis> <code>flash=200</code> (the value is in
+    milliseconds).</para>
 
     <note>
       <formalpara>
@@ -5190,12 +5192,12 @@ quite useless oths application will only work on Zap trunks.</screen></para>
       <secondary><code>FollowMe()</code></secondary>
     </indexterm>
 
-    <simpara>Follow-Me/Find-Me Funktionalität.</simpara>
+    <simpara>Follow-Me/Find-Me functionality.</simpara>
 
-    <synopsis>FollowMe(<replaceable>FollowMeID</replaceable>,<replaceable>Optionen</replaceable>)</synopsis>
+    <synopsis><command>FollowMe(<replaceable>followMeID</replaceable>,<replaceable>options</replaceable>)</command></synopsis>
 
-    <simpara>Bitte lesen die Konfigurationsdatei
-    <filename>followme.conf</filename>.</simpara>
+    <simpara>Read the configuration file <filename>followme.conf</filename>
+    for a complete explanation.</simpara>
 
     <note>
       <formalpara>
@@ -5239,13 +5241,15 @@ Returns -1 on hangup</screen></para>
       <secondary><code>ForkCDR()</code></secondary>
     </indexterm>
 
-    <simpara>Erstellt ein zusätzliches CDR aus dem aktuellen Anruf.</simpara>
+    <simpara>Generates an additional CDR in the current call.</simpara>
 
-    <synopsis>ForkCDR()</synopsis>
+    <synopsis><command>ForkCDR()</command></synopsis>
 
-    <simpara>Erstellt für den Rest des aktuellen Anrufs einen zusätzlichen
-    Call Detail Record, um die in Rechnung zu stellende Gesprächszeit von der
-    Gesamtdauer des Anrufs zu unterscheiden.</simpara>
+    <simpara>Generates an additional CDR beginning from the moment the
+    ForkCDR() command is called. Used for the purpose of distinguishing
+    between total call duration and actual conversation duration for billing
+    purposes. Option v will pass all the CDR variables to the new
+    CDR.</simpara>
 
     <programlisting>exten =&gt; 123,n,ForkCDR()</programlisting>
 
