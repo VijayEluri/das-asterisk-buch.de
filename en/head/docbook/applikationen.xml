@@ -4154,7 +4154,7 @@ received and the extension to jump to exists:
 ; password (1234). Set the caller ID so that the call appears to be
 ; coming from inside the company:
 [incoming]
-exten =&gt; 123,1,DISA(1234,disa,Widgets, Inc &lt;(212) 5553412&gt;)
+exten =&gt; 123,1,DISA(1234,disa,Widgets Inc &lt;212-555-3412&gt;)
 [disa]
 exten =&gt; _0800XXXXXXXX,1,Dial(Zap/4/${EXTEN})</programlisting>
 
@@ -5292,16 +5292,16 @@ If the option 'v' is passed all cdr variables will be passed along also.</screen
       <secondary><code>GetCPEID()</code></secondary>
     </indexterm>
 
-    <simpara>Holt die CPE-ID eines ADSI-fähigen Telefons.</simpara>
+    <simpara>Retrieve the CPE-ID (Customer Premises Equipment ID) of an
+    ADSI-capable telephone.</simpara>
 
-    <synopsis>GetCPEID()</synopsis>
+    <synopsis><command>GetCPEID()</command></synopsis>
 
-    <simpara>Holt die CPE-ID und weitere Informationen und zeigt sie auf der
-    Asterisk-Konsole an. Diese Informationen werden häufig benötigt, um die
-    Datei <filename>zapata.conf</filename> für Operationen bei ADSI-fähigen
-    Telefonen einzurichten.</simpara>
+    <simpara>Retrieves the CPE-ID and additional information, displaying it on
+    the Asterisk CLI. This information is often needed to properly configure
+    <filename>zapata.conf</filename> to support ADSI features.</simpara>
 
-    <simpara>Liefert beim Auflegen -1 zurück.</simpara>
+    <simpara>Returns -1 on hang-up.</simpara>
 
     <programlisting>exten =&gt; 123,1,GetCPEID()</programlisting>
 
@@ -5343,23 +5343,23 @@ to properly setup zapata.conf for on-hook operations.</screen></para>
       <secondary><code>Gosub()</code></secondary>
     </indexterm>
 
-    <simpara>Springt zu einer bestimmten Priorität, Extension und einem
-    bestimmten context (mit der Möglichkeit der Rückkehr).</simpara>
+    <simpara>Jumps to the specified priority, extension and context and allows
+    return.</simpara>
 
-    <synopsis>Gosub([[<replaceable>context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Priorität</replaceable>)</synopsis>
+    <synopsis><command>Gosub([[<replaceable>context</replaceable>,]<replaceable>extension</replaceable>,]<replaceable>priorität</replaceable>)</command></synopsis>
 
-    <synopsis>Gosub(<replaceable>benannte_Priorität</replaceable>)</synopsis>
+    <synopsis><command>Gosub(<replaceable>named_priority</replaceable>)</command></synopsis>
 
-    <simpara>Springt wie <code>Goto()</code> im Dialplan, erlaubt es dem
-    Unterprogramm aber, mit <code>Return()</code> zurückzukehren.</simpara>
+    <simpara>Like <code><command>Goto()</command></code> but allows the
+    dialplan subroutine to return with
+    <command><code>Return()</code></command>.</simpara>
 
-    <simpara>Gibt 0 zurück oder -1, wenn das Sprungziel ungültig
-    ist.</simpara>
+    <simpara>Returns 0, or -1 if the target is invalid.</simpara>
 
-    <programlisting>exten =&gt; 123,1,Gosub(cid-setzen)
+    <programlisting>exten =&gt; 123,1,Gosub(set-cid)
 exten =&gt; 123,n,Dial(SIP/${EXTEN})
 
-exten =&gt; 123,10(cid-setzen),Set(CALLERID(all)=Apfelmus GmbH &lt;012345678&gt;)
+exten =&gt; 123,10(set-cid),Set(CALLERID(all)=Widgets Inc &lt;(212-555-3412&gt;)
 exten =&gt; 123,n,Return()</programlisting>
 
     <note>
@@ -5403,21 +5403,21 @@ Gosub([[context|]exten|]priority)
       <secondary><code>GosubIf()</code></secondary>
     </indexterm>
 
-    <simpara>Springt bedingt zu der angegebenen Priorität (mit der Möglichkeit
-    der Rückkehr).</simpara>
+    <simpara>Jumps to the specified priority if a condition is satisfied and
+    allows return.</simpara>
 
-    <synopsis>GosubIf(<replaceable>Bedingung</replaceable>?<replaceable>PrioWahr</replaceable>:<replaceable>PrioFalsch</replaceable>)</synopsis>
+    <synopsis><command>GosubIf(<replaceable>condition</replaceable>?<replaceable>labeliftrue</replaceable>:<replaceable>labeliffalse</replaceable>)</command></synopsis>
 
-    <simpara>Springt wie <code>GotoIf()</code> unter einer bestimmten
-    Bedingung im Dialplan, erlaubt es dem Unterprogramm aber, mit
-    <code>Return()</code> zurückzukehren.</simpara>
+    <simpara>Jumps to the specified priority if a condition is satisfied
+    (similar to <command><code>GotoIf()</code></command> ) but allows the
+    subroutine to return with
+    <command><code>Return()</code></command>.</simpara>
 
-    <simpara>Gibt 0 zurück oder -1, wenn das Sprungziel ungültig
-    ist.</simpara>
+    <simpara>Returns 0 or -1 if the target is invalid.</simpara>
 
-    <programlisting>exten =&gt; telcid,1,Set(CALLERID(all)=Apfelmus &lt;0123456780&gt;)
+    <programlisting>exten =&gt; telcid,1,Set(CALLERID(all)=Widgets &lt;212-555-3412&gt;)
 exten =&gt; telcid,n,Return()
-exten =&gt; faxcid,1,Set(CALLERID(all)=Apfelmus &lt;0123456785&gt;)
+exten =&gt; faxcid,1,Set(CALLERID(all)=Widgets &lt;212-555-3412&gt;)
 exten =&gt; faxcid,n,Return()
 
 exten =&gt; _0.,1,GosubIf($[${CHANNEL:4:2} = 43]?faxcid,1:telcid,1)
@@ -5469,24 +5469,20 @@ in the dialplan, to be returned to with a Return.</screen></para>
       <secondary><code>Goto()</code></secondary>
     </indexterm>
 
-    <simpara>Springt zu einer bestimmten Priorität, Extension und einem
-    bestimmten context.</simpara>
+    <simpara>Jumps to a specified priority, extension and context.</simpara>
 
-    <synopsis>Goto([[<replaceable>context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Priorität</replaceable>)</synopsis>
+    <synopsis><command>Goto([[<replaceable>context</replaceable>,]<replaceable>extension</replaceable>,]<replaceable>priority</replaceable>)</command></synopsis>
 
-    <synopsis>Goto(<replaceable>benannte_Priorität</replaceable>)</synopsis>
+    <synopsis><command>Goto(<replaceable>named_priority</replaceable>)</command></synopsis>
 
-    <simpara>Übergibt die Kontrolle des aktuellen Channels ohne Möglichkeit
-    der Rückkehr an die spezifizierte Priorität und setzt optional Extension
-    und context des Ziels.</simpara>
+    <simpara>Hands the currently active channel to the specified priority (and
+    optionally, extension and context).</simpara>
 
-    <simpara>Optional können Sie die Anwendung dazu benutzen, zu der durch den
-    Parameter <code>benannte_Priorität</code> angegebenen Priorität (also
-    Priorität mit Label) zu gelangen. Benannte Prioritäten funktionieren
-    ausschließlich in der aktuellen Extension.</simpara>
+    <simpara>Optionally, a named priority may be specified to access a
+    labelled priority. Named priorities work only in the current
+    extension.</simpara>
 
-    <simpara>Liefert immer 0 zurück, auch falls der gegebene context, die geg.
-    Extension oder Priorität nicht gültig sind.</simpara>
+    <simpara>Always returns 0, even if the target is invalid.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,2,Set(COUNT=1)
@@ -5497,9 +5493,9 @@ exten =&gt; 123,5,Goto(3)
 ; das gleiche mit einer benannten Priorität:
 exten =&gt; 124,1,Answer()
 exten =&gt; 124,2,Set(COUNT=1)
-exten =&gt; 124,3(ansage),SayNumber(${COUNT})
+exten =&gt; 124,3(announcement),SayNumber(${COUNT})
 exten =&gt; 124,4,Set(COUNT=$[ ${COUNT} + 1 ])
-exten =&gt; 124,5,Goto(ansage)</programlisting>
+exten =&gt; 124,5,Goto(announcement)</programlisting>
 
     <note>
       <formalpara>
@@ -5546,41 +5542,44 @@ then the channel will continue at the next priority of the current extension.</s
       <secondary><code>GotoIf()</code></secondary>
     </indexterm>
 
-    <simpara>Springt bedingt zu der angegebenen Priorität,</simpara>
+    <simpara>Jumps to a specified priority, extension and context if a
+    condition is satisfied.</simpara>
 
-    <synopsis>GotoIf(<replaceable>Bedingung</replaceable>?<replaceable>PrioWahr</replaceable>:<replaceable>PrioFalsch</replaceable>)</synopsis>
+    <synopsis><command>GotoIf(<replaceable>condition</replaceable>?<replaceable>labeliftrue</replaceable>:<replaceable>labeliffalse</replaceable>)</command></synopsis>
 
-    <simpara>Schickt den Anruf ohne Möglichkeit der Rückkehr an die Priorität
-    <code>PrioWahr</code>, falls die <code>Bedingung</code> wahr ist oder zu
-    <code>PrioFalsch</code>, falls sie falsch ist. Entweder
-    <code>PrioWahr</code> oder <code>PrioFalsch</code> können ausgelassen
-    werden (dann wird ggf. mit der nächsten Priorität weitergemacht), aber
-    nicht beide (und nicht der Doppelpunkt!).</simpara>
+    <simpara>Hands the currently active channel to the priority specified by
+    <replaceable>labeliftrue</replaceable> if the condition is true, or to the
+    priority specified in <replaceable>labeliffalse</replaceable> if the
+    condition is false. Either <replaceable>labeliftrue</replaceable> or
+    <replaceable>labeliffalse</replaceable> may be omitted (in which case
+    execution continues with the next priority) but not both! You must include
+    the colon delimiter (:).</simpara>
 
-    <para>Eine Priorität ist hier eines der Folgenden:<itemizedlist>
+    <para>In this case, a priority can be:<itemizedlist>
         <listitem>
-          <simpara>eine Priorität, z.B. <code>10</code></simpara>
+          <simpara>a single priority, <emphasis>e.g.</emphasis>
+          <code>10</code></simpara>
         </listitem>
 
         <listitem>
-          <simpara>eine Extension und eine Priorität, z.B.
+          <simpara>an extension and a priority, <emphasis>e.g.</emphasis>
           <code>123,10</code></simpara>
         </listitem>
 
         <listitem>
-          <simpara>context, Extension und Priorität, z.B.
-          <code>incoming,123,10</code></simpara>
+          <simpara>a context, extension and priority,
+          <emphasis>e.g.</emphasis> <code>incoming,123,10</code></simpara>
         </listitem>
 
         <listitem>
-          <simpara>eine benannte Priorität innerhalb der gleichen Extension,
-          z.B. <code>ok</code></simpara>
+          <simpara>a named priority in the same extension,
+          <emphasis>e.g.</emphasis> <code>ok</code></simpara>
         </listitem>
       </itemizedlist></para>
 
-    <programlisting>exten =&gt; 123,1,GotoIf($[ ${test} = 5 ]?ok:nein)
+    <programlisting>exten =&gt; 123,1,GotoIf($[ ${test} = 5 ]?ok:no)
 exten =&gt; 123,10(ok),Playback(tt-monkeys)
-exten =&gt; 123,20(nein),Playback(tt-weasels)</programlisting>
+exten =&gt; 123,20(no),Playback(tt-weasels)</programlisting>
 
     <note>
       <formalpara>
@@ -5628,32 +5627,33 @@ performed, but execution continues with the next priority in the dialplan.</scre
       <secondary><code>GotoIfTime()</code></secondary>
     </indexterm>
 
-    <simpara>Verzweigt bedingt, abhängig von Zeit und Tag.</simpara>
+    <simpara>Jumps to the specified priority if the time condition is
+    met.</simpara>
 
-    <synopsis>GotoIfTime(<replaceable>Zeit</replaceable>,<replaceable>Wochentag</replaceable>,<replaceable>Monatstag</replaceable>,<replaceable>Monat</replaceable>?[[<replaceable>context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Pri</replaceable>o)</synopsis>
+    <synopsis><command>GotoIfTime(<replaceable>times</replaceable>,<replaceable>daysofweek</replaceable>,<replaceable>daysofmonth</replaceable>,<replaceable>months</replaceable>?[[<replaceable>context</replaceable>,]<replaceable>extension</replaceable>,]<replaceable>priority</replaceable>)</command></synopsis>
 
-    <simpara>Verzweigt zu der angegebenen Priorität, falls die aktuelle Zeit
-    in das angegebene Muster fällt. Jedes Element kann auch als * (für immer)
-    oder als Spanne (mit <code>-</code>) definiert werden.</simpara>
+    <simpara>Jumps to the specified priority if the current time falls within
+    the specified time window. Each element may be defined with a "*" (always)
+    or a <code>"-"</code> (range).</simpara>
 
     <para>Die Parameter zu dieser Anwendung sind: <variablelist
         termlength="15">
         <varlistentry>
-          <term><code>Uhrzeit-Spanne</code></term>
+          <term><code>times</code></term>
 
           <listitem>
-            <simpara>Zeitintervall, im 24-Stunden-Format mit Minuten, z.B.
-            <code>9:00-17:00</code></simpara>
+            <simpara>Time interval, in 24 hour format with hours and minutes,
+            <emphasis>e.g.</emphasis> <code>9:00-17:00</code></simpara>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><code>Wochentag</code></term>
+          <term><code>daysofweek</code></term>
 
           <listitem>
-            <simpara>Wochentage (<code>mon</code>, <code>tue</code>,
+            <simpara>Weekdays (<code>mon</code>, <code>tue</code>,
             <code>wed</code>, <code>thu</code>, <code>fri</code>,
-            <code>sat</code>, <code>sun</code>), z.B.
+            <code>sat</code>, <code>sun</code>), <emphasis>e.g.</emphasis>
             <code>mon-fri</code></simpara>
           </listitem>
         </varlistentry>
@@ -5662,7 +5662,8 @@ performed, but execution continues with the next priority in the dialplan.</scre
           <term><code>Monatstag</code></term>
 
           <listitem>
-            <simpara>Tag des Monats (1-31), z.B. <code>1-15</code></simpara>
+            <simpara>Days of the month (1-31), <emphasis>e.g.</emphasis>
+            <code>1-15</code></simpara>
           </listitem>
         </varlistentry>
 
@@ -5670,22 +5671,23 @@ performed, but execution continues with the next priority in the dialplan.</scre
           <term><code>Monat</code></term>
 
           <listitem>
-            <simpara>Monate (<code>jan</code>, <code>feb</code>,
+            <simpara>Months of the year (<code>jan</code>, <code>feb</code>,
             <code>mar</code>, <code>apr</code>, <code>mai</code>,
             <code>jun</code>, <code>jul</code>, <code>aug</code>,
             <code>sep</code>, <code>oct</code>, <code>nov</code>,
-            <code>dec</code>), z.B. <code>apr-oct</code></simpara>
+            <code>dec</code>), <emphasis>e.g.</emphasis>
+            <code>apr-oct</code></simpara>
           </listitem>
         </varlistentry>
       </variablelist></para>
 
-    <programlisting>; Während der Öffnungszeiten zum context incoming-geoeffnet springen.
-; Wir haben montags-freitags von 9 bis 18 Uhr geöffnet:
-exten =&gt; s,1,GotoIfTime(09:00-17:59,mon-fri,*,*?incoming-geoeffnet,s,1)
-; außerdem samstags von 9 bis 12:
-exten =&gt; s,n,GotoIfTime(09:00-11:59,sat,*,*?incoming-geoeffnet,s,1)
-; Außerhalb der Öffnungszeiten zum context incoming-geschlossen:
-exten =&gt; s,n,Goto(incoming-geschlossen,s,1)</programlisting>
+    <programlisting>; During business hours, jump to incoming-open context.
+; We are open Monday to Friday from 9:00 to 18:00 (9 a.m. to 6 p.m.):
+exten =&gt; s,1,GotoIfTime(09:00-17:59,mon-fri,*,*?incoming-open,s,1)
+; Also Saturdays from 9 to 12:
+exten =&gt; s,n,GotoIfTime(09:00-11:59,sat,*,*?incoming-open,s,1)
+; After hours go to incoming-closed:
+exten =&gt; s,n,Goto(incoming-closed,s,1)</programlisting>
 
     <note>
       <formalpara>
@@ -5734,13 +5736,13 @@ in the dialplan if the current time matches the given time specification.</scree
       <secondary><code>Hangup()</code></secondary>
     </indexterm>
 
-    <simpara>Legt den aktuellen Channel auf.</simpara>
+    <simpara>Hangs up the active channel.</simpara>
 
-    <synopsis>Hangup()</synopsis>
+    <synopsis><command>Hangup()</command></synopsis>
 
-    <simpara>Legt den aktuellen Channel bedingungslos auf.</simpara>
+    <simpara>Hangs up the active channel unconditionally.</simpara>
 
-    <simpara>Liefert stets -1 zurück.</simpara>
+    <simpara>Returns -1.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Playback(vm-goodbye)
@@ -5789,16 +5791,17 @@ value.</screen></para>
       <secondary><code>IAX2Provision()</code></secondary>
     </indexterm>
 
-    <simpara>Versorgt eine anrufende IAXy-Einheit.</simpara>
+    <simpara>Provision a calling IAXy device, optionally using the specified
+    template.</simpara>
 
-    <synopsis>IAX2Provision([<replaceable>Template</replaceable>])</synopsis>
+    <synopsis><command>IAX2Provision([<replaceable>template</replaceable>])</command></synopsis>
 
-    <simpara>Stellt einer anrufende IAXy-Einheit die Vorlage
-    <code>Template</code> bereit. Ist keine Vorlage angegeben, wird die
-    Standard-Vorlage benutzt. IAXy-Versorgungsvorlagen sind in der
-    Konfigurationsdatei <filename>iaxprov.conf</filename> definiert.</simpara>
+    <simpara>Provisions a calling IAXy device with
+    <replaceable>template</replaceable>. If no template is used, the default
+    is used. IAXy templates are defined in
+    <filename>iaxprov.conf</filename>.</simpara>
 
-    <simpara>Liefert 0 bei Erfolg oder -1 bei einem Fehler.</simpara>
+    <simpara>Returns 0 on success or -1 on failure.</simpara>
 
     <programlisting>exten =&gt; 123,1,IAX2Provision(default)</programlisting>
 
@@ -5834,19 +5837,19 @@ default if one is not specified.  Returns -1 on error or 0 on success.</screen><
       <secondary><code>ImportVar()</code></secondary>
     </indexterm>
 
-    <simpara>Setzt eine Variable basierend auf einer Channelvariable eines
-    anderen Channels.</simpara>
+    <simpara>Sets a variable with the contents of a channel variable from
+    another channel.</simpara>
 
-    <synopsis>ImportVar(<replaceable>NeueVariable</replaceable>=<replaceable>Channel</replaceable>,<replaceable>Variable</replaceable>)</synopsis>
+    <synopsis><command>ImportVar(<replaceable>newVariable</replaceable>=<replaceable>channel</replaceable>,<replaceable>variable</replaceable>)</command></synopsis>
 
-    <simpara>Setzt die Variable <code>NeueVariable</code> auf den Wert von
-    <code>Variable</code> des angegebenen Channels. Falls
-    <code>NeueVariable</code> mit dem Zeichen <code>_</code> beginnt, wird
-    einfache Vererbung angenommen. Falls <code>NeueVariable</code> mit
-    <code>__</code> beginnt, wird unbeschränkte Vererbung
-    angenommen.</simpara>
+    <simpara>Sets the variable
+    <code><replaceable>newVariable</replaceable></code> to the value contained
+    in <code><replaceable>variable</replaceable></code> in the specified
+    channel. If <code><replaceable>newVariable</replaceable></code> begins
+    with "<code>_"</code>, single inheritance is used; if it begins with
+    <code>"__"</code>, unlimited inheritance is used.</simpara>
 
-    <programlisting>; Caller-ID vom Channel Zap/1 importieren:
+    <programlisting>; import Caller-ID from channel Zap/1:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,ImportVar(cid=Zap/1,CALLERID)</programlisting>
 
@@ -5891,30 +5894,28 @@ Set for more information.</screen></para>
       <secondary><code>Log()</code></secondary>
     </indexterm>
 
-    <simpara>Sendet den angegebenen Text an den angegebenen
-    Log-Level.</simpara>
+    <simpara>Sends a specified message to the specified log level.</simpara>
 
-    <synopsis>Log(<replaceable>Level</replaceable>,<replaceable>Nachricht</replaceable>)</synopsis>
+    <synopsis><command>Log(<replaceable>level</replaceable>,<replaceable>message</replaceable>)</command></synopsis>
 
-    <simpara>Gibt die angegebene Nachricht an den entsprechenden Log-Level
-    weiter.</simpara>
+    <simpara>Delivers a specified message to a defined log level.</simpara>
 
     <variablelist termlength="11">
       <varlistentry>
-        <term><code>Level</code></term>
+        <term><code>level</code></term>
 
         <listitem>
-          <simpara>Einer der folgenden Ziellevel: <code>ERROR</code>,
+          <simpara>One of the following target levels: <code>ERROR</code>,
           <code>WARNING</code>, <code>NOTICE</code>, <code>DEBUG</code>,
           <code>VERBOSE</code>, <code>DTMF</code></simpara>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term><code>Nachricht</code></term>
+        <term><code>message</code></term>
 
         <listitem>
-          <simpara>Zu loggende Nachricht</simpara>
+          <simpara>The message to be written to the log</simpara>
         </listitem>
       </varlistentry>
     </variablelist>
@@ -5958,29 +5959,31 @@ Log(&lt;level&gt;|&lt;message&gt;)
       <secondary><code>LookupBlacklist()</code></secondary>
     </indexterm>
 
-    <simpara>Schlägt die Caller-ID-Nummer in der lokalen Blacklist-Datenbank
-    in der AstDB nach.</simpara>
+    <simpara>Checks the caller ID of a call against the local number blacklist
+    in the Asterisk database (AstDB).</simpara>
 
-    <synopsis>LookupBlacklist([<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis><command>LookupBlacklist([<replaceable>options</replaceable>])</command></synopsis>
 
-    <simpara>Sucht die Caller-ID-Nummer (/-Name) des aktiven Channels in der
-    AstDB in der Familie <code>blacklist</code>. Wenn die Option j (jump)
-    angegeben ist, die Nummer gefunden wird und eine Priorität n+101
-    existiert, geht die Ausführung bei dieser Priorität weiter. Wird auf dem
-    Channel keine Caller-ID empfangen, tut die Anwendung nichts.</simpara>
+    <simpara>Searches for the caller ID number (or name) of the active channel
+    in the <code>blacklist</code> family of the AstDB.des aktiven Channels in
+    der AstDB in der Familie <code>blacklist</code>. If the option j is given,
+    the number exists in the AstDB and the priority
+    <replaceable>n</replaceable>+101 exists, the channel is handed to that
+    priority. If no caller ID is available, the application does
+    nothing.</simpara>
 
-    <simpara>Die Applikation setzt auch die Channelvariable
-    <code>LOOKUPBLSTATUS</code> auf <code>FOUND</code> (gefunden) oder
-    <code>NOTFOUND</code> (nicht gefunden).</simpara>
+    <simpara>Sets the channel variable <code>LOOKUPBLSTATUS</code> to
+    <code>FOUND</code> or <code>NOTFOUND</code>.</simpara>
 
-    <simpara>Um der Blacklist Einträge hinzuzufügen, geben Sie im CLI
-    <code>database put blacklist "<replaceable>Nummer</replaceable>"
-    "1"</code>, bzw. <code>database del blacklist
-    "<replaceable>Nummer</replaceable>"</code> zum Löschen oder <code>database
-    show blacklist</code> für eine Auflistung ein.</simpara>
+    <simpara>To add numbers to the blacklist from the CLI, enter
+    <code>database put blacklist "<replaceable>number</replaceable>"
+    "1"</code>; similarly <code>database del blacklist
+    "<replaceable>number</replaceable>"</code> to delete the entry and
+    <code>database show blacklist</code> for a listing of all the entries in
+    the database.</simpara>
 
-    <programlisting>; Nummern aus der Schwarzen Liste nicht zulassen,
-; andernfalls die Nummer in der Variablen ${PETER} wählen:
+    <programlisting>; Block calls from numbers in the blacklist,
+; otherwise dial the number in the variable ${PETER}:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,LookupBlacklist()
 exten =&gt; 123,n,GotoIf($["${LOOKUPBLSTATUS}" = "FOUND"]?black,1)
@@ -5989,14 +5992,14 @@ exten =&gt; 123,n,Dial(${PETER},30)
 exten =&gt; black,1,Playback(tt-allbusy)
 exten =&gt; black,n,Hangup()</programlisting>
 
-    <para>Die Applikation <code>LookupBlacklist()</code> könnte folgendermaßen
-    ersetzt werden:<programlisting>exten =&gt; 123,1,Macro(blacklist,${CALLERID(num)})
+    <para>You can accomplish the same effect as <code>LookupBlacklist()</code>
+    with the following dialplan entries:<programlisting>exten =&gt; 123,1,Macro(blacklist,${CALLERID(num)})
 exten =&gt; 123,n,Dial(IAX2/user:secret@widgets.biz/500)
 
 [macro-blacklist]
 ; Aufruf: Macro(blacklist,${CALLERID(num)})
 exten =&gt; s,1,GotoIf(${DB_EXISTS(blacklist/${ARG1})}?black)
-exten =&gt; s,10(black),NoOp(Nummer ${ARG1} ist auf der Blacklist)
+exten =&gt; s,10(black),NoOp(${ARG1} is in the blacklist)
 exten =&gt; s,n,Busy(5)
 exten =&gt; s,n,Hangup()</programlisting></para>
 
@@ -6037,25 +6040,25 @@ Example: exten =&gt; 1234,1,LookupBlacklist()</screen></para>
       <secondary><code>LookupCIDName()</code></secondary>
     </indexterm>
 
-    <simpara>Sucht einen Caller-ID-Namen in der AstDB.</simpara>
+    <simpara>Looks up a caller ID name in the AstDB.</simpara>
 
-    <synopsis>LookupCIDName()</synopsis>
+    <synopsis><command>LookupCIDName()</command></synopsis>
 
-    <simpara>Schlägt die Caller-ID-Nummer des aktiven Channels in der AstDB
-    (Familie <code>cidname</code>) nach und setzt den Caller-ID-Namen - wenn
-    vorhanden - auf den gespeicherten Wert. Diese Anwendung tut nichts, wenn
-    auf dem Channel keine Caller-ID empfangen wird.
-    <code>LookupCIDName()</code> kann nützlich sein, wenn Sie nur eine
-    Caller-ID-Nummer, aber keinen -Namen empfangen, oder wenn Sie den
-    Caller-ID-Namen für einige eingehende Anrufe ändern möchten.</simpara>
+    <simpara>Looks up the caller ID number in the AstDB (family
+    <code>cidname</code>), and, if it exists, sets the corresponding caller ID
+    name. This application does nothing if no caller ID is present.
+    <code>LookupCIDName()</code> can be useful if you receive number
+    information but no names, or if you want to change the caller ID
+    information certain incoming calls.</simpara>
 
-    <simpara>Liefert stets 0 zurück.</simpara>
+    <simpara>Returns 0.</simpara>
 
-    <simpara>Um der Liste Einträge hinzuzufügen, geben Sie im CLI
-    <code>database put cidname "<replaceable>Nummer</replaceable>"
-    "<replaceable>Name</replaceable>"</code>, bzw. <code>database del cidname
-    "<replaceable>Nummer</replaceable>"</code> zum Löschen oder <code>database
-    show cidname</code> für eine Auflistung ein.</simpara>
+    <simpara>To add entries to the list from the CLI enter <code>database put
+    cidname "<replaceable>number</replaceable>"
+    "<replaceable>name</replaceable>"</code>; similarly enter <code>database
+    del cidname "<replaceable>number</replaceable>"</code> to delete entries
+    and <code>database show cidname</code> to print a list of all the entries
+    in the database.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,LookupCIDName()</programlisting>
@@ -6095,32 +6098,33 @@ calls.</screen></para>
       <secondary><code>Macro()</code></secondary>
     </indexterm>
 
-    <simpara>Ruft ein zuvor definiertes Makro auf.</simpara>
+    <simpara>Executes a previously defined macro.</simpara>
 
-    <synopsis>Macro(<replaceable>macroname</replaceable>[,<replaceable>Arg1</replaceable>[,<replaceable>Arg2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
+    <synopsis>Macro(<replaceable>macroname</replaceable>[,<replaceable>arg1</replaceable>[,<replaceable>arg2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
 
-    <simpara>Führt ein im context
-    <code>macro-<replaceable>macroname</replaceable></code> definiertes Makro
-    aus, indem es zur <code>s</code>-Extension dieses contextes springt und
-    nach der Ausführung des Makros zurückkehrt.</simpara>
+    <simpara>Executes a macro defined in the context
+    <code>macro-<replaceable>macroname</replaceable></code> by handing the
+    channel over to the <code>s</code> extension in the macro and returning
+    after the macro has finished running.</simpara>
 
-    <simpara>Die angerufene Extension, context und Priorität sind innerhalb
-    des Makros in<code> ${MACRO_EXTEN}</code>, <code>${MACRO_CONTEXT}</code>
-    und <code>${MACRO_PRIORITY}</code> verfügbar. Die Parameter
-    <code>Arg1</code>, <code>Arg2</code> ... werden im Makrocontext zu
-    <code>${ARG1}</code>, <code>${ARG2}</code> usw.</simpara>
+    <simpara>The called extension, context and priority are passed to the
+    macro in the variables<code> ${MACRO_EXTEN}</code>,
+    <code>${MACRO_CONTEXT}</code> and <code>${MACRO_PRIORITY}</code>. The
+    arguments are passed to the macro in <code>${ARG1}</code>,
+    <code>${ARG2}</code>, and so on.</simpara>
 
-    <simpara><code>Macro()</code> liefert -1 zurück, falls irgendein Schritt
-    des Makros -1 zurückliefert, sonst 0. Falls bei Beendigung des Ablaufs
-    <code>${MACRO_OFFSET}</code> gesetzt ist, versucht die Anwendung bei
-    Priorität n+1+<code>MACRO_OFFSET</code> fortzufahren, falls ein solcher
-    Schritt existiert, sonst bei n+1.</simpara>
+    <simpara><command><code>Macro()</code></command> returns -1 if any step in
+    the macro returns -1, otherwise it returns 0. If the variable
+    <code>${MACRO_OFFSET}</code> is set when the macro finishes, the
+    application will continue executing at priority
+    <replaceable>n</replaceable>+1+<code>MACRO_OFFSET</code> if it exists,
+    otherwise it will continue at <replaceable>n</replaceable>+1.</simpara>
 
-    <simpara>Falls die <code>Goto()</code>-Anwendung aus dem Makro heraus
-    aufgerufen wird, wird das Makro enden und die Kontrolle an das Ziel von
-    <code>Goto()</code> gehen.</simpara>
+    <simpara>If <code><command>Goto()</command></code> is called from within
+    the macro, macro execution ends and the call continues in the priority
+    specified in <command>Goto()</command>.</simpara>
 
-    <programlisting>; ein Makro definieren, das vom übergebenen Wert runterzählt:
+    <programlisting>; define a macro that counts down from the provided value:
 [macro-countdown]
 exten =&gt; s,1,Set(COUNT=${ARG1})
 exten =&gt; s,n,While($[ ${COUNT} &gt; 0])
@@ -6129,8 +6133,8 @@ exten =&gt; s,n,Set(COUNT=$[ ${COUNT} - 1 ])
 exten =&gt; s,n,EndWhile()
 
 [default]
-exten =&gt; 123,1,Macro(countdown,3)   ; das Makro "countdown" mit ARG1=3 aufrufen
-exten =&gt; 124,1,Macro(countdown,5)   ; das Makro "countdown" mit ARG1=5 aufrufen</programlisting>
+exten =&gt; 123,1,Macro(countdown,3)   ; call the macro "countdown" with ARG1=3
+exten =&gt; 124,1,Macro(countdown,5)   ; call the macro "countdown" with ARG1=5</programlisting>
 
     <note>
       <formalpara>
@@ -6189,36 +6193,37 @@ WARNING: Because of the way Macro is implemented (it executes the priorities
       <secondary><code>MacroExclusive()</code></secondary>
     </indexterm>
 
-    <simpara>Ruft ein zuvor definiertes Makro auf. Aber nur eins zu einem
-    gegebenen Zeitpunkt.</simpara>
+    <simpara>Executes a previously defined macro but allows only a single
+    instance of the macro to execute at any given point in time.</simpara>
 
-    <synopsis>MacroExclusive(<replaceable>macroname</replaceable>[,<replaceable>Arg1</replaceable>[,<replaceable>Arg2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
+    <synopsis><command>MacroExclusive(<replaceable>macroname</replaceable>[,<replaceable>arg1</replaceable>[,<replaceable>arg2</replaceable>[,<replaceable>...</replaceable>]]])</command></synopsis>
 
-    <simpara>Führt - wie <code>Macro()</code> - ein im context
-    <code>macro-<replaceable>macroname</replaceable></code> definiertes Makro
-    aus (und nur das eine!), indem es zur <code>s</code>-Extension dieses
-    contextes springt und nach der Ausführung des Makros zurückkehrt. Wird das
-    Macro während es bereits läuft an einer anderen Stelle des Dialplanes noch
-    einmal aufgerufen, so muss diese Instanz warten, bis das erste Macro
-    fertig abgearbeitet ist.</simpara>
+    <simpara>Executes - same as <code>Macro()</code> - a macro defined in
+    <code>macro-<replaceable>macroname</replaceable></code>, by handing the
+    channel over to the <code>s</code> extension in the macro and returning
+    after the macro has finished running, but allows only a single instance to
+    run at any given time! If the same macro is called at the same time from
+    elsewhere in the dialplan, this second instance must wait until the first
+    instance has completed.</simpara>
 
-    <simpara>Die angerufene Extension, context und Priorität sind innerhalb
-    des Makros in <code>${MACRO_EXTEN}</code>, <code>${MACRO_CONTEXT}</code>
-    und <code>${MACRO_PRIORITY}</code> verfügbar. Die Parameter
-    <code>Arg1</code>, <code>Arg2</code> ... werden im Makrocontext zu
-    <code>${ARG1}</code>, <code>${ARG2}</code> usw.</simpara>
+    <simpara>The called extension, context and priority are passed to the
+    macro in the variables<code> ${MACRO_EXTEN}</code>,
+    <code>${MACRO_CONTEXT}</code> and <code>${MACRO_PRIORITY}</code>. The
+    arguments are passed to the macro in <code>${ARG1}</code>,
+    <code>${ARG2}</code>, and so on.</simpara>
 
-    <simpara><code>Macro()</code> liefert -1 zurück, falls irgendein Schritt
-    des Makros -1 zurückliefert, sonst 0. Falls bei Beendigung des Ablaufs
-    <code>${MACRO_OFFSET}</code> gesetzt ist, versucht die Anwendung bei
-    Priorität n+1+<code>MACRO_OFFSET</code> fortzufahren, falls ein solcher
-    Schritt existiert, sonst bei n+1.</simpara>
+    <simpara><command><code>Macro()</code></command> returns -1 if any step in
+    the macro returns -1, otherwise it returns 0. If the variable
+    <code>${MACRO_OFFSET}</code> is set when the macro finishes, the
+    application will continue executing at priority
+    <replaceable>n</replaceable>+1+<code>MACRO_OFFSET</code> if it exists,
+    otherwise it will continue at <replaceable>n</replaceable>+1.</simpara>
 
-    <simpara>Falls die <code>Goto()</code>-Anwendung aus dem Makro heraus
-    aufgerufen wird, wird das Makro enden und die Kontrolle an das Ziel von
-    <code>Goto()</code> gehen.</simpara>
+    <simpara>If <code><command>Goto()</command></code> is called from within
+    the macro, macro execution ends and the call continues in the priority
+    specified in <command>Goto()</command>.</simpara>
 
-    <programlisting>; ein Makro definieren, das vom übergebenen Wert runterzählt:
+    <programlisting>; define a macro that counts down from the provided value:
 [macro-countdown]
 exten =&gt; s,1,Set(COUNT=${ARG1})
 exten =&gt; s,n,While($[ ${COUNT} &gt; 0])
@@ -6227,8 +6232,8 @@ exten =&gt; s,n,Set(COUNT=$[ ${COUNT} - 1 ])
 exten =&gt; s,n,EndWhile()
 
 [default]
-exten =&gt; 123,1,MacroExclusive(countdown,3)   ; das Makro "countdown" mit ARG1=3 aufrufen
-exten =&gt; 124,1,MacroExclusive(countdown,5)   ; das Makro "countdown" mit ARG1=5 aufrufen</programlisting>
+exten =&gt; 123,1,MacroExclusive(countdown,3)   ; call the macro "countdown" with ARG1=3
+exten =&gt; 124,1,MacroExclusive(countdown,5)   ; call the macro "countdown" with ARG1=5</programlisting>
 
     <note>
       <formalpara>
@@ -6272,12 +6277,12 @@ Arguments and return values as in application Macro()</screen></para>
       <secondary><code>MacroExit()</code></secondary>
     </indexterm>
 
-    <simpara>Bricht die Abarbeitung eines Macros ab.</simpara>
+    <simpara>Interrupts execution of a macro.</simpara>
 
-    <synopsis>MacroExit()</synopsis>
+    <synopsis><command>MacroExit()</command></synopsis>
 
-    <simpara>Kann innerhalb eines Macros dazu benutzt werden das selbige
-    vorzeigtig zu beenden.</simpara>
+    <simpara>May be used within a macro to end execution of the macro as
+    though there were no further priorities remaining.</simpara>
 
     <note>
       <formalpara>
@@ -6319,13 +6324,12 @@ behavior.</screen></para>
       <secondary><code>MacroIf()</code></secondary>
     </indexterm>
 
-    <simpara>Startet verschiedene Macros in Abhängigkeit einer
-    Expression.</simpara>
+    <simpara>Conditionally starts different macros.</simpara>
 
-    <synopsis>MacroIf(<replaceable>Ausdruck</replaceable>?<replaceable>MacronameA</replaceable>[,<replaceable>argA1</replaceable>][:<replaceable>MacronameB</replaceable>[,<replaceable>argB1</replaceable>]])</synopsis>
+    <synopsis><command>MacroIf(<replaceable>expression</replaceable>?<replaceable>macronameA</replaceable>[,<replaceable>argA1</replaceable>][:<replaceable>macronameB</replaceable>[,<replaceable>argB1</replaceable>]])</command></synopsis>
 
-    <simpara>Ruft bedingt ein Makro auf, wobei ein Ausdruck im Stil von
-    <code>GotoIf()</code> ausschlaggebend ist.</simpara>
+    <simpara>Calls a macro depending on a condition (defined in the same way
+    as in <command><code>GotoIf()</code></command> ).</simpara>
 
     <note>
       <formalpara>
@@ -6368,28 +6372,27 @@ Arguments and return values as in application macro()</screen></para>
       <secondary><code>mailboxExists()</code></secondary>
     </indexterm>
 
-    <simpara>Verzweigt bedingt, falls die angegebene Voicemailbox
-    existiert.</simpara>
+    <simpara>Checks to see if the specified voicemail box exists.</simpara>
 
-    <synopsis>mailboxExists(<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis><command>mailboxExists(<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][,<replaceable>options</replaceable>])</command></synopsis>
 
-    <simpara>Prüft, ob die durch <code>mailbox</code> angegebene Voicemailbox
-    existiert. Sie können zusätzlich einen Voicemail-context
-    <code>context</code> übergeben, wenn die mailbox nicht zum
-    Standard-Voicemail-context gehört.</simpara>
+    <simpara>Checks to see if the voicemail box defined in
+    <replaceable>mailbox</replaceable> exists. A voicemail context may be
+    specified if the mailbox being checked is not in the default
+    context.</simpara>
 
-    <simpara>Setzt die Channelvariable <code>VMBOXEXISTSSTATUS</code> auf
-    <code>SUCCESS</code> (Erfolg, mailbox vorhanden) oder <code>FAILED</code>
-    (fehlgeschlagen, mailbox nicht vorhanden).</simpara>
+    <simpara>Sets the channel variable <code>VMBOXEXISTSSTATUS</code> to
+    <code>SUCCESS</code> (mailbox found) or <code>FAILED</code> (mailbox not
+    found).</simpara>
 
-    <simpara>Mit der Option <code>j</code> wird bei vorhandener mailbox zur
-    Priorität n+101 gesprungen.</simpara>
+    <simpara>Option <code>j</code> enables jumping to priority
+    <replaceable>n</replaceable>+101 on success.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,mailboxExists(123@default)
 exten =&gt; 123,n,Goto(box-${VMBOXEXISTSSTATUS})
 exten =&gt; 123,10(box-SUCCESS),Voicemail(123,u)
-exten =&gt; 123,20(box-FAILED),Playback(tut-uns-leid)</programlisting>
+exten =&gt; 123,20(box-FAILED),Playback(sorry)</programlisting>
 
     <note>
       <formalpara>
@@ -6436,42 +6439,40 @@ will be used.
       <secondary><code>MeetMe()</code></secondary>
     </indexterm>
 
-    <simpara>Nimmt den Anrufer in eine MeetMe-Konferenz auf.</simpara>
+    <simpara>Places the caller in a MeetMe conference.</simpara>
 
-    <synopsis>MeetMe([<replaceable>KonferenzNr</replaceable>][,<replaceable>Optionen</replaceable>[,<replaceable>PIN</replaceable>]])</synopsis>
+    <synopsis><command>MeetMe([<replaceable>conference</replaceable>][,<replaceable>options</replaceable>[,<replaceable>PIN</replaceable>]])</command></synopsis>
 
-    <simpara>Verbindet den Anrufer auf dem aktuellen Channel zu einer
-    MeetMe-Konferenz, angegeben durch den Parameter <code>KonferenzNr</code>.
-    Ohne Angabe der Konferenznummer wird der Teilnehmer zur Eingabe derselben
-    aufgefordert.</simpara>
+    <simpara>Connects the caller in the current channel to a MeetMe conference
+    defined by <replaceable>conferenceNo</replaceable>. If this is not
+    specified, the application asks the caller to enter a conference
+    number.</simpara>
 
-    <simpara>Wird als <code>PIN</code>-Parameter die PIN-Nummer der Konferenz
-    (statisch in <filename>meetme.conf</filename> oder dynamisch vom Ersteller
-    festgelegt) übergeben, so wird der Anrufer direkt in die Konferenz
-    geleitet. Ansonsten muss der Anrufer die PIN eingeben, um beitreten zu
-    können.</simpara>
+    <simpara>If <code>PIN</code> is correctly set to the PIN (personal
+    identification number) of the conference (set statically in
+    <filename>meetme.conf</filename> or dynamically by the conference
+    operator) the caller is placed directly into the conference; otherwise,
+    the caller must enter the PIN first.</simpara>
 
     <important>
-      <simpara>Damit MeetMe-Konferenzen funktionieren, muss ein passendes
-      Zaptel-Interface installiert sein. Alternativ kann auch der
-      <code>ztdummy</code>-Treiber für Timing-Zwecke verwendet
-      werden.</simpara>
+      <simpara>MeetMe conferences require a Zaptel interface to be installed
+      in the Asterisk server; these provide a time source for synchronization
+      of the participating channels. If no Zaptel interface is available, the
+      <code>ztdummy</code> driver may be used.</simpara>
 
-      <simpara>MeetMe-Konferenzen benutzen offenbar intern immer den
-      uLaw-Codec, je mehr Teilnehmer in einer Konferenz andere Codecs wie GSM
-      verwenden, desto mehr Rechenleistung wird für die Umkodierung
-      benötigt.</simpara>
+      <simpara>MeetMe conferences always use the <code>ulaw</code> codec
+      internally. The more conference participants use other codecs such as
+      GSM or alaw, the higher the processor load due to transcoding.</simpara>
     </important>
 
-    <simpara>Die <code>Optionen</code> können sich aus folgenden Zeichen
-    zusammensetzen:</simpara>
+    <simpara>Valid options include:</simpara>
 
     <variablelist termlength="3">
       <varlistentry>
         <term><code>a</code></term>
 
         <listitem>
-          <simpara>Aktiviert den Administrator-Modus.</simpara>
+          <simpara>Sets admin mode.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6479,8 +6480,8 @@ will be used.
         <term><code>A</code></term>
 
         <listitem>
-          <simpara>Markiert den eintretenden User als besonderen Teilnehmer
-          (siehe <code>w</code> und <code>x</code>).</simpara>
+          <simpara>Marks the joining user as a special participant (see
+          <code>w</code> and <code>x</code>).</simpara>
         </listitem>
       </varlistentry>
 
@@ -6488,13 +6489,12 @@ will be used.
         <term><code>b</code></term>
 
         <listitem>
-          <simpara>Startet das in <code>${MEETME_AGI_BACKGROUND}</code>
-          spezifizierte AGI-Skript, standardmäßig
-          <filename>conf-background.agi</filename>. (Funktioniert nur dann
-          korrekt, wenn alle Kanäle in einer Konferenz Zap-Kanäle sind.) Das
-          Skript erhält alle DTMF-Tanstendrücke, wodurch die Kombination mit
-          Optionen, die auch das Abfangen von Tasten zur Folge haben
-          (<code>p</code>), nicht möglich ist.</simpara>
+          <simpara>Starts the AGI script defined in
+          <code>${MEETME_AGI_BACKGROUND}</code>,
+          <filename>conf-background.agi</filename> by default. (Works only if
+          all the channels in the conference are Zap channels.) The script is
+          passed all DTMF keypresses; will not work in combination with
+          options that also capture DTMF (such as <code>p</code>).</simpara>
         </listitem>
       </varlistentry>
 
@@ -6502,7 +6502,8 @@ will be used.
         <term><code>c</code></term>
 
         <listitem>
-          <simpara>Kündigt beim Betreten die Zahl der Teilnehmer an.</simpara>
+          <simpara>Announces the number of participants to a joining
+          user.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6510,7 +6511,7 @@ will be used.
         <term><code>d</code></term>
 
         <listitem>
-          <simpara>Legt dynamisch einen neuen Konferenzraum an.</simpara>
+          <simpara>Dynamically allocates a new conference.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6518,9 +6519,9 @@ will be used.
         <term><code>D</code></term>
 
         <listitem>
-          <simpara>Legt dynamisch einen neuen Konferenzraum an, wobei die
-          Festlegung der PIN verlangt wird. (Wenn der User keine PIN will,
-          muss er <code>#</code> drücken.)</simpara>
+          <simpara>Dynamically allocates a new conference but asks the user to
+          set a PIN (if no PIN is desired, the user must press
+          "<code>#"</code>).</simpara>
         </listitem>
       </varlistentry>
 
@@ -6528,7 +6529,7 @@ will be used.
         <term><code>e</code></term>
 
         <listitem>
-          <simpara>Wählt eine leere Konferenz aus.</simpara>
+          <simpara>Selects an empty conference.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6536,8 +6537,8 @@ will be used.
         <term><code>E</code></term>
 
         <listitem>
-          <simpara>Wählt eine leere Konferenz aus, die keine PIN
-          verlangt.</simpara>
+          <simpara>Selects an empty conference that does not require a
+          PIN.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6545,8 +6546,17 @@ will be used.
         <term><code>i</code></term>
 
         <listitem>
-          <simpara>Kündigt Betreten oder Verlassen eines Teilnehmers an (nur
-          mit Zap-Kanälen).</simpara>
+          <simpara>Announces join and exit of new participants with review
+          (works only with Zap channels).</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>I</term>
+
+        <listitem>
+          <para>Announces join and exit of new participants without review
+          (works only with Zap channels).</para>
         </listitem>
       </varlistentry>
 
@@ -6554,8 +6564,7 @@ will be used.
         <term><code>m</code></term>
 
         <listitem>
-          <simpara>Aktiviert den Monitor-Modus (nur hören, nicht
-          sprechen).</simpara>
+          <simpara>Listen-only mode.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6563,8 +6572,18 @@ will be used.
         <term><code>M</code></term>
 
         <listitem>
-          <simpara>Aktiviert Wartemusik (Music on Hold), wenn nur ein
-          Teilnehmer in der Konferenz ist.</simpara>
+          <simpara>Music-on-hold mode. Plays music-on-hold if there is only
+          one participant in the conference.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>o</term>
+
+        <listitem>
+          <para>Sets talker optimization. Improves conference quality and
+          reduces transcoding overhead by muting participants who are not
+          currently speaking.</para>
         </listitem>
       </varlistentry>
 
@@ -6572,8 +6591,8 @@ will be used.
         <term><code>p</code></term>
 
         <listitem>
-          <simpara>Ermöglicht es dem Teilnehmer, die Konferenz durch Drücken
-          von <code>#</code> zu verlassen.</simpara>
+          <simpara>Participants may leave by pressing
+          <code>"#"</code>.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6581,8 +6600,8 @@ will be used.
         <term><code>P</code></term>
 
         <listitem>
-          <simpara>Fragt immer nach der PIN, auch wenn sie hier im Befehl
-          angegeben ist.</simpara>
+          <simpara>Requests a PIN even if it is provided in the
+          command.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6590,8 +6609,8 @@ will be used.
         <term><code>q</code></term>
 
         <listitem>
-          <simpara>Aktiviert den ruhigen Modus (spielt keine
-          Eintritts-/Austrittsklänge ab).</simpara>
+          <simpara>Quiet mode. Does not play entry/exit notification
+          tones.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6599,14 +6618,12 @@ will be used.
         <term><code>r</code></term>
 
         <listitem>
-          <simpara>Zeichnet eine Konferenz auf. Datei:
-          <code>${MEETME_RECORDINGFILE}</code>, Format:
-          <code>${MEETME_RECORDINGFORMAT}</code>. Der Standard-Dateiname
-          lautet
-          <code>meetme-conf-rec-${<replaceable>KonferenzNr</replaceable>}-${<replaceable>UniqueID</replaceable>}</code>,
-          wobei <code>UniqueID</code> eine einmalige ID ist. Das
-          Standardformat ist <code>wav</code>. (Funktioniert nur mit
-          Zap-Kanälen)</simpara>
+          <simpara>Records a conference. File:
+          <code>${MEETME_RECORDINGFILE}</code>, format:
+          <code>${MEETME_RECORDINGFORMAT}</code>. Default filename is
+          <code>meetme-conf-rec-${<replaceable>conference</replaceable>}-${<replaceable>uniqueID</replaceable>}</code>.
+          The default format is <code>wav</code>. (Works only with Zap
+          channels.)</simpara>
         </listitem>
       </varlistentry>
 
@@ -6614,8 +6631,7 @@ will be used.
         <term><code>s</code></term>
 
         <listitem>
-          <simpara>Wechselt beim Drücken von <code>*</code> ins (Teilnehmer-
-          oder Administrator-)Menü.</simpara>
+          <simpara>Switches to menu (user or admin) "*" is pressed.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6623,8 +6639,7 @@ will be used.
         <term><code>t</code></term>
 
         <listitem>
-          <simpara>Aktiviert den Nur-Sprechen-Modus (nur reden, nicht
-          hören).</simpara>
+          <simpara>Talk-only mode.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6632,9 +6647,8 @@ will be used.
         <term><code>T</code></term>
 
         <listitem>
-          <simpara>Aktiviert die Sprecher-Erkennung (wird zum
-          Manager-Inferface gesendet und in der MeetMe-Liste im CLI
-          angezeigt).</simpara>
+          <simpara>Talker detection. (Information is sent to the Manager
+          interface and displayed in the MeetMe list in the CLI.)</simpara>
         </listitem>
       </varlistentry>
 
@@ -6642,7 +6656,7 @@ will be used.
         <term><code>v</code></term>
 
         <listitem>
-          <simpara>Aktiviert den Video-Modus (bisher ohne Funktion).</simpara>
+          <simpara>Video mode (not yet implemented).</simpara>
         </listitem>
       </varlistentry>
 
@@ -6650,9 +6664,9 @@ will be used.
         <term><code>w</code></term>
 
         <listitem>
-          <simpara>Wartet, bis ein gekennzeichneter Teilnehmer (siehe
-          <code>A</code>) die Konferenz betritt. Bis dahin hören alle
-          Teilnehmer Wartemusik.</simpara>
+          <simpara>Wait until the marked participant joins the conference.
+          Until this point, the other participants will hear
+          music-on-hold.</simpara>
         </listitem>
       </varlistentry>
 
@@ -6660,9 +6674,8 @@ will be used.
         <term><code>x</code></term>
 
         <listitem>
-          <simpara>Schließt die Konferenz, wenn sie vom letzten
-          gekennzeichneten Teilnehmer (siehe <code>A</code>) verlassen
-          wird.</simpara>
+          <simpara>Ends the conference when the last marked participant exits
+          (see <code>A</code>).</simpara>
         </listitem>
       </varlistentry>
 
@@ -6670,34 +6683,40 @@ will be used.
         <term><code>X</code></term>
 
         <listitem>
-          <simpara>Ermöglicht es dem Teilnehmer, die Konferenz durch Eingabe
-          einer einziffrigen Extension im context
-          <code>${MEETME_EXIT_CONTEXT}</code> zu verlassen, oder durch Eingabe
-          der Nummer einer Extension des aktuellen contexts, falls diese
-          Variable nicht definiert ist.</simpara>
+          <simpara>Participants may exit the conference by dialling a
+          single-digit extension in the <code>${MEETME_EXIT_CONTEXT}</code>
+          context, or the current context if this variable is not defined.
+          Option <code>X</code> does not work with <code>p</code> or
+          <code>s</code>.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>1</term>
+
+        <listitem>
+          <para>Does not play the "You are currently the only person in this
+          conference" message when the first conference participant
+          enters.</para>
         </listitem>
       </varlistentry>
     </variablelist>
 
-    <simpara>Die Option <code>X</code> funktioniert nicht zusammen mit
-    <code>p</code> oder <code>s</code>.</simpara>
-
-    <simpara>Verwenden Sie <code>e</code> (oder <code>E</code>) zusammen mit
-    <code>d</code> (oder <code>D</code>), um dynamisch einen neuen
-    Konferenzraum zu eröffnen, wobei Asterisk automatisch die
-    <code>KonferenzNr</code> festlegt. Sie müssen dann natürlich den anderen
-    Teilnehmern die Nummer mitteilen oder entsprechende Dialplan-Logik
-    einsetzen.</simpara>
+    <simpara>You can use <code>e</code> (or <code>E</code>) together with
+    <code>d</code> (or <code>D</code>) to dynamically open a new conference.
+    This means you will have to find a way of distributing the conference
+    number to the other users, or employ some dialplan logic to accomplish the
+    same objective.</simpara>
 
     <note>
-      <para>Mit <code>d</code> oder <code>D</code> werden
-      <emphasis>dynamisch</emphasis> Konferenzräume angelegt, in der
-      <filename>meetme.conf</filename> können sie
-      <emphasis>statisch</emphasis> definiert werden.</para>
+      <para>The options <code>d</code> or <code>D</code>
+      <emphasis>dynamically</emphasis> open conferences; conferences are
+      defined <emphasis>statically</emphasis> in
+      <filename>meetme.conf</filename>.</para>
     </note>
 
     <programlisting>exten =&gt; 123,1,Answer()
-; den Anrufer in Konferenzraum 333 schicken (mit der PIN 1234):
+; Place the caller in conference 333 (with PIN 1234):
 exten =&gt; 123,n,MeetMe(333,DpM,1234)</programlisting>
 
     <formalpara>
@@ -6708,83 +6727,83 @@ exten =&gt; 123,n,MeetMe(333,DpM,1234)</programlisting>
     </formalpara>
 
     <formalpara>
-      <title>Befehle im CLI</title>
+      <title>Commands in the CLI</title>
 
-      <para>Diese Befehle stehen im CLI zur Verfügung, um MeetMe-Konferenzen
-      zu verwalten (dabei ist die <code>TeilnehmerNr</code> die in der Liste
-      angezeigte Nummer des Teilnehmers):<variablelist>
+      <para>The following commands are for administering conferences from the
+      CLI. (The value <code><replaceable>participant</replaceable></code> is
+      the number of participant as displayed in the participant
+      list):<variablelist>
           <?dbfo list-presentation="blocks"?>
 
           <varlistentry>
             <term><code>MeetMe</code></term>
 
             <listitem>
-              <simpara>Listet alle Konferenzen auf.</simpara>
+              <simpara>List all conferences.</simpara>
             </listitem>
           </varlistentry>
 
           <varlistentry>
             <term><code>MeetMe list
-            <replaceable>KonferenzNr</replaceable></code></term>
+            <replaceable>conference</replaceable></code></term>
 
             <listitem>
-              <simpara>Listet die Teilnehmer einer Konferenz auf.</simpara>
+              <simpara>List the participants in the specified
+              conference.</simpara>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term><code>MeetMe kick <replaceable>KonferenzNr</replaceable>
-            <replaceable>TeilnehmerNr</replaceable></code></term>
+            <term><code>MeetMe kick <replaceable>conference</replaceable>
+            <replaceable>participant</replaceable></code></term>
 
             <listitem>
-              <simpara>Wirft einen Teilnehmer aus der Konferenz.</simpara>
+              <simpara>Kicks a participant out of the conference.</simpara>
             </listitem>
           </varlistentry>
 
           <varlistentry>
             <term><code>MeetMe kick
-            <replaceable>KonferenzNr</replaceable></code></term>
+            <replaceable>conference</replaceable></code></term>
 
             <listitem>
-              <simpara>Wirft alle Teilnehmer aus der Konferenz.</simpara>
+              <simpara>Kicks all participants out of the conference.</simpara>
             </listitem>
           </varlistentry>
 
           <varlistentry>
             <term><code>MeetMe lock
-            <replaceable>KonferenzNr</replaceable></code></term>
+            <replaceable>conference</replaceable></code></term>
 
             <listitem>
-              <simpara>Sperrt eine Konferenz, so dass keine Teilnehmer mehr
-              aufgenommen werden.</simpara>
+              <simpara>Locks a conference to new participants.</simpara>
             </listitem>
           </varlistentry>
 
           <varlistentry>
             <term><code>MeetMe unlock
-            <replaceable>KonferenzNr</replaceable></code></term>
+            <replaceable>conference</replaceable></code></term>
 
             <listitem>
-              <simpara>Hebt eine Konferenz-Sperre (s.o.) wieder auf.</simpara>
+              <simpara>Unlocks a previous lock (see above).</simpara>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term><code>MeetMe mute <replaceable>KonferenzNr</replaceable>
-            <replaceable>TeilnehmerNr</replaceable></code></term>
+            <term><code>MeetMe mute <replaceable>conference</replaceable>
+            <replaceable>participant</replaceable></code></term>
 
             <listitem>
-              <simpara>Schaltet einen Teilnehmer stumm.</simpara>
+              <simpara>Mute a conference participant.</simpara>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term><code>MeetMe unmute <replaceable>KonferenzNr</replaceable>
-            <replaceable>TeilnehmerNr</replaceable></code></term>
+            <term><code>MeetMe unmute <replaceable>conference</replaceable>
+            <replaceable>participant</replaceable></code></term>
 
             <listitem>
-              <simpara>Hebt die Stummschaltung eines Teilnehmers (s.o.) wieder
-              auf.</simpara>
+              <simpara>Unmute a conference participant (see above).</simpara>
             </listitem>
           </varlistentry>
         </variablelist></para>
@@ -6899,19 +6918,19 @@ The option string may contain zero or more of the following characters:
       <secondary><code>MeetMeAdmin()</code></secondary>
     </indexterm>
 
-    <simpara>Administration von MeetMe-Konferenzen</simpara>
+    <simpara>Administers a MeetMe conference.</simpara>
 
-    <synopsis>MeetMeAdmin(<replaceable>KonferenzNr</replaceable>,<replaceable>Befehl</replaceable>[,<replaceable>TeilnehmerNr</replaceable>])</synopsis>
+    <synopsis><command>MeetMeAdmin(<replaceable>conference</replaceable>,<replaceable>command</replaceable>[,<replaceable>participant</replaceable>])</command></synopsis>
 
-    <para>Führt den angegebenen MeetMe-Administrationsbefehl in der
-    angegebenen Konferenz aus. Der Befehl kann einer der folgenden sein (Die
-    <code>TeilnehmerNr</code> wird nur für den Befehl <code>k</code>
-    benötigt.): <variablelist termlength="3">
+    <para>Executes a command in the specified conference. The command may be
+    one of the following (the
+    <code><replaceable>participant</replaceable></code> is required only for
+    the kick command (<code>k)</code>): <variablelist termlength="3">
         <varlistentry>
           <term><code>K</code></term>
 
           <listitem>
-            <simpara>Wirft alle Teilnehmer aus der Konferenz.</simpara>
+            <simpara>Kicks all participants out of the conference.</simpara>
           </listitem>
         </varlistentry>
 
@@ -6919,8 +6938,8 @@ The option string may contain zero or more of the following characters:
           <term><code>k</code></term>
 
           <listitem>
-            <simpara>Wirft den Teilnehmer mit der angegebenen
-            <code>TeilnehmerNr</code> aus der Konferenz</simpara>
+            <simpara>Kicks <code><replaceable>participant</replaceable></code>
+            out of the conference.</simpara>
           </listitem>
         </varlistentry>
 
@@ -6928,8 +6947,8 @@ The option string may contain zero or more of the following characters:
           <term><code>e</code></term>
 
           <listitem>
-            <simpara>Wirft den letzten Teilnehmer, der sich zu der Konferenz
-            verbunden hat, raus</simpara>
+            <simpara>Kicks the last participant who joined out of the
+            conference.</simpara>
           </listitem>
         </varlistentry>
 
@@ -6937,8 +6956,7 @@ The option string may contain zero or more of the following characters:
           <term><code>L</code></term>
 
           <listitem>
-            <simpara>Sperrt die Konferenz (d.h. keine neuen
-            Teilnehmer)</simpara>
+            <simpara>Locks the conference to new participants.</simpara>
           </listitem>
         </varlistentry>
 
@@ -6946,7 +6964,7 @@ The option string may contain zero or more of the following characters:
           <term><code>l</code></term>
 
           <listitem>
-            <simpara>Entsperrt die Konferenz.</simpara>
+            <simpara>Unlocks the conference.</simpara>
           </listitem>
         </varlistentry>
 
@@ -6954,7 +6972,7 @@ The option string may contain zero or more of the following characters:
           <term><code>M</code></term>
 
           <listitem>
-            <simpara>Schaltet die Konferenz für einen User stumm.</simpara>
+            <simpara>Mute a conference participant.</simpara>
           </listitem>
         </varlistentry>
 
@@ -6962,8 +6980,7 @@ The option string may contain zero or more of the following characters:
           <term><code>m</code></term>
 
           <listitem>
-            <simpara>Hebt die Stummschaltung (durch <code>M</code>)
-            auf</simpara>
+            <simpara>Unmute a muted participant.</simpara>
           </listitem>
         </varlistentry>
 
@@ -6971,8 +6988,8 @@ The option string may contain zero or more of the following characters:
           <term><code>N</code></term>
 
           <listitem>
-            <simpara>Schaltet alle Teilnehmer außer dem Administrator
-            stumm</simpara>
+            <simpara>Mute everyone except the conference
+            administrator.</simpara>
           </listitem>
         </varlistentry>
 
@@ -6980,16 +6997,15 @@ The option string may contain zero or more of the following characters:
           <term><code>n</code></term>
 
           <listitem>
-            <simpara>Hebt die Stummschaltung (durch <code>N</code>)
-            auf</simpara>
+            <simpara>Unmute everyone mute by <code>N</code>.</simpara>
           </listitem>
         </varlistentry>
       </variablelist></para>
 
-    <programlisting>; Konferenz 333 fuer den User 3 stummschalten:
+    <programlisting>; Mute participant 3 in conference 333
 exten =&gt; 123,1,MeetMeAdmin(333,M,3)
 
-; Teilnehmer 3 aus der Konferenz 333 kicken:
+; Kick participant 3 out of conference 333:
 exten =&gt; 123,1,MeetMeAdmin(333,k,3)</programlisting>
 
     <note>
@@ -7067,18 +7083,16 @@ MeetMe conference Administration
       <secondary><code>MeetMeCount()</code></secondary>
     </indexterm>
 
-    <simpara>Zählt die Teilnehmer einer MeetMe-Konferenz.</simpara>
+    <simpara>Counts the number of participants in a MeetMe
+    conference.</simpara>
 
-    <synopsis>MeetMeCount(<replaceable>KonferenzNr</replaceable>[,<replaceable>Variablenname</replaceable>])</synopsis>
+    <synopsis><command>MeetMeCount(<replaceable>conference</replaceable>[,<replaceable>variablename</replaceable>])</command></synopsis>
 
-    <simpara>Spielt die Anzahl der Teilnehmer in der MeetMe-Konferenz ab.
-    Falls eine Variable angegeben ist, wird der Abspielvorgang übersprungen
-    und die Anzahl in diese Variable geschrieben.</simpara>
+    <simpara>Announces the number of participants in the conference. If the
+    variable name is provided, the announcement is skipped and the count
+    written to this variable.</simpara>
 
-    <simpara>Liefert bei Erfolg 0 zurück, bei einem Fehler -1</simpara>
-
-    <simpara>Zählt die Teilnehmer in Konferenz 501, und weist diese Zahl
-    <code>${COUNT}</code> zu.</simpara>
+    <simpara>Returns 0 on success, -1 on error.</simpara>
 
     <programlisting>; die Teilnehmerzahl der Konferenz 333 in ${anzahl} speichern:
 exten =&gt; 333,1,MeetMeCount(123,anzahl)</programlisting>
@@ -7131,16 +7145,16 @@ A ZAPTEL INTERFACE MUST BE INSTALLED FOR CONFERENCING FUNCTIONALITY.</screen></p
       <secondary><code>Milliwatt()</code></secondary>
     </indexterm>
 
-    <simpara>Erzeugt einen 1000-Hz-Ton.</simpara>
+    <simpara>Generates a 1000 Hz test tone on a channel.</simpara>
 
     <synopsis>Milliwatt()</synopsis>
 
-    <simpara>Erzeugt einen konstanten 1000-Hz-Ton bei 0 dbm (u-law). Diese
-    Anwendung wird häufig verwendet, um die Audioeigenschaften eines
-    bestimmten Channels zu testen. Allerdings ist die Bezeichnung etwas
-    irreführend, sinnvoller schiene <quote>Kilohertz()</quote>.</simpara>
+    <simpara>Milliwatt tone lines are used by telecommunications carriers for
+    testing and measuring line characteristics. They can be used to check for
+    echo, excessive or inadequate volume, or some kinds of line noise.
+    Standard milliwatt test tones are 1004 Hz at 0 dbm (u-law).</simpara>
 
-    <programlisting>; einen 1000-Hz-Ton erzeugen:
+    <programlisting>; generate a 1000 Hz Milliwatt test tone:
 exten =&gt; 123,1,Milliwatt()</programlisting>
 
     <note>
@@ -7179,22 +7193,22 @@ Milliwatt(): Generate a Constant 1000Hz tone at 0dbm (mu-law)</screen></para>
       <secondary><code>MixMonitor()</code></secondary>
     </indexterm>
 
-    <simpara>Schneidet das Gespräch auf dem aktuellen Channel mit (eine
-    Datei)</simpara>
+    <simpara>Records the audio on the current channel but mixes it before
+    writing it to a file.</simpara>
 
-    <synopsis>MixMonitor(<replaceable>Basisname</replaceable>.<replaceable>Format</replaceable>[,<replaceable>Optionen</replaceable>[,<replaceable>Befehl</replaceable>]])</synopsis>
+    <synopsis><command>MixMonitor(<replaceable>fileprefix</replaceable>.<replaceable>format</replaceable>[,<replaceable>options</replaceable>[,<replaceable>command</replaceable>]])</command></synopsis>
 
-    <simpara>Startet die Audio-Aufzeichnung des aktuellen Channels. Dabei
-    werden im im Gegensatz zu <code>Monitor()</code> direkt beide Kanäle zu
-    einer Datei gemischt.</simpara>
+    <simpara>Starts recording the audio on the current channel. Instead of
+    recording each direction in a separate file the way
+    <code><command>Monitor()</command></code> would, mixes the two audio
+    streams on-the-fly and writes the result to the specified file.</simpara>
 
-    <para>Optionen:<variablelist termlength="6">
+    <para>Options:<variablelist termlength="6">
         <varlistentry>
           <term><code>a</code></term>
 
           <listitem>
-            <simpara>Hängt den Audio-Stream an eine bestehende Datei
-            an.</simpara>
+            <simpara>Appends the audio stream to an existing file.</simpara>
           </listitem>
         </varlistentry>
 
@@ -7202,10 +7216,9 @@ Milliwatt(): Generate a Constant 1000Hz tone at 0dbm (mu-law)</screen></para>
           <term><code>b</code></term>
 
           <listitem>
-            <simpara>Startet die Aufnahme erst, nachdem der Anruf mit einem
-            anderen Channel verbunden wurde, also nachdem z.B. durch
-            <code>Dial()</code> tatsächlich ein Gespräch zustande
-            kommt.</simpara>
+            <simpara>Saves audio to the file only while the channel is
+            bridged, <emphasis>i.e.</emphasis> once a conversation has
+            actually begun, and only until it is hung up.</simpara>
           </listitem>
         </varlistentry>
 
@@ -7213,8 +7226,8 @@ Milliwatt(): Generate a Constant 1000Hz tone at 0dbm (mu-law)</screen></para>
           <term><code>v(<replaceable>x</replaceable>)</code></term>
 
           <listitem>
-            <simpara>Passt die eingehende Lautstärke um Faktor <code>x</code>
-            an (-4 bis 4).</simpara>
+            <simpara>Adjusts the heard volume by an increment of
+            <code>x</code> (range -4 to 4).</simpara>
           </listitem>
         </varlistentry>
 
@@ -7222,8 +7235,8 @@ Milliwatt(): Generate a Constant 1000Hz tone at 0dbm (mu-law)</screen></para>
           <term><code>V(<replaceable>x</replaceable>)</code></term>
 
           <listitem>
-            <simpara>Passt die ausgehende Lautstärke um Faktor <code>x</code>
-            an (-4 bis 4).</simpara>
+            <simpara>Adjusts the spoken volume by an increment of
+            <code>x</code> (range -4 to 4).</simpara>
           </listitem>
         </varlistentry>
 
@@ -7231,18 +7244,18 @@ Milliwatt(): Generate a Constant 1000Hz tone at 0dbm (mu-law)</screen></para>
           <term><code>W(<replaceable>x</replaceable>)</code></term>
 
           <listitem>
-            <simpara>Passt die eingehende und ausgehende Lautstärke um Faktor
-            <code>x</code> an (-4 bis 4).</simpara>
+            <simpara>Adjusts both heard and spoken volume by an increment of
+            <code>x</code> (range -4 to 4).</simpara>
           </listitem>
         </varlistentry>
       </variablelist></para>
 
-    <simpara><code>Befehl</code> wird (falls angegeben) nach der Aufzeichnung
-    ausgeführt. Die Variable <code>${MIXMONITOR_FILENAME}</code> wird auf den
-    Namen der aufgezeichneten Datei gesetzt.</simpara>
+    <simpara>The <replaceable>command</replaceable> (if provided) is executed
+    after recording. The variable <code>${MIXMONITOR_FILENAME}</code> is set
+    to the filename used for the recording.</simpara>
 
-    <simpara>Beachten Sie auch die Hinweise bei
-    <code>Monitor()</code>.</simpara>
+    <simpara>See also additional information in the description to
+    <code><command>Monitor()</command></code>.</simpara>
 
     <note>
       <formalpara>
@@ -7299,58 +7312,56 @@ The variable MIXMONITOR_FILENAME will contain the filename used to record.</scre
       <secondary><code>Monitor()</code></secondary>
     </indexterm>
 
-    <simpara>Schneidet das Gespräch auf dem aktuellen Channel mit (zwei
-    Dateien)</simpara>
+    <simpara>Records the current channel in two separate files.</simpara>
 
-    <synopsis>Monitor([<replaceable>Format</replaceable>[,<replaceable>Basisname</replaceable>[,<replaceable>Optionen</replaceable>]]])</synopsis>
+    <synopsis>Monitor([<replaceable>format</replaceable>[,<replaceable>fileprefix</replaceable>[,<replaceable>options</replaceable>]]])</synopsis>
 
-    <simpara>Startet die Audio-Aufzeichnung des aktuellen Channels. Die auf
-    dem Channel eingehenden und ausgehenden Sprachpakete werden in seperaten
-    Dateien aufgezeichnet, bis der Channel aufgelegt oder die Überwachung
-    durch die <code>StopMonitor()</code>-Anwendung beendet wird.</simpara>
+    <simpara>Starts audio recording on the current channel. Incoming and
+    outgoing audio packets are written to separate files until the channel is
+    hung up or monitoring is stopped with
+    <code><command>StopMonitor()</command></code>.</simpara>
 
-    <simpara><code>Format</code> gibt das Dateiformat (= Dateiendung) an. Ohne
-    Angabe wird <code>wav</code> verwendet.</simpara>
+    <simpara>The parameter <replaceable>format</replaceable> sets the file
+    format. If this is not specified, <code>wav</code> is used.</simpara>
 
-    <simpara><code>Basisname</code> gibt den Basis-Dateinamen an (also ohne
-    Dateiendung). Ohne Angabe wird der Name aus dem Channelnamen und einer
-    Nummer zusammengesetzt, z.B. <code>IAX2[foo@bar]-3</code>. Das eingehende
-    Audio wird in
-    <filename><replaceable>Basisname</replaceable>-in.<replaceable>Format</replaceable></filename>,
-    das ausgehende in
-    <filename><replaceable>Basisname</replaceable>-out.<replaceable>Format</replaceable></filename>
-    im Verzeichnis <filename>/var/spool/asterisk/monitor/</filename>
-    gespeichert.</simpara>
+    <simpara>The parameter <replaceable>fileprefix</replaceable> specifies the
+    filename without extension. If this is not specified, the filename is
+    assembled out of the channel name and a number, for example,<code>
+    IAX2[foo@bar]-3</code>. Incoming audio is written to
+    <filename><replaceable>fileprefix</replaceable>-in.<replaceable>format</replaceable></filename>,
+    outgoing audio in
+    <filename><replaceable>fileprefix</replaceable>-out.<replaceable>format</replaceable></filename>,
+    both in <filename>/var/spool/asterisk/monitor/</filename>.</simpara>
 
-    <para>Eine der beiden Optionen kann angegeben werden: <variablelist
-        termlength="3">
+    <para>Two options may be specified: <variablelist termlength="3">
         <varlistentry>
           <term><code>m</code></term>
 
           <listitem>
-            <simpara>Nach dem Beenden der Aufnahme werden die Dateien für In
-            und Out in eine gemischt und die ursprünglichen Dateien gelöscht.
-            Dazu muss das Programm <command>soxmix</command> aus dem Paket
-            <command>sox</command> installiert sein<footnote>
+            <simpara>After recording is complete, mixes the incoming and
+            outgoing audio files into a single file and deletes the originals.
+            Requires that <command>soxmix</command> from the
+            <command>sox</command> package be installed on the
+            server.<footnote>
                 <simpara><ulink
                 url="http://sox.sourceforge.net/">http://sox.sourceforge.net/</ulink>,
-                siehe Beschreibung in <xref linkend="musiconhold.conf" />,
-                mindestens Version 12.17.7, Ihre installierte Version erfahren
-                Sie mit <command>soxmix -help</command></simpara>
-              </footnote>. Falls die Variable <code>${MONITOR_EXEC}</code>
-            definiert ist, wird statt <command>soxmix</command> die angegebene
-            Anwendung ausgeführt, und die ursprünglichen Dateien für beide
-            Richtungen nicht automatisch gelöscht<footnote>
-                <para>abhängig von der Asterisk-Version; ältere Versionen
-                löschen nicht automatisch</para>
-              </footnote>. <command>soxmix</command> (bzw.
-            <command>${MONITOR_EXEC}</command>) werden drei Parameter
-            übergeben, die beiden Aufzeichnungsdateien und der Dateiname für
-            die zu erstellende gemischte Datei, welcher dem Basisnamen ohne
-            <code>-in</code>/<code>-out</code> entspricht. Ist
-            <code>${MONITOR_EXEC_ARGS}</code> gesetzt, werd der Inhalt als
-            zusätzliche Argumente an <code>${MONITOR_EXEC}</code>
-            übergeben.</simpara>
+                see also an explanation in <xref
+                linkend="musiconhold.conf" />, version 12.17.7 or newer. You
+                may check your installed version with <command>soxmix
+                -help</command></simpara>
+              </footnote>If the variable <code>${MONITOR_EXEC}</code> is
+            defined, this application is executed instead of
+            <command>soxmix</command> and the original incoming and outgoing
+            audio files are not deleted.<footnote>
+                <para>depends on Asterisk version; older versions do not
+                delete automatically. Best to check with a proper test.</para>
+              </footnote>. <command>soxmix</command> (or
+            <command>${MONITOR_EXEC}</command> if specified) is passed three
+            values: the names of the incoming and outgoing audio files and the
+            name of the mixed file, which is the fileprefix without
+            <code>-in</code>/<code>-out</code>. If
+            <code>${MONITOR_EXEC_ARGS}</code> is set, the contents are used as
+            arguments to <code>${MONITOR_EXEC}</code>.</simpara>
 
             <important>
               <para>Bei der Verwendung von <command>soxmix</command> ist zu
@@ -10494,7 +10505,7 @@ exten =&gt; 123,n,Set(GLOBAL(TEST2)=456)   ; Asterisk 1.4</programlisting>
     <simpara><code>Set()</code> wird auch verwendet, um in Funktionen zu
     schreiben (siehe <xref linkend="funktionen" />).</simpara>
 
-    <programlisting>exten =&gt; 123,1,Set(CALLERID(name)=Apfelmus)  ; CALLERID(name) setzen
+    <programlisting>exten =&gt; 123,1,Set(CALLERID(name)=Widgets)  ; CALLERID(name) setzen
 exten =&gt; 123,n,Set(CALLERID(name)=)          ; CALLERID(name) leeren
 
 exten =&gt; 123,n,Set(DB(mein/test)=ok)         ; in AstDB schreiben
