@@ -10084,14 +10084,14 @@ LANGUAGE function for more information on setting the language for the channel.<
       <secondary><code>SayPhonetic()</code></secondary>
     </indexterm>
 
-    <simpara>Buchstabiert die angegebene Zeichenkette phonetisch.</simpara>
+    <simpara>Spells a string using the NATO phonetic alphabet.</simpara>
 
-    <synopsis>SayPhonetic(<replaceable>String</replaceable>)</synopsis>
+    <synopsis><command>SayPhonetic(<replaceable>string</replaceable>)</command></synopsis>
 
-    <simpara>Buchstabiert den angegebenen String unter Verwendung des
-    phonetischen NATO-Alphabets bzw. Funker-Alphabets (je nach Sprache). Die
-    Sprache kann mit der Funktion <code>LANGUAGE()</code> geändert werden.
-    Umlaute/Sonderzeichen sind bisher nicht möglich.</simpara>
+    <simpara>Spells out the provided string using the NATO phonetic alphabet
+    or its linguistic variations. The language may be set with the Asterisk
+    function <code>LANGUAGE()</code>. Umlauts and other special characters are
+    not yet supported.</simpara>
 
     <programlisting>exten =&gt; 123,1,Set(LANGUAGE=en)
 exten =&gt; 123,n,SayPhonetic(asterisk)
@@ -10140,46 +10140,46 @@ alphabet that correspond to the letters in the given string.</screen></para>
       <secondary><code>SayUnixTime()</code></secondary>
     </indexterm>
 
-    <simpara>Zeitansage in einem spezifischen Format</simpara>
+    <simpara>Announce the time in a custom format.</simpara>
 
-    <synopsis>SayUnixTime([<replaceable>Unixzeit</replaceable>][,<replaceable>Zeitzone</replaceable>[,<replaceable>Format</replaceable>]])</synopsis>
+    <synopsis><command>SayUnixTime([<replaceable>unixtime</replaceable>][,<replaceable>timezone</replaceable>[,<replaceable>format</replaceable>]])</command></synopsis>
 
-    <para>Sagt die angegebene Zeit unter Berücksichtigung der angegebenen
-    Zeitzone und des vorgegebenen Formats. Die Parameter sind: <variablelist
-        termlength="10">
+    <para>Announces the current time according to the specified time zone and
+    format. Allowed options are: <variablelist termlength="10">
         <varlistentry>
-          <term><code>Unixzeit</code></term>
+          <term><code>unixtime</code></term>
 
           <listitem>
-            <simpara>Unix-Timestamp, also die Anzahl der Sekunden seit dem 1.
-            Januar 1970, 0 Uhr GMT. Kann negative Werte annehmen. Standardwert
-            ist die aktuelle Zeit.</simpara>
+            <simpara>The time in Unix time format, <emphasis>i.e.</emphasis>
+            the number of seconds that have passed since the start of the
+            epoch, which began at 0:00 UTC, January 1st, 1970. Accepts
+            negative values. The default value is the current time.</simpara>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><code>Zeitzone</code></term>
+          <term><code>timezone</code></term>
 
           <listitem>
-            <simpara>Die Zeitzone. Eine Liste findet sich in
-            <filename>/usr/share/zoneinfo/</filename>. Standardwert ist die
-            Geräteeinstellung.</simpara>
+            <simpara>The time zone. A list may be found in
+            <filename>/usr/share/zoneinfo/</filename>. The default is the
+            system time zone.</simpara>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><code>Format</code></term>
+          <term><code>format</code></term>
 
           <listitem>
-            <simpara>Das Format, in der die Zeit gesprochen werden soll. Eine
-            Liste von Formaten findet sich in
-            <filename>voicemail.conf</filename>. Als Standardformat wird
-            <code>ABdY 'digits/at' IMp</code> verwendet.</simpara>
+            <simpara>The time format of the announcement. A list of allowed
+            formats may be found in <filename>voicemail.conf</filename> from
+            the default installation. The default time format is <code>ABdY
+            'digits/at' IMp</code>.</simpara>
           </listitem>
         </varlistentry>
       </variablelist></para>
 
-    <simpara>Liefert 0 zurück oder -1, wenn aufgelegt wird.</simpara>
+    <simpara>Returns 0 or -1 if the channel is hung up.</simpara>
 
     <programlisting>exten =&gt; 123,1,SayUnixTime(,,IMp)</programlisting>
 
@@ -10219,21 +10219,19 @@ SayUnixTime([unixtime][|[timezone][|format]])
       <secondary><code>SendDTMF()</code></secondary>
     </indexterm>
 
-    <simpara>Sendet beliebige DTMF-Ziffern zu dem Channel.</simpara>
+    <simpara>Send DTMF digits on the channel.</simpara>
 
-    <synopsis>SendDTMF(<replaceable>Ziffern</replaceable>[,<replaceable>Timeout_ms</replaceable>])</synopsis>
+    <synopsis><command>SendDTMF(<replaceable>digits</replaceable>[,<replaceable>timeout_ms</replaceable>])</command></synopsis>
 
-    <simpara>Sendet die angegebenen DTMF-Ziffern auf einem Channel. Gültige
-    DTMF-Symbole sind <code>0</code>-<code>9</code>, <code>*</code>,
-    <code>#</code> und <code>A</code>-<code>D</code>. Sie können auch den
-    Buchstaben <code>w</code> als eine Ziffer verwendet, er steht für eine
-    Wartezeit von 500 Millisekunden. Der Parameter <code>Timeout_ms</code>
-    bezeichnet die Zeitdauer in Millisekunden zwischen den Ziffern. Falls
-    nicht angegeben, wird ein Wert von 250 Millisekunden für
-    <code>Timeout_ms</code> angenommen.</simpara>
+    <simpara>Sends the specified DTMF sequence on the channel. Permitted
+    symbols are <code>0</code>-<code>9</code>, <code>*</code>, <code>#</code>
+    and <code>A</code>-<code>D</code>. Additionally <code>w</code> is allowed;
+    it indicates a pause of 500 ms. The argument
+    <code><replaceable>timeout_ms</replaceable></code> sets the pause in
+    milliseconds between tones. If not specified, defaults to 250
+    ms.</simpara>
 
-    <simpara>Liefert bei Erfolg 0 zurück oder -1, wenn aufgelegt
-    wird.</simpara>
+    <simpara>Returns 0, or -1 if the channel is hung up.</simpara>
 
     <programlisting>exten =&gt; 123,1,SendDTMF(123w456w789,200)</programlisting>
 
@@ -10276,20 +10274,20 @@ Sends arbitrary DTMF digits
       <secondary><code>SendImage()</code></secondary>
     </indexterm>
 
-    <simpara>Sendet eine Bilddatei.</simpara>
+    <simpara>Sends an image file to the channel.</simpara>
 
-    <synopsis>SendImage(<replaceable>Dateiname</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis><command>SendImage(<replaceable>filename</replaceable>[,<replaceable>options</replaceable>])</command></synopsis>
 
-    <simpara>Sendet eine Bilddatei auf einem Channel. Falls die Übermittlung
-    von Bildern unterstützt wird und die Übertragung fehlschlägt, wird
-    aufgelegt, sonst bei der nächsten Priorität fortgefahren. Mit der Option
-    <code>j</code> wird, wenn der Channel keine Bildübertragung unterstützt,
-    zur Priorität n+101 gesprungen.</simpara>
+    <simpara>Sends an image file to the channel. If images are supported and
+    the transmission fails, the application hangs up; otherwise it continues
+    on the next priority. If option <code>j</code> is set, the application
+    jumps to priority <replaceable>n</replaceable>+101, if it
+    exists.</simpara>
 
-    <simpara>Liefert 0 zurück, wenn das Bild fehlerfrei übertragen wurde oder
-    der Channel eine Bildübertragung nicht unterstützt, sonst -1. Setzt die
-    Channelvariable <code>SENDIMAGESTATUS</code> entweder auf <code>OK</code>
-    (Erfolg) oder <code>NOSUPPORT</code> (nicht unterstützt).</simpara>
+    <simpara>Returns 0 on successful transmission of the image or if the
+    channel does not support images, otherwise returns -1. Sets the channel
+    variable <code>SENDIMAGESTATUS</code> to <code>OK</code> or
+    <code>NOSUPPORT</code>.</simpara>
 
     <programlisting>exten =&gt; 123,1,SendImage(logo.jpg)</programlisting>
 
@@ -10338,26 +10336,24 @@ This application sets the following channel variable upon completion:
       <secondary><code>SendText()</code></secondary>
     </indexterm>
 
-    <simpara>Sendet Text zu dem Channel.</simpara>
+    <simpara>Sends text to the channel.</simpara>
 
-    <synopsis>SendText(<replaceable>Text</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis><command>SendText(<replaceable>text</replaceable>[,<replaceable>option</replaceable>])</command></synopsis>
 
-    <simpara>Überträgt den Text auf einem Channel (z.B. zur Anzeige im
-    Display), falls die Übertragung von Text unterstützt wird. Danach wird die
-    Ausführung bei der nächsten Priorität fortgesetzt. Mit der Option
-    <code>j</code> wird, wenn der Channel keine Textübertragung unterstützt,
-    zur Priorität n+101 gesprungen.</simpara>
+    <simpara>Sends text to the channel (e.g. to print on the display) if the
+    transmission of text is supported by the channel and the device. The
+    channel is handed to the next priority afterwards. If text transmission is
+    not supported, option <code>j</code> makes the channel jump to priority
+    <replaceable>n</replaceable>+101 if it exists.</simpara>
 
-    <simpara>Der Text sollte bisher bei den meisten Kanälen 7-Bit-ASCII
-    sein.</simpara>
+    <simpara>The text is 7 bit ASCII for most channels.</simpara>
 
-    <simpara>Liefert 0 zurück, wenn der Text fehlerfrei übertragen wurde oder
-    der Channel eine Textübertragung nicht unterstützt, sonst -1. Setzt die
-    Channelvariable <code>SENDTEXTSTATUS</code> auf <code>SUCCESS</code>
-    (Erfolg), <code>FAILURE</code> (Sendefehler) oder <code>UNSUPPORTED</code>
-    (nicht unterstützt).</simpara>
+    <simpara>Returns 0 if the text is transmitted without errors, otherwise
+    -1. Sets the channel variable <code>SENDTEXTSTATUS</code> to
+    <code>SUCCESS</code>, <code>FAILURE</code> or
+    <code>UNSUPPORTED</code>.</simpara>
 
-    <programlisting>exten =&gt; 123,1,SendText(Willkommen zu Asterisk)</programlisting>
+    <programlisting>exten =&gt; 123,1,SendText(Welcome to Asterisk)</programlisting>
 
     <note>
       <formalpara>
@@ -10406,26 +10402,26 @@ The option string many contain the following character:
       <secondary><code>SendURL()</code></secondary>
     </indexterm>
 
-    <simpara>Sendet dem Channel eine URL.</simpara>
+    <simpara>Sends a URL to the channel.</simpara>
 
-    <synopsis>SendURL(<replaceable>URL</replaceable>[,<replaceable>Option</replaceable>])</synopsis>
+    <synopsis><command>SendURL(<replaceable>URL</replaceable>[,<replaceable>options</replaceable>])</command></synopsis>
 
-    <simpara>Sendet dem Channel eine URL, die das Gerät aufrufen soll (IAX2).
-    Setzt die Ausführung beim nächsten Schritt fort.</simpara>
+    <simpara>Sends the channel a URL for the device to call up, then hands the
+    channel to the next priority.</simpara>
 
-    <simpara>Mit der Option <code>j</code> wird, wenn der Channel keine
-    Übertragung von URLs unterstützt, zur Priorität n+101 gesprungen. Mit der
-    Option <code>wait</code> wird vor dem Fortfahren auf eine Bestätigung
-    gewartet, dass die URL geladen wurde.</simpara>
+    <simpara>If the channel does not support URL transmission, option
+    <code>j</code> makes the channel jump to priority
+    <replaceable>n</replaceable>+101 if it exists. Option <code>wait</code>
+    makes the application wait for confirmation that the URL was loaded before
+    continuing to the next priority.</simpara>
 
-    <simpara>Liefert 0 zurück, wenn die URL fehlerfrei übertragen wurde oder
-    der Channel die Übertragung nicht unterstützt, sonst -1. Setzt die
-    Channelvariable <code>SENDURLSTATUS</code> auf <code>SUCCESS</code>
-    (Erfolg), <code>FAILURE</code> (Sendefehler), <code>UNSUPPORTED</code>
-    (nicht unterstützt) oder <code>NOLOAD</code> (bei <code>wait</code>:
-    Client konnte die URL nicht laden).</simpara>
+    <simpara>Returns 0 if the URL is transmitted without errors, otherwise -1.
+    Sets the channel variable <code>SENDURLSTATUS</code> to
+    <code>SUCCESS</code>, <code>FAILURE</code>, <code>UNSUPPORTED</code> or
+    <code>NOLOAD</code> (requires option <code>wait</code>; the client could
+    not load the URL successfully).</simpara>
 
-    <programlisting>exten =&gt; 123,1,SendURL(http://www.asterisk.org/,wait)</programlisting>
+    <programlisting>exten =&gt; 123,1,SendURL(http://www.mobileweather.org/index.xml,wait)</programlisting>
 
     <note>
       <formalpara>
@@ -10500,42 +10496,44 @@ does not support HTML transport.  Otherwise, the channel is hung up.</screen></p
       <secondary><code>Set()</code></secondary>
     </indexterm>
 
-    <simpara>Setzt eine Variable auf den angegebenen Wert.</simpara>
+    <simpara>Sets a variable to the specified value.</simpara>
 
-    <synopsis>Set(<replaceable>Variable</replaceable>=<replaceable>Wert</replaceable>[,<replaceable>Variable2</replaceable>=<replaceable>Wert2</replaceable>,...][,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis><command>Set(<replaceable>variable</replaceable>=<replaceable>value</replaceable>[,<replaceable>variable2</replaceable>=<replaceable>value2</replaceable>,...][,<replaceable>options</replaceable>])</command></synopsis>
 
-    <simpara>Setzt die Variable auf den angegebenen Wert. Beginnt der Name der
-    Variablen mit dem Zeichen <code>_</code>, wird einfache Vererbung
-    angenommen (d.h. wird auf Kanäle vererbt, die von diesem Channel erzeugt
-    werden), beginnt er mit <code>__</code>, wird Endlosvererbung angenommen
-    (d.h. wird auf alle Kinder-Kanäle vererbt). Bis zu 24 Variablen können
-    gesetzt werden. Variablen sind normalerweise nur innerhalb eines Channels
-    gültig und werden beim Auflegen gelöscht. Mit der Option <code>g</code>
-    setzt man in Asterisk 1.2 eine Variable (nicht eine Funktion!) global; in
-    1.4 macht man das mit Hilfe der Funktion <code>GLOBAL()</code>.</simpara>
+    <simpara>Sets the variable to the specified value. If the variable name
+    starts with <code>"_"</code>, single inheritance is set
+    (<emphasis>i.e.</emphasis> the variable is inherited by any channels
+    opened from this channel); if it begins with <code>"__"</code>, unlimited
+    inheritance is set (i.e. all children of this channel, regardless of
+    generation, inherit the variable). Up to 24 variables may be set.
+    Variables are valid only in the channel and are cancelled when the channel
+    is hung up. Option <code>g</code> sets a global variable in Asterisk 1.2;
+    in 1.4 this is accomplished with the Asterisk function
+    <code>GLOBAL()</code>.</simpara>
 
-    <programlisting>; die Variable TEST auf "123" setzen:
+    <programlisting>; Set a variable TEST to "123":
 exten =&gt; 123,1,Set(TEST=123)
 exten =&gt; 123,n,SayDigits(${TEST})
 
-; die globale Variable TEST2 auf "456" setzen:
+; Set a global variable TEST2 to "456":
 exten =&gt; 123,n,Set(TEST2=456,g)         ; Asterisk 1.2
 exten =&gt; 123,n,Set(GLOBAL(TEST2)=456)   ; Asterisk 1.4</programlisting>
 
     <note>
-      <para>Ob globale Variablen auch nach einem Reload von Asterisk noch
-      gültig sind, wird durch die Einstellung <code>clearglobalvars</code> in
-      der <filename>extensions.conf</filename> bestimmt.</para>
+      <para>Whether global variables are cleared upon
+      <command>reload</command> depends on the setting of
+      <code>clearglobalvars</code> in
+      <filename>extensions.conf</filename>.</para>
     </note>
 
-    <simpara><code>Set()</code> wird auch verwendet, um in Funktionen zu
-    schreiben (siehe <xref linkend="funktionen" />).</simpara>
+    <simpara><code><command>Set()</command></code> is also used to write to
+    functions (see <xref linkend="funktionen" />).</simpara>
 
-    <programlisting>exten =&gt; 123,1,Set(CALLERID(name)=Widgets)  ; CALLERID(name) setzen
-exten =&gt; 123,n,Set(CALLERID(name)=)          ; CALLERID(name) leeren
+    <programlisting>exten =&gt; 123,1,Set(CALLERID(name)=Widgets)  ; set CALLERID(name)
+exten =&gt; 123,n,Set(CALLERID(name)=)         ; clear CALLERID(name)
 
-exten =&gt; 123,n,Set(DB(mein/test)=ok)         ; in AstDB schreiben
-exten =&gt; 123,n,Set(var=${DB(mein/test)})     ; aus AstDB lesen</programlisting>
+exten =&gt; 123,n,Set(DB(my/test)=ok)         ; write a value to the AstDB
+exten =&gt; 123,n,Set(var=${DB(my/test)})     ; read a value from the AstDB</programlisting>
 
     <note>
       <formalpara>
@@ -10585,17 +10583,22 @@ channel and all children channels.
       <secondary><code>SetAMAFlags()</code></secondary>
     </indexterm>
 
-    <simpara>Setzt AMA-Flags im Anrufprotokoll.</simpara>
+    <simpara>Sets AMA-Flags in the Call Detail Record (CDR).</simpara>
 
-    <synopsis>SetAMAFlags(<replaceable>Flags</replaceable>)</synopsis>
+    <synopsis><command>SetAMAFlags(<replaceable>flags</replaceable>)</command></synopsis>
 
-    <simpara>Setzt zu Abrechnungszwecken die AMA-Flags im Anrufprotokoll (Call
-    Detail Record), wobei die AMA-Einstellungen in den
-    Channelkonfigurationsdateien überschrieben werden. Gültige Werte sind
-    <code>default</code>, <code>omit</code>, <code>billing</code> und
+    <simpara>Sets AMA (Automatic Message Accounting)<footnote>
+        <para>In North America, Automatic Message Accounting has been used for
+        billing in Direct Distance Dialing since it was introduced in the
+        mid-20th century. The system was originally used to provide the toll
+        system with information about the originating circuit so that the
+        subscriber could be billed for a long distance call.</para>
+      </footnote> flags in the CDR. Overrides any settings found in channel
+    configuration files. Valid settings are <code>default</code>,
+    <code>omit</code>, <code>billing</code> and
     <code>documentation</code>.</simpara>
 
-    <simpara>Liefert stets 0 zurück.</simpara>
+    <simpara>Returns 0.</simpara>
 
     <programlisting>exten =&gt; 123,1,SetAMAFlags(billing)</programlisting>
 
