@@ -40,7 +40,7 @@
   <sidebar>
     <simpara>A brief aside: the configuration files in Asterisk use the obtuse
     INI format (which may be familiar to you if you have worked with a
-    certain, widely distributed operating system). No grammatical standard was
+    certain, widely-distributed operating system). No grammatical standard was
     ever publicly released for INI, and the parser does not follow generally
     accepted conventions for tokenizing and lexical and syntactical analysis.
     This is why the Asterisk fork project, <ulink
@@ -5009,7 +5009,7 @@ See doc/externalivr.txt for a protocol specification.</screen></para>
     network. The intent is to help distribute the load of processor-intensive
     AGI scripts or programs to remote servers and reduce start-up latency of
     those programs (a FastAGI script can be started before it is actually
-    needed, much like a FastCGI script on a web server). </simpara>
+    needed, much like a FastCGI script on a web server).</simpara>
 
     <simpara><code>FastAGI()</code> attempts to connect directly to a running
     FastAGI program listening for connections on the specified
@@ -7314,7 +7314,7 @@ The variable MIXMONITOR_FILENAME will contain the filename used to record.</scre
 
     <simpara>Records the current channel in two separate files.</simpara>
 
-    <synopsis>Monitor([<replaceable>format</replaceable>[,<replaceable>fileprefix</replaceable>[,<replaceable>options</replaceable>]]])</synopsis>
+    <synopsis><command>Monitor([<replaceable>format</replaceable>[,<replaceable>fileprefix</replaceable>[,<replaceable>options</replaceable>]]])</command></synopsis>
 
     <simpara>Starts audio recording on the current channel. Incoming and
     outgoing audio packets are written to separate files until the channel is
@@ -7354,7 +7354,8 @@ The variable MIXMONITOR_FILENAME will contain the filename used to record.</scre
             <command>soxmix</command> and the original incoming and outgoing
             audio files are not deleted.<footnote>
                 <para>depends on Asterisk version; older versions do not
-                delete automatically. Best to check with a proper test.</para>
+                delete automatically. It's best to check with a proper
+                test.</para>
               </footnote>. <command>soxmix</command> (or
             <command>${MONITOR_EXEC}</command> if specified) is passed three
             values: the names of the incoming and outgoing audio files and the
@@ -7364,24 +7365,23 @@ The variable MIXMONITOR_FILENAME will contain the filename used to record.</scre
             arguments to <code>${MONITOR_EXEC}</code>.</simpara>
 
             <important>
-              <para>Bei der Verwendung von <command>soxmix</command> ist zu
-              beachten, dass <command>soxmix</command> ohne explizite Angabe
-              der Dateitypen diese aus den Endungen erkennt. <code>gsm</code>
-              und <code>wav</code> bereiten z.B. keine Probleme, aber für die
-              Formate <code>alaw</code> und <code>ulaw</code> werden als
-              Endungen <code>al</code> bzw. <code>ul</code> erwartet. Lesen
-              Sie also ggf. die Anleitung von sox (/soxmix) und verwenden Sie
-              <code>${MONITOR_EXEC_ARGS}</code> oder benutzen Sie ein kleines
-              Wrapper-Skript als <code>${MONITOR_EXEC}</code>, das die
-              Datei-Parameter liest und soxmix mit Angabe der Typen
-              aufruft.</para>
+              <para>Note that <command>soxmix</command> attempts to determine
+              the file type based on the file extension. Formats such as
+              <code>gsm</code> and <code>wav</code> are normally not a
+              problem, but for other formats such as <code>alaw</code> and
+              <code>ulaw</code>, it expects the file extensions
+              <code>.al</code> and <code>.ul</code> respectively. To resolve
+              this, read the manual pages for sox (/soxmix) and use
+              <code>${MONITOR_EXEC_ARGS}</code> or write a small wrapper
+              script that reads the format parameter and call it in
+              <code>${MONITOR_EXEC}</code>.</para>
             </important>
 
             <note>
-              <simpara>Wenn Sie eine kombinierte Aufzeichnung wollen, ist
-              meist <code>MixMonitor()</code> die bessere Alternative, da es
-              die Kanäle direkt während der Aufnahme mischt und dadurch
-              Lastspitzen am Ende der Aufzeichnung vermeidet.</simpara>
+              <simpara>If you wanted a single mixed sound file,
+              <code>MixMonitor()</code> is usually the better option, as it
+              mixes on-the-fly and thereby avoids a spike in CPU load at the
+              end of the recording.</simpara>
             </note>
           </listitem>
         </varlistentry>
@@ -7390,46 +7390,44 @@ The variable MIXMONITOR_FILENAME will contain the filename used to record.</scre
           <term><code>b</code></term>
 
           <listitem>
-            <simpara>Startet die Aufnahme erst, nachdem ein Anruf zu einem
-            anderen Channel verbunden wurde, also nachdem z.B. durch
-            <code>Dial()</code> tatsächlich ein Gespräch zustande
-            kommt.</simpara>
+            <simpara>Saves audio to the file only while the channel is
+            bridged, <emphasis>i.e.</emphasis> once a conversation has
+            actually begun, and only until it is hung up.</simpara>
           </listitem>
         </varlistentry>
       </variablelist></para>
 
-    <simpara>Gibt 0 bei Erfolg zurück oder -1 bei einem Fehler
-    (Überwachungsdateien konnten nicht geöffnet werden, Channel wird bereits
-    aufgezeichnet, ...)</simpara>
+    <simpara>Returns 0 on success, or -1 on failure (such as a failure to open
+    the audio files for writing, or the channel is already being monitored,
+    <emphasis>etc.</emphasis>)</simpara>
 
-    <programlisting>; das Gespräch aufzeichnen und hinterher die Audio-Kanäle mixen:
+    <programlisting>; record the conversation and mix the audio afterwards:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Monitor(gsm,,mb)
 exten =&gt; 123,n,SayDigits(123456789)
 exten =&gt; 123,n,Hangup()
 
-; wie oben aber mit einem eigenen Wrapper, der soxmix aufruft:
+; as above, only with our own wrapper script that calls soxmix:
 exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(MONITOR_EXEC=/pfad/zu/mein-soxmix-wrapper.sh)
+exten =&gt; 123,n,Set(MONITOR_EXEC=/path/to/my-soxmix-wrapper.sh)
 exten =&gt; 123,n,Monitor(gsm,,mb)
 exten =&gt; 123,n,SayDigits(123456789)
 exten =&gt; 123,n,Hangup()</programlisting>
 
     <important>
-      <para>Stellen Sie vor dem Mitschneiden von Gesprächen sicher, dass die
-      rechtlichen Voraussetzungen erfüllt sind. Meist müssen beide Teilnehmer
-      von der Aufzeichnung informiert sein.<footnote>
-          <simpara>siehe auch <ulink
+      <para>Before recording conversations, make sure you are complying with
+      the relevant legislation in your jurisdiction. In most cases, both
+      parties must be aware they are being recorded.<footnote>
+          <simpara>see also <ulink
           url="http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues">http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues</ulink></simpara>
         </footnote></para>
     </important>
 
     <note>
-      <simpara>Einige Anwender, die viele (50-500) Gespräche gleichzeitig
-      aufnehmen, berichten von <emphasis>stark</emphasis> verbesserter
-      Performance, wenn man auf eine RAM-Disk aufzeichnet (weniger
-      Such-Operationen) und die Dateien erst nach Gesprächsende auf die
-      Festplatte (lokal oder gemountet) kopiert.</simpara>
+      <simpara>Some Asterisk users who routinely need to record many
+      conversations (50-500) report much better performance if call recordings
+      are written to a RAM disk (fewer and shorter seek operations) before
+      being copied to a hard disk when the conversation is over.</simpara>
     </note>
 
     <note>
@@ -7495,14 +7493,14 @@ monitored, otherwise 0.</screen></para>
       <secondary><code>Morsecode()</code></secondary>
     </indexterm>
 
-    <simpara>Gibt einen angegebenen String als Morsezeichen aus.</simpara>
+    <simpara>Transmits the provided string as Morse code.</simpara>
 
-    <synopsis>Morsecode(<replaceable>String</replaceable>)</synopsis>
+    <synopsis>Morsecode(<replaceable>string</replaceable>)</synopsis>
 
-    <simpara>Spielt den angegebenen String als Morsezeichen.</simpara>
+    <simpara>Plays back the provided string in Morse code.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Morsecode("Das Pferd frisst den Hafer nicht.")
+exten =&gt; 123,n,Morsecode("The dog barks at midnight.")
 exten =&gt; 123,n,Hangup()</programlisting>
 
     <note>
@@ -7539,37 +7537,37 @@ MORSEDITLEN is set, it will use that value for the length (in ms) of the dit
       <secondary><code>MP3Player()</code></secondary>
     </indexterm>
 
-    <simpara>Gibt eine MP3-Datei oder einen MP3-Stream wieder.</simpara>
+    <simpara>Plays an MP3 file or stream.</simpara>
 
-    <synopsis>MP3Player(<replaceable>Dateiname</replaceable>)</synopsis>
+    <synopsis><command>MP3Player(<replaceable>filename</replaceable>)</command></synopsis>
 
-    <simpara>Verwendet das Programm <code>mpg123</code><footnote>
+    <simpara>Uses <code>mpg123</code><footnote>
         <simpara><ulink url="http://mpg123.org/">http://mpg123.org/</ulink>,
         <ulink
         url="http://sourceforge.net/projects/mpg123/">http://sourceforge.net/projects/mpg123/</ulink>,
-        für MacOS X siehe auch <ulink
+        for Mac OS X see also <ulink
         url="http://sourceforge.net/projects/mosx-mpg123/">http://sourceforge.net/projects/mosx-mpg123/</ulink></simpara>
-      </footnote>, um dem Anrufer eine MP3-Datei vorzuspielen. Der angegebene
-    Dateiname kann auch eine URL sein. Der Anrufer kann die Wiedergabe durch
-    Betätigung einer beliebigen Taste stoppen.</simpara>
+      </footnote>, to play back an MP3 to the caller. The filename may also be
+    a URL. The caller may interrupt playback by pressing any key.</simpara>
 
-    <simpara>Die richtige Version von <code>mpg123</code> muss installiert
-    sein, damit diese Anwendung ordnungsgemäß funktioniert. Asterisk arbeitet
-    momentan mit der Version 0.59r ideal.</simpara>
+    <simpara>Asterisk is sensitive to the version of <code>mpg123</code> used.
+    At the time of this writing the most stable version was 0.59r; using other
+    versions may produce unexpected results.</simpara>
 
     <note>
-      <simpara>Das häufig als Alternative installierte und auf
-      <filename>mpg123</filename> verlinkte Programm <command>mpg321</command>
-      funktioniert <emphasis>nicht</emphasis> einwandfrei.</simpara>
+      <simpara>The popular alternative to <filename>mpg123</filename>,
+      <command>mpg321</command>, does <emphasis>not</emphasis> work reliably
+      with Asterisk.</simpara>
     </note>
 
-    <simpara>Liefert -1, falls aufgelegt wird, sonst 0.</simpara>
+    <simpara>Returns -1 if the channel is hung up, otherwise returns
+    0.</simpara>
 
-    <programlisting>; lokale Datei spielen:
+    <programlisting>; play a local MP3 file:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,MP3Player(test.mp3)
 
-; Datei von einer URL spielen:
+; play an MP3 stream:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,MP3Player(http://server.tld/test.mp3)</programlisting>
 
@@ -7605,21 +7603,20 @@ any key on the dialpad, or by hanging up.</screen></para>
       <secondary><code>MusicOnHold()</code></secondary>
     </indexterm>
 
-    <simpara>Spielt endlos Wartemusik.</simpara>
+    <simpara>Plays music indefinitely.</simpara>
 
     <synopsis>MusicOnHold(<replaceable>class</replaceable>)</synopsis>
 
-    <simpara>Spielt die durch class spezifizierte Wartemusik, wie in
-    <filename>musiconhold.conf</filename> konfiguriert. Wird
-    <code>class</code> nicht angegeben, wird die Standardmusik-Klasse für
-    diesen Channel verwendet. Um die Standardmusik-Klasse für einen Channel
-    einzustellen, können Sie die Funktion <code>MUSICCLASS()</code>
-    verwenden.</simpara>
+    <simpara>Plays music belonging to the specified
+    <replaceable>class</replaceable>, as configured in
+    <filename>musiconhold.conf</filename>. If
+    <code><replaceable>class</replaceable></code> is not specified, the
+    default class for the channel is used. To set the default class for the
+    channel, use the function <code>MUSICCLASS()</code>.</simpara>
 
-    <simpara>Liefert -1, falls aufgelegt wird, ansonsten wird sie endlos
-    ausgeführt.</simpara>
+    <simpara>Returns only -1 when the channel is hung up.</simpara>
 
-    <programlisting>; auf diese Extension könnte man Telefonverkäufer schicken:
+    <programlisting>; send telemarketers to this extension and hope they are very patient:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,2,Playback(tt-allbusy)
 exten =&gt; 123,3,MusicOnHold(default)
@@ -7666,18 +7663,16 @@ Never returns otherwise.</screen></para>
       <secondary><code>NBScat()</code></secondary>
     </indexterm>
 
-    <simpara>Wiedergabe eines lokalen NBS-Streams</simpara>
+    <simpara>Plays back a local NBS stream.</simpara>
 
     <synopsis>NBScat()</synopsis>
 
-    <simpara>Verwendet das <code>nbscat8k</code>-Programm, um den lokalen NBS
-    (Network Broadcast Sound)-Stream zu hören. (Schauen Sie sich das
-    <filename>nbs</filename>-Modul in Digiums CVS-Server an, um weitere
-    Informationen zu erhalten.) Der Anrufer kann durch Drücken einer
-    beliebigen Taste aussteigen.</simpara>
+    <simpara>Uses <code>nbscat8k</code> to retrieve a local NBS (Network
+    Broadcast Sound) stream. (Take a look at the <filename>nbs</filename>
+    module in Digium's Asterisk CVS for more information.) The caller can exit
+    by pressing any key.</simpara>
 
-    <simpara>Die Anwendung liefert -1, falls aufgelegt wird, ansonsten wird
-    sie endlos ausgeführt.</simpara>
+    <simpara>Returns only -1 when the channel is hung up.</simpara>
 
     <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,NBScat()</programlisting>
@@ -7714,17 +7709,17 @@ User can exit by pressing any key
       <secondary><code>NoCDR()</code></secondary>
     </indexterm>
 
-    <simpara>Unterdrückt das CDR.</simpara>
+    <simpara>Suppresses generation of a Call Detail Record for the call on the
+    current channel.</simpara>
 
-    <synopsis>NoCDR()</synopsis>
+    <synopsis><command>NoCDR()</command></synopsis>
 
-    <simpara>Unterdrückt die Erstellung eines Anrufprotokolls (Call Detail
-    Record) für den aktuellen Anruf.</simpara>
+    <simpara>Suppresses generation of a CDR for the current call.</simpara>
 
-    <programlisting>; für Anrufe an 0123-45678 kein CDR:
-exten =&gt; 5551212,1,Answer()
-exten =&gt; 5551212,n,NoCDR()
-exten =&gt; 5551212,n,Dial(Zap/4/012345678)</programlisting>
+    <programlisting>; no CDR for calls to INWATS directory assistance:
+exten =&gt; 18005551212,1,Answer()
+exten =&gt; 18005551212,n,NoCDR()
+exten =&gt; 18005551212,n,Dial(Zap/4/18005551212)</programlisting>
 
     <note>
       <formalpara>
@@ -7763,22 +7758,23 @@ current call.</screen></para>
       <secondary><code>NoOp()</code></secondary>
     </indexterm>
 
-    <simpara>Tut nichts (no operation).</simpara>
+    <simpara>Does nothing.</simpara>
 
-    <synopsis>NoOp(<replaceable>Text</replaceable>)</synopsis>
+    <synopsis><command>NoOp(<replaceable>text</replaceable>)</command></synopsis>
 
-    <simpara>Diese Anwendung tut nichts - dem Namen nach. Mit
-    <code>NoOp()</code> kann man aber Text auf dem Asterisk-CLI ausgeben -
-    eine zum Debugging sehr nützliche Eigenschaft.</simpara>
+    <simpara>This application does absolutely nothing - well, not
+    <emphasis>exactly</emphasis>. You can use <code>NoOp()</code> to print
+    text to the Asterisk CLI, which can be very useful.</simpara>
 
-    <simpara>Sie müssen den Text nicht in Anführungszeichen betten. Stehen
-    Anführungszeichen innerhalb der Klammern, werden diese auf der Konsole
-    ausgegeben.</simpara>
+    <simpara>The text need not be between quotation marks. If they are
+    entered, they will be printed on the CLI along with the rest of the
+    text.</simpara>
 
     <important>
-      <para>Die Ausgabe von <code>NoOp()</code> auf dem CLI erfolgt erst ab
-      dem Verbose-Level 3. Dieser kann im CLI mit <command>set verbose
-      3</command> gesetzt werden.</para>
+      <para>Text from <code>NoOp()</code> appears on the CLI at verbose level
+      3 or higher. You can set this in the CLI with <command>set verbose
+      3</command> or by invoking the Asterisk CLI with <command>asterisk
+      -vvvr</command>.</para>
     </important>
 
     <programlisting>exten =&gt; 123,1,NoOp(Caller-ID: ${CALLERID})</programlisting>
@@ -7824,21 +7820,21 @@ variables or functions without having any effect.</screen></para>
       <secondary><code>Page()</code></secondary>
     </indexterm>
 
-    <simpara>Rundruf.</simpara>
+    <simpara>Pages an extension.</simpara>
 
-    <synopsis>Page(<replaceable>Technology</replaceable>/<replaceable>Resource</replaceable>[&amp;<replaceable>Technology2</replaceable>/<replaceable>Resource2</replaceable>[&amp;<replaceable>...</replaceable>]][,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis><command>Page(<replaceable>technology</replaceable>/<replaceable>resource</replaceable>[&amp;<replaceable>technology2</replaceable>/<replaceable>resource2</replaceable>[&amp;<replaceable>...</replaceable>]][,<replaceable>options</replaceable>])</command></synopsis>
 
-    <simpara>Die als Parameter angegebenen Telefone werden angerufen und
-    kommen automatisch in einen Konferenzraum, in dem sie allerdings nicht
-    sprechen können. Dies kann nur der Initiator des Rundrufes.
-    Optionen:</simpara>
+    <simpara>The designated devices are dropped into a dynamically generated
+    conference room with their microphones muted. The only device that can
+    send audio is that of the person paging. When the page is finished the
+    room is struck. Options:</simpara>
 
     <variablelist termlength="3">
       <varlistentry>
         <term><code>d</code></term>
 
         <listitem>
-          <simpara>Full-Duplex-Modus aktivieren</simpara>
+          <simpara>Activates full duplex audio.</simpara>
         </listitem>
       </varlistentry>
 
@@ -7846,7 +7842,8 @@ variables or functions without having any effect.</screen></para>
         <term><code>q</code></term>
 
         <listitem>
-          <simpara>Es wird kein Ton abgespielt.</simpara>
+          <simpara>Suppresses the notification tone at the beginning of the
+          page.</simpara>
         </listitem>
       </varlistentry>
 
@@ -7854,12 +7851,21 @@ variables or functions without having any effect.</screen></para>
         <term><code>r</code></term>
 
         <listitem>
-          <simpara>Der Rundruf wird in einer Datei aufgezeichnet.</simpara>
+          <simpara>The page is recorded to a file.</simpara>
         </listitem>
       </varlistentry>
     </variablelist>
 
     <programlisting>exten =&gt; 123,1,Page(SIP/2000&amp;SIP/2001&amp;SIP/2002)</programlisting>
+
+    <tip>
+      <para>Most devices treat a page like any other call. If the device is
+      not explicitly instructed to auto-answer, it will simply ring, and the
+      intended recipient will not hear the message. SIP devices can be told to
+      auto-answer, often by setting a SIP header. Every device is different;
+      review the administration manuals for your SIP phone and see <xref
+      linkend="???" /></para>
+    </tip>
 
     <note>
       <formalpara>
@@ -7902,19 +7908,18 @@ destroyed when the original caller leaves.  Valid options are:
       <secondary><code>Park()</code></secondary>
     </indexterm>
 
-    <simpara>Parkt den aktuellen Anruf.</simpara>
+    <simpara>Parks the current call.</simpara>
 
-    <synopsis>Park(<replaceable>Extension</replaceable>)</synopsis>
+    <synopsis><command>Park(<replaceable>extension</replaceable>)</command></synopsis>
 
-    <simpara>Parkt den aktuellen Anruf (typischerweise in Kombination mit
-    einer beaufsichtigten Übertragung, um die <quote>Parkplatznummer</quote>
-    zu bestimmen). Diese Anwendung ist intern stets registriert und muss nicht
-    explizit im Wählplan eingefügt werden, jedoch müssen Sie den
-    <code>parkedcalls</code>-context mit der Zeile <code>include =&gt;
-    parkedcalls</code> einbinden. Die Parkkonfiguration wird in
-    <filename>features.conf</filename> vorgenommen.</simpara>
+    <simpara>Parks the active call, typically in combination with an attended
+    transfer so that you can know where the call has been parked. This
+    application is registered internally so it shouldn't be necessary to add
+    it into the dialplan, though you should make sure it is enabled in
+    features.conf. You may include the context with the <code>include =&gt;
+    parkedcalls</code> statement.</simpara>
 
-    <programlisting>; den Anruf auf 701 parken:
+    <programlisting>; park the call in parking space 701:
 include =&gt; parkedcalls
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Park(701)</programlisting>
@@ -7973,23 +7978,29 @@ priority.</screen></para>
       <secondary><code>ParkAndAnnounce()</code></secondary>
     </indexterm>
 
-    <simpara>Parkt den aktuellen Anruf und macht ihn über den spezifizierten
-    Channel bekannt.</simpara>
+    <simpara>Parks the current call and announces the parking space on the
+    specified channel.</simpara>
 
-    <synopsis>ParkAndAnnounce(<replaceable>Template</replaceable>,<replaceable>Timeout</replaceable>,<replaceable>Channel</replaceable>[,<replaceable>Return-context</replaceable>])</synopsis>
+    <synopsis><command>ParkAndAnnounce(<replaceable>template</replaceable>,<replaceable>timeout</replaceable>,<replaceable>channel</replaceable>[,<replaceable>return-context</replaceable>])</command></synopsis>
 
-    <simpara>Parkt den aktuellen Anruf in dem dafür vorgesehenen Bereich (auf
-    dem Parkplatz) und meldet ihn über den spezifizierten Channel.
-    <code>Template</code> bezeichnet eine Liste von durch Kommas voneinander
-    getrennten Dateien, die anzukündigen sind; das Wort <code>PARKED</code>
-    wird durch die Parkplatznummer des Anrufs ersetzt. Der Parameter
-    <code>Timeout</code> bestimmt die Zeit in Sekunden, nach deren Ablauf der
-    Anruf zum <code>Return-context</code> zurückkehrt. <code>Channel</code>
-    bezeichnet den Channel, der anzurufen ist, um die Ankündigung zu machen
-    (<code>Console/dsp</code> ruft die Konsole auf).
-    <code>Return-context</code> ist ein Label im <code>GoTo()</code>-Stil, um
-    den Anruf nach der Beendigung zurückzubringen. Standardeinstellung hierfür
-    ist n+1 im context <code>Return-context</code>.</simpara>
+    <simpara>Parks the current call in the parking lot, but announces the
+    parking space on another, specified channel. The
+    <code><replaceable>template</replaceable></code> specifies a
+    colon-delimited list of sound files to be played; the word
+    <code>PARKED</code> in the example below is replaced with the parking
+    space number assigned to the parked call. The
+    <code><replaceable>timeout</replaceable></code> sets the maximum time the
+    call may be parked before it is placed back in the
+    <code><replaceable>return-context</replaceable></code>. The
+    <code><replaceable>channel</replaceable></code> denotes the channel on
+    which the announcement is to be made (in our example,
+    <code>Console/dsp</code> prints the announcements to the Asterisk
+    console). The <code><replaceable>return-context</replaceable></code> is a
+    label in <code><command>GoTo()</command></code> format that determines the
+    context to return the call to if it is not retrieved from the parking lot
+    by a user within the defined <replaceable>timeout</replaceable> window.
+    The default return priority is <replaceable>n</replaceable>+1 in
+    <code><replaceable>return-context</replaceable></code>.</simpara>
 
     <programlisting>include =&gt; parkedcalls
 exten =&gt; 123,1,Answer()
@@ -8072,17 +8083,18 @@ use of this information.</screen></para>
       <secondary><code>ParkedCall()</code></secondary>
     </indexterm>
 
-    <simpara>Beantwortet einen geparkten Anruf.</simpara>
+    <simpara>Retrieves a parked call.</simpara>
 
-    <synopsis>ParkedCall(<replaceable>Extension</replaceable>)</synopsis>
+    <synopsis><command>ParkedCall(<replaceable>extension</replaceable>)</command></synopsis>
 
-    <simpara>Verbindet den Anrufer mit dem auf dem durch
-    <code>Extension</code> identifizierten Parkplatz geparkten Anruf. Diese
-    Anwendung ist intern ständig registriert und muss daher dem Wählplan nicht
-    explizit hinzugefügt werden. Sie sollten jedoch den
-    <code>parkedcalls</code>-context einbinden.</simpara>
+    <simpara>Connects the channel to a parked call identified by
+    <code><replaceable>extension</replaceable></code>. This application is
+    registered internally so it shouldn't be necessary to add it into the
+    dialplan, though you should make sure it is enabled in features.conf. You
+    may include the context with the <code>include =&gt; parkedcalls</code>
+    statement.</simpara>
 
-    <programlisting>; den Anruf auf "Parkplatz" 701 wiederaufnehmen:
+    <programlisting>; retrieve the call parked at 701:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,ParkedCall(701)</programlisting>
 
@@ -8126,12 +8138,12 @@ context.</screen></para>
       <secondary><code>PauseMonitor()</code></secondary>
     </indexterm>
 
-    <simpara>Stoppt das Monitoring eines Channels.</simpara>
+    <simpara>Stops monitoring of a channel.</simpara>
 
-    <synopsis>PauseMonitor()</synopsis>
+    <synopsis><command>PauseMonitor()</command></synopsis>
 
-    <simpara>Pausiert die Aufzeichnung eines Channels, bis die Pause mit
-    <code>UnpauseMonitor()</code> wieder aufgehoben wird.</simpara>
+    <simpara>Stops recording of a channel until it is resumed with
+    <command><code>UnpauseMonitor()</code></command>.</simpara>
 
     <note>
       <formalpara>
@@ -8173,33 +8185,29 @@ Pauses monitoring of a channel until it is re-enabled by a call to UnpauseMonito
       <secondary><code>PauseQueueMember()</code></secondary>
     </indexterm>
 
-    <simpara>Pausiert ein Warteschlangenmitglied, so dass es keine Anrufe
-    empfangen kann.</simpara>
+    <simpara>Pauses a queue device so that it cannot take calls from the
+    queue.</simpara>
 
-    <synopsis>PauseQueueMember([<replaceable>Schlange</replaceable>],<replaceable>Interface</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
+    <synopsis><command>PauseQueueMember([<replaceable>queue</replaceable>],<replaceable>interface</replaceable>[,<replaceable>options</replaceable>])</command></synopsis>
 
-    <simpara>Pausiert die Durchstellung von Anrufen zu einem
-    Warteschlangenmitglied. Das spezifizierte Interface wird in der gegebenen
-    Warteschlange zeitweilig angehalten. Dadurch wird verhindert, dass Anrufe
-    aus der Warteschlange zu diesem Interface durchgestellt werden, bis es
-    nicht wieder freigegeben wurde durch <code>UnpauseQueueMember()</code>
-    oder das Manager-Interface. Wenn kein Warteschlangenname angegeben ist,
-    wird das Interface in jeder Warteschlange, in der es ein Mitglied ist,
-    angehalten. Befindet sich das Interface nicht in der benannten
-    Warteschlange, oder wenn keine Warteschlange angegeben und das Interface
-    nicht Mitglied irgendeiner Warteschlange ist, wird - bei Angabe der Option
-    <code>j</code> - die Ausführung bei Priorität n+101 fortgesetzt, falls
-    diese existiert.</simpara>
+    <simpara>Blocks calls for a queue member until expressly re-enabled,
+    either with <command><code>UnpauseQueueMember()</code></command> or
+    through the Manager interface. If no queue is specified, the device is
+    paused in every queue in which it is a member. If a queue is specified but
+    the device is not a member in it, or if no queue is specified and the
+    device does not belong to any queues <emphasis>and</emphasis> option
+    <code>j</code> is set, execution proceeds at priority
+    <replaceable>n</replaceable>+101 if it exists.</simpara>
 
-    <simpara>Gibt -1 zurück, falls das Interface nicht gefunden wurde oder
-    keine Extension existiert, zu der gesprungen werden kann, sonst 0. Setzt
-    die Channel-Variable <code>PQMSTATUS</code> auf <code>PAUSED</code>
-    (pausiert) oder <code>NOTFOUND</code> (nicht gefunden).</simpara>
+    <simpara>Returns 0 on success, otherwise returns -1 if the interface
+    cannot be found or the jump priority does not exist. Sets the channel
+    variable <code>PQMSTATUS</code> to <code>PAUSED</code> or
+    <code>NOTFOUND</code>.</simpara>
 
-    <programlisting>; wenn *111002 gewählt wird, wird Agent/1002 auf allen Schlangen pausiert:
+    <programlisting>; If we dial *111002, Agent/1002 is paused on all queues where she is a member:
 exten =&gt; *11ZXXX,1,PauseQueueMember(,Agent/${EXTEN:3})
 
-; mit *121002 wird Agent/1002 wieder aktiviert:
+; Dialing *121002 unpauses Agent/1002 again:
 exten =&gt; *12ZXXX,1,UnpauseQueueMember(,Agent/${EXTEN:3})</programlisting>
 
     <note>
