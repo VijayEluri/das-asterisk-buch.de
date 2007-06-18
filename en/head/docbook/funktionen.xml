@@ -346,7 +346,7 @@ Returns the base64 string</screen></para>
             <simpara>DNID<footnote>
                 <simpara>Dialed/Destination Number Identification
                 Service</simpara>
-              </footnote>number. Corresponds to the dialed number (Sometimes
+              </footnote> number. Corresponds to the dialed number (Sometimes
             also found in field <code>dnis</code>, perhaps depending on the
             Asterisk version)</simpara>
           </listitem>
@@ -359,24 +359,26 @@ Returns the base64 string</screen></para>
             <simpara>RDNIS<footnote>
                 <simpara>Redirected Dialed Number Identification
                 Service</simpara>
-              </footnote>-Nummer. Die Nummer, die auf die aktuelle Extension
-            umgeleitet hat, z.B. falls die Nummer einer Voicemailbox nicht die
-            gewählte Extension ist.</simpara>
+              </footnote> number. The number which was forwarded to the
+            current extension. (This is useful, for example, if the number of
+            the active mailbox does not correspond to that of the dialed
+            extension.)</simpara>
           </listitem>
         </varlistentry>
-      </variablelist>Ab Asterisk 1.4 muss z.B. statt der Variablen
-    <code>${CALLERIDNUM}</code> die Funktion <code>${CALLERID(num)}</code>
-    verwendet werden, statt <code>${RDNIS}</code>
-    <code>$(CALLERID(rdnis))</code> etc. Die Applikation
-    <code>SetCIDName()</code> wird durch
-    <code>Set(CALLERID(name)=<replaceable>Name</replaceable>)</code> ersetzt,
-    <code>SetCallerID()</code> durch
-    <code>Set(CALLERID(all)=<replaceable>Name</replaceable>
-    &lt;<replaceable>Nummer</replaceable>&gt;)</code> etc.<programlisting>; die Variable foo auf die Anruferkennung setzen:
+      </variablelist>The old channel variable <code>${CALLERIDNUM}</code> is
+    replaced by the function <code>${CALLERID(num)}</code> as of Asterisk 1.4
+    (Similarly, <code>${RDNIS}</code> is replaced by
+    <code>$(CALLERID(rdnis))</code> etc.). The application
+    <code><command>SetCIDName()</command></code> is replaced by
+    <code><command>Set(CALLERID(name)=<replaceable>Name</replaceable>)</command></code>
+    (Similarly, <code>SetCallerID()</code> is replaced by
+    <command><code>Set(CALLERID(all)=<replaceable>Name</replaceable>
+    &lt;<replaceable>Number</replaceable>&gt;)</code></command>
+    etc.).<programlisting>; Set the variable foo to the complete caller ID:
 exten =&gt; 123,1,Set(foo=${CALLERID(all)})
 
-; den Anrufernamen auf "Peter Meier" setzen:
-exten =&gt; 123,1,Set(CALLERID(name)="Peter Meier") </programlisting></para>
+; Set the caller namer to "Robert Cossack":
+exten =&gt; 123,1,Set(CALLERID(name)="Robert Cossack") </programlisting></para>
 
     <note>
       <formalpara>
@@ -416,19 +418,19 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
         <secondary><code>CDR()</code></secondary>
       </indexterm></title>
 
-    <synopsis>CDR(<replaceable>Feld</replaceable>)</synopsis>
+    <synopsis>CDR(<replaceable>field</replaceable>)</synopsis>
 
-    <para>Liest oder setzt CDR<footnote>
+    <para>Reads or sets CDR<footnote>
         <simpara>Call Data Record, siehe <xref
         linkend="glossar-cdr" /></simpara>
-      </footnote>-Felder. <code>Feld</code> ist eines der folgenden (wenn
-    nicht anders angegeben ist nur Lesen möglich):<variablelist
+      </footnote> fields. The <replaceable>field</replaceable> is one of the
+    following (only reading is possible unless otherwise noted):<variablelist
         termlength="13">
         <varlistentry>
           <term><code>clid</code></term>
 
           <listitem>
-            <simpara>Caller-ID</simpara>
+            <simpara>Caller ID</simpara>
           </listitem>
         </varlistentry>
 
@@ -436,7 +438,7 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>src</code></term>
 
           <listitem>
-            <simpara>Source, die Caller-ID-Nummer</simpara>
+            <simpara>The source number (caller ID number)</simpara>
           </listitem>
         </varlistentry>
 
@@ -444,7 +446,7 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>dst</code></term>
 
           <listitem>
-            <simpara>Destination, Ziel-Extension</simpara>
+            <simpara>The call destination</simpara>
           </listitem>
         </varlistentry>
 
@@ -452,7 +454,7 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>dcontext</code></term>
 
           <listitem>
-            <simpara>Destination context, der Ziel-Context</simpara>
+            <simpara>Destination context</simpara>
           </listitem>
         </varlistentry>
 
@@ -460,7 +462,7 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>channel</code></term>
 
           <listitem>
-            <simpara>Der Kanalname</simpara>
+            <simpara>Channel name</simpara>
           </listitem>
         </varlistentry>
 
@@ -468,8 +470,7 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>dstchannel</code></term>
 
           <listitem>
-            <simpara>Destination channel, der Ziel-Kanal, falls
-            zutreffend</simpara>
+            <simpara>Destination channel, if applicable</simpara>
           </listitem>
         </varlistentry>
 
@@ -477,7 +478,7 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>lastapp</code></term>
 
           <listitem>
-            <simpara>Die letzte ausgeführte Applikation</simpara>
+            <simpara>The last executed application</simpara>
           </listitem>
         </varlistentry>
 
@@ -485,8 +486,7 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>lastdata</code></term>
 
           <listitem>
-            <simpara>Die Argumente der zuletzt ausgeführten
-            Applikation</simpara>
+            <simpara>The arguments to the last executed application</simpara>
           </listitem>
         </varlistentry>
 
@@ -494,7 +494,7 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>start</code></term>
 
           <listitem>
-            <simpara>Die Start-Zeit des Anrufs</simpara>
+            <simpara>Time the call started</simpara>
           </listitem>
         </varlistentry>
 
@@ -502,7 +502,7 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>answer</code></term>
 
           <listitem>
-            <simpara>Die Zeit, zu der der Anruf beantwortet wurde</simpara>
+            <simpara>Time the call was answered</simpara>
           </listitem>
         </varlistentry>
 
@@ -510,7 +510,7 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>end</code></term>
 
           <listitem>
-            <simpara>Die End-Zeit des Anrufs</simpara>
+            <simpara>Time the call ended</simpara>
           </listitem>
         </varlistentry>
 
@@ -518,7 +518,7 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>duration</code></term>
 
           <listitem>
-            <simpara>Die Dauer des Anrufs (in Sekunden)</simpara>
+            <simpara>Duration of the call in seconds</simpara>
           </listitem>
         </varlistentry>
 
@@ -526,8 +526,8 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>billsec</code></term>
 
           <listitem>
-            <simpara>Die Dauer des Anrufs seit der Anruf beantwortet wurde,
-            also die zu berechnende Zeit (in Sekunden)</simpara>
+            <simpara>Duration of the call since the call was answered (in
+            other words, the billable duration) in seconds</simpara>
           </listitem>
         </varlistentry>
 
@@ -535,9 +535,8 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>disposition</code></term>
 
           <listitem>
-            <simpara>Der Status des Anrufs: <code>ANSWERED</code>, <code>NO
-            ANSWER</code>, <code>BUSY</code> oder
-            <code>FAILED</code></simpara>
+            <simpara>Status of the call: <code>ANSWERED</code>, <code>NO
+            ANSWER</code>, <code>BUSY</code> or <code>FAILED</code></simpara>
           </listitem>
         </varlistentry>
 
@@ -545,15 +544,15 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>amaflags</code></term>
 
           <listitem>
-            <simpara>Die AMA<footnote>
-                <simpara>Automated Message Accounting</simpara>
-              </footnote>-Flags. <code>DEFAULT</code> (System-Default),
-            <code>BILLING</code> (zur Abrechnung), <code>DOCUMENTATION</code>
-            (zur Dokumentierung) oder <code>OMIT</code> (keine Aufzeichnung).
-            (Manchmal findet man statt <code>BILLING</code> und
-            <code>OMIT</code> auch die Angaben <code>BILL</code> und
-            <code>IGNORE</code> - evtl. abhängig von der
-            Asterisk-Version)</simpara>
+            <simpara>The AMA<footnote>
+                <simpara>Automated Message Accounting, see <xref
+                linkend="glossar-AMA" /></simpara>
+              </footnote> flags. Possible flags are <code>DEFAULT</code>,
+            <code>BILLING</code>, <code>DOCUMENTATION</code> and
+            <code>OMIT</code>. (Sometimes <code>BILLING</code> and
+            <code>OMIT</code> are replaced by <code>BILL</code> and
+            <code>IGNORE</code>, perhaps depending on the Asterisk
+            version.)</simpara>
           </listitem>
         </varlistentry>
 
@@ -561,8 +560,8 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>accountcode</code></term>
 
           <listitem>
-            <simpara>Die alphanumerische Nummer des Abrechnungskontos, max. 20
-            Zeichen (auch Setzen möglich)</simpara>
+            <simpara>The alphanumeric ID of the billing account, maximum 20
+            characters. May be set as well as read</simpara>
           </listitem>
         </varlistentry>
 
@@ -570,8 +569,8 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>uniqueid</code></term>
 
           <listitem>
-            <simpara>Die einmalige alphanumerische ID des Kanals (max. 32
-            Zeichen)</simpara>
+            <simpara>The unique ID of the channel (maximum 32
+            characters)</simpara>
           </listitem>
         </varlistentry>
 
@@ -579,15 +578,15 @@ Uses channel callerid by default or optional callerid, if specified.</screen></p
           <term><code>userfield</code></term>
 
           <listitem>
-            <simpara>Das User-Feld, in das beliebige Informationen (max. 255
-            Zeichen) geschrieben werden können (auch Setzen möglich)</simpara>
+            <simpara>A user field for storing arbitrary information (maximum
+            255 characters). May be set as well as read</simpara>
           </listitem>
         </varlistentry>
-      </variablelist><programlisting>; foo auf die Dauer des Anrufs setzen:
+      </variablelist><programlisting>; Set foo to the duration of the call:
 exten =&gt; 123,1,Set(foo=${CDR(duration)})
 
-; das User-Feld auf "meine Infos" setzen:
-exten =&gt; 123,1,Set(CDR(userfield)=meine Infos)</programlisting></para>
+; Set the user field to "my information":
+exten =&gt; 123,1,Set(CDR(userfield)=my information)</programlisting></para>
 
     <note>
       <formalpara>
@@ -681,18 +680,18 @@ Options:
         <secondary><code>CHANNEL()</code></secondary>
       </indexterm></title>
 
-    <synopsis>CHANNEL(<replaceable>Feld</replaceable>)</synopsis>
+    <synopsis>CHANNEL(<replaceable>field</replaceable>)</synopsis>
 
     <simpara><emphasis>(beginning Asterisk 1.4)</emphasis></simpara>
 
-    <para>Liest/setzt bestimmte Kanaldaten. <code>Feld</code> ist eines der
-    folgenden (wenn nicht anders angegeben, ist nur Lesen
-    möglich):<variablelist>
+    <para>Reads/sets specific channel parameters. The
+    <replaceable>field</replaceable> is one of the following (only reading is
+    possible unless otherwise noted):<variablelist>
         <varlistentry>
           <term><code>audioreadformat</code></term>
 
           <listitem>
-            <simpara>Das Format eingehender Audiodaten auf dem Kanal</simpara>
+            <simpara>The format for incoming audio on the channel</simpara>
           </listitem>
         </varlistentry>
 
@@ -700,7 +699,7 @@ Options:
           <term><code>audionativeformat</code></term>
 
           <listitem>
-            <simpara>Das native Audioformat des Kanals</simpara>
+            <simpara>The native audio format of the channel</simpara>
           </listitem>
         </varlistentry>
 
@@ -708,7 +707,7 @@ Options:
           <term><code>audiowriteformat</code></term>
 
           <listitem>
-            <simpara>Das Format ausgehender Audiodaten auf dem Kanal</simpara>
+            <simpara>The format for outgoing audio on the channel</simpara>
           </listitem>
         </varlistentry>
 
@@ -716,11 +715,11 @@ Options:
           <term><code>callgroup</code></term>
 
           <listitem>
-            <simpara>In Asterisk lassen sich Extensions in Call groups von 0 -
-            63 einordnen, z.B. als Kundennummer.<footnote>
-                <simpara>Diese Beschränkung auf 64 Gruppen scheint rein
-                willkürlich zu sein, und dürfte für den ein oder anderen
-                Anwender nicht ausreichen.</simpara>
+            <simpara>Extensions in Asterisk can be sorted into call groups
+            numbered from 0 - 63, <emphasis>e.g.</emphasis> as a client
+            number.<footnote>
+                <simpara>This limit of 64 call groups appears to be completely
+                arbitrary and may not be sufficient for all users.</simpara>
               </footnote></simpara>
           </listitem>
         </varlistentry>
@@ -729,8 +728,8 @@ Options:
           <term><code>channeltype</code></term>
 
           <listitem>
-            <simpara>Die <quote>Technologie</quote> dieses Kanals, also z.B:
-            IAX oder SIP</simpara>
+            <simpara>The channel driver, or "technology" of the current
+            channel, <emphasis>e.g.</emphasis>: IAX or SIP</simpara>
           </listitem>
         </varlistentry>
 
@@ -738,8 +737,8 @@ Options:
           <term><code>language</code></term>
 
           <listitem>
-            <simpara>Die Sprache für Voice-Prompts (auch Setzen
-            möglich)</simpara>
+            <simpara>The language for voice prompts. May be set as well as
+            read</simpara>
           </listitem>
         </varlistentry>
 
@@ -747,9 +746,9 @@ Options:
           <term><code>musicclass</code></term>
 
           <listitem>
-            <simpara>Die Musik-Klasse für Wartemusik, wie in
-            <filename>musiconhold.conf</filename> definiert (auch Setzen
-            möglich)</simpara>
+            <simpara>The music-on-hold class, as defined in
+            <filename>musiconhold.conf</filename>. May be set as well as
+            read</simpara>
           </listitem>
         </varlistentry>
 
@@ -757,7 +756,7 @@ Options:
           <term><code>state</code></term>
 
           <listitem>
-            <para>Zustand des Kanals (<code>Down</code>, <code>Rsrvd</code>,
+            <para>State of the channel (<code>Down</code>, <code>Rsrvd</code>,
             <code>OffHook</code>, <code>Dialing</code>, <code>Ring</code>,
             <code>Ringing</code>, <code>Up</code>, <code>Busy</code>,
             <code>Dialing Offhook</code>, <code>Pre-ring</code>,
@@ -769,12 +768,13 @@ Options:
           <term><code>tonezone</code></term>
 
           <listitem>
-            <simpara>Die <quote>Tone zone</quote> bestimmt die Ton-Signale
-            (Wählen, Klingeln, Besetzt, ...) für bestimmte Länder. Sie wird in
-            der Konfigurationsdatei des Kanals (z.B.
-            <filename>zaptel.conf</filename>) durch <code>loadzone</code> und
-            <code>defaultzone</code> festgelegt. Die möglichen Werte sind (wie
-            in der <filename>indications.conf</filename> definiert):
+            <simpara>The "tone zone" defines the standard tone indications
+            (dialing, ringing, busy, <emphasis>etc.</emphasis>) for specific
+            regions and countries. This is set in the configuration file for
+            the channel driver (<emphasis>e.g.</emphasis>
+            <filename>zaptel.conf</filename>) with the parameters
+            <code>loadzone</code> and <code>defaultzone</code>. Possible
+            values are (as defined in <filename>indications.conf</filename>):
             <code>at</code>, <code>au</code>, <code>be</code>,
             <code>br</code>, <code>ch</code>, <code>cl</code>,
             <code>cn</code>, <code>cz</code>, <code>de</code>,
@@ -793,16 +793,17 @@ Options:
           <term><code>videonativeformat</code></term>
 
           <listitem>
-            <simpara>Das native Videoformat dieses Kanals</simpara>
+            <simpara>The native video format of the channel</simpara>
           </listitem>
         </varlistentry>
-      </variablelist>Zusätzlich zu diesen Feldern kann der Treiber des Kanals
-    noch weitere bereitstellen, die man in der entsprechenden Dokumentation
-    nachschlagen kann. Felder, die auf dem aktuellen Kanal nicht zur Verfügung
-    stehen, geben einen leeren String zurück.<programlisting>; Typ des Kanals abfragen:
+      </variablelist>In addition to the field described above, specific
+    channel drivers can make others available. To learn more about these, look
+    in the documentation for the specific channel driver. Fields which are
+    unavailable on the current channel will return an empty
+    string.<programlisting>; Query the channel type:
 exten =&gt; 123,1,Set(foo=${CHANNEL(channeltype)})
 
-; Sprache auf Englisch setzen:
+; Change language to English:
 exten =&gt; 123,1,Set(CHANNEL(language)=en)</programlisting></para>
 
     <note>
@@ -855,12 +856,11 @@ return an empty string.</screen></para>
         <secondary><code>CHECKSIPDOMAIN()</code></secondary>
       </indexterm></title>
 
-    <synopsis>CHECKSIPDOMAIN(<replaceable>Domain</replaceable>)</synopsis>
+    <synopsis>CHECKSIPDOMAIN(<replaceable>domain</replaceable>)</synopsis>
 
-    <para>Prüft, ob die angegebene Domain (kann auch eine IP-Adresse sein)
-    eine SIP-Domain ist, die Asterisk als lokal behandelt (siehe Datei
-    <filename>sip.conf</filename>). Gibt den Domain-Namen oder einen leeren
-    String zurück.<programlisting>exten =&gt; 123,1,Set(foo=${CHECKSIPDOMAIN(123.45.67.89)})</programlisting></para>
+    <para>Checks to see if the specified SIP domain name (may also be an IP
+    address) is local (see <filename>sip.conf</filename>). Returns the domain
+    name, IP address or empty string.<programlisting>exten =&gt; 123,1,Set(foo=${CHECKSIPDOMAIN(123.45.67.89)})</programlisting></para>
 
     <note>
       <formalpara>
@@ -884,7 +884,7 @@ Check the domain= configuration in sip.conf</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
   </section>
@@ -896,13 +896,13 @@ Check the domain= configuration in sip.conf</screen></para>
         <secondary><code>CURL()</code></secondary>
       </indexterm></title>
 
-    <synopsis>CURL(<replaceable>URL</replaceable>[|<replaceable>POST-Daten</replaceable>])</synopsis>
+    <synopsis>CURL(<replaceable>URL</replaceable>[|<replaceable>POST-data</replaceable>])</synopsis>
 
-    <para>Lädt eine Webseite unter der angegebenen <code>URL</code> mit
-    <code>GET</code>. Wenn <code>POST-Daten</code> angegeben sind, werden
-    diese Daten mit <code>POST</code> gesendet. Gibt die Seite als String
-    zurück.<programlisting>; Die Seite unter der URL http://beispiel.de/seite.php?id=1&amp;action=view abrufen:
-exten =&gt; 123,1,Set(foo=${CURL(http://beispiel.de/seite.php?id=1&amp;action=view)})</programlisting></para>
+    <para>Loads a web page from the specified <replaceable>URL</replaceable>
+    using <code>GET</code>. If
+    <code><replaceable>POST-data</replaceable></code> are provided, these are
+    sent with <code>POST</code>. Returns the page as a string.<programlisting>; Retrieve http://example.com/page.php?id=1&amp;action=view :
+exten =&gt; 123,1,Set(foo=${CURL(http://example.com/page.php?id=1&amp;action=view)})</programlisting></para>
   </section>
 
   <section id="funktionen-cut">
@@ -912,35 +912,36 @@ exten =&gt; 123,1,Set(foo=${CURL(http://beispiel.de/seite.php?id=1&amp;action=vi
         <secondary><code>CUT()</code></secondary>
       </indexterm></title>
 
-    <synopsis>CUT(<replaceable>Variablenname</replaceable>,<replaceable>Trennzeichen</replaceable>,<replaceable>Feld</replaceable>)</synopsis>
+    <synopsis>CUT(<replaceable>variablename</replaceable>,<replaceable>delimiter</replaceable>,<replaceable>field</replaceable>)</synopsis>
 
-    <para>(Offenbar müssen in Asterisk 1.2.8 statt der Kommas zwischen den
-    Parametern Pipe-Zeichen (<code>|</code>) verwendet werden.)</para>
+    <para>(As of Asterisk 1.2.8, use a pipe ("|") character instead of commas
+    as a parameter delimiter.)</para>
 
-    <para>Zerteilt den String in einer Variablen anhand eines Trennzeichens
-    (Default: <code>-</code>) und gibt den so entstandenen Einzelteil an der
-    Stelle <code>Feld</code> (1-basiert) zurück. <code>Feld</code> kann auch
-    eine Spanne sein (z.B. <code>2-4</code>) oder mehrere Felder/Spannen,
-    durch <code>&amp;</code> getrennt, z.B. <code>2-4&amp;6</code>; die
-    entsprechenden Felder werden dann wieder durch das Trennzeichen verbunden.
-    Auch eine Range wie <code>3-</code> (alles ab Feld 3) oder <code>-3</code>
-    (bis Feld 3) ist möglich.</para>
+    <para>Processes a string in a variable according to a specified delimiter
+    (default: <code>-</code>) and returns the requested fields. The
+    <replaceable>field</replaceable> may also be a range of fields
+    (<emphasis>e.g.</emphasis> <code>2-4</code>) or multiple fields and
+    ranges, separated with "&amp;", <emphasis>e.g.</emphasis>
+    <code>2-4&amp;6</code>; ranges such as <code>3-</code> (everything from
+    field 3 on) or <code>-3</code> (everything up to field 3) is
+    possible.</para>
 
-    <para>Ein Komma als Trennzeichen muss durch Backslash escaped werden, z.B.
-    <code>CUT(var,\,,2)</code>.</para>
+    <para>If a comma is used as a delimiter, it must first be escaped with a
+    backslash, <emphasis>e.g.</emphasis> <code>CUT(var,\,,2)</code>.</para>
 
-    <para><programlisting>exten =&gt; 123,1,Set(var=1-2-3-4-5)            ; var ist "1-2-3-4-5"
-exten =&gt; 123,n,Set(var=${CUT(var,,1-3&amp;5)})   ; var ist "1-2-3-5"</programlisting></para>
+    <para><programlisting>exten =&gt; 123,1,Set(var=1-2-3-4-5)            ; var is "1-2-3-4-5"
+exten =&gt; 123,n,Set(var=${CUT(var,,1-3&amp;5)})   ; var is "1-2-3-5"</programlisting></para>
 
     <important>
-      <para>Der Parameter <code>Variablenname</code> muss der
-      <emphasis>Name</emphasis> einer Variablen sein, nicht ein String. Die
-      wäre also <emphasis>falsch</emphasis>:
+      <para>The parameter <code><replaceable>variablename</replaceable></code>
+      must be the <emphasis>name</emphasis> of a variable, and not a string.
+      If <code>foo</code> is the variable name and <code>bar</code> the
+      contents, the following example would be incorrect:
       <code>CUT(${bar},,3)</code></para>
     </important>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-fieldqty" /></para>
     </formalpara>
@@ -968,7 +969,7 @@ Slices and dices strings, based upon a named delimiter.
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
   </section>
@@ -980,13 +981,13 @@ Slices and dices strings, based upon a named delimiter.
         <secondary><code>DB()</code></secondary>
       </indexterm></title>
 
-    <synopsis>DB(<replaceable>Familie</replaceable>/<replaceable>Schlüssel</replaceable>)</synopsis>
+    <synopsis>DB(<replaceable>family</replaceable>/<replaceable>key</replaceable>)</synopsis>
 
-    <para>Liest/setzt einen Wert in der AstDB. Beim Lesen wird der Wert
-    zurückgegeben oder ein leerer String, wenn der Wert nicht existiert. Das
-    Ergebnis ist in der Variable <code>DB_RESULT</code>
-    verfügbar.<programlisting>; Eintrag open/source setzen und abfragen:
-exten =&gt; 123,1,Set(DB(open/source)=${ja})
+    <para>Reads/sets a value in the Asterisk DB (AstDB). When reading, either
+    a value is returned, or an empty string if the key does not exist. The
+    output can be found in the variable
+    <code>DB_RESULT</code>.<programlisting>; Set open/source in the AstDB and then query it:
+exten =&gt; 123,1,Set(DB(open/source)=${yes})
 exten =&gt; 123,n,Set(var=${DB(open/source)})
 exten =&gt; 123,n,GotoIf($[[${DB(open/source)} = 1]?opensource:closedsource)</programlisting></para>
 
@@ -1013,12 +1014,12 @@ function.</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-db_exists" />, <xref
       linkend="funktionen-db_delete" />, <xref
@@ -1033,17 +1034,15 @@ function.</screen></para>
         <secondary><code>DB_DELETE()</code></secondary>
       </indexterm></title>
 
-    <synopsis>DB_DELETE(<replaceable>Familie</replaceable>/<replaceable>Schlüssel</replaceable>)</synopsis>
+    <synopsis>DB_DELETE(<replaceable>family/key</replaceable>)</synopsis>
 
-    <para>Löscht einen Wert aus der AstDB. Dabei wird auch die Variable
-    <code>DB_RESULT</code> auf den entsprechenden Wert gesetzt, falls
-    vorhanden.<programlisting>; den Eintrag cidnums/0123456789 löschen:
-exten =&gt; 123,1,Set(ignored=${DB_DELETE(cidnums/0123456789)})</programlisting></para>
+    <para>Deletes a value from the AstDB. Upon completion, the variable
+    <code>DB_RESULT</code> is set to this value, if it exists.<programlisting>; delete cidnums/4045559814:
+exten =&gt; 123,1,Set(ignored=${DB_DELETE(cidnums/4045559814)})</programlisting></para>
 
     <note>
-      <simpara>Vor Asterisk 1.4 muss statt der Funktion
-      <code>DB_DELETE()</code> die Applikation <code>DBdel()</code> verwendet
-      werden.</simpara>
+      <simpara>For versions prior to Asterisk 1.4, use the application
+      <code>DBdel()</code>.</simpara>
     </note>
 
     <note>
@@ -1072,7 +1071,7 @@ will be set to the key's value if it exists.</screen></para>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-db" />, <xref
       linkend="funktionen-db_exists" />, <xref
@@ -1088,21 +1087,22 @@ will be set to the key's value if it exists.</screen></para>
         <secondary><code>DB_EXISTS()</code></secondary>
       </indexterm></title>
 
-    <synopsis>DB_EXISTS(<replaceable>Familie</replaceable>/<replaceable>Schlüssel</replaceable>)</synopsis>
+    <synopsis>DB_EXISTS(<replaceable>family</replaceable>/<replaceable>key</replaceable>)</synopsis>
 
-    <para>Prüft, ob ein Schlüssel in der AstDB vorhanden ist. Gibt 1 oder 0
-    zurück. Setzt auch die Variable <code>DB_RESULT</code> auf den unter dem
-    Schlüssel gespeicherten Wert.<programlisting>; abfragen, ob der Eintrag cidnums/0123456789 existiert:
-exten =&gt; 123,1,Set(foo=${DB_EXISTS(cidnums/0123456789)})</programlisting></para>
+    <para>Tests to see if a key exists in the AstDB. Returns 1 or 0. Sets the
+    variable <code>DB_RESULT</code> to the value of the key, if it
+    exists.<programlisting>; Query if cidnums/4045559814 exists:
+exten =&gt; 123,1,Set(foo=${DB_EXISTS(cidnums/4045559814)})</programlisting></para>
 
-    <para>So kann z.B. die Applikation <code>LookupBlacklist()</code> ersetzt
-    werden. Springt, falls die Anrufernummer in der Blacklist ist, zum Context
-    <code>blacklisted</code>, Extension <code>s</code>, Priorität
-    <code>1</code>:<programlisting>exten =&gt; 123,1,GotoIf(${DB_EXISTS(blacklist/${CALLERID(num)})}?blacklisted,s,1)
-exten =&gt; 123,n,Dial(IAX2/benutzer:passwort@beispiel.de/500)
+    <para>This is one way to replace the application
+    <code>LookupBlacklist()</code>. This code example causes Asterisk to jump
+    to the context <code>blacklisted</code>, extension <code>s</code>,
+    priority <code>1</code>, if the CID can be found in the
+    blacklist:<programlisting>exten =&gt; 123,1,GotoIf(${DB_EXISTS(blacklist/${CALLERID(num)})}?blacklisted,s,1)
+exten =&gt; 123,n,Dial(IAX2/user:password@example.com/500)
 
 [blacklisted]
-exten =&gt; s,1,NoOp(${CALLERID(num)} ist auf der Blacklist)
+exten =&gt; s,1,NoOp(${CALLERID(num)} is in the blacklist)
 exten =&gt; s,n,Hangup()</programlisting></para>
 
     <note>
@@ -1127,12 +1127,12 @@ also set the variable DB_RESULT to the key's value if it exists.</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-db" />, <xref
       linkend="funktionen-db_delete" />, <xref
@@ -1147,15 +1147,16 @@ also set the variable DB_RESULT to the key's value if it exists.</screen></para>
         <secondary><code>DUNDILOOKUP()</code></secondary>
       </indexterm></title>
 
-    <synopsis>DUNDILOOKUP(<replaceable>Nummer</replaceable>[|<replaceable>DUNDi-Context</replaceable>[|<replaceable>Optionen</replaceable>]])</synopsis>
+    <synopsis>DUNDILOOKUP(<replaceable>number</replaceable>[|<replaceable>DUNDi-context</replaceable>[|<replaceable>options</replaceable>]])</synopsis>
 
-    <para>Schlägt eine Telefonnummer mit DUNDi (<xref
-    linkend="glossar-dundi" />) nach. Wird kein <code>DUNDi-Context</code>
-    angegeben, wird <code>e164</code> angenommen. Mit der Option
-    <code>b</code> (bypass) wird der interne DUNDi-Cache umgangen. Gibt die
-    gefundene Verbindung in der Form <code>Technologie/Ressource</code> oder
-    einen leeren String zurück.<programlisting>; die Nummer 0123456789 nachschlagen:
-exten =&gt; 123,1,Set(foo=${DUNDILOOKUP(0123456789)})</programlisting></para>
+    <para>Looks up a telephone number with DUNDi (<xref
+    linkend="glossar-dundi" />). If
+    <code><replaceable>DUNDi-context</replaceable></code> is specified,
+    <code>e164</code> is assumed. The option <code>b</code> (bypass) will
+    cause Asterisk to bypass the internal DUNDi cache. Returns the found entry
+    in the form <code>technology/resource</code>, if it exists, otherwise
+    returns an empty string.<programlisting>; look up number 5145550123 in DUNDi:
+exten =&gt; 123,1,Set(foo=${DUNDILOOKUP(5145550123)})</programlisting></para>
 
     <note>
       <formalpara>
@@ -1181,12 +1182,12 @@ be bypassed.</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><filename>dundi.conf</filename></para>
     </formalpara>
@@ -1199,23 +1200,23 @@ be bypassed.</screen></para>
         <secondary><code>ENUMLOOKUP()</code></secondary>
       </indexterm></title>
 
-    <para>Asterisk 1.2:<synopsis>ENUMLOOKUP(<replaceable>Nummer</replaceable>[,<replaceable>Dienst</replaceable>[,<replaceable>OptionenUndEintragsnr</replaceable>[,<replaceable>Zonen-Suffix</replaceable>]]])</synopsis></para>
+    <para>Asterisk 1.2:<synopsis>ENUMLOOKUP(<replaceable>number</replaceable>[,<replaceable>service</replaceable>[,<replaceable>optionsANDentrynumber</replaceable>[,<replaceable>zone-suffix</replaceable>]]])</synopsis></para>
 
-    <para>Asterisk 1.4:<synopsis>ENUMLOOKUP(<replaceable>Nummer</replaceable>[,<replaceable>Dienst</replaceable>[,<replaceable>Optionen</replaceable>,<replaceable>Eintragsnr</replaceable>[,<replaceable>Zonen-Suffix</replaceable>]]])</synopsis></para>
+    <para>Asterisk 1.4:<synopsis>ENUMLOOKUP(<replaceable>number</replaceable>[,<replaceable>service</replaceable>[,<replaceable>options</replaceable>,<replaceable>entrynumber</replaceable>[,<replaceable>Zonen-Suffix</replaceable>]]])</synopsis></para>
 
-    <para>Schlägt eine Nummer mit ENUM (<xref linkend="glossar-enum" />) nach.
-    <code>Dienst</code> kann u.A. <code>sip</code> (Default),
-    <code>iax2</code>, <code>h323</code>, <code>tel</code> oder
-    <code>ALL</code> sein. Mit der Option <code>c</code> wird die Anzahl der
-    Einträge zurückgegeben. Die <code>Eintragsnr</code> (Default
-    <code>1</code>) wählt einen Eintrag aus der Ergebnisliste aus.
-    Zonen-Suffix (Default: <code>e164.arpa</code>) ist die ENUM-Zone.
-    Ausführliche Beschreibung und Beispiele in
+    <para>Looks up a number with ENUM (<xref linkend="glossar-enum" />). The
+    <replaceable>service</replaceable> can be <code>sip</code> (default),
+    <code>iax2</code>, <code>h323</code>, <code>tel</code> or
+    <code>ALL</code>. The option <code>c</code> returns the number of entries.
+    The <replaceable>entrynumber</replaceable> (default <code>1</code>)
+    selects the entry from the list of results. The
+    <replaceable>zone-suffix</replaceable> (default: <code>e164.arpa</code>)
+    is the ENUM zone. Comprehensive descriptions and examples may be found in
     <filename>doc/README.enum</filename> (1.2) /
     <filename>doc/enum.txt</filename> (1.4).<programlisting>; in Asterisk 1.2:
 exten =&gt; 123,1,Set(foo=${ENUMLOOKUP(+${CALLERID(num)},sip,1,freenum.org)})
 
-; in Astarisk 1.4:
+; in Asterisk 1.4:
 exten =&gt; 123,1,Set(foo=${ENUMLOOKUP(+${CALLERID(num)},sip,,1,freenum.org)})</programlisting></para>
 
     <note>
@@ -1253,7 +1254,7 @@ For more information, see doc/enum.txt</screen></para>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><filename>enum.conf</filename></para>
     </formalpara>
@@ -1266,17 +1267,17 @@ For more information, see doc/enum.txt</screen></para>
         <secondary><code>ENV()</code></secondary>
       </indexterm></title>
 
-    <synopsis>ENV(<replaceable>Variablenname</replaceable>)</synopsis>
+    <synopsis>ENV(<replaceable>variablename</replaceable>)</synopsis>
 
-    <para>Liest/setzt eine Umgebungsvariable (Environment). Umgebungsvariablen
-    sind keine Variablen in Asterisk, sondern in der Betriebssystem-Umgebung.
-    Sie können in der Shell mit <code>echo
-    $<replaceable>Variablenname</replaceable></code> ausgegeben werden.
-    Umgebungsvariablen unterscheiden zwischen Groß- unf Kleinschreibung und
-    werden fast immer großgeschrieben.<programlisting>; HOME lesen:
+    <para>Reads/sets an environment variable (a variable in the operating
+    system environment - these can be viewed from the shell with
+    <command><code>echo
+    $<replaceable>variablename</replaceable></code></command>). Environment
+    variables are case-sensitive and are almost always written all
+    uppercase.<programlisting>; read HOME:
 exten =&gt; 123,1,Set(foo=${ENV(HOME)})
 
-; HOME setzen:
+; set HOME:
 exten =&gt; 123,1,Set(ENV(HOME)=/myAst)</programlisting></para>
 
     <note>
@@ -1298,7 +1299,7 @@ Not available</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
   </section>
@@ -1310,15 +1311,15 @@ Not available</screen></para>
         <secondary><code>EVAL()</code></secondary>
       </indexterm></title>
 
-    <synopsis>EVAL(<replaceable>Variable</replaceable>)</synopsis>
+    <synopsis>EVAL(<replaceable>variable</replaceable>)</synopsis>
 
-    <para>Wertet eine Variable doppelt aus. Das lässt sich am besten an einem
-    Beispiel erklären: Wenn die Variable <code>${VAR}</code> den String
-    "<code>${VAR2}</code>" enthält, würde sie ohne <code>Eval()</code> zu
-    diesem String ausgewertet. Mit <code>Eval()</code> wird auch
-    <code>${VAR2}</code> nochmal zu ihrem Inhalt ausgewertet.<programlisting>; wenn VAR den String "${VAR2}" enthält und VAR2 den String "Hallo Welt":
+    <para>Evaluates a variable twice. An example is useful: If the variable
+    <code>${VAR}</code> contains a string "<code>${VAR2}</code>", that is what
+    is returned when <code>${VAR}</code> is called. If <code>Eval()</code> is
+    used, the nested variable is also evaluated, and the contents of
+    <code>${VAR2}</code> are also returned.<programlisting>; If VAR contains the string "${VAR2}" and VAR2 contains the string "Hello World":
 exten =&gt; 123,1,Set(foo=${EVAL(${VAR})})
-; dann ist foo jetzt "Hallo Welt"</programlisting></para>
+; now foo is "Hello World"</programlisting></para>
 
     <note>
       <formalpara>
@@ -1347,7 +1348,7 @@ left with "${OTHERVAR}".</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
   </section>
@@ -1359,13 +1360,13 @@ left with "${OTHERVAR}".</screen></para>
         <secondary><code>EXISTS()</code></secondary>
       </indexterm></title>
 
-    <synopsis>EXISTS(<replaceable>Variable</replaceable>)</synopsis>
+    <synopsis>EXISTS(<replaceable>variable</replaceable>)</synopsis>
 
-    <para>Prüft, ob eine Variable definiert ist. Gibt 1 oder 0
-    zurück.<programlisting>exten =&gt; 123,1,Set(Var1=test)
+    <para>Checks to see if a variable is defined. Returns 1 or
+    0.<programlisting>exten =&gt; 123,1,Set(Var1=test)
 exten =&gt; 123,n,Set(Var2=)
-exten =&gt; 123,n,Set(foo=${EXISTS(${Var1})})   ; foo ist 1
-exten =&gt; 123,n,Set(foo=${EXISTS(${Var2})})   ; foo ist 0</programlisting></para>
+exten =&gt; 123,n,Set(foo=${EXISTS(${Var1})})   ; foo is 1
+exten =&gt; 123,n,Set(foo=${EXISTS(${Var2})})   ; foo is 0</programlisting></para>
 
     <note>
       <formalpara>
@@ -1386,7 +1387,7 @@ Not available</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
   </section>
@@ -1398,11 +1399,12 @@ Not available</screen></para>
         <secondary><code>FIELDQTY()</code></secondary>
       </indexterm></title>
 
-    <synopsis>FIELDQTY(<replaceable>Variablenname</replaceable>,<replaceable>Trennzeichen</replaceable>)</synopsis>
+    <synopsis>FIELDQTY(<replaceable>variablename</replaceable>,<replaceable>delimiter</replaceable>)</synopsis>
 
-    <para>Gibt zurück, wie viele Teilstrings entstehen würden, wenn man den
-    Inhalt der Variablen anhand des Trennzeichens aufteilt.<programlisting>exten =&gt; 123,1,Set(Var=hallo#du#da#am#telefon)
-exten =&gt; 123,n,Set(Anzahl=${FIELDQTY(Var,#)})    ; Anzahl ist 5</programlisting></para>
+    <para>Returns the number of fields which exist if
+    <replaceable>variablename</replaceable> is partitioned using
+    <replaceable>delimiter</replaceable>.<programlisting>exten =&gt; 123,1,Set(Var=hello#you#there#on#the#telephone)
+exten =&gt; 123,n,Set(Count=${FIELDQTY(Var,#)})    ; Count ist 6</programlisting></para>
 
     <note>
       <formalpara>
@@ -1431,7 +1433,7 @@ Not available</screen></para>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-cut" /></para>
     </formalpara>
@@ -1444,12 +1446,12 @@ Not available</screen></para>
         <secondary><code>FILTER()</code></secondary>
       </indexterm></title>
 
-    <synopsis>FILTER(<replaceable>erlaubte Zeichen</replaceable>,<replaceable>String</replaceable>)</synopsis>
+    <synopsis>FILTER(<replaceable>allowedCharacters</replaceable>,<replaceable>string</replaceable>)</synopsis>
 
     <simpara><emphasis>(beginning Asterisk 1.4)</emphasis></simpara>
 
-    <para>Filtert den String, so dass nur noch die erlaubten Zeichen im
-    Rückgabewert vorkommen.<programlisting>; nur die Zeichen 0123456789 in ${cdrnum} zulassen:
+    <para>Filters <replaceable>string</replaceable> so that only the allowed
+    characters are returned.<programlisting>; allow only 0123456789 from ${cdrnum}:
 exten =&gt; 123,1,Set(foo=${FILTER(0123456789,${cdrnum})})</programlisting></para>
 
     <note>
@@ -1483,20 +1485,22 @@ Not available</screen></para>
         <secondary><code>GLOBAL()</code></secondary>
       </indexterm></title>
 
-    <synopsis>GLOBAL(<replaceable>Variablenname</replaceable>)</synopsis>
+    <synopsis>GLOBAL(<replaceable>variablename</replaceable>)</synopsis>
 
     <simpara><emphasis>(beginning Asterisk 1.4)</emphasis></simpara>
 
-    <para>Wird verwendet, um eine Variable als global zu deklarieren, also
-    gültig über die Lebensdauer eines Kanals hinaus. In Asterisk 1.2 verwendet
-    man stattdessen <code>Set()</code> (<xref linkend="applikationen-set" />)
-    mit der Option <code>g</code>.<programlisting>; eine globale Variable ${meinevariable} definieren:
-exten =&gt; 123,1,Set(GLOBAL(meinevariable)=Test)</programlisting></para>
+    <para>Used to declare a variable global, <emphasis>i.e.</emphasis> valid
+    beyond the active life of the current channel. Asterisk 1.2 users use
+    <command><code>Set()</code></command> (<xref
+    linkend="applikationen-set" />) with the option
+    <code>g</code>.<programlisting>; define global variable ${myvariable}:
+exten =&gt; 123,1,Set(GLOBAL(myvariable)=Test)</programlisting></para>
 
     <note>
-      <para>Ob globale Variablen auch nach einem Reload von Asterisk noch
-      gültig sind, wird durch die Einstellung <code>clearglobalvars</code> in
-      der <filename>extensions.conf</filename> bestimmt.</para>
+      <para>Whether global variables persist through a
+      <command>reload</command> on the Asterisk console depends whether
+      <code>clearglobalvars</code> is set in
+      <filename>extensions.conf</filename>.</para>
     </note>
 
     <note>
@@ -1530,13 +1534,13 @@ Not available</screen></para>
         <secondary><code>GROUP()</code></secondary>
       </indexterm></title>
 
-    <synopsis>GROUP([<replaceable>Kategorie</replaceable>])</synopsis>
+    <synopsis>GROUP([<replaceable>category</replaceable>])</synopsis>
 
-    <para>Liest/setzt die Gruppe des Kanals (Kanäle lassen sich beliebig
-    gruppieren).<programlisting>exten =&gt; 123,1,Set(GROUP()=ausgehende)                ; Gruppe setzen
-exten =&gt; 123,n,GotoIf($[${GROUP_COUNT()} &gt; 10]?200)   ; zu viele?
-exten =&gt; 123,n,Dial(0123456)                          ; wählen
-exten =&gt; 123,200,SetVar(DIALSTATUS=CHANUNAVAIL)       ; ablehnen</programlisting></para>
+    <para>Reads/sets the group for the channel (channels may be grouped as
+    required).<programlisting>exten =&gt; 123,1,Set(GROUP()=outgoing)                ; set group
+exten =&gt; 123,n,GotoIf($[${GROUP_COUNT()} &gt; 10]?200)   ; too many outgoing calls?
+exten =&gt; 123,n,Dial(7785553233)                          ; dial
+exten =&gt; 123,200,SetVar(DIALSTATUS=CHANUNAVAIL)       ; too many outgoing calls, refuse</programlisting></para>
 
     <note>
       <formalpara>
@@ -1557,12 +1561,12 @@ Gets or sets the channel group.</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-group_count" />, <xref
       linkend="funktionen-group_list" />, <xref
@@ -1577,12 +1581,11 @@ Gets or sets the channel group.</screen></para>
         <secondary><code>GROUP_COUNT()</code></secondary>
       </indexterm></title>
 
-    <synopsis>GROUP_COUNT([<replaceable>Gruppe</replaceable>[@<replaceable>Kategorie</replaceable>]])</synopsis>
+    <synopsis>GROUP_COUNT([<replaceable>group</replaceable>[@<replaceable>category</replaceable>]])</synopsis>
 
-    <para>Gibt die Anzahl der Kanäle in der angegebenen Gruppe zurück. Wird
-    keine Gruppe angegeben, gilt die aktuelle Gruppe des
-    Kanals.<programlisting>; Anzahl der Kanäle in Gruppe ausgehende abfragen:
-exten =&gt; 123,1,Set(foo=${GROUP_COUNT(ausgehende)})</programlisting></para>
+    <para>Returns the number of channels in the specified group. If no group
+    is specified, the group of the current channel is assumed.<programlisting>; Query outgoing for number of channels:
+exten =&gt; 123,1,Set(foo=${GROUP_COUNT(outgoing)})</programlisting></para>
 
     <note>
       <formalpara>
@@ -1604,12 +1607,12 @@ channel's current group if not specifed (and non-empty).</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-group" />, <xref
       linkend="funktionen-group_list" />, <xref
@@ -1626,8 +1629,8 @@ channel's current group if not specifed (and non-empty).</screen></para>
 
     <synopsis>GROUP_LIST()</synopsis>
 
-    <para>Gibt eine durch Leerzeichen getrennte Liste aller Gruppen zurück,
-    die für den aktuellen Kanal gesetzt sind.<programlisting>exten =&gt; 123,1,Set(foo=${GROUP_LIST()})</programlisting></para>
+    <para>Returns a space-separated list of all the groups set for the current
+    channel.<programlisting>exten =&gt; 123,1,Set(foo=${GROUP_LIST()})</programlisting></para>
 
     <note>
       <formalpara>
@@ -1648,12 +1651,12 @@ Gets a list of the groups set on a channel.</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-group" />, <xref
       linkend="funktionen-group_count" />, <xref
@@ -1668,11 +1671,11 @@ Gets a list of the groups set on a channel.</screen></para>
         <secondary><code>GROUP_MATCH_COUNT()</code></secondary>
       </indexterm></title>
 
-    <synopsis>GROUP_MATCH_COUNT(<replaceable>Muster</replaceable>[@<replaceable>Kategorie</replaceable>])</synopsis>
+    <synopsis>GROUP_MATCH_COUNT(<replaceable>pattern</replaceable>[@<replaceable>category</replaceable>])</synopsis>
 
-    <para>Gibt die Anzahl der Kanäle zurück, auf die das angegebene Suchmuster
-    - ein regulärer Ausdruck - passt.<programlisting>; Anzahl der Kanäle in den Gruppen gruppe[1-4] abfragen:
-exten =&gt; 123,1,Set(foo=${GROUP_MATCH_COUNT(gruppe[1-4])})</programlisting></para>
+    <para>Returns the number of channels in groups matching the specified
+    pattern.<programlisting>; Query for the number of channels in groups group[1-4]:
+exten =&gt; 123,1,Set(foo=${GROUP_MATCH_COUNT(group[1-4])})</programlisting></para>
 
     <note>
       <formalpara>
@@ -1694,12 +1697,12 @@ Uses standard regular expression matching (see regex(7)).</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-group" />, <xref
       linkend="funktionen-group_count" />, <xref
@@ -1714,16 +1717,18 @@ Uses standard regular expression matching (see regex(7)).</screen></para>
         <secondary><code>IAXPEER()</code></secondary>
       </indexterm></title>
 
-    <synopsis>IAXPEER(<replaceable>Peer-Name</replaceable>[:<replaceable>Feld</replaceable>])</synopsis>
+    <synopsis>IAXPEER(<replaceable>peername</replaceable>[:<replaceable>field</replaceable>])</synopsis>
 
-    <para>Gibt Daten über einen IAX-Peer zurück. <code>Peer-Name</code> kann
-    auch <code>CURRENTCHANNEL</code> für den aktuellen Kanal sein.
-    <code>Feld</code> ist eines der folgenden:<variablelist termlength="15">
+    <para>Returns information about an IAX peer. The
+    <replaceable>peername</replaceable> can be replaced with
+    <code>CURRENTCHANNEL</code> to specify the current channel. The
+    <replaceable>field</replaceable> is one of the following:<variablelist
+        termlength="15">
         <varlistentry>
           <term><code>ip</code></term>
 
           <listitem>
-            <simpara>(Default) Die IP-Adresse des Peers</simpara>
+            <simpara>(default) the IP address of the peer</simpara>
           </listitem>
         </varlistentry>
 
@@ -1731,8 +1736,7 @@ Uses standard regular expression matching (see regex(7)).</screen></para>
           <term><code>status</code></term>
 
           <listitem>
-            <simpara>Der Status (wenn <code>qualify=yes</code> gesetzt
-            ist)</simpara>
+            <simpara>Peer status (when <code>qualify=yes</code>)</simpara>
           </listitem>
         </varlistentry>
 
@@ -1740,7 +1744,7 @@ Uses standard regular expression matching (see regex(7)).</screen></para>
           <term><code>mailbox</code></term>
 
           <listitem>
-            <simpara>Die eingestellte Mailbox</simpara>
+            <simpara>The configured mailbox</simpara>
           </listitem>
         </varlistentry>
 
@@ -1748,7 +1752,7 @@ Uses standard regular expression matching (see regex(7)).</screen></para>
           <term><code>context</code></term>
 
           <listitem>
-            <simpara>Der eingestellte Context</simpara>
+            <simpara>The configured context</simpara>
           </listitem>
         </varlistentry>
 
@@ -1756,8 +1760,8 @@ Uses standard regular expression matching (see regex(7)).</screen></para>
           <term><code>expire</code></term>
 
           <listitem>
-            <simpara>Die Unix-Time (Epoch), wann die Verbindung das nächste
-            Mal ausläuft.</simpara>
+            <simpara>The expiry time (in Unix time) for the
+            connection</simpara>
           </listitem>
         </varlistentry>
 
@@ -1765,7 +1769,7 @@ Uses standard regular expression matching (see regex(7)).</screen></para>
           <term><code>dynamic</code></term>
 
           <listitem>
-            <simpara>Ob die Verbindung dynamisch (<code>dynamic</code>) ist
+            <simpara>Whether the connection is dynamic or not
             (<code>yes</code>|<code>no</code>).</simpara>
           </listitem>
         </varlistentry>
@@ -1774,7 +1778,7 @@ Uses standard regular expression matching (see regex(7)).</screen></para>
           <term><code>callerid_name</code></term>
 
           <listitem>
-            <simpara>Der eingestellte Caller-ID-Name</simpara>
+            <simpara>The configured CID name</simpara>
           </listitem>
         </varlistentry>
 
@@ -1782,7 +1786,7 @@ Uses standard regular expression matching (see regex(7)).</screen></para>
           <term><code>callerid_num</code></term>
 
           <listitem>
-            <simpara>Die eingestellte Caller-ID-Nummer</simpara>
+            <simpara>The configured CID number</simpara>
           </listitem>
         </varlistentry>
 
@@ -1790,7 +1794,7 @@ Uses standard regular expression matching (see regex(7)).</screen></para>
           <term><code>codecs</code></term>
 
           <listitem>
-            <simpara>Die verfügbaren Codecs</simpara>
+            <simpara>The accessible codecs</simpara>
           </listitem>
         </varlistentry>
 
@@ -1798,11 +1802,11 @@ Uses standard regular expression matching (see regex(7)).</screen></para>
           <term><code>codec[<replaceable>x</replaceable>]</code></term>
 
           <listitem>
-            <simpara>Der Codec Nummer <code>x</code> (0-basiert) in der
-            Reihenfolge der Präferenz</simpara>
+            <simpara>Preferred codec number <code>x</code> (beginning with
+            0)</simpara>
           </listitem>
         </varlistentry>
-      </variablelist><programlisting>; die IP-Adresse von peer1 abfragen:
+      </variablelist><programlisting>; Query the IP address of peer1:
 exten =&gt; 123,1,Set(foo=${IAXPEER(peer1:ip)})</programlisting></para>
 
     <note>
@@ -1844,7 +1848,7 @@ If CURRENTCHANNEL specified, returns IP address of current channel</screen></par
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-sippeer" /></para>
     </formalpara>
@@ -1857,11 +1861,11 @@ If CURRENTCHANNEL specified, returns IP address of current channel</screen></par
         <secondary><code>IF()</code></secondary>
       </indexterm></title>
 
-    <synopsis>IF(<replaceable>Ausdruck</replaceable>?<replaceable>trueVal</replaceable>:<replaceable>falseVal</replaceable>)</synopsis>
+    <synopsis>IF(<replaceable>expression</replaceable>?<replaceable>trueVal</replaceable>:<replaceable>falseVal</replaceable>)</synopsis>
 
-    <para>Gibt abhängig von der Bedingung den ersten oder zweiten Wert zurück.
-    Ist die Bedingung wahr, wird der Wert nach <code>?</code>, sonst der Wert
-    nach <code>:</code> zurückgegeben.<programlisting>; wenn ${Var}=123 ist, dann 5 zurückgeben, sonst 9:
+    <para>Returns a value depending on a condition. If the condition is true,
+    the value following <code>?</code> is returned, otherwise the value
+    following <code>:</code> is returned.<programlisting>; If ${Var}=123, return 5, otherwise return 9:
 exten =&gt; 123,1,Set(foo=${IF($[ ${Var} = 123]?5:9)})</programlisting></para>
 
     <note>
@@ -1883,12 +1887,12 @@ Not available</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-iftime" />, x<xref
       linkend="applikationen-execif" />, <xref
@@ -1904,26 +1908,24 @@ Not available</screen></para>
         <secondary><code>IFTIME()</code></secondary>
       </indexterm></title>
 
-    <synopsis>IFTIME(Zeit-<replaceable>Ausdruck</replaceable>?<replaceable>trueVal</replaceable>:<replaceable>falseVal</replaceable>)</synopsis>
+    <synopsis>IFTIME(<replaceable>time-condition</replaceable>?<replaceable>trueVal</replaceable>:<replaceable>falseVal</replaceable>)</synopsis>
 
-    <para>Gibt - wie <code>IF()</code> - abhängig von der Bedingung den ersten
-    oder zweiten Wert zurück, nur dass hier ein spezieller Zeit-Ausdruck
-    angegeben wird.</para>
+    <para>Returns a value depending on the time condition.</para>
 
-    <para>Der Zeit-Ausdruck ist aufgebaut im Format
-    <code><replaceable>Uhrzeit</replaceable>|<replaceable>Wochentag</replaceable>|<replaceable>Monatstag</replaceable>|<replaceable>Monat</replaceable></code>,
-    wobei jeder Teil auch eine Spanne (mit <code>-</code>) oder das immer
-    passende Wildcard <code>*</code> sein kann. Die Zeit wird im
-    24-Std.-Format (z.B. <code>08:00-18:00</code>), Wochentage und Monatsnamen
-    als 3-buchstabige englische Abkürzung (<code>mon</code>, <code>tue</code>,
-    <code>wed</code>, <code>thu</code>, <code>fri</code>, <code>sat</code>,
-    <code>sun</code> bzw. <code>jan</code>, <code>feb</code>,
+    <para>The <replaceable>time-condition</replaceable> follows the format
+    <code><replaceable>time</replaceable>|<replaceable>dayofweek</replaceable>|<replaceable>date</replaceable>|<replaceable>month</replaceable></code>;
+    each parameter may also be a range separated by <code>-</code>, or contain
+    the wildcard<code> *</code>. Time is given in 24 hour format
+    (<emphasis>e.g.</emphasis> <code>08:00-18:00</code>), weekdays and month
+    names are three-letter English language abbreviations (<code>mon</code>,
+    <code>tue</code>, <code>wed</code>, <code>thu</code>, <code>fri</code>,
+    <code>sat</code>, <code>sun</code> and <code>jan</code>, <code>feb</code>,
     <code>mar</code>, <code>apr</code>, <code>may</code>, <code>jun</code>,
     <code>jul</code>, <code>aug</code>, <code>sep</code>, <code>oct</code>,
-    <code>nov</code>, <code>dec</code>) angegeben.<programlisting>; gültig 8-18 Uhr, montags, 1.-15. Dezember:
+    <code>nov</code>, <code>dec</code>).<programlisting>; Valid from 8 a.m. to 6 p.m., Mondays, 1st to the 15th of December:
 exten =&gt; 123,1,Set(foo=${IFTIME(08:00-18:00|mon|1-15|dec?5:0)})
 
-; gültig jeden Samstag und Sonntag:
+; Valid every Saturday and Sunday:
 exten =&gt; 123,1,Set(foo=${IFTIME(*|sat-sun|*|*?5:0)})</programlisting></para>
 
     <note>
@@ -1945,12 +1947,12 @@ Not available</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-if" />, <xref
       linkend="applikationen-execif" />, <xref
@@ -1966,10 +1968,10 @@ Not available</screen></para>
         <secondary><code>ISNULL()</code></secondary>
       </indexterm></title>
 
-    <synopsis>ISNULL(<replaceable>Wert</replaceable>)</synopsis>
+    <synopsis>ISNULL(<replaceable>value</replaceable>)</synopsis>
 
-    <para>Gibt 1 zurück, wenn der Wert NULL (kein Wert) ist, sonst
-    0.<programlisting>exten =&gt; 123,1,Set(foo=${ISNULL(${Var1})})</programlisting></para>
+    <para>Returns 1 if <replaceable>value</replaceable> is NULL (kein Wert),
+    otherwise returns 0.<programlisting>exten =&gt; 123,1,Set(foo=${ISNULL(${Var1})})</programlisting></para>
 
     <note>
       <formalpara>
@@ -1990,7 +1992,7 @@ Not available</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
   </section>
@@ -2002,12 +2004,12 @@ Not available</screen></para>
         <secondary><code>KEYPADHASH()</code></secondary>
       </indexterm></title>
 
-    <synopsis>KEYPADHASH(<replaceable>String</replaceable>)</synopsis>
+    <synopsis>KEYPADHASH(<replaceable>string</replaceable>)</synopsis>
 
-    <simpara>Wandelt die Buchstaben A-Z (und a-z) entsprechend der
-    Telefontastatur in Ziffern um. Damit können z.B. Vanity-Nummern wie
-    0800-AUTOHAUS (0800-28864287) in richtige Nummern umgewandelt
-    werden.</simpara>
+    <simpara>Transforms an alphabetical string to digits according to the
+    standard telephone keypad letter assignments. This enables quick
+    conversion of vanity numbers (<emphasis>e.g.</emphasis> 1-800-BADHAIR
+    (1-800-2234247) to actual numbers.</simpara>
 
     <informaltable>
       <tgroup cols="3" colsep="none" rowsep="none">
@@ -2053,7 +2055,7 @@ Not available</screen></para>
       </tgroup>
     </informaltable>
 
-    <programlisting>exten =&gt; 123,1,Set(foo=${KEYPADHASH(AUTOHAUS)})  ; gibt 28864287 zurück</programlisting>
+    <programlisting>exten =&gt; 123,1,Set(foo=${KEYPADHASH(BADHAIR)})  ; returns 2234247</programlisting>
 
     <note>
       <formalpara>
@@ -2088,18 +2090,19 @@ Example:  ${KEYPADHASH(Les)} returns "537"</screen></para>
 
     <synopsis>LANGUAGE()</synopsis>
 
-    <para>Liest/setzt die Sprache des Kanals. Die Sprache beeinflusst u.a.,
-    welche Audiodateien abgespielt werden. Ist z.B. <code>de</code>
-    eingestellt und <code>Playback(tt-weasels)</code> wird ausgeführt, so wird
-    die Datei <filename>de/tt-weasels</filename> abgespielt (wenn vorhanden).
-    Gleiches gilt für <code>SayDigits()</code> etc.<programlisting>; abfragen:
+    <para>Reads/sets the language of the current channel. This setting
+    determines, among other things, which audio files are played. If the
+    language is set to <code>de</code> and
+    <command><code>Playback(tt-weasels)</code></command> is run in the
+    dialplan, Asterisk will play <filename>de/tt-weasels</filename>, if it
+    exists, and similarly for <code><command>SayDigits()</command></code> and
+    other applications which rely on pre-recorded audio files.<programlisting>; Query:
 exten =&gt; 123,1,Set(foo=${LANGUAGE()})
 
-; Deutsch setzen:
-exten =&gt; 123,1,Set(LANGUAGE()=de)</programlisting><warning>
-        <para>Ist deprecated (unerwünscht). Nutzen Sie lieber die Funktion
-        <code>CHANNEL(language)</code>. Siehe <xref
-        linkend="funktionen-channel" /></para>
+; Set Spanish:
+exten =&gt; 123,1,Set(LANGUAGE()=es)</programlisting><warning>
+        <para>This function is deprecated. Use <code>CHANNEL(language)</code>
+        instead. See <xref linkend="funktionen-channel" /></para>
       </warning></para>
 
     <note>
@@ -2143,12 +2146,12 @@ Deprecated. Use CHANNEL(language) instead.</screen></para>
         <secondary><code>LEN()</code></secondary>
       </indexterm></title>
 
-    <synopsis>LEN(<replaceable>String</replaceable>)</synopsis>
+    <synopsis>LEN(<replaceable>string</replaceable>)</synopsis>
 
-    <para>Gibt die Länge (Anzahl der Zeichen) eines Strings
-    zurück.<programlisting>; angenommen, ${test} ist "Hallo Welt"
+    <para>Returns the length of
+    <replaceable>string</replaceable>.<programlisting>; If ${test} is "Hello World"
 exten =&gt; 123,1,Set(foo=${LEN(${test})})
-; dann wird 10 zurückgegeben</programlisting></para>
+; returns 11</programlisting></para>
 
     <note>
       <formalpara>
@@ -2169,7 +2172,7 @@ Not available</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
   </section>
@@ -2181,16 +2184,16 @@ Not available</screen></para>
         <secondary><code>MATH()</code></secondary>
       </indexterm></title>
 
-    <synopsis>MATH(<replaceable>Zahl1</replaceable> <replaceable>Operator</replaceable> <replaceable>Zahl2</replaceable>[,<replaceable>Ergebnistyp</replaceable>])</synopsis>
+    <synopsis>MATH(<replaceable>number1</replaceable> <replaceable>operator</replaceable> <replaceable>number2</replaceable>[,<replaceable>typeofresult</replaceable>])</synopsis>
 
-    <para>Berechnet einfache mathematische Ausdrücke. Mögliche Operatoren
-    sind: <code>+</code>, <code>-</code>, <code>/</code>, <code>*</code>,
+    <para>Calculates simple mathematical expressions. Allowed operators are :
+    <code>+</code>, <code>-</code>, <code>/</code>, <code>*</code>,
     <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>,
-    <code>&gt;=</code>, <code>==</code>, <code>%</code> (modulo). Ergebnistyp:
-    <code>f</code>, <code>float</code> (Fließkommazahl, Default),
-    <code>i</code>, <code>int</code> (Ganzzahl), <code>h</code>,
-    <code>hex</code> (Wert im Hexadezimal-System), <code>c</code>,
-    <code>char</code> (Byte).<programlisting>; 3*8 als Ganzzahl berechnen:
+    <code>&gt;=</code>, <code>==</code>, <code>%</code> (modulo). The
+    <replaceable>typeofresult</replaceable> may be: <code>f</code>,
+    <code>float</code> (default), <code>i</code>, <code>int</code> (integer),
+    <code>h</code>, <code>hex</code> (hexadecimal), <code>c</code>,
+    <code>char</code> (byte output).<programlisting>; Calculate 3*8 as an integer:
 exten =&gt; 123,1,Set(i=${MATH(3*8,int)})</programlisting></para>
 
     <note>
@@ -2220,7 +2223,7 @@ Example: Set(i=${MATH(123%16,int)}) - sets var i=11</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
   </section>
@@ -2232,10 +2235,10 @@ Example: Set(i=${MATH(123%16,int)}) - sets var i=11</screen></para>
         <secondary><code>MD5()</code></secondary>
       </indexterm></title>
 
-    <synopsis>MD5(<replaceable>String</replaceable>)</synopsis>
+    <synopsis>MD5(<replaceable>string</replaceable>)</synopsis>
 
-    <para>Berechnet den MD5-Hash (Digest, Prüfsumme) eines Strings
-    (hexadezimale Rückgabe).<programlisting>exten =&gt; 123,1,Set(foo=${MD5(${string})})</programlisting></para>
+    <para>Calculates the MD5 hash (checksum) of a string (returns in
+    hexadecimal format).<programlisting>exten =&gt; 123,1,Set(foo=${MD5(${string})})</programlisting></para>
 
     <note>
       <formalpara>
@@ -2256,7 +2259,7 @@ Not available</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
   </section>
@@ -2268,19 +2271,18 @@ Not available</screen></para>
         <secondary><code>MUSICCLASS()</code></secondary>
       </indexterm></title>
 
-    <synopsis>MUSICCLASS(<replaceable>Klasse</replaceable>)</synopsis>
+    <synopsis>MUSICCLASS(<replaceable>class</replaceable>)</synopsis>
 
-    <para>Liest/setzt die Music-on-Hold-Klasse (Klasse der
-    Wartemusik).<programlisting>; abfragen:
+    <para>Reads/sets the music-on-hold class.<programlisting>; Query:
 exten =&gt; 123,1,Set(foo=${MUSICCLASS()})
 
-; auf "HeavyMetal" setzen:
+; Set to "HeavyMetal":
 exten =&gt; 123,1,Set(MUSICCLASS()=HeavyMetal)</programlisting></para>
 
     <important>
-      <para>Ab Asterisk 1.4 deprecated. Stattdessen
-      <code>Set(CHANNEL(musicclass)=<replaceable>default</replaceable>)</code>
-      verwenden, siehe <xref linkend="funktionen-channel" />.</para>
+      <para>Deprecated as of Asterisk 1.4. Use
+      <command><code>Set(CHANNEL(musicclass)=<replaceable>default</replaceable>)</code></command>
+      instead. See <xref linkend="funktionen-channel" />.</para>
     </important>
 
     <note>
@@ -2317,14 +2319,14 @@ Deprecated. Use CHANNEL(musicclass) instead.</screen></para>
         <secondary><code>ODBC_SQL()</code></secondary>
       </indexterm></title>
 
-    <synopsis>ODBC_SQL(<replaceable>SQL-Query</replaceable>)</synopsis>
+    <synopsis>ODBC_SQL(<replaceable>SQL-query</replaceable>)</synopsis>
 
-    <para>Führt den angegebenen SQL-Query aus und gibt ggf. das Ergebnis
-    zurück.<programlisting>; abfragen:
-exten =&gt; 123,1,Set(Name=${ODBC_SQL(SELECT name FROM liste WHERE nummer='123')})
+    <para>Executes the specified SQL query and returns the result, if
+    any.<programlisting>; Query:
+exten =&gt; 123,1,Set(Name=${ODBC_SQL(SELECT name FROM list WHERE number='123')})
 
-; setzen:
-exten =&gt; 123,1,Set(ODBC_SQL(UPDATE liste SET name='Peter' WHERE nummer='123'))</programlisting></para>
+; Set:
+exten =&gt; 123,1,Set(ODBC_SQL(UPDATE list SET name='Robert' WHERE number='123'))</programlisting></para>
   </section>
 
   <section id="funktionen-odbc_user_database">
@@ -2337,19 +2339,20 @@ exten =&gt; 123,1,Set(ODBC_SQL(UPDATE liste SET name='Peter' WHERE nummer='123')
 
     <synopsis>ODBC_USER_DATABASE(<replaceable>var1</replaceable>[,<replaceable>var2</replaceable>[,...]])</synopsis>
 
-    <para>Führt den in <filename>func_odbc.conf</filename> definierten
-    SQL-Query aus und gibt ggf. das Ergebnis zurück. Die in der Abfrage
-    definierten <code>${VAL1}</code>, <code>${VAL2}</code>, ...,
-    <code>${ARG1}</code>, <code>${ARG2}</code>, ... werden durch die
-    angegebenen Werte ersetzt.</para>
+    <para>Runs the SQL query defined in <filename>func_odbc.conf</filename>
+    and returns the result, if any. The values defined in
+    <filename>func_odbc.conf</filename>, such as <code>${VAL1}</code>,
+    <code>${VAL2}</code>, ..., <code>${ARG1}</code>, <code>${ARG2}</code>, ...
+    are replaced by the corresponding values provided when the function is
+    called.</para>
 
     <para><filename>func_odbc.conf</filename>:<programlisting>[USER_DATABASE]
-dsn=meine_datenbank
-read=SELECT name FROM liste WHERE nummer='${ARG1}'
-write=UPDATE liste SET name=${VAL1} WHERE nummer='${ARG1}'</programlisting><filename>extensions.conf</filename>:<programlisting>; abfragen (read):
+dsn=my_database
+read=SELECT name FROM list WHERE number='${ARG1}'
+write=UPDATE list SET name=${VAL1} WHERE number='${ARG1}'</programlisting><filename>extensions.conf</filename>:<programlisting>; Query (read):
 exten =&gt; 123,1,Set(Name=${ODBC_USER_DATABASE(${EXTEN})})
 
-; setzen (write):
+; Update (write):
 exten =&gt; 123,1,Set(ODBC_USER_DATABASE(${CALLERID(name)})=1000)</programlisting></para>
   </section>
 
@@ -2360,14 +2363,14 @@ exten =&gt; 123,1,Set(ODBC_USER_DATABASE(${CALLERID(name)})=1000)</programlistin
         <secondary><code>QUEUEAGENTCOUNT()</code></secondary>
       </indexterm></title>
 
-    <simpara>in Asterisk 1.2 - für 1.4 siehe
+    <simpara>in Asterisk 1.2; Asterisk 1.4 users see
     <code>QUEUE_MEMBER_COUNT()</code></simpara>
 
-    <synopsis>QUEUEAGENTCOUNT(<replaceable>Warteschlange</replaceable>)</synopsis>
+    <synopsis>QUEUEAGENTCOUNT(<replaceable>queue</replaceable>)</synopsis>
 
-    <para>Gibt die Anzahl der Agenten (im Gegensatz zu den Anrufern) auf der
-    Warteschlange zurück.<programlisting>; Anzahl der Agenten in der "supportSchlange":
-exten =&gt; 123,1,Set(foo=${QUEUEAGENTCOUNT(supportSchlange)})</programlisting></para>
+    <para>Returns the number of agents (as opposed to number of callers) in
+    the specified <replaceable>queue</replaceable>.<programlisting>; Number of agents in "supportqueue":
+exten =&gt; 123,1,Set(foo=${QUEUEAGENTCOUNT(supportqueue)})</programlisting></para>
 
     <note>
       <formalpara>
@@ -2402,14 +2405,15 @@ This function is deprecated.  You should use QUEUE_MEMBER_COUNT() instead.</scre
         <secondary><code>QUEUE_MEMBER_COUNT()</code></secondary>
       </indexterm></title>
 
-    <simpara>in Asterisk 1.4 - für 1.2 siehe
+    <simpara>in Asterisk 1.4 - Asterisk 1.2 users see
     <code>QUEUEAGENTCOUNT()</code></simpara>
 
-    <synopsis>QUEUE_MEMBER_COUNT(<replaceable>Warteschlange</replaceable>)</synopsis>
+    <synopsis>QUEUE_MEMBER_COUNT(<replaceable>queue</replaceable>)</synopsis>
 
-    <para>Gibt die Anzahl der Agenten (im Gegensatz zu den Anrufern) auf der
-    Warteschlange zurück.<programlisting>; Anzahl der Agenten in der "supportSchlange":
-exten =&gt; 123,1,Set(foo=${QUEUE_MEMBER_COUNT(supportSchlange)}) </programlisting></para>
+    <para>Returns the number of agents (and/or members, which may be devices
+    rather than logged-in users) in the specified
+    <replaceable>queue</replaceable>.<programlisting>; Number of members in "supportqueue":
+exten =&gt; 123,1,Set(foo=${QUEUE_MEMBER_COUNT(supportqueue)}) </programlisting></para>
 
     <note>
       <formalpara>
@@ -2442,12 +2446,12 @@ Returns the number of members currently associated with the specified queue.</sc
         <secondary><code>QUEUE_MEMBER_LIST()</code></secondary>
       </indexterm></title>
 
-    <synopsis>QUEUE_MEMBER_LIST(<replaceable>Warteschlange</replaceable>)</synopsis>
+    <synopsis>QUEUE_MEMBER_LIST(<replaceable>queue</replaceable>)</synopsis>
 
-    <para>Gibt eine durch Komma getrennte Liste der Agenten auf einer
-    Warteschleife zurück.<programlisting>; Agenten in der "supportSchlange":
-exten =&gt; 123,1,Set(foo=${QUEUE_MEMBER_LIST(supportSchlange)})
-; gibt z.B. 5,8,33 zurück</programlisting></para>
+    <para>Returns a comma-delimited list of the members in the specified
+    <replaceable>queue</replaceable>.<programlisting>; Agents in "supportqueue":
+exten =&gt; 123,1,Set(foo=${QUEUE_MEMBER_LIST(supportqueue)})
+; Returns, for example, 5,8,33</programlisting></para>
 
     <note>
       <formalpara>
@@ -2480,11 +2484,12 @@ Returns a comma-separated list of members associated with the specified queue.</
         <secondary><code>QUOTE()</code></secondary>
       </indexterm></title>
 
-    <synopsis>QUOTE(<replaceable>String</replaceable>)</synopsis>
+    <synopsis>QUOTE(<replaceable>string</replaceable>)</synopsis>
 
-    <para>Escaped Anführungszeichen innerhalb eines Strings.<programlisting>; wenn ${var} &gt;&gt;Die "Asterisk"-PBX&lt;&lt; ist
+    <para>Quotes a string exactly, escaping embedded quotation marks if
+    necessary.<programlisting>; If ${var} is &gt;&gt;The "Asterisk"-PBX&lt;&lt;
 exten =&gt; 123,1,Set(foo=${QUOTE(${var})})
-; dann wird &gt;&gt;Die \"Asterisk\"-PBX&lt;&lt; zurückggeben</programlisting></para>
+; returns &gt;&gt;The \"Asterisk\"-PBX&lt;&lt;</programlisting></para>
 
     <note>
       <formalpara>
@@ -2521,22 +2526,22 @@ Not available</screen></para>
 
     <simpara><emphasis>(beginning Asterisk 1.4)</emphasis></simpara>
 
-    <para>Gibt ein Zahl zwischen <code>min</code> und <code>max</code> (beide
-    einschließlich) zurück. Der Default für <code>min</code> ist 0, der für
-    <code>max</code> ist die größte auf dem System darstellbare Ganzzahl
-    (meist 2147483647).<programlisting>; einen zufälligen Wert zwischen 1 und 10 (einschließlich) wählen:
-exten =&gt; 123,1,Set(zufall=${RAND(1,10)})
+    <para>Returns a randomly-generated number between <code>min</code> and
+    <code>max</code> inclusive. The default for <code>min</code> is 0, for
+    <code>max</code> the default is the largest integer supported by the
+    system (usually 2147483647).<programlisting>; Choose a random number between 1 and 10 (inclusive):
+exten =&gt; 123,1,Set(coincidence=${RAND(1,10)})
 
-; Glücksspiel:
-exten =&gt; 123,1,GotoIf($[${RAND(0,100)} &lt; 25]?gewonnen:verloren)
-exten =&gt; gewonnen,1,Playback(gewonnen)
-exten =&gt; gewonnen,n,Goto(123,1)
-exten =&gt; verloren,1,Playback(verloren)
-exten =&gt; verloren,n,Goto(123,1)</programlisting></para>
+; Game of chance:
+exten =&gt; 123,1,GotoIf($[${RAND(0,100)} &lt; 25]?won:lost)
+exten =&gt; won,1,Playback(won)
+exten =&gt; won,n,Goto(123,1)
+exten =&gt; lost,1,Playback(lost)
+exten =&gt; lost,n,Goto(123,1)</programlisting></para>
 
     <note>
-      <para>Vor Asterisk 1.4 muss man stattdessen die Applikation
-      <code>Random()</code> verwenden.</para>
+      <para>If you are using versions prior to Asterisk 1.4, use the
+      application <code><command>Random()</command></code>.</para>
     </note>
 
     <note>
@@ -2566,7 +2571,7 @@ specified, while max defaults to RAND_MAX (2147483647 on many systems).
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="applikationen-random" /></para>
     </formalpara>
@@ -2579,26 +2584,26 @@ specified, while max defaults to RAND_MAX (2147483647 on many systems).
         <secondary><code>REGEX()</code></secondary>
       </indexterm></title>
 
-    <synopsis>REGEX("<replaceable>Ausdruck</replaceable>" <replaceable>String</replaceable>)</synopsis>
+    <synopsis>REGEX("<replaceable>expression</replaceable>" <replaceable>string</replaceable>)</synopsis>
 
-    <para>Gibt 1 zurück, wenn ein String auf einen regulären Ausdruck passt,
-    sonst 0. Der reguläre Ausdruck kann auch <code>^</code> (passt auf den
-    Anfang) und <code>$</code> (passt auf das Ende) enthalten. Variablen
-    werden vorher ausgewertet.</para>
+    <para>Returns 1, if <replaceable>string</replaceable> matches the regular
+    expression <replaceable>expression</replaceable>, otherwise returns 0. The
+    regular expression may include <code>^</code> (matches the beginning) and
+    <code>$</code> (matches the end). Variables are evaluated first.</para>
 
-    <para>Der Parser in Asterisk 1.2 arbeitet nicht sauber und kann durch
-    besondere Zeichen wie <code>$</code> oder geschweifte Klammern im Ausdruck
-    verwirrt werden. Als Workaround definiert man sich z.B. eine Variable
-    <code>${dollar}</code> mit dem Inhalt "<code>$</code>" und verwendet diese
-    statt des <code>$</code>-Zeichens.</para>
+    <para>The parser in Asterisk 1.2 does not behave consistently and can be
+    confused by expressions containing special characters such as
+    <code>$</code> or angle brackets. An ugly workaround is to define a
+    variable (for example <code>${dollar}</code>) and have it contain the
+    special character (for example, "<code>$</code>").</para>
 
-    <para><programlisting>; prüfen, ob der Ausdruck "[abc][0-9]" auf den String "b3" passt:
-exten =&gt; 123,1,Set(foo=${REGEX("[abc][0-9]" b3)})   ; gibt 1 zurück
+    <para><programlisting>; Test to see if the string "b3" matches the regular expression "[abc][0-9]":
+exten =&gt; 123,1,Set(foo=${REGEX("[abc][0-9]" b3)})   ; returns 1
 
-; prüfen, ob ${str} mit 0 endet, Asterisk 1.4:
+; Test to see if ${str} ends in 0, for Asterisk 1.4:
 exten =&gt; 123,1,Set(foo=${REGEX("0$" ${str})})
 
-; in Asterisk 1.2 behilft man sich so:
+; in Asterisk 1.2, using the workaround described above:
 exten =&gt; 123,1,Set(foo=${REGEX("0${dollar}" ${str})})</programlisting></para>
 
     <note>
@@ -2635,15 +2640,16 @@ then put two spaces there; the second will not be skipped.</screen></para>
         <secondary><code>SET()</code></secondary>
       </indexterm></title>
 
-    <synopsis>SET(<replaceable>Variablenname</replaceable>=<replaceable>Ausdruck</replaceable>)</synopsis>
+    <synopsis>SET(<replaceable>variablename</replaceable>=<replaceable>expression</replaceable>)</synopsis>
 
-    <para>Kann innerhalb von verschachtelten Ausdrücken verwendet werden, um
-    Variablen auf einen Wert zu setzen. (Nicht verwechseln mit der Applikation
-    <code>Set()</code>!)<programlisting>; ${a}, ${b}, ${c}, und ${d} auf 8 setzen:
+    <para>Can be used inside nested expressions to set variables to the
+    desired value. (Not to be confused with the application
+    <code><command>Set()</command></code>! This is the cause of much
+    grief!)<programlisting>; Set ${a}, ${b}, ${c}, and ${d} to 8:
 exten =&gt; 123,1,Set(a=${SET(b=${SET(c=${SET(d=8)})})})
 
-; es ist aber meist vorteilhafter, zugunsten der Übersichtlichkeit
-; ein oder zwei Zeilen mehr zu schreiben</programlisting></para>
+; In the interest of readability and comprehension, it is
+; usually better to write one or two more lines</programlisting></para>
 
     <note>
       <formalpara>
@@ -2664,12 +2670,12 @@ Not available</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="applikationen-set" /></para>
     </formalpara>
@@ -2682,11 +2688,11 @@ Not available</screen></para>
         <secondary><code>SHA1()</code></secondary>
       </indexterm></title>
 
-    <synopsis>SHA1(<replaceable>String</replaceable>)</synopsis>
+    <synopsis>SHA1(<replaceable>string</replaceable>)</synopsis>
 
-    <para>Berechnet den SHA1-Hash (Digest, Prüfsumme) eines Strings
-    (hexadezimale Rückgabe).<programlisting>; den SHA1-Hash von "Hallo Welt" berechnen:
-exten =&gt; 123,1,Set(sha1hash=${SHA1(Hallo Welt)})</programlisting></para>
+    <para>Calculates the SHA1 hash (checksum) of a string (returns
+    hexadecimal).<programlisting>; Calculate the SHA1 hash of "Hello World":
+exten =&gt; 123,1,Set(sha1hash=${SHA1(Hello World)})</programlisting></para>
 
     <note>
       <formalpara>
@@ -2722,15 +2728,15 @@ Generate a SHA1 digest via the SHA1 algorythm.
         <secondary><code>SIPCHANINFO()</code></secondary>
       </indexterm></title>
 
-    <synopsis>SIPCHANINFO(<replaceable>Feld</replaceable>)</synopsis>
+    <synopsis>SIPCHANINFO(<replaceable>field</replaceable>)</synopsis>
 
-    <para>Gibt Daten des aktuellen SIP-Kanals zurück. Gültige Felder
-    sind:<variablelist termlength="11">
+    <para>Returns information about the current SIP channel. The field may be
+    one of:<variablelist termlength="11">
         <varlistentry>
           <term><code>peerip</code></term>
 
           <listitem>
-            <simpara>Die IP-Adresse des Peers</simpara>
+            <simpara>The IP address of the peer</simpara>
           </listitem>
         </varlistentry>
 
@@ -2738,7 +2744,7 @@ Generate a SHA1 digest via the SHA1 algorythm.
           <term><code>recvip</code></term>
 
           <listitem>
-            <simpara>Die ursprüngliche IP-Adresse des Peers</simpara>
+            <simpara>The source IP address of the peer</simpara>
           </listitem>
         </varlistentry>
 
@@ -2746,7 +2752,7 @@ Generate a SHA1 digest via the SHA1 algorythm.
           <term><code>from</code></term>
 
           <listitem>
-            <simpara>Die URI aus dem <code>From:</code>-Header</simpara>
+            <simpara>The URI from the <code>From:</code> header</simpara>
           </listitem>
         </varlistentry>
 
@@ -2754,7 +2760,7 @@ Generate a SHA1 digest via the SHA1 algorythm.
           <term><code>uri</code></term>
 
           <listitem>
-            <simpara>Die URI aus dem <code>Contact:</code>-Header</simpara>
+            <simpara>The URI from the <code>Contact:</code> header</simpara>
           </listitem>
         </varlistentry>
 
@@ -2762,7 +2768,7 @@ Generate a SHA1 digest via the SHA1 algorythm.
           <term><code>useragent</code></term>
 
           <listitem>
-            <simpara>Der User-Agent (Client-Programm)</simpara>
+            <simpara>The user agent</simpara>
           </listitem>
         </varlistentry>
 
@@ -2770,10 +2776,10 @@ Generate a SHA1 digest via the SHA1 algorythm.
           <term><code>peername</code></term>
 
           <listitem>
-            <simpara>Der Name des Peers</simpara>
+            <simpara>The name of the peer</simpara>
           </listitem>
         </varlistentry>
-      </variablelist><programlisting>; den Namen des Peers abfragen:
+      </variablelist><programlisting>; Query the name of a SIP peer:
 exten =&gt; 123,1,Set(foo=${SIPCHANINFO(peername)}) </programlisting></para>
 
     <note>
@@ -2815,15 +2821,16 @@ Valid items are:
         <secondary><code>SIPPEER()</code></secondary>
       </indexterm></title>
 
-    <synopsis>SIPPEER(<replaceable>Peername</replaceable>[,<replaceable>Feld</replaceable>])</synopsis>
+    <synopsis>SIPPEER(<replaceable>peername</replaceable>[,<replaceable>field</replaceable>])</synopsis>
 
-    <para>Gibt Informationen über einen SIP-Peer zurück. Gültige Felder
-    sind:<variablelist termlength="15">
+    <para>Returns information about a SIP peer. The
+    <replaceable>field</replaceable> may be one of:<variablelist
+        termlength="15">
         <varlistentry>
           <term><code>ip</code></term>
 
           <listitem>
-            <simpara>(Default) Die IP-Adresse des Peers</simpara>
+            <simpara>The IP address of the peer (default)</simpara>
           </listitem>
         </varlistentry>
 
@@ -2831,7 +2838,7 @@ Valid items are:
           <term><code>mailbox</code></term>
 
           <listitem>
-            <simpara>Die eingestellte Mailbox</simpara>
+            <simpara>The configured mailbox</simpara>
           </listitem>
         </varlistentry>
 
@@ -2839,7 +2846,7 @@ Valid items are:
           <term><code>context</code></term>
 
           <listitem>
-            <simpara>Der eingestellte Context</simpara>
+            <simpara>The configured context</simpara>
           </listitem>
         </varlistentry>
 
@@ -2847,8 +2854,8 @@ Valid items are:
           <term><code>expire</code></term>
 
           <listitem>
-            <simpara>Die Unix-Zeit (Epoch), wann die Verbindung das nächste
-            Mal ausläuft.</simpara>
+            <simpara>The expiry time (in Unix time) for the
+            connection.</simpara>
           </listitem>
         </varlistentry>
 
@@ -2856,7 +2863,7 @@ Valid items are:
           <term><code>dynamic</code></term>
 
           <listitem>
-            <simpara>Ob <code>dynamic=yes</code> gesetzt ist
+            <simpara>Whether or not <code>dynamic</code> is set
             (<code>yes</code>|<code>no</code>).</simpara>
           </listitem>
         </varlistentry>
@@ -2865,7 +2872,7 @@ Valid items are:
           <term><code>callerid_name</code></term>
 
           <listitem>
-            <simpara>Der eingestellte Caller-ID-Name</simpara>
+            <simpara>The configured CID name</simpara>
           </listitem>
         </varlistentry>
 
@@ -2873,7 +2880,7 @@ Valid items are:
           <term><code>callerid_num</code></term>
 
           <listitem>
-            <simpara>Die eingestellte Caller-ID-Nummer</simpara>
+            <simpara>The configured CID number</simpara>
           </listitem>
         </varlistentry>
 
@@ -2881,7 +2888,7 @@ Valid items are:
           <term><code>codecs</code></term>
 
           <listitem>
-            <simpara>Die verfügbaren Codecs</simpara>
+            <simpara>Available codecs</simpara>
           </listitem>
         </varlistentry>
 
@@ -2889,8 +2896,8 @@ Valid items are:
           <term><code>status</code></term>
 
           <listitem>
-            <simpara>Der Status (wenn <code>qualify=yes</code> gesetzt
-            ist)</simpara>
+            <simpara>The status (when <code>qualify=yes</code> is
+            set)</simpara>
           </listitem>
         </varlistentry>
 
@@ -2898,8 +2905,7 @@ Valid items are:
           <term><code>regexten</code></term>
 
           <listitem>
-            <simpara>Die Registrierungs-Extension
-            (<code>regexten</code>)</simpara>
+            <simpara>The registration extension</simpara>
           </listitem>
         </varlistentry>
 
@@ -2907,7 +2913,7 @@ Valid items are:
           <term><code>limit</code></term>
 
           <listitem>
-            <simpara>Begrenzung der Anzahl der Anrufe</simpara>
+            <simpara>Maximum number of calls</simpara>
           </listitem>
         </varlistentry>
 
@@ -2915,8 +2921,8 @@ Valid items are:
           <term><code>curcalls</code></term>
 
           <listitem>
-            <simpara>Die Anzahl der derzeitigen Anrufe (nur wenn ein Limit
-            gesetzt ist)</simpara>
+            <simpara>Number of current calls (only if a limit is
+            set)</simpara>
           </listitem>
         </varlistentry>
 
@@ -2924,7 +2930,7 @@ Valid items are:
           <term><code>language</code></term>
 
           <listitem>
-            <simpara>Die Default-Sprache für diesen Peer</simpara>
+            <simpara>The default language for this peer</simpara>
           </listitem>
         </varlistentry>
 
@@ -2932,7 +2938,7 @@ Valid items are:
           <term><code>useragent</code></term>
 
           <listitem>
-            <simpara>Der User-Agent des Peers</simpara>
+            <simpara>The useragent of the peer</simpara>
           </listitem>
         </varlistentry>
 
@@ -2940,8 +2946,8 @@ Valid items are:
           <term><code>codec[<replaceable>x</replaceable>]</code></term>
 
           <listitem>
-            <simpara>Der Codec Nummer <code>x</code> (0-basiert) in der
-            Reihenfolge der Präferenz</simpara>
+            <simpara>Preferred codec number <code>x</code> (beginning with
+            0)</simpara>
           </listitem>
         </varlistentry>
 
@@ -2949,13 +2955,13 @@ Valid items are:
           <term><code>accountcode</code></term>
 
           <listitem>
-            <simpara>Die Abrechnungsnummer im CDR für Gespräche mit diesem
-            Peer</simpara>
+            <simpara>The billing account code in the CDR for conversations
+            with this peer</simpara>
           </listitem>
         </varlistentry>
-      </variablelist><programlisting>; die IP-Adresse des Peers 2001:
+      </variablelist><programlisting>; The IP address of peer 2001:
 exten =&gt; 123,1,Set(sip_ip=${SIPPEER(2001,ip)})
-; der bevorzugte Codec des Peers:
+; the preferred codec of the peer:
 exten =&gt; 123,n,Set(sip_ip=${SIPPEER(2001,codec[0])})</programlisting></para>
 
     <note>
@@ -3002,7 +3008,7 @@ Valid items are:
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-iaxpeer" /></para>
     </formalpara>
@@ -3015,13 +3021,13 @@ Valid items are:
         <secondary><code>SIP_HEADER()</code></secondary>
       </indexterm></title>
 
-    <synopsis>SIP_HEADER(<replaceable>Headername</replaceable>[,<replaceable>Nummer</replaceable>])</synopsis>
+    <synopsis>SIP_HEADER(<replaceable>headername</replaceable>[,<replaceable>number</replaceable>])</synopsis>
 
-    <para>Gibt einen Header aus dem SIP-Protokoll zurück. Diese Funktion
-    werden Sie nur benötigen, wenn Sie genaue Kenntnis des SIP-Protokolls
-    haben. Da manche Header (wie <code>Via</code>) mehrfach vorkommen können,
-    kann man mit <code>Nummer</code> (1-basiert) angeben, welche Zeile man
-    haben will.<programlisting>; den TO-Header abfragen:
+    <para>Retrieves the specified SIP header. You are not likely to need this
+    unless you have a thorough understanding of the SIP protocol. Because some
+    headers appear more than once in a SIP packet, you can specify which
+    instance of the header you want to see with
+    <replaceable>number</replaceable>.<programlisting>; Query the TO header:
 exten =&gt; 123,1,Set(DN=${SIP_HEADER(TO):5})
 exten =&gt; 123,2,Set(DN=${CUT(DN,@,1)})</programlisting></para>
 
@@ -3051,7 +3057,7 @@ that name to retrieve. Headers start at offset 1.</screen></para>
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="applikationen-sipaddheader" /></para>
     </formalpara>
@@ -3064,13 +3070,13 @@ that name to retrieve. Headers start at offset 1.</screen></para>
         <secondary><code>SORT()</code></secondary>
       </indexterm></title>
 
-    <synopsis>SORT(<replaceable>Schlüssel1</replaceable>:<replaceable>Wert1</replaceable>[,<replaceable>Schlüssel2</replaceable>:<replaceable>Wert2</replaceable>[,...]])</synopsis>
+    <synopsis>SORT(<replaceable>key1</replaceable>:<replaceable>value1</replaceable>[,<replaceable>key2</replaceable>:<replaceable>value2</replaceable>[,...]])</synopsis>
 
-    <para>Sortiert eine Liste von Schlüsseln und Werten anhand der Werte (als
-    Fließkommazahlen) und gibt eine durch Komma getrennte Liste der Schlüssel
-    zurück.<programlisting>; Liste sortieren:
-exten =&gt; 123,1,Set(foo=${SORT(vier:4|haelfte:.5|hundert:100|pi:3.14|e:2.71828|minuseins:-1)})
-; foo ist jetzt "minuseins,haelfte,e,pi,vier,hundert"</programlisting></para>
+    <para>Processes a list of keys and values and returns a comma-separated
+    list of the keys sorted based on their floating-point
+    values.<programlisting>; Sort a list:
+exten =&gt; 123,1,Set(foo=${SORT(four:4|half:.5|hundred:100|pi:3.14|e:2.71828|minusone:-1)})
+; foo is now "minusone,half,e,pi,four,hundred"</programlisting></para>
 
     <note>
       <formalpara>
@@ -3093,7 +3099,7 @@ floating-point numbers.</screen></para>
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
   </section>
@@ -3105,20 +3111,22 @@ floating-point numbers.</screen></para>
         <secondary><code>STAT()</code></secondary>
       </indexterm></title>
 
-    <synopsis>STAT(<replaceable>Flag</replaceable>,<replaceable>Dateiname</replaceable>)</synopsis>
+    <synopsis>STAT(<replaceable>flag</replaceable>,<replaceable>filename</replaceable>)</synopsis>
 
     <simpara><emphasis>(beginning Asterisk 1.4)</emphasis></simpara>
 
-    <para>Gibt Status-Informationen über eine Datei zurück (vgl. die
-    Shell-Befehl <command>test</command> und <command>stat</command>). Mit
-    <code>Dateiname</code> ist ein Datei-Knoten (<quote>inode</quote>)
-    gemeint, kann also auch ein Verzeichnis oder eine besondere Datei sein.
-    <code>Flag</code> ist eines der folgenden:<variablelist>
+    <para>Returns status information about a file (compare the shell commands
+    <command>test</command> and <command>stat</command>). The
+    <code><replaceable>filename</replaceable></code> refers to an inode, so it
+    can be a directory or a specific file. The
+    <code><replaceable>flag</replaceable></code> can be one of the
+    following:<variablelist>
         <varlistentry>
           <term><code>d</code></term>
 
           <listitem>
-            <simpara>Prüft, ob die Datei ein Verzeichnis ist.</simpara>
+            <simpara>Tests to see if <replaceable>filename</replaceable> is a
+            directory.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3126,7 +3134,7 @@ floating-point numbers.</screen></para>
           <term><code>e</code></term>
 
           <listitem>
-            <simpara>Prüft, ob die Datei existiert.</simpara>
+            <simpara>Tests if the file exists.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3134,9 +3142,10 @@ floating-point numbers.</screen></para>
           <term><code>f</code></term>
 
           <listitem>
-            <simpara>Prüft, ob die Datei eine reguläre Datei ist (im Gegensatz
-            zu besonderen Dateien: block special file, character special file,
-            symbolic link, named pipe, socket).</simpara>
+            <simpara>Tests if <replaceable>filename</replaceable> is a regular
+            file (as opposed to a special file, such as a block special file,
+            character special file, symbolic link, named pipe, or
+            socket).</simpara>
           </listitem>
         </varlistentry>
 
@@ -3144,8 +3153,9 @@ floating-point numbers.</screen></para>
           <term><code>m</code></term>
 
           <listitem>
-            <simpara>Gibt den Datei-Modus zurück (oktal), also die Rechte,
-            z.B. 0754.</simpara>
+            <simpara>Returns the mode of <replaceable>filename</replaceable>
+            (octal), <emphasis>i.e.</emphasis> the permissions:
+            <emphasis>e.g.</emphasis> 0754.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3153,7 +3163,7 @@ floating-point numbers.</screen></para>
           <term><code>s</code></term>
 
           <listitem>
-            <simpara>Gibt die Datei-Größe in Bytes zurück.</simpara>
+            <simpara>Returns the file size in bytes.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3161,8 +3171,7 @@ floating-point numbers.</screen></para>
           <term><code>A</code></term>
 
           <listitem>
-            <simpara>Gibt die Unix-Time des letzten Zugriffs zurück
-            (access).</simpara>
+            <simpara>Returns the last access time (in Unix time).</simpara>
           </listitem>
         </varlistentry>
 
@@ -3170,8 +3179,8 @@ floating-point numbers.</screen></para>
           <term><code>C</code></term>
 
           <listitem>
-            <simpara>Gibt die Unix-Time zurück, wann sich der Knoten (inode)
-            zuletzt geändert hat (change).</simpara>
+            <simpara>Returns the last inode change time (in Unix
+            time).</simpara>
           </listitem>
         </varlistentry>
 
@@ -3179,11 +3188,10 @@ floating-point numbers.</screen></para>
           <term><code>M</code></term>
 
           <listitem>
-            <simpara>Gibt die Unix-Time der letzten Veränderung zurück
-            (modification).</simpara>
+            <simpara>Returns the last modified time (in Unix time).</simpara>
           </listitem>
         </varlistentry>
-      </variablelist><programlisting>; letzte Veränderung der Datei /etc/crontab abfragen:
+      </variablelist><programlisting>; See when /etc/crontab was last changed:
 exten =&gt; 123,1,Set(foo=${STAT(M,/etc/crontab)})</programlisting></para>
 
     <note>
@@ -3225,17 +3233,18 @@ flag may be one of the following:
         <secondary><code>STRFTIME()</code></secondary>
       </indexterm></title>
 
-    <synopsis>STRFTIME([<replaceable>Unixtime</replaceable>][,[<replaceable>Zeitzone</replaceable>][,<remark>Format</remark>]])</synopsis>
+    <synopsis>STRFTIME([<replaceable>unixtime</replaceable>][,[<replaceable>timezone</replaceable>][,<remark>format</remark>]])</synopsis>
 
-    <para>Formatiert eine Unix-Zeit (Epoch), umgerechnet in die angegebene
-    Zeitzone, in einem bestimmten Format. Wenn <code>Unixtime</code> nicht
-    angegeben wird, gilt die aktuelle Zeit. Der Default der
-    <code>Zeitzone</code> ist die des Rechners. Mögliche Zeitzonen finden Sie
-    in <filename>/usr/share/zoneinfo/</filename>. Die Formatierungsplatzhalter
-    sind die wie in der C-Funktion <code>strftime()</code> (siehe <command>man
-    strftime</command>), der Default ist <code>%c</code>, also die
-    Lokale-abhängige Darstellung von Datum und Zeit.<programlisting>; Datum/Zeit im Format JJJJ-MM-TT HH:MM:SS
-exten =&gt; 123,1,Set(zeit=${STRFTIME(${EPOCH},Europe/Berlin,"%Y-%m-%d %H:%M:%S")})</programlisting></para>
+    <para>Returns a date and time in the specified format. If
+    <replaceable>unixtime</replaceable> is not provided, the current time is
+    used. The default <replaceable>timezone</replaceable> is the system
+    default timezone. Possible time zones may be found in
+    <filename>/usr/share/zoneinfo/</filename>. The format placeholders are the
+    same as those for the C function <code>strftime()</code> (see <command>man
+    strftime</command>), the default is <code>%c</code>,
+    <emphasis>i.e.</emphasis> the locale-dependent date-time
+    format.<programlisting>; Date/time in format YYYY-MM-DD HH:MM:SS
+exten =&gt; 123,1,Set(time=${STRFTIME(${EPOCH},America/Los_Angeles,"%Y-%m-%d %H:%M:%S")})</programlisting></para>
 
     <note>
       <formalpara>
@@ -3271,15 +3280,15 @@ Not available</screen></para>
         <secondary><code>STRPTIME()</code></secondary>
       </indexterm></title>
 
-    <synopsis>STRPTIME(<replaceable>DatumZeit</replaceable>|<replaceable>Zeitzone</replaceable>|<replaceable>Format</replaceable>)</synopsis>
+    <synopsis>STRPTIME(<replaceable>datetime</replaceable>|<replaceable>timezone</replaceable>|<replaceable>format</replaceable>)</synopsis>
 
     <simpara><emphasis>(beginning Asterisk 1.4)</emphasis></simpara>
 
-    <para>Wandelt einen formatierten Datums-/Zeit-String unter
-    Berücksichtigung der Zeitzone in einen Unix-Timestamp um.<programlisting>; Datum/Zeit im Format JJJJ-MM-TT HH:MM:SS in ${zeit} speichern:
-exten =&gt; 123,1,Set(zeit=${STRFTIME(${EPOCH},Europe/Berlin,"%Y-%m-%d %H:%M:%S")})
-; ${zeit} wieder in einen Timestamp umwandeln:
-exten =&gt; 123,n,Set(timestamp=${STRPTIME(${zeit}|Europe/Berlin|%Y-%m-%d %H:%M:%S)} </programlisting></para>
+    <para>Converts a formatted date and time string into a Unix
+    timestamp.<programlisting>; Save the date/time in the format YYYY-MM-DD HH:MM:SS in the variable ${time}:
+exten =&gt; 123,1,Set(time=${STRFTIME(${EPOCH},America/Los_Angeles,"%Y-%m-%d %H:%M:%S")})
+; Convert ${time} into Unix time:
+exten =&gt; 123,n,Set(timestamp=${STRPTIME(${time}|America/Los_Angeles|%Y-%m-%d %H:%M:%S)} </programlisting></para>
 
     <note>
       <formalpara>
@@ -3310,7 +3319,7 @@ Example:
     </note>
 
     <formalpara>
-      <title>Siehe auch</title>
+      <title>See also</title>
 
       <para><xref linkend="funktionen-strftime" /></para>
     </formalpara>
@@ -3323,21 +3332,20 @@ Example:
         <secondary><code>TIMEOUT()</code></secondary>
       </indexterm></title>
 
-    <synopsis>TIMEOUT(<replaceable>Art</replaceable>)</synopsis>
+    <synopsis>TIMEOUT(<replaceable>type</replaceable>)</synopsis>
 
-    <para>Liest/setzt einen Timeout auf einem Kanal. Diese Arten von Timeouts
-    sind möglich:<variablelist termlength="10">
+    <para>Reads/sets a timeout on the channel. The following types are
+    permitted:<variablelist termlength="10">
         <varlistentry>
           <term><code>absolute</code></term>
 
           <listitem>
-            <simpara>Die gesamte, maximale Zeit, die ein Anruf dauern darf.
-            Beim Erreichen dieser Dauer wird auf die Extension <code>T</code>
-            (absolute timeout) weitergeleitet oder aufgelegt. Ein Wert von 0
-            bedeutet keine Begrenzung. Mit dem Aufruf dieser Funktion wird die
-            vorangehende Einstellung ungültig und neu gesetzt. Der Timeout
-            beginnt zum Zeitpunkt des Aufrufs dieser Funktion, nicht mit dem
-            Beginn des Anrufs.</simpara>
+            <simpara>The absolute, maximum duration of a call. Once reached,
+            the call is passed to the extension <code>T</code>, if it exists,
+            or hung up. A value of 0 is the same as no timeout. When this
+            function is called, the existing setting is reset and overwritten.
+            The timeout counter starts when this function is called, not when
+            the call begins.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3345,11 +3353,11 @@ Example:
           <term><code>digit</code></term>
 
           <listitem>
-            <simpara>Die maximale Zeit, die zwischen dem Eintippen von Ziffern
-            erlaubt ist. Beim Überschreiten wird die Eingabe des Users als
-            beendet angesehen. Wenn dann die Extension nicht existiert, wird
-            auf die Extension <code>i</code> (invalid) weitergeleitet oder
-            aufgelegt. Der Default ist 5 Sekunden.</simpara>
+            <simpara>The maximum time allowed between entry of digits. If
+            exceeded, user input is deemed to have finished. If the resulting
+            extension does not exist, the call is passed to the extension
+            <code>i</code> (invalid), if it exists, or hung up. The default is
+            5 seconds.</simpara>
           </listitem>
         </varlistentry>
 
@@ -3357,20 +3365,20 @@ Example:
           <term><code>response</code></term>
 
           <listitem>
-            <simpara>Die maximale Zeit, die auf eine Eingabe vom User gewartet
-            wird. Wenn der User keine Extension tippt, wird auf die Extension
-            <code>t</code> (timeout) weitergeleitet oder aufgelegt. Default:
-            10 Sekunden.</simpara>
+            <simpara>The maximum time to wait for input from a user. If the
+            user does not enter an extension, the call is passed to extension
+            <code>t</code> (timeout), if it exists, or the call is hung up.
+            Default: 10 seconds.</simpara>
           </listitem>
         </varlistentry>
-      </variablelist><programlisting>; absoluten Timeout abfragen:
+      </variablelist><programlisting>; Check the absolute timeout:
 exten =&gt; 123,1,Set(foo=${TIMEOUT(absolute)})
 
-; Anruf-Dauer auf maximal 60 Sekunden begrenzen:
+; Limit call duration to a maximum of 60 seconds:
 exten =&gt; 123,1,Set(TIMEOUT(absolute)=60)
 exten =&gt; 123,n,Dial(SIP/${EXTEN})
-exten =&gt; T,1,Playback(tut-uns-leid) 
-exten =&gt; T,n,Playback(auf-wiederhoeren) 
+exten =&gt; T,1,Playback(sorry-dude) 
+exten =&gt; T,n,Playback(buh-bye) 
 exten =&gt; T,n,Hangup()</programlisting></para>
 
     <note>
@@ -3414,7 +3422,7 @@ response: The maximum amount of time permitted after falling through a
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
   </section>
@@ -3426,10 +3434,10 @@ response: The maximum amount of time permitted after falling through a
         <secondary><code>TXTCIDNAME()</code></secondary>
       </indexterm></title>
 
-    <synopsis>TXTCIDNAME(<replaceable>Nummer</replaceable>)</synopsis>
+    <synopsis>TXTCIDNAME(<replaceable>number</replaceable>)</synopsis>
 
-    <para>Schlägt den Namen des Anrufers mittels DNS (im TXT-Record)
-    nach.<programlisting>exten =&gt; 123,1,Set(foo=${TXTCIDNAME(012345678)})</programlisting></para>
+    <para>Looks up the CID name of the caller in DNS (via a
+    TXT-Record).<programlisting>exten =&gt; 123,1,Set(foo=${TXTCIDNAME(9755557346)})</programlisting></para>
   </section>
 
   <section id="funktionen-uridecode">
@@ -3439,12 +3447,12 @@ response: The maximum amount of time permitted after falling through a
         <secondary><code>URIDECODE()</code></secondary>
       </indexterm></title>
 
-    <synopsis>URIDECODE(<replaceable>String</replaceable>)</synopsis>
+    <synopsis>URIDECODE(<replaceable>string</replaceable>)</synopsis>
 
-    <para>Dekodiert einen URI-kodierten String. Siehe
-    <code>URIENCODE()</code>.<programlisting>; "www.beispiel.de/?seite=Hallo%20Welt" dekodieren:
-exten =&gt; 123,1,Set(foo=${URIDECODE("Hallo%20Welt")})
-; ergibt "Hallo Welt"</programlisting></para>
+    <para>Decodes a URI encoded string. See
+    <code>URIENCODE()</code>.<programlisting>; Decode "www.example.com/?page=Hello%20World":
+exten =&gt; 123,1,Set(foo=${URIDECODE("Hello%20World")})
+; Returns "Hello World"</programlisting></para>
 
     <note>
       <formalpara>
@@ -3480,14 +3488,15 @@ Not available</screen></para>
         <secondary><code>URIENCODE()</code></secondary>
       </indexterm></title>
 
-    <synopsis>URIENCODE(<replaceable>String</replaceable>)</synopsis>
+    <synopsis>URIENCODE(<replaceable>string</replaceable>)</synopsis>
 
-    <para>URI-kodiert einen String, d.h., dass Zeichen, die nicht in einer URI
-    vorkommen dürfen, durch Escape-Sequenzen der Form
-    <code>%<replaceable>XX</replaceable></code> ersetzt werden, wobei
-    <code>XX</code> der hexadezimale Wert des Zeichens ist.<programlisting>; "Hallo Welt" kodieren:
-exten =&gt; 123,1,Set(foo=${URIENCODE("Hallo Welt")})
-; ergibt "Hallo%20Welt"</programlisting></para>
+    <para>URI-encodes a string, so that characters not normally allowed in a
+    URL are replaced with escape sequences following the format
+    <code>%<replaceable>XX</replaceable></code>, where
+    <code><replaceable>XX</replaceable></code> is the hexadecimal bytecode of
+    the character.<programlisting>; Encode "Hello World":
+exten =&gt; 123,1,Set(foo=${URIENCODE("Hello World")})
+; Returns "Hello%20World"</programlisting></para>
 
     <note>
       <formalpara>
@@ -3523,25 +3532,25 @@ Not available</screen></para>
         <secondary><code>VMCOUNT()</code></secondary>
       </indexterm></title>
 
-    <synopsis>VMCOUNT(<replaceable>VM-Box</replaceable>[@<replaceable>Context</replaceable>][|<replaceable>Ordner</replaceable>])</synopsis>
+    <synopsis>VMCOUNT(<replaceable>VM-box</replaceable>[@<replaceable>context</replaceable>][|<replaceable>folder</replaceable>])</synopsis>
 
-    <para>Gibt die Anzahl der Voicemailnachrichten in einer Voicemailbox
-    zurück. Der Default-Context ist <code>default</code>, der Default-Ordner
-    ist <code>INBOX</code>.<programlisting>; Anzahl der Nachrichten in der Mailbox 456 abfragen:
+    <para>Returns the number of voice mail messages in the specified mailbox.
+    The default context is <code>default</code>, the default folder is
+    <code>INBOX</code>.<programlisting>; Query for the number of messages in mailbox 456:
 exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(anzahl=${VMCOUNT(456)})
-exten =&gt; 123,n,Playback(vm-youhave)          ; "Sie haben"
-exten =&gt; 123,n,GotoIf($[ ${anzahl} = 0 ]?keine:neue)
+exten =&gt; 123,n,Set(count=${VMCOUNT(456)})
+exten =&gt; 123,n,Playback(vm-youhave)          ; "You have"
+exten =&gt; 123,n,GotoIf($[ ${count} = 0 ]?none:new)
 
-exten =&gt; 123,10(keine),Playback(vm-no)       ; "keine"
-exten =&gt; 123,n,Goto(weiter)
+exten =&gt; 123,10(none),Playback(vm-no)       ; "no"
+exten =&gt; 123,n,Goto(continue)
 
-exten =&gt; 123,20(neue),SayNumber($COUNT)      ; Anzahl
-exten =&gt; 123,n,Goto(weiter)
+exten =&gt; 123,20(new),SayNumber($COUNT)      ; count
+exten =&gt; 123,n,Goto(continue)
 
-exten =&gt; 123,30(weiter),Playback(vm-INBOX)   ; "neue"
-exten =&gt; 123,n,Playback(vm-messages)         ; "Nachrichten"
-exten =&gt; 123,n,Playback(vm-goodbye)          ; "Auf Wiederhören!"
+exten =&gt; 123,30(continue),Playback(vm-INBOX)   ; "new"
+exten =&gt; 123,n,Playback(vm-messages)         ; "messages"
+exten =&gt; 123,n,Playback(vm-goodbye)          ; "Goodbye!"
 exten =&gt; 123,n,Hangup()</programlisting></para>
 
     <note>
@@ -3564,11 +3573,10 @@ Counts the voicemail in a specified mailbox
       <formalpara>
         <title>diff output to internal help in Asterisk 1.2:</title>
 
-        <para><screen>- keine - </screen></para>
+        <para><screen>- none - </screen></para>
       </formalpara>
     </note>
 
-    <simpara>Siehe auch <xref
-    linkend="applikationen-mailboxexists" /></simpara>
+    <simpara>See also <xref linkend="applikationen-mailboxexists" /></simpara>
   </section>
 </section>
