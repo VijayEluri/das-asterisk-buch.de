@@ -54,6 +54,19 @@ host=dynamic</programlisting>Das SIP-Telefon mit der Nummer 2000 ruft in
     entsprechenden Extension (also der dazu passenden Regel). Ist diese
     Extension nicht vorhanden, passiert auch nichts.</para>
 
+    <warning>
+      <para>Das Verständnis für die Benutzung von Contexten ist essentiell für
+      Programmierung und Administration einer Asterisk Telefonanlage. Es ist
+      für Anfänger nicht immer ersichtlich, warum die korrekte Benutzung von
+      Contexten so wichtig ist. Sollten Sie sich jetzt nicht ganz sicher sein,
+      dann gehen Sie bitte das in <xref linkend="kapitel-installation" />
+      beschriebene Beispiel für eine Minimale Telefonanlage Schritt für
+      Schritt durch. </para>
+
+      <para>Über diese Hürde stoplert am Anfang fast jeder und es ist sinnvoll
+      die Zeit für das Verständnis zu investieren!</para>
+    </warning>
+
     <section id="context-syntax">
       <title>Syntax</title>
 
@@ -127,8 +140,13 @@ Regeln, Anweisungen, ...</programlisting></para>
       <title>Grundlegende Applikationen</title>
 
       <para>Um die Programmierbeispiele in diesem Kapitel halbwegs sinnvoll zu
-      gestalten, benötigen wir folgende Applikationen (alle diese
-      Applikationen werden später noch genau erklärt):</para>
+      gestalten<footnote>
+          <para>Ein typisches Henne-Ei-Problem. Man kann eine Applikation nur
+          verstehen, wenn man die Programmierung eines Dialplanes versteht und
+          umgekehrt.</para>
+        </footnote>, benötigen wir folgende Applikationen (alle diese
+      Applikationen werden später noch in <xref linkend="applikationen" />
+      genau erklärt):</para>
 
       <itemizedlist>
         <listitem>
@@ -136,7 +154,8 @@ Regeln, Anweisungen, ...</programlisting></para>
 
           <para>Die <code>Answer()</code>-Applikation dient dazu, einen
           Verbindungsversuch zu akzeptieren. Wenn ein Channel klingelt, dann
-          kann <code>Answer()</code> den virtuellen Hörer abnehmen.</para>
+          kann <code>Answer()</code> den virtuellen Hörer abnehmen. Siehe auch
+          <xref linkend="applikationen-answer" />.</para>
         </listitem>
 
         <listitem>
@@ -144,7 +163,8 @@ Regeln, Anweisungen, ...</programlisting></para>
 
           <para><code>Hangup()</code> ist das Gegenstück zu
           <code>Answer()</code>. Die Verbindung wird getrennt, der virtuelle
-          Hörer aufgelegt.</para>
+          Hörer aufgelegt. Siehe auch <xref
+          linkend="applikationen-hangup" />.</para>
         </listitem>
 
         <listitem>
@@ -154,14 +174,16 @@ Regeln, Anweisungen, ...</programlisting></para>
           Diese finden sich, wenn kein anderes Verzeichnis angegeben worden
           ist, im Verzeichnis <filename>/var/lib/asterisk/sounds/</filename>.
           Die Dateiendung wird dabei nicht angegeben (Asterisk sucht sich den
-          optimalen Codec selbstständig raus).</para>
+          optimalen Codec selbstständig raus). Siehe auch <xref
+          linkend="applikationen-playback" />.</para>
         </listitem>
 
         <listitem>
           <para><code>Wait(Zahl)</code></para>
 
           <para>Mit <code>Wait()</code> kann man eine Pause abrufen. Die Zahl
-          in der Klammer gibt die Anzahl der zu wartenden Sekunden an.</para>
+          in der Klammer gibt die Anzahl der zu wartenden Sekunden an. Siehe
+          auch <xref linkend="applikationen-wait" />.</para>
         </listitem>
 
         <listitem>
@@ -172,7 +194,26 @@ Regeln, Anweisungen, ...</programlisting></para>
           ein praktisches Tool, um Dialpläne zu debuggen. Der Inhalt des
           übergebenen Strings wird auf dem CLI ausgegeben. Im CLI muss dafür
           aber der Verbose Level auf mindestens 3 eingestellt sein (einfach im
-          CLI <command>set verbose 3</command> eingeben).</para>
+          CLI <command>set verbose 3</command> eingeben). Siehe auch <xref
+          linkend="applikationen-noop" />.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>VoiceMail(Voicemailbox,u)</code></para>
+
+          <para>Die Applikation <code>VoiceMail()</code> gibt dem Anrufer die
+          Möglichkeit eine Sprachnachricht auf der Voicemailbox die als erster
+          Parameter bestimmt wird zu hinterlassen. Siehe auch <xref
+          linkend="applikationen-voicemail" />.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>VoiceMailMain()</code></para>
+
+          <para>Die Applikation <code>VoiceMailMain()</code> gibt dem Anrufer
+          Zugang zum Voicemailsystem. Wer über eine Voicemailbox verfügt, kann
+          diese dort abhören. Siehe auch <xref
+          linkend="applikationen-voicemailmain" />.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -845,8 +886,8 @@ exten =&gt; 03012345678,1,Dial(SIP/03012345678)</programlisting></para>
 
         <para><programlisting>include =&gt; context|&lt;uhrzeit&gt;|&lt;wochentag&gt;|&lt;tag-des-monats&gt;|&lt;monat&gt;</programlisting>Die
         Wochentage und Monate werden immer durch die ersten drei Buchstaben
-        des entsprechenden enlischen Begriffes bestimmt. Wochentage: mon, tue,
-        wed, thu, fri, sat, sun</para>
+        des entsprechenden englischen Begriffes bestimmt. Wochentage: mon,
+        tue, wed, thu, fri, sat, sun</para>
       </section>
 
       <section>
@@ -865,6 +906,57 @@ exten =&gt; 2000,1,Dial(SIP/2000)
 [anrufbeantworter]
 exten =&gt; 2000,1,VoiceMail(2000,u)&#8232;</programlisting></para>
       </section>
+    </section>
+  </section>
+
+  <section id="apfelmus-exten-var">
+    <title>Die Variable ${EXTEN} und die Funktion ${CALLERID(num)}</title>
+
+    <para>Obwohl wir im Buch erst später über Variablen (siehe <xref
+    linkend="programmierer-howto-variablen" />) und Funktionen (siehe <xref
+    linkend="funktionen" />) sprechen, möchte ich zwei sehr einfache und
+    intuitiv zu benutzende Elemente schon hier vorstellen. Es handelt sich um
+    die Systemvariable <code>${EXTEN}</code> und die Funktion
+    <code>${CALLERID(num)}</code>. </para>
+
+    <section>
+      <title>${EXTEN}</title>
+
+      <para>In der Systemvariable <code>${EXTEN}</code> wird von Asterisk
+      automatisch die gewählte Rufnummer (also die Extension) gespeichert.
+      Mann kann also in der <filename>extensions.conf</filename>
+      anstatt:<programlisting>exten =&gt; 2000,1,Dial(SIP/2000)</programlisting>auch
+      einfach<programlisting>exten =&gt; 2000,1,Dial(SIP/${EXTEN})</programlisting>schreiben.
+      Bei einer Zeile ist das natürlich noch wenig sinnvoll, aber wenn man
+      diese Funktionalität mit Pattern Matching (siehe <xref
+      linkend="regular-expression-syntax" />) kombiniert, dann kann man sehr
+      viel Zeit und Aufwand sparen und bekommt zusätzlich auch noch eine viel
+      übersichtlichere Konfiguration.</para>
+
+      <para>Um somit alle SIP-Telefone mit den Durchwahlen 2000 bis 2999 in
+      der <filename>extensions.conf</filename> anwählbar zu machen, reicht
+      folgende Zeile:<programlisting>exten =&gt; _2XXX,1,Dial(SIP/${EXTEN})</programlisting></para>
+
+      <tip>
+        <para>Eine Ausführliche Beschreibung zum Thema Variablen finden Sie
+        unter <xref linkend="variablen" />.</para>
+      </tip>
+    </section>
+
+    <section>
+      <title>${CALLERID(num)}</title>
+
+      <para>Der Funktionsaufruf <code>${CALLERID(num)}</code> gibt als
+      Ergebnis die Nummer des Anrufers aus. Dies ist besonders bei der
+      Applikation <code>VoiceMailMain()</code> praktisch, da man dort als
+      ersten Parameter die gewünschte Mailboxnummer angeben kann. So könnte
+      man mit folgendem Dialplan-Eintrag eine komfortable Abfrage der
+      Voicemailbox realisieren:<programlisting>exten =&gt; 99,1,VoiceMailMain(${CALLERID(num)})</programlisting></para>
+
+      <tip>
+        <para>Eine ausführliche Beschreibung zur Funktion ${CALLERID(num)}
+        finden Sie unter <xref linkend="funktionen-callerid" /></para>
+      </tip>
     </section>
   </section>
 </chapter>
