@@ -331,6 +331,109 @@ exten =&gt; _10X,3,Hangup()
         expression</emphasis> also.</para>
       </note></para>
 
+    <section id="regular-expression-syntax">
+      <title>Syntax<indexterm>
+          <primary>Pattern</primary>
+        </indexterm><indexterm>
+          <primary>Suchmuster</primary>
+        </indexterm></title>
+
+      <para>Dialplan patterns always begin with the underscore
+      (<code>_</code>) character:<programlisting>exten =&gt; _<emphasis>Pattern,Priority,Applikation</emphasis></programlisting></para>
+
+      <para>An Asterisk dialplan pattern can have the following
+      elements:<variablelist termlength="7">
+          <varlistentry>
+            <term><code>[abc]</code></term>
+
+            <listitem>
+              <para>The digits <emphasis>a</emphasis>, <emphasis>b</emphasis>
+              and <emphasis>c</emphasis>. For example, to match 34, 37, and
+              38:<programlisting>exten =&gt; _3[478],1,NoOp(Test)</programlisting></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>[a-b]</code></term>
+
+            <listitem>
+              <para>Any digit in the range <emphasis>a</emphasis> to
+              <emphasis>b</emphasis>. For example, to match any number between
+              31 and 35:<programlisting>exten =&gt; _3[1-5],1,NoOp(Test)</programlisting>(<emphasis>e.g.</emphasis>
+              <code>[25-8]</code> is also acceptable for the digits
+              2,5,6,7,8)</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>X</code></term>
+
+            <listitem>
+              <para>Any digit from 0 to 9. For example, to match any number
+              between 300 and 399:<programlisting>exten =&gt; _3XX,1,NoOp(Test)</programlisting></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>Z</code></term>
+
+            <listitem>
+              <para>Any digit from 1 to 9. For example, to match any number
+              between 31 and 39:<programlisting>exten =&gt; _3Z,1,NoOp(Test)</programlisting></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>N</code></term>
+
+            <listitem>
+              <para>Any digit from 2 to 9. For example, to match any number
+              between 32 and 39:<programlisting>exten =&gt; _3N,1,NoOp(Test)</programlisting></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>.</code></term>
+
+            <listitem>
+              <para>Any number of digits of any kind. For example, to match
+              all numbers that begin with 011:<programlisting>exten =&gt; _011.,1,NoOp(Test)</programlisting></para>
+
+              <warning>
+                <para>Don't use <code>the '_.'</code> pattern! This will also
+                include special extensions such as <code>i</code>,
+                <code>t</code> and <code>h</code>. Use <code>_X.</code> or
+                <code>_X</code> if you need broad pattern matching.</para>
+              </warning>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term><code>!</code></term>
+
+            <listitem>
+              <para>This special 'wildcard' character will match as soon as
+              the number dialled is unambiguous; <emphasis>i.e.</emphasis>
+              when the number being dialled cannot match any other extension
+              in the context. Once a match is made, the outgoing line is
+              picked up and dialing proceeds in real-time with direct feedback
+              (this is known as 'overlap dialing').</para>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+
+      <para><important>
+          <para>A common error is to forget the underscore ("_") character at
+          the beginning of the pattern. This convention is necessary because
+          SIP devices, as configured in <filename>sip.conf,</filename> can
+          have alphanumeric names (For example, in Asterisk, '333',
+          'loadingdock' and 'A31' are all acceptable names for a SIP device).
+          It also means that if you forget to use the underscore, your
+          extension will never match <emphasis>and</emphasis> you will never
+          see an error message informing you of your mistake.</para>
+        </important></para>
+    </section>
+
     <section>
       <title>Testing a pattern using <command>dialplan
       show</command><indexterm>
@@ -447,109 +550,6 @@ exten =&gt; _2X,3,Hangup()</programlisting></para>
       <code>my-phones</code> context, you still won't hear the 'hello world'
       message. Extension '25' only works for phones in the
       <code>department-q</code> context.</para>
-    </section>
-
-    <section id="regular-expression-syntax">
-      <title>Syntax<indexterm>
-          <primary>Pattern</primary>
-        </indexterm><indexterm>
-          <primary>Suchmuster</primary>
-        </indexterm></title>
-
-      <para>Dialplan patterns always begin with the underscore
-      (<code>_</code>) character:<programlisting>exten =&gt; _<emphasis>Pattern,Priority,Applikation</emphasis></programlisting></para>
-
-      <para>An Asterisk dialplan pattern can have the following
-      elements:<variablelist termlength="7">
-          <varlistentry>
-            <term><code>[abc]</code></term>
-
-            <listitem>
-              <para>The digits <emphasis>a</emphasis>, <emphasis>b</emphasis>
-              and <emphasis>c</emphasis>. For example, to match 34, 37, and
-              38:<programlisting>exten =&gt; _3[478],1,NoOp(Test)</programlisting></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term><code>[a-b]</code></term>
-
-            <listitem>
-              <para>Any digit in the range <emphasis>a</emphasis> to
-              <emphasis>b</emphasis>. For example, to match any number between
-              31 and 35:<programlisting>exten =&gt; _3[1-5],1,NoOp(Test)</programlisting>(<emphasis>e.g.</emphasis>
-              <code>[25-8]</code> is also acceptable for the digits
-              2,5,6,7,8)</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term><code>X</code></term>
-
-            <listitem>
-              <para>Any digit from 0 to 9. For example, to match any number
-              between 300 and 399:<programlisting>exten =&gt; _3XX,1,NoOp(Test)</programlisting></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term><code>Z</code></term>
-
-            <listitem>
-              <para>Any digit from 1 to 9. For example, to match any number
-              between 31 and 39:<programlisting>exten =&gt; _3Z,1,NoOp(Test)</programlisting></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term><code>N</code></term>
-
-            <listitem>
-              <para>Any digit from 2 to 9. For example, to match any number
-              between 32 and 39:<programlisting>exten =&gt; _3N,1,NoOp(Test)</programlisting></para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term><code>.</code></term>
-
-            <listitem>
-              <para>Any number of digits of any kind. For example, to match
-              all numbers that begin with 011:<programlisting>exten =&gt; _011.,1,NoOp(Test)</programlisting></para>
-
-              <warning>
-                <para>Don't use <code>the '_.'</code> pattern! This will also
-                include special extensions such as <code>i</code>,
-                <code>t</code> and <code>h</code>. Use <code>_X.</code> or
-                <code>_X</code> if you need broad pattern matching.</para>
-              </warning>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term><code>!</code></term>
-
-            <listitem>
-              <para>This special 'wildcard' character will match as soon as
-              the number dialled is unambiguous; <emphasis>i.e.</emphasis>
-              when the number being dialled cannot match any other extension
-              in the context. Once a match is made, the outgoing line is
-              picked up and dialing proceeds in real-time with direct feedback
-              (this is known as 'overlap dialing').</para>
-            </listitem>
-          </varlistentry>
-        </variablelist></para>
-
-      <para><important>
-          <para>A common error is to forget the underscore ("_") character at
-          the beginning of the pattern. This convention is necessary because
-          SIP devices, as configured in <filename>sip.conf,</filename> can
-          have alphanumeric names (For example, in Asterisk, '333',
-          'loadingdock' and 'A31' are all acceptable names for a SIP device).
-          It also means that if you forget to use the underscore, your
-          extension will never match <emphasis>and</emphasis> you will never
-          see an error message informing you of your mistake.</para>
-        </important></para>
     </section>
 
     <section id="wann-matcht-welches-pattern">
