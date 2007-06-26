@@ -8,71 +8,71 @@
 % with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
 % Texts. A copy of the license is included in the section entitled "GNU
 % Free Documentation License".
-% Asterisk training and consulting is offered at http://www.amooma.de-->
+-->
 
-  <title>Interactive Voice Response Systeme (IVR)</title>
+  <!--% translated from the German by Stephen Bosch <sbosch@vodacomm.ca>-->
 
-  <para>In der ursprünglichen Definition ist ein Interactive Voice Response
-  System (<acronym>IVR</acronym>) ein Ansagemenüsystem, das durch natürliche
-  Sprache des Anrufers gesteuert wird. Allerdings ist diese Definition im
-  allgemeinen etwas weischer geworden. Mittlerweile werden auch Systeme die
-  nur über Touch-Tone-Erkennung arbeiten allgemein als IVRs bezeichnet.
-  </para>
+  <!--% Asterisk training and consulting is offered at http://www.amooma.de-->
 
-  <para>IVRs sind automatisierte Dialogsysteme, die einem Anrufer bestimmte
-  Informationsangebote oder andere Leistungen in Dialogform anbieten. Das
-  grundlegende Prinzip ist bei fast allen Systemen gleich, dem Anrufer wird
-  ein Menü vorgelesen, aus dem er dann durch bestimmte Aktionen (meist das
-  Drücken einer Taste auf dem Telefon) einzelne auswählen kann. So kann man
-  über solche Systeme die aktuellen Börsenkurse oder auch Abfahrtzeiten von
-  Zügen der Deutschen Bahn abfragen. Es gibt sogar Systeme, die Buchungen von
-  Veranstaltungstickets ermöglichen. Die Dialogsysteme unterscheiden sich
-  hierbei in dem Grad der Automation. Voll automatisierte Systeme generieren
-  die Sprachansagen (Text2Speech) und verfügen über eine maschinelle
-  Spracherkennung, um die Benutzereingaben zu erkennen. Solche Systeme bieten
-  einen sehr hohen Komfort, sind jedoch technisch derart anspruchsvoll, dass
-  sie selten zum Einsatz kommen.<footnote>
-      <para>Für Asterisk gibt es von der Firma LumenVox eine
-      Spracherkennungsschnittstelle. Diese ist zum Zeitpunkt der Drucklegung
-      dieses Buches allerdings noch nicht für die Deutsche Sprache erhältlich.
-      Einfach Konstrukte wie die Erkennung von "ja" und "nein" lassen sich
-      aber recht einfach nachbilden. Informationen zu LumenVox findet man auf
-      <ulink
+  <title>Interactive Voice Response (IVR)</title>
+
+  <para>An interactive voice response system lets computer systems interact
+  with telephone callers, who provide input to the system either by pressing
+  the keypad on their telephone set (DTMF, "dual-tone multi-frequency" keying,
+  aka Touch-Tone®) or by saying something (natural language speech
+  recognition). Most IVR systems provide selection menus for routing calls
+  without requiring operator intervention, but modern IVR systems can also be
+  very complex applications that handle information or control
+  equipment.</para>
+
+  <para>The basic principle common to all IVR systems, however, is that the
+  caller is read a menu and chooses options from that menu to perform actions,
+  or, alternatively, enters information (in numerical format, through pressing
+  the keypad). IVRs can be used to obtain stock quotations, train schedules,
+  and weather reports; they can also be used for automated purchasing systems,
+  such as for concert tickets. The potential applications are limited only by
+  your imagination.</para>
+
+  <para>Systems vary in their complexity. The most advanced generate spoken
+  text "on-the-fly" using text-to-speech (TTS) systems and accept spoken user
+  input with speech recognition. When properly implemented they can provide a
+  high level of user-friendliness, but implementation is so complex that they
+  are rarely used, except in larger organizations.<footnote>
+      <para>LumenVox makes a speech recognition kit for Asterisk. See <ulink
       url="http://www.lumenvox.com/"><citetitle>http://www.lumenvox.com</citetitle></ulink></para>
-    </footnote> </para>
+    </footnote></para>
 
-  <para>Die einfachste Variante ist zugleich die verbreitetste. Vorher
-  aufgenommene Textnachrichten (Soundfiles) werden abgespielt und die
-  Nutzereingaben erfolgen durch Drücken der Telefontasten, deren
-  charakteristische Frequenz einfach und robust von Asterisk standardmässig
-  erkannt werden kann. </para>
+  <para>The simplest form of IVR is also the most common. Pre-recorded
+  messages are played to the caller; the caller responds with DTMF keypad
+  input, which Asterisk can recognize easily in the default install.</para>
 
-  <para>Die Meinungen über IVRs gehen zum Teil deutlich auseinander, die einen
-  empfinden sie als nützliche Hilfe, andere wiederum ärgern sich darüber. Oft
-  bieten sie dabei immer wieder Stoff für reichlich Lacher. Meistens liegt das
-  an ungeschickten Menüführungen oder bei Systemen mit einer maschinellen
-  Spracherkennung an einer schlechten Erkennungsrate. Eine gut funktionierende
-  IVR kann dem Kunden eine echte Hilfe sein, aber eine schlecht umgesetzte
-  kann einen Kunden auch abschrecken. Deshalb sollte man dieses Mittel mit
-  Bedacht einsetzen und sich Zeit für eine sorgfältig geplante und sauber
-  integrierte Lösung nehmen. Häufiges Überprüfen der Zahl der vorzeitigen
-  Abbrüche durch Auflegen muss dabei zu den Routineaufgaben gehören. Und --
-  IVRs sind weder ein Selbstzweck noch ein Allheilmittel -- denken Sie an Ihre
-  Kunden!</para>
+  <para>Public opinion on IVRs is divided. Some people find them a helpful
+  form of automation, while others find them exceedingly frustrating. This is
+  usually the result of poor menu design or speech recognition with a high
+  failure rate. A well-functioning IVR can be pleasant for the customer, but a
+  poorly implemented one can scare her away.<footnote>
+      <para>The increasingly multi-ethnic nature of society everywhere means
+      that speech recognition should be implemented with caution, as accents
+      can be problematic.</para>
+    </footnote>Take care when planning an IVR system. Pay special attention to
+  menu design and allow adequate time for a clean development and deployment.
+  Aggressive testing and post-deployment monitoring of premature hang-ups
+  should be part of your routine. Remember that IVR systems are not an end in
+  themselves, nor are they a panacea. Think of your customer!</para>
 
   <section id="einfache-ivr">
-    <title id="eine-einfache-ivr">Eine einfache IVR</title>
+    <title id="eine-einfache-ivr">A simple IVR</title>
 
-    <para>Bei den Standardsprachbausteinen gibt es eine Datei
-    <filename>marryme.gsm</filename>, die den Text "Will you marry me? Press 1
-    for yes or 2 for no."<footnote>
-        <para>Übersetzung: Möchtest Du mich heiraten? Drücke 1 für ja und 2
-        für nein.</para>
-      </footnote> enthält. Um hiermit eine Heiratsantrags-IVR zu realisieren,
-    reicht folgender Dialplan.<footnote>
-        <para>Es sollte auch dem größten Geek unter den Lesern klar sein, dass
-        eine solche IVR nur als Beispiel und niemals als reale Möglichkeit
-        eines Heiratsantrages in Betracht gezogen werden sollte! ;-)</para>
+    <para>The standard Asterisk sound set includes a file called
+    <filename>marryme.gsm</filename>, containing the announcement "Will you
+    marry me? Press 1 for yes or 2 for no."<footnote>
+        <para>Allison Smith is a Canadian voice professional who is the "Voice
+        of Asterisk". Its growing popularity has given her a considerable cult
+        following :)</para>
+      </footnote>To build a "marriage proposal" application, the following
+    dialplan will suffice:<footnote>
+        <para>Using this IVR for an actual marriage proposal is strongly
+        discouraged.</para>
       </footnote><programlisting>exten =&gt; 30,1,Answer()
 exten =&gt; 30,2,Background(marryme)
 exten =&gt; 30,3,Hangup()
@@ -81,33 +81,33 @@ exten =&gt; 1,1,Playback(thank-you-cooperation)
 exten =&gt; 1,2,Hangup()
 
 exten =&gt; 2,1,Playback(sorry)
-exten =&gt; 2,2,Hangup()</programlisting>Wird die 30 angerufen, hebt Asterisk
-    ab und spielt das Soundfile <filename>marryme.gsm</filename> ab. Während
-    der Ansage kann jederzeit vom Benutzer eine Eingabe gemacht werden. Diese
-    Eingabe wird als weitere Extension gewertet und abgerufen. Wer also die 1
-    drückt, bekommt die Ansage "Thank you for your cooperation." abgespielt.
-    Danach legt Asterisk auf.</para>
+exten =&gt; 2,2,Hangup()</programlisting>If the caller dials extension 30,
+    Asterisk answers and plays the file <filename>marryme.gsm</filename>.
+    Through use of the <command>Background()</command> application, the user
+    is allowed to enter input at any time during playback. The input is
+    interpreted as an extension and the call is passed to that extension. If
+    the caller presses 1, he hears "Thank you for your cooperation," after
+    which Asterisk hangs up.</para>
 
     <section id="ivr-unterschied-playback-und-background">
-      <title id="unterschied-playback-und-background">Unterschied zwischen
-      Playback() und Background()</title>
+      <title id="unterschied-playback-und-background">Differences between
+      Playback() and Background()</title>
 
-      <para>Mit der Applikation <application>Playback()</application> (siehe
-      <xref linkend="applikationen-playback" />) können Soundfiles nur
-      abgespielt werden, jegliche Eingabe während des Abspielens wird nicht
-      beachtet. <application>Background()</application> (siehe <xref
-      linkend="applikationen-background" />) hingegen spielt die Datei ab und
-      wartet während des Abspielens auf eine Eingabe. Diese wird dann als
-      Extension interpretiert, als wenn Sie im aktuellen Context auch so
-      gewählt worden wäre.</para>
+      <para><application><command>Playback()</command></application> (see
+      <xref linkend="applikationen-playback" />) only plays back sound files;
+      input is ignored.
+      <application><command>Background()</command></application> (see <xref
+      linkend="applikationen-background" />) plays sound files back while
+      listening for caller input, which is interpreted as an extension as
+      though it had been dialed as one.</para>
     </section>
 
     <section id="ivr-unterschied-10-und-1000">
-      <title id="unterschied-10-und-1000">Unterschied zwischen 10 und
+      <title id="unterschied-10-und-1000">Difference between 10 and
       1000</title>
 
-      <para>Nehmen wir als Beispiel für die Problematik der gleich anfangenden
-      Extensions den folgenden Dialplan:<programlisting>exten =&gt; 30,1,Answer()
+      <para>To address the challenge of extensions beginning with the same
+      digits, let's examine the following example:<programlisting>exten =&gt; 30,1,Answer()
 exten =&gt; 30,2,Background(marryme)
 exten =&gt; 30,3,Hangup()
 
@@ -123,36 +123,34 @@ exten =&gt; 100,2,Hangup()
 exten =&gt; 2,1,Playback(sorry)
 exten =&gt; 2,2,Hangup()</programlisting></para>
 
-      <para>Damit Asterisk zwischen den Eingaben 1, 10 und 100 unterschieden
-      kann, wartet <application>Background()</application> nach jeder Eingabe
-      eine bestimmte Zeit. Ist diese Zeit (<parameter>TIMEOUT</parameter>)
-      abgelaufen, so gilt die Eingabe als beendet.<tip>
-          <para>Mit <parameter>TIMEOUT</parameter> können noch andere Timeouts
-          definiert werden, Informationen dazu bekommen Sie im CLI mit der
-          Eingabe <command>show function TIMEOUT</command>. Weitere
-          Informationen zu TIMEOUT finden Sie bei <xref
+      <para><command>Background()</command> waits a set time after each digit
+      in order to distinguish between 1, 10 and 100. Once this time
+      (<parameter>TIMEOUT</parameter>) has expired, input is deemed to be
+      complete.<tip>
+          <para><parameter>TIMEOUT</parameter> lets you set other timeouts.
+          For more information, enter <command>show function TIMEOUT</command>
+          in the Asterisk CLI, or see <xref
           linkend="funktionen-timeout" /></para>
-        </tip>Den <parameter>TIMEOUT</parameter> kann man in Sekunden angeben
-      und wie folgt im Dialplan setzen:<programlisting>exten =&gt; 123,1,Set(TIMEOUT(digit)=3)</programlisting></para>
+        </tip><parameter>TIMEOUT</parameter> is defined in seconds and may be
+      set in the dialplan like so.<programlisting>exten =&gt; 123,1,Set(TIMEOUT(digit)=3)</programlisting></para>
 
       <section>
-        <title>Eigenintelligenz</title>
+        <title>Intelligent discernment</title>
 
-        <para>Asterisk wird beim obigen Dialplan bei der Eingabe der Ziffer 2
-        direkt und bei der Eingabe der Ziffer 1 erst nach dem Ende des
-        TIMEOUTs reagieren. Es erkennt also selbstständig, wann eine Eingabe
-        bereits logisch gültig ist und agiert entsprechend.</para>
+        <para>In the dialplan above, Asterisk will proceed immediately if 2 is
+        pressed, but only after the timeout has expired if 1 is pressed.
+        Asterisk intelligently determines whether a digit entered can match
+        multiple extensions and behaves accordingly.</para>
       </section>
     </section>
 
     <section id="ivr-falscheingaben">
-      <title id="falscheingabe-i-extension">Falscheingaben (die
-      i-Extension)</title>
+      <title id="falscheingabe-i-extension">Invalid input (the i
+      extension)</title>
 
-      <para>Eine Falscheingabe (also eine nicht im Dialplan definierte
-      Eingabe) kann mit der <code>i</code>-Extension (i wie invalid)
-      abgefangen werden. Das einfache Beispiel würde folgendermaßen
-      aussehen:<programlisting>exten =&gt; 30,1,Answer()
+      <para>An invalid entry (any entry for which no extension in the dialplan
+      matches) can be handled by the <code>i</code> extension. A simple
+      example would look like this:<programlisting>exten =&gt; 30,1,Answer()
 exten =&gt; 30,2,Background(marryme)
 exten =&gt; 30,3,Hangup()
 
@@ -162,21 +160,21 @@ exten =&gt; 1,2,Hangup()
 exten =&gt; 2,1,Playback(sorry)
 exten =&gt; 2,2,Hangup()
 
-; Bei allen anderen Eingaben wird diese
-; i-Extension aufgerufen.
+; Any other input is caught by the i extension.
 exten =&gt; i,1,Background(sorry)
 exten =&gt; i,2,Hangup()</programlisting></para>
     </section>
 
     <section id="ivr-pausen">
-      <title id="pausen-silence">Pausen</title>
+      <title id="pausen-silence">Pauses</title>
 
-      <para>Die einfachste Möglichkeit, kurze Pausen für die Eingabe zu
-      realisieren, ist das Abspielen von Soundfiles ohne Inhalt. Im
-      Verzeichnis <filename>/var/lib/asterisk/sounds/silence/</filename> gibt
-      es 1 bis 9 Sekunden lange Dateien, die nur Stille abspielen. Soll in
-      unserem Heiratsantragsbeispiel noch 5 Sekunden auf eine Antwort gewartet
-      werden, so kann man das wie folgt erreichen:<programlisting>exten =&gt; 30,1,Answer()
+      <para>The easiest way to create pauses for input is to play back empty
+      sound files. A series of silent sound files of between 1 and 9 seconds
+      in length may be found in
+      <filename>/var/lib/asterisk/sounds/silence/</filename>. If we need to
+      allow five seconds following the prompt (a marriage proposal requires
+      careful consideration, after all), here's how we can accomplish
+      that:<programlisting>exten =&gt; 30,1,Answer()
 exten =&gt; 30,2,Background(marryme)
 exten =&gt; 30,3,Background(silence/5)
 exten =&gt; 30,4,Hangup()
@@ -193,59 +191,56 @@ exten =&gt; i,2,Hangup()</programlisting></para>
   </section>
 
   <section id="mehrstufige-ivr">
-    <title id="mehrstufig-ivr">Mehrstufige IVR-Systeme</title>
+    <title id="mehrstufig-ivr">Multilevel IVR systems</title>
 
-    <para>Das Problem bei mehrstufigen IVRs ist, dass der Benutzer je nach
-    Menüstruktur mehrmals eine einstellige Zahl (evtl. sogar die gleiche)
-    drücken soll, aber jeweils ein anderes Ergebnis erhält oder eine andere
-    Aktion erfolgt. Da innerhalb eines Contextes eine Zahl aber nur einmal
-    vergeben werden kann, bliebe der Anrufer immer auf dieser Menüebene
-    hängen. Sollen mehrere Menüs hintereinander geschaltet werden und in jedem
-    Menü gleiche Eingaben andere Ergebnisse bringen, so muss man diese
-    Untermenüs in andere Contexte (in unserem Beispiel <code>[kantine]</code>)
-    legen. Der Sprung zwischen den einzelnen Positionen erfolgt dann mit
-    <application>Goto()</application> (siehe <xref
-    linkend="applikationen-goto" />). Nehmen wir an, Sie haben folgende
-    Soundfiles im Verzeichnis <filename>/var/lib/asterisk/sounds/</filename>
-    abgespeichert:</para>
+    <para>The problem with multilevel IVRs is that the caller has to enter
+    single digits multiple times (oftentimes the same digit), but gets a
+    different response depending on the menu level. Because a number can only
+    be used once in a given context, the caller would be stuck on the first
+    menu level. If we need multiple menus which provide different responses
+    for the same digits, we must place the submenus in different contexts
+    (<code>[cafeteria]</code> in our example). We jump between these contexts
+    using the application <command><application>Goto()</application></command>
+    (see <xref linkend="applikationen-goto" />). Let's assume you have the
+    following sound files stored in
+    <filename>/var/lib/asterisk/sounds/</filename>:</para>
 
     <itemizedlist>
       <listitem>
-        <para><filename>grundmenue.gsm</filename></para>
+        <para><filename>mainmenu.gsm</filename></para>
 
-        <para>Bitte drücken Sie die 1 für den Verkauf, die 2 für den
-        Hausmeister und die 3 für die Kantine.</para>
+        <para>"Press 1 for sales, 2 for service, or 3 for the
+        cafeteria."</para>
       </listitem>
 
       <listitem>
-        <para><filename>kantine.gsm</filename></para>
+        <para><filename>cafeteria.gsm</filename></para>
 
-        <para>Drücken Sie die 1 für den Essensplan dieser Woche und die 2 für
-        den Essensplan der nächsten Woche.</para>
+        <para>"Press 1 to hear the menu for this week or 2 to hear the menu
+        for next week."</para>
       </listitem>
 
       <listitem>
-        <para><filename>essensplan-diese-woche.gsm</filename></para>
+        <para><filename>cafeteria-menu-this-week.gsm</filename></para>
 
-        <para>Montag gibt es Nudeln mit Tomatensoße, Dienstag gibt es
-        Jägerschnitzel, ...</para>
+        <para>"Monday: Noodles with pesto sauce. Tuesday: Pork
+        chops..."</para>
       </listitem>
 
       <listitem>
-        <para><filename>essensplan-naechste-woche.gsm</filename></para>
+        <para><filename>cafeteria-menu-next-week.gsm</filename></para>
 
-        <para>Montag gibt es Eintopf, Dienstag gibt es Jägerschnitzel,
-        ...</para>
+        <para>"Monday: Stew, featuring noodles, basil and, um, pork
+        chops..."</para>
       </listitem>
     </itemizedlist>
 
-    <para>Wenn der Verkauf unter der Extension 100 und der Hausmeister unter
-    der Extension 150 erreichbar ist, sieht der Dialplan für diese IVR
-    folgendermaßen aus:<programlisting>[beispiel-ivr]
-; Das Menue wird staendig wiederholt.
+    <para>If sales is at extension 100 and the service department is at 150,
+    the dialplan for this IVR would look like this:<programlisting>[example-ivr]
+; The menu is repeated until the caller provides input.
 ;
 exten =&gt; 30,1,Answer()
-exten =&gt; 30,2,Background(grundmenue)
+exten =&gt; 30,2,Background(mainmenu)
 exten =&gt; 30,3,Background(silence/3)
 exten =&gt; 30,4,Goto(2)
 
@@ -253,129 +248,116 @@ exten =&gt; 1,1,Dial(SIP/100)
 
 exten =&gt; 2,1,Dial(SIP/150)
 
-; Goto() springt in einen anderen 
-; Context ([kantine])
+; Goto() jumps to another context ([cafeteria])
 ;
-exten =&gt; 3,1,Goto(kantine,100,1)
+exten =&gt; 3,1,Goto(cafeteria,100,1)
 
 exten =&gt; i,1,Goto(30,2)
 
-[kantine]
-exten =&gt; 100,1,Background(kantine)
+[cafeteria]
+exten =&gt; 100,1,Background(cafeteria)
 exten =&gt; 100,2,Background(silence/3)
 exten =&gt; 100,3,Goto(1)
 
-exten =&gt; 1,1,Playback(essensplan-diese-woche)
+exten =&gt; 1,1,Playback(cafeteria-menu-this-week)
 exten =&gt; 1,2,Wait(2)
 exten =&gt; 1,3,Goto(1)
 
-exten =&gt; 2,1,Playback(essensplan-naechste-woche)
+exten =&gt; 2,1,Playback(cafeteria-menu-next-week)
 exten =&gt; 2,2,Wait(2)
 exten =&gt; 2,3,Goto(1)
 
-; Bei einer Falscheingabe wird 
-; wieder in das Start-Menue 
-; gesprungen.
-;
-exten =&gt; i,1,Goto(beispiel-ivr,30,2)</programlisting></para>
+; Invalid input sends the caller back to the main menu
+exten =&gt; i,1,Goto(example-ivr,30,2)</programlisting></para>
 
     <section>
-      <title>Tiefe der IVR</title>
+      <title>IVR depth</title>
 
-      <para>Auch wenn es technisch möglich ist beliebig tiefe
-      Verschachtelungen zu realisieren, so ist es in der Praxis ratsam nicht
-      mehr als drei Ebenen an Menüs hintereinander zu schalten. Viele Anrufer
-      legen nach der dritten Eingabeebene auf.</para>
+      <para>Even though it is technically possible to support an unlimited
+      number of IVR levels, in practice it is advisable to keep the number of
+      menu levels to a maximum of three. Many callers hang up after the third
+      menu level.</para>
     </section>
   </section>
 
   <section id="text2speech">
-    <title id="tts">Text2Speech (TTS)</title>
+    <title id="tts">Text-to-Speech (TTS)</title>
 
-    <para>Text2Speech beschreibt die Umwandlung von geschriebenem Text in
-    gesprochenen Text (Sprachsynthese) auf Computersystemen. Auf unserem
-    Asterisk-System bedeutet das, dass ein Programm anhand einer Textdatei
-    (meist in ASCII) eine entsprechende Audiodatei (Soundfile) erzeugt. Diese
-    kann wie jede andere Multimediadatei abgespielt werden und man hört den
-    Text dann gesprochen. Wie bei vielen Software-Projekten wird die englische
-    Sprache meist besser unterstützt als die deutsche.</para>
+    <para>Text-to-speech is simply the conversion of written text into a
+    spoken word, using speech synthesis. In our Asterisk system this means
+    that an external program generates a sound file using a given text file
+    (usually in ASCII format) as the source. The resulting sound file is
+    played back as any other sound file would be, and the caller hears the
+    text spoken out.</para>
 
-    <para>Darüber hinaus gibt es große Qualitätsunterschiede zwischen den
-    offenen und freien (meist GPL) Engines und entsprechenden kommerziellen
-    Lösungen.<tip>
-        <para>Einen kostenlosen Test einer qualitativ sehr guten Engine kann
-        man online bei IBM unter <ulink
-        url="http://www.ibm.com/software/pervasive/tech/demos/tts.shtml">http://www.ibm.com/software/pervasive/tech/demos/tts.shtml</ulink>
-        machen.</para>
-      </tip>Das Speech Synthesis System Festival (<ulink
+    <para>Quality of text-to-speech engines vary widely. As a rule-of-thumb,
+    the open source engines are not as sophisticated as the commercial
+    ones.<tip>
+        <para>Sometimes you can test high quality engines through web portals.
+        IBM offers a test portal for its TTS engine at <ulink
+        url="http://www.ibm.com/software/pervasive/tech/demos/tts.shtml">http://www.ibm.com/software/pervasive/tech/demos/tts.shtml</ulink>.</para>
+      </tip>The TTS engine Festival (<ulink
     url="http://www.cstr.ed.ac.uk/projects/festival/">http://www.cstr.ed.ac.uk/projects/festival/</ulink>)
-    eignet sich gerade noch so für englische Text, aber spätestens bei
-    deutschen Texten lässt die Qualität sehr zu wünschen übrig. Als guten
-    Kompromiss kann ich die Software der amerikanischen Firma Cepstral (<ulink
-    url="http://www.cepstral.com/">http://www.cepstral.com/</ulink>) nehmen.
-    Es gibt dort eine kostenlose Probeversion und eine recht günstige
-    Vollversion. <footnote>
-        <para>Auch hier gibt es eine Online-Testversion unter <ulink
+    is a widely used open source version, but the voices included with it
+    often lack the quality necessary for professional implementation,
+    particularly if you need voices in languages other than English. Many
+    Asterisk developers use the engine and voices sold commercially by
+    Cepstral (<ulink
+    url="http://www.cepstral.com/">http://www.cepstral.com/</ulink>). As of
+    this writing, the pricing was reasonable.<footnote>
+        <para>Like IBM, Cepstral has a demo portal at <ulink
         url="http://www.cepstral.com/demos/">http://www.cepstral.com/demos/</ulink>.</para>
-      </footnote>Die hier vorgestellte Lösung baut auf der Cepstral Engine
-    auf.<footnote>
-        <para>Wer sich ein wenig mit Festival beschäftigt, kann die hier
-        gezeigten Beispiele leicht auf Festival übertragen. Dies gilt in
-        gleicher Weise auch für jede andere Text-to-Speech-Engine.</para>
+      </footnote>The solution described here builds on the Cepstral
+    engine.<footnote>
+        <para>For those who have worked with Festival before, these
+        instructions are easily modified to work with it. This applies to
+        other TTS engines as well. The implementation model is the
+        same.</para>
       </footnote></para>
 
-    <warning>
-      <para>Cepstral und Festival sind beides keine qualitativ hochwertigen
-      Text-to-Speech-Engines! Leider gibt es in diesem Feld nur im
-      Hochpreissegment wirklich gute Lösungen.</para>
-    </warning>
-
     <section id="installation-cepstral-tts">
-      <title id="installation-cepstral">Installation Cepstral
+      <title id="installation-cepstral">Installating Cepstral
       Text-to-Speech</title>
 
-      <para>Auf der Webseite <ulink
-      url="http://www.cepstral.com/downloads/">http://www.cepstral.com/downloads/</ulink>
-      kann man die deutsche Sprach-Engine herunterladen (evtl. auf den Link
-      ''Additional Voices'' klicken). Die entsprechende Datei (hier
-      beispielhaft immer als
-      <filename>Cepstral_Matthias_i386-linux_4.1.2.tar.gz</filename>
-      bezeichnet) wird wie folgt installiert:<programlisting>tar xvzf Cepstral_Matthias_i386-linux_4.1.2.tar.gz
-cd Cepstral_Matthias_i386-linux_4.1.2
+      <para>Download the voice from <ulink
+      url="http://www.cepstral.com/downloads/">http://www.cepstral.com/downloads/</ulink>.
+      The file (<filename>Cepstral_David_i386-linux_4.2.0.tar.gz</filename> in
+      this example) is installed with the following commands:<programlisting>tar xvzf Cepstral_David_i386-linux_4.2.0.tar.gz
+cd Cepstral_David_i386-linux_4.2.0.tar.gz
 ./install</programlisting></para>
     </section>
 
     <section id="cepstral-beispiel">
-      <title id="beispiele-und-tests">Beispiele und Tests</title>
+      <title id="beispiele-und-tests">Examples and tests</title>
 
-      <para>Falls bei der Installation nicht anders angegeben, wird die Engine
-      als <filename>/opt/swift/bin/swift</filename> installiert. Testen kann
-      man dies mit folgender Eingabe auf der Linux-Kommandozeile:<screen>/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "Dies ist ein Test."</screen>Das
-      Ergebnis kann man sich entweder mit einem Audioplayer oder mit Asterisk
-      anhören. Dazu einfach in der <filename>extensions.conf</filename>
-      folgenden Eintrag hinzufügen:<programlisting>exten =&gt; 1234,1,Answer()
+      <para>The engine installs to <filename>/opt/swift/bin/swift</filename>
+      unless otherwise specified. You can test the installation from the
+      command line as follows:<screen>/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "This is a test."</screen>You
+      can play the resulting file with any audio player, or through Asterisk.
+      To do this, just add a few lines to
+      <filename>extensions.conf</filename>:<programlisting>exten =&gt; 1234,1,Answer()
 exten =&gt; 1234,2,Playback(/tmp/test)
-exten =&gt; 1234,3,Hangup()</programlisting>Um einen beliebigen Text ausgeben
-      zu lassen, benutzen wir die
-      <application>System()</application>-Applikation im Dialplan. Hier ein
-      Beispiel:<programlisting>exten =&gt; 1222,1,Answer()
+exten =&gt; 1234,3,Hangup()</programlisting>To generate some speech output
+      from within Asterisk, we use the
+      <application><command>System()</command></application> application in
+      the dialplan. Here is an example:<programlisting>exten =&gt; 1222,1,Answer()
 exten =&gt; 1222,2,System(rm -rf /tmp/test.wav)
-exten =&gt; 1222,3,System(/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "Noch ein Test.")
+exten =&gt; 1222,3,System(/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "Another test.")
 exten =&gt; 1222,4,Playback(/tmp/test)
 exten =&gt; 1222,5,Hangup()</programlisting></para>
     </section>
 
     <section id="cepstral-pausen">
-      <title id="pausen">Pausen in Texten</title>
+      <title id="pausen">Pauses in text</title>
 
-      <para>Cepstral benutzt SSML (Speech Synthesis Markup Language) innerhalb
-      der Engine. So kann eine Pause im obigen Beispiel wie folgt eingefügt
-      werden:<programlisting>exten =&gt; 1222,1,Answer()
+      <para>Cepstral uses SSML (Speech Synthesis Markup Language) in its
+      engine. You can add speech pauses to the output by specifying them as in
+      this example:<programlisting>exten =&gt; 1222,1,Answer()
 exten =&gt; 1222,2,System(rm -rf /tmp/test.wav)
-exten =&gt; 1222,3,System(/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "Noch ein Test. &lt;break time='2500ms'/&gt; Ende!")
+exten =&gt; 1222,3,System(/opt/swift/bin/swift -o /tmp/test.wav -p audio/sampling-rate=8000,audio/channels=1 "Another test. &lt;break time='2500ms'/&gt; Done!")
 exten =&gt; 1222,4,Playback(/tmp/test.wav)
-exten =&gt; 1222,5,Hangup()</programlisting>Information zu SSML findet man
-      beim W3C unter <ulink
+exten =&gt; 1222,5,Hangup()</programlisting>Learn more about the SSML standard
+      at <ulink
       url="http://www.w3.org/TR/speech-synthesis/">http://www.w3.org/TR/speech-synthesis/</ulink>.</para>
     </section>
   </section>
