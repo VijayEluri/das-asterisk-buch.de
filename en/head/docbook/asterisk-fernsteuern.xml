@@ -460,14 +460,20 @@ Variables: (Names marked with * are required)
       returns the number of new and old messages in the specified
       mailbox:<programlisting>#!/usr/bin/expect
 #
-# Aufruf: ./vmcount.exp 1234@default
+# Usage: ./vmcount.exp 1234@default
+
+# The user account from manager.conf:
+set username "admin"
+set secret "secret5"
+set host "127.0.0.1"
+set port "5038"
 
 if {[llength $argv] != 1} {
     send_user "Error: You must specify a mailbox!\n"
     exit 1
 }
 
-# first argument is the mailbox:
+# First argument is the mailbox:
 set mailbox [lindex $argv 0]
 send_user "Mailbox: $mailbox\n"
 
@@ -475,13 +481,21 @@ send_user "Mailbox: $mailbox\n"
 log_user 0
 
 # Open connection to AMI:
-spawn telnet 127.0.0.1 5038
+spawn telnet $host $port
 
-# Wait for the text "Manager"; once received, send a login packet
+# Just in case telnet aborts because it cannot connect:
+expect_before eof {
+    send_user "Failed to connect.\n"
+    exit 1
+}
+
+# Wait for the text "Manager"; once received, send a login packet:
 #
 expect "Manager" {
     send_user "Connected.\n"
-    send "Action: Login\nUsername: admin\nSecret: secret5\n\n"
+    send "Action: Login\nUsername: $username\nSecret: $secret\n\n"
+    # Please note that telnet automatically converts line feeds
+    # (\n) to CR LF (\r\n) - so you must not write \r\n here.
 }
 
 # Login successful?:
@@ -494,7 +508,7 @@ expect {
     -re "Response:\\s*Success" {
         send_user "Logged in.\n"
         # Query the number of messages in the mailbox:
-        send "Action: MailboxCount\nMailbox: 1234@default\n\n"
+        send "Action: MailboxCount\nMailbox: $mailbox\n\n"
     }
 }
 
@@ -571,8 +585,7 @@ Old messages: 0
       events. If we connect to Asterisk using <command>asterisk
       -vvvr</command> and simultaneously run <command>php -q
       sLogin.php</command> to open a connection to the AMI<footnote>
-          <simpara> The user and password are deliberately
-          incorrect.</simpara>
+          <simpara>The user and password are deliberately incorrect.</simpara>
         </footnote>, watching the CLI, we see:<screen>mos-eisley*CLI&gt; 
   == Parsing '/etc/asterisk/manager.conf': Found
 [Jan 26 20:08:09] NOTICE[10352]: manager.c:961 authenticate: 127.0.0.1 tried to authenticate with nonexistent user 'mark'
@@ -581,9 +594,9 @@ mos-eisley*CLI&gt; </screen> This failed because the user did not exist, yet
       the demo script still reports success:<screen>$  php -q sLogin.php 
 Login Sucessful 
 
-</screen>followed by the response packet:<screen>Response:  Error
-ActionID:  1
-Message:  Authentication failed
+</screen>followed by the response packet:<screen>Response: Error
+ActionID: 1
+Message: Authentication failed
 </screen>The StarAstAPI is, as you can see, not completely clean, but is
       simple enough that it can be improved easily. If we call <command>php -q
       sEvents.php</command> - this time with the correct user - we
@@ -591,17 +604,17 @@ Message:  Authentication failed
   == Parsing '/etc/asterisk/manager.conf': Found
   == Manager 'admin' logged on from 127.0.0.1
 mos-eisley*CLI&gt; </screen>As a test, we execute a <code>reload</code> in the
-      CLI, which is reflected in the PHP script output:<screen>Event:  Reload
-Privilege:  system,all
-Message:  Reload Requested
+      CLI, which is reflected in the PHP script output:<screen>Event: Reload
+Privilege: system,all
+Message: Reload Requested
 
-Event:  ChannelReload
-Privilege:  system,all
-Channel:  SIP
-ReloadReason:  RELOAD (Channel module reload)
-Registry_Count:  0
-Peer_Count:  0
-User_Count:  0
+Event: ChannelReload
+Privilege: system,all
+Channel: SIP
+ReloadReason: RELOAD (Channel module reload)
+Registry_Count: 0
+Peer_Count: 0
+User_Count: 0
 
 </screen>Give your creativity free-reign! Write a small script that calls all
       your friends - in the middle of the night, of course!</para>
