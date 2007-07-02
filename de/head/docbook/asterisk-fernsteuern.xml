@@ -475,6 +475,12 @@ Variables: (Names marked with * are required)
 #
 # Aufruf: ./vmcount.exp 1234@default
 
+# der Benutzer-Zugang wie in manager.conf eingerichtet:
+set username "admin"
+set secret "geheim"
+set host "127.0.0.1"
+set port "5038"
+
 if {[llength $argv] != 1} {
     send_user "Fehler: Geben Sie eine Mailbox an!\n"
     exit 1
@@ -488,14 +494,24 @@ send_user "Mailbox: $mailbox\n"
 log_user 0
 
 # Verbindung zum AMI öffnen:
-spawn telnet 127.0.0.1 5038
+spawn telnet $host $port
+
+# für den Fall, daß telnet abbricht weil keine Verbindung
+# hergestellt werden kann:
+expect_before eof {
+    send_user "Fehler beim Verbinden.\n"
+    exit 1
+}
 
 # auf die Zeichenfolge "Manager" warten und bei Erfolg
 # ein Login-Paket senden:
 #
 expect "Manager" {
     send_user "Verbunden.\n"
-    send "Action: Login\nUsername: admin\nSecret: geheim\n\n"
+    send "Action: Login\nUsername: $username\nSecret: $secret\n\n"
+    # Beachten Sie, daß telnet Zeilenumbrüche (\n) automatisch
+    # in CR LF (\r\n) umwandelt. Man darf hier also nicht \r\n
+    # angeben.
 }
 
 # Login erfolgreich?:
@@ -508,7 +524,7 @@ expect {
     -re "Response:\\s*Success" {
         send_user "Eingeloggt.\n"
         # Anzahl der Mailbox-Nachrichten abfragen:
-        send "Action: MailboxCount\nMailbox: 1234@default\n\n"
+        send "Action: MailboxCount\nMailbox: $mailbox\n\n"
     }
 }
 
@@ -598,9 +614,9 @@ mos-eisley*CLI&gt; </screen> Es hat also wegen des falschen Users nicht
       funktioniert, trotzdem meldet das Demo-Skript:<screen>$  php -q sLogin.php 
 Login Sucessful 
 
-</screen>und danach das Response-Paket:<screen>Response:  Error
-ActionID:  1
-Message:  Authentication failed
+</screen>und danach das Response-Paket:<screen>Response: Error
+ActionID: 1
+Message: Authentication failed
 </screen>StarAstAPI arbeitet also nicht ganz sauber, kann aber sicher ohne
       allzu großen Aufwand verbessert werden. Wenn wir <command>php -q
       sEvents.php</command> aufrufen - jetzt mit dem richtigen User - sehen
@@ -609,17 +625,17 @@ Message:  Authentication failed
   == Manager 'admin' logged on from 127.0.0.1
 mos-eisley*CLI&gt; </screen>Testhalber führen wir im CLI ein
       <code>reload</code> aus, was sich in diesen Events in der Ausgabe des
-      PHP-Skripts widerspiegelt:<screen>Event:  Reload
-Privilege:  system,all
-Message:  Reload Requested
+      PHP-Skripts widerspiegelt:<screen>Event: Reload
+Privilege: system,all
+Message: Reload Requested
 
-Event:  ChannelReload
-Privilege:  system,all
-Channel:  SIP
-ReloadReason:  RELOAD (Channel module reload)
-Registry_Count:  0
-Peer_Count:  0
-User_Count:  0
+Event: ChannelReload
+Privilege: system,all
+Channel: SIP
+ReloadReason: RELOAD (Channel module reload)
+Registry_Count: 0
+Peer_Count: 0
+User_Count: 0
 
 </screen>Lassen Sie sich was einfallen! Schreiben Sie ein kleines Skript, das
       all Ihre Freunde anruft - natürlich mitten in der Nacht!</para>
