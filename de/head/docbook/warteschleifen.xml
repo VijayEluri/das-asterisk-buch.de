@@ -329,9 +329,17 @@ done
               der nach dem letzten Anruf an der Reihe ist.</simpara>
             </listitem>
           </varlistentry>
-        </variablelist>Es ist zu beachten, dass Agenten, für die ein
-      niedrigerer Malus (penalty) festgelegt wurde, immer Agenten mit höherem
-      Malus vorgezogen werden.<programlisting>strategy = ringall</programlisting>Die
+        </variablelist></para>
+
+      <sidebar>
+        <para>In Asterisk 1.6 wird voraussichtlich das
+        <code>roundrobin</code>-Verfahren wegfallen und <code>rrmemory</code>
+        in <code>roundrobin</code> umbenannt werden.</para>
+      </sidebar>
+
+      <para>Es ist zu beachten, dass Agenten, für die ein niedrigerer Malus
+      (penalty) festgelegt wurde, immer Agenten mit höherem Malus vorgezogen
+      werden.<programlisting>strategy = ringall</programlisting>Die
       Einstellung ist abhängig von Ihren Gegebenheiten: <code>ringall</code>
       ist vielleicht lästig, die anderen Werte verursachen zusätzliche
       Wartezeit für den Anrufer, falls Agenten nicht ans Telefon gehen.</para>
@@ -544,8 +552,10 @@ periodic-announce = queue-periodic-announce  ; "All reps busy, wait for next"</p
       <title><code>eventwhencalled</code></title>
 
       <para>Stellt ein (<code>yes</code>|<code>no</code>), ob u.a. die
-      folgenden Events für das Manager-Interface erzeugt werden: AgentCalled,
-      AgentDump, AgentConnect, AgentComplete.<programlisting>eventwhencalled = yes</programlisting></para>
+      folgenden Events für das Manager-Interface erzeugt werden:
+      <literal>AgentCalled</literal>, <literal>AgentDump</literal>,
+      <literal>AgentConnect</literal>,
+      <literal>AgentComplete</literal>.<programlisting>eventwhencalled = yes</programlisting></para>
     </section>
 
     <section id="queues.conf-eventmemberstatus">
@@ -724,7 +734,7 @@ member =&gt; Agent/1002</programlisting>Diese Agenten müssen wir noch in der
     <section id="agents.conf-createlink">
       <title><code>createlink</code></title>
 
-      <para>Legt fest (<code>yes</code>|<code>no</code>), ob im User-field
+      <para>Legt fest (<code>yes</code>|<code>no</code>), ob im User-Field
       (dem Freitextfeld) des CDR der Dateiname der Aufzeichnung gespeichert
       werden soll, damit man sie später zuordnen kann.<programlisting>createlink = yes</programlisting></para>
     </section>
@@ -869,7 +879,7 @@ VMAuthenticate(${agentennr},s);</programlisting>zum Authentifizieren der
     Queue-Log, normalerweise <filename>/var/log/asterisk/queue_log</filename>
     detailliert festgehalten (natürlich werden auch Einträge im CDR-Log
     gemacht). Im <filename>queue_log</filename> steht ein Eintrag pro Zeile im
-    Format:<programlisting><replaceable>Timestamp</replaceable>|<replaceable>Anruf-ID</replaceable>|<replaceable>Schlange</replaceable>|<replaceable>Kanal</replaceable>|<replaceable>Event</replaceable>|<replaceable>Param1</replaceable>[|<replaceable>Param2</replaceable>[|<replaceable>Param3</replaceable>]]</programlisting></para>
+    Format:<programlisting><replaceable>Timestamp</replaceable>|<replaceable>Anruf-ID</replaceable>|<replaceable>Schlange</replaceable>|<replaceable>Channel</replaceable>|<replaceable>Event</replaceable>|<replaceable>Param1</replaceable>[|<replaceable>Param2</replaceable>[|<replaceable>Param3</replaceable>]]</programlisting></para>
 
     <variablelist termlength="11">
       <varlistentry>
@@ -885,7 +895,9 @@ VMAuthenticate(${agentennr},s);</programlisting>zum Authentifizieren der
         <term><code>Anruf-ID</code></term>
 
         <listitem>
-          <simpara>Ist die einmalige ID des Anrufs (alphanumerisch).</simpara>
+          <simpara>Ist die einmalige ID des Anrufs (alphanumerisch). Kann auch
+          <code>NULL</code> oder <code>NONE</code> sein (z.B. bei dem Ereignis
+          <literal>QUEUESTART</literal>).</simpara>
         </listitem>
       </varlistentry>
 
@@ -894,16 +906,17 @@ VMAuthenticate(${agentennr},s);</programlisting>zum Authentifizieren der
 
         <listitem>
           <simpara>Ist der Name der Warteschlange, z.B. <code>support</code>.
-          Kann auch <code>NULL</code> sein.</simpara>
+          Kann auch <code>NULL</code> oder <code>NONE</code> sein.</simpara>
         </listitem>
       </varlistentry>
 
       <varlistentry>
-        <term><code>Kanal</code></term>
+        <term><code>Channel</code></term>
 
         <listitem>
           <simpara>Ist der Name des überbrückten Kanals, z.B.
-          <code>Agent/1001</code>. Kann auch <code>NULL</code> sein.</simpara>
+          <code>Agent/1001</code>. Kann auch <code>NULL</code> oder
+          <code>NONE</code> sein.</simpara>
         </listitem>
       </varlistentry>
 
