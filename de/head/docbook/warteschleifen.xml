@@ -64,22 +64,32 @@
       </varlistentry>
     </variablelist></para>
 
-  <simpara>Eine häufige Ursache für Missverständnisse ist die Verwechslung von
+  <simpara>Eine häufige Ursache für Mißverständnisse ist die Verwechslung von
   <quote>Queue Members</quote> mit Anrufern: Mit den Mitgliedern einer
   Warteschlange sind immer nur die Agenten, <emphasis>nicht</emphasis> die
-  Anrufer gemeint.<footnote>
-      <para>Hier wird der Einfachheit halber der Begriff
-      <quote>Agenten</quote> verwendet, Markus Bönke macht aber folgende
-      Anmerkung:<blockquote>
-          <simpara>Sie übersetzen Queue Member mit "Agenten", wenn man aus der
-          Call-Center-Welt kommt, ist das ein bisschen verwirrend, da Queue
-          Members durchaus normale SIP-Extensions sein können.</simpara>
-        </blockquote></para>
-    </footnote></simpara>
+  Anrufer gemeint.</simpara>
+
+  <tip>
+    <para>Hier wird der Einfachheit halber der Begriff <quote>Agenten</quote>
+    verwendet, Markus Bönke macht aber folgende Anmerkung:<blockquote>
+        <simpara>Sie übersetzen Queue Member mit "Agenten", wenn man aus der
+        Call-Center-Welt kommt, ist das ein bisschen verwirrend, da Queue
+        Members durchaus normale SIP-Extensions sein können.</simpara>
+      </blockquote></para>
+
+    <para>Das ist völlig richtig. Man muß nicht über den
+    <code>Agent</code>-Channel (der wie ein Proxy funktioniert) gehen, sondern
+    kann auch direkt <code>SIP</code>-Geräte zu einer Warteschlange
+    hinzufügen. Also schreibt man in der queues.conf z.B. <code>member =&gt;
+    SIP/1001</code> oder man fügt das Interface dynamisch aus dem Dialplan mit
+    <code>AddQueueMember()</code><footnote>
+        <para>siehe <xref linkend="applikationen-addqueuemember" /></para>
+      </footnote> einer Queue hinzu.</para>
+  </tip>
 
   <simpara>Agenten können mehreren Schlangen angehören, und wir wollen, dass
   sich jeder Agent von einer beliebigen Extension aus einloggen kann
-  (<quote>Hot-desking</quote>). Das grundsätzliche Vorgehen zur Definition von
+  (<quote>Hot-Desking</quote>). Das grundsätzliche Vorgehen zur Definition von
   Agenten und Warteschlangen sieht vereinfacht so aus:</simpara>
 
   <para><emphasis
@@ -1106,18 +1116,40 @@ VMAuthenticate(${agentennr},s);</programlisting>zum Authentifizieren der
       </footnote>. Siehe auch <xref
     linkend="applikationen-queuelog" />.</para>
 
-    <para>Asterisk kann derzeit das Queue-Log noch nicht direkt in eine
-    SQL-Tabelle schreiben. Wie man das trotzdem erreichen kann, wird auf
-    <ulink
-    url="http://www.voip-info.org/wiki/view/Asterisk+queue_log+on+MySQL">http://www.voip-info.org/wiki/view/Asterisk+queue_log+on+MySQL</ulink>
-    beschrieben. Eine Möglichkeit ist, die Datei
-    <filename>queue_log</filename> durch eine Named-Pipe zu ersetzen und dann
-    z.B. mit einem Perl-Skript die Einträge in eine Datenbank zu schreiben.
-    Hier ein Perl-Skript von William Lloyd<footnote>
-        <simpara>wlloyd at slap.net, veröffentlicht auf der
-        Digium-Mailingliste <code>asterisk-users</code>, siehe: <ulink
-        url="http://lists.digium.com/pipermail/asterisk-users/2005-July/109892.html">http://lists.digium.com/pipermail/asterisk-users/2005-July/109892.html</ulink></simpara>
-      </footnote>:<programlisting>#!/usr/bin/perl -w
+    <section id="queue-log-mysql">
+      <title>Queue-Log in MySQL importieren</title>
+
+      <para>Leider kann Asterisk derzeit das Queue-Log noch nicht direkt in
+      eine SQL-Datenbank-Tabelle schreiben. Daß die Daten in einer
+      SQL-Datenbank liegen, ist aber für alle bekannten Statistik-Tools eine
+      Grundvoraussetzung. Zu diesem Zweck existieren verschiedene
+      Skripte<footnote>
+          <para>siehe <ulink
+          url="http://www.voip-info.org/wiki/view/Asterisk+queue_log+on+MySQL">http://www.voip-info.org/wiki/view/Asterisk+queue_log+on+MySQL</ulink></para>
+        </footnote> (meist in Perl) bzw. werden bei den Tools mitgeliefert.
+      Sie alle gehen den im unten angefügten Skript beschriebenen Weg, die
+      Datei <filename>queue_log</filename> durch eine Named-Pipe (FIFO) zu
+      ersetzen. Das Skript öffnet die FIFO zum Lesen, und sobald Asterisk eine
+      Log-Meldung hineinschreibt, wird diese in die Datenbank
+      eingetragen.</para>
+
+      <warning>
+        <para>Diese Methode wird vermutlich in 99 % aller Fälle problemlos
+        funktionieren. Allerdings besteht die Gefahr, daß das Skript, falls es
+        aus irgendwelchen Gründen nicht vor Asterisk gestartet sein sollte
+        oder vorzeitig beendet wird, nicht mehr aus der Named-Pipe liest und
+        Asterisk beim Versuch zu Schreiben ein
+        <literal>SIGPIPE</literal>-Signal erhält, was Asterisk zum Absturz
+        bringen würde!</para>
+      </warning>
+
+      <para>Da aber ohne Unterstützung durch Asterisk keine wirkliche
+      Alternative besteht, soll hier der theoretischen Gefahr zum Trotz ein
+      Perl-Skript von William Lloyd den Ansatz beschreiben<footnote>
+          <simpara>wlloyd at slap.net, veröffentlicht auf der
+          Digium-Mailingliste <code>asterisk-users</code>, siehe: <ulink
+          url="http://lists.digium.com/pipermail/asterisk-users/2005-July/109892.html">http://lists.digium.com/pipermail/asterisk-users/2005-July/109892.html</ulink></simpara>
+        </footnote>:<programlisting>#!/usr/bin/perl -w
 #
 # wlloyd at slap.net
 
@@ -1216,7 +1248,8 @@ action, info1, info2, info3) VALUES ('$data[0]', '$data[1]', '$data
 $dbh-&gt;disconnect();
 
 exit 0;</programlisting>Bei QueueMetrics (kostenlose Demo-Version) wird
-    ebenfalls ein Perl-Skript <filename>queueLoader.pl</filename>
-    mitgeliefert.</para>
+      ebenfalls ein Perl-Skript <filename>queueLoader.pl</filename>
+      mitgeliefert (siehe Warnung oben!).</para>
+    </section>
   </section>
 </chapter>
