@@ -1,788 +1,273 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="isdn-1.2-digium-b410p" lang="de" revision="$Revision: 545 $">
-  <!--% Copyright (c) 2007
-% - Stephen Bosch <sbosch@vodacomm.ca>
+<section id="installation-1.4-debian-4.0" lang="en" revision="$Revision:473 $">
+  <!--% Copyright (c) 2006 - 2007 by 
+% Stefan Wintermeyer <sw@amooma.de>
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
 % or any later version published by the Free Software Foundation;
 % with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
 % Texts. A copy of the license is included in the section entitled "GNU
 % Free Documentation License".
+% translated from the German by Stephen Bosch <sbosch@vodacomm.ca>
 % Asterisk training and consulting is offered at http://www.amooma.de-->
 
-  <title>Sangoma A102D T1/E1/J1 ISDN card</title>
+  <title>Installing Asterisk 1.4.x on Debian Linux 4.0 (Etch)</title>
 
-  <para>This chapter covers the installation, configuration and testing of a
-  Sangoma A102D T1 interface card. This card is a two-port T1 card, but the
-  installation process is similar for all variants of the Sangoma
-  hardware.</para>
+  <indexterm>
+    <primary>Asterisk 1.4 Installation</primary>
 
-  <section id="isdn-1.2-digium-b410p-installation">
-    <title>Installation</title>
+    <secondary>Debian Linux</secondary>
+  </indexterm>
 
-    <para>This installation assumes a fresh, standard installation of Debian
-    GNU/Linux 4.0 (<replaceable>a.k.a.</replaceable> Etch).<important>
-        <para>Things change quickly in the open-source world. We do our best
-        to make the instructions the most current that they can be, and, as of
-        this writing, they are. If you find something that needs updating to
-        reflect changes in the platform software, please let us know. We
-        update the text on a regular basis. You can find the unstable version
-        of the text at <ulink
-        url="http://www.das-asterisk-buch.de/unstable/">http://www.the-asterisk-book.com/unstable/</ulink>.</para>
-      </important>Start with the <xref
-    linkend="install-1.4-on-debian-4.0" /></para>
+  <para>Following these instructions will install the components necessary to
+  use all the features covered in this book (except where otherwise
+  indicated). As a result, it is a little more comprehensive than a typical
+  installation but offers the advantage that you won't have to install
+  additional components in future.</para>
 
-    <para>We recommend the network installation CD image, which is
-    approximately 100 MB in size and can be obtained at <ulink
-    url="http://www.debian.org/releases/stable/debian-installer/">http://www.debian.org/releases/stable/debian-installer/</ulink>.
-    The installation instructions for Debian GNU/Linux may be found at <ulink
-    url="http://www.debian.org/releases/stable/installmanual">http://www.debian.org/releases/stable/installmanual.</ulink></para>
+  <para>We assume a freshly installed Debian GNU/Linux 4.0 (a.k.a Etch). You
+  can obtain an ISO image for the net-based install of x86 Debian Linux at
+  <ulink
+  url="http://www.debian.org/releases/etch/debian-installer/">http://www.debian.org/releases/etch/debian-installer/</ulink>.
+  A Debian GNU/Linux installation manual may be found at <ulink
+  url="http://www.debian.org/releases/etch/i386/">http://www.debian.org/releases/etch/i386/</ulink>.</para>
 
-    <para><emphasis>Following successful installation of Debian, issue
-    <command>su</command> to become the root user and enter the commands which
-    follow. Do not omit any steps and make sure that all the steps are run as
-    root, except where otherwise noted.</emphasis></para>
+  <para><emphasis>Before starting, please log in as root.</emphasis><note>
+      <para>For the sake of brevity, verbose output has been trimmed.
+      Editorial omissions are indicated with <code>[...]</code>.</para>
+    </note></para>
 
-    <para>First, update the system with <command>apt-get
-    update</command>:<screen>debian:~# apt-get update
-Get:1 http://debian.yorku.ca etch Release.gpg [378B]
-Hit http://debian.yorku.ca etch Release
-Ign http://debian.yorku.ca etch/main Packages/DiffIndex
-Ign http://debian.yorku.ca etch/main Sources/DiffIndex
-Hit http://debian.yorku.ca etch/main Packages
-Hit http://debian.yorku.ca etch/main Sources
-Get:2 http://security.debian.org etch/updates Release.gpg [189B]
+  <para>Update the Debian package listing with <command>apt-get
+  update</command>:<screen>debian:~# apt-get update
+Ign cdrom://[Debian GNU/Linux 4.0 r0 _Etch_ - Official i386 NETINST Binary-1 20070407-11:29] etch Release.gpg
+Ign cdrom://[Debian GNU/Linux 4.0 r0 _Etch_ - Official i386 NETINST Binary-1 20070407-11:29] etch Release
+Ign cdrom://[Debian GNU/Linux 4.0 r0 _Etch_ - Official i386 NETINST Binary-1 20070407-11:29] etch/contrib Packages/DiffIndex
+Ign cdrom://[Debian GNU/Linux 4.0 r0 _Etch_ - Official i386 NETINST Binary-1 20070407-11:29] etch/main Packages/DiffIndex
+Get:1 http://security.debian.org etch/updates Release.gpg [189B]      
+Get:2 http://ftp.debian.org etch Release.gpg [378B]   
 Hit http://security.debian.org etch/updates Release
+Hit http://ftp.debian.org etch Release        
 Ign http://security.debian.org etch/updates/main Packages/DiffIndex
+Ign http://ftp.debian.org etch/main Packages/DiffIndex
 Ign http://security.debian.org etch/updates/contrib Packages/DiffIndex
 Ign http://security.debian.org etch/updates/main Sources/DiffIndex
+Ign http://ftp.debian.org etch/main Sources/DiffIndex
 Ign http://security.debian.org etch/updates/contrib Sources/DiffIndex
 Hit http://security.debian.org etch/updates/main Packages
-Get:3 ftp://mirrors.ibiblio.org etch Release.gpg [189B]
+Hit http://ftp.debian.org etch/main Packages   
 Hit http://security.debian.org etch/updates/contrib Packages
+Hit http://ftp.debian.org etch/main Sources    
 Hit http://security.debian.org etch/updates/main Sources
 Hit http://security.debian.org etch/updates/contrib Sources
-Hit ftp://mirrors.ibiblio.org etch Release
-Err ftp://mirrors.ibiblio.org etch Release
-
-Get:4 ftp://mirrors.ibiblio.org etch Release [1026B]
-Ign ftp://mirrors.ibiblio.org etch Release
-Get:5 ftp://mirrors.ibiblio.org etch/non-free Packages/DiffIndex
-Ign ftp://mirrors.ibiblio.org etch/non-free Packages/DiffIndex
-Hit ftp://mirrors.ibiblio.org etch/non-free Packages
-Fetched 1217B in 2s (572B/s)
+Fetched 2B in 1s (1B/s)  
 Reading package lists... Done
-debian:~# 
-</screen></para>
+debian:~# </screen></para>
 
-    <para>To be sure that all the packages are current, run <command>apt-get
-    -y upgrade</command>:<screen>debian:~# apt-get -y upgrade
-debian:~# apt-get -y upgrade
+  <para>Now update all the currently installed packages with <command>apt-get
+  -y upgrade</command>:<screen>debian:~# apt-get -y upgrade
 Reading package lists... Done
 Building dependency tree... Done
 0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
 debian:~# </screen></para>
 
-    <para>Jetzt müssen Sie mit <command>apt-get -y install openssl zlibc
-    libkrb5-dev libncurses5-dev libssl-dev zlib1g-dev</command> noch ein paar
-    Pakete nachinstallieren, damit das spätere Kompilieren von Asterisk
-    erfolgreich durchgeführt werden kann:</para>
+  <para>Just for the case the the upgrade installed a new kernel we have to
+  reboot the system with shutdown -r now<screen>debian:~# shutdown -r now
 
-    <screen>debian:~# apt-get -y install openssl zlibc libkrb5-dev libncurses5-dev libssl-dev zlib1g-dev
-Paketlisten werden gelesen... Fertig
-Abhängigkeitsbaum wird aufgebaut... Fertig
-Die folgenden zusätzlichen Pakete werden installiert:
-  comerr-dev libkadm55
-Vorgeschlagene Pakete:
-  doc-base krb5-doc ca-certificates
-Die folgenden NEUEN Pakete werden installiert:
-  comerr-dev libkadm55 libkrb5-dev libncurses5-dev libssl-dev openssl
-  zlib1g-dev zlibc
-0 aktualisiert, 8 neu installiert, 0 zu entfernen und 0 nicht aktualisiert.
-Es müssen 6025kB Archive geholt werden.
-Nach dem Auspacken werden 18,8MB Plattenplatz zusätzlich benutzt.
-Hole:1 http://ftp.de.debian.org stable/main libkadm55 1.3.6-2sarge3 [165kB]
-Hole:2 http://ftp.de.debian.org stable/main libncurses5-dev 5.4-4 [1038kB]
-Hole:3 http://ftp.de.debian.org stable/main libssl-dev 0.9.7e-3sarge4 [2555kB] 
-Hole:4 http://ftp.de.debian.org stable/main openssl 0.9.7e-3sarge4 [906kB]     
-Hole:5 http://ftp.de.debian.org stable/main zlib1g-dev 1:1.2.2-4.sarge.2 [488kB]
-Hole:6 http://ftp.de.debian.org stable/main zlibc 0.9j-7 [245kB]               
-Hole:7 http://ftp.de.debian.org stable/main comerr-dev 2.1-1.37-2sarge1 [53,0kB]
-Hole:8 http://ftp.de.debian.org stable/main libkrb5-dev 1.3.6-2sarge3 [574kB]  
-Es wurden 6025kB in 57s geholt (104kB/s)                                       
-Wähle vormals abgewähltes Paket libkadm55.
-(Lese Datenbank ... 32512 Dateien und Verzeichnisse sind derzeit installiert.)
-Entpacke libkadm55 (aus .../libkadm55_1.3.6-2sarge3_i386.deb) ...
-Wähle vormals abgewähltes Paket libncurses5-dev.
-Entpacke libncurses5-dev (aus .../libncurses5-dev_5.4-4_i386.deb) ...
-Wähle vormals abgewähltes Paket libssl-dev.
-Entpacke libssl-dev (aus .../libssl-dev_0.9.7e-3sarge4_i386.deb) ...
-Wähle vormals abgewähltes Paket openssl.
-Entpacke openssl (aus .../openssl_0.9.7e-3sarge4_i386.deb) ...
-Creating directory /etc/ssl
-Wähle vormals abgewähltes Paket zlib1g-dev.
-Entpacke zlib1g-dev (aus .../zlib1g-dev_1%3a1.2.2-4.sarge.2_i386.deb) ...
-Wähle vormals abgewähltes Paket zlibc.
-Entpacke zlibc (aus .../archives/zlibc_0.9j-7_i386.deb) ...
-Wähle vormals abgewähltes Paket comerr-dev.
-Entpacke comerr-dev (aus .../comerr-dev_2.1-1.37-2sarge1_i386.deb) ...
-Wähle vormals abgewähltes Paket libkrb5-dev.
-Entpacke libkrb5-dev (aus .../libkrb5-dev_1.3.6-2sarge3_i386.deb) ...
-Richte libkadm55 ein (1.3.6-2sarge3) ...
+Broadcast message from root@debian (pts/0) (Fri May  4 19:43:09 2007):
 
-Richte libncurses5-dev ein (5.4-4) ...
-Richte libssl-dev ein (0.9.7e-3sarge4) ...
+The system is going down for reboot NOW!
+</screen></para>
 
-Richte openssl ein (0.9.7e-3sarge4) ...
+  <para>After the reboot we have to login again as root.</para>
 
-Richte zlib1g-dev ein (1.2.2-4.sarge.2) ...
-Richte zlibc ein (0.9j-7) ...
+  <para>A few more packages are needed to satisfy Asterisk build dependencies.
+  Do <command>apt-get -y install build-essential libncurses5-dev libcurl3-dev
+  libvorbis-dev libspeex-dev unixodbc unixodbc-dev libiksemel-dev
+  linux-headers-`uname -r`.</command></para>
 
-Richte comerr-dev ein (2.1-1.37-2sarge1) ...
+  <screen>debian:~# apt-get -y install build-essential libncurses5-dev libcurl3-dev libvorbis-dev libspeex-dev unixodbc unixodbc-dev libiksemel-dev linux-headers-`uname -r`
+Reading package lists... Done
+Building dependency tree... Done
+The following extra packages will be installed:
+  binutils ca-certificates comerr-dev cpp cpp-4.1 defoma dpkg-dev fontconfig
+  fontconfig-config g++ g++-4.1 gcc gcc-4.1 libaudio2 libc6-dev libcurl3
+  libcurl3-openssl-dev libexpat1 libfontconfig1 libfreetype6 libice6
+  libidn11-dev libiksemel3 libjpeg62 libkadm55 libkrb5-dev liblcms1 libltdl3
+  libltdl3-dev libmng1 libodbcinstq1c2 libogg-dev libogg0 libpng12-0 libqt3-mt
+  libsm6 libspeex1 libssl-dev libssp0 libstdc++6-4.1-dev libvorbis0a
+  libvorbisenc2 libvorbisfile3 libx11-6 libx11-data libxau6 libxcursor1
+  libxdmcp6 libxext6 libxfixes3 libxft2 libxi6 libxinerama1 libxrandr2
+  libxrender1 libxt6 linux-headers-2.6.18-4 linux-kbuild-2.6.18
+  linux-kernel-headers make odbcinst1debian1 openssl pkg-config ttf-dejavu
+  x11-common zlib1g-dev
+Suggested packages:
+  binutils-doc doc-base cpp-doc gcc-4.1-locales defoma-doc psfontmgr
+  x-ttcidfont-conf dfontmgr debian-keyring gcc-4.1-doc lib64stdc++6
+  manpages-dev autoconf automake1.9 libtool flex bison gdb gcc-doc
+  libc6-dev-amd64 lib64gcc1 lib64ssp0 nas glibc-doc libcurl3-dbg
+  libfreetype6-dev krb5-doc liblcms-utils libtool-doc libqt3-mt-psql
+  libqt3-mt-mysql libqt3-mt-odbc speex libstdc++6-4.1-doc make-doc-non-dfsg
+  libgnome-dev libmyodbc odbc-postgresql libct1 libqt3-mt-dev
+Recommended packages:
+  libft-perl bzip2 libmudflap0-dev libgl1-mesa-glx libgl1 libglu1-mesa libglu1
+  libxmu6
+The following NEW packages will be installed:
+  binutils build-essential ca-certificates comerr-dev cpp cpp-4.1 defoma
+  dpkg-dev fontconfig fontconfig-config g++ g++-4.1 gcc gcc-4.1 libaudio2
+  libc6-dev libcurl3 libcurl3-dev libcurl3-openssl-dev libexpat1
+  libfontconfig1 libfreetype6 libice6 libidn11-dev libiksemel-dev libiksemel3
+  libjpeg62 libkadm55 libkrb5-dev liblcms1 libltdl3 libltdl3-dev libmng1
+  libncurses5-dev libodbcinstq1c2 libogg-dev libogg0 libpng12-0 libqt3-mt
+  libsm6 libspeex-dev libspeex1 libssl-dev libssp0 libstdc++6-4.1-dev
+  libvorbis-dev libvorbis0a libvorbisenc2 libvorbisfile3 libx11-6 libx11-data
+  libxau6 libxcursor1 libxdmcp6 libxext6 libxfixes3 libxft2 libxi6
+  libxinerama1 libxrandr2 libxrender1 libxt6 linux-headers-2.6.18-4
+  linux-headers-2.6.18-4-686 linux-kbuild-2.6.18 linux-kernel-headers make
+  odbcinst1debian1 openssl pkg-config ttf-dejavu unixodbc unixodbc-dev
+  x11-common zlib1g-dev
+0 upgraded, 75 newly installed, 0 to remove and 0 not upgraded.
+Need to get 23.1MB/38.1MB of archives.
+After unpacking 137MB of additional disk space will be used.
+Get:1 http://ftp.debian.org etch/main libice6 1:1.0.1-2 [42.6kB]
+Get:2 http://ftp.debian.org etch/main libsm6 1:1.0.1-3 [18.0kB]
 
-Richte libkrb5-dev ein (1.3.6-2sarge3) ...
-debian:~#</screen>
+[...]
 
-    <para>Asterisk kann erst nach der Installation von mISDN installiert
-    werden. mISDN lässt sich momentan nur mit einem 2.6.x Kernel kompilieren.
-    Um diesen zu installieren, suchen Sie mit <command>apt-cache search
-    kernel-image-2.6.8 | grep kernel-image</command> den zu Ihrer Architektur
-    passenden Kernel:<screen>debian:~# apt-cache search kernel-image-2.6.8 | grep kernel-image
-kernel-image-2.6.8-3-386 - Linux kernel image for version 2.6.8 on 386.
-kernel-image-2.6.8-11-amd64-generic - Linux kernel image for version 2.6.8 on generic x86_64 systems
-kernel-image-2.6.8-11-amd64-k8 - Linux kernel image for version 2.6.8 on AMD64 systems
-kernel-image-2.6.8-11-amd64-k8-smp - Linux kernel image for version 2.6.8 on AMD64 SMP systems
-kernel-image-2.6.8-11-em64t-p4 - Linux kernel image for version 2.6.8 on Intel EM64T systems
-kernel-image-2.6.8-11-em64t-p4-smp - Linux kernel image for version 2.6.8 on Intel EM64T SMP systems
-kernel-image-2.6.8-12-amd64-generic - Linux kernel image for version 2.6.8 on generic x86_64 systems
-kernel-image-2.6.8-12-amd64-k8 - Linux kernel image for version 2.6.8 on AMD64 systems
-kernel-image-2.6.8-12-amd64-k8-smp - Linux kernel image for version 2.6.8 on AMD64 SMP systems
-kernel-image-2.6.8-12-em64t-p4 - Linux kernel image for version 2.6.8 on Intel EM64T systems
-kernel-image-2.6.8-12-em64t-p4-smp - Linux kernel image for version 2.6.8 on Intel EM64T SMP systems
-kernel-image-2.6.8-2-386 - Linux kernel image for version 2.6.8 on 386.
-kernel-image-2.6.8-2-686 - Linux kernel image for version 2.6.8 on PPro/Celeron/PII/PIII/P4.
-kernel-image-2.6.8-2-686-smp - Linux kernel image for version 2.6.8 on PPro/Celeron/PII/PIII/P4 SMP.
-kernel-image-2.6.8-2-k7 - Linux kernel image for version 2.6.8 on AMD K7.
-kernel-image-2.6.8-2-k7-smp - Linux kernel image for version 2.6.8 on AMD K7 SMP.
-kernel-image-2.6.8-3-686 - Linux kernel image for version 2.6.8 on PPro/Celeron/PII/PIII/P4.
-kernel-image-2.6.8-3-686-smp - Linux kernel image for version 2.6.8 on PPro/Celeron/PII/PIII/P4 SMP.
-kernel-image-2.6.8-3-k7 - Linux kernel image for version 2.6.8 on AMD K7.
-kernel-image-2.6.8-3-k7-smp - Linux kernel image for version 2.6.8 on AMD K7 SMP.
-debian:~# </screen>In diesem Beispiel entscheiden wir uns für den Kernel
-    <parameter>kernel-image-2.6.8-3-686</parameter> und installieren diesen
-    mit <command>apt-get -y install
-    kernel-image-2.6.8-3-686</command>:<screen>debian:~# apt-get -y install kernel-image-2.6.8-3-686
-Paketlisten werden gelesen... Fertig
-Abhängigkeitsbaum wird aufgebaut... Fertig
-Vorgeschlagene Pakete:
-  lilo kernel-doc-2.6.8 kernel-source-2.6.8
-Die folgenden NEUEN Pakete werden installiert:
-  kernel-image-2.6.8-3-686
-0 aktualisiert, 1 neu installiert, 0 zu entfernen und 1 nicht aktualisiert.
-Es müssen 15,6MB Archive geholt werden.
-Nach dem Auspacken werden 45,2MB Plattenplatz zusätzlich benutzt.
-Hole:1 http://security.debian.org stable/updates/main kernel-image-2.6.8-3-686 2.6.8-16sarge6 [15,6MB]
-Es wurden 15,6MB in 1m7s geholt (232kB/s)                                      
-Wähle vormals abgewähltes Paket kernel-image-2.6.8-3-686.
-(Lese Datenbank ... 25562 Dateien und Verzeichnisse sind derzeit installiert.)
-Entpacke kernel-image-2.6.8-3-686 (aus .../kernel-image-2.6.8-3-686_2.6.8-16sarge6_i386.deb) ...
-Richte kernel-image-2.6.8-3-686 ein (2.6.8-16sarge6) ...
-Searching for GRUB installation directory ... found: /boot/grub .
-Testing for an existing GRUB menu.list file... found: /boot/grub/menu.lst .
-Searching for splash image... none found, skipping...
-Found kernel: /boot/vmlinuz-2.6.8-3-686
-Found kernel: /boot/vmlinuz-2.4.27-3-386
-Updating /boot/grub/menu.lst ... done
+Setting up libvorbis-dev (1.1.2.dfsg-1.2) ...
+Setting up linux-headers-2.6.18-4 (2.6.18.dfsg.1-12) ...
+Setting up linux-kbuild-2.6.18 (2.6.18-1) ...
+Setting up linux-headers-2.6.18-4-686 (2.6.18.dfsg.1-12) ...
+Setting up unixodbc-dev (2.2.11-13) ...
+Setting up libstdc++6-4.1-dev (4.1.1-21) ...
+Setting up g++-4.1 (4.1.1-21) ...
+Setting up g++ (4.1.1-15) ...
 
+Setting up build-essential (11.3) ...
+debian:~# </screen>
 
-debian:~#</screen>Danach booten wir den Rechner mit <command>shutdown -r
-    now</command> und können nach dem Booten mit <command>uname -a</command>
-    kontrollieren, ob mit dem richtigen Kernel gebootet wurde:<screen>debian:~# uname -a
-Linux debian 2.6.8-3-686 #1 Tue Dec 5 21:26:38 UTC 2006 i686 GNU/Linux
-debian:~#</screen>Zum Kompilieren benötigen wir jetzt noch die zum Kernel
-    passenden Header-Dateien. Diese können mit <command>apt-get -y install
-    kernel-headers-`uname -r`</command> nachinstalliert werden:<screen>debian:~# apt-get -y install kernel-headers-`uname -r`
-Paketlisten werden gelesen... Fertig
-Abhängigkeitsbaum wird aufgebaut... Fertig
-Die folgenden zusätzlichen Pakete werden installiert:
-  kernel-headers-2.6.8-3 kernel-kbuild-2.6-3
-Die folgenden NEUEN Pakete werden installiert:
-  kernel-headers-2.6.8-3 kernel-headers-2.6.8-3-686 kernel-kbuild-2.6-3
-0 aktualisiert, 3 neu installiert, 0 zu entfernen und 1 nicht aktualisiert.
-Es müssen 3402kB Archive geholt werden.
-Nach dem Auspacken werden 42,6MB Plattenplatz zusätzlich benutzt.
-Hole:1 http://ftp.de.debian.org stable/main kernel-kbuild-2.6-3 2.6.8-2 [363kB]
-Hole:2 http://security.debian.org stable/updates/main kernel-headers-2.6.8-3 2.6.8-16sarge6 [2781kB]
-Hole:3 http://security.debian.org stable/updates/main kernel-headers-2.6.8-3-686 2.6.8-16sarge6 [258kB]
-Es wurden 3402kB in 18s geholt (188kB/s)                                       
-Wähle vormals abgewähltes Paket kernel-kbuild-2.6-3.
-(Lese Datenbank ... 27265 Dateien und Verzeichnisse sind derzeit installiert.)
-Entpacke kernel-kbuild-2.6-3 (aus .../kernel-kbuild-2.6-3_2.6.8-2_i386.deb) ...
-Wähle vormals abgewähltes Paket kernel-headers-2.6.8-3.
-Entpacke kernel-headers-2.6.8-3 (aus .../kernel-headers-2.6.8-3_2.6.8-16sarge6_i386.deb) ...
-Wähle vormals abgewähltes Paket kernel-headers-2.6.8-3-686.
-Entpacke kernel-headers-2.6.8-3-686 (aus .../kernel-headers-2.6.8-3-686_2.6.8-16sarge6_i386.deb) ...
-Richte kernel-kbuild-2.6-3 ein (2.6.8-2) ...
-Richte kernel-headers-2.6.8-3 ein (2.6.8-16sarge6) ...
+  <para>Now change into the <filename>/usr/src</filename> directory with
+  <command>cd /usr/src</command>:<screen>debian:~# cd /usr/src
+debian:/usr/src#</screen></para>
 
-Richte kernel-headers-2.6.8-3-686 ein (2.6.8-16sarge6) ...
-debian:~# </screen></para>
+  <para>Find the Asterisk sources you need at the official homepage:<ulink
+  url="http://www.asterisk.org/"><citetitle>
+  http://www.asterisk.org/</citetitle></ulink>. Take care to use only a
+  <emphasis role="bold">stable</emphasis>, <emphasis
+  role="bold">current</emphasis> version and not a development version.
+  Download it to <filename>/usr/src</filename> with <command>wget
+  http://ftp.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz</command>:</para>
 
-    <para>Auf der Asterisk-Homepage <ulink
-    url="http://www.asterisk.org/"><citetitle>http://www.asterisk.org/</citetitle>
-    </ulink> finden Sie die notwendigen Quellen, um Asterisk zu kompilieren.
-    Nehmen Sie bitte eine <emphasis role="bold">stabile</emphasis> und keine
-    Entwickler-Version und laden Sie diese mit <command>wget
-    http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz</command>
-    in das Verzeichnis <filename>/usr/src/</filename> herunter:</para>
+  <screen>debian:/usr/src# wget http://ftp.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz
+--13:03:47--  http://ftp.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz
+           =&gt; `asterisk-1.4-current.tar.gz'
+Resolving ftp.digium.com... 216.27.40.102, 69.16.138.164
+Connecting to ftp.digium.com|216.27.40.102|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 17,081,631 (16M) [application/x-gzip]
 
-    <screen>debian:/usr/src/# cd /usr/src
-debian:/usr/src# wget http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz
---18:30:46--  http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz
-           =&gt; `asterisk-1.2-current.tar.gz'
-Auflösen des Hostnamen »ftp.digium.com«.... 69.16.138.164
-Verbindungsaufbau zu ftp.digium.com[69.16.138.164]:80... verbunden.
-HTTP Anforderung gesendet, warte auf Antwort... 200 OK
-Länge: 10,584,113 [application/x-gzip]
+100%[====================================&gt;] 17,081,631   263.92K/s    ETA 00:00
 
-100%[====================================&gt;] 10,584,113   224.71K/s    ETA 00:00
+13:04:56 (244.60 KB/s) - `asterisk-1.4-current.tar.gz' saved [17081631/17081631]
 
-18:31:36 (207.67 KB/s) - »asterisk-1.2-current.tar.gz« gespeichert [10584113/10584113]
-</screen>
+debian:/usr/src#</screen>
 
-    <para>Als Nächstes laden Sie mit <command>wget
-    http://ftp.digium.com/pub/zaptel/zaptel-1.2-current.tar.gz</command> den
-    dazugehörigen Zaptel-Treiber:<screen>debian:/usr/src# wget http://ftp.digium.com/pub/zaptel/zaptel-1.2-current.tar.gz
---20:47:06--  http://ftp.digium.com/pub/zaptel/zaptel-1.2-current.tar.gz
-           =&gt; `zaptel-1.2-current.tar.gz'
-Auflösen des Hostnamen »ftp.digium.com«.... 69.16.138.164
-Verbindungsaufbau zu ftp.digium.com[69.16.138.164]:80... verbunden.
-HTTP Anforderung gesendet, warte auf Antwort... 200 OK
-Länge: 1,487,021 [application/x-gzip]
+  <para>You will need the current Zaptel drivers as well. Get them with
+  <command>wget
+  http://ftp.digium.com/pub/zaptel/zaptel-1.4-current.tar.gz</command>:<screen>debian:/usr/src# wget http://ftp.digium.com/pub/zaptel/zaptel-1.4-current.tar.gz
+--13:06:49--  http://ftp.digium.com/pub/zaptel/zaptel-1.4-current.tar.gz
+           =&gt; `zaptel-1.4-current.tar.gz'
+Resolving ftp.digium.com... 216.27.40.102, 69.16.138.164
+Connecting to ftp.digium.com|216.27.40.102|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 2,839,262 (2.7M) [application/x-gzip]
 
-100%[=====================================&gt;] 1,487,021     13.08K/s    ETA 00:00
+100%[====================================&gt;] 2,839,262    263.92K/s    ETA 00:00
 
-20:49:12 (12.25 KB/s) - »zaptel-1.2-current.tar.gz« gespeichert [1487021/1487021]
+13:06:59 (260.09 KB/s) - `zaptel-1.4-current.tar.gz' saved [2839262/2839262]
 
 debian:/usr/src#</screen></para>
 
-    <para></para>
-
-    <para></para>
-
-    <para></para>
-
-    <para>Da der Zaptel-Treiber immer vor dem Asterisk-Paket kompiliert werden
-    muss, entpacken wir diesen mit <command>tar xvzf
-    zaptel-1.2-current.tar.gz</command> und wechseln dann mit <command>cd
-    zaptel-1.2.12</command> in das Verzeichnis, kompilieren ihn mit
-    <command>make</command> und installieren ihn mit <command>make
-    install</command>:</para>
-
-    <para><screen>debian:/usr/src# tar zxvf zaptel-1.4-current.tar.gz
-zaptel-1.4.4/
-zaptel-1.4.4/build_tools/
-zaptel-1.4.4/build_tools/install_prereq
-zaptel-1.4.4/build_tools/make_version
-zaptel-1.4.4/build_tools/genmodconf
-zaptel-1.4.4/build_tools/make_firmware_object
-zaptel-1.4.4/build_tools/make_svn_branch_name
-zaptel-1.4.4/build_tools/menuselect-deps.in
-zaptel-1.4.4/build_tools/genudevrules
-zaptel-1.4.4/build_tools/make_version_h
-zaptel-1.4.4/build_tools/make_tree
-zaptel-1.4.4/wct4xxp/
-zaptel-1.4.4/wct4xxp/vpm450m.h
-zaptel-1.4.4/wct4xxp/Makefile
-zaptel-1.4.4/wct4xxp/base.c
-zaptel-1.4.4/wct4xxp/Makefile.kernel26
-zaptel-1.4.4/wct4xxp/wct4xxp-diag.c
-zaptel-1.4.4/wct4xxp/wct4xxp.h
-zaptel-1.4.4/wct4xxp/vpm450m.c
-zaptel-1.4.4/doc/
-zaptel-1.4.4/doc/ztspeed.8
-zaptel-1.4.4/doc/zttool.8
-zaptel-1.4.4/doc/ztcfg.8
-zaptel-1.4.4/doc/zttest.8
-zaptel-1.4.4/doc/torisatool.8
-zaptel-1.4.4/doc/fxstest.8
-zaptel-1.4.4/doc/ztmonitor.8
-zaptel-1.4.4/doc/fxotune.8
-zaptel-1.4.4/tor2.c
-zaptel-1.4.4/tormenta2.ucf
-zaptel-1.4.4/README.b410p
-zaptel-1.4.4/tonezone.c
-zaptel-1.4.4/zconfig.h
-zaptel-1.4.4/bootstrap.sh
-zaptel-1.4.4/tonezone.h
-zaptel-1.4.4/sethdlc-new.c
-zaptel-1.4.4/tor2-hw.h
-zaptel-1.4.4/hdlctest.c
-zaptel-1.4.4/complex.cc
-zaptel-1.4.4/complex.h
-zaptel-1.4.4/wcte11xp.c
-zaptel-1.4.4/ztd-loc.c
-zaptel-1.4.4/zaptel.sysconfig
-zaptel-1.4.4/wcte12xp.c
-zaptel-1.4.4/configure.ac
-zaptel-1.4.4/checkstack
-zaptel-1.4.4/fxotune.h
-zaptel-1.4.4/Makefile
-zaptel-1.4.4/jpah.h
-zaptel-1.4.4/README.Astribank
-zaptel-1.4.4/fxotune.c
-zaptel-1.4.4/wctc4xxp/
-zaptel-1.4.4/wctc4xxp/codec_test.c
-zaptel-1.4.4/wctc4xxp/Makefile
-zaptel-1.4.4/wctc4xxp/base.c
-zaptel-1.4.4/wctc4xxp/Makefile.kernel26
-zaptel-1.4.4/hpec/
-zaptel-1.4.4/hpec/hpec_zaptel.h
-zaptel-1.4.4/hpec/hpec_user.h
-zaptel-1.4.4/hpec/hpec.h
-zaptel-1.4.4/README.hpec
-zaptel-1.4.4/ecdis.h
-zaptel-1.4.4/datamods/
-zaptel-1.4.4/datamods/hdlc_cisco.c
-zaptel-1.4.4/datamods/hdlc_fr.c
-zaptel-1.4.4/datamods/hdlc_raw.c
-zaptel-1.4.4/datamods/hdlc_ppp.c
-zaptel-1.4.4/datamods/hdlc_raw_eth.c
-zaptel-1.4.4/datamods/hdlc_generic.c
-zaptel-1.4.4/datamods/Makefile
-zaptel-1.4.4/datamods/syncppp.c
-zaptel-1.4.4/xpp/
-zaptel-1.4.4/xpp/firmwares/
-zaptel-1.4.4/xpp/firmwares/FPGA_1141.hex
-zaptel-1.4.4/xpp/firmwares/FPGA_FXS.hex
-zaptel-1.4.4/xpp/firmwares/USB_1130.hex
-zaptel-1.4.4/xpp/firmwares/USB_1140.hex
-zaptel-1.4.4/xpp/firmwares/USB_1150.hex
-zaptel-1.4.4/xpp/firmwares/LICENSE.firmware
-zaptel-1.4.4/xpp/firmwares/FPGA_1151.hex
-zaptel-1.4.4/xpp/firmwares/README
-zaptel-1.4.4/xpp/parport_debug.h
-zaptel-1.4.4/xpp/card_global.h
-zaptel-1.4.4/xpp/xproto.h
-zaptel-1.4.4/xpp/zap_debug.c
-zaptel-1.4.4/xpp/utils/
-zaptel-1.4.4/xpp/utils/zconf/
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Config/
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Config/Defaults.pm
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Xpp/
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Xpp/Xbus.pm
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Xpp/Xpd.pm
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Xpp.pm
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Hardware/
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Hardware/USB.pm
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Hardware/PCI.pm
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Chans.pm
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Hardware.pm
-zaptel-1.4.4/xpp/utils/zconf/Zaptel/Span.pm
-zaptel-1.4.4/xpp/utils/zconf/Zaptel.pm
-zaptel-1.4.4/xpp/utils/xpp_fxloader.usermap
-zaptel-1.4.4/xpp/utils/zt_registration
-zaptel-1.4.4/xpp/utils/fpga_load.8
-zaptel-1.4.4/xpp/utils/xpp_blink
-zaptel-1.4.4/xpp/utils/genzaptelconf.8
-zaptel-1.4.4/xpp/utils/test_parse.c
-zaptel-1.4.4/xpp/utils/xpp_fxloader
-zaptel-1.4.4/xpp/utils/fpga_load.c
-zaptel-1.4.4/xpp/utils/xpp_modprobe
-zaptel-1.4.4/xpp/utils/lszaptel
-zaptel-1.4.4/xpp/utils/genzaptelconf
-zaptel-1.4.4/xpp/utils/xpp.rules
-zaptel-1.4.4/xpp/utils/zapconf
-zaptel-1.4.4/xpp/utils/xpp_sync
-zaptel-1.4.4/xpp/utils/print_modes.c
-zaptel-1.4.4/xpp/utils/hexfile.c
-zaptel-1.4.4/xpp/utils/hexfile.h
-zaptel-1.4.4/xpp/utils/zaptel_hardware
-zaptel-1.4.4/xpp/utils/zaptel-helper
-zaptel-1.4.4/xpp/utils/Makefile
-zaptel-1.4.4/xpp/init_card_4_26
-zaptel-1.4.4/xpp/card_bri.c
-zaptel-1.4.4/xpp/zap_debug.h
-zaptel-1.4.4/xpp/init_card_6_26
-zaptel-1.4.4/xpp/card_bri.h
-zaptel-1.4.4/xpp/xpp_log.h
-zaptel-1.4.4/xpp/README.metering
-zaptel-1.4.4/xpp/xpp_usb.c
-zaptel-1.4.4/xpp/xpp_zap.c
-zaptel-1.4.4/xpp/.version
-zaptel-1.4.4/xpp/README.Astribank
-zaptel-1.4.4/xpp/card_fxo.c
-zaptel-1.4.4/xpp/xpp_zap.h
-zaptel-1.4.4/xpp/calibrate_slics
-zaptel-1.4.4/xpp/card_fxs.c
-zaptel-1.4.4/xpp/card_fxo.h
-zaptel-1.4.4/xpp/Makefile
-zaptel-1.4.4/xpp/card_fxs.h
-zaptel-1.4.4/xpp/xpd.h
-zaptel-1.4.4/xpp/init_card_3_26
-zaptel-1.4.4/xpp/ChangeLog
-zaptel-1.4.4/xpp/xbus-core.c
-zaptel-1.4.4/xpp/init_card_7_26
-zaptel-1.4.4/xpp/xbus-core.h
-zaptel-1.4.4/xpp/xdefs.h
-zaptel-1.4.4/xpp/parport_debug.c
-zaptel-1.4.4/xpp/card_global.c
-zaptel-1.4.4/xpp/xproto.c
-zaptel-1.4.4/pciradio.rbt
-zaptel-1.4.4/torisatool.c
-zaptel-1.4.4/kb1ec_const.h
-zaptel-1.4.4/mec2_const.h
-zaptel-1.4.4/ztmonitor.c
-zaptel-1.4.4/zonedata.c
-zaptel-1.4.4/makeopts.in
-zaptel-1.4.4/ChangeLog
-zaptel-1.4.4/ztdummy.c
-zaptel-1.4.4/mec.h
-zaptel-1.4.4/pciradio.c
-zaptel-1.4.4/ztdiag.c
-zaptel-1.4.4/sec.h
-zaptel-1.4.4/patlooptest.c
-zaptel-1.4.4/sec-2.h
-zaptel-1.4.4/ztdummy.h
-zaptel-1.4.4/tormenta2.rbt
-zaptel-1.4.4/ztd-eth.c
-zaptel-1.4.4/firmware/
-zaptel-1.4.4/firmware/firmware.xml
-zaptel-1.4.4/firmware/Makefile
-zaptel-1.4.4/mkfilter.h
-zaptel-1.4.4/wcusb.c
-zaptel-1.4.4/digits.h
-zaptel-1.4.4/wcusb.h
-zaptel-1.4.4/kb1ec.h
-zaptel-1.4.4/Makefile.kernel26
-zaptel-1.4.4/mec3-float.h
-zaptel-1.4.4/tor2.ee
-zaptel-1.4.4/mec3.h
-zaptel-1.4.4/mg2ec_const.h
-zaptel-1.4.4/fasthdlc.h
-zaptel-1.4.4/zaptel.conf.sample
-zaptel-1.4.4/hdlcverify.c
-zaptel-1.4.4/fxstest.c
-zaptel-1.4.4/configure
-zaptel-1.4.4/tor2ee.c
-zaptel-1.4.4/torisa.c
-zaptel-1.4.4/ztdynamic.c
-zaptel-1.4.4/zaptel.h
-zaptel-1.4.4/menuselect/
-zaptel-1.4.4/menuselect/autoconfig.h.in
-zaptel-1.4.4/menuselect/configure
-zaptel-1.4.4/menuselect/make_version
-zaptel-1.4.4/menuselect/menuselect.c
-zaptel-1.4.4/menuselect/mxml/
-zaptel-1.4.4/menuselect/mxml/mxml-search.c
-zaptel-1.4.4/menuselect/mxml/configure
-zaptel-1.4.4/menuselect/mxml/mxml-node.c
-zaptel-1.4.4/menuselect/mxml/Makefile.in
-zaptel-1.4.4/menuselect/mxml/mxml.pc.in
-zaptel-1.4.4/menuselect/mxml/ANNOUNCEMENT
-zaptel-1.4.4/menuselect/mxml/mxml-set.c
-zaptel-1.4.4/menuselect/mxml/mxml.list.in
-zaptel-1.4.4/menuselect/mxml/README
-zaptel-1.4.4/menuselect/mxml/config.h.in
-zaptel-1.4.4/menuselect/mxml/mxml-file.c
-zaptel-1.4.4/menuselect/mxml/COPYING
-zaptel-1.4.4/menuselect/mxml/mxml.h
-zaptel-1.4.4/menuselect/mxml/mxml-string.c
-zaptel-1.4.4/menuselect/mxml/mxml-index.c
-zaptel-1.4.4/menuselect/mxml/CHANGES
-zaptel-1.4.4/menuselect/mxml/mxml-private.c
-zaptel-1.4.4/menuselect/mxml/mxml-attr.c
-zaptel-1.4.4/menuselect/mxml/mxml-entity.c
-zaptel-1.4.4/menuselect/mxml/install-sh
-zaptel-1.4.4/menuselect/mxml/mxml.pc
-zaptel-1.4.4/menuselect/menuselect_stub.c
-zaptel-1.4.4/menuselect/bootstrap.sh
-zaptel-1.4.4/menuselect/makeopts.in
-zaptel-1.4.4/menuselect/menuselect_gtk.c
-zaptel-1.4.4/menuselect/config.guess
-zaptel-1.4.4/menuselect/menuselect.h
-zaptel-1.4.4/menuselect/linkedlists.h
-zaptel-1.4.4/menuselect/config.sub
-zaptel-1.4.4/menuselect/README
-zaptel-1.4.4/menuselect/strcompat.c
-zaptel-1.4.4/menuselect/configure.ac
-zaptel-1.4.4/menuselect/acinclude.m4
-zaptel-1.4.4/menuselect/missing
-zaptel-1.4.4/menuselect/Makefile
-zaptel-1.4.4/menuselect/menuselect_curses.c
-zaptel-1.4.4/menuselect/example_menuselect-tree
-zaptel-1.4.4/menuselect/aclocal.m4
-zaptel-1.4.4/menuselect/install-sh
-zaptel-1.4.4/config.guess
-zaptel-1.4.4/makefw.c
-zaptel-1.4.4/biquad.h
-zaptel-1.4.4/config.sub
-zaptel-1.4.4/gendigits.c
-zaptel-1.4.4/zaptel.xml
-zaptel-1.4.4/hdlcstress.c
-zaptel-1.4.4/wctdm.c
-zaptel-1.4.4/proslic.h
-zaptel-1.4.4/timertest.c
-zaptel-1.4.4/zaptel.init
-zaptel-1.4.4/.version
-zaptel-1.4.4/zttranscode.c
-zaptel-1.4.4/bittest.h
-zaptel-1.4.4/wctdm.h
-zaptel-1.4.4/pattest.c
-zaptel-1.4.4/sethdlc.c
-zaptel-1.4.4/wcfxo.c
-zaptel-1.4.4/zttool.c
-zaptel-1.4.4/zttest.c
-zaptel-1.4.4/README.fxotune
-zaptel-1.4.4/LICENSE
-zaptel-1.4.4/mg2ec.h
-zaptel-1.4.4/orig.ee
-zaptel-1.4.4/hdlcgen.c
-zaptel-1.4.4/wcfxsusb.c
-zaptel-1.4.4/mknotch.cc
-zaptel-1.4.4/oct612x/
-zaptel-1.4.4/oct612x/octdeviceapi/
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_tone_detection.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_chip_stats.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_mixer.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_debug.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_tsst.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_playout_buf.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_remote_debug.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_conf_bridge.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_miscellaneous.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_events.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_chip_open.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_tlv.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_phasing_tsst.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_tsi_cnct.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_memory.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_channel.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_adpcm_chan.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_user.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_api/oct6100_interrupts.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_events_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_mixer_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_adpcm_chan_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_interrupts_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_debug_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_version.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_remote_debug_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_tsst_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_playout_buf_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_tone_detection_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_miscellaneous_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_conf_bridge_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_chip_stats_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_apimi/
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_apimi/oct6100_mask_interrupts.c
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_phasing_tsst_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_chip_open_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_tlv_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_tsi_cnct_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_memory_priv.h
-zaptel-1.4.4/oct612x/octdeviceapi/oct6100api/oct6100_channel_priv.h
-zaptel-1.4.4/oct612x/apilib/
-zaptel-1.4.4/oct612x/apilib/largmath/
-zaptel-1.4.4/oct612x/apilib/largmath/octapi_largmath.c
-zaptel-1.4.4/oct612x/apilib/llman/
-zaptel-1.4.4/oct612x/apilib/llman/octapi_llman_private.h
-zaptel-1.4.4/oct612x/apilib/llman/octapi_llman.c
-zaptel-1.4.4/oct612x/apilib/bt/
-zaptel-1.4.4/oct612x/apilib/bt/octapi_bt0_private.h
-zaptel-1.4.4/oct612x/apilib/bt/octapi_bt0.c
-zaptel-1.4.4/oct612x/include/
-zaptel-1.4.4/oct612x/include/apilib/
-zaptel-1.4.4/oct612x/include/apilib/octapi_largmath.h
-zaptel-1.4.4/oct612x/include/apilib/octapi_llman.h
-zaptel-1.4.4/oct612x/include/apilib/octapi_bt0.h
-zaptel-1.4.4/oct612x/include/oct6100api/
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_interrupts_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_debug_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_defines.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_tone_detection_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_remote_debug_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_playout_buf_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_mixer_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_tsst_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_phasing_tsst_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_playout_buf_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_events_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_chip_open_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_api_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_remote_debug_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_adpcm_chan_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_tsi_cnct_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_channel_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_mixer_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_adpcm_chan_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_debug_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_chip_stats_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_conf_bridge_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_apimi.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_tone_detection_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_chip_open_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_tlv_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_apiud.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_tsi_cnct_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_channel_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_chip_stats_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_conf_bridge_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_api.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_phasing_tsst_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_events_pub.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_interrupts_inst.h
-zaptel-1.4.4/oct612x/include/oct6100api/oct6100_errors.h
-zaptel-1.4.4/oct612x/include/octrpc/
-zaptel-1.4.4/oct612x/include/octrpc/oct6100_rpc_protocol.h
-zaptel-1.4.4/oct612x/include/octrpc/rpc_protocol.h
-zaptel-1.4.4/oct612x/include/octdef.h
-zaptel-1.4.4/oct612x/include/octosdependant.h
-zaptel-1.4.4/oct612x/include/digium_unused.h
-zaptel-1.4.4/oct612x/include/octtypevx.h
-zaptel-1.4.4/oct612x/include/octtypewin.h
-zaptel-1.4.4/oct612x/include/octmac.h
-zaptel-1.4.4/oct612x/include/octtype.h
-zaptel-1.4.4/oct612x/test.c
-zaptel-1.4.4/oct612x/octasic-helper
-zaptel-1.4.4/oct612x/get_discards
-zaptel-1.4.4/oct612x/Makefile
-zaptel-1.4.4/zaptel-base.c
-zaptel-1.4.4/wcfxsusb.h
-zaptel-1.4.4/tormenta2.vhd
-zaptel-1.4.4/usbfxstest.c
-zaptel-1.4.4/arith.h
-zaptel-1.4.4/README
-zaptel-1.4.4/ztcfg.c
-zaptel-1.4.4/patgen.c
-zaptel-1.4.4/wct1xxp.c
-zaptel-1.4.4/ztspeed.c
-zaptel-1.4.4/ztcfg.h
-zaptel-1.4.4/wctdm24xxp.c
-zaptel-1.4.4/ifcfg-hdlc0
-zaptel-1.4.4/acinclude.m4
-zaptel-1.4.4/README.fxsusb
-zaptel-1.4.4/fir.h
-zaptel-1.4.4/ifup-hdlc
-zaptel-1.4.4/mec2.h
-zaptel-1.4.4/aclocal.m4
-zaptel-1.4.4/ztcfg-dude.c
-zaptel-1.4.4/install-sh
-debian:/usr/src#                                               </screen></para>
-
-    <para>Jetzt kann der Befehl <command>make b410p</command> aufgerufen
-    werden und das Skript lädt selbstständig die notwendigen Dateien nach und
-    baut die ISDN-Treiber für die Karte:<screen>debian:/usr/src/zaptel-1.2.12# make b410p
-[ -f misdn-b410p.tar.gz ] || wget ftp://ftp.digium.com/pub/zaptel/b410p/misdn-b410p.tar.gz
---12:27:54--  ftp://ftp.digium.com/pub/zaptel/b410p/misdn-b410p.tar.gz
-           =&gt; `misdn-b410p.tar.gz'
-Auflösen des Hostnamen »ftp.digium.com«.... 216.27.40.102
-Verbindungsaufbau zu ftp.digium.com[216.27.40.102]:21... verbunden.
-Anmelden als anonymous ... Angemeldet!
-==&gt; SYST ... fertig.    ==&gt; PWD ... fertig.
-==&gt; TYPE I ... fertig.  ==&gt; CWD /pub/zaptel/b410p ... fertig.
-==&gt; PASV ... fertig.    ==&gt; RETR misdn-b410p.tar.gz ... fertig.
-Länge: 572,153 (unmaßgeblich)
-
-100%[====================================&gt;] 572,153      183.53K/s    ETA 00:00
-
-12:27:59 (183.04 KB/s) - »misdn-b410p.tar.gz« gespeichert [572153]
-
-tar -zxf misdn-b410p.tar.gz
-make -C misdn install
-make[1]: Entering directory `/usr/src/zaptel-1.2.12/misdn'
-
-Makeing mISDN
-=============
-
-cp /usr/src/zaptel-1.2.12/misdn/drivers/isdn/hardware/mISDN/Makefile.v2.6 /usr/src/zaptel-1.2.12/misdn/drivers/isdn/hardware/mISDN/Makefile
+  <para>Unpack the compressed tar archives with <command>tar xvzf
+  asterisk-1.4-current.tar.gz &amp;&amp; tar xvzf
+  zaptel-1.4-current.tar.gz</command>:<screen>debian:/usr/src# tar xvzf asterisk-1.4-current.tar.gz &amp;&amp; tar xvzf zaptel-1.4-current.tar.gz
+asterisk-1.4.2/
+asterisk-1.4.2/build_tools/
+asterisk-1.4.2/build_tools/menuselect-deps.in
+asterisk-1.4.2/build_tools/get_moduleinfo
+asterisk-1.4.2/build_tools/mkpkgconfig
+asterisk-1.4.2/build_tools/embed_modules.xml
+asterisk-1.4.2/build_tools/get_makeopts
+asterisk-1.4.2/build_tools/make_version
 
 [...]
 
-make[3]: Leaving directory `/usr/src/zaptel-1.2.12/mISDNuser/tenovis'
-make[3]: Entering directory `/usr/src/zaptel-1.2.12/mISDNuser/voip'
-for i in voipisdn ; do \
-        install -m 755 $i //usr/bin ;\
-done
-make[3]: Leaving directory `/usr/src/zaptel-1.2.12/mISDNuser/voip'
-make[2]: Leaving directory `/usr/src/zaptel-1.2.12/mISDNuser'
-cp include/*.h //usr/include/mISDNuser/
-make[1]: Leaving directory `/usr/src/zaptel-1.2.12/mISDNuser'
-debian:/usr/src/zaptel-1.2.12# </screen></para>
+zaptel-1.4.1/timertest.c
+zaptel-1.4.1/mec3-float.h
+zaptel-1.4.1/zaptel.init
+zaptel-1.4.1/hdlcverify.c
+zaptel-1.4.1/fxstest.c
+zaptel-1.4.1/zaptel-base.c
+debian:/usr/src#  </screen></para>
 
-    <para>Jetzt wieder mit <command>cd ..</command> ins Verzeichnis
-    <filename>/usr/src</filename> wechseln und den Asterisk-Tarball mit
-    <command>tar xvzf asterisk-1.2-current.tar.gz</command> entpacken:</para>
+  <remark>Asterisk 1.4 is the first version of Asterisk that uses the standard
+  Unix/Linux autoconf mechanism.</remark>
 
-    <para><screen>debian:/usr/src/zaptel-1.2.12# cd ..
-debian:/usr/src# tar xvzf asterisk-1.2-current.tar.gz 
-asterisk-1.2.14/
-asterisk-1.2.14/build_tools/
-asterisk-1.2.14/build_tools/make_svn_branch_name
-asterisk-1.2.14/build_tools/mkdep
-asterisk-1.2.14/build_tools/make_build_h
-asterisk-1.2.14/build_tools/make_version_h
-asterisk-1.2.14/build_tools/make_defaults_h
-asterisk-1.2.14/aesopt.h
-asterisk-1.2.14/utils.c
-asterisk-1.2.14/keys/
-[...]
-asterisk-1.2.14/cli.c
-asterisk-1.2.14/io.c
-asterisk-1.2.14/ulaw.c
-asterisk-1.2.14/logger.c
-debian:/usr/src# </screen></para>
-
-    <para>Die entpackten Dateien müssen jetzt kompiliert werden. Dies
-    geschieht mit dem Befehl <command>make</command> im gerade entpackten
-    Verzeichnis.<warning>
-        <para>Bitte achten Sie darauf, dass die hier in der Dokumentation
-        benutzte Version 1.2.14 vielleicht zum Zeitpunkt Ihrer Installation
-        nicht mehr aktuell ist. Entsprechend werden sich die Verzeichnisnamen
-        ändern.</para>
-      </warning>Übrigens ist dies jetzt ein guter Moment, sich einen Kaffee
-    oder Tee zu kochen. Der Kompiliervorgang kann je nach Rechenleistung des
-    PCs wenige Minuten oder bis zu einer Stunde dauern.</para>
-
-    <screen>debian:/usr/src# cd asterisk-1.2.14 
-debian:/usr/src/asterisk-1.2.14# make
-if cmp -s .cleancount .lastclean ; then echo ; else \
-        make clean; cp -f .cleancount .lastclean;\
-fi
-
-build_tools/make_version_h &gt; include/asterisk/version.h.tmp
-if cmp -s include/asterisk/version.h.tmp include/asterisk/version.h ; then echo; else \
-        mv include/asterisk/version.h.tmp include/asterisk/version.h ; \
-fi
-rm -f include/asterisk/version.h.tmp
-build_tools/mkdep  -pipe  -Wall -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -g3  -Iinclude -I../include -D_REENTRANT -D_GNU_SOURCE  -O6 -march=i686         -fomit-frame-pointer  acl.c aescrypt.c aeskey.c aestab.c alaw.c app.c asterisk.c ast_expr2.c ast_expr2f.c astmm.c autoservice.c buildinfo.c callerid.c cdr.c channel.c chanvars.c cli.c config.c cryptostub.c db.c devicestate.c dlfcn.c dns.c dnsmgr.c dsp.c enum.c file.c frame.c fskmodem.c image.c indications.c io.c jitterbuf.c loader.c logger.c manager.c md5.c muted.c netsock.c pbx.c plc.c poll.c privacy.c rtp.c say.c sched.c slinfactory.c srv.c strcompat.c tdd.c
+  <para><important>
+      <para>Asterisk is a very dynamic project; as such, the version numbers
+      in the examples depicted below will increase frequently and over time.
+      Documentation is by its nature static and it is not always possible to
+      keep version numbers current. We ask that you keep this in mind and
+      notify us of changes.</para>
+    </important>We build the Zaptel drivers first. Change into the Zaptel
+  directory with <command>cd zaptel-1.4.1</command> and build it with
+  <command>./configure &amp;&amp; make &amp;&amp; make
+  install</command>:<screen>debian:/usr/src# cd zaptel-1.4.1
+debian:/usr/src/zaptel-1.4.1# ./configure &amp;&amp; make &amp;&amp; make install
+checking for gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables... 
+checking for suffix of object files... o
 
 [...]
 
-make[1]: Nothing to be done for `all'.
-make[1]: Leaving directory `/usr/src/asterisk-1.2.14/stdtime'
- +--------- Asterisk Build Complete ---------+
- + Asterisk has successfully been built, but +
- + cannot be run before being installed by   +
- + running:                                  +
- +                                           +
- +               make install                +
- +-------------------------------------------+</screen>
+/usr/bin/install -c -m 644 doc/zttool.8 /usr/share/man/man8
+[ `id -u` = 0 ] &amp;&amp; /sbin/depmod -a 2.6.18-4-686 || :
+[ -f /etc/zaptel.conf ] || /usr/bin/install -c -D -m 644 zaptel.conf.sample /etc/zaptel.conf
+build_tools/genmodconf linux26 "" "pciradio tor2 torisa wcfxo wct1xxp wctdm wctdm24xxp wcte11xp wcusb ztd-eth ztd-loc wcte12xp wct4xxp wctc4xxp wcfxs wctdm8xxp wct2xxp"
+Building /etc/modprobe.d/zaptel...
+***
+*** WARNING:
+*** If you had custom settings in /etc/modprobe.d/zaptel,
+*** they have been moved to /etc/modprobe.d/zaptel.bak.
+***
+*** In the future, do not edit /etc/modprobe.d/zaptel, but
+*** instead put your changes in another file
+*** in the same directory so that they will not
+*** be overwritten by future Zaptel updates.
+***
+debian:/usr/src/zaptel-1.4.1#</screen></para>
 
-    <para>Die Software ist jetzt kompiliert und muss nur noch mit
-    <command>make install</command> installiert (sprich an die vorgesehenen
-    Stellen im Dateisystem kopiert) werden:</para>
-
-    <screen>debian:/usr/src/asterisk-1.2.14# make install
-build_tools/make_version_h &gt; include/asterisk/version.h.tmp
-if cmp -s include/asterisk/version.h.tmp include/asterisk/version.h ; 
-then echo;
+  <para>Asterisk MeetMe conferences require a timing source. In the absence of
+  a hardware timing source, we use the software timing source contained in the
+  <code>ztdummy</code> kernel module. Load the module with <command>modprobe
+  ztdummy</command>:<screen>debian:/usr/src/zaptel-1.4.1# modprobe ztdummy
+debian:/usr/src/zaptel-1.4.1#</screen>Now we can build Asterisk. Enter the
+  Asterisk source directory with <command>cd /usr/src/asterisk-1.4.2</command>
+  and build it with <command>./configure &amp;&amp; make &amp;&amp; make
+  install</command>:<screen>debian:/usr/src/zaptel-1.4.1# cd /usr/src/asterisk-1.4.2
+debian:/usr/src/asterisk-1.4.2# ./configure &amp;&amp; make &amp;&amp; make install
+checking build system type... i686-pc-linux-gnu
+checking host system type... i686-pc-linux-gnu
+checking for gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
 
 [...]
 
+for x in ; do /usr/bin/install -c -m 755 $x /usr/lib/asterisk/modules ; done
+make[1]: Leaving directory `/usr/src/asterisk-1.4.2/main'
  +---- Asterisk Installation Complete -------+
  +                                           +
  +    YOU MUST READ THE SECURITY DOCUMENT    +
@@ -804,139 +289,53 @@ then echo;
  + **Note** This requires that you have      +
  + doxygen installed on your local system    +
  +-------------------------------------------+
-debian:/usr/src/asterisk-1.2.14#</screen>
+debian:/usr/src/asterisk-1.4.2#</screen></para>
 
-    <para>Geschafft! Die soeben kompilierten Programmdateien sind jetzt auf
-    dem System installiert. Allerdings finden wir im
-    Asterisk-Konfigurationsverzeichnis <filename>/etc/asterisk/</filename>
-    noch gähnende Leere vor. In diesem Verzeichnis liegen die
-    Konfigurationsdateien von Asterisk und da wir nicht von Null beginnen
-    möchten, lassen wir uns die Standarddateien erstellen. Dies erreichen wir
-    mit <command>make samples</command>:</para>
+  <para>Asterisk is now installed, but we're not finished yet. Essential
+  configuration files in <filename>/etc/asterisk</filename> do not yet exist.
+  Rather than start from scratch, we install a set of sample configuration
+  files with <command>make samples</command>:</para>
 
-    <screen>debian:/usr/src/asterisk-1.2.14# make samples
-build_tools/make_version_h &gt; include/asterisk/version.h.tmp
-if cmp -s include/asterisk/version.h.tmp include/asterisk/version.h ; 
-then echo;
+  <screen>debian:/usr/src/asterisk-1.4.2# make samples
+mkdir -p /etc/asterisk
+for x in configs/*.adsi; do \
+        if [ ! -f /etc/asterisk/$x ]; then \
+                /usr/bin/install -c -m 644 $x /etc/asterisk/`/usr/bin/basename $x` ; \
+        fi ; \
 
 [...]
 
+for x in vm-theperson digits/1 digits/2 digits/3 digits/4 vm-isonphone; do \
+        cat /var/lib/asterisk/sounds/$x.gsm &gt;&gt; /var/spool/asterisk/voicemail/default/1234/busy.gsm ; \
 done
-debian:/usr/src/asterisk-1.2.14#</screen>
+debian:/usr/src/asterisk-1.4.2# </screen>
 
-    <para>Fertig! Asterisk ist auf Ihrem System installiert. Mit dem Befehl
-    <command>asterisk -V</command> können Sie die installierte Version
-    herausfinden (bitte achten Sie auf das großgeschriebene V):<screen>debian:/usr/src/asterisk-1.2.14# asterisk -V
-Asterisk 1.2.14
-debian:/usr/src/asterisk-1.2.14#</screen></para>
-  </section>
+  <para>Done! Asterisk is ready to go! Check the installed version with
+  <command>asterisk -V</command> (uppercase V):<screen>debian:/usr/src/asterisk-1.4.2# asterisk -V
+Asterisk 1.4.2
+debian:/usr/src/asterisk-1.4.2# </screen></para>
 
-  <section id="isdn-1.2-digium-b410p-konfiguration">
-    <title>Konfiguration des mISDN-Treibers</title>
+  <section>
+    <title>Start-up and shutdown scripts</title>
 
-    <para>Mit dem Skript <filename>/etc/init.d/misdn-init</filename> können
-    Sie jetzt Ihre ISDN-Karte konfigurieren. Als Erstes überprüfen wir aber
-    mit <command>/etc/init.d/misdn-init scan</command>, ob die Karte auch
-    erkannt wird:<screen>debian:/usr/src/asterisk-1.2.14# /etc/init.d/misdn-init scan
-[OK] found the following devices:
-card=1,0x4
-[ii] run "/etc/init.d/misdn-init config" to store this information to /etc/misdn-init.conf
-debian:/usr/src/asterisk-1.2.14#</screen></para>
+    <para>To make sure that Asterisk starts automatically at boot time and
+    shuts down cleanly during shutdown or reboot, we need init scripts.
+    Install them from the <filename>/usr/src/asterisk-1.4.2</filename>
+    directory with <command>make config</command>:<screen>debian:/usr/src/asterisk-1.4.2# make config
+ Adding system startup for /etc/init.d/asterisk ...
+   /etc/rc2.d/K91asterisk -&gt; ../init.d/asterisk
+   /etc/rc3.d/K91asterisk -&gt; ../init.d/asterisk
+   /etc/rc4.d/K91asterisk -&gt; ../init.d/asterisk
+   /etc/rc5.d/K91asterisk -&gt; ../init.d/asterisk
+   /etc/rc2.d/S10asterisk -&gt; ../init.d/asterisk
+   /etc/rc3.d/S10asterisk -&gt; ../init.d/asterisk
+   /etc/rc4.d/S10asterisk -&gt; ../init.d/asterisk
+   /etc/rc5.d/S10asterisk -&gt; ../init.d/asterisk
+debian:/usr/src/asterisk-1.4.2#</screen></para>
 
-    <para>Das sieht sehr gut aus und führt zum nächsten Schritt: Der
-    Konfiguration mit <command>/etc/init.d/misdn-init config</command><screen>debian:/usr/src/asterisk-1.2.14# /etc/init.d/misdn-init config
-[OK] /etc/misdn-init.conf created. It's now safe to run "/etc/init.d/misdn-init start"
-[ii] make your ports (1-4) available in asterisk by editing "/etc/asterisk/misdn.conf"
-debian:/usr/src/asterisk-1.2.14#</screen>Die Konfigurationsdatei
-    <filename>/etc/misdn-init.conf</filename> wurde geschrieben und wir können
-    mit dieser Standardkonfiguration schon mal loslegen und
-    <command>/etc/init.d/misdn-init start</command> ausführen:<screen>debian:/usr/src/asterisk-1.2.14# /etc/init.d/misdn-init start
------------------------------------------
- Loading module(s) for your misdn-cards:
------------------------------------------
-modprobe --ignore-install hfcmulti type=0x4 protocol=0x12,0x12,0x12,0x12 layermask=0x3,0x3,0x3,0x3 poll=128 debug=0xf
-[i] creating device node: /dev/mISDN
-debian:/usr/src/asterisk-1.2.14#</screen></para>
-
-    <para>Um auch ganz sicherzugehen, kann man noch mit <command>lsmod | grep
-    hfcmulti</command> überprüfen, ob das Modul sauber geladen wurde und mit
-    <command>dmesg | grep Digium</command>, ob die Karte vom Modul gefunden
-    wurde:<screen>debian:/usr/src/asterisk-1.2.14# lsmod | grep hfcmulti
-hfcmulti               76360  0 
-mISDN_core             85216  6 mISDN_dsp,hfcmulti,mISDN_capi,l3udss1,mISDN_l2,mISDN_l1
-debian:/usr/src/asterisk-1.2.14# dmesg | grep Digium
-HFC-multi: card manufacturer: 'Cologne Chip AG' card name: 'HFC-4S Digium Card' clock: normal
-debian:/usr/src/asterisk-1.2.14#</screen></para>
-
-    <para>Die Konfigurationsdateien <filename>/etc/misdn-init.conf</filename>
-    und <filename>/etc/asterisk/misdn.conf</filename> sind sehr gut
-    dokumentiert. Für den ersten Test sollten Sie nur sicherstellen, dass in
-    der <filename>/etc/misdn-init.conf</filename> der Eintrag Port settings
-    für Ihre Bedürfnisse passend ist. Per Default steht da
-    <parameter>nt_ptmp=1,2,3,4</parameter> und das bedeutet, dass auf allen
-    vier Ports Point-to-Multi-Point signalisiert wird. Bitte nach einer
-    Anpassung dieser Datei das <command>/etc/init.d/misdn-init
-    restart</command> nicht vergessen.</para>
-  </section>
-
-  <section id="isdn-1.2-digium-b410p-incoming">
-    <title>Incoming</title>
-
-    <para>Starten Sie Asterisk mit <command>asterisk -vvvvvvc</command> und
-    verbinden Sie den ersten Port der Karte mit Ihrem ISDN-Anschluss. Wenn Sie
-    jetzt auf diesem Anschluss von extern (z.B. vom Handy aus) anrufen, werden
-    Sie im CLI eine Fehlermeldung sehen (da Sie ja noch keine entsprechende
-    Extension im Dialplan haben). Falls der hier aufgeführte Context
-    <parameter>[Intern]</parameter> heißt, können Sie mit folgendem Abschnitt
-    im Dialplan alle Gespräche an Ihr SIP-Telefon mit der Nummer 2000
-    weiterleiten:<programlisting>[Intern]
-exten =&gt; _.,1,Dial(SIP/2000)</programlisting></para>
-  </section>
-
-  <section id="isdn-1.2-digium-b410p-outgoing">
-    <title>Outgoing</title>
-
-    <para>Wenn Sie möchten, dass für alle Telefone im Context
-    <parameter>[verkauf]</parameter> die Möglichkeit besteht, über eine
-    führende 0 (Null) eine Amtsleitung auf dem ersten Port Ihrer Karte zum
-    ISDN-Netz zu bekommen, dann können Sie das mit den folgenden Zeilen in
-    Ihrer <filename>extensions.conf</filename> einstellen:<programlisting>[verkauf]
-exten =&gt; _00.,1,Dial(misdn/1/${EXTEN:1})</programlisting></para>
-
-    <para>Wenn Sie nicht über einen bestimmten Port, sondern über einen freien
-    Port in einer bestimmten Gruppe telefonieren wollen, so können Sie das
-    über das <parameter>g:gruppenname</parameter>-Konstrukt machen. In der
-    Standardkonfiguration ist eine Gruppe intern für die Ports 1 und 2
-    definiert (siehe <parameter>[intern]</parameter> in der
-    <filename>/etc/asterisk/misdn.conf</filename>. Über diese Gruppe kann wie
-    folgt raustelefoniert werden (gleiches Beispiel wie oben):<programlisting>[verkauf]
-exten =&gt; _00.,1,Dial(misdn/g:intern/${EXTEN:1})</programlisting></para>
-  </section>
-
-  <section id="isdn-1.2-digium-b410p-echo-cancellation">
-    <title>Echo Cancellation</title>
-
-    <para>Die Digium B410P ISDN-Karte hat eine eingebaut
-    Echo-Cancellation-Funktion, die in der Kartenhardware abgebildet ist und
-    somit Rechenlast von der CPU nimmt. Sie kann mit dem
-    <filename>misdn.conf</filename>-Parameter
-    <parameter>echocancel=yes</parameter> aktiviert werden.</para>
-  </section>
-
-  <section id="isdn-1.2-digium-b410p-support">
-    <title>Zusätzliche Informationen und Support</title>
-
-    <para>Auf der Homepage <ulink url="http://www.misdn.org">
-    <citetitle>http://www.misdn.org</citetitle> </ulink> befinden sich einige
-    Informationen zu den aktuellen Versionen von mISDN. Weiterhin gibt es ein
-    deutsches Forum zu mISDN auf <ulink
-    url="http://www.ip-phone-forum.de/forumdisplay.php?f=521">
-    <citetitle>http://www.ip-phone-forum.de/forumdisplay.php?f=521</citetitle>
-    </ulink>. Schließlich finden Sie auf dem VoIP-Info-Wiki hilfreiche
-    Informationen <ulink url="http://www.voip-info.org/wiki/view/chan_mISDN">
-    <citetitle>http://www.voip-info.org/wiki/view/chan_mISDN</citetitle>
-    </ulink>. Und außerdem können Sie natürlich auch noch beim technischen
-    Support von Digium anrufen (siehe <ulink
-    url="http://www.digium.com"><citetitle>http://www.digium.com</citetitle></ulink>).</para>
+    <para>The <filename>ztdummy</filename> kernel module must also start at
+    boot time; add it to <filename>/etc/modules</filename> with <command>echo
+    "ztdummy" &gt;&gt; /etc/modules</command>:<screen>debian:/usr/src/asterisk-1.4.2# echo "ztdummy" &gt;&gt; /etc/modules
+debian:/usr/src/asterisk-1.4.2# </screen></para>
   </section>
 </section>
