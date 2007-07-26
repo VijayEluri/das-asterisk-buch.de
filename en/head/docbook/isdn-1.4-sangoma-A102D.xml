@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section id="installation-1.4-debian-4.0" lang="en" revision="$Revision:473 $">
+<section id="isdn-1.4-sangoma-A102D.html" lang="en" revision="$Revision:473 $">
   <!--% Copyright (c) 2006 - 2007 by 
 % Stefan Wintermeyer <sw@amooma.de>
 % Permission is granted to copy, distribute and/or modify this document
@@ -14,9 +14,7 @@
   <title>Installing the Sangoma A102D T1/E1/J1 2-port ISDN card</title>
 
   <indexterm>
-    <primary>Asterisk 1.4 Installation</primary>
-
-    <secondary>Debian Linux</secondary>
+    <primary>Sangoma ISDN installation</primary>
   </indexterm>
 
   <para>The Sangoma cards are sold as a series with a common architecture, so
@@ -26,11 +24,7 @@
   to Zaptel. For this reason, parts of the base install instructions are
   repeated here. Nevertheless, it's important that you follow these
   instructions, and follow them carefully. Following the instructions will
-  ensure that the configuration. Following these instructions will install the
-  components necessary to use all the features covered in this book (except
-  where otherwise indicated). As a result, it is a little more comprehensive
-  than a typical installation but offers the advantage that you won't have to
-  install additional components in future.</para>
+  ensure that the configuration works as intended.</para>
 
   <para>We assume a freshly installed Debian GNU/Linux 4.0 (a.k.a Etch). You
   can obtain an ISO image for the net-based install of x86 Debian Linux at
@@ -194,27 +188,103 @@ Length: 2,839,262 (2.7M) [application/x-gzip]
 
 debian:/usr/src#</screen></para>
 
-  <para>Unpack the compressed tar archives with <command>tar xvzf
-  asterisk-1.4-current.tar.gz &amp;&amp; tar xvzf
-  zaptel-1.4-current.tar.gz</command>:<screen>debian:/usr/src# tar xvzf asterisk-1.4-current.tar.gz &amp;&amp; tar xvzf zaptel-1.4-current.tar.gz
-asterisk-1.4.2/
-asterisk-1.4.2/build_tools/
-asterisk-1.4.2/build_tools/menuselect-deps.in
-asterisk-1.4.2/build_tools/get_moduleinfo
-asterisk-1.4.2/build_tools/mkpkgconfig
-asterisk-1.4.2/build_tools/embed_modules.xml
-asterisk-1.4.2/build_tools/get_makeopts
-asterisk-1.4.2/build_tools/make_version
+  <para>You will also need the libpri package. Get it with <command>wget
+  http://ftp.digium.com/pub/libpri/releases/libpri-1.4.1.tar.gz</command>:</para>
+
+  <para><screen>debian:/usr/src# wget http://ftp.digium.com/pub/libpri/releases/libpri-1.4.1.tar.gz
+--09:48:17--  http://ftp.digium.com/pub/libpri/releases/libpri-1.4.1.tar.gz
+           =&gt; `libpri-1.4.1.tar.gz'
+Resolving ftp.digium.com... 216.27.40.102
+Connecting to ftp.digium.com|216.27.40.102|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 81,178 (79K) [application/x-gzip]
+
+100%[====================================&gt;] 81,178       233.06K/s
+
+09:48:23 (232.02 KB/s) - `libpri-1.4.1.tar.gz' saved [81178/81178]
+
+debian:/usr/src#
+</screen>Get the current Sangoma wanpipe driver set at <ulink
+  url="???">ftp://ftp.sangoma.com/linux/current_wanpipe</ulink>. In this
+  example, <command>wget
+  ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-2.3.4-9.tgz</command>:</para>
+
+  <para><screen>debian:/usr/src# wget ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-2.3.4-9.tgz
+--09:40:07--  ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-2.3.4-9.tgz
+           =&gt; `wanpipe-2.3.4-9.tgz'
+Resolving ftp.sangoma.com... 64.34.169.116
+Connecting to ftp.sangoma.com|64.34.169.116|:21... connected.
+Logging in as anonymous ... Logged in!
+==&gt; SYST ... done.    ==&gt; PWD ... done.
+==&gt; TYPE I ... done.  ==&gt; CWD /linux/current_wanpipe ... done.
+==&gt; PASV ... done.    ==&gt; RETR wanpipe-2.3.4-9.tgz ... done.
+Length: 10,088,497 (9.6M) (unauthoritative)
+
+100%[====================================&gt;] 10,088,497   303.15K/s    ETA 00:00
+
+09:40:40 (300.96 KB/s) - `wanpipe-2.3.4-9.tgz' saved [10088497]
+
+debian:/usr/src#
+</screen></para>
+
+  <para>Unpack all the compressed tar archives with <command>tar xvzf
+  asterisk-1.4-current.tar.gz &amp;&amp; tar xvzf zaptel-1.4-current.tar.gz
+  &amp;&amp; tar xvzf libpri-1.4.1.tar.gz &amp;&amp; tar xvzf
+  wanpipe-2.3.4-9.tgz</command>:<screen>debian:/usr/src# tar xvzf asterisk-1.4-current.tar.gz &amp;&amp; tar xvzf zaptel-1.4-current.tar.gz &amp;&amp; tar xvzf libpri-1.4.1.tar.gz &amp;&amp; tar xvzf wanpipe-2.3.4-9.tgz
+asterisk-1.4.9/
+asterisk-1.4.9/sample.call
+asterisk-1.4.9/missing
+asterisk-1.4.9/configs/
+asterisk-1.4.9/configs/rpt.conf.sample
+asterisk-1.4.9/configs/features.conf.sample
+asterisk-1.4.9/configs/cdr_custom.conf.sample
+asterisk-1.4.9/configs/res_pgsql.conf.sample
+asterisk-1.4.9/configs/agents.conf.sample
 
 [...]
 
-zaptel-1.4.1/timertest.c
-zaptel-1.4.1/mec3-float.h
-zaptel-1.4.1/zaptel.init
-zaptel-1.4.1/hdlcverify.c
-zaptel-1.4.1/fxstest.c
-zaptel-1.4.1/zaptel-base.c
-debian:/usr/src#  </screen></para>
+zaptel-1.4.4/
+zaptel-1.4.4/build_tools/
+zaptel-1.4.4/build_tools/install_prereq
+zaptel-1.4.4/build_tools/make_version
+zaptel-1.4.4/build_tools/genmodconf
+zaptel-1.4.4/build_tools/make_firmware_object
+zaptel-1.4.4/build_tools/make_svn_branch_name
+zaptel-1.4.4/build_tools/menuselect-deps.in
+zaptel-1.4.4/build_tools/genudevrules
+zaptel-1.4.4/build_tools/make_version_h
+zaptel-1.4.4/build_tools/make_tree
+
+[...]
+
+libpri-1.4.1/
+libpri-1.4.1/pri_timers.h
+libpri-1.4.1/.version
+libpri-1.4.1/README
+libpri-1.4.1/copy_string.c
+libpri-1.4.1/LICENSE
+libpri-1.4.1/prisched.c
+libpri-1.4.1/ChangeLog
+
+[...]
+
+wanpipe-2.3.4-9/
+wanpipe-2.3.4-9/doc/
+wanpipe-2.3.4-9/doc/README-1.install
+wanpipe-2.3.4-9/doc/README-2.config
+wanpipe-2.3.4-9/doc/README-3.operation
+wanpipe-2.3.4-9/doc/README-4.debugging
+wanpipe-2.3.4-9/doc/README.adsl
+wanpipe-2.3.4-9/doc/README.atm
+
+[...]
+
+wanpipe-2.3.4-9/wan_ec/OCT6126-128S.ima
+wanpipe-2.3.4-9/wan_ec/OCT6116-32S.ima
+wanpipe-2.3.4-9/wan_ec/OCT6116-64S.ima
+wanpipe-2.3.4-9/wan_ec/OCT6116-256S.ima
+wanpipe-2.3.4-9/ChangeLog.stable.bak
+debian:/usr/src#                   </screen></para>
 
   <remark>Asterisk 1.4 is the first version of Asterisk that uses the standard
   Unix/Linux autoconf mechanism.</remark>
@@ -226,23 +296,46 @@ debian:/usr/src#  </screen></para>
       keep version numbers current. We ask that you keep this in mind and
       notify us of changes.</para>
     </important>We build the Zaptel drivers first. Change into the Zaptel
-  directory with <command>cd zaptel-1.4.1</command> and build it with
+  directory with <command>cd zaptel-1.4.4</command> and build it with
   <command>./configure &amp;&amp; make &amp;&amp; make
-  install</command>:<screen>debian:/usr/src# cd zaptel-1.4.1
-debian:/usr/src/zaptel-1.4.1# ./configure &amp;&amp; make &amp;&amp; make install
+  install</command>:<screen>debian:/usr/src/zaptel-1.4.4# ./configure &amp;&amp; make &amp;&amp; make install
 checking for gcc... gcc
 checking for C compiler default output file name... a.out
 checking whether the C compiler works... yes
 checking whether we are cross compiling... no
-checking for suffix of executables... 
+checking for suffix of executables...
 checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
 
 [...]
 
-/usr/bin/install -c -m 644 doc/zttool.8 /usr/share/man/man8
-[ `id -u` = 0 ] &amp;&amp; /sbin/depmod -a 2.6.18-4-686 || :
-[ -f /etc/zaptel.conf ] || /usr/bin/install -c -D -m 644 zaptel.conf.sample /etc/zaptel.conf
-build_tools/genmodconf linux26 "" "pciradio tor2 torisa wcfxo wct1xxp wctdm wctdm24xxp wcte11xp wcusb ztd-eth ztd-loc wcte12xp wct4xxp wctc4xxp wcfxs wctdm8xxp wct2xxp"
+make[2]: Entering directory `/usr/src/zaptel-1.4.4/menuselect'
+make[3]: Entering directory `/usr/src/zaptel-1.4.4/menuselect/mxml'
+gcc -O -Wall   -c mxml-attr.c
+gcc -O -Wall   -c mxml-entity.c
+gcc -O -Wall   -c mxml-file.c
+gcc -O -Wall   -c mxml-index.c
+gcc -O -Wall   -c mxml-node.c
+gcc -O -Wall   -c mxml-search.c
+
+[...]
+
+install -d /etc/udev/rules.d
+build_tools/genudevrules &gt; /etc/udev/rules.d/zaptel.rules
+for x in pciradio.ko tor2.ko torisa.ko wcfxo.ko wct1xxp.ko wctdm.ko wctdm24xxp.ko wcte11xp.ko wcusb.ko zaptel.ko ztd-eth.ko ztd-loc.ko ztdummy.ko ztdynamic.ko zttranscode.ko wcte12xp.ko wct4xxp/wct4xxp.ko wctc4xxp/wctc4xxp.ko xpp/xpp_usb.ko xpp/xpd_fxo.ko xpp/xpd_fxs.ko xpp/xpp.ko; do \
+                rm -f /lib/modules/2.6.18-4-686/extra/$x ; \
+                rm -f /lib/modules/2.6.18-4-686/misc/$x ; \
+                rm -f /lib/modules/2.6.18-4-686/zaptel/$x ; \
+        done;
+make -C /lib/modules/2.6.18-4-686/build SUBDIRS=/usr/src/zaptel-1.4.4 INSTALL_MOD_PATH= INSTALL_MOD_DIR=misc modules_install
+make[1]: Entering directory `/usr/src/linux-headers-2.6.18-4-686'
+  INSTALL /usr/src/zaptel-1.4.4/pciradio.ko
+  INSTALL /usr/src/zaptel-1.4.4/tor2.ko
+  INSTALL /usr/src/zaptel-1.4.4/torisa.ko
+  INSTALL /usr/src/zaptel-1.4.4/wcfxo.ko
+
+[...]
+
 Building /etc/modprobe.d/zaptel...
 ***
 *** WARNING:
@@ -254,27 +347,64 @@ Building /etc/modprobe.d/zaptel...
 *** in the same directory so that they will not
 *** be overwritten by future Zaptel updates.
 ***
-debian:/usr/src/zaptel-1.4.1#</screen></para>
+debian:/usr/src/zaptel-1.4.4#
+</screen></para>
 
-  <para>Asterisk MeetMe conferences require a timing source. In the absence of
-  a hardware timing source, we use the software timing source contained in the
-  <code>ztdummy</code> kernel module. Load the module with <command>modprobe
-  ztdummy</command>:<screen>debian:/usr/src/zaptel-1.4.1# modprobe ztdummy
-debian:/usr/src/zaptel-1.4.1#</screen>Now we can build Asterisk. Enter the
-  Asterisk source directory with <command>cd /usr/src/asterisk-1.4.2</command>
-  and build it with <command>./configure &amp;&amp; make &amp;&amp; make
-  install</command>:<screen>debian:/usr/src/zaptel-1.4.1# cd /usr/src/asterisk-1.4.2
-debian:/usr/src/asterisk-1.4.2# ./configure &amp;&amp; make &amp;&amp; make install
+  <para>Next, change to the libpri source directory with <command>cd
+  /usr/src/libpri-1.4.1</command> and build it with <command>make &amp;&amp;
+  make install</command>:</para>
+
+  <para><screen>debian:/usr/src/zaptel-1.4.4# cd /usr/src/libpri-1.4.1
+debian:/usr/src/libpri-1.4.1# make &amp;&amp; make install
+CC=gcc ./mkdep -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g   `ls *.c`
+gcc -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g     -c -o copy_string.o copy_string.c
+gcc -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g     -c -o pri.o pri.c
+gcc -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g     -c -o q921.o q921.c
+gcc -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g     -c -o prisched.o prisched.c
+gcc -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g     -c -o q931.o q931.c
+gcc -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g     -c -o pri_facility.o pri_facility.c
+ar rcs libpri.a copy_string.o pri.o q921.o prisched.o q931.o pri_facility.o
+ranlib libpri.a
+gcc -fPIC -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g   -o copy_string.lo -c copy_string.c
+gcc -fPIC -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g   -o pri.lo -c pri.c
+gcc -fPIC -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g   -o q921.lo -c q921.c
+gcc -fPIC -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g   -o prisched.lo -c prisched.c
+gcc -fPIC -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g   -o q931.lo -c q931.c
+gcc -fPIC -Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g   -o pri_facility.lo -c pri_facility.c
+gcc -shared -Wl,-hlibpri.so.1.0 -o libpri.so.1.0 copy_string.lo pri.lo q921.lo prisched.lo q931.lo pri_facility.lo
+/sbin/ldconfig -n .
+ln -sf libpri.so.1.0 libpri.so
+ln -sf libpri.so.1.0 libpri.so.1
+mkdir -p /usr/lib
+mkdir -p /usr/include
+install -m 644 libpri.h /usr/include
+install -m 755 libpri.so.1.0 /usr/lib
+if [ -x /usr/sbin/sestatus ] &amp;&amp; ( /usr/sbin/sestatus | grep "SELinux status:" | grep -q "enabled"); then /sbin/restorecon -v /usr/lib/libpri.so.1.0; fi
+( cd /usr/lib ; ln -sf libpri.so.1.0 libpri.so ; ln -sf libpri.so.1.0 libpri.so.1 )
+install -m 644 libpri.a /usr/lib
+if test $(id -u) = 0; then /sbin/ldconfig -n /usr/lib; fi
+debian:/usr/src/libpri-1.4.1#
+</screen>Now we can build Asterisk. Enter the Asterisk source directory with
+  <command>cd /usr/src/asterisk-1.4.2</command> and build it with
+  <command>./configure &amp;&amp; make &amp;&amp; make
+  install</command>:<screen>debian:/usr/src/libpri-1.4.1# cd /usr/src/asterisk-1.4.9/
+debian:/usr/src/asterisk-1.4.9# ./configure &amp;&amp; make &amp;&amp; make install
 checking build system type... i686-pc-linux-gnu
 checking host system type... i686-pc-linux-gnu
 checking for gcc... gcc
 checking for C compiler default output file name... a.out
 checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
 
 [...]
 
+make[1]: Leaving directory `/usr/src/asterisk-1.4.9/funcs'
+make[1]: Entering directory `/usr/src/asterisk-1.4.9/main'
 for x in ; do /usr/bin/install -c -m 755 $x /usr/lib/asterisk/modules ; done
-make[1]: Leaving directory `/usr/src/asterisk-1.4.2/main'
+make[1]: Leaving directory `/usr/src/asterisk-1.4.9/main'
  +---- Asterisk Installation Complete -------+
  +                                           +
  +    YOU MUST READ THE SECURITY DOCUMENT    +
@@ -296,31 +426,350 @@ make[1]: Leaving directory `/usr/src/asterisk-1.4.2/main'
  + **Note** This requires that you have      +
  + doxygen installed on your local system    +
  +-------------------------------------------+
-debian:/usr/src/asterisk-1.4.2#</screen></para>
+debian:/usr/src/asterisk-1.4.9# </screen></para>
 
   <para>Asterisk is now installed, but we're not finished yet. Essential
   configuration files in <filename>/etc/asterisk</filename> do not yet exist.
   Rather than start from scratch, we install a set of sample configuration
   files with <command>make samples</command>:</para>
 
-  <screen>debian:/usr/src/asterisk-1.4.2# make samples
+  <screen>debian:/usr/src/asterisk-1.4.9# make samples
 mkdir -p /etc/asterisk
 for x in configs/*.adsi; do \
-        if [ ! -f /etc/asterisk/$x ]; then \
-                /usr/bin/install -c -m 644 $x /etc/asterisk/`/usr/bin/basename $x` ; \
-        fi ; \
+                if [ ! -f /etc/asterisk/$x ]; then \
+                        /usr/bin/install -c -m 644 $x /etc/asterisk/`/usr/bin/basename $x` ; \
+                fi ; \
+        done
 
 [...]
 
-for x in vm-theperson digits/1 digits/2 digits/3 digits/4 vm-isonphone; do \
-        cat /var/lib/asterisk/sounds/$x.gsm &gt;&gt; /var/spool/asterisk/voicemail/default/1234/busy.gsm ; \
-done
-debian:/usr/src/asterisk-1.4.2# </screen>
+mkdir -p /var/spool/asterisk/voicemail/default/1234/INBOX
+build_tools/make_sample_voicemail //var/lib/asterisk //var/spool/asterisk
+debian:/usr/src/asterisk-1.4.9#</screen>
 
   <para>Done! Asterisk is ready to go! Check the installed version with
-  <command>asterisk -V</command> (uppercase V):<screen>debian:/usr/src/asterisk-1.4.2# asterisk -V
-Asterisk 1.4.2
-debian:/usr/src/asterisk-1.4.2# </screen></para>
+  <command>asterisk -V</command> (uppercase V):<screen>debian:/usr/src/asterisk-1.4.9# asterisk -V
+Asterisk 1.4.9
+debian:/usr/src/asterisk-1.4.9# </screen>Now it is time to install
+  wanpipe.</para>
+
+  <section>
+    <title>Installing wanpipe</title>
+
+    <para>The Sangoma cards use Sangoma's wanpipe driver layer, which builds
+    on Zaptel. The installation process, which was once somewhat arcane, has
+    been much simplified by an installation script which automatically detects
+    and configures cards. If needed, it can also generate a zapata.conf
+    file.</para>
+
+    <para>The wanpipe drivers require that flex and byacc be installed. Do
+    this with <command>apt-get install flex byacc</command>:</para>
+
+    <para><screen>debian:/usr/src/asterisk-1.4.9# apt-get install flex byacc
+Reading package lists... Done
+Building dependency tree... Done
+Suggested packages:
+  bison
+The following NEW packages will be installed:
+  byacc flex
+0 upgraded, 2 newly installed, 0 to remove and 8 not upgraded.
+Need to get 352kB of archives.
+After unpacking 1516kB of additional disk space will be used.
+Get:1 http://debian.yorku.ca etch/main flex 2.5.33-11 [310kB]
+Get:2 http://debian.yorku.ca etch/main byacc 20050813-1 [42.1kB]
+Fetched 352kB in 1s (241kB/s)
+Preconfiguring packages ...
+Selecting previously deselected package flex.
+(Reading database ... 93308 files and directories currently installed.)
+Unpacking flex (from .../flex_2.5.33-11_i386.deb) ...
+Selecting previously deselected package byacc.
+Unpacking byacc (from .../byacc_20050813-1_i386.deb) ...
+Setting up flex (2.5.33-11) ...
+
+Setting up byacc (20050813-1) ...
+
+debian:/usr/src/asterisk-1.4.9#
+</screen>Change into the wanpipe directory with <command>cd
+    /usr/src/wanpipe</command>, and run <command>./Setup
+    install</command>:</para>
+
+    <para><screen>debian:/usr/src/asterisk-1.4.9# cd /usr/src/wanpipe-2.3.4-9
+debian:/usr/src/wanpipe-2.3.4-9# ./Setup install</screen></para>
+
+    <para>The installation script runs and the following screen
+    appears:</para>
+
+    <para><screen>ARGS:
+
+        ----------------------------------------------------------
+                  WAN Router v2.3.4-9 Installation Script
+            Copyright (c) 1995-2007, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+
+WANPIPE INSTALLATION
+
+You are about to install WANPIPE Multi-Protocol WAN Router into your
+system. This script will examine your system, then install, create
+and/or modify necessary files and directories.
+
+You must have the full Linux source code in /lib/modules/2.6.18-4-686/build
+directory and development system (i.e. GNU C compiler and utilities)
+installed in order to be able to install this product.
+
+The automatic WANPIPE kernel module compilation option will compile all
+necessary WANPIPE drivers: thus, no need to re-compile the kernel.
+
+Previously patched kernels can now be upgraded to the latest
+WANPIPE release: thus, no need for a fresh kernel install.
+
+Please read WanpipeInstallation.(pdf/txt) and
+Release Notes before proceeding with the installation.
+
+Would you like to install WAN Router now? (y/n)
+</screen>Press <keycap>y</keycap> to continue. The installer checks for
+    prerequisites:</para>
+
+    <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-9 Installation Script
+            Copyright (c) 1995-2007, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+
+Fixing file permissions...
+
+Verifying files and fixing permissions ...Done
+Checking for C developement tools ...(gcc) OK
+Checking for C++ developement tools ...OK
+Checking for Make utility ...OK
+Checking for ncurses library ... OK
+Checking for Perl developement tools ...OK
+Checking for AWK ...OK
+Checking for FLEX ...OK
+Checking for Patch ...OK
+Checking for libtermcap-devel...OK
+Checking for yacc...Checking for yacc...OK
+
+Press [Enter] to continue...
+</screen>Press enter to proceed:</para>
+
+    <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-9 Installation Script
+            Copyright (c) 1995-2007, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+
+
+UPDATING WANPIPE DEVICE DRIVERS: LINUX KERNEL
+
+To integrate WANPIPE Multiprotocol WAN Router (and WAN drivers
+included with this package) into the Linux kernel, the kernel has
+to be 'patched' or 'upgraded'.
+
+Patching/Upgrading will update ONLY WANPIPE source
+files located in the Linux kernel.
+
+If the kernel has already been patched with old WANPIPE
+drivers you'll be prompted to upgrade to the current version.
+
+IMPORTANT:
+It is always recommended to say YES to UPGRADE option,
+this way we make sure that the latest WANPIPE driver
+sources are in the linux kernel tree.
+
+Would you like update/upgrade wanpipe drivers? (y/n)
+</screen>Press <keycap>y</keycap> and enter to continue. You will be prompted
+    for pathnames and file locations. Where Linux libraries and modules are
+    concerned, the defaults are usually correct (it is normally not necessary
+    to change this unless you are deliberately compiling for a kernel other
+    than the one you are currently running):</para>
+
+    <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-9 Installation Script
+            Copyright (c) 1995-2007, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+
+
+Please specify absolute path name of your linux directory
+
+        (Press Enter for Default: /lib/modules/2.6.18-4-686/build)
+
+
+Setting linux directory to /lib/modules/2.6.18-4-686/build
+
+
+goat
+Upgrading WANPIPE kernel documentation ...Done.
+
+
+Upgrading WANPIPE kernel headers ...Done.
+
+Upgrading WANPIPE kernel drivers ...Done.
+
+WANPIPE device drivers upgraded successfully!
+
+Press [Enter] to continue...
+</screen>The next step is compiling the kernel modules:</para>
+
+    <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-9 Installation Script
+            Copyright (c) 1995-2007, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+
+WANPIPE KERNEL DRIVER COMPILATION
+
+The next step in WANPIPE installation involves compiling WANPIPE kernel
+modules.  The setup is able to compile all WANPIPE and API drivers.
+
+        Therefore, NO kernel recompilation is necessary :)
+
+Default Compilation:
+--------------------
+  WANPIPE drivers will include following standard WAN
+  protocols:  Frame Relay, CHDLC, PPP, X25 and ADSL
+Custom Compilation:
+------------------
+  Customise WANPIPE driver compilation to add only the
+  protocols that you need.  This way one can reduce
+  the size of the WANPIPE kernel drivers.
+
+Refer to the WapipeIntallation.(pdf/txt) documentation.
+
+Proceed to build WANPIPE kernel modules ? (y/n)
+</screen><note>
+        <para>The script output contains numerous typographical errors. The
+        document is actually "WanpipeInstallation.pdf"</para>
+      </note>Press <keycap>y</keycap> and enter to continue with the
+    installation:</para>
+
+    <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-9 Installation Script
+            Copyright (c) 1995-2007, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+
+
+        Please Select Compilation Mode
+
+1. WAN Protocols Support (Default)
+       Protocols: Frame Relay, CHDLC, PPP, ATM, X25, ADSL, TDM API
+
+2. TDM Voice (Zaptel) Support Only
+       Protocols: TDMV (Zaptel), TDM API on AFT adatpers.
+
+3. TDM Voice (Zaptel) + WAN Protocol Support
+
+4. SMG (SS7) (Default for SMG install)
+
+5. SMG (SS7) + TDM Voice (Zaptel)
+
+6. TDM API (FreeSwitch Default)
+       Protocols: TDM API on AFT adapters.
+
+7. Custom Compilation Mode
+       Specify protocols to be added into the WANPIPE
+       kernel drivers.
+
+Please select (1,2,3,4,5,6 or 7) [Default: 1]:</screen>In almost all cases, it
+    is only necessary to select option 2. Option 1 is for data only; option 3
+    combines both TDM voice and data protocol support. For the purposes of
+    this example, however, we are configuring only TDM voice support.</para>
+
+    <para>Choose option 2. You are prompted for paths to Zaptel:</para>
+
+    <para><screen>Please specify absolute path to Zaptel source directory
+
+[default:/usr/src/zaptel]
+
+&lt;specify path:&gt; Warning: /usr/src/zaptel does not exist
+</screen>Enter the pathname <filename>/usr/src/zaptel-1.4.4</filename>:</para>
+
+    <para><screen>/usr/src/zaptel-1.4.4
+Enabling the TDM Voice Asterisk Support
+
+
+Enable TDMV DCHAN Native HDLC Support &amp; Patch Zaptel ? (y/n)</screen>HDLC
+    (High-Level Data Link Control) is a link-layer protocol used here for ISDN
+    D-channel communications. Because the Sangoma cards include a hardware
+    HDLC controller, you have the option of running that in place of the HDLC
+    stack included in Zaptel. Press <keycap>y</keycap> and enter to
+    continue:</para>
+
+    <para><screen>   Zaptel DCHAN Patch successful
+
+Recompile/reinstall zaptel (recommended) ? (y/n)                     </screen>Press
+    y and enter to continue:</para>
+
+    <para><screen>
+   Removing current Zaptel compilation(make clean)...OK
+   Recompiling/reinstalling Zaptel(make install)...OK
+
+Checking for UDEV Zaptel compatibility...   UDEV rules not found/or not used
+Enabling the AFT TE1 Support
+
+        Supported WAN Protocols:
+
+Press [Enter] to continue...
+
+- API Socket
+        Support for X25, HDLC, CHDLC and Frame Relay API
+        socket development.
+
+Press [Enter] to continue...
+
+- AFT TE1 Support
+        Support for AFT TE1 Cards.
+        Protocols: Frame Relay
+                   PPP
+                   CHDLC
+        API:       HDLC (Raw)
+                   Transparent Bitstreaming
+
+Press [Enter] to continue...
+
+
+- TDM Voice Hardware Support for Asterisk PBX Software
+        Hardware Support for Asterisk PBX Software over
+        S514 T1/E1 Cards.
+
+Press [Enter] to continue...
+
+
+WARNING: Module installation dir mismatch!
+         Linux source name  = 2.6.18
+         Current image name = 2.6.18-4-686
+
+  If you are building wanpipe modules for the
+  currently running image, use the 2.6.18-4-686
+  directory (i.e. select 'y')
+
+Install modules for current image: 2.6.18-4-686 ? (y/n)
+</screen>At this point you should press <keycap>y</keycap> and enter, then
+    watch the output for errors:</para>
+
+    <para><screen>Installing modules for kernel: 2.6.18-4-686 !
+
+
+Checking for SMP support ...Enabled.
+
+Checking current processor type ...i686
+
+Wan Update Flags:  -DAF_WANPIPE_2612_FORCE_UPDATE -DWANPIPE_MOD_266_FORCE_UPDATE
+
+
+--------------------------------------------------
+CFLAGS: gcc -Wp,-MD,.wanpipe.o.d -nostdinc -iwithprefix include -D__LINUX__ -Dlinux -D__KERNEL__ -I/lib/modules/2.6.18-4-686/build/include  -DMODULE   -DAF_WANPIPE_2612_FORCE_UPDATE -DWANPIPE_MOD_266_FORCE_UPDATE  -4.1 -m32 -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Os -pipe -msoft-float -mpreferred-stack-boundary=2  -march=i686 -mregparm=3 -ffreestanding -I/lib/modules/2.6.18-4-686/build/include/asm-i386/mach-default -fomit-frame-pointer  -fno-stack-protector -Wdeclaration-after-statement -Wno-pointer-sign -D__KERNEL__ -Iinclude  -include include/linux/autoconf.h
+--------------------------------------------------
+
+Checking for REGPARM kernel option ...Enabled.
+
+Compiling General WANPIPE Driver for 2.6.X Kernel .....Done.
+
+
+WAN HWEC module enabled and compiled!
+Linking Wanpipe Driver and protocols ...Done.
+
+Updating Kernel Modules ...Done.
+
+Visually Confirm that driver compilation was successful! (y/n)
+</screen>No errors! We confirm</para>
+  </section>
 
   <section>
     <title>Start-up and shutdown scripts</title>
