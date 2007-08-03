@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <section id="isdn-1.4-sangoma-A102D.html" lang="en" revision="$Revision:473 $">
   <!--% Copyright (c) 2006 - 2007 by 
 % Stefan Wintermeyer <sw@amooma.de>
@@ -17,6 +17,10 @@
     <primary>Sangoma ISDN installation</primary>
   </indexterm>
 
+  <para>In this example, we will walk through the process for installing and
+  configuring a Sangoma A102D T1/E1/J1 2-port ISDN card, configure the card to
+  loop back to itself, and place some test calls over the T1 PRI.</para>
+
   <para>The Sangoma cards are sold as a series with a common architecture, so
   the same instructions apply whether the card you are installing has 1 or 8
   ports. The initial installation procedure closely follows a standard
@@ -25,6 +29,10 @@
   repeated here. Nevertheless, it's important that you follow these
   instructions, and follow them carefully. Following the instructions will
   ensure that the configuration works as intended.</para>
+
+  <para>Though the process can seem daunting, much of it is automated, and in
+  all but the most particular installations, the defaults are
+  sufficient.</para>
 
   <para>We assume a freshly installed Debian GNU/Linux 4.0 (a.k.a Etch). You
   can obtain an ISO image for the net-based install of x86 Debian Linux at
@@ -71,8 +79,8 @@ Building dependency tree... Done
 0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
 debian:~# </screen></para>
 
-  <para>Just for the case the the upgrade installed a new kernel we have to
-  reboot the system with shutdown -r now<screen>debian:~# shutdown -r now
+  <para>Just in case the upgrade installed a new kernel we have to reboot the
+  system with <command>shutdown -r now</command>:<screen>debian:~# shutdown -r now
 
 Broadcast message from root@debian (pts/0) (Fri May  4 19:43:09 2007):
 
@@ -207,22 +215,22 @@ debian:/usr/src#
 </screen>Get the current Sangoma wanpipe driver set at <ulink
   url="???">ftp://ftp.sangoma.com/linux/current_wanpipe</ulink>. In this
   example, <command>wget
-  ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-2.3.4-9.tgz</command>:</para>
+  ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-2.3.4-13.tgz</command>:</para>
 
-  <para><screen>debian:/usr/src# wget ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-2.3.4-9.tgz
---09:40:07--  ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-2.3.4-9.tgz
-           =&gt; `wanpipe-2.3.4-9.tgz'
+  <para><screen>debian:/usr/src# wget ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-2.3.4-13.tgz
+--09:40:07--  ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-2.3.4-13.tgz
+           =&gt; `wanpipe-2.3.4-13.tgz'
 Resolving ftp.sangoma.com... 64.34.169.116
 Connecting to ftp.sangoma.com|64.34.169.116|:21... connected.
 Logging in as anonymous ... Logged in!
 ==&gt; SYST ... done.    ==&gt; PWD ... done.
 ==&gt; TYPE I ... done.  ==&gt; CWD /linux/current_wanpipe ... done.
-==&gt; PASV ... done.    ==&gt; RETR wanpipe-2.3.4-9.tgz ... done.
+==&gt; PASV ... done.    ==&gt; RETR wanpipe-2.3.4-13.tgz ... done.
 Length: 10,088,497 (9.6M) (unauthoritative)
 
 100%[====================================&gt;] 10,088,497   303.15K/s    ETA 00:00
 
-09:40:40 (300.96 KB/s) - `wanpipe-2.3.4-9.tgz' saved [10088497]
+09:40:40 (300.96 KB/s) - `wanpipe-2.3.4-13.tgz' saved [10088497]
 
 debian:/usr/src#
 </screen></para>
@@ -230,7 +238,7 @@ debian:/usr/src#
   <para>Unpack all the compressed tar archives with <command>tar xvzf
   asterisk-1.4-current.tar.gz &amp;&amp; tar xvzf zaptel-1.4-current.tar.gz
   &amp;&amp; tar xvzf libpri-1.4.1.tar.gz &amp;&amp; tar xvzf
-  wanpipe-2.3.4-9.tgz</command>:<screen>debian:/usr/src# tar xvzf asterisk-1.4-current.tar.gz &amp;&amp; tar xvzf zaptel-1.4-current.tar.gz &amp;&amp; tar xvzf libpri-1.4.1.tar.gz &amp;&amp; tar xvzf wanpipe-2.3.4-9.tgz
+  wanpipe-2.3.4-13.tgz</command>:<screen>debian:/usr/src# tar xvzf asterisk-1.4-current.tar.gz &amp;&amp; tar xvzf zaptel-1.4-current.tar.gz &amp;&amp; tar xvzf libpri-1.4.1.tar.gz &amp;&amp; tar xvzf wanpipe-2.3.4-13.tgz
 asterisk-1.4.9/
 asterisk-1.4.9/sample.call
 asterisk-1.4.9/missing
@@ -268,22 +276,22 @@ libpri-1.4.1/ChangeLog
 
 [...]
 
-wanpipe-2.3.4-9/
-wanpipe-2.3.4-9/doc/
-wanpipe-2.3.4-9/doc/README-1.install
-wanpipe-2.3.4-9/doc/README-2.config
-wanpipe-2.3.4-9/doc/README-3.operation
-wanpipe-2.3.4-9/doc/README-4.debugging
-wanpipe-2.3.4-9/doc/README.adsl
-wanpipe-2.3.4-9/doc/README.atm
+wanpipe-2.3.4-13/
+wanpipe-2.3.4-13/doc/
+wanpipe-2.3.4-13/doc/README-1.install
+wanpipe-2.3.4-13/doc/README-2.config
+wanpipe-2.3.4-13/doc/README-3.operation
+wanpipe-2.3.4-13/doc/README-4.debugging
+wanpipe-2.3.4-13/doc/README.adsl
+wanpipe-2.3.4-13/doc/README.atm
 
 [...]
 
-wanpipe-2.3.4-9/wan_ec/OCT6126-128S.ima
-wanpipe-2.3.4-9/wan_ec/OCT6116-32S.ima
-wanpipe-2.3.4-9/wan_ec/OCT6116-64S.ima
-wanpipe-2.3.4-9/wan_ec/OCT6116-256S.ima
-wanpipe-2.3.4-9/ChangeLog.stable.bak
+wanpipe-2.3.4-13/wan_ec/OCT6126-128S.ima
+wanpipe-2.3.4-13/wan_ec/OCT6116-32S.ima
+wanpipe-2.3.4-13/wan_ec/OCT6116-64S.ima
+wanpipe-2.3.4-13/wan_ec/OCT6116-256S.ima
+wanpipe-2.3.4-13/ChangeLog.stable.bak
 debian:/usr/src#                   </screen></para>
 
   <remark>Asterisk 1.4 is the first version of Asterisk that uses the standard
@@ -454,14 +462,14 @@ debian:/usr/src/asterisk-1.4.9# </screen>Now it is time to install
   wanpipe.</para>
 
   <section>
-    <title>Installing wanpipe</title>
+    <title>Installing WANPIPE</title>
 
-    <para>The Sangoma cards use Sangoma's wanpipe driver layer, which patches
+    <para>The Sangoma cards use Sangoma's WANPIPE driver layer, which patches
     Zaptel. An installation script automatically detects and configures cards.
     If needed, it can also generate a zapata.conf file.</para>
 
-    <para>The wanpipe drivers require that flex and byacc be installed. Do
-    this with <command>apt-get install flex byacc</command>:</para>
+    <para>WANPIPE requires that flex and byacc be installed. Do this with
+    <command>apt-get install flex byacc</command>:</para>
 
     <para><screen>debian:/usr/src/asterisk-1.4.9# apt-get install flex byacc
 Reading package lists... Done
@@ -487,20 +495,41 @@ Setting up flex (2.5.33-11) ...
 Setting up byacc (20050813-1) ...
 
 debian:/usr/src/asterisk-1.4.9#
-</screen>Change into the wanpipe directory with <command>cd
-    /usr/src/wanpipe</command>, and run <command>./Setup
+</screen></para>
+
+    <para><tip>
+        <para>It is a good idea to make symbolic links to the install sources,
+        like so: <command>cd /usr/src &amp;&amp; ln -s /usr/src/zaptel-1.4.4
+        zaptel &amp;&amp; ln -s /usr/src/asterisk-1.4.9 asterisk &amp;&amp; ln
+        -s /usr/src/libpri-1.4.1 libpri</command> ... and so on, modifying the
+        targets to match your source packages. This is because the wanpipe
+        script looks for directories without version numbers by default.
+        Having the symbolic links means you don't have to remember the exact
+        directory names :)</para>
+      </tip>The installer wraps a series of scripts which compile, install and
+    configure the wanpipe modules, as well as configuring the PRI interface
+    and generating <filename>zapata.conf</filename>, if so desired. For our
+    example, we have divided the process into sections for a better overview.
+    Most of these scripts can also be run individually after
+    installation.</para>
+
+    <para>Change into the wanpipe directory with <command>cd
+    /usr/src/wanpipe-2.3.4-13</command>, and run <command>./Setup
     install</command>:</para>
 
-    <para><screen>debian:/usr/src/asterisk-1.4.9# cd /usr/src/wanpipe-2.3.4-9
-debian:/usr/src/wanpipe-2.3.4-9# ./Setup install</screen></para>
+    <section>
+      <title>WANPIPE modules</title>
 
-    <para>The installation script runs and the following screen
-    appears:</para>
+      <para><screen>debian:/usr/src/asterisk-1.4.9# cd /usr/src/wanpipe-2.3.4-13
+debian:/usr/src/wanpipe-2.3.4-13# ./Setup install</screen></para>
 
-    <para><screen>ARGS:
+      <para>The installation script runs and the following screen
+      appears:</para>
+
+      <para><screen>ARGS:
 
         ----------------------------------------------------------
-                  WAN Router v2.3.4-9 Installation Script
+                  WAN Router v2.3.4-13 Installation Script
             Copyright (c) 1995-2007, Sangoma Technologies Inc.
         ----------------------------------------------------------
 
@@ -525,10 +554,10 @@ Release Notes before proceeding with the installation.
 
 Would you like to install WAN Router now? (y/n)
 </screen>Press <keycap>y</keycap> to continue. The installer checks for
-    prerequisites:</para>
+      prerequisites:</para>
 
-    <para><screen>        ----------------------------------------------------------
-                  WAN Router v2.3.4-9 Installation Script
+      <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-13 Installation Script
             Copyright (c) 1995-2007, Sangoma Technologies Inc.
         ----------------------------------------------------------
 
@@ -549,8 +578,8 @@ Checking for yacc...Checking for yacc...OK
 Press [Enter] to continue...
 </screen>Press enter to proceed:</para>
 
-    <para><screen>        ----------------------------------------------------------
-                  WAN Router v2.3.4-9 Installation Script
+      <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-13 Installation Script
             Copyright (c) 1995-2007, Sangoma Technologies Inc.
         ----------------------------------------------------------
 
@@ -574,13 +603,13 @@ sources are in the linux kernel tree.
 
 Would you like update/upgrade wanpipe drivers? (y/n)
 </screen>Press <keycap>y</keycap> and enter to continue. You will be prompted
-    for pathnames and file locations. Where Linux libraries and modules are
-    concerned, the defaults are usually correct (it is normally not necessary
-    to change this unless you are deliberately compiling for a kernel other
-    than the one you are currently running):</para>
+      for pathnames and file locations. Where Linux libraries and modules are
+      concerned, the defaults are usually correct (it is normally not
+      necessary to change this unless you are deliberately compiling for a
+      kernel other than the one you are currently running):</para>
 
-    <para><screen>        ----------------------------------------------------------
-                  WAN Router v2.3.4-9 Installation Script
+      <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-13 Installation Script
             Copyright (c) 1995-2007, Sangoma Technologies Inc.
         ----------------------------------------------------------
 
@@ -593,7 +622,6 @@ Please specify absolute path name of your linux directory
 Setting linux directory to /lib/modules/2.6.18-4-686/build
 
 
-goat
 Upgrading WANPIPE kernel documentation ...Done.
 
 
@@ -606,8 +634,8 @@ WANPIPE device drivers upgraded successfully!
 Press [Enter] to continue...
 </screen>The next step is compiling the kernel modules:</para>
 
-    <para><screen>        ----------------------------------------------------------
-                  WAN Router v2.3.4-9 Installation Script
+      <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-13 Installation Script
             Copyright (c) 1995-2007, Sangoma Technologies Inc.
         ----------------------------------------------------------
 
@@ -628,17 +656,14 @@ Custom Compilation:
   protocols that you need.  This way one can reduce
   the size of the WANPIPE kernel drivers.
 
-Refer to the WapipeIntallation.(pdf/txt) documentation.
+Refer to the WanpipeInstallation.(pdf/txt) documentation.
 
 Proceed to build WANPIPE kernel modules ? (y/n)
-</screen><note>
-        <para>The script output contains numerous typographical errors. The
-        document is actually "WanpipeInstallation.pdf"</para>
-      </note>Press <keycap>y</keycap> and enter to continue with the
-    installation:</para>
+</screen>Press <keycap>y</keycap> and enter to continue with the
+      installation:</para>
 
-    <para><screen>        ----------------------------------------------------------
-                  WAN Router v2.3.4-9 Installation Script
+      <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-13 Installation Script
             Copyright (c) 1995-2007, Sangoma Technologies Inc.
         ----------------------------------------------------------
 
@@ -665,36 +690,40 @@ Proceed to build WANPIPE kernel modules ? (y/n)
        kernel drivers.
 
 Please select (1,2,3,4,5,6 or 7) [Default: 1]:</screen>In almost all cases, it
-    is only necessary to select option 2. Option 1 is for data only; option 3
-    combines both TDM voice and data protocol support. For the purposes of
-    this example, however, we are configuring only TDM voice support.</para>
+      is only necessary to select option 2. Option 1 is for data only; option
+      3 combines both TDM voice and data protocol support. For the purposes of
+      this example, however, we are configuring only TDM voice support.</para>
 
-    <para>Choose option 2. You are prompted for paths to Zaptel:</para>
+      <para>Choose option 2. You are prompted for paths to Zaptel:</para>
 
-    <para><screen>Please specify absolute path to Zaptel source directory
+      <para><screen>Please specify absolute path to Zaptel source directory
 
 [default:/usr/src/zaptel]
 
 &lt;specify path:&gt; Warning: /usr/src/zaptel does not exist
-</screen>Enter the pathname <filename>/usr/src/zaptel-1.4.4</filename>:</para>
+</screen><note>
+          <para>If you created the symbolic links as suggested above, you will
+          not see the warning message.</para>
+        </note>Enter the pathname
+      <filename>/usr/src/zaptel-1.4.4</filename>:</para>
 
-    <para><screen>/usr/src/zaptel-1.4.4
+      <para><screen>/usr/src/zaptel-1.4.4
 Enabling the TDM Voice Asterisk Support
 
 
 Enable TDMV DCHAN Native HDLC Support &amp; Patch Zaptel ? (y/n)</screen>HDLC
-    (High-Level Data Link Control) is a link-layer protocol used here for ISDN
-    D-channel communications. Because the Sangoma cards include a hardware
-    HDLC controller, you have the option of running that in place of the HDLC
-    stack included in Zaptel. Press <keycap>y</keycap> and enter to
-    continue:</para>
+      (High-Level Data Link Control) is a link-layer protocol used here for
+      ISDN D-channel communications. Because the Sangoma cards include a
+      hardware HDLC controller, you have the option of running that in place
+      of the HDLC stack included in Zaptel. Press <keycap>y</keycap> and enter
+      to continue:</para>
 
-    <para><screen>   Zaptel DCHAN Patch successful
+      <para><screen>   Zaptel DCHAN Patch successful
 
 Recompile/reinstall zaptel (recommended) ? (y/n)                     </screen>Press
-    y and enter to continue:</para>
+      y and enter to continue:</para>
 
-    <para><screen>
+      <para><screen>
    Removing current Zaptel compilation(make clean)...OK
    Recompiling/reinstalling Zaptel(make install)...OK
 
@@ -739,9 +768,9 @@ WARNING: Module installation dir mismatch!
 
 Install modules for current image: 2.6.18-4-686 ? (y/n)
 </screen>At this point you should press <keycap>y</keycap> and enter, then
-    watch the output for errors:</para>
+      watch the output for errors:</para>
 
-    <para><screen>Installing modules for kernel: 2.6.18-4-686 !
+      <para><screen>Installing modules for kernel: 2.6.18-4-686 !
 
 
 Checking for SMP support ...Enabled.
@@ -768,7 +797,562 @@ Updating Kernel Modules ...Done.
 Visually Confirm that driver compilation was successful! (y/n)
 </screen></para>
 
-    <para>No errors! We confirm</para>
+      <para>No errors! We confirm by pressing <keycap>y</keycap> and
+      enter.</para>
+    </section>
+
+    <section>
+      <title>Driver boot scripts and configuration</title>
+
+      <para>Next, the installer configures the WANPIPE drivers to start at
+      boot time. For both of the following prompts, press <keycap>y</keycap>
+      and enter:</para>
+
+      <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-13 Installation Script
+            Copyright (c) 1995-2007, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+
+
+WANPIPE BOOTSTRAP CONFIGURATION
+
+Your system uses System V -style initialization scripts.  You have an option
+to add router start-up script to those scripts so that the router will start
+automatically when system enters multi-user mode and shut down when it enters
+single-user mode or when it is halted.
+
+i.e. By selecting this option WANPIPE will startup on system bootup and
+     stop on system shutdown.
+
+Would you like to install WANPIPE start-up scripts? (y/n) y
+
+         WANPIPE Setup for boot startup
+Would you like to auto-execute ztcfg after wanrouter start? (y/n) y
+Press [Enter] to continue...</screen>The following prompts ask you where you
+      want to put the wanpipe configuration files. You should accept the
+      defaults unless you have a specific and good reason to choose something
+      else, since the defaults follow the Linux FHS (File Hierarchy Standard).
+      In other words, unless you know exactly what you are doing and why,
+      leave them as is:</para>
+
+      <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-13 Installation Script
+            Copyright (c) 1995-2007, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+
+WANPIPE META CONFIGURATION
+
+There are two configuration files associated with WANPIPE.
+
+1) /usr/src/wanpipe-2.3.4-13/wanrouter.rc:
+        - defines locations of important files such as lock
+          and configuration files as well as start/stop
+          order of multiple WANPIPE devices.
+2) /usr/src/wanpipe-2.3.4-13/wanpipe1.conf:
+        - main configuration file for each WANPIPE device.
+        - defines interfaces, hardware and protocol information.
+        - this file can be created using the 'wancfg' GUI
+          utility or manually based on sample files located
+          in /etc/wanpipe/samples.
+
+Please read the WanpipeInstallation.(pdf/txt) manual for further
+information.
+
+Press [Enter] to continue...
+
+Please specify a desired location for WANPIPE configuration files.
+
+        (Press Enter for Default: /etc/wanpipe)
+
+&lt;specify path:&gt;
+
+Please specify a desired location for WANPIPE interface files.
+
+        (Press Enter for Default: /etc/wanpipe/interfaces)
+
+&lt;specify path:&gt;
+
+
+Please specify a location for WANPIPE binary, firmware files.
+
+        (Press Enter for Default: /etc/wanpipe/firmware)
+
+&lt;specify path:&gt;</screen></para>
+
+      <para>With the paths specified, we can proceed to install the
+      utilities.</para>
+    </section>
+
+    <section>
+      <title>WANPIPE utilities</title>
+
+      <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-12 Installation Script
+            Copyright (c) 1995-2007, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+
+WANPIPE UTILITIES SETUP
+
+WANPIPE utilities are used to:
+        1) create WANPIPE configuration files.
+                (/usr/sbin/wancfg)
+        2) create configuration files for Zaptel and Asterisk
+                (/usr/sbin/wancfg_zaptel)
+        3) start,stop,restart individual/all devices and interfaces.
+                (/usr/sbin/wanrouter)
+        4) debug line, protocol and driver problems.
+                (/usr/sbin/wanpipemon)
+        5) configure the optional onboard FT1 CSU/DSU (S508/S5143).
+                (/usr/sbin/cfgft1)
+        6) aid in WANPIPE API development
+                (/etc/wanpipe/api)
+
+Refer to the WanpipeInstallation.(pdf/txt) for more information.
+
+Press [Enter] to continue...</screen></para>
+
+      <para>Press enter after the information page and wait for the utilities
+      to build:</para>
+
+      <para><screen>Compiling WANPIPE Utilities ...Done.
+
+
+Compiling WANPIPE WanCfg Utility ...
+Done.
+
+
+Compiling WANPIPE Misc Utilities ...Done.
+
+
+Compiling WANPIPE LibSangoma TDM API library ...Done.
+
+
+Compiling WANPIPE API Development Utilities ...Done.
+
+
+Compiling WANPIPE HWEC Utilities ...Done.
+
+        WANPIPE Environment Setup Complete !!!
+
+Press [Enter] to continue...</screen></para>
+
+      <para>When the compile is done, press enter and wait while the utilities
+      are installed.</para>
+
+      <para><screen>Installing WANPIPE Files ... !
+Installing  WANPIPE Utilities in /usr/sbin
+Installing wanrouter.rc in /etc/wanpipe
+Installing wanpipe libraries in /etc/wanpipe
+Installing firmware in /etc/wanpipe/firmware
+Installing documentation in /usr/share/doc/wanpipe
+Installing sample api code in /etc/wanpipe/api
+Installing driver headers in /etc/wanpipe/api/include/linux
+Installing Hardware Echo Cancel Utilites
+Press [Enter] to continue...</screen>There are ample opportunities to
+      interrupt the process :) Press enter again:</para>
+
+      <para><screen>        ----------------------------------------------------------
+                  WAN Router v2.3.4-12 Installation Script
+            Copyright (c) 1995-2007, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+
+WANPIPE INSTALLATON: COMPLETE
+
+WAN Router installation is now complete. WANPIPE kernel drivers
+and configuration/debug utilities have been compiled and installed.
+
+        1) Proceed to configure the WANPIPE drivers using the
+           /usr/sbin/wancfg GUI configurator.
+        2) Use the /usr/sbin/wanrouter startup scrip to start and stop
+           the router.
+        3) Use /usr/sbin/cfgft1 to configure the (optional) onboard
+           CSU/DSU.
+        4) The temporary wanpipe directory can now be deleted
+        5) To uninstall WANPIPE package run ./Setup remove
+
+Please read WanpipeInstallation.(pdf/txt) manual for further instructions.
+
+IMPORTANT:
+---------
+HOTPLUG Conflicts with WANPIPE
+  The HOTPLUG Service should be disabled because it
+  conflicts with Wanpipe interface startup.
+  The HOTPLUG can conflict with startup of TDMV drivers.
+  Please read the README.faq on how to prevent this.
+
+IMPORTANT:
+---------
+The Linux Kernel and Modules in /lib/modules/2.6.18-4-686/build:
+        DO NOT have to be manually recompiled!
+
+WANPIPE kernel modules are already installed :)</screen></para>
+
+      <para>The WANPIPE installation is now complete. The next step in the
+      process configures Zaptel and gets everything ready to work with
+      Asterisk.</para>
+    </section>
+
+    <section>
+      <title>Zaptel configuration</title>
+
+      <para>The final script is the Zaptel configuration script, which prompts
+      you for settings for each port on the card. In our example, the card has
+      two ports, so we will have to enter configuration information twice. For
+      cards with more or fewer ports, the installation process changes
+      accordingly.</para>
+
+      <para>We will configure port 1 in the same way as we would if connecting
+      it to the PSTN. Port 2 will simulate a PSTN connection for our loopback
+      test; as a result, the configuration is a little different.</para>
+
+      <para><screen>
+
+Wanpipe / Zaptel Configuration
+==============================
+
+wancfg_zaptel configurator can create all wanpipe devices
+for ZAPTEL as well as /etc/zaptel.conf file.
+Optionally: wancfg_zaptel can also create Asterisk zapata.conf
+-----------------------------------------------------
+Would you like to configure wanpipe devices for ZAPTEL? (y/n) y
+
+###################################################################
+#    Sangoma Wanpipe:  Zaptel/SMG/TDMAPI Configuration Script     #
+#                           v2.4                                  #
+#                  Sangoma Technologies Inc.                      #
+#                     Copyright(c) 2007.                          #
+###################################################################
+
+Would you like to generate /etc/asterisk/zapata.conf
+ 1. YES
+ 2. NO
+[1-2]:1</screen></para>
+
+      <para>Press <keycap>1</keycap> and enter.</para>
+
+      <para><screen>---------------------------------------------
+Configuring T1/E1 cards [A101/A102/A104/A108]
+---------------------------------------------
+[...]
+A102 detected on slot:11 bus:0</screen></para>
+
+      <para>Good news! The card is detected.</para>
+
+      <para><screen>-----------------------------------------------------------
+Configuring port 1 on A102 slot:11 bus:0.
+-----------------------------------------------------------
+
+Select media type for A102 on port 1 [slot:11 bus:0 span:1]
+ 1. T1
+ 2. E1
+ 3. Unused
+ 4. Exit
+[1-4]:1
+</screen>We are configuring a T1. Press <keycap>1</keycap> and enter.</para>
+
+      <para><screen>Select clock for A102 on port 1 [slot:11 bus:0 span:1]
+ 1. NORMAL
+ 2. MASTER
+[1-2]:1
+</screen>In most installations, you will be taking the clock from the PSTN, so
+      here we choose 1.</para>
+
+      <para><screen>Select signalling type for 102 on port 1 [slot:11 bus:0 span:1]
+ 1. PRI CPE
+ 2. PRI NET
+ 3. E &amp; M
+ 4. E &amp; M Wink
+ 5. FXS - Loop Start
+ 6. FXS - Ground Start
+ 7. FXS - Kewl Start
+ 8. FX0 - Loop Start
+ 9. FX0 - Ground Start
+ 10. FX0 - Kewl Start
+[1-10]:1
+</screen>We are configuring PRI CPE<footnote>
+          <para>Customer Premises Equipment.</para>
+        </footnote>, so press <keycap>1</keycap> and enter.</para>
+
+      <para><screen>Select switchtype for 102 on port 1
+ 1. National ISDN 2
+ 2. Nortel DMS100
+ 3. AT&amp;T 4ESS
+ 4. Lucent 5ESS
+ 5. EuroISDN
+ 6. Old National ISDN 1
+ 7. Q.SIG
+[1-7]:1</screen>While, in theory, ISDN is a standard, we all know that there
+      is usually a gap between the theory and practice. The official standard
+      protocol implementation is National ISDN 2, and this will work for most
+      installations. Manufacturers have been known to extend specifications
+      with their own "enhancements"; if you <emphasis>know</emphasis> that you
+      are connecting your equipment to a Nortel DMS100 or Lucent 5ESS, by all
+      means, choose those options; however, National ISDN 2 has a good chance
+      of working with those switches also.<footnote>
+          <para>Sometimes, National ISDN 2 will work better even on a Nortel
+          DMS 100. The best option depends on how the switch has been
+          programmed, and there's often no way to find out except by trial and
+          error.</para>
+        </footnote> Option 1 is an appropriate choice.</para>
+
+      <para><screen>Select dialplan context for A102 on port 1
+ 1. from-pstn
+ 2. from-internal
+ 3. Custom
+[1-3]:1</screen>The script suggests some names for the dialplan contexts. It
+      needs this information for configuring <filename>zapata.conf</filename>.
+      Choose 1.</para>
+
+      <para><screen>Port 1 on A102 configuration complete...
+Press any key to continue:</screen></para>
+
+      <para>Port 1 is done! Now we configure port 2. We want to simulate the
+      PSTN side, so the settings will be different. This is also useful if you
+      plan on connecting two PBXs through a private PRI - one side will have
+      to play the role of the carrier.</para>
+
+      <para><screen>-----------------------------------------------------------
+Configuring port 2 on A102 slot:11 bus:0.
+-----------------------------------------------------------
+
+Select media type for A102 on port 2 [slot:11 bus:0 span:2]
+ 1. T1
+ 2. E1
+ 3. Unused
+ 4. Exit
+[1-4, ENTER='T1']:1</screen></para>
+
+      <para>This part is the same as for port 1. It is still a T1.</para>
+
+      <para><screen>Select clock for A102 on port 2 [slot:11 bus:0 span:2]
+ 1. NORMAL
+ 2. MASTER
+[1-2, ENTER='NORMAL']:2</screen></para>
+
+      <para>The clock settings are different from port 1. We want port 2 to
+      generate the clock signal, so we choose option 2, and now the script
+      asks us whether that signal is to be generated spontaneously or whether
+      it should be taken from another port on the card:</para>
+
+      <para><screen>Clock synchronisation options for 102 on port 2 [slot:11 bus:0 span:2]
+ Free run: Use internal oscillator on card [default]
+ Port N: Sync with clock from port N
+
+Select clock source 102 on port 2 [slot:11 bus:0 span:2]
+ 1. Free run
+ 2. Port 1
+[1-2, ENTER='Free run']:1</screen></para>
+
+      <para>In general, when configuring a port as the master, it is okay to
+      choose "free run".</para>
+
+      <para><screen>Select signalling type for 102 on port 2 [slot:11 bus:0 span:2]
+ 1. PRI CPE
+ 2. PRI NET
+ 3. E &amp; M
+ 4. E &amp; M Wink
+ 5. FXS - Loop Start
+ 6. FXS - Ground Start
+ 7. FXS - Kewl Start
+ 8. FX0 - Loop Start
+ 9. FX0 - Ground Start
+ 10. FX0 - Kewl Start
+[1-10, ENTER='PRI CPE']:2</screen></para>
+
+      <para>We can recognize this prompt from our configuration of port 1, but
+      this time, we choose PRI NET, because this port will be playing the
+      network role.</para>
+
+      <para><screen>Select switchtype for 102 on port 2
+ 1. National ISDN 2
+ 2. Nortel DMS100
+ 3. AT&amp;T 4ESS
+ 4. Lucent 5ESS
+ 5. EuroISDN
+ 6. Old National ISDN 1
+ 7. Q.SIG
+[1-7, ENTER='National ISDN 2']:1</screen></para>
+
+      <para>Again, choose option 1 (National ISDN 2). Next:</para>
+
+      <para><screen>Select dialplan context for A102 on port 2
+ 1. from-pstn
+ 2. from-internal
+ 3. Custom
+[1-3, ENTER='from-pstn']:2</screen></para>
+
+      <para>This is the final prompt. Choose option 2; our test calls will be
+      coming from internal devices over the T1.<footnote>
+          <para>It's also simpler for the purposes of demonstration to use the
+          defaults.</para>
+        </footnote></para>
+
+      <para>Port 2 is done:</para>
+
+      <para><screen>Port 2 on A102 configuration complete...
+Press any key to continue:
+
+T1/E1 card configuration complete.
+Press any key to continue:</screen>And now the card is ready:</para>
+
+      <para><screen>###################################################################
+#                             SUMMARY                             #
+###################################################################
+
+  2 T1/E1 port(s) detected, 2 configured
+  0 analog card(s) detected, 0 configured
+
+Configurator has created the following files:
+        1. Wanpipe config files in /etc/wanpipe
+        2. Zaptel config file /etc/zaptel.conf
+        3. Zapata config file /etc/asterisk/zapata.conf
+
+
+Your original configuration files will be saved to:
+        1. /etc/zaptel.conf.bak
+        2. /etc/asterisk/zapata.conf.bak
+
+
+Your configuration has been saved in /etc/wanpipe/debug-2007-07-27.tgz.
+When requesting support, email this file to techdesk@sangoma.com
+
+Press any key to continue:
+</screen></para>
+
+      <para>Save the changes and start everything up:</para>
+
+      <para><screen>Zaptel and Wanpipe configuration complete: choose action
+ 1. Save cfg: Restart Asterisk &amp; Wanpipe now
+ 2. Save cfg: Restart Asterisk &amp; Wanpipe when convenient
+ 3. Save cfg: Stop Asterisk &amp; Wanpipe now
+ 4. Save cfg: Stop Asterisk &amp; Wanpipe when convenient
+ 5. Do not save cfg: Exit
+[1-5]:1
+</screen><note>
+          <para>At this point, Asterisk will not do much of anything because
+          we haven't yet written a dialplan, but the drivers are built and the
+          card is configured.</para>
+        </note></para>
+
+      <para>You should see some output similar to this:</para>
+
+      <para><screen>Stopping Asterisk...
+Unable to connect to remote asterisk (does /var/run/asterisk.ctl exist?)
+Error executing command:
+asterisk -rx "stop now"
+
+
+Stopping Wanpipe...
+
+
+Unloading Zaptel modules...
+
+Removing old configuration files...
+
+Copying new Wanpipe configuration files...
+
+Copying new Zaptel configuration file (/etc/zaptel.conf)...
+
+Copying new chan_zap configuration files (/etc/asterisk/zapata.conf)...
+
+Starting Wanpipe...
+
+Starting WAN Router...
+Loading WAN drivers: wanpipe done.
+Starting up device: wanpipe1
+--&gt; Loading ec image OCT6116-64S.ima...
+Starting up device: wanpipe2
+Configuring interfaces: w1g1
+done.
+Configuring interfaces: w2g1
+done.
+
+Loading Zaptel...
+
+Zaptel Version: 1.4.4
+Echo Canceller: MG2
+Configuration
+======================
+
+SPAN 1: ESF/B8ZS Build-out: 0 db (CSU)/0-133 feet (DSX-1)
+SPAN 2: ESF/B8ZS Build-out: 0 db (CSU)/0-133 feet (DSX-1)
+
+48 channels configured.
+
+
+Would you like to execute 'ztcfg' each time wanrouter starts?
+ 1. YES
+ 2. NO
+[1-2]:1
+</screen></para>
+
+      <para>Press 1 and enter; Asterisk starts. If we see it list all the
+      channels on the card, the installation was successful:</para>
+
+      <para><screen>
+Starting Asterisk...
+
+Listing Asterisk channels...
+
+   Chan Extension  Context         Language   MOH Interpret
+ pseudo            from-internal              default
+      1            from-pstn                  default
+      2            from-pstn                  default
+      3            from-pstn                  default
+      4            from-pstn                  default
+      5            from-pstn                  default
+      6            from-pstn                  default
+      7            from-pstn                  default
+      8            from-pstn                  default
+      9            from-pstn                  default
+     10            from-pstn                  default
+     11            from-pstn                  default
+     12            from-pstn                  default
+     13            from-pstn                  default
+     14            from-pstn                  default
+     15            from-pstn                  default
+     16            from-pstn                  default
+     17            from-pstn                  default
+     18            from-pstn                  default
+     19            from-pstn                  default
+     20            from-pstn                  default
+     21            from-pstn                  default
+     22            from-pstn                  default
+     23            from-pstn                  default
+     25            from-internal              default
+     26            from-internal              default
+     27            from-internal              default
+     28            from-internal              default
+     29            from-internal              default
+     30            from-internal              default
+     31            from-internal              default
+     32            from-internal              default
+     33            from-internal              default
+     34            from-internal              default
+     35            from-internal              default
+     36            from-internal              default
+     37            from-internal              default
+     38            from-internal              default
+     39            from-internal              default
+     40            from-internal              default
+     41            from-internal              default
+     42            from-internal              default
+     43            from-internal              default
+     44            from-internal              default
+     45            from-internal              default
+     46            from-internal              default
+     47            from-internal              default
+[Jul 27 17:31:04] WARNING[22643]: pbx.c:6238 ast_context_verify_includes: Context 'ael-local' tries includes nonexistent context 'ael-parkedcalls'
+[Jul 27 17:31:04] WARNING[22643]: pbx.c:6238 ast_context_verify_includes: Context 'ael-dundi-e164-local' tries includes nonexistent context 'ael-dundi-e164-canonical'
+[Jul 27 17:31:04] WARNING[22643]: pbx.c:6238 ast_context_verify_includes: Context 'ael-dundi-e164-local' tries includes nonexistent context 'ael-dundi-e164-customers'
+[Jul 27 17:31:04] WARNING[22643]: pbx.c:6238 ast_context_verify_includes: Context 'ael-dundi-e164-local' tries includes nonexistent context 'ael-dundi-e164-via-pstn'
+
+Type "asterisk -r" to connect to Asterisk console
+
+debian:/usr/src/wanpipe# </screen></para>
+
+      <para></para>
+    </section>
   </section>
 
   <section>
