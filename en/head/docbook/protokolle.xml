@@ -10,140 +10,166 @@
 % Free Documentation License".
 % Asterisk training and consulting is offered at http://www.amooma.de-->
 
-  <title>Protokolle</title>
+  <title>Protocols</title>
 
   <section id="protokolle-einleitung">
-    <title>Einleitung</title>
+    <title>Introduction</title>
 
-    <para>In diesem Kapitel geht es um die Technik, die einzelnen Sprachpakete
-    von A nach B zu bekommen. Dies wird mit Hilfe von verschiedenen
-    Übertragungsprotokollen geleistet. Diese Protokolle setzen aber wiederum
-    auf verschiedene Netzwerkprotokolle (TCP und UDP) auf. Um manche Probleme
-    zu verstehen, benötigt man ein grundlegendes Verständnis dieser
-    Netzwerkprotokolle. Deshalb werden diese hier näher erklärt. Sie sind
-    nicht wesentlich, um Asterisk erfolgreich einzusetzen, jedoch sehr
-    wertvoll für ein tieferes Verständnis der Vorgänge. Dieses Kapitel ist in
-    erster Linie als Nachschlagewerk für den Fall der Fälle gedacht.</para>
+    <para>This chapter will cover the techniques by which we actually get
+    voice data from one point to another. The session protocols for this
+    purpose are really a kind of "grammar" that governs this transmission, and
+    are in turn built upon the transport layer protocols that make up the
+    TCP/IP protocol stack: namely TCP and UDP. You should have a fundamental
+    understanding of these protocols when troubleshooting certain problems,
+    which is why we are describing them in some detail here. This
+    understanding is not strictly necessary to implement Asterisk but is
+    nevertheless valuable. As such, this chapter is intended as a reference in
+    the event it is needed.</para>
   </section>
 
   <section id="netzwerkprotokolle">
-    <title>Netzwerkprotokolle</title>
+    <title>Network protocols</title>
 
-    <para>Dem Leser sei an dieser Stelle der Wikipedia-Artikel zu diesem Thema
-    wärmstens empfohlen und die nachfolgende Darstellung ist in ihrer Struktur
-    an demselben<footnote>
-        <para>Siehe <ulink
-        url="http://de.wikipedia.org/wiki/Transmission_Control_Protocol"><citetitle>http://de.wikipedia.org/wiki/Transmission_Control_Protocol</citetitle></ulink>
-        und <ulink
-        url="http://de.wikipedia.org/wiki/User_Datagram_Protocol"><citetitle>http://de.wikipedia.org/wiki/User_Datagram_Protocol</citetitle></ulink></para>
-      </footnote> angelehnt.</para>
+    <para>We recommend you look at the Wikipedia articles describing the
+    transport protocols, which cover them in considerably more depth.<footnote>
+        <para>See <citetitle><ulink
+        url="???">http://en.wikipedia.org/wiki/Transmission_Control_Protocol</ulink></citetitle>
+        and <citetitle><ulink
+        url="???">http://en.wikipedia.org/wiki/User_Datagram_Protocol</ulink></citetitle></para>
+      </footnote></para>
 
-    <para>Für alle Ungeduldigen, hier eine einfache und knappe Definition: TCP
-    ist ein Protokoll, das sicherstellt, dass die Übertragung der gesamten
-    Information vom Sender geordnet und vollständig beim Empfänger ankommt.
-    Das Ziel der vollständigen und korrekten Datenübertragung wird mit einem
-    relativ großen Overhead im Verhältnis zur Nutzlast erkauft. Im Gegensatz
-    dazu investiert das Schwesterprotokoll UDP sehr viel weniger in die
-    Steuerung der Übertragung und schickt einfach alles raus und stellt nicht
-    sicher, dass jedes einzelne Datenpaket auch wirklich beim Empfänger
-    ankommt. Für VoIP sind beide Protokolltypen von Bedeutung, da bei einem
-    normalen VoIP-Anruf die initiale Verbindung über TCP hergestellt wird, die
-    reinen Sprachdaten aber mit UDP übertragen werden. Speziell für die
-    Übertragung von Audiodaten ist Quantität der Datenpakete wichtiger als
-    Qualität.</para>
+    <para>For the impatient among you, here is a simple and brief definition:
+    TCP is a protocol which ensures that all the information transmitted by
+    the sender arrives at the receiver complete and in the correct order. This
+    reliability is at the cost of relatively higher transmission overhead,
+    which, during times of congestion, is more likely to lead to interruptions
+    or delays in transmission. By contrast, its sister protocol UDP invests
+    almost nothing in assuring that everything is received; instead, it merely
+    sends out every packet as soon it is ready to be delivered without regard
+    to whether it arrives intact or even in the right sequence.</para>
+
+    <para>Both protocols are of importance in VoIP applications, because
+    connections are established using TCP, whereas the voice data itself is
+    transmitted using UDP. Particularly where audio data packets are
+    concerned, quantity is indeed more important than quality.</para>
 
     <section id="tcp">
       <title>Transmission Control Protocol (TCP)</title>
 
-      <para>Das Transmission Control Protocol (TCP) ist eine Vereinbarung
-      (Protokoll) darüber, auf welche Art und Weise Daten zwischen Computern
-      ausgetauscht werden sollen. Alle Betriebssysteme moderner Computer
-      beherrschen TCP und nutzen es für den Datenaustausch mit anderen
-      Rechnern. Das Protokoll ist ein zuverlässiges, verbindungsorientiertes
-      Transportprotokoll in Computernetzwerken. Es ist Teil der
-      Internetprotokollfamilie, der Grundlage des Internets. Entwickelt wurde
-      TCP von Robert E. Kahn und Vinton G. Cerf. Ihre Forschungsarbeit, die
-      sie bereits im Jahre 1973 begannen, zog sich über mehrere Jahre hin.
-      Deshalb erfolgte die erste Standardisierung von TCP erst im Jahre 1981
-      als RFC 793. Danach gab es viele Erweiterungen, die bis heute in neuen
-      RFCs (einer Reihe von technischen und organisatorischen Dokumenten zum
-      Internet) spezifiziert werden und alle zu TCP gehören. Im Unterschied
-      zum verbindungslosen UDP (User Datagram Protocol) stellt TCP einen
-      virtuellen Kanal zwischen zwei Endpunkten einer Netzwerkverbindung
-      (Sockets) her. Auf diesem Kanal können in beide Richtungen Daten
-      übertragen werden. TCP setzt in den meisten Fällen auf das IP
-      (Internet-Protokoll) auf, weshalb häufig (und oft nicht ganz korrekt)
-      auch vom TCP/IP-Protokoll die Rede ist. Es ist in Schicht 4 des
-      OSI-Referenzmodells angesiedelt. Aufgrund seiner vielen angenehmen
-      Eigenschaften (Datenverluste werden erkannt und automatisch behoben,
-      Datenübertragung ist in beiden Richtungen möglich, Netzwerküberlastung
-      wird verhindert usw.) ist TCP ein sehr weit verbreitetes Protokoll zur
-      Datenübertragung. Beispielsweise wird TCP als (fast) ausschließliches
-      Transportmedium für das WWW, E-Mail, Daten in Peer-to-Peer-Netzwerken
-      und für viele andere populäre Netzwerkdienste verwendet.</para>
+      <para>The Transmission Control Protocol (TCP) is a protocol governing
+      the transmission of data between computers. The operating systems of all
+      modern computer understand and support TCP and use it to exchange data
+      with other computers on a network. It is a reliable, connection-oriented
+      transport protocol, and forms part of the Internet Protocol
+      family.</para>
+
+      <para>TCP was developed by Robert E. Kahn and Vinton G. Cerf, beginning
+      initially as a research project in 1973 and culminating in the
+      publication, in 1981, of the Internet standards document RFC<footnote>
+          <para>"Request for Comments". These documents begin as simple
+          proposals addressed to peers in the Internet engineering community
+          and subject to revision; when a draft proposal has been accepted it
+          is annotated and becomes part of the body of standards.</para>
+        </footnote> 793, which forms the basis for all the TCP standards
+      documents which followed, and, like many of its companion protocols,
+      remains a "living" protocol which always being extended and updated,
+      through new RFC documents, to meet new needs and circumstances.</para>
+
+      <para>TCP sets up a virtual connection between two endpoints in a
+      network. Data may be transmitted in either direction. TCP is almost
+      always encapsulated in IP (Internet Protocol); for this reason you will
+      often hear the term TCP/IP used. It allows bi-directional data
+      transmission, no matter which endpoint originated the connection; it
+      automatically detects and corrects data loss, and automatically adjusts
+      the data transmission rate to accommodate network conditions. These
+      features, along with the fact the standard is open, have made TCP the
+      most widely-used data transmission protocol, and today it is used for
+      the World Wide Web, e-mail, peer-to-peer file sharing, and other popular
+      network services.</para>
 
       <section id="tcp-allgemein">
-        <title>Allgemeines</title>
+        <title>General</title>
 
-        <para>TCP ist im Prinzip eine Ende-zu-Ende-Verbindung in Vollduplex,
-        welche die Übertragung der Informationen in beide Richtungen zu
-        gleicher Zeit zulässt. Diese Verbindung kann in zwei
-        Halbduplexverbindungen eingeteilt werden, bei denen Informationen in
-        beide Richtungen (allerdings nicht gleichzeitig) fließen können. Die
-        Daten in Gegenrichtung können dabei zusätzliche
-        Steuerungsinformationen enthalten. Die Verwaltung (management) dieser
-        Verbindung sowie die Datenübertragung werden von der TCP-Software
-        übernommen. Die TCP-Software ist eine Funktionssammlung und (je nach
-        Betriebssystem unterschiedlich) bei Linux auch im Betriebssystemkern,
-        dem Linux-Kernel, angesiedelt. Anwendungen, die diese Software häufig
-        nutzen, sind zum Beispiel Webbrowser und Webserver. Jede
-        TCP-Verbindung wird eindeutig durch zwei Endpunkte identifiziert. Ein
-        Endpunkt stellt ein geordnetes Paar dar, bestehend aus IP-Adresse und
-        Port. Ein solches Paar bildet eine bi-direktionale
-        Software-Schnittstelle und wird auch als Socket bezeichnet. Mit Hilfe
-        der IP-Adressen werden die an der Verbindung beteiligten Rechner
-        identifiziert; mit Hilfe der Ports werden dann auf den beiden
-        beteiligten Rechnern die beiden miteinander kommunizierenden Programme
-        identifiziert. Durch die Verwendung von Portnummern auf beiden Seiten
-        der Verbindung ist es beispielsweise möglich, dass ein Webserver auf
-        einem Port (normalerweise Port 80) gleichzeitig mehrere Verbindungen
-        zu einem anderen Rechner geöffnet hat. Ports sind 16-Bit-Zahlen
-        (Portnummern) und reichen von 0 bis 65535. Ports von 0 bis 1023 sind
-        reserviert und werden von der IANA vergeben, z.B. ist Port 80 für das
-        im WWW verwendete HTTP-Protokoll reserviert. Allerdings ist das
-        Benutzen der vordefinierten Ports nicht bindend. So kann jeder
-        Administrator beispielsweise einen FTP-Server (normalerweise Port 21)
-        auch auf einem beliebigen anderen Port laufen lassen.</para>
+        <para>TCP is an end-to-end ("circuit-like"), full duplex (meaning it
+        allows the transmission of data in both directions at the same time)
+        connection. Alternatively, connections may be assembled as two,
+        half-duplex connections in which information may travel in both
+        directions, albeit not at the same time; data may be returned for the
+        purpose of connection management. Connection management itself is
+        handled by the TCP protocol stack, software which is typically
+        attached to, or forms part of, the core of the operating system. In
+        the case of Linux, the TCP stack is in the kernel itself; this stack
+        is accessed by network software such as e-mail clients, web browsers
+        and servers.</para>
+
+        <para>Each TCP connection consists of two endpoints, with each
+        endpoint establishing a pair of identifying characteristics: namely,
+        the unique IP address of the endpoint, and the port. This pair forms a
+        software interface that allows bi-directional data transfer, and is
+        sometimes called a "socket". The computers participating in the
+        connection are identified by their IP addresses, while the particular
+        connection is identified by the port number. As a result, it is
+        possible for a web server, for example, to have multiple connections
+        to a remote endpoint from its port 80; it keeps track of these
+        multiple connections because each connection uses a different port on
+        the remote endpoint.</para>
+
+        <para>Ports are 16 bit numbers, and so range from 0 to 65535. The
+        ports from 0 to 1023 are reserved and assigned by IANA<footnote>
+            <para>Internet Assigned Numbers Authority. See <citetitle><ulink
+            url="???">http://www.iana.org</ulink></citetitle>.</para>
+          </footnote></para>
+
+        <para> for specific applications. For example, web traffic, which uses
+        HTTP, travels over the port reserved for HTTP traffic, port 80. The
+        use of particular ports is not binding; an administrator may operate
+        an FTP server on a port other than 21. For publicly-accessible
+        services, however, client software will expect to find its specific
+        service on the IANA-specified port, and special, private services are
+        usually operated on unassigned ports above 1024.</para>
       </section>
 
       <section id="tcp-verbindungsaufbau">
-        <title>Verbindungsaufbau und -abbau</title>
+        <title>Connection setup and teardown</title>
 
-        <para>Ein Webserver, der seinen Dienst anbietet, generiert einen
-        Endpunkt mit dem Port und seiner Adresse. Dies wird als passive open
-        oder auch als listen bezeichnet. Will ein Client eine Verbindung
-        aufbauen, generiert er einen eigenen Endpunkt aus seiner
-        Rechneradresse und einer noch freien Portnummer. Mit Hilfe eines ihm
-        bekannten Ports und der Adresse des Servers kann dann eine Verbindung
-        aufgebaut werden. Während der Datenübertragungsphase (active open)
-        sind die Rollen von Client und Server (aus TCP-Sicht) vollkommen
-        symmetrisch. Insbesondere kann jeder der beiden beteiligten Rechner
-        einen Verbindungsabbau einleiten. Während des Abbaus kann die
-        Gegenseite noch Daten übertragen, die Verbindung kann also halb-offen
-        sein.</para>
+        <para>A web server publishing a service to the outside world sets up a
+        socket consisting of its IP address and a port, and waits for clients
+        to initiate connections to this socket. A socket in this state is said
+        to be "listening", and indeed a display of the active sockets
+        (typically through a command such as <command>netstat -an</command>)
+        will show some in the LISTEN state. If a client wants to connect, it
+        sets up a socket of its own with its IP address and a
+        randomly-selected, unused port number, and uses this socket to connect
+        to the listening socket on the server. Once the connection is
+        established, the roles of client and server are indistinguishable and
+        basically symmetrical. Either side may terminate the connection (when
+        done gracefully, this is sometimes called "teardown.") Data may still
+        be transferred by the opposite endpoint while the connection is being
+        torn down.</para>
       </section>
 
       <section id="tcp-drei-wege-handshake">
-        <title>Der Drei-Wege-Handshake</title>
+        <title>The Three-Way Handshake</title>
 
-        <para>Der Drei-Wege-Handshake ist die Bezeichnung für ein bestimmtes
-        Verfahren, um eine in Bezug auf Übertragungsverluste sichere
-        Datenübertragung zwischen zwei Instanzen zu ermöglichen. Obwohl
-        überwiegend in der Netzwerktechnik verwendet, ist der
-        Drei-Wege-Handshake nicht auf diese beschränkt.</para>
+        <para>The three-way handshake is the manner by which two TCP endpoints
+        establish and maintain a connection so as to minimize data
+        loss.</para>
 
         <section id="tcp-verbindungsaufbau">
-          <title>Verbindungsaufbau</title>
+          <title>Connection setup</title>
+
+          <para>The device which wants to set up a connection sends the remote
+          device a TCP SYN (synchronize) packet with a sequence number
+          <replaceable>x</replaceable>. Sequence numbers are used to set the
+          correct order for packets, ensure that no packets are missing, and
+          check for duplicates when the packet stream is reassembled at the
+          remote device.</para>
+
+          <para>The type of packet (SYN) and the sequence number are set in
+          the TCP header and the sequence number is selected randomly (how
+          this is done depends on the TCP implementation). </para>
+
+          <para></para>
 
           <para>Beim Aufbau einer TCP-Verbindung kommt der sogenannte
           Drei-Wege-Handshake zum Einsatz. Der Rechner, der die Verbindung
@@ -209,11 +235,11 @@
 
         <mediaobject>
           <imageobject role="fo">
-            <imagedata fileref="bilder/tcp_header.png" />
+            <imagedata fileref="images/tcp_header.png" />
           </imageobject>
 
           <imageobject role="html">
-            <imagedata fileref="bilder/tcp_header.html.jpg" />
+            <imagedata fileref="images/tcp_header.html.jpg" />
           </imageobject>
         </mediaobject>
       </section>
