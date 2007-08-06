@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<chapter id="kapitel-protokolle" lang="en" revision="$Revision: 631 $">
-  <!--% Copyright (c) 2006 - 2007 by 
-- Stefan Wintermeyer <sw@amooma.de>
+<chapter id="kapitel-protokolle" lang="de" revision="$Revision: 631 $">
+  <!--% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
 % or any later version published by the Free Software Foundation;
 % with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
 % Texts. A copy of the license is included in the section entitled "GNU
 % Free Documentation License".
-% Asterisk training and consulting is offered at http://www.amooma.de-->
+-->
+
+  <!--% translated from the German by Stephen Bosch <sbosch@vodacomm.ca>-->
+
+  <!--% Asterisk training and consulting is offered at http://www.amooma.de-->
 
   <title>Protocols</title>
 
@@ -23,8 +26,8 @@
     understanding of these protocols when troubleshooting certain problems,
     which is why we are describing them in some detail here. This
     understanding is not strictly necessary to implement Asterisk but is
-    nevertheless valuable. As such, this chapter is intended as a reference in
-    the event it is needed.</para>
+    nevertheless valuable. As such, this chapter is intended as a reference
+    for the event it is needed.</para>
   </section>
 
   <section id="netzwerkprotokolle">
@@ -158,80 +161,67 @@
         <section id="tcp-verbindungsaufbau">
           <title>Connection setup</title>
 
-          <para>The device which wants to set up a connection sends the remote
-          device a TCP SYN (synchronize) packet with a sequence number
-          <replaceable>x</replaceable>. Sequence numbers are used to set the
-          correct order for packets, ensure that no packets are missing, and
-          check for duplicates when the packet stream is reassembled at the
-          remote device.</para>
+          <para>The client intitiating a connection sends the server a TCP SYN
+          (synchronize, identified with the SYN flag bit set to 1) packet with
+          a sequence number <replaceable>x</replaceable>. Sequence numbers are
+          used to set the correct order for packets, ensure that no packets
+          are missing, and check for duplicates when the packet stream is
+          reassembled at the server.</para>
 
           <para>The type of packet (SYN) and the sequence number are set in
           the TCP header and the sequence number is selected randomly (how
-          this is done depends on the TCP implementation). </para>
+          this is done depends on the TCP implementation). The server replies
+          with a SYN/ACK (synchronize-acknowledge, identified with both SYN
+          and ACK flags set to 1) packet having a (similarly randomly
+          selected) sequence number <replaceable>y</replaceable>. At the same
+          time it increments the sequence number of the initiating SYN packet
+          by one (<replaceable>x</replaceable> + 1) and places this number in
+          the acknowledgement field of the packet's TCP header.</para>
 
-          <para></para>
-
-          <para>Beim Aufbau einer TCP-Verbindung kommt der sogenannte
-          Drei-Wege-Handshake zum Einsatz. Der Rechner, der die Verbindung
-          aufbauen will, sendet dem anderen ein SYN-Paket (von engl.
-          synchronize) mit einer Sequenznummer x. Die Sequenznummern sind
-          dabei für die Sicherstellung einer vollständigen Übertragung in der
-          richtigen Reihenfolge und ohne Duplikate wichtig. Es handelt sich
-          also um ein Paket, dessen SYN-Bit im Paketkopf gesetzt ist (siehe
-          TCP-Header). Die Start-Sequenznummer ist eine beliebige Zahl, deren
-          Generierung von der jeweiligen TCP-Implementierung abhängig ist. Sie
-          sollte jedoch möglichst zufällig sein, um Sicherheitsrisiken zu
-          vermeiden. Die Gegenstelle (siehe Skizze) empfängt das Paket und
-          sendet in einem eigenen SYN-Paket im Gegenzug ihre
-          Start-Sequenznummer y (die ebenfalls beliebig und unabhängig von der
-          Start-Sequenznummer der Gegenstelle ist). Zugleich bestätigt sie den
-          Erhalt des ersten SYN-Pakets, indem sie die Sequenznummer x um eins
-          erhöht und im ACK-Teil (von engl. acknowledgment = Bestätigung) des
-          Headers zurückschickt. Der Client bestätigt zuletzt den Erhalt des
-          SYN/ACK-Pakets durch das Senden eines eigenen ACK-Pakets mit der
-          Sequenznummer y+1. Dieser Vorgang wird auch als Forward
-          Acknowledgement bezeichnet. Außerdem sendet der Client den Wert x+1
-          aus Sicherheitsgründen ebenso zurück. Dieses ACK-Segment erhält der
-          Server, das ACK-Segment ist durch das gesetzte ACK-Flag
-          gekennzeichnet. Die Verbindung ist damit aufgebaut.</para>
+          <para>Finally, the client completes the handshake by replying to the
+          SYN/ACK with an ACK packet of its own, incrementing the sequence
+          number by one (<replaceable>y</replaceable> + 1). This process is
+          also called "forward acknowledgement". For extra security, the
+          client also wraps the received <replaceable>x</replaceable> + 1
+          sequence number in this ACK reply. If all goes well, the connection
+          is established.</para>
         </section>
 
         <section id="tcp-verbindungsabbau">
-          <title>Verbindungsabbau</title>
+          <title>Connection teardown</title>
 
-          <para>Der geregelte Verbindungsabbau erfolgt ähnlich. Statt des
-          SYN-Bits kommt das FIN-Bit (von engl. finish = Ende, Abschluss) zum
-          Einsatz, welches anzeigt, dass keine Daten mehr vom Sender kommen.
-          Der Erhalt des Pakets wird wiederum mittels ACK bestätigt. Der
-          Empfänger des FIN-Pakets sendet zuletzt seinerseits ein FIN-Paket,
-          das ihm ebenfalls bestätigt wird. Obwohl eigentlich vier Wege
-          genutzt werden, handelt es sich beim Verbindungsabbau auch um einen
-          Drei-Wege-Handshake, da die ACK- und FIN-Operationen vom Server zum
-          Client als ein Weg gewertet werden. Zudem ist ein verkürztes
-          Verfahren möglich, bei dem FIN und ACK genau wie beim
-          Verbindungsaufbau im selben Paket untergebracht werden. Die maximum
-          segment lifetime (MSL) ist die maximale Zeit, die ein Segment im
-          Netzwerk verbringen kann, bevor es verworfen wird. Nach dem Senden
-          des letzten ACKs wechselt der Client in einen zwei MSL andauernden
-          Wartezustand (Waitstate), in dem alle verspäteten Segmente verworfen
-          werden. Dadurch wird sichergestellt, dass keine verspäteten Segmente
-          als Teil einer neuen Verbindung fehlinterpretiert werden. Außerdem
-          wird eine korrekte Verbindungsterminierung sichergestellt. Geht ACK
-          y+1 verloren, läuft beim Server der Timer ab, und das LAST_ACK
-          Segment wird erneut übertragen.</para>
+          <para>Graceful teardown follows a similar process. Instead of
+          packets with SYN flag bits set, the FIN (finish) flag bit is set.
+          This indicates to the receiver that the sender will not be
+          transmitting any further data. This is acknowledged with an ACK
+          packet. The recipient of the initial FIN packet then responds with
+          an ACK packet of its own, which is likewise acknowledged. Though
+          four packets are exchanged, this is still treated as a three-way
+          handshake, since the FIN-ACK combination from the server to the
+          client is considered a "one-way" operation (the FIN and ACK message
+          can also be contained in a single packet).</para>
+
+          <para>The maximum segment lifetime (MSL) is the maximum time that a
+          TCP segment may exist in the network before it is discarded
+          (normally 2 minutes). After the transmission of the last ACK, the
+          client enters a wait state equal to two MSL periods; during this
+          time all late-arriving segments are discarded. This is to ensure
+          that no late-arriving segments are misinterpreted as the initiation
+          of new connections. This also ensures that the connection is indeed
+          closed gracefully; if the ACK <replaceable>y</replaceable> + 1 goes
+          missing, a wait timer on the server expires and the LAST_ACK segment
+          is retransmitted.</para>
         </section>
       </section>
 
       <section id="tcp-header">
-        <title>Aufbau des TCP-Headers</title>
+        <title>TCP header structure</title>
 
-        <para>Das TCP-Segment besteht immer aus zwei Teilen - dem Header und
-        der Nutzlast (Payload). Die Nutzlast enthält die zu übertragenden
-        Daten, die wiederum Protokollinformationen der Anwendungsschicht wie
-        HTTP oder FTP entsprechen können. Der Header enthält für die
-        Kommunikation erforderliche Daten sowie das Dateiformat beschreibende
-        Information. Die Werte werden in network byte order (big endian)
-        angegeben.</para>
+        <para>A TCP segment consists of two parts: the header, containing the
+        transmission information such as port and sequence number, and the
+        payload, which is the real information we want to send, which usually
+        includes application layer protocol information (such as HTTP or SSH).
+        The values are transmitted in network (big endian) byte order.</para>
 
         <mediaobject>
           <imageobject role="fo">
@@ -245,223 +235,130 @@
       </section>
 
       <section id="tcp-datenuebertragung">
-        <title>Datenübertragung</title>
+        <title>Data transmission</title>
 
         <section id="tcp-ip-paket-groesse">
-          <title>TCP- / IP-Paket-Größe</title>
+          <title>TCP/IP packet size</title>
 
-          <para>Ein TCP-Segment hat typischerweise eine Größe von 1500 Bytes.
-          Es darf nur so groß sein, dass es in die darunterliegende
-          Übertragungsschicht passt, das Internetprotokoll IP. Das IP-Paket
-          ist theoretisch bis 65535 Bytes (64 Kilobyte) spezifiziert, wird
-          aber selbst meist über Ethernet übertragen, und dort ist die
-          Rahmengröße auf 1500 Bytes festgelegt. TCP und IP Protokoll
-          definieren jeweils einen Header von 20 Bytes Größe. Für die
-          Nutzdaten bleiben in einem TCP/IP-Paket also 1460 Bytes übrig. Da
-          die meisten Internet-Anschlüsse DSL verwenden, gibt es dort noch das
-          Point-to-Point Protocol (PPP) zwischen IP und Ethernet, was nochmal
-          8 Bytes für den PPP-Rahmen kostet. Dem TCP/IP-Paket verbleiben im
-          Ethernet-Rahmen nur 1492 Bytes MTU, die Nutzdaten reduzieren sich
-          auf insgesamt 1452 Bytes MSS. Dies entspricht einer Auslastung von
-          96,8 %.</para>
+          <para>A TCP segment is typically no larger than 1500 bytes. It must
+          be small enough to fit in the protocol data unit<footnote>
+              <para>"Protocol Data Unit" is a term used to refer to the unit
+              of transmission corresponding to a given network layer. In the
+              session layer, the PDU is called a segment ("TCP segment"); in
+              the network layer, it is a packet ("IP packet"); in the link
+              layer, it is a frame ("Ethernet frame").</para>
+            </footnote> of the protocol layer immediately beneath it in the
+          stack, in this case, IP. An IP packet may be as large as 64
+          kilobytes, but because IP is practically always transmitted over
+          Ethernet, most IP packets are smaller than the maximum Ethernet
+          frame size of 1500 bytes. Both TCP and IP specify a header of 20
+          bytes, respectively, so the payload is limited to 1460 bytes. Some
+          connections (particularly some forms of DSL service) use PPP
+          (Point-to-Point Protocol), which requires an additional 8 bytes of
+          header information, meaning that the TCP/IP packet can be a maximum
+          of 1492 bytes, leaving a maximum segment size (or MSS) of 1452
+          bytes. This corresponds to about 3.2% overhead.</para>
         </section>
 
         <section id="tcp-aufteilen-der-daten">
-          <title>Aufteilen der Anwendungsdaten auf TCP- / IP-Pakete</title>
+          <title>Distribution of application data across TCP/IP
+          packets</title>
 
-          <para>Empfänger und Sender einigen sich vor dem Datenaustausch über
-          das Options-Feld auf die Größe der MSS. Die Anwendung, die Daten
-          versenden möchte, beispielsweise ein Webserver, legt zum Beispiel
-          einen 10 Kilobyte großen Datenblock im Puffer ab. Um so mit einem
-          1460 Byte großen Nutzdatenfeld 10 Kilobyte Daten zu versenden, teilt
-          man die Daten auf mehrere Pakete auf, fügt einen TCP-Header hinzu
-          und versendet die TCP-Segmente. Dieser Vorgang wird Segmentierung
-          genannt. Im Puffer ist der Datenblock, dieser wird in fünf Segmente
-          aufgeteilt. Jedes Segment erhält durch die TCP-Software einen
-          TCP-Header. Drei TCP-Segmente wurden aktuell abgeschickt. Diese sind
-          nicht notwendigerweise sortiert, da im Internet jedes TCP-Segment
-          einen anderen Weg nehmen und es dadurch zu Verzögerungen kommen
-          kann. Damit die TCP-Software im Empfänger die Segmente wieder
-          sortieren kann, ist jedes Segment nummeriert (die Segmente werden
-          sozusagen durchgezählt). Bei der Zuordnung der Segmente wird die
-          Sequenznummer herangezogen. Der Empfänger muss diejenigen
-          TCP-Segmente bestätigen, die einwandfrei (Prüfsumme ist in Ordnung)
-          angekommen sind.</para>
+          <para>The sender and receiver negotiate the maximum segment size
+          before data transmission begins, using the options field in the TCP
+          header. The application wanting to send data (for example, a web
+          server) places a data block of 10 kilobytes in the transmit buffer.
+          To send this 10 kB data block, it is divided into multiple packets,
+          each with its own TCP header, and transmitted as TCP segments, a
+          process called segmentation.</para>
+
+          <para>Segments usually leave in sequential order, though this is not
+          strictly necessary, since the sequence numbering allows the receiver
+          to re-assemble them in the correct order. Received segments are
+          checked for integrity by calculating a checksum. If it is correct,
+          the packet is acknowledged. If it is incorrect, the acknowledgement
+          is withheld and the sender retransmits the packet.</para>
         </section>
       </section>
 
-      <section id="tcp-flusssteuerung">
-        <title>Flusssteuerung</title>
-
-        <para>Da die Anwendung Daten aus dem Puffer liest, ändert sich der
-        Füllstand des Puffers ständig. Deshalb ist es notwendig, den
-        Datenfluss dem Füllstand entsprechend zu steuern. Dies geschieht mit
-        dem Sliding Window und dessen Größe. Die Größe dieser Windows wird
-        ständig angepasst und der Process der Anpassung ist ein nicht zu
-        unterschätzender Overhead in der Kommunikation von Sender und
-        Empfänger.</para>
-      </section>
-
-      <section id="tcp-slow-start">
-        <title>Slow-Start</title>
-
-        <para>Zu Beginn einer Datenübertragung dient der
-        Slow-Start-Algorithmus zur Bestimmung des congestion window (wörtlich:
-        Überlast-Zeitfenster), um einer möglichen Überlastsituation
-        vorzubeugen. Man möchte Staus vermeiden, und da die momentane
-        Auslastung des Netzes nicht bekannt ist, wird mit zunächst kleinen
-        Datenmengen begonnen. Der Algorithmus startet mit einem kleinen
-        Zeitfenster von zwei MSS, in dem Datenpakete vom Sender zum Empfänger
-        übertragen werden. Der Empfänger sendet nun eine Bestätigung
-        (Acknowledgement, ACK) an den Sender zurück. Anschließend wird die
-        Größe des congestion window um eine Segmentgröße erhöht. Für jede
-        weitere Bestätigung wird dieses wieder um eine Segmentgröße erhöht,
-        das Limit ist das vom Empfänger festgelegte Empfangsfenster. Das
-        Wachstum des Fensters ist in der Regel exponentiell, also erst
-        langsam, dann schnell; insofern kann der historisch bedingte Name
-        Slow-Start fälschlicherweise ein langsames Wachstum
-        suggerieren.</para>
-      </section>
-
-      <section id="tcp-ueberlastkontrolle">
-        <title>Überlastkontrolle</title>
-
-        <para>Gehen bei einer bestimmten Fenstergröße Pakete verloren, kann
-        das festgestellt werden, wenn der Sender innerhalb einer bestimmten
-        Zeit (Timeout) keine Bestätigung (ACK) erhält. Man muss davon
-        ausgehen, dass das Paket aufgrund zu hoher Netzlast von einem Router
-        im Netz verworfen wurde. Das heißt, der Puffer eines Routers ist
-        vollgelaufen; es handelt sich hier sozusagen um einen Stau im Netz. Um
-        diesen aufzulösen, müssen alle beteiligten Sender ihre Netzlast
-        reduzieren. Wird ein Paketverlust festgestellt, so wählt man die
-        Hälfte der noch unbestätigten Daten im Netz als geeignetes Zeitfenster
-        für die Datenübertragung zwischen diesem Sender und diesem Empfänger
-        über den benutzten Kanal. Das verlorene Paket wird erneut übertragen,
-        für jede Bestätigung wird die Sendefenstergröße wieder um eine MSS
-        erhöht wie beim Slow-Start. Fast-Retransmit und Fast-Recovery werden
-        eingesetzt, um nach einem Paketverlust schneller auf die
-        Stau-Situation zu reagieren. Dazu informiert ein Empfänger den Sender,
-        wenn Pakete außer der Reihe ankommen und somit dazwischen ein
-        Paketverlust vorliegt. Hierfür bestätigt der Empfänger das letzte
-        korrekte Paket erneut für jedes weitere ankommende Paket außer der
-        Reihe. Man spricht dabei von Dup-Acks (Duplicate acknowledgements).
-        Der Sender bemerkt die duplizierten Bestätigungen, und nach dem
-        dritten Duplikat sendet er sofort, vor Ablauf des Timers, das
-        verlorene Paket erneut. Weil nicht auf den Ablauf des Timers gewartet
-        werden muss, heißt das Prinzip Fast Retransmit. Die Dup-Acks sind auch
-        Hinweise darauf, dass zwar ein Paketverlust stattfand, aber doch die
-        folgenden Pakete angekommen sind. Deshalb wird das Sendefenster nach
-        dem Fehler nur halbiert und nicht wie beim Timeout wieder mit
-        Slow-Start begonnen. Zusätzlich kann das Sendefenster noch um die
-        Anzahl der Dup-Acks erhöht werden, denn jedes steht für ein weiteres
-        Paket, welches den Empfänger erreicht hat, wenn auch außer der Reihe.
-        Da dadurch nach dem Fehler schneller wieder die volle Sendeleistung
-        erreicht wird, nennt man das Prinzip Fast-Recovery (schnelles
-        Erholen). Bis zum Erkennen des Paketverlustes wurden noch weitere
-        Pakete bis zur Sendefenstergröße übertragen. Der Empfänger konnte
-        diese nicht nutzen, weil ein Paket der Serie verloren ging, aber er
-        kann sie im Puffer halten. Nach der Neuübertragung des verlorenen
-        Pakets durch den Sender bestätigt der Empfänger mittels ACK und einer
-        höheren Sequenznummer die nun vollständige Paketfolge. Das erspart dem
-        Sender, alle nach dem Paketverlust übertragenen Pakete erneut zu
-        übertragen, und er kann sofort mit ganz neuen Paketen fortfahren; man
-        nennt das kumuliertes ACK. Selective ACKs werden genutzt, um noch mehr
-        Kontrollinformationen über den Datenfluss vom Empfänger an den Sender
-        zurückzuschicken. Dabei wird nach einem Paketverlust vom Empfänger im
-        TCP-Optionsfeld ein zusätzlicher Header eingefügt, aus welchem der
-        Sender genau ersehen kann, welche Pakete bereits angekommen sind und
-        welche fehlen (im Gegensatz zu den standardmäßigen kumulativen ACKs
-        von TCP). Als bestätigt gelten die Pakete auch weiterhin erst dann,
-        wenn der Empfänger dem Sender ein ACK für die Pakete übermittelt
-        hat.</para>
-      </section>
-
       <section id="tcp-datenintegritaet">
-        <title>Datenintegrität und Zuverlässigkeit</title>
+        <title>Data integrity and reliability</title>
 
-        <para>Im Gegensatz zum verbindungslosen UDP implementiert TCP einen
-        bidirektionalen, byte-orientierten, zuverlässigen Datenstrom zwischen
-        zwei Endpunkten. Das darunterliegende Protokoll (IP) ist
-        paketorientiert, wobei Datenpakete verloren gehen können, in
-        verkehrter Reihenfolge ankommen dürfen und sogar doppelt empfangen
-        werden können. TCP wurde entwickelt, um mit der Unsicherheit der
-        darunterliegenden Schichten umzugehen. Es prüft daher die Integrität
-        der Daten mittels der Prüfsumme im Paketkopf und stellt die
-        Reihenfolge durch Sequenznummern sicher. Der Sender wiederholt das
-        Senden von Paketen, falls keine Bestätigung innerhalb einer bestimmten
-        Zeitspanne (Timeout) eintrifft. Die Daten der Pakete werden beim
-        Empfänger in einem Puffer in der richtigen Reihenfolge zu einem
-        Datenstrom zusammengefügt und doppelte Pakete verworfen. Der
-        Datentransfer kann selbstverständlich jederzeit nach dem Aufbau einer
-        Verbindung gestört, verzögert oder ganz unterbrochen werden. Das
-        Übertragungssystem läuft dann in einen Timeout. Der vorab getätigte
-        Verbindungsaufbau stellt also keinerlei Gewähr für eine nachfolgende,
-        dauerhaft gesicherte Übertragung dar.</para>
+        <para>TCP allows a bi-directional, byte-oriented, reliable data stream
+        between two endpoints. The underlying network layer protocol (IP) is
+        packet-switched, and packets can get lost, mangled, or arrive in the
+        wrong order. TCP was designed to deal with these inherent
+        uncertainties, and so it verifies data integrity using a checksum
+        provided in the packet header, establishes the correct packet order
+        using sequence numbers, and discards duplicate packets. The sender
+        retransmits packets that are not acknowledged within a certain time.
+        The received packets are assembled in the correct order in the receive
+        buffer to form a data stream which is passed to the appropriate
+        application.</para>
+
+        <para>Of course, the data transfer can be interrupted, corrupted or
+        terminated at any time. The connection will expire after a timeout has
+        been exceeded. The successful establishment of a connection does not
+        guarantee that a lasting and reliable transfer will follow.</para>
       </section>
     </section>
 
     <section id="udp">
       <title>User Datagram Protocol (UDP)</title>
 
-      <para>Das User Datagram Protocol (Abk. UDP) ist ein minimales,
-      verbindungsloses Netzprotokoll, das zur Transportschicht der
-      Internetprotokollfamilie gehört. Aufgabe von UDP ist es, Daten, die über
-      das Internet übertragen werden, der richtigen Anwendung zukommen zu
-      lassen. Die Entwicklung von UDP begann 1977, als man für die Übertragung
-      von Sprache ein einfacheres Protokoll benötigte als das bisherige
-      verbindungsorientierte TCP. Es wurde ein Protokoll benötigt, das nur für
-      die Adressierung zuständig war, ohne die Datenübertragung zu sichern, da
-      dies zu Verzögerungen bei der Sprachübertragung führen würde.</para>
+      <para>In contrast to TCP, the User Datagram Protocol (UDP) is a minimal,
+      connectionless session layer protocol. Development of UDP began in 1977,
+      after the limits of TCP for the transmission of time-sensitive data
+      became apparent. A protocol which handled only addressing was needed,
+      without the overhead that went with guaranteed delivery.</para>
 
       <section id="udp-funktionsweise">
-        <title>Funktionsweise</title>
+        <title>Operation</title>
 
-        <para>Um die Daten, die mit UDP versendet werden, dem richtigen
-        Programm auf dem Zielrechner zukommen zu lassen, werden bei UDP
-        sogenannte Ports verwendet. Dazu wird bei UDP die Portnummer des
-        Dienstes mitgesendet, der die Daten erhalten soll. Diese Erweiterung
-        der Host-zu-Host- auf eine Prozess-zu-Prozess-Übertragung wird als
-        Anwendungsmultiplexen und -demultiplexen bezeichnet.</para>
+        <para>To ensure that data sent via UDP reaches the appropriate
+        application, source and destination ports are specified in the UDP
+        header. This process-to-process communication is called application
+        <emphasis>multiplexing</emphasis> and
+        <emphasis>de-multiplexing</emphasis> (sometimes muxing and
+        demuxing).</para>
       </section>
 
       <section id="udp-eigenschaften">
-        <title>Eigenschaften</title>
+        <title>Characteristics</title>
 
-        <para>UDP stellt einen verbindungslosen, potentiell unzuverlässigen
-        Übertragungsdienst bereit. Das bedeutet, dass es keine Garantie gibt,
-        dass ein einmal gesendetes Paket auch ankommt oder dass Pakete in der
-        gleichen Reihenfolge ankommen, in der sie gesendet wurden. Eine
-        Anwendung, die UDP nutzt, muss daher gegenüber verloren gegangenen und
-        umsortierten Paketen unempfindlich sein oder selbst entsprechende
-        Korrekturmaßnahmen beinhalten. Da vor Übertragungsbeginn nicht erst
-        eine Verbindung aufgebaut werden muss, können die Hosts schneller mit
-        dem Datenaustausch beginnen. Dies fällt vor allem bei Anwendungen ins
-        Gewicht, bei denen nur kleine Datenmengen ausgetauscht werden müssen.
-        Einfache Frage-Antwort-Protokolle wie das Domain Name System verwenden
-        UDP, um die Netzwerkbelastung gering zu halten und damit den
-        Datendurchsatz zu erhöhen. Ein Drei-Wege-Handshake wie bei TCP für den
-        Aufbau der Verbindung würde unnötigen Overhead erzeugen. Daneben
-        bietet die ungesicherte Übertragung auch den Vorteil von geringen
-        Übertragungsverzögerungsschwankungen: Geht bei einer TCP-Verbindung
-        ein Paket verloren, so wird es automatisch erneut angefordert. Dies
-        braucht Zeit, die Übertragungsdauer kann daher schwanken, was für
-        Multimediaanwendungen schlecht ist. Bei VoIP z.B. würde es zu
-        plötzlichen Aussetzern kommen bzw. die Wiedergabepuffer müssten größer
-        angelegt werden. Bei verbindungslosen Kommunikationsdiensten bringen
-        verloren gegangene Pakete dagegen nicht die gesamte Übertragung ins
-        Stocken, sondern vermindern lediglich die Qualität. UDP übernimmt die
-        Eigenschaften der darunterliegenden Netzwerkschicht. Im Falle des
-        Internet Protocols IP können Datenpakete maximal 65535 Bytes lang
-        sein, wovon der IP-Header und UDP-Header insgesamt mindestens 28 Bytes
-        belegen. UDP-Datagramme haben daher maximal 65507 Nutzdatenbytes.
-        Solche Pakete werden jedoch von IP fragmentiert übertragen, so dass
-        UDP nur bei Datenpaketgrößen bis zu einigen Kilobytes sinnvoll ist. IP
-        löscht Pakete etwa bei Übertragungsfehlern oder bei Überlast.
-        Datagramme können daher fehlen. Das UDP-Protokoll bietet hierfür keine
-        Erkennungs- oder Korrekturmechanismen wie etwa TCP. Im Falle von
-        mehreren möglichen Routen zum Ziel kann IP bei Bedarf neue Wege
-        wählen. Hierdurch ist es in seltenen Fällen sogar möglich, dass später
-        gesendete Daten früher gesendete überholen.</para>
+        <para>UDP establishes a connectionless, potentially unreliable
+        transfer service. This means that neither transmission nor order of
+        reception are guaranteed; that is, UDP sends data on a "best effort"
+        basis. Applications which use UDP must take these characteristics into
+        account and implement data correction where it is appropriate and
+        necessary. Because no connection setup is required prior to data
+        transmission (as is the case with TCP), the endpoints can begin
+        exchanging data more quickly. This relatively low overhead makes UDP
+        particularly useful for applications which exchange only small amounts
+        of data, such as Domain Name System (DNS).</para>
+
+        <para>In addition, the absence of handshaking means that there is less
+        variation in latency, or jitter. If a packet is lost in a TCP
+        transaction, precious time is needed while the recipient waits for the
+        sender to retransmit it, and the momentary latency can increase
+        dramatically. This is important for multimedia applications which are
+        sensitive to delay. In VoIP applications, these kinds of delays lead
+        to sound artifacts and dropouts.</para>
+
+        <para>Connectionless protocols like UDP do not stop the flow of data
+        if packets go missing. It is up to the receiving end to make sense of
+        the gaps in the data stream when packets are lost, and most do this by
+        momentarily reducing the resolution or quality of the resulting audio
+        or video.</para>
+
+        <para>UDP, like TCP, is constrained by the protocol data unit size of
+        the underlying network stack layers. IP packets cannot be larger than
+        65535 bytes, of which the IP and UDP headers consume at least 28
+        bytes, leaving a maximum of 65507 bytes for the actual payload. Such
+        datagrams are usually fragmented in IP. In practice, UDP packets are
+        rarely more than a few kilobytes in size. IP will discard packets in
+        the case of transmission error or overflow, so datagrams can go
+        missing.</para>
       </section>
     </section>
   </section>
@@ -469,62 +366,62 @@
   <section id="definition-channel">
     <title>Channels</title>
 
-    <para>Ein Channel ist die Verbindung zwischen zwei Punkten (in unserem
-    Fall sind das meistens menschliche Gesprächsteilnehmer). Es gibt folgende
-    Channel-Arten:</para>
+    <para>In Asterisk, a channel is the connection between two endpoints
+    (usually human beings in conversation). The following channel types
+    exist:</para>
 
     <itemizedlist>
       <listitem>
         <para>Agent</para>
 
-        <para>Ein ACD Agent-Channel</para>
+        <para>An automatic call distribution (ACD) Agent channel</para>
       </listitem>
 
       <listitem>
         <para>CAPI</para>
 
-        <para>Ein ISDN-Channel</para>
+        <para>An ISDN channel</para>
       </listitem>
 
       <listitem>
         <para>Console</para>
 
-        <para>Ein Linux-Konsolen-Client-Treiber für Soundkarten, die mit OSS
-        oder ALSA angesprochen werden können.</para>
+        <para>A Linux console channel driver for sound cards which can be
+        manipulated through OSS and ALSA.</para>
       </listitem>
 
       <listitem>
         <para>H.323</para>
 
-        <para>Ein VoIP-Protokoll</para>
+        <para>A VoIP protocol.</para>
       </listitem>
 
       <listitem>
         <para>IAX</para>
 
-        <para>Ein VoIP-Protokoll<note>
-            <para>Prinzipiel gibt es zwei Versionen von IAX (1 und 2). Wer
-            heute von IAX spricht, meint eigentlich immer IAX2 (also die
-            Version 2).</para>
+        <para>A VoIP protocol.<note>
+            <para>In principle, there are two versions of IAX (1 and 2).
+            Today, anyone referring to IAX is almost certainly speaking about
+            IAX2 (in other words, IAX version 2).</para>
           </note></para>
       </listitem>
 
       <listitem>
         <para>Local</para>
 
-        <para>Ein Loopback in einen anderen Context</para>
+        <para>A loopback into another context.</para>
       </listitem>
 
       <listitem>
         <para>MGCP</para>
 
-        <para>Ein VoIP-Protokoll</para>
+        <para>A VoIP protocol.</para>
       </listitem>
 
       <listitem>
         <para>mISDN</para>
 
-        <para>Ein ISDN-Channel</para>
+        <para>An ISDN channel.</para>
       </listitem>
 
       <listitem>
@@ -536,25 +433,26 @@
       <listitem>
         <para>phone</para>
 
-        <para>Linux Telephony Channel</para>
+        <para>Linux Telephony channel</para>
       </listitem>
 
       <listitem>
         <para>SIP</para>
 
-        <para>Ein VoIP-Protokoll</para>
+        <para>A VoIP protocol.</para>
       </listitem>
 
       <listitem>
         <para>Skinny</para>
 
-        <para>Ein VoIP-Protokoll</para>
+        <para>A VoIP protocol (also called SCCP, or Skinny Client Control
+        Protocol).</para>
       </listitem>
 
       <listitem>
         <para>vISDN</para>
 
-        <para>Ein ISDN-Channel</para>
+        <para>An ISDN channel.</para>
       </listitem>
 
       <listitem>
@@ -566,33 +464,32 @@
       <listitem>
         <para>VPB</para>
 
-        <para>Verbindung von normalen Telefonanschlüssen mit
-        Voicetronix-Karten</para>
+        <para>Voicetronix hardware channel driver for PSTN connections.</para>
       </listitem>
 
       <listitem>
         <para>Zap</para>
 
-        <para>Verbindung von normalen Telefonanschlüssen mit Digium-Karten.
-        Wird aber auch häufig für Karten anderer Hersteller benutzt.</para>
+        <para>Digium hardware channel driver for PSTN connections; also used
+        for hardware from competing manufacturers.</para>
       </listitem>
     </itemizedlist>
 
-    <para>In den meisten Beispielen in diesem Buch wird immer von
-    SIP-Verbindungen ausgegangen. Der Grund dafür ist einfach: Zurzeit gibt es
-    sehr viel mehr SIP- als z.B. IAX-fähige VoIP-Telefone. In diesem Kapitel
-    werden diese zwei wichtigen Protokolle im Einzelnen beschrieben. Wer will,
-    kann dieses Kapitel aber überspringen und bei konkreten Fragen zu
-    bestimmten Parametern hier nachschlagen.</para>
+    <para>Most examples in this book assume SIP connections. The reason for
+    this is simple -- at the moment, there are more SIP-capable VoIP
+    telephones than telephones for any other VoIP protocol. The other
+    significant VoIP protocol for Asterisk is IAX. This chapter will cover
+    these two important protocols in some further detail, but may also be used
+    as parameter reference for configuration.</para>
   </section>
 
   <section id="peers-users-friends">
-    <title>Peers, Users und Friends</title>
+    <title>Peers, Users and Friends</title>
 
-    <para>Die Unterscheidung der Begriffe Peer, User und Friend ist in der
-    Asterisk-Dokumentation nicht immer leicht verständlich dargestellt und
-    wird daher auch teilweise falsch auf manchen Webseiten wiedergegeben. Die
-    folgende Tabelle zeigt die jeweiligen Funktionen:</para>
+    <para>The distinction between the Asterisk classifications "peer", "user"
+    and "friend" is not always clear in the Asterisk documentation;
+    consequently there are some incorrect websites. The following table
+    describes the functions of each host type:</para>
 
     <informaltable>
       <tgroup cols="3">
@@ -624,124 +521,113 @@
       </tgroup>
     </informaltable>
 
-    <para>Ein Peer kann also nur angerufen werden, ein User nur anrufen und
-    ein Friend kann beides.<tip>
-        <para>In der Praxis wird meistens nur <parameter>Friend</parameter>
-        benutzt. Entsprechend muss man sich diese Tabelle nicht einprägen,
-        sondern kann sie im Spezialfall nachschlagen.</para>
+    <para>A peer can only be called, a user can only make calls, and a friend
+    can do both.<tip>
+        <para>In practice, <parameter>friend</parameter> is used the most. As
+        such, you needn't memorize this table, but it is always here if you
+        need to refer to it later.</para>
       </tip></para>
   </section>
 
   <section id="iax-vs-sip">
     <title>IAX versus SIP</title>
 
-    <para>Fast jeder Asterisk-Administrator muss sich irgendwann einmal die
-    Frage stellen, ob er eher auf SIP oder eher auf IAX setzen soll. Die kurze
-    Antwort: Wenn IAX möglich ist (also, wenn die Telefone es unterstützen),
-    dann sollte IAX benutzt werden. Ansonsten immer SIP. Mark Spencer (der
-    Erfinder von Asterisk) hat zu diesem Thema auf einer Asterisk-Mailingliste
-    im Jahr 2004 eine ausführlichere Antwort geschrieben (die im Original
-    englische E-Mail finden Sie im <xref
-    linkend="anhang-iax-vs-sip" />):</para>
+    <para>Every Asterisk administrator is eventually faced with the question
+    of whether to build primarily on SIP or IAX. If IAX is available and
+    possible (that is, the sets support it), then IAX should be used;
+    otherwise, you should use SIP. Mark Spencer, the inventor of Asterisk,
+    wrote an e-mail to the Asterisk users mailing list in 2004 that attempts
+    to address the question:</para>
 
     <screen>Date: Mon, 5 Jul 2004 18:59:52 -0500 (CDT)
 From: Mark Spencer &lt;markster@digium.com&gt;
 
-Ich möchte einige Unterschiede zwischen SIP und IAX kurz 
-zusammenfassen. Vielleicht hilft Dir das bei der 
-Entscheidungsfindung.
+Let me summarize some differences between SIP and IAX, and it might help you
+make a decision about what is best for you.
 
-1) IAX arbeitet während des Gesprächs unabhängig von der Anzahl 
-der Anrufe und des verwendeten Codecs effizienter als RTP. Der 
-Vorteil liegt irgendwo zwischen 2400 Kbit/s für einen 
-Einzelanruf und der dreifachen Anzahl der Anrufe pro Megabit 
-bei G.729, wenn die Messung bei aktiviertem Trunk-Modus auf der 
-MAC-Ebene vorgenommen wird.
+1) IAX is more efficient on the wire than RTP for any number of calls,
+any codec. The benefit is anywhere from 2.4k for a single call to
+approximately tripling the number of calls per megabit for G.729 when
+measured to the MAC level when running trunk mode.
 
-2) IAX ist nicht ASCII-, sondern datenelementkodiert. Dies macht
-Implementierungen wesentlich leichter und zudem robuster 
-gegenüber Pufferüberlaufangriffen, da absolut keine Textanalyse 
-oder -interpretation erforderlich ist. IAX führt den gesamten 
-IP-Stapel, IAX-Stapel, TDM-Schnittstelle, Echokompensation und 
-Erzeugung der Anrufer-ID auf 4k Heap und Stack sowie 64k Flash 
-aus. Dies veranschaulicht ganz klar die 
-Implementierungseffizienz des Entwurfs. Die Größe der 
-IAX-Signalpakete ist drastisch geringer als die bei SIP, was 
-aber in der Regel nur dann erwähnenswert ist, wenn zahlreiche 
-Clients sich häufig registrieren. Allgemein gesprochen ist IAX2 
-bei der Kodierung, der Dekodierung und der Überprüfung der Daten 
-effizienter. Zudem wäre es für den Autor einer 
-IAX-Implementierung extrem schwierig, eine Inkompatibilität mit 
-einer anderen Implementierung herzustellen, da für eine 
-Interpretation kaum Raum vorhanden ist.
+2) IAX is information-element encoded rather than ASCII encoded. This
+makes implementations substantially simpler and more robust to buffer
+overrun attacks since absolutely no text parsing or interpretation is
+required. The IAXy runs its entire IP stack, IAX stack, TDM interface,
+echo canceler, and callerid generation in 4k of heap and stack and 64k of
+flash. Clearly this demonstrates the implementation efficiency of its
+design. The size of IAX signaling packets is phenomenally smaller than
+those of SIP, but that is generally not a concern except with large
+numbers of clients frequently registering. Generally speaking, IAX2 is
+more efficient in its encoding, decoding and verifying information, and it
+would be extremely difficult for an author of an IAX implementation to
+somehow be incompatible with another implementation since so little is
+left to interpretation.
 
-3) IAX weist eine sehr klare Trennung von Schicht 2 und Schicht 
-3 auf, d.h. sowohl Signalisierung als auch Tondaten haben 
-definierte Zustände, werden robust und in konsistenter Weise 
-übertragen, und wenn ein Endpunkt des Anrufs unvermittelt 
-verschwindet, dann wird der Anruf auch zeitnah beendet und zwar
-auch dann, wenn keine weiteren Signale und/oder Audiodaten 
-empfangen werden. Einen solchen Mechanismus weist SIP nicht auf; 
-hinzu kommt, dass, was die Signalisierung angeht, die 
-Zuverlässigkeit sehr niedrig und schwerfällig ist, weswegen 
-zusätzlich zum Kernstandard RF3261 weitere Standards benötigt 
-werden.
+3) IAX has a very clear layer2 and layer3 separation, meaning that both
+signaling and audio have defined states, are robustly transmitted in a
+consistent fashion, and that when one end of the call abruptly disappears,
+the call WILL terminate in a timely fashion, even if no more signaling
+and/or audio is received. SIP does not have such a mechanism, and its
+reliability from a signaling perspective is obviously very poor and
+clumsy requiring additional standards beyond the core RF3261.
 
-4) Die einheitlichen Signalisierungs- und Audiopfade von IAX 
-gestatten die transparente Navigation von NATs, und der 
-Firewall-Administrator muss lediglich einen einzigen Port 
-öffnen, um den Einsatz von IAX zu gestatten. Der IAX-Client 
-muss für einen korrekten Betrieb überhaupt nichts über das 
-Netzwerk wissen, in dem er sich befindet. Anders gesagt: Es kann 
-niemals eine durch eine Firewall bedingte Situation auftreten, 
-in der IAX einen Anruf aufbauen und dann keine Audiodaten 
-übertragen kann (natürlich vorausgesetzt, es ist genügend
-Bandbreite vorhanden).
+4) IAX's unified signaling and audio paths permit it to transparently
+navigate NAT's and provide a firewall administrator only a *single* port to
+have to open to permit its use. It requires an IAX client to know
+absolutely nothing about the network that it is on to operate. More
+clearly stated, there is *never* a situation that can be created with a
+firewall in which IAX can complete a call and not be able to pass audio
+(except of course if there was insufficient bandwidth).
 
-5) Das authentifizierte Übertragungssystem von IAX gestattet 
-die Übertragung von Audio- und Rufsteuerdaten über einen 
-zwischengeschalteten Server auf eine robuste Weise: Wenn zwei 
-Endpunkte einander aus irgendeinem Grund nicht erkennen können, 
-wird der Ruf über den Zentralserver gehalten.
+5) IAX's authenticated transfer system allows you to transfer audio and
+call control off a server-in-the-middle in a robust fashion such that if
+the two endpoints cannot see one another for any reason, the call
+continues through the central server.
 
-6) IAX trennt die Caller-ID vom Authentifizierungsmechanismus 
-des Benutzers. SIP verfügt hierzu über keine eindeutige Methode, 
-sofern nicht Remote-Party-IDs verwendet werden.
+6) IAX clearly separates Caller*ID from the authentication mechanism of
+the user. SIP does not have a clear method to do this unless
+Remote-Party-ID is used.
 
-7) SIP ist ein IETF-Standard. Zwar gibt es eine neue 
-Dokumentation von Frank Miller, aber IAX ist gegenwärtig noch 
-kein veröffentlichter Standard.
+7) SIP is an IETF standard. While there is some fledgling documentation
+courtesy Frank Miller, IAX is not a published standard at this time.
 
-8) IAX ermöglicht es einem Endpunkt, die Gültigkeit einer 
-Telefonnummer zu überprüfen, damit er weiß, ob die Nummer 
-vollständig ist, vollständig sein könnte oder aber zwar 
-vollständig ist, aber länger sein könnte. SIP bietet hierfür 
-keine vollständige Unterstützung.
+8) IAX allows an endpoint to check the validity of a phone number to know
+whether the number is complete, may be complete, or is complete but could
+be longer. There is no way to completely support this in SIP.
 
-9) IAX sendet DTMF stets außerbandig, d.h. es kann keine 
-Verwirrung bezüglich der Frage entstehen, welche Methode verwendet 
-wird.
+9) IAX always sends DTMF out of band so there is never any confusion about
+what method is used.
 
-10) IAX unterstützt die Übertragung von Sprache und Context, was 
-in einer Asterisk-Umgebung durchaus sinnvoll ist. Mehr fällt mir 
-jetzt im Moment nicht ein.
+10) IAX support transmission of language and context, which are useful in
+an Asterisk environment. That's pretty much all that comes to mind at the
+moment.
+
 
 Mark
 
-PS: Ich nehme mal an, dass SIP trotzdem ein paar Vorteile 
-aufweisen muss (andernfalls wären seine Entwickler ja Dummköpfe).
 
-Es bleibt also zu fragen, wie IAX die folgenden Aspekte verwaltet:
-1) Bandbreitenanzeige
-2) Neue Codecs
-3) Erweiterbarkeit
-4) Parken von Verbindungen und andere komplexe Szenarien
-5) Videotelephonie
+PS:
+I Guess there must be some advantages to SIP (or we should call the writers of
+it stupid).
 
-Ich habe den Eindruck, dass dies alles in SIP besser geregelt ist.</screen>
+So here a few questions to elaborate how IAX handles:
 
-    <para>Nachtrag zu dieser E-Mail: IAX ist mittlerweile ein offenes und gut
-    dokumentiertes Protokoll.</para>
+1) Bandwidth indications
+
+2) New codecs
+
+3) extensibility
+
+4) Call Hold and other complex scenarios
+
+5) Video telephone
+
+I have got the impression this has all been better arranged in SIP
+</screen>
+
+    <para>Appendix to this e-mail: in the intervening years, IAX has itself
+    become a well-documented and open protocol.</para>
   </section>
 
   <xi:include href="sip.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
