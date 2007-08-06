@@ -7,7 +7,11 @@
 % with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
 % Texts. A copy of the license is included in the section entitled "GNU
 % Free Documentation License".
-% Asterisk training and consulting is offered at http://www.amooma.de-->
+-->
+
+  <!--% translated from the German by Stephen Bosch <sbosch@vodacomm.ca>-->
+
+  <!--% Asterisk training and consulting is offered at http://www.amooma.de-->
 
   <title id="iax.title">IAX</title>
 
@@ -16,109 +20,106 @@
   </indexterm>
 
   <simpara>IAX<footnote>
-      <simpara>Hier ist immer IAX2, also IAX Version 2 gemeint.</simpara>
-    </footnote> ist das Inter-Asterisk-eXchange-Protokoll, also das
-  Asterisk-eigene VoIP-Protokoll, das bevorzugt verwendet werden
-  soll.</simpara>
+      <simpara>Here, we are always referring to IAX2, or IAX version
+      2.</simpara>
+    </footnote> is the Inter-Asterisk-eXchange protocol. This is the
+  Asterisk-native and preferred protocol.</simpara>
 
   <section id="warum-iax">
-    <title>Warum IAX?</title>
+    <title>Why IAX?</title>
 
-    <simpara>Braucht die Welt eigentlich <emphasis>noch</emphasis> ein
-    VoIP-Protokoll, wo es doch schon SIP, H.323 etc. und eine Reihe
-    proprietärer Protokolle gibt? Darüber lässt sich natürlich streiten. IAX
-    hat aber einige Vorteile, hier die wichtigsten, neben weiteren technischen
-    Details:</simpara>
+    <simpara>Does the world really need yet another VoIP protocol, when we
+    already have SIP, H.323, MGCP and an array of proprietary protocols? Of
+    course, this point remains arguable. Nevertheless, IAX has certain
+    advantages:</simpara>
 
     <itemizedlist>
       <listitem>
-        <simpara>Geringer Overhead. Im Vergleich zu beispielsweise SIP (und
-        dem darin verwendeten RTP) hat IAX als reines UDP-Protokoll ein
-        deutlich besseres Nutzdaten:Overhead-Verhältnis.</simpara>
+        <simpara>Minimal overhead: Compared with SIP (and the RTP encapsulated
+        within it), IAX has, as a purely UDP protocol, a significantly better
+        payload-overhead ratio.</simpara>
       </listitem>
 
       <listitem>
-        <simpara>NAT-/Firewall-tauglich. Trotz solcher Hürden kann IAX
-        problemlos Anrufe initiieren und entgegennehmen etc. Es muss nur ein
-        einziger Firewall-Port freigegeben werden (bei SIP mindestens
-        3).</simpara>
+        <simpara>NAT/firewall friendly: This is perhaps its biggest advantage
+        -- IAX, because it uses only a single port, is easy to accommodate in
+        firewall rulesets (in the case of SIP, this is at a minimum three,
+        often large port ranges).</simpara>
       </listitem>
 
       <listitem>
-        <simpara>Einfaches Protokoll. Es müssen keinerlei Strings geparst
-        werden, was IAX kaum anfällig für Speicherüberläufe macht.</simpara>
+        <simpara>Simplicity: There is no need to parse strings, which makes
+        IAX inherently less vulnerable to buffer overflow security
+        flaws.</simpara>
       </listitem>
 
       <listitem>
-        <simpara>Gesprächs-Transfers. Gespräche können sowohl über einen
-        zentralen Server laufen als auch direkt zwischen zwei
-        Teilnehmern.</simpara>
+        <simpara>Call routing and transfer: Calls can be patched by a central
+        server or connected directly between two users.</simpara>
       </listitem>
 
       <listitem>
-        <para>Trunking. Dadurch kann über die gleiche Datenleitung eine viel
-        höhere Anzahl von simultanen Gesprächen geführt werden (siehe <xref
+        <para>Trunking. Allows multiple calls to be passed through a single
+        IAX connection, minimizing overhead (see <xref
         linkend="codecs-trunking" />).</para>
       </listitem>
     </itemizedlist>
   </section>
 
   <section id="iax-beispielkonf">
-    <title>Beispiel für eine IAX-Konfiguration</title>
+    <title>Example of an IAX configuration</title>
 
-    <simpara>Am Anfang der <filename>iax.conf</filename> steht immer der
-    Eintrag <code>[general]</code>. Ähnlich wie bei der
-    <filename>sip.conf</filename> werden im <code>[general]</code>-Abschnitt
-    allgemeine Parameter übergeben. Darunter kommt dann die Definition der
-    einzelnen Channels.</simpara>
+    <simpara>The IAX configuration file <filename>iax.conf</filename> always
+    begins with the section heading <code>[general]</code>. Just as with
+    <filename>sip.conf</filename>, <code>[general]</code> contains global
+    parameters which apply to all the individual IAX connections which
+    follow.</simpara>
 
-    <simpara>Als Beispiel für die Möglichkeiten des IAX-Protokolls verbinden
-    wir zwei voneinander unabhängige Telefonanlagen mit dem IAX-Protokoll. So
-    können Gespräche von der einen zur anderen Anlage geführt werden und
-    müssen nicht über das Festnetz geroutet werden.</simpara>
+    <simpara>To demonstrate the possibilities offered by the IAX protocol, we
+    will connect two IAX PBX systems. In this way, calls can be routed
+    directly between them without need for using the PSTN.</simpara>
 
     <section id="iax-beispielkonf-aufgabe">
-      <title>Aufgabenstellung</title>
+      <title>Objectives</title>
 
-      <simpara>Es gibt zwei Anlagen mit jeweils zwei Telefonen (1000 und
-      1001). Die Anlagen heißen <code>ast1</code> und <code>ast2</code>. Jede
-      Anlage soll in der Lage sein, Gespräche an die andere Anlage mit dem
-      IAX-Protokoll zu übermitteln. Dazu wird eine Vorwahl benutzt. Die
-      Vorwahl <code>0901</code> verbindet zur Anlage <code>ast1</code> und
-      <code>0902</code> zur Anlage <code>ast2</code>. Die Anlage
-      <code>ast1</code> besitzt in diesem Beispiel die IP-Adresse
-      <code>192.168.0.101</code> und die Anlage <code>ast2</code> die
-      IP-Adresse <code>192.168.0.102</code>.</simpara>
+      <simpara>There are two Asterisk systems, named <code>ast1</code> and
+      <code>ast2</code>, each with two telephones (1000 and 1001). Each system
+      must be able to connect calls to the other via IAX. For this purpose we
+      assign a dialing prefix to each server; <code>0901</code> connects calls
+      to <code>ast1</code> and <code>0902</code> connects calls to
+      <code>ast2</code>. The <code>ast1</code> system has the IP
+      <code>192.168.0.101</code> and <code>ast2</code> has IP<code>
+      192.168.0.102</code>.</simpara>
     </section>
 
     <section id="iax-beispielkonf-ast1">
-      <title>Konfiguration ast1</title>
+      <title>Configuration of ast1</title>
 
-      <para>Die <filename>iax.conf</filename> enthält folgende Konfiguration:
-      <programlisting>[ast2]
+      <para>The <filename>iax.conf</filename> for <code>ast1</code> contains
+      the following configuration: <programlisting>[ast2]
 type = friend
 host = 192.168.0.102
 secret = 1234
-context = test-telefone
-permit = 0.0.0.0/0.0.0.0</programlisting> Die
-      <filename>extensions.conf</filename> enthält folgende Konfiguration:
+context = test-telephones
+permit = 0.0.0.0/0.0.0.0</programlisting>The file
+      <filename>extensions.conf</filename> contains this configuration:
       <programlisting>[via-asterisk2]
 exten =&gt; 09021000,1,Dial(IAX2/ast2/1000)
 exten =&gt; 09021001,1,Dial(IAX2/ast2/1001)
 ;          ^   ^               ^     ^
 ;          |   |               |     |
-; virt.Vorwahl ext      Verbindung  ext</programlisting></para>
+; virt.prefix  ext      connection  ext</programlisting></para>
     </section>
 
     <section id="iax-beispielkonf-ast2">
-      <title>Konfiguration ast2</title>
+      <title>Configuration of ast2</title>
 
-      <para>Die <filename>iax.conf</filename> enthält folgende Konfiguration:
-      <programlisting>[ast1]
+      <para>The <filename>iax.conf</filename> for <code>ast2</code> contains
+      the following configuration: <programlisting>[ast1]
 type = friend
 host = 192.168.0.101
 secret = 1234
-context = test-telefone
+context = test-telephones
 permit = 0.0.0.0/0.0.0.0</programlisting> Die
       <filename>extensions.conf</filename> enthält folgende Konfiguration:
       <programlisting>[via-asterisk1]
@@ -128,12 +129,13 @@ exten =&gt; 09011001,1,Dial(IAX2/ast1/1001)</programlisting></para>
   </section>
 
   <section id="iax-globalekonf">
-    <title>Globale Einstellungen</title>
+    <title>Global settings</title>
 
-    <simpara>Die folgenden Parameter können nur im <code>[general]</code>-Teil
-    definiert werden, sind also gültig für alle Channels. Sie können hier
-    außerdem auch einige der in <xref linkend="iax-channelkonf" />
-    beschriebenen Einstellungen verwenden.</simpara>
+    <simpara>The following parameters can only be used in the
+    <code>[general]</code> section, and so are valid ofrTeil definiert werden,
+    sind also gültig für alle Channels. Sie können hier außerdem auch einige
+    der in <xref linkend="iax-channelkonf" /> beschriebenen Einstellungen
+    verwenden.</simpara>
 
     <section id="iax-globalekonf-bandwidth">
       <title><code>bandwidth</code></title>
