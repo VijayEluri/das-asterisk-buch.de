@@ -216,7 +216,12 @@ my %AGI; my $tests = 0; my $fail = 0; my $pass = 0;</programlisting>Hier
     $AGI{$1} = $2;
   }
 }</programlisting>Die eben eingelesenen Werte werden zum Debuggen auf STDERR,
-      also im Endeffekt auf dem CLI ausgegeben.<programlisting>sub checkresult {
+      also im Endeffekt auf dem CLI ausgegeben:<programlisting>print STDERR "AGI Environment Dump:\n";
+foreach my $i (sort keys %AGI) {
+        print STDERR " -- $i = $AGI{$i}\n";
+}
+</programlisting>Danach geht es mit <code>checkresult</code>
+      weiter:<programlisting>sub checkresult {
   my ($res) = @_;
   my $retval;
   $tests++;
