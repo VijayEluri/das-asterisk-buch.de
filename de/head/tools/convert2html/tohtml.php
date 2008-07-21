@@ -58,7 +58,7 @@ Aus SVN auschecken ...
 ===============================================
 ";
 if (! array_key_exists('r',$opts)){
-	exec ("svn co $u $p 'https://svn.amooma.com/das-asterisk-buch/branches/1.0/docbook/' '$docbookDir'", $out, $err);
+	exec ("svn co $u $p 'https://svn.amooma.com/das-asterisk-buch/de/head/docbook/' '$docbookDir'", $out, $err);
 	echo implode("\n", $out), "\n";
 	if ($err != 0) {
 		echo "Fehler beim Auschecken!\n";
