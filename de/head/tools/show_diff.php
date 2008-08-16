@@ -1,4 +1,4 @@
-<?
+<?php
 
 $fp = fopen("apps_book_1.4", 'r');
 
@@ -25,14 +25,6 @@ while(!feof($fp))
     }
 
 }
-
-
-
-
-
-
-
-
 
 
 

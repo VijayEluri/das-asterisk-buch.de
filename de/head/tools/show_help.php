@@ -1,4 +1,4 @@
-<?
+<?php
 
 
 $fp = fopen("ast16_apps", 'r');

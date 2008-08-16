@@ -1,4 +1,4 @@
-<?
+<?php
 
 $xml = simplexml_load_file('applications.xml');
 
