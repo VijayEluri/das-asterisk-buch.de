@@ -549,10 +549,11 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</programlisting>
       <code>[general]</code>-Sektion erweitert werden:</para>
 
       <programlisting>[general]
-allowsubscribe=yes
-notifyringing=yes
-notifyhold=yes
-useclientcode=yes</programlisting>
+allowsubscribe = yes
+notifyringing = yes
+notifyhold = yes
+useclientcode = yes
+limitonpeers = yes</programlisting>
 
       <para>Des Weiteren muss in der Sektion des Telefons, das die
       überwachende Rolle übernimmt, eine sogenannte "Subscription" eingetragen
@@ -563,13 +564,18 @@ useclientcode=yes</programlisting>
       überwacht werden sollen. In der Regel ist dieser identisch mit dem
       Context, in dem sich die eigentlichen Telefone bewegen.</para>
 
+      <para>Außerdem muß ein "call-limit" auf einen Wert größer als 0 gesetzt
+      sein (am besten mindestens 2, sonst hat man Probleme bei Transfers
+      etc.).</para>
+
       <programlisting>[2000]
-type=friend
-context=meine-telefone
-subscribecontext=meine-telefone
-secret=1234
-host=dynamic
-mailbox=2000</programlisting>
+type = friend
+context = meine-telefone
+subscribecontext = meine-telefone
+call-limit = 20
+secret = 1234
+host = dynamic
+mailbox = 2000</programlisting>
 
       <para>Für die zu überwachenden Telefone muss innerhalb der
       <filename>sip.conf</filename> kein Eintrag hinzugefügt werden, dies
@@ -589,33 +595,29 @@ mailbox=2000</programlisting>
 
 [meine-telefone]
 exten =&gt; 2001,hint,SIP/2001
+exten =&gt; 2002,hint,SIP/2002
+exten =&gt; 2003,hint,SIP/2003
 
-exten =&gt; _2XXX,1,Dial(SIP/${EXTEN},20,j)
-exten =&gt; _2XXX,2,VoiceMail(u${EXTEN})
-exten =&gt; _2XXX,102,VoiceMail(b${EXTEN})
-
-exten =&gt; 2999,1,VoiceMailMain(s${CALLERID(num)})
-
-exten =&gt; asterisk,1,VoiceMailMain(s${CALLERID(num)})</programlisting>
+exten =&gt; _2XXX,1,Dial(SIP/${EXTEN})
+exten =&gt; _2XXX,n,VoiceMail(u${EXTEN})
+</programlisting>
 
       <important>
         <para>Die hint-Priorität war in der Vergangenheit immer für einige
         Tücken und Probleme bekannt. In einigen älteren Asterisk-Versionen ist
         die Priorität case-sensitive, muss also auf alle Fälle
-        kleingeschrieben werden. Ebenso funktioniert auch nicht in allen
-        Asterisk-Versionen die Benutzung von Variablen für die zu
-        überwachenden Extensions. Der sicherste Weg ist daher für jede zu
-        überwachende Extension einen Eintrag exakt in der obigen Form
-        anzulegen. Der Übersichtlichkeit halber kann man alle gesammelten
-        Hints auch in einen eigenen Context legen und diesen überall dort mit
-        <code>include =&gt;...</code> einbinden, wo er benötigt wird.</para>
+        kleingeschrieben werden. Und es muß für jedes Telefon ein Hint
+        definiert werden. Der Übersichtlichkeit halber kann man alle
+        gesammelten Hints auch in einen eigenen Context legen und diesen
+        überall dort mit <code>include =&gt;...</code> einbinden, wo er
+        benötigt wird.</para>
       </important>
 
       <para>Nun muss noch das überwachende Telefon konfiguriert werden. Dazu
       melden Sie sich wie gewohnt mit einem Webbrowser am Telefon an und gehen
       in das Untermenü "Funktionstasten". Dort belegen Sie die Funktionstaste
-      Ihrer Wahl (im Beispiel die P6) mit dem Typ "Ziel" und tragen die zu
-      überwachende Extension ein, hier also die 2001.</para>
+      Ihrer Wahl (im Beispiel die P6) mit dem Typ "Ziel"/"Nebenstelle" und
+      tragen die zu überwachende Extension ein, hier also die 2001.</para>
 
       <screenshot>
         <screeninfo>snom Konfiguration Leitungsüberwachung</screeninfo>
@@ -651,7 +653,7 @@ exten =&gt; asterisk,1,VoiceMailMain(s${CALLERID(num)})</programlisting>
       </screenshot>
 
       <important>
-        <para>Die Bezeichnung "Ziel" wurde in den snom-Hardphones in einer der
+        <para>Die Bezeichnung "Ziel" wurde in den snom-Hardphones in einem der
         neueren Releases in "Nebenstelle" umbenannt und gilt daher nur noch
         für die Softphones und ältere Firmware-Stände in den Hardphones. Es
         ist nur eine Umbenennung, die weitere hier beschriebene Funktionalität
@@ -788,14 +790,21 @@ callpickup_dialoginfo: on</programlisting>
     <section id="snom-leds-custom">
       <title>Gezielte Ansteuerung der LEDs</title>
 
-      <para>In der bristuffed-Version von Asterisk ist es ebenfalls möglich,
-      die LEDs z.B. auch gezielt aus dem Wählplan anzusteuern. Dazu wurde
-      Asterisk die Applikation "Devstate" hinzugefügt. Bitte prüfen Sie auf
-      der Asterisk-Konsole über den Befehl <command>show application
-      Devstate</command>, ob Ihre Asterisk-Version diesen Patch
-      enthält:</para>
+      <section id="snom-leds-custom-bristuff">
+        <title>Applikation Devstate() in BRIstuff</title>
 
-      <screen>*CLI&gt; show application Devstate
+        <indexterm>
+          <primary>Devstate()</primary>
+        </indexterm>
+
+        <para>In der bristuffed-Version von Asterisk ist es ebenfalls möglich,
+        die LEDs z.B. auch gezielt aus dem Wählplan anzusteuern. Dazu wurde
+        Asterisk die Applikation "Devstate" hinzugefügt. Bitte prüfen Sie auf
+        der Asterisk-Konsole über den Befehl <command>show application
+        Devstate</command>, ob Ihre Asterisk-Version diesen Patch
+        enthält:</para>
+
+        <screen>*CLI&gt; show application Devstate
 
   -= Info about application 'Devstate' =-
 
@@ -809,49 +818,51 @@ Generate a device state change event given the input parameters
 
 *CLI&gt;</screen>
 
-      <para>Der Parameter "device" stellt nichts weiter dar, als eine
-      spezielle Extension vom Typ Device-State, die aber im Prinzip exakt so
-      angesprochen wird wie z.B. eine SIP-Extension. Die Device-States sollten
-      im Wählplan gut von regulären Extensions unterscheidbar sein, damit man
-      bei der Wartung und Fehlersuche nicht durcheinander kommt.</para>
+        <para>Der Parameter "device" stellt nichts weiter dar, als eine
+        spezielle Extension vom Typ Device-State, die aber im Prinzip exakt so
+        angesprochen wird wie z.B. eine SIP-Extension. Die Device-States
+        sollten im Wählplan gut von regulären Extensions unterscheidbar sein,
+        damit man bei der Wartung und Fehlersuche nicht durcheinander
+        kommt.</para>
 
-      <para>Genau wie oben bereits beschrieben, muss in der snom-Konfiguration
-      die anzusteuernde Leitungsanzeige mit der passenden Extension
-      eingestellt werden. Auch hier muss als Typ der Parameter "Ziel" gewählt
-      werden. Im nachfolgenden Beispiel wird die "9912" zur Ansteuerung der
-      Anzeige P12 genutzt. P6 ist nach wie vor aus dem obigen Beispiel gesetzt
-      und bleibt auch in bekannter Weise funktionsfähig.</para>
+        <para>Genau wie oben bereits beschrieben, muss in der
+        snom-Konfiguration die anzusteuernde Leitungsanzeige mit der passenden
+        Extension eingestellt werden. Auch hier muss als Typ der Parameter
+        "Ziel" gewählt werden. Im nachfolgenden Beispiel wird die "9912" zur
+        Ansteuerung der Anzeige P12 genutzt. P6 ist nach wie vor aus dem
+        obigen Beispiel gesetzt und bleibt auch in bekannter Weise
+        funktionsfähig.</para>
 
-      <screenshot>
-        <screeninfo>Gezielte LED-Ansteuerung</screeninfo>
+        <screenshot>
+          <screeninfo>Gezielte LED-Ansteuerung</screeninfo>
 
-        <mediaobject>
-          <imageobject role="fo">
-            <imagedata fileref="bilder/snom-hint3.png" />
-          </imageobject>
+          <mediaobject>
+            <imageobject role="fo">
+              <imagedata fileref="bilder/snom-hint3.png" />
+            </imageobject>
 
-          <imageobject role="html">
-            <imagedata fileref="bilder/snom-hint3.html.jpg" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+            <imageobject role="html">
+              <imagedata fileref="bilder/snom-hint3.html.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
 
-      <para>In der Datei <filename>extensions.conf</filename> muss nun ein
-      weiterer Hint gesetzt werden, diesmal vom Typ DS statt SIP:</para>
+        <para>In der Datei <filename>extensions.conf</filename> muss nun ein
+        weiterer Hint gesetzt werden, diesmal vom Typ DS statt SIP:</para>
 
-      <programlisting>[meine-telefone]
+        <programlisting>[meine-telefone]
 exten =&gt; 2001,hint,SIP/2001
 exten =&gt; 9912,hint,DS/9912
 
 ; Gespraechsuebernahme (PickUp) fuer bristuff
 exten =&gt; _*8.,1,PickUpChan(SIP/${EXTEN:2})</programlisting>
 
-      <para>Das ist bereits alles. Wie gehabt nun das Telefon neu anmelden,
-      damit die Subscriptions registriert werden. Mittels <command>show
-      hints</command> (<command>core show hints</command> in Version 1.4)
-      sieht man nun einen weiteren Hint aufgeführt:</para>
+        <para>Das ist bereits alles. Wie gehabt nun das Telefon neu anmelden,
+        damit die Subscriptions registriert werden. Mittels <command>show
+        hints</command> (<command>core show hints</command> in Version 1.4)
+        sieht man nun einen weiteren Hint aufgeführt:</para>
 
-      <screen>*CLI&gt; show hints
+        <screen>*CLI&gt; show hints
 
     -= Registered Asterisk Dial Plan Hints =-
    9912                : DS/9912               State:Unavailable     Watchers  1
@@ -860,29 +871,56 @@ exten =&gt; _*8.,1,PickUpChan(SIP/${EXTEN:2})</programlisting>
 - 2 hints registered
 *CLI&gt;</screen>
 
-      <para>Auch ein <command>show subscriptions</command> sollte einen
-      weiteren Wert anzeigen:</para>
+        <para>Auch ein <command>show subscriptions</command> sollte einen
+        weiteren Wert anzeigen:</para>
 
-      <screen>*CLI&gt; sip show subscriptions
+        <screen>*CLI&gt; sip show subscriptions
 Peer             User        Call ID      Extension        Last state     Type
 192.168.0.2      2000        866a9545a90  9912             Idle           dialog-info+xml
 192.168.0.2      2000        866a9545a90  2001             Idle           dialog-info+xml
 2 active SIP subscriptions
 *CLI&gt;</screen>
 
-      <para>Um die Funktionsweise zu testen, kann der Wählplan z.B. um
-      folgenden Code erweitert werden:</para>
+        <para>Um die Funktionsweise zu testen, kann der Wählplan z.B. um
+        folgenden Code erweitert werden:</para>
 
-      <programlisting>exten =&gt; _*9X,1,Answer()
+        <programlisting>exten =&gt; _*9X,1,Answer()
 exten =&gt; _*9X,n,Devstate(9912,${EXTEN:2})
 exten =&gt; _*9X,n,Wait(1)
 exten =&gt; _*9X,n,Hangup()</programlisting>
 
-      <para>Nun können die verschiedene Device-States über *9&lt;state&gt;
-      überprüft werden, z.B. kann man die LED mit *96 blinken oder mit *92
-      dauerhaft leuchten lassen sowie mit *91 wieder deaktivieren. Ist die
-      Funktionsweise einmal sichergestellt, sind der sinnvollen Anwendung
-      dieses Features natürlich keine Grenzen gesetzt.</para>
+        <para>Nun können die verschiedene Device-States über *9&lt;state&gt;
+        überprüft werden, z.B. kann man die LED mit *96 blinken oder mit *92
+        dauerhaft leuchten lassen sowie mit *91 wieder deaktivieren. Ist die
+        Funktionsweise einmal sichergestellt, sind der sinnvollen Anwendung
+        dieses Features natürlich keine Grenzen gesetzt.</para>
+      </section>
+
+      <section id="snom-leds-custom-devstate">
+        <title>Funktion DEVSTATE() ab Asterisk 1.6</title>
+
+        <indexterm>
+          <primary>DEVSTATE()</primary>
+        </indexterm>
+
+        <indexterm>
+          <primary>Funktionen</primary>
+
+          <secondary>DEVSTATE()</secondary>
+        </indexterm>
+
+        <para>Ab Asterisk 1.6 ist die oben beschriebene Funktionalität
+        prinzipiell schon eingebaut, allerdings nicht als Applikation
+        Devstate() sondern als Funktion DEVSTATE().</para>
+
+        <para>Siehe dazu auch: Blog-Artikel "Custom Device State" von Russel
+        Bryant (Leiter der Open-Source-Entwicklung bei Digium) unter <ulink
+        url="http://www.asterisk.org/node/48325">http://www.asterisk.org/node/48325</ulink></para>
+
+        <para>Für diejenigen die vor einem Patch nicht zurückschrecken gibt es
+        die Funktion auch als Backport für Asterisk 1.4, siehe <ulink
+        url="http://www.asterisk.org/node/48360">http://www.asterisk.org/node/48360</ulink></para>
+      </section>
     </section>
 
     <section id="snom-per-fernwartung-booten">
