@@ -454,9 +454,9 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</programlisting>
   </section>
 
   <section id="snom-360-menu">
-    <title>Benutzerdefinierte Menüführung (nur snom 360)</title>
+    <title>Benutzerdefinierte Menüführung</title>
 
-    <para>Die Geräte der 360er Baureihe verfügen über von außen
+    <para>Die Geräte der 360er und 370er Baureihen verfügen über von außen
     programmierbare Menüs. Die zugrundeliegenden XML-Strukturen sind unter
     <ulink url="???">http://www.snom.info/wiki/index.php/Xmlobjects</ulink>
     ausführlich erläutert. In der oben angegebenen automatischen Konfiguration
@@ -474,15 +474,15 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</programlisting>
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;SnomIPPhoneMenu&gt;
-&lt;Title&gt;Menu&lt;/Title&gt;
-&lt;MenuItem&gt;
-&lt;Name&gt;Globales Adressbuch&lt;/Name&gt;
-&lt;URL&gt;http://pbx.apfelmus-gmbh.de/snom/webapps/phonebook/phonebook.php&lt;/URL&gt;
-&lt;/MenuItem&gt;
-&lt;MenuItem&gt;
-&lt;Name&gt;Sondernummern&lt;/Name&gt;
-&lt;URL&gt;http://pbx.apfelmus-gmbh.de/snom/webapps/specialnums.xml&lt;/URL&gt;
-&lt;/MenuItem&gt;
+  &lt;Title&gt;Menu&lt;/Title&gt;
+  &lt;MenuItem&gt;
+    &lt;Name&gt;Globales Adressbuch&lt;/Name&gt;
+    &lt;URL&gt;http://pbx.apfelmus-gmbh.de/snom/webapps/phonebook/phonebook.php&lt;/URL&gt;
+  &lt;/MenuItem&gt;
+  &lt;MenuItem&gt;
+    &lt;Name&gt;Sondernummern&lt;/Name&gt;
+    &lt;URL&gt;http://pbx.apfelmus-gmbh.de/snom/webapps/specialnums.xml&lt;/URL&gt;
+  &lt;/MenuItem&gt;
 &lt;/SnomIPPhoneMenu&gt;</programlisting>
 
     <para>Ein Druck auf die snom-Taste führt zu einem Menü mit den beiden
@@ -492,9 +492,15 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</programlisting>
     auswählen. Eine Ebene zurück gelangt man mit der X-Taste.</para>
 
     <tip>
-      <para>Den "xml version"-Header kann man auch weglassen, der eingebaute
-      Browser ist in der Lage, das XML-Menü auch ohne diese Header korrekt zu
-      interpretieren.</para>
+      <para>Die "&lt;?xml version ..?&gt;"-Zeile kann man auch weglassen, der
+      eingebaute Browser ist in der Lage, das XML-Menü auch ohne diese Header
+      korrekt zu interpretieren.<footnote>
+          <para>Bei älterer Firmware könnte man auch sagen: Die "&lt;?xml
+          version ..?&gt;"-Zeile kann man auch weglassen, der eingebaute
+          Browser ist auch mit diesem Header sowieso nicht in der Lage, XML
+          korrekt zu interpretieren, insbesondere wenn es um die Kodierung und
+          um XML-Entities geht. ;-)</para>
+        </footnote></para>
     </tip>
 
     <para>Diese Menüform führt noch keine Wahlvorgänge durch, sondern dient
