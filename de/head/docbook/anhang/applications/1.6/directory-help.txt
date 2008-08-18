@@ -1,0 +1,46 @@
+-= Info about application 'Directory' =-
+
+[Synopsis]
+Provide directory of voicemail extensions
+
+[Description]
+  Directory(vm-context[,dial-context[,options]]): This application will present
+the calling channel with a directory of extensions from which they can search
+by name. The list of names and corresponding extensions is retrieved from the
+voicemail configuration file, voicemail.conf.
+  This application will immediately exit if one of the following DTMF digits are
+received and the extension to jump to exists:
+    0 - Jump to the 'o' extension, if it exists.
+    * - Jump to the 'a' extension, if it exists.
+
+  Parameters:
+    vm-context   - This is the context within voicemail.conf to use for the
+                   Directory.
+    dial-context - This is the dialplan context to use when looking for an
+                   extension that the user has selected, or when jumping to the
+                   'o' or 'a' extension.
+
+  Options:
+    e           In addition to the name, also read the extension number to the
+              caller before presenting dialing options.
+    f[(<n>)]    Allow the caller to enter the first name of a user in the
+              directory instead of using the last name.  If specified, the
+              optional number argument will be used for the number of
+              characters the user should enter.
+    l[(<n>)]    Allow the caller to enter the last name of a user in the
+              directory.  This is the default.  If specified, the
+              optional number argument will be used for the number of
+              characters the user should enter.
+    b[(<n>)]    Allow the caller to enter either the first or the last name
+              of a user in the directory.  If specified, the optional number
+              argument will be used for the number of characters the user
+              should enter.
+    m           Instead of reading each name sequentially and asking for
+              confirmation, create a menu of up to 8 names.
+    p(<n>)      Pause for n milliseconds after the digits are typed.  This is
+              helpful for people with cellphones, who are not holding the
+              receiver to their ear while entering DTMF.
+
+    Only one of the f, l, or b options may be specified.  If more than one is
+    specified, then Directory will act as if 'b' was specified.  The number
+    of characters for the user to type defaults to 3.
