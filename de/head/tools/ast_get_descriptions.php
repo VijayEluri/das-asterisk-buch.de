@@ -44,7 +44,7 @@ echo "\n";
 $err=0; $out=array();
 exec( 'asterisk -rx '. escapeShellArg('core show version'), $out, $err );
 if ($err !== 0) {
-	echo "\nERROR\n\n";
+	echo "\nERROR\n".implode("\n",$out)."\n\n";
 	exit(1);
 }
 $out = _un_terminal_color(implode("\n", $out));
@@ -53,6 +53,9 @@ if (! preg_match('/Asterisk ([0-9.\-a-zA-Z]+)/', $out, $m)) {
 	exit(1);
 }
 $ast_vers = $m[1];
+if (preg_match('/^SVN-branch-/i', $ast_vers, $m)) {
+	$ast_vers = subStr($ast_vers, strLen($m[0]));
+}
 if (preg_match('/^([0-9]+)\.([0-9]+)/', $ast_vers, $m)) {
 	$ast_vers = $m[1].'.'.$m[2];
 }
@@ -86,7 +89,7 @@ switch ($mode) {
 $err=0; $out=array();
 exec( 'asterisk -rx '. escapeShellArg($rxn), $out, $err );
 if ($err !== 0) {
-	echo "\nERROR\n\n";
+	echo "\nERROR\n".implode("\n",$out)."\n\n";
 	exit(1);
 }
 $m = array();
@@ -117,7 +120,7 @@ foreach ($items as $item) {
 	$err=0; $out=array();
 	exec( 'asterisk -rx '. escapeShellArg(sPrintF($rx1,$item)), $out, $err );
 	if ($err !== 0) {
-		echo "\nERROR\n\n";
+		echo "\nERROR\n".implode("\n",$out)."\n\n";
 		exit(1);
 	}
 	$out = implode("\n", $out);
