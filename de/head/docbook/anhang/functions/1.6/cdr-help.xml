@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screen>-= Info about function &apos;CDR&apos; =-
+
+[Syntax]
+CDR(&lt;name&gt;[,options])
+
+[Synopsis]
+Gets or sets a CDR variable
+
+[Description]
+Options:
+  &apos;l&apos; uses the most recent CDR on a channel with multiple records
+  &apos;r&apos; searches the entire stack of CDRs on the channel
+  &apos;s&apos; skips any CDR&apos;s that are marked &apos;LOCKED&apos; due to forkCDR() calls.
+      (on setting/writing CDR vars only)
+  &apos;u&apos; retrieves the raw, unprocessed value
+  For example, &apos;start&apos;, &apos;answer&apos;, and &apos;end&apos; will be retrieved as epoch
+  values, when the &apos;u&apos; option is passed, but formatted as YYYY-MM-DD HH:MM:SS
+  otherwise.  Similarly, disposition and amaflags will return their raw
+  integral values.
+  Here is a list of all the available cdr field names:
+    clid          lastdata       disposition
+    src           start          amaflags
+    dst           answer         accountcode
+    dcontext      end            uniqueid
+    dstchannel    duration       userfield
+    lastapp       billsec        channel
+  All of the above variables are read-only, except for accountcode,
+  userfield, and amaflags. You may, however,  supply
+  a name not on the above list, and create your own
+  variable, whose value can be changed with this function,
+  and this variable will be stored on the cdr.
+  For setting CDR values, the &apos;l&apos; flag does not apply to
+  setting the accountcode, userfield, or amaflags.
+   raw values for disposition:
+       1 = NO ANSWER
+       2 = BUSY
+       3 = FAILED
+       4 = ANSWERED
+    raw values for amaflags:
+       1 = OMIT
+       2 = BILLING
+       3 = DOCUMENTATION<screen>
