@@ -131,8 +131,10 @@ foreach ($items as $item) {
 	# trim:
 	$out = trim($out);
 	
+	$fileb = $dir.'/'.strToLower($item).'-help';
+	
 	$o = $out ."\n";
-	$fh = fOpen( $dir.'/'.$item.'-help.txt', 'wb' );
+	$fh = fOpen( $fileb.'.txt', 'wb' );
 	if (! $fh) {
 		echo "\nERROR. Failed to open file.\n\n";
 		exit(1);
@@ -142,7 +144,7 @@ foreach ($items as $item) {
 	
 	$o = '<'.'?xml version="1.0" encoding="UTF-8"?'.'>'."\n";
 	$o.= '<screen>'. _xmlent($out) .'<screen>'."\n";
-	$fh = fOpen( $dir.'/'.$item.'-help.xml', 'wb' );
+	$fh = fOpen( $fileb.'.xml', 'wb' );
 	if (! $fh) {
 		echo "\nERROR. Failed to open file.\n\n";
 		exit(1);
