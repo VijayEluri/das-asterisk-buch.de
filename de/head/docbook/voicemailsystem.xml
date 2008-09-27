@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <chapter id="kapitel-voicemail" lang="de" revision="$Revision:594 $">
-  <!--% Copyright (c) 2006 - 2007 by 
+  <!--% Copyright (c) 2006 - 2008 by 
 % - Stefan Wintermeyer <sw@amooma.de>
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
@@ -16,18 +16,20 @@
     <title id="voicemail-einleitung.title">Einleitung</title>
 
     <simpara>In diesem Kapitel beschäftigen wir uns mit den Möglichkeiten des
-    eingebauten Voicemailsystems von Asterisk. Dies ist nicht zu verwechseln
-    mit einem Interactive Voice Response System (IVR), dem Thema von <xref
-    linkend="kapitel-ivr" />.</simpara>
+    eingebauten Voicemailsystems von Asterisk. Dies ist nicht mit einem
+    <emphasis>Interactive Voice Response System</emphasis> (IVR) zu
+    verwechseln, dem Thema von <xref linkend="kapitel-ivr" />.</simpara>
 
-    <simpara>Da jede Telefonanlage einen Anrufbeantworter oder Neudeutsch ein
-    Voicemailsystem<footnote>
-        <simpara>In diesem Buch wird das Wort Voicemailsystem oder kurz
-        Voicemail benutzt anstelle von Anrufbeantworter. Ein
-        <quote>Anrufbeantworter</quote> ist nach allgemeinem Verständnis eher
-        ein schwarzer Kasten mit einem Kassettenrekorder neben dem Telefon.
-        Ein Voicemailsystem bietet viel mehr Möglichkeiten als ein
-        Anrufbeantworter im herkömmlichen Sinne.</simpara>
+    <simpara>Da jede Telefonanlage einen Anrufbeantworter (oder Neudeutsch:
+    ein Voicemailsystem)<footnote>
+        <simpara>In diesem Buch wird das Wort
+        <emphasis>Voicemailsystem</emphasis> oder kurz
+        <emphasis>Voicemail</emphasis> anstelle von
+        <emphasis>Anrufbeantworter</emphasis> benutzt. Ein Anrufbeantworter
+        ist nach allgemeinem Verständnis eher ein schwarzer Kasten mit einem
+        Kassettenrekorder neben dem Telefon. Ein Voicemailsystem bietet viel
+        mehr Möglichkeiten als ein Anrufbeantworter im herkömmlichen
+        Sinne.</simpara>
       </footnote> benötigt, haben die Asterisk-Entwickler ein solches System
     als Grundausstattung eingebaut.<footnote>
         <simpara>Das Voicemailsystem wurde übrigens von den
@@ -46,7 +48,7 @@
     Möglichkeiten von Voicemailsystemen unter Asterisk eingegangen.</simpara>
 
     <section id="voicemail-beispiele-meier">
-      <title id="voicemail-beispiele-meier.title">Voicemailbox der Familie
+      <title id="voicemail-beispiele-meier.title">Die Voicemailbox der Familie
       Meier</title>
 
       <simpara>Die Familie Meier stellt im Zuge der Modernisierung des
@@ -100,8 +102,8 @@
 
                 <entry>202</entry>
 
-                <entry>Normale Voicemailbox und Benachrichtigung per E-Mail,
-                die Sprachnachricht wird der E-Mail beigefügt</entry>
+                <entry>Normale Voicemailbox und Benachrichtigung per E-Mail.
+                Die Sprachnachricht wird der E-Mail beigefügt.</entry>
               </row>
 
               <row>
@@ -137,12 +139,12 @@ attach = yes
 202 =&gt; 1234,Peter Meier,peter@die-familie-meier.de
 203 =&gt; 1234,Lisa Meier,lisa@die-familie-meier.de,,delete=yes</programlisting>
 
-        <simpara>Und in der <filename>extensions.conf</filename> wird auf die
+        <simpara>In der <filename>extensions.conf</filename> wird auf die
         Voicemailbox wie folgt verwiesen:</simpara>
 
         <programlisting>[familie-meier]
 ; Wenn nach 30 Sekunden niemand abnimmt, geht das Gespraech 
-; auf die Voicemailbox, das gleiche bei besetzt:
+; auf die Voicemailbox, das Gleiche bei besetzt:
 exten =&gt; _20[0-3],1,Set(ZIELNR=${EXTEN})
 exten =&gt; _20[0-3],n,Dial(SIP/${EXTEN},30)
 exten =&gt; _20[0-3],n,Goto(s-${DIALSTATUS},1)  ; zum Status (NOANSWER,BUSY,CHANUNAVAIL,CONGESTION,ANSWER)
@@ -155,7 +157,7 @@ exten =&gt; _s-.,1,Goto(s-NOANSWER,1)           ; alles andere wie nicht erreich
 ; Telefon seine persoenliche Voicemailbox abrufen:
 exten =&gt; 250,1,VoiceMailMain(${CALLERID(num)})</programlisting>
 
-        <para>Oder schöner so:<programlisting>[familie-meier]
+        <para>Schöner wäre es so:<programlisting>[familie-meier]
 exten =&gt; _20[0-3],1,Macro(normal|SIP/${EXTEN}|${EXTEN})
 
 exten =&gt; 250,1,VoiceMailMain(${CALLERID(num)})
@@ -272,7 +274,7 @@ exten =&gt; _s-.,1,Goto(s-NOANSWER,1)          ; alles andere wie nicht erreichb
                       besetztem Anschluss kann hingegen keine Nachricht
                       hinterlassen werden.<footnote>
                           <simpara>Dies ist eine Vorsichtsmaßnahme, die einen
-                          Denial-Of-Service im Falle eines großen IT-Problems
+                          Denial-of-Service im Falle eines großen IT-Problems
                           verhindern soll. Wenn alle Mitarbeiter eine
                           Nachricht auf dem Voicemailsystem hinterlassen
                           würden, dann käme die IT-Abteilung mit dem Abhören
@@ -387,7 +389,7 @@ exten =&gt; _s-.,1,Goto(s-NOANSWER,1)          ; alles andere wie nicht erreichb
 
         <programlisting>[general]
 ; Die Sprachnachrichten werden im qualitativ hochwertigen 
-; WAV Format gespeichert.
+; WAV-Format gespeichert.
 format = wav
 
 ; Die E-Mails mit den Sprachnachrichten fuer die Nutzer erhalten 
@@ -467,7 +469,7 @@ exten =&gt; s,1,Dial(${ARG1},30)               ; max. 30 Sekunden klingeln
 exten =&gt; s,n,Goto(s-${DIALSTATUS},1)        ; je nach Status springen (NOANSWER,BUSY,CHANUNAVAIL,CONGESTION,ANSWER)
 exten =&gt; s-NOANSWER,1,VoiceMail(${ARG2},u)  ; Voicemail mit Ansage "nicht erreichbar"
 exten =&gt; s-BUSY,1,VoiceMail(${ARG2},b)      ; Voicemail mit Ansage "besetzt"
-exten =&gt; s-ANSWER,1,Hangup()                ; zur Sicherheit nach Gespräch auflegen
+exten =&gt; s-ANSWER,1,Hangup()                ; zur Sicherheit nach Gespraech auflegen
 exten =&gt; _s-.,1,Goto(s-NOANSWER,1)          ; alles andere wie nicht erreichbar behandeln
 
 [interne-gespraeche]
@@ -484,7 +486,7 @@ exten =&gt; _20[1-2],1,Macro(simple|SIP/${EXTEN}|${EXTEN})
 ; Das Sekretariat hat eine Gruppenmailbox:
 exten =&gt; _2[3-6]X,1,Macro(simple|SIP/${EXTEN}|804)
 
-; Der Verkauf National hat eine Gruppenmailbox:
+; Der Verkauf Inland hat eine Gruppenmailbox:
 exten =&gt; _3[0-4]X,1,Macro(simple|SIP/${EXTEN}|802)
 
 ; Der Verkauf Ausland hat eine Gruppenmailbox:
@@ -517,13 +519,13 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         <simpara>Die <filename>extensions.conf</filename> der Apfelmus GmbH
         sieht jetzt schon etwas aufwendiger aus. Das liegt daran, dass wir
         verschiedene Voicemailboxarten verwenden. Es gibt einmal die normale
-        Voicemailbox und dann noch die Gruppen-Voicemailboxen für den Verkauf
+        Voicemailbox und dann noch die Gruppenvoicemailboxen für den Verkauf
         und das Sekretariat. Weiterhin sollen die Mitarbeiter des Verkaufs
         ihre Voicemailboxen ohne Passwort-Eingabe abrufen können. Das Ganze
         soll natürlich für den einzelnen Mitarbeiter möglichst komfortabel
         abgebildet werden. Aus diesem Grund bleibt für alle User des Systems
         die <code>800</code> die Rufnummer der Voicemailbox, unter der sie
-        dieselbige abrufen können.</simpara>
+        dieselbe abrufen können.</simpara>
       </section>
     </section>
   </section>
@@ -608,12 +610,12 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
               <simplelist>
                 <member>Wenn der Anrufer während der Ansage die <code>0</code>
                 (Null) drückt, dann springt die Applikation zu der Extension
-                <code>o</code> (Buchstabe o kleingeschrieben) in diesem
+                <code>o</code> (Buchstabe o, kleingeschrieben) in diesem
                 Context.</member>
 
                 <member>Wenn der Anrufer während der Ansage den <code>*</code>
                 (Stern) drückt, dann springt die Applikation zu der Extension
-                <code>a</code> (Buchstabe a kleingeschrieben) in diesem
+                <code>a</code> (Buchstabe a, kleingeschrieben) in diesem
                 Context.</member>
               </simplelist>
             </listitem>
@@ -628,10 +630,10 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
                   <term><code>u</code></term>
 
                   <listitem>
-                    <simpara>veranlasst, dass die <quote>unavailable</quote>
-                    (nicht verfügbar) Nachricht abgespielt wird. Der Dateiname
-                    im Filesystem ist
-                    <filename>/var/lib/asterisk/sounds/vm-isunavail.gsm</filename><footnote>
+                    <simpara>veranlasst, dass die Nachricht
+                    <quote>unavailable</quote> (nicht verfügbar) abgespielt
+                    wird. Der Dateiname im Filesystem ist
+                    <filename>/var/lib/asterisk/sounds/vm-isunavail.gsm</filename>.<footnote>
                         <simpara>Falls Sie ein fertiges Asterisk-Paket
                         verwenden, kann der Pfad z.B. auch
                         <filename>/usr/share/asterisk/sounds/</filename>
@@ -644,10 +646,10 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
                   <term><code>b</code></term>
 
                   <listitem>
-                    <simpara>veranlasst, dass die <quote>busy</quote>
-                    (besetzt) Nachricht abgespielt wird. Der Dateiname im
-                    Filesystem ist
-                    <filename>/var/lib/asterisk/sounds/vm-rec-busy.gsm.</filename></simpara>
+                    <simpara>veranlasst, dass die Nachricht
+                    <quote>busy</quote> (besetzt) abgespielt wird. Der
+                    Dateiname im Filesystem ist
+                    <filename>/var/lib/asterisk/sounds/vm-rec-busy.gsm</filename>.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -706,7 +708,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
             <term><code>mailbox</code></term>
 
             <listitem>
-              <simpara>Der Name (also Nummer) der Mailbox. Wenn kein Name
+              <simpara>Der Name (also die Nummer) der Mailbox. Wenn kein Name
               vorgegeben wurde, fragt das System danach.</simpara>
             </listitem>
           </varlistentry>
@@ -946,7 +948,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
                       <entry><emphasis
                       role="bold"><code>1</code></emphasis></entry>
 
-                      <entry>Aufnahme der <quote>nicht
+                      <entry>Aufnahme der <quote>Nicht
                       erreichbar</quote>-Ansage <foreignphrase
                       lang="en">(Record your unavailable
                       message)</foreignphrase></entry>
@@ -956,7 +958,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
                       <entry><emphasis
                       role="bold"><code>2</code></emphasis></entry>
 
-                      <entry>Aufnahme der <quote>im Gespräch</quote>-Ansage
+                      <entry>Aufnahme der <quote>Im Gespräch</quote>-Ansage
                       <foreignphrase lang="en">(Record your busy
                       message)</foreignphrase></entry>
                     </row>
@@ -1049,7 +1051,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
       </indexterm></title>
 
     <simpara>In der Datei <filename>voicemail.conf</filename> wird das
-    Voicemailsystem von Asterisk konfiguriert. Es besteht aus 3
+    Voicemailsystem von Asterisk konfiguriert. Es besteht aus drei
     Bereichen:</simpara>
 
     <itemizedlist>
@@ -1364,7 +1366,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
                       </indexterm></entry>
 
                     <entry><simpara>Datum und Uhrzeit des
-                    Anrufes</simpara></entry>
+                    Anrufs</simpara></entry>
                   </row>
 
                   <row>
@@ -1587,10 +1589,10 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
             <simpara>Listet die Codecs auf, mit denen eine Sprachnachricht
             abgespeichert werden soll. Werden mehrere Codecs aufgeführt,
             werden auch mehrere Dateien gespeichert. Das kann im Extremfall zu
-            Platzproblemen auf der Festplatte führen. Der Vorteil liegt darin,
-            dass bei einer Abfrage die Nachricht nicht noch einmal neu kodiert
-            werden muss, falls der Abfragende mit einem anderen Codec abfragt,
-            als mit dem, in dem die Nachricht bereits gespeichert
+            Platzproblemen auf der Festplatte führen. Der Vorteil besteht
+            darin, dass bei einer Abfrage die Nachricht nicht noch einmal neu
+            kodiert werden muss, falls der Abfragende mit einem anderen Codec
+            abfragt als mit dem, in dem die Nachricht bereits gespeichert
             wurde.</simpara>
 
             <simpara>Bei aktiviertem <code>attach</code> wird das erste Format
@@ -1661,7 +1663,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
             neuen Nachrichten mehr aufgenommen werden, und der Anrufer hört
             die Nachricht
             <filename>/var/lib/asterisk/sounds/vm-mailboxfull.gsm</filename><footnote>
-                <simpara>Pfad abhängig von der Installation, z.B. auch
+                <simpara>Der Pfad ist von der Installationabhängig, z.B. auch
                 <filename>/usr/share/asterisk/sounds/</filename></simpara>
               </footnote>.</simpara>
 
@@ -1687,7 +1689,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
 
           <listitem>
             <simpara>Definiert die maximale Länge einer Sprachnachricht in
-            Sekunden. Default: unendlich</simpara>
+            Sekunden. Default: unendlich.</simpara>
 
             <simpara>Beispiel:</simpara>
 
@@ -1711,7 +1713,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
 
           <listitem>
             <simpara>Definiert die minimale Länge einer Sprachnachricht in
-            Sekunden. Default: <code>0</code></simpara>
+            Sekunden. Default: <code>0</code>.</simpara>
 
             <simpara>Beispiel:</simpara>
 
@@ -1735,7 +1737,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
 
           <listitem>
             <simpara>Definiert die maximale Länge einer Begrüßungsnachricht in
-            Sekunden. Default: unendlich</simpara>
+            Sekunden. Default: unendlich.</simpara>
 
             <simpara>Beispiel:</simpara>
 
@@ -1788,9 +1790,9 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
             dieser Wert ist, desto höher ist die Empfindlichkeit. Default:
             <code>128</code><footnote>
                 <simpara>Es lässt sich selbst im Source-Code von Asterisk
-                keine Information finden, in welchem Rahmen sich dieser Wert
-                sinnvoll bewegen kann (es handelt sich um einen Int). Ggf. ist
-                also Ausprobieren erforderlich.</simpara>
+                keine Information dazu finden, in welchem Rahmen sich dieser
+                Wert sinnvoll bewegen kann (es handelt sich um einen Int).
+                Gegebenenfalls müssen Sie das ausprobieren.</simpara>
               </footnote></simpara>
 
             <simpara>Beispiel:</simpara>
@@ -1816,7 +1818,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
           <listitem>
             <simpara>Definiert die maximale Anzahl von fehlerhaften
             Einlogversuchen (falsches Passwort durch den User), bevor Asterisk
-            auflegt. Default: <code>3</code></simpara>
+            auflegt. Default: <code>3</code>.</simpara>
 
             <simpara>Beispiel:</simpara>
 
@@ -1840,9 +1842,9 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
 
           <listitem>
             <simpara>Setzt die Anzahl an Millisekunden, um die während des
-            Abhörens einer Sprachnachricht mit den Tasten für weiter und
-            zurück in der Nachricht gesprungen wird. Default:
-            <code>3000</code></simpara>
+            Abhörens einer Sprachnachricht mit den Tasten für Weiter und
+            Zurück in der Nachricht gesprungen wird. Default:
+            <code>3000</code>.</simpara>
 
             <simpara>Beispiel:</simpara>
 
@@ -1867,7 +1869,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
           <listitem>
             <simpara>Erlaubt es dem User von Voicemailboxen, die Einträge
             eines Dial-by-Name-Systems zur Weiterleitung von Nachrichten zu
-            benutzen. Default: <code>no</code></simpara>
+            benutzen. Default: <code>no</code>.</simpara>
 
             <simpara>Beispiel:</simpara>
 
@@ -1892,7 +1894,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
           <listitem>
             <simpara>Definiert, ob die Telefonnummer des Anrufers beim Abrufen
             der Nachrichten angesagt werden soll. Default:
-            <code>no</code></simpara>
+            <code>no</code>.</simpara>
 
             <simpara>Beispiel:</simpara>
 
@@ -1918,7 +1920,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
             <simpara>Legt die Contexte fest (durch Kommata getrennt), die beim
             Abrufen einer Voicemail-Nachricht als intern gelten, für die also
             z.B. nur die Durchwahl (Extension) als Caller-ID angesagt wird.
-            Default: keine</simpara>
+            Default: keine.</simpara>
           </listitem>
         </varlistentry>
 
@@ -1996,9 +1998,9 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </varlistentry>
       </variablelist>
 
-      <simpara>Neben den hier aufgeführten Parametern gibt es noch weitere,
+      <simpara>Neben den hier aufgeführten Parametern gibt es noch weitere;
       die genannten sind jedoch die wichtigsten für gängige Konfigurationen.
-      Eine Auflistung aller verfügbaren Parameter findet sich in der Datei
+      Eine Auflistung aller verfügbaren Parameter finden Sie in der Datei
       <filename>voicemail.conf</filename>. In der Grundinstallation sind dort
       alle Parameter mit einer kurzen Beschreibung enthalten.</simpara>
     </section>
@@ -2025,8 +2027,8 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
       Format definiert werden, mit dem dem User die Uhrzeit angesagt
       wird.<footnote>
           <simpara>Beachten Sie, dass Sie eine wie hier beschrieben definierte
-          Zeitzone noch für die User aktivieren müssen. Siehe <xref
-          linkend="voicemail-voicemail.conf-mailbox" /></simpara>
+          Zeitzone noch für die User aktivieren müssen (siehe <xref
+          linkend="voicemail-voicemail.conf-mailbox" />.</simpara>
         </footnote></simpara>
 
       <section id="voicemail-voicemail.conf-zonemessages-syntax">
@@ -2198,8 +2200,8 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
               </informaltable>
 
               <simpara>Daneben gibt es noch die Sonderfälle
-              <code>${<replaceable>VAR</replaceable>}</code> (Inhalt dieser
-              Variablen wird eingefügt) <code>und
+              <code>${<replaceable>VAR</replaceable>}</code> (der Inhalt
+              dieser Variablen wird eingefügt) <code>und
               '<replaceable>sprachdatei</replaceable>'</code>. Dabei ist zu
               beachten, dass '<replaceable>sprachdatei</replaceable>' ohne
               <quote><filename>.gsm</filename></quote> ist. Dieser
@@ -2248,9 +2250,9 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
             <primary sortas="default"><code>[default]</code></primary>
           </indexterm></title>
 
-        <simpara>Wenn kein anderer Context eingerichtet wurde, muss
-        zumindestens der <code>[default]</code>-Context existieren. Für die
-        meisten aller Installationen reicht dieser aus.</simpara>
+        <simpara>Wenn kein anderer Context eingerichtet wurde, muss zumindest
+        der <code>[default]</code>-Context existieren. Für die meisten aller
+        Installationen reicht dieser aus.</simpara>
       </section>
     </section>
 
@@ -2291,7 +2293,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
             <term><code>mailbox</code></term>
 
             <listitem>
-              <simpara>Name der Mailbox (Ziffern)</simpara>
+              <simpara>Name der Mailbox (Ziffern).</simpara>
             </listitem>
           </varlistentry>
 
@@ -2310,7 +2312,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
 
             <listitem>
               <simpara>E-Mail-Adresse, an die Sprachnachrichten gesendet
-              werden sollen</simpara>
+              werden sollen.</simpara>
             </listitem>
           </varlistentry>
 
@@ -2319,7 +2321,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
 
             <listitem>
               <simpara>E-Mail Adresse des Pagers, an die Benachrichtigungen
-              (eine Textzeile) geschickt werden sollen<footnote>
+              (eine Textzeile) geschickt werden sollen.<footnote>
                   <simpara>Bitte beachten Sie, dass diese Nachrichten
                   ebenfalls E-Mails sind. Sollten Sie SMS-Nachrichten
                   verschicken wollen, suchen Sie im Internet nach <quote>sms
@@ -2333,12 +2335,12 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
             <term><code>optionen</code></term>
 
             <listitem>
-              <simpara>Unterschiedliche Optionen, die durch ein Pipe-Zeichen
-              (<code>|</code>) voneinander getrennt aneinandergereiht werden.
+              <simpara>Unterschiedliche Optionen, die, durch ein Pipe-Zeichen
+              (<code>|</code>) voneinander getrennt, aneinandergereiht werden.
               Sie können hier die unter <code>[general]</code> (siehe <xref
               linkend="voicemail-voicemail.conf-general" />) global
               festgelegten Einstellungen pro Mailbox verändern. Bitte beachten
-              Sie, dass zwischen Parametername, dem Gleich-Zeichen
+              Sie, dass zwischen dem Parameternamen, dem Gleichheitszeichen
               (<code>=</code>) und dem Wert keine Leerzeichen sein dürfen.
               Dasselbe gilt für das Pipe-Zeichen (<code>|</code>).</simpara>
 
@@ -2408,7 +2410,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
                     </indexterm></term>
 
                   <listitem>
-                    <simpara>Legt ggf. ein anderes als das unter
+                    <simpara>Legt ggf. ein anderes Format als das unter
                     <code>[general]</code> mittels <code>format</code>
                     eingestellte Format fest, das für E-Mail-Anhänge verwendet
                     wird.</simpara>
@@ -2450,7 +2452,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
 
                   <listitem>
                     <simpara>Definiert, ob die Länge der Nachricht angesagt
-                    werden soll. Default: <code>yes</code></simpara>
+                    werden soll. Default: <code>yes</code>.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2470,7 +2472,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
                   <listitem>
                     <simpara>Legt die Mindestlänge einer Nachricht in Minuten
                     fest, ab der die Länge angesagt wird. Default:
-                    <code>0</code></simpara>
+                    <code>0</code>.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2555,7 +2557,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
                   <listitem>
                     <simpara>Legt fest, ob der Anrufer die von ihm
                     hinterlassene Sprachnachricht vor dem Speichern erneut
-                    anhören kann. Default: <code>no</code></simpara>
+                    anhören kann. Default: <code>no</code>.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2575,10 +2577,10 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
                   <listitem>
                     <simpara>Definiert, ob der Anrufer vor, während oder nach
                     der Aufnahme seiner Sprachnachricht mit der Eingabe von
-                    <code>0</code> (also Null auf dem Telefon drücken) zum
-                    Operator durchgestellt wird. Operator ist immer die
+                    <code>0</code> (indem er also Null auf dem Telefon drückt)
+                    zum Operator durchgestellt wird. Operator ist immer die
                     Extension <code>o</code> (kleiner Buchstabe o) im
-                    aktuellen Context. Default: <code>no</code></simpara>
+                    aktuellen Context. Default: <code>no</code>.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2600,8 +2602,8 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
                     Sprachnachricht angesagt werden sollen. Wenn dieser
                     Parameter auf <code>no</code> gesetzt ist, dann werden
                     dadurch bestimmte andere Einstellungen (wie zum Beispiel
-                    <code>tz</code>) überstimmt. Default:
-                    <code>yes</code></simpara>
+                    <code>tz</code>) überschrieben?. Default:
+                    <code>yes</code>.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2621,7 +2623,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
                   <listitem>
                     <simpara>Definiert, ob Sprachnachrichten nach dem
                     Versenden per E-Mail automatisch gelöscht werden sollen.
-                    Default: <code>no</code></simpara>
+                    Default: <code>no</code>.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2641,7 +2643,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
                   <listitem>
                     <simpara>Definiert, ob das System nach dem Löschen oder
                     Abspeichern einer Sprachnachricht automatisch zur nächsten
-                    Nachricht springt. Default: <code>no</code></simpara>
+                    Nachricht springt. Default: <code>no</code>.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2661,7 +2663,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
                   <listitem>
                     <simpara>Bestimmt, ob das System den User beim ersten
                     Abruf des Systems dazu zwingt, seinen Namen aufnehmen zu
-                    lassen. Default: <code>no</code></simpara>
+                    lassen. Default: <code>no</code>.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2682,7 +2684,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
                     <simpara>Definiert, ob das System den User bei der ersten
                     Nutzung des Voicemailsystems dazu zwingt, eine persönliche
                     Ansage für seine Voicemailbox aufzunehmen. Default:
-                    <code>no</code></simpara>
+                    <code>no</code>.</simpara>
                   </listitem>
                 </varlistentry>
 
@@ -2702,7 +2704,7 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
                   <listitem>
                     <simpara>Definiert, ob dieser Eintrag aus dem
                     Dial-by-Name-Verzeichnis herausgenommen (versteckt) werden
-                    soll. Default: <code>no</code></simpara>
+                    soll. Default: <code>no</code>.</simpara>
                   </listitem>
                 </varlistentry>
               </variablelist>
@@ -2726,15 +2728,16 @@ military = Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</progra
     <simpara>Auch wenn es eigentlich nicht unmittelbar mit der
     VoiceMail-Funktion von Asterisk zu tun hat, gehört das
     Dial-by-Name-Directory<footnote>
-        <para>Anstelle des deutschen Wortes Verzeichnis verwenden wir der
-        Einfachheit halber das englische Wort Directory.</para>
+        <para>Anstelle des deutschen Wortes <emphasis>Verzeichnis</emphasis>
+        verwenden wir der Einfachheit halber das englische Wort
+        <emphasis>Directory</emphasis>.</para>
       </footnote> sinngemäß in dieses Kapitel. Es wurde von den
     Asterisk-Entwicklern als Teil des Voicemailsystems programmiert und greift
     auf Daten der Datei <filename>voicemail.conf</filename> zu.</simpara>
 
     <simpara>Wenn wir für das Beispiel in <xref
-    linkend="voicemail-beispiele-meier" /> die folgende Konfiguration zu
-    Grunde legen:</simpara>
+    linkend="voicemail-beispiele-meier" /> die folgende Konfiguration zugrunde
+    legen ...</simpara>
 
     <programlisting>[general]
 format = gsm
@@ -2747,9 +2750,9 @@ format = gsm
 202 =&gt; 1234,Peter Meier,peter@die-familie-meier.de
 203 =&gt; 1234,Lisa Meier,lisa@die-familie-meier.de,,delete=yes</programlisting>
 
-    <simpara>Dann können wir daraus recht einfach ein Dial-by-Name-Directory
-    generieren. Dies geschieht durch Aufruf des Programmes
-    <code>Directory()</code> in der
+    <simpara>... dann können wir daraus recht einfach ein
+    Dial-by-Name-Directory generieren. Dies geschieht durch Aufruf des
+    Programms <code>Directory()</code> in der
     <filename>extensions.conf</filename>:</simpara>
 
     <programlisting>exten =&gt; 800,1,Directory(default,from-intern)</programlisting>
@@ -2778,7 +2781,7 @@ format = gsm
 
           <listitem>
             <simpara>Das Directory wird benutzt, um eine bestimmte Person
-            anzurufen, entsprechend muss auch ein Context definiert werden,
+            anzurufen. Entsprechend muss auch ein Context definiert werden,
             aus dem (in der <filename>extensions.conf</filename>) der Anruf
             geführt werden soll. Ist
             <code><replaceable>dial-context</replaceable></code> nicht
@@ -2805,17 +2808,18 @@ format = gsm
         </varlistentry>
       </variablelist>
 
-      <simpara>Siehe auch <xref linkend="applikationen-directory" /></simpara>
+      <simpara>Siehe auch <xref
+      linkend="applikationen-directory" />.</simpara>
     </section>
 
     <section id="voicemail-telefonbuch-funktion">
       <title id="voicemail-telefonbuch-funktion.title">Funktionsweise</title>
 
-      <simpara>Der Anrufer wird vom Directory aufgefordert, die ersten 3
-      Buchstaben des Nachnamens (beim Aufruf mit der Option <code>f</code>,
-      des Vornamens) mit dem Tastenfeld des Telefons einzugeben. Das Programm
-      sucht dann den entsprechenden Eintrag aus dem Directory und verbindet
-      den Anrufer auf Wunsch.</simpara>
+      <simpara>Der Anrufer wird vom Directory aufgefordert, die ersten drei
+      Buchstaben des Nachnamens (beim Aufruf mit der Option <code>f</code>
+      sind es Buchstaben des Vornamens) mit dem Tastenfeld des Telefons
+      einzugeben. Das Programm sucht dann den entsprechenden Eintrag aus dem
+      Directory und verbindet den Anrufer auf Wunsch.</simpara>
     </section>
   </section>
 
@@ -2827,29 +2831,29 @@ format = gsm
     <simpara>Nicht nur als internes Rufnummernverzeichnis kann die
     <filename>voicemail.conf</filename> sehr nützlich sein, sondern auch als
     Speicherort für Passwörter. Sie werden vielleicht eine Situation haben, in
-    der sich Ihre internen Benutzer aus welchem Grund auch immer am System
-    authentifizieren sollen - ein konkreter Fall wären Call-Center-Agenten,
+    der sich Ihre internen Benutzer (aus welchem Grund auch immer) am System
+    authentifizieren sollen -- ein konkreter Fall wären Call-Center-Agenten,
     die sich anmelden.</simpara>
 
     <simpara>Es bietet sich in solchen Fällen manchmal an, für die
     betreffenden User einen Eintrag in der <filename>voicemail.conf</filename>
-    anzulegen, obwohl diese vielleicht gar keine Mailbox brauchen. Und keine
-    Angst: auf den so angelegten Mailboxen wird niemand versehentlich eine
+    anzulegen, obwohl diese vielleicht gar keine Mailbox brauchen. Keine
+    Angst: Auf den so angelegten Mailboxen wird niemand versehentlich eine
     Nachricht hinterlassen können, solange Sie nicht im Dialplan mit
     <code>VoiceMail()</code> (oder <code>VoiceMailMain()</code>) darauf
     verweisen.</simpara>
 
-    <para>Sie könnten beispielsweise die Voicemail-Boxen<programlisting>1001 =&gt; 1234,Hans Glueck,,,hidefromdir=yes
+    <para>Sie könnten beispielsweise die Voicemailboxen<programlisting>1001 =&gt; 1234,Hans Glueck,,,hidefromdir=yes
 1002 =&gt; 1234,Peter Pech,,,hidefromdir=yes</programlisting>im Abschnitt
     <code>[call-center-agenten]</code> anlegen und die User an geeigneter
-    Stelle im Dialplan mit VMAuthenticate (<xref
+    Stelle im Dialplan mit <code>VMAuthenticate</code> (<xref
     linkend="applikationen-vmauthenticate" />) dem System gegenüber
     authentifizieren:<programlisting>exten =&gt; 988,n,Read(agentennr,agent-user,10,,3)
 exten =&gt; 988,n,VMAuthenticate(${agentennr}@call-center-agenten)</programlisting></para>
 
-    <simpara>Betrachten Sie das aber nur als Denkanstoß bzw. Beschreibung
+    <simpara>Betrachten Sie das aber nur als Denkanstoß bzw. als Beschreibung
     einer von vielen Möglichkeiten zur Authentifizierung. Eine Speicherung der
     Passwörter in der AstDB oder einer anderen Datenbank wäre diesem Ansatz in
-    den häufigsten Fällen vorzuziehen.</simpara>
+    den meisten Fällen vorzuziehen.</simpara>
   </section>
 </chapter>
