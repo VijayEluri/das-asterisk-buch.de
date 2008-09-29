@@ -20,13 +20,13 @@
     </indexterm></title>
 
   <para>VoIP-Telefone der Firma <ulink url="http://www.snom.de">snom</ulink>
-  sind in Deutschland sehr beliebt und werden deshalb an dieser Stelle im
-  Detail beschrieben. Es gibt eine Reihe von verschiedenen snom-Telefonen. Das
-  snom 360 und sein neuer großer Bruder 370 stechen allerdings mit einigen
-  Features für den Einsatz in großen Firmen hervor. Alle snom-Telefone bieten
-  durch die umfangreiche SIP-Unterstützung in Kombination mit Asterisk
-  Eigenschaften, die man sonst nur von herstellerspezifischen Anlagen mit
-  Systemtelefonen kennt.</para>
+  sind in Deutschland sehr beliebt und werden deshalb exemplarisch an dieser
+  Stelle im Detail beschrieben. Es gibt eine Reihe von verschiedenen
+  snom-Telefonen. Das snom 360 und sein neuer großer Bruder 370 stechen
+  allerdings mit einigen Features für den Einsatz in großen Firmen hervor.
+  Alle snom-Telefone bieten durch die umfangreiche SIP-Unterstützung in
+  Kombination mit Asterisk Eigenschaften, die man sonst nur von
+  herstellerspezifischen Anlagen mit Systemtelefonen kennt.</para>
 
   <section id="snom-asterisk-sip.conf">
     <title>Konfiguration von Asterisk</title>
@@ -117,6 +117,18 @@ vmexten=obelisk</programlisting>
       Telefons belegen oder bei den snom 360-Modellen über die XML-Steuerung
       einen Menüpunkt zur Verfügung stellen.</para>
     </warning>
+
+    <para><tip>
+        <para>Die snom 370er-Modelle verfügen über eine zweifarbige
+        Message-LED. Leuchtet diese gelb, so signalisiert das angegangene aber
+        nicht angenommene Anrufe. Diese Anrufe finden sich dann in der
+        internen Anrufliste des Telefons wieder. Die Retrieve-Taste
+        funktioniert in diesem Fall nicht. Erst wenn die LED rot blinkt, liegt
+        auch ein Anruf auf der Mailbox vor, der mittels der Retrieve-Taste
+        abgehört werden kann. Bei Anwendern, die zuvor mit einem Gerät der
+        360er-Baureihe gearbeitet haben, kann das anfangs zu Verwirrung
+        führen.</para>
+      </tip></para>
 
     <para>Sollte die Anwahl der Mailbox noch nicht problemlos funktionieren,
     so überprüfen Sie bitte am snom-Telefon zusätzlich den Eintrag
@@ -667,8 +679,7 @@ exten =&gt; _2XXX,n,VoiceMail(u${EXTEN}) </programlisting>
       nach dem Asterisk-Neustart ist für die saubere Anmeldung der
       Subscription des Telefons notwendig. Zunächst sollte überprüft werden,
       ob alles richtig konfiguriert wurde. Dazu geben Sie im Asterisk-CLI die
-      Zeile <command>show hints</command> (<command>core show hints</command>
-      in Version 1.4) ein:</para>
+      Zeile <command>core show hints</command> ein:</para>
 
       <screen>*CLI&gt; show hints
 -= Registered Asterisk Dial Plan Hints =-
@@ -709,8 +720,8 @@ Peer User Call ID Extension Last state Type
 
       <screen>Extension Changed 2001 new state Idle for Notify User 2000</screen>
 
-      <para>Setzen Sie den Befehl <command>show hints</command> (<command>core
-      show hints</command> ab Version 1.4) erneut ab:</para>
+      <para>Setzen Sie den Befehl<command>core show hints</command> erneut
+      ab:</para>
 
       <screen>*CLI&gt; show hints
 -= Registered Asterisk Dial Plan Hints =-
@@ -802,20 +813,18 @@ callpickup_dialoginfo: on</programlisting>
           <primary>Devstate()</primary>
         </indexterm>
 
-        <para>In den aktuellen Versionen von Asterisk ist es ebenfalls
-        möglich, die LEDs z.B. auch gezielt aus dem Wählplan anzusteuern. Dazu
-        wurde Asterisk die Applikation "Devstate" hinzugefügt. Bitte prüfen
-        Sie auf der Asterisk-Konsole über den Befehl <command>show application
-        Devstate</command>, ob Ihre Asterisk-Version diesen Patch
-        enthält:</para>
+        <para>In Asterisk ist es ebenfalls möglich, die LEDs z.B. auch gezielt
+        aus dem Wählplan anzusteuern. Dazu dient die Applikation
+        "DevState":</para>
 
         <screen>*CLI&gt; show application Devstate 
 -= Info about application 'Devstate' =-
-[Synopsis] Generate a device state change event given the input parameters 
-[Description] Devstate(device|state): 
-Generate a device state change event given the input parameters. Returns 0. State
-values match the asterisk device states. They are 0 = unknown, 1 = not
-inuse, 2 = inuse, 3 = busy, 4 = invalid, 5 = unavailable, 6 = ringing
+[Synopsis] 
+Generate a device state change event given the input parameters 
+
+[Description] 
+Devstate(device|state): 
+Generate a device state change event given the input parameters. Returns 0. State values match the asterisk device states. They are 0 = unknown, 1 = not inuse, 2 = inuse, 3 = busy, 4 = invalid, 5 = unavailable, 6 = ringing
 *CLI&gt;</screen>
 
         <para>Der Parameter "device" stellt nichts weiter dar, als eine
@@ -858,9 +867,8 @@ exten =&gt; 9912,hint,DS/9912
 exten =&gt; _*8.,1,PickUpChan(SIP/${EXTEN:2})</programlisting>
 
         <para>Das ist bereits alles. Wie gehabt nun das Telefon neu anmelden,
-        damit die Subscriptions registriert werden. Mittels <command>show
-        hints</command> (<command>core show hints</command> in Version 1.4)
-        sieht man nun einen weiteren Hint aufgeführt:</para>
+        damit die Subscriptions registriert werden. Mittels <command>core show
+        hints</command> sieht man nun einen weiteren Hint aufgeführt:</para>
 
         <screen>*CLI&gt; show hints
 -= Registered Asterisk Dial Plan Hints =-
@@ -909,7 +917,7 @@ exten =&gt; _*9X,n,Hangup()</programlisting>
         </indexterm>
 
         <para>Ab Asterisk 1.6 ist die oben beschriebene Funktionalität nicht
-        als Applikation Devstate() sondern als Funktion DEVSTATE()
+        als Applikation DevState() sondern als Funktion DEVSTATE()
         eingebaut.</para>
 
         <para>Siehe dazu auch: Blog-Artikel "Custom Device State" von Russel
