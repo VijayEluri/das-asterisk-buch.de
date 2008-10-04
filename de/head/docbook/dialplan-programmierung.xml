@@ -69,8 +69,8 @@ exten =&gt; 1001,3,Hangup()</programlisting>Die Funktionsweise der jeweiligen
       <title>Variablen</title>
 
       <para>Zum Generieren und Verändern von Variablen wird die Applikation
-      <code>Set()</code> benutzt:<programlisting>exten =&gt; 1002,1,Set(Lieblingstier = "Tiger")
-exten =&gt; 1002,n,Set(Lieblingszahl = 23)</programlisting></para>
+      <code>Set()</code> benutzt:<programlisting>exten =&gt; 1002,1,Set(Lieblingstier=Tiger)
+exten =&gt; 1002,n,Set(Lieblingszahl=23)</programlisting></para>
 
       <para>Zum Lesen und Ausgeben von Variablen wird die Syntax
       <code>${VARIABLENNAME}</code> benutzt. Mit der Applikation
@@ -82,25 +82,35 @@ exten =&gt; 1003,n,NoOp(${Lieblingszahl})</programlisting></para>
           <listitem>
             <para>Globale Variablen</para>
 
-            <para>Gelten im gesamten Dialplan und werden mit
-            <code>Set(X=23,g)</code> generiert und verändert.<programlisting>exten =&gt; 1004,1,Set(SOLL-UEBERALL-LESBAR-SEIN = 23,g)
-exten =&gt; 1004,n,NoOp(${SOLL-UEBERALL-LESBAR-SEIN})</programlisting></para>
+            <para>Gelten im gesamten Dialplan und werden bei Bedarf in der
+            <filename>extensions.conf</filename> im Abschnitt
+            <literal>[globals]</literal><programlisting>[globals]
+SOLL_UEBERALL_LESBAR_SEIN=&gt;23</programlisting>bzw. in der
+            <filename>extensions.ael</filename> in <literal>globals</literal>
+            gesetzt.<programlisting>globals {
+    SOLL_UEBERALL_LESBAR_SEIN=23;
+}</programlisting></para>
+
+            <para>Sie können auch im Dialplan mit
+            <code>Set(GLOBAL(X)=23)</code> gesetzt und verändert
+            werden.<programlisting>exten =&gt; 1004,1,Set(GLOBAL(SOLL_UEBERALL_LESBAR_SEIN)=23)
+exten =&gt; 1004,n,NoOp(${SOLL_UEBERALL_LESBAR_SEIN})</programlisting></para>
           </listitem>
 
           <listitem>
-            <para>Channel Variablen</para>
+            <para>Channel-Variablen</para>
 
             <para>Gelten nur im aktiven Channel (ein Channel kann z.B. ein
             Gespräch von Peter und Uwe sein). Sie werden mit
-            <code>Set(Y=42)</code> generiert und verändert.<programlisting>exten =&gt; 1005,1,Set(SOLL-NUR-HIER-LESBAR-SEIN = 42)
-exten =&gt; 1005,n,NoOp(${SOLL-NUR-HIER-LESBAR-SEIN})</programlisting></para>
+            <code>Set(Y=42)</code> definiert und verändert.<programlisting>exten =&gt; 1005,1,Set(SOLL_NUR_HIER_LESBAR_SEIN=42)
+exten =&gt; 1005,n,NoOp(${SOLL_NUR_HIER_LESBAR_SEIN})</programlisting></para>
           </listitem>
 
           <listitem>
-            <para>System Variablen</para>
+            <para>System-Variablen</para>
 
-            <para>Diese sind quasi "Gott gegeben" (ok, natürlich eher
-            "Asterisk gegeben" ;-)) und können einfach im Dialplan aufgerufen
+            <para>Diese sind quasi "Gott-gegeben" (ok, natürlich eher
+            "Asterisk-gegeben" ;-)) und können einfach im Dialplan aufgerufen
             werden. Eine typische Systemvariable ist ${EXTEN}.<programlisting>exten =&gt; 1006,1,NoOp(Gewaehlte Nummer: ${EXTEN})</programlisting></para>
           </listitem>
         </itemizedlist></para>
@@ -119,7 +129,7 @@ exten =&gt; 1005,n,NoOp(${SOLL-NUR-HIER-LESBAR-SEIN})</programlisting></para>
         <primary>Labels</primary>
       </indexterm>
 
-      <para>Mit <code>Goto()</code> kann man innerhalb des Dialplanes Sprünge
+      <para>Mit <code>Goto()</code> kann man innerhalb des Dialplans Sprünge
       zu einem mit (Labelname) definierten Label vollziehen:<footnote>
           <para>Man kann natürlich mit <code>Goto()</code> auch zu einer
           bestimmten Priorität springen. Aber dann ist der ganze Vorteil der
@@ -255,20 +265,23 @@ exten =&gt; 1015,n,Return()</programlisting></para>
     unterschiedliche oder wechselnde Einsatzzwecke anzupassen. Die Verwendung
     von Variablen ermöglicht erst den individuellen Einsatz eines Programms,
     ohne die erneute Übersetzung des Programmcodes in ein ausführbares
-    Programm.<tip>
-        <para>Wer noch nie programmiert hat oder mit Variablen in Berührung
-        gekommen ist, sollte sich an dieser Stelle kurz bei <ulink
-        url="http://de.wikipedia.org/wiki/Variable_%28Programmierung%29">
-        <citetitle>http://de.wikipedia.org/wiki/Variable_%28Programmierung%29</citetitle>
-        </ulink> in die Materie einlesen.</para>
-      </tip> Variablen haben bei Asterisk unterschiedliche Reichweiten. Es
-    gibt lokale (im Asterisk-Jargon Channel-Variablen genannt) Variablen, die
-    Werte nur für den jeweiligen und aktiven Channel (also das aktuelle
-    Gespräch) setzen, und globale Variablen, die Werte für alle Channels
-    setzen. Die bereits von Asterisk vorgesehenen Variablen haben wir ja in
-    Form der Parameter in den Konfigurationsdateien schon ausführlich kennen
-    gelernt. Neben diesen gibt es auch die Möglichkeit, eigene Variablen zu
-    definieren und diese in den Konfigurationsdateien zu verwenden.</para>
+    Programm.</para>
+
+    <tip>
+      <para>Wer noch nie programmiert hat oder mit Variablen in Berührung
+      gekommen ist, sollte sich an dieser Stelle kurz bei <ulink
+      url="http://de.wikipedia.org/wiki/Variable_%28Programmierung%29">http://de.wikipedia.org/wiki/Variable_%28Programmierung%29</ulink>
+      in die Materie einlesen.</para>
+    </tip>
+
+    <para>Variablen haben bei Asterisk unterschiedliche Geltungsbereiche. Es
+    gibt Channel-Variablen, die Werte nur für den jeweiligen und aktiven
+    Channel (also das aktuelle Gespräch) setzen, und globale Variablen, die
+    Werte für alle Channels setzen. Die bereits von Asterisk vorgesehenen
+    Variablen haben wir ja in Form der Parameter in den Konfigurationsdateien
+    schon ausführlich kennengelernt. Neben diesen gibt es auch die
+    Möglichkeit, eigene Variablen zu definieren und diese in den
+    Konfigurationsdateien zu verwenden.</para>
 
     <section id="variablen-auslesen">
       <title>Variablen in einer Extension auslesen</title>
@@ -289,8 +302,7 @@ exten =&gt; 105,1,Dial(SIP/105)
 exten =&gt; 106,1,Dial(SIP/106)
 exten =&gt; 107,1,Dial(SIP/107)
 exten =&gt; 108,1,Dial(SIP/108)
-exten =&gt; 109,1,Dial(SIP/109)
-</programlisting></para>
+exten =&gt; 109,1,Dial(SIP/109)</programlisting></para>
 
       <para>Beispiel nachher:<programlisting>exten =&gt; _10X,1,Dial(SIP/${EXTEN})</programlisting></para>
     </section>
@@ -305,8 +317,9 @@ exten =&gt; 109,1,Dial(SIP/109)
       es sich um eine Variable handelt. Umgekehrt bedeutet das aber auch, dass
       Groß- und Kleinschreibung nicht für die Unterscheidung von Variablen
       verwendet werden kann.<important>
-          <para>Die von Asterisk selbst generierten Variablen wie ${EXTEN}
-          müssen immer in Großbuchstaben geschrieben werden.</para>
+          <para>Die von Asterisk selbst generierten Variablen wie
+          <literal>${EXTEN}</literal> müssen immer in Großbuchstaben
+          geschrieben werden.</para>
         </important></para>
 
       <section id="var-strings">
@@ -419,29 +432,21 @@ exten =&gt; _XXX,n,VoiceMail(${EXTEN})
       <section id="set-syntax">
         <title>Syntax</title>
 
-        <para><code>Set(Variablenname=Wert[,Variablenname2=Wert2][,Option])</code></para>
-
-        <para>Als Option kann ein <parameter>g</parameter> angegeben werden.
-        Mit diesem <parameter>g</parameter> kann mit <code>Set()</code> eine
-        globale Variable gesetzt werden. Ohne diese Option geht Asterisk immer
-        von lokalen Channel-Variablen aus.</para>
+        <synopsis>Set(<replaceable>Variablenname</replaceable>=<replaceable>Wert</replaceable>)</synopsis>
 
         <para>Beispiel:</para>
 
-        <programlisting>; Eine globale Variable setzen:
-exten =&gt; 10,1,Set(KLINGELZEIT=90,g)
+        <programlisting>; Eine Channel-Variable setzen:
+exten =&gt; 10,1,Set(LIEBLINGSOBSTSORTE="Apfel")
 
-; Eine Channel-Variable setzen:
-exten =&gt; 10,2,Set(LIEBLINGSOBSTSORTE="Apfel")
-
-; Zwei Channel-Variablen auf einmal setzen:
-exten =&gt; 10,3,Set(VAR1=10,VAR2=23)
+; Eine globale Variable setzen:
+exten =&gt; 10,n,Set(GLOBAL(KLINGELZEIT)=90)
 
 ; Die Variablen auf dem CLI ausgeben
-exten =&gt; 10,4,NoOp(KLINGELZEIT = ${KLINGELZEIT})
-exten =&gt; 10,5,NoOp(LIEBLINGSOBSTSORTE = ${LIEBLINGSOBSTSORTE})
-exten =&gt; 10,6,NoOp(VAR1 = ${VAR1})
-exten =&gt; 10,7,NoOp(VAR2 = ${VAR2})</programlisting>
+exten =&gt; 10,n,NoOp(KLINGELZEIT = ${KLINGELZEIT})
+exten =&gt; 10,n,NoOp(LIEBLINGSOBSTSORTE = ${LIEBLINGSOBSTSORTE})
+exten =&gt; 10,n,NoOp(VAR1 = ${VAR1})
+exten =&gt; 10,n,NoOp(VAR2 = ${VAR2})</programlisting>
       </section>
     </section>
 
@@ -462,8 +467,8 @@ exten =&gt; 10,7,NoOp(VAR2 = ${VAR2})</programlisting>
 
         <para>Will man eine Channel-Variable übergeben, aber keine globale
         Variable dafür benutzen, so kann man der Channel-Variable ein
-        <code>_</code> (Underscore) voransetzen. Diese Channel-Variable wird
-        dann an den nächsten Channel vererbt. Dabei wird der Underscore
+        <literal>_</literal> (Unterstrich) voransetzen. Diese Channel-Variable
+        wird dann an den nächsten Channel vererbt. Dabei wird der Unterstrich
         entfernt. Die Vererbung kann also nur einmal erfolgen.</para>
 
         <para>Beispiel:<programlisting>exten =&gt; 1234,1,Set(_KUCHENSORTE="Marmorkuchen")</programlisting></para>
@@ -473,8 +478,9 @@ exten =&gt; 10,7,NoOp(VAR2 = ${VAR2})</programlisting>
         <title>Mehrstufige Vererbung</title>
 
         <para>Will man eine Channel-Variable beliebig oft vererben, so muss
-        man zwei <code>__</code> (Underscore)-Zeichen vor die Variable setzen.
-        Die zwei Underscore-Zeichen werden dann immer mitvererbt.</para>
+        man zwei <literal>__</literal> (Unterstrich)-Zeichen vor die Variable
+        setzen. Die zwei Unterstrich-Zeichen werden dann immer
+        mitvererbt.</para>
 
         <warning>
           <para>Asterisk unterscheidet die Namen von Variablen, die mit einem
@@ -487,10 +493,9 @@ exten =&gt; 1234,n,Set(KUCHENSORTE="Marmorkuchen")</programlisting></para>
 
         <para>Beispiel:<programlisting>exten =&gt; 1234,1,Set(__KUCHENSORTE="Nusskuchen")</programlisting></para>
 
-        <para>Bei einem Abruf einer vererbten Channel-Variable ist es egal, ob
-        man die Unterstriche voranstellt oder nicht. Die beiden folgenden
-        Zeilen geben zweimal den gleichen Wert im CLI aus:<programlisting>exten =&gt; 1234,1,NoOp(${__KUCHENSORTE})
-exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
+        <para>Die Unterstriche müssen aber nur beim Setzen der Variable
+        vorangestellt werden, nicht beim Auslesen.<programlisting>exten =&gt; 1234,1,Set(__KUCHENSORTE="Pflaumenkuchen")
+exten =&gt; 1234,n,NoOp(Kuchen: ${KUCHENSORTE})</programlisting></para>
       </section>
     </section>
 
@@ -509,10 +514,11 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
           <para>Eine komplette Liste aller vordefinierten Variablen finden Sie
           in der Datei <filename>doc/README.variables</filename> (Asterisk
           1.2) und <filename>doc/channelvariables.txt</filename> (Asterisk
-          1.4). In dieser Liste werden nur nicht DEPRECATED Variablen
-          aufgelistet. So finden Sie z.B. ein ${CALLERIDNUM} nicht in dieser
-          Liste, weil dies deprecated ist (man soll anstatt die Funktion
-          ${CALLERID(num)} benutzen).</para>
+          1.4). In dieser Liste werden nur nicht-deprecatete Variablen
+          aufgelistet. So finden Sie z.B. ein
+          <literal>${CALLERIDNUM}</literal> nicht in dieser Liste, weil dies
+          deprecated ist (man soll anstatt die Funktion
+          <literal>${CALLERID(num)}</literal> benutzen).</para>
         </warning>Die für das jeweilige Thema relevanten Variablen werden aber
       im Buch immer in jedem Kapitel extra aufgeführt.<footnote>
           <para>Ein klassisches Henne-Ei-Problem</para>
@@ -717,9 +723,7 @@ exten =&gt; 1234,n,NoOp(${KUCHENSORTE})</programlisting></para>
               <para>Leider macht diese Variante in Deutschland wenig Sinn, da
               es unterschiedlich lange Vorwahlen gibt. Mehr Informationen zur
               deutschen Vorwahl finden Sie unter <ulink
-              url="http://de.wikipedia.org/wiki/Telefonvorwahl_%28Deutschland%29">
-              <citetitle>http://de.wikipedia.org/wiki/Telefonvorwahl_%28Deutschland%29.</citetitle>
-              </ulink></para>
+              url="http://de.wikipedia.org/wiki/Telefonvorwahl_%28Deutschland%29">http://de.wikipedia.org/wiki/Telefonvorwahl_%28Deutschland%29</ulink>.</para>
             </footnote></para>
 
           <para>Nehmen wir an, wir möchten bei Telefonaten zur Nummer
@@ -768,11 +772,11 @@ exten =&gt; _0001X.,n,Set(DURCHWAHL=${EXTEN:-4}</programlisting></para>
       <section id="h-extension-beispiel">
         <title>Beispiel</title>
 
-        <para>Sollen in der globalen Variable GESPRAECHE immer die Anzahl der
-        aktuell geführten Gespräche gespeichert werden, so muss diese beim
-        Aufbau eines Gesprächs um 1 erhöht und beim Abbau eines Gesprächs
-        (also beim Auflegen) wieder um 1 vermindert werden. Der folgende
-        Dialplan zeigt die Grundidee:<programlisting>[global]
+        <para>Sollen in der globalen Variable <literal>GESPRAECHE</literal>
+        immer die Anzahl der aktuell geführten Gespräche gespeichert werden,
+        so muss diese beim Aufbau eines Gesprächs um 1 erhöht und beim Abbau
+        eines Gesprächs (also beim Auflegen) wieder um 1 vermindert werden.
+        Der folgende Dialplan zeigt die Grundidee:<programlisting>[global]
 GESPRAECHE=0
 
 [from-intern]
