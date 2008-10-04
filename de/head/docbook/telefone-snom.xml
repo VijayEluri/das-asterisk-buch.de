@@ -254,36 +254,40 @@ vmexten=obelisk</programlisting>
       man hier Sprach- und Datumseinstellungen, feste Tastaturbelegungen etc.
       konfigurieren.</para>
 
-      <programlisting># After each setting (before the colon) you can set a flag, which means respectively: 
-# ! means writeable by the user, but will not overwrite existing 
-# $ means writeable by the user, but will overwrite existing (available since version 4.2) 
-# &amp; (or no flag) means read only, but will overwrite existing 
-# more settings can be found at the settings (dump) page of the phone's build in webinterface 
-# Language and Time settings 
-language$: Deutsch 
-web_language$: Deutsch
-timezone$: GER+1 
-date_us_format&amp;: off 
-time_24_format&amp;: on
-tone_scheme&amp;: GER 
+      <programlisting># After each setting (before the colon) you can set a flag, which means respectively:
+# ! means writeable by the user, but will not overwrite existing
+# $ means writeable by the user, but will overwrite existing (available since version 4.2)
+# &amp; (or no flag) means read only, but will overwrite existing
 
-# define the firmware update policy here 
-# valid values are &lt;auto_update&gt;, &lt;ask_for_update&gt;, &lt;never_update_firm&gt;, 
-# &lt;never_update_boot&gt;, &lt;settings_only&gt; 
-update_policy: auto_update 
+# more settings can be found at the settings (dump) page of the phone's build in webinterface
+
+# Language and Time settings
+language$: Deutsch
+web_language$: Deutsch
+timezone$: GER+1
+date_us_format&amp;: off
+time_24_format&amp;: on
+tone_scheme&amp;: GER
+
+# define the firmware update policy here
+# valid values are &lt;auto_update&gt;, &lt;ask_for_update&gt;, &lt;never_update_firm&gt;,
+# &lt;never_update_boot&gt;, &lt;settings_only&gt;
+update_policy: auto_update
 
 #define the firmware update interval here, amount in minutes, default is 1440 = 1 day
-firmware_interval: 2880 
+firmware_interval: 2880
 setting_server!: http://pbx.apfelmus-gmbh.de/snom/settings/snom.php?mac={mac}
-subscribe_config!: off 
+subscribe_config!: off
 update_server!: http://pbx.apfelmus-gmbh.de/snom/settings/snom.php?mac={mac}
-contrast!: 14 
+
+contrast!: 14
 dtmf_speaker_phone!: on
-web_language!: Deutsch
 dkey_snom&amp;: url http://pbx.apfelmus-gmbh.de/snom/webapps/mainmenu.xml
+
 admin_mode: off
-admin_mode_password$:4321
-admin_mode_password_confirm$:4321
+admin_mode_password$: 4321
+admin_mode_password_confirm$: 4321
+
 alert_internal_ring_text: alert-internal
 alert_external_ring_text: alert-external
 alert_group_ring_text: alert-group</programlisting>
@@ -310,21 +314,24 @@ alert_group_ring_text: alert-group</programlisting>
       Telefons. Hier die spezielle Konfiguration eines solchen
       Telefons:</para>
 
-      <programlisting># After each setting (before the colon) you can set a flag, which means respectively: 
+      <programlisting># After each setting (before the colon) you can set a flag, which means respectively:
 # ! means writeable by the user, but will not overwrite existing
 # $ means writeable by the user, but will overwrite existing (available since version 4.2)
 # &amp; (or no flag) means read only, but will overwrite existing
+
 # First account
 user_active1!: on
 user_realname1$: Hans Mustermann &lt;2000&gt;
 user_name1$: 2000
 user_host1&amp;: pbx.apfelmus-gmbh.de
 user_pass1$: 1234
-# You may add up to 12 accounts
-# set second account to active outgoing identity
-active_line$: 1 
 
-# in order to perform automated updates, define the firmware setting file URL 
+# You may add up to 12 accounts
+
+# set second account to active outgoing identity
+active_line$: 1
+
+# in order to perform automated updates, define the firmware setting file URL
 # where you specify the final firmware image URL
 firmware_status: http://pbx.apfelmus-gmbh.de/snom/firmware360.htm</programlisting>
 
@@ -467,7 +474,7 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</programlisting>
 
     <para>Die Geräte der 360er und 370er Baureihen verfügen über von außen
     programmierbare Menüs. Die zugrundeliegenden XML-Strukturen sind unter
-    <ulink url="???">http://wiki.snom.com/Xmlobjects</ulink> ausführlich
+    <ulink url="http://wiki.snom.com/Xmlobjects">http://wiki.snom.com/Xmlobjects</ulink> ausführlich
     erläutert. In der oben angegebenen automatischen Konfiguration wurde
     bereits auf die Zeile <code>dkey_snom&amp;: url
     http://pbx.apfelmus-gmbh.de/snom/webapps/mainmenu.xml</code> hingewiesen.
@@ -483,15 +490,15 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</programlisting>
 
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;SnomIPPhoneMenu&gt;
-&lt;Title&gt;Menu&lt;/Title&gt;
-&lt;MenuItem&gt;
-&lt;Name&gt;Globales Adressbuch&lt;/Name&gt;
-&lt;URL&gt;http://pbx.apfelmus-gmbh.de/snom/webapps/phonebook/phonebook.php&lt;/URL&gt;
-&lt;/MenuItem&gt;
-&lt;MenuItem&gt;
-&lt;Name&gt;Sondernummern&lt;/Name&gt;
-&lt;URL&gt;http://pbx.apfelmus-gmbh.de/snom/webapps/specialnums.xml&lt;/URL&gt;
-&lt;/MenuItem&gt;
+  &lt;Title&gt;Menu&lt;/Title&gt;
+  &lt;MenuItem&gt;
+    &lt;Name&gt;Globales Adressbuch&lt;/Name&gt;
+    &lt;URL&gt;http://pbx.apfelmus-gmbh.de/snom/webapps/phonebook/phonebook.php&lt;/URL&gt;
+  &lt;/MenuItem&gt;
+  &lt;MenuItem&gt;
+    &lt;Name&gt;Sondernummern&lt;/Name&gt;
+    &lt;URL&gt;http://pbx.apfelmus-gmbh.de/snom/webapps/specialnums.xml&lt;/URL&gt;
+  &lt;/MenuItem&gt;
 &lt;/SnomIPPhoneMenu&gt;</programlisting>
 
     <para>Ein Druck auf die snom-Taste führt zu einem Menü mit den beiden
@@ -564,7 +571,7 @@ exten =&gt; _2XXX,n,Dial(SIP/${EXTEN})</programlisting>
       <para>Zunächst muss in der Datei <filename>sip.conf</filename> die
       <code>[general]</code>-Sektion erweitert werden:</para>
 
-      <programlisting>[general] 
+      <programlisting>[general]
 allowsubscribe = yes
 notifyringing = yes
 notifyhold = yes
@@ -584,7 +591,7 @@ limitonpeers = yes</programlisting>
       sein (am besten mindestens 2, sonst hat man Probleme bei Transfers
       etc.).</para>
 
-      <programlisting>[2000] 
+      <programlisting>[2000]
 type = friend
 context = meine-telefone
 subscribecontext = meine-telefone
@@ -613,8 +620,9 @@ mailbox = 2000</programlisting>
 exten =&gt; 2001,hint,SIP/2001
 exten =&gt; 2002,hint,SIP/2002
 exten =&gt; 2003,hint,SIP/2003
+
 exten =&gt; _2XXX,1,Dial(SIP/${EXTEN})
-exten =&gt; _2XXX,n,VoiceMail(u${EXTEN}) </programlisting>
+exten =&gt; _2XXX,n,VoiceMail(u${EXTEN})</programlisting>
 
       <important>
         <para>Die hint-Priorität war in der Vergangenheit immer für einige
@@ -681,9 +689,9 @@ exten =&gt; _2XXX,n,VoiceMail(u${EXTEN}) </programlisting>
       ob alles richtig konfiguriert wurde. Dazu geben Sie im Asterisk-CLI die
       Zeile <command>core show hints</command> ein:</para>
 
-      <screen>*CLI&gt; show hints
--= Registered Asterisk Dial Plan Hints =-
-2001 : SIP/2001 State:Unavailable Watchers 0
+      <screen>*CLI&gt; core show hints
+    -= Registered Asterisk Dial Plan Hints =-
+   2001                : SIP/2001              State:Unavailable     Watchers  0
 ----------------
 - 1 hints registered
 *CLI&gt;</screen>
@@ -696,8 +704,8 @@ exten =&gt; _2XXX,n,VoiceMail(u${EXTEN}) </programlisting>
       aktiven Subscriptions bestätigt, die durch das Kommando <command>sip
       show subscriptions</command> initiiert wird.</para>
 
-      <screen>*CLI&gt; sip show subscriptions 
-Peer User Call ID Extension Last state Type
+      <screen>*CLI&gt; sip show subscriptions
+Peer             User        Call ID      Extension        Last state     Type
 0 active SIP subscriptions
 *CLI&gt;</screen>
 
@@ -705,8 +713,8 @@ Peer User Call ID Extension Last state Type
       Befehl erneut ab:</para>
 
       <screen>*CLI&gt; sip show subscriptions
-Peer User Call ID Extension Last state Type 
-192.168.0.2 2000 815d944554e 2001 Unavailable dialog-info+xml
+Peer             User        Call ID      Extension        Last state     Type
+192.168.0.2      2000        815d944554e  2001             Unavailable    dialog-info+xml
 1 active SIP subscription
 *CLI&gt;</screen>
 
@@ -723,10 +731,11 @@ Peer User Call ID Extension Last state Type
       <para>Setzen Sie den Befehl<command>core show hints</command> erneut
       ab:</para>
 
-      <screen>*CLI&gt; show hints
--= Registered Asterisk Dial Plan Hints =-
-2001 : SIP/2001 State:Idle Watchers 1 
----------------- - 1 hints registered
+      <screen>*CLI&gt; core show hints
+    -= Registered Asterisk Dial Plan Hints =-
+   2001                : SIP/2001              State:Idle            Watchers  1
+----------------
+- 1 hints registered
 *CLI&gt;</screen>
 
       <para>Im Gegensatz zu vorher sieht man, dass das Telefon einen
@@ -752,10 +761,11 @@ Extension Changed 2001 new state Idle for Notify User 2000</screen>
       zu ermöglichen, muss noch ein weiterer Eintrag in der extensions.conf
       hinzugefügt werden.</para>
 
-      <programlisting>[meine-telefone] 
+      <programlisting>[meine-telefone]
 exten =&gt; 2001,hint,SIP/2001
-; Gespraechsuebernahme (PickUp
-exten =&gt; _*8.,1,PickUp2(SIP/${EXTEN:2})</programlisting>
+
+; Gespraechsuebernahme (PickUp)
+exten =&gt; _*8.,1,PickUp(SIP/${EXTEN:2})</programlisting>
 
       <para><note>
           <para>Die Gesprächsübernahme durch die Zeichenfolge
@@ -859,9 +869,9 @@ Generate a device state change event given the input parameters. Returns 0. Stat
         <para>In der Datei <filename>extensions.conf</filename> muss nun ein
         weiterer Hint gesetzt werden, diesmal vom Typ DS statt SIP:</para>
 
-        <programlisting>[meine-telefone] 
+        <programlisting>[meine-telefone]
 exten =&gt; 2001,hint,SIP/2001
-exten =&gt; 9912,hint,DS/9912 
+exten =&gt; 9912,hint,DS/9912
 
 ; Gespraechsuebernahme (PickUp)
 exten =&gt; _*8.,1,PickUpChan(SIP/${EXTEN:2})</programlisting>
@@ -871,9 +881,9 @@ exten =&gt; _*8.,1,PickUpChan(SIP/${EXTEN:2})</programlisting>
         hints</command> sieht man nun einen weiteren Hint aufgeführt:</para>
 
         <screen>*CLI&gt; show hints
--= Registered Asterisk Dial Plan Hints =-
-9912 : DS/9912 State:Unavailable Watchers 1
-2001 : SIP/2001 State:Idle Watchers 1
+    -= Registered Asterisk Dial Plan Hints =-
+   9912                : DS/9912               State:Unavailable     Watchers  1
+   2001                : SIP/2001              State:Idle            Watchers  1
 ----------------
 - 2 hints registered
 *CLI&gt;</screen>
@@ -881,10 +891,10 @@ exten =&gt; _*8.,1,PickUpChan(SIP/${EXTEN:2})</programlisting>
         <para>Auch ein <command>show subscriptions</command> sollte einen
         weiteren Wert anzeigen:</para>
 
-        <screen>*CLI&gt; sip show subscriptions 
-Peer User Call ID Extension Last state Type
-192.168.0.2 2000 866a9545a90 9912 Idle dialog-info+xml
-192.168.0.2 2000 866a9545a90 2001 Idle dialog-info+xml 
+        <screen>*CLI&gt; sip show subscriptions
+Peer             User        Call ID      Extension        Last state     Type
+192.168.0.2      2000        866a9545a90  9912             Idle           dialog-info+xml
+192.168.0.2      2000        866a9545a90  2001             Idle           dialog-info+xml
 2 active SIP subscriptions
 *CLI&gt;</screen>
 
@@ -944,7 +954,7 @@ exten =&gt; _*9X,n,Hangup()</programlisting>
       in die Datei <filename>/etc/asterisk/sip_notify.conf</filename>
       ein:</para>
 
-      <programlisting>[reboot-snom] 
+      <programlisting>[reboot-snom]
 Event=&gt;reboot
 Content-Length=&gt;0</programlisting>
 
@@ -954,8 +964,8 @@ Content-Length=&gt;0</programlisting>
       also zum Beispiel:</para>
 
       <screen>*CLI&gt; sip notify reboot-snom 2001
-Sending NOTIFY of type 'reboot-snom' to '2001' 
--- Unregistered SIP '2001' 
+Sending NOTIFY of type 'reboot-snom' to '2001'
+    -- Unregistered SIP '2001'
 *CLI&gt;</screen>
 
       <para>Das Ganze kann man natürlich auch mit Hilfe eines Skripts von
@@ -964,20 +974,20 @@ Sending NOTIFY of type 'reboot-snom' to '2001'
       Extension eines Administrator-Telefons. Ein notwendiges Skript könnte
       wie folgt ausehen:</para>
 
-      <programlisting>#!/bin/bash 
+      <programlisting>#!/bin/bash
 ASTERISK=/usr/sbin/asterisk
-$ASTERISK -r -x "sip notify reboot-snom 1000 2000 2001"</programlisting>
+$ASTERISK -rx "sip notify reboot-snom 1000 2000 2001"</programlisting>
 
       <para>Den Aufruf aus dem Wählplan könnte man wie folgt
       realisieren:</para>
 
-      <programlisting>[globals] 
+      <programlisting>[globals]
 ; Kommando zum Zurücksetzen der snom-Telefone
 CMD_RESET_SNOM=/usr/local/sbin/resetAllSnoms.sh
 
 [admin]
-exten =&gt; 666,1,NoOp(Bastard Operator from Hell Snom Reset) 
-exten =&gt; 666,n,System(${CMD_RESET_SNOM}) ; Externes Kommando ausfuehren</programlisting>
+exten =&gt; 666,1,NoOp(Bastard Operator from Hell Snom Reset)
+exten =&gt; 666,n,System(${CMD_RESET_SNOM})  ; externes Kommando ausfuehren</programlisting>
 
       <important>
         <para>Bitte geben Sie so eine Funktion auf gar keinen Fall für
