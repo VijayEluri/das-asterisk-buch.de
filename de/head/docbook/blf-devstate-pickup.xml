@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="blf-pickup" lang="de" revision="$Revision$">
+  <!--% Copyright (c) 2006 - 2008
+% - Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% - Philipp Kempgen <philipp.kempgen@amooma.de>
+% - Norbert A. Richartz <norbert.richartz@secunet.com>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>BLF<footnote>
+      <para>Busy Lamp Field, Besetztlampenfeld</para>
+    </footnote>, Pickup<footnote>
+      <para>Heranholen, Rufübernahme</para>
+    </footnote><indexterm>
+      <primary>BLF</primary>
+    </indexterm><indexterm>
+      <primary>Pickup</primary>
+    </indexterm><indexterm>
+      <primary>DEVSTATE()</primary>
+    </indexterm><indexterm>
+      <primary>Hints</primary>
+    </indexterm><indexterm>
+      <primary>LEDs</primary>
+    </indexterm><indexterm>
+      <primary>Heranholen</primary>
+    </indexterm><indexterm>
+      <primary>Rufübernahme</primary>
+    </indexterm></title>
+
+  <warning>
+    <para>########################################################</para>
+
+    <bridgehead>IST NOCH IN ARBEIT. AUSLAGERUNG VON
+    <filename>telefone-snom.xml</filename></bridgehead>
+
+    <para>########################################################</para>
+  </warning>
+
+  <formalpara id="blf-beschreibung">
+    <title>Beschreibung des Leistungsmerkmals BLF</title>
+
+    <para>Besetztlampenfelder (BLF) sind ein in Deutschland weit verbreitetes
+    Feature traditioneller Telefonanlagen. Dabei handelt es sich um LEDs oder
+    LCD-Anzeigen und zugehörige Tasten am Telefon, mit denen die Nebenstellen
+    von einzelnen Kollegen oder ganzen Gruppen überwacht (im Sinne von
+    beobachtet) werden. Klingelt ein überwachtes Telefon, dann blinkt am
+    eigenen Apparat die entsprechende LED<footnote>
+        <para>Bei einigen Anlagen sieht man sogar die Rufnummer des Anrufers.
+        Dies ist jedoch - soviel sei vorab gesagt - bei Asterisk nicht
+        möglich, bzw. nur mit einem Patch (siehe u.a. <ulink
+        url="http://bugs.digium.com/view.php?id=5014"><citetitle>Asterisk Bug
+        5014</citetitle></ulink>).</para>
+      </footnote>. Ist der überwachte Teilnehmer im Gespräch so leuchtet die
+    LED am überwachenden Gerät dauerhaft. Ansonsten ist die LED aus.<footnote>
+        <para>Daneben gibt es je nach Anlage noch weitere "Blink-Kadenzen",
+        z.B. ein langsameres Blinken wenn der andere Teilnehmer sein Gespräch
+        auf "Halten" gestellt hat.</para>
+      </footnote>Was das Drücken der Taste bewirkt ist abhängig vom Status des
+    anderen Teilnehmers. Ist der Kollege frei so wird ein normaler Anruf
+    aufgebaut. Wenn aber sein Telefon klingelt (eigene LED blinkt), so kann
+    man durch Drücken der Taste<footnote>
+        <para>Je nach Telefonanlage geht das nicht durch Tastendruck sondern
+        durch (umständliche) Eingabe eines Feature-Codes
+        (<literal>*</literal><replaceable>sonstwas</replaceable>).</para>
+      </footnote> das eingehende Gespräch zum eigenen Apparat
+    heranholen.</para>
+  </formalpara>
+
+  <para>Wir wollen uns im folgenden damit beschäftigen wie man diese
+  Funktionen mit Asterisk nachbauen kann.</para>
+
+  <section id="blf-leds">
+    <title>Ansteuerung der LEDs</title>
+
+    <section id="blf-sip.conf">
+      <title>sip.conf</title>
+
+      <para>Zuerst sind bestimmte Einstellungen im Abschnitt
+      <literal>[general]</literal> der <filename>sip.conf</filename>
+      erforderlich:</para>
+
+      <programlisting>[general]
+allowsubscribe = yes
+notifyringing = yes
+notifyhold = yes
+limitonpeers = yes</programlisting>
+
+      <para>Auch in den Abschnitten der einzelnen SIP-Benutzer sind
+      Einstellungen hinzuzufügen, nämlich <literal>subscribecontext</literal>
+      und <literal>call-limit</literal>. <literal>subscribecontext</literal>
+      besagt in welchem Context Asterisk suchen soll wenn dieser Benutzer den
+      Status anderer Benutzer "abonnieren" will. I.d.R. ist das der Context in
+      dem sich auch die internen Benutzer befinden.
+      <literal>call-limit</literal> hat eigentlich eine andere Aufgabe,
+      nämlich die Anzahl der gleichzeitigen Gespräche dieses Benutzers zu
+      beschränken (wenn es auf einen Wert &gt; 0 gesetzt wird). Es dient hier
+      aber auch dazu, dass Asterisk überhaupt die Anzahl der gleichzeitigen
+      Gespräche dieses Benutzers mitzählt, was wichtig ist für den Status
+      (frei/besetzt). Es muß also auf einen beliebigen Wert &gt; 0 gesetzt
+      werden, am besten mindestens 2, sonst hat man Probleme bei
+      Transfers.</para>
+
+      <para>Zudem sind (für das spätere Heranholen von Gesprächen) noch die
+      zwei Parameter <literal>callgroup</literal><footnote>
+          <para>siehe <xref linkend="sip-channel-callgroup" /></para>
+        </footnote> und <literal>pickupgroup</literal><footnote>
+          <para>siehe <xref linkend="sip-channel-pickupgroup" /></para>
+        </footnote> von Bedeutung. Z.B. darf ein Benutzer mit
+      <literal>pickupgroup=2</literal> Gespräche von anderen Benutzern mit
+      <literal>callgroup=2</literal> heranholen. Dies dient also der
+      Rechteverwaltung. Da es allerdings nur 64 mögliche Gruppen gibt (0 bis
+      63) ist diese Methode nur für kleine bis mittelgroße Installationen
+      brauchbar. Bei großen Installationen setzt man für alle User die gleiche
+      Gruppe und muß sich dann um die Rechteverwaltung selber kümmern (dazu
+      später noch ein Hinweis).</para>
+
+      <programlisting>[21]
+type = friend
+context = interne-benutzer
+secret = 9847825134
+host = dynamic
+mailbox = 2000
+<emphasis role="bold">subscribecontext = interne-benutzer</emphasis>
+<emphasis role="bold">call-limit = 10</emphasis>
+<emphasis role="bold">callgroup = 2</emphasis>
+<emphasis role="bold">pickupgroup = 2</emphasis></programlisting>
+    </section>
+
+    <section id="blf-hints">
+      <title>Hints</title>
+
+      <para>Als nächstes muß man Asterisk die Zuordnung zwischen Extensions
+      und Benutzern (oder Geräten) mitteilen. Dies macht man im Dialplan mit
+      sogenannten "Hints". Wenn man in Dialplan-Prioritäten denkt, dann ist
+      ein <literal>hint</literal> eine spezielle Priorität die noch vor der
+      Priorität <literal>1</literal> steht. Wichtig ist dass sich die Hints in
+      dem Context befinden den man in der <filename>sip.conf</filename> (s.o.)
+      mit <filename>subscribecontext</filename> angegeben hat, ansonsten
+      werden die Status-Informationen nicht weitergeleitet. Das ist durchaus
+      Absicht, damit man nicht per se von allen Telefonen alle weiteren
+      überwachen kann. Durch unterschiedliche Contexte lässt sich also auch
+      eine Art Berechtigungssystem bauen.<footnote>
+          <para>Diese Methode eigent sich allerdings nicht so gut für
+          Datenbank-gestützte <quote>Realtime</quote>-Installationen.</para>
+        </footnote></para>
+
+      <table colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+        <title>Hints &ndash; Einfaches Beispiel</title>
+
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[interne-benutzer]
+
+exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
+exten =&gt; 21,1,Dial(SIP/${EXTEN},40)
+exten =&gt; 21,n,VoiceMail(${EXTEN},u)
+
+exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
+exten =&gt; 22,1,Dial(SIP/${EXTEN},40)
+exten =&gt; 22,n,VoiceMail(${EXTEN},u)</programlisting></entry>
+
+              <entry><programlisting>context interne-benutzer {
+  
+  <emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {
+    Dial(SIP/${EXTEN},40);
+    VoiceMail(${EXTEN},u);
+  }
+  <emphasis role="bold">hint(SIP/22)</emphasis> 22 =&gt; {
+    Dial(SIP/${EXTEN},40);
+    VoiceMail(${EXTEN},u);
+  }
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <table colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+        <title>Hints &ndash; Beispiel mit Pattern (Asterisk 1.4)</title>
+
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[interne-benutzer]
+
+exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
+exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
+
+exten =&gt; _2X,1,Dial(SIP/${EXTEN},40)
+exten =&gt; _2X,n,VoiceMail(${EXTEN},u)</programlisting></entry>
+
+              <entry><programlisting>context interne-benutzer {
+  
+  <emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {}
+  <emphasis role="bold">hint(SIP/22)</emphasis> 22 =&gt; {}
+  
+  _2X =&gt; {
+    Dial(SIP/${EXTEN},40);
+    VoiceMail(${EXTEN},u);
+  }
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <important>
+        <para>Hierbei ist zu beachten daß ein <literal>hint</literal> in
+        Asterisk 1.4 nicht mit Pattern geschrieben werden kann.<literallayout>exten =&gt; _2X,hint,SIP/${EXTEN}</literallayout>bzw.<literallayout>hint(SIP/${EXTEN}) _2X =&gt; {<replaceable>...</replaceable>}</literallayout>wäre
+        also unzulässig.</para>
+
+        <para>Ab Asterisk 1.6 ist diese Schreibweise möglich, auch wenn es
+        anfänglich noch zu Problemen kam. Bitte beachten Sie aber, dass
+        während der Interpretation eines Hints noch kein Channel besteht, was
+        bedeutet dass auch keine Channel-Variablen in der Hint-Definition zur
+        Verfügung stehen - mit Ausnahme von
+        <literal>${EXTEN}</literal>.</para>
+      </important>
+
+      <table colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+        <title>Hints &ndash; Beispiel mit Pattern (Asterisk 1.6)</title>
+
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[interne-benutzer]
+
+exten =&gt; _2X,<emphasis role="bold">hint,SIP/${EXTEN}</emphasis>
+exten =&gt; _2X,1,Dial(SIP/${EXTEN},40)
+exten =&gt; _2X,n,VoiceMail(${EXTEN},u)</programlisting></entry>
+
+              <entry><programlisting>context interne-benutzer {
+  
+  <emphasis role="bold">hint(SIP/${EXTEN})</emphasis> _2X =&gt; {
+    Dial(SIP/${EXTEN},40);
+    VoiceMail(${EXTEN},u);
+  }
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <table colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+        <title>Hints &ndash; Beispiel mit mehreren Benutzern in einem
+        <literal>hint</literal></title>
+
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[interne-benutzer]
+
+exten =&gt; lager,<emphasis role="bold">hint,SIP/21&amp;SIP/22</emphasis>
+
+exten =&gt; _2X,1,Dial(SIP/${EXTEN},40)</programlisting></entry>
+
+              <entry><programlisting>context interne-benutzer {
+  
+  <emphasis role="bold">hint(SIP/21&amp;SIP/22)</emphasis> lager =&gt; {}
+  
+  _2X =&gt; {
+    Dial(SIP/${EXTEN},40);
+  }
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <tip>
+        <para>Der Übersichtlichkeit halber kann man alle Hints auch in einen
+        eigenen Context legen und diesen überall dort mit <code>include =&gt;
+        meine-hints</code> einbinden, wo er benötigt wird. Dies ist v.a. in
+        Asterisk-Versionen vor 1.6 interessant.</para>
+      </tip>
+    </section>
+  </section>
+
+  <section>
+    <title></title>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title></title>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>###########################################</title>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title></title>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title></title>
+
+    <para></para>
+  </section>
+
+  <section id="snom-leds">
+    <title>Ansteuerung der Leitungstasten und -LEDs</title>
+
+    <section id="snom-leds-anzeige">
+      <title>Konfiguration der Rufanzeige</title>
+
+      <para>Nun muss noch das überwachende Telefon konfiguriert werden. Dazu
+      melden Sie sich wie gewohnt mit einem Webbrowser am Telefon an und gehen
+      in das Untermenü "Funktionstasten". Dort belegen Sie die Funktionstaste
+      Ihrer Wahl (im Beispiel die P6) mit dem Typ "Ziel"/"Nebenstelle" und
+      tragen die zu überwachende Extension ein, hier also die 2001.</para>
+
+      <screenshot>
+        <screeninfo>snom Konfiguration Leitungsüberwachung</screeninfo>
+
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata fileref="bilder/snom-hint1.png" />
+          </imageobject>
+
+          <imageobject role="html">
+            <imagedata fileref="bilder/snom-hint1.html.jpg" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Nachdem die Einstellungen gespeichert wurden, ändert das Telefon
+      den Eintrag automatisch in eine passende URI der Form
+      &lt;sip:2001@xxx.xxx.xxx.xxx;user=phone&gt; (xxx.xxx.xxx.xxx ist die
+      IP-Adresse der Telefonanlage) ab:</para>
+
+      <screenshot>
+        <screeninfo>snom Konfiguration Leitungsüberwachung Ziel</screeninfo>
+
+        <mediaobject>
+          <imageobject role="fo">
+            <imagedata fileref="bilder/snom-hint2.png" />
+          </imageobject>
+
+          <imageobject role="html">
+            <imagedata fileref="bilder/snom-hint2.html.jpg" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <important>
+        <para>Die Bezeichnung "Ziel" wurde in den snom-Hardphones in einem der
+        neueren Releases in "Nebenstelle" umbenannt und gilt daher nur noch
+        für die Softphones und ältere Firmware-Stände in den Hardphones. Es
+        ist nur eine Umbenennung, die weitere hier beschriebene Funktionalität
+        bleibt unverändert erhalten.</para>
+      </important>
+
+      <para>Nun sind alle Einstellungen getätigt. Zunächst muss Asterisk neu
+      gestartet werden und anschließend die Telefone. Der Telefon-Neustart
+      nach dem Asterisk-Neustart ist für die saubere Anmeldung der
+      Subscription des Telefons notwendig. Zunächst sollte überprüft werden,
+      ob alles richtig konfiguriert wurde. Dazu geben Sie im Asterisk-CLI die
+      Zeile <command>core show hints</command> ein:</para>
+
+      <screen>*CLI&gt; core show hints
+    -= Registered Asterisk Dial Plan Hints =-
+   2001                : SIP/2001              State:Unavailable     Watchers  0
+----------------
+- 1 hints registered
+*CLI&gt;</screen>
+
+      <para>In obigem Beispiel wird deutlich, dass das zu überwachende Telefon
+      noch nicht am Asterisk-Server angemeldet ist
+      (<parameter>unavailable</parameter>). Ebenso ist auch noch kein
+      überwachendes Telefon an den Status dieser Extension angeklinkt
+      (Watchers-Wert ist 0). Letzteres wird auch durch die Auflistung der
+      aktiven Subscriptions bestätigt, die durch das Kommando <command>sip
+      show subscriptions</command> initiiert wird.</para>
+
+      <screen>*CLI&gt; sip show subscriptions
+Peer             User        Call ID      Extension        Last state     Type
+0 active SIP subscriptions
+*CLI&gt;</screen>
+
+      <para>Nun melden Sie zunächst das überwachende Telefon an und setzen den
+      Befehl erneut ab:</para>
+
+      <screen>*CLI&gt; sip show subscriptions
+Peer             User        Call ID      Extension        Last state     Type
+192.168.0.2      2000        815d944554e  2001             Unavailable    dialog-info+xml
+1 active SIP subscription
+*CLI&gt;</screen>
+
+      <para>Hier wird deutlich, dass der User 2000 die Extension 2001
+      überwacht. Bereits jetzt leuchtet die Lampe am Telefon, die zur
+      Überwachung konfiguriert wurde.</para>
+
+      <para>Nun melden Sie das zu überwachende Telefon erneut an. Bereits mit
+      der Anmeldung sollte folgende Zeile auf dem Asterisk-CLI
+      erscheinen:</para>
+
+      <screen>Extension Changed 2001 new state Idle for Notify User 2000</screen>
+
+      <para>Setzen Sie den Befehl<command>core show hints</command> erneut
+      ab:</para>
+
+      <screen>*CLI&gt; core show hints
+    -= Registered Asterisk Dial Plan Hints =-
+   2001                : SIP/2001              State:Idle            Watchers  1
+----------------
+- 1 hints registered
+*CLI&gt;</screen>
+
+      <para>Im Gegensatz zu vorher sieht man, dass das Telefon einen
+      definierten Zustand hat ("Idle") und zudem ein weiteres Telefon den
+      Zustand überwacht (Watchers-Wert ist 1). Die Konfiguration ist nun
+      komplett, Asterisk meldet Statuswechsel der überwachten Extension sofort
+      an das überwachende Telefon. Befindet sich das überwachte Telefon im
+      Gespräch, leuchtet die LED dauerhaft. Wird das überwachte Telefon
+      angerufen, blinkt die LED. Ohne Aktivität ist auch die LED gelöscht. Die
+      unterschiedlichen Status sind ebenfalls auf der Konsole sichtbar:</para>
+
+      <screen>Extension Changed 2001 new state InUse for Notify User 2000
+Extension Changed 2001 new state Ringing for Notify User 2000
+Extension Changed 2001 new state Idle for Notify User 2000</screen>
+    </section>
+
+    <section id="snom-leds-pickup">
+      <title>Rufannahme (PickUp) eines angezeigten Gesprächs</title>
+
+      <para>In der bisherigen Konfiguration werden Gespräche des überwachten
+      Teilnehmers nur angezeigt. Gerade bei Gruppenanrufen ist es nützlich,
+      dass ein anderer Teilnehmer diese Anrufe auch übernehmen kann. Um dies
+      zu ermöglichen, muss noch ein weiterer Eintrag in der extensions.conf
+      hinzugefügt werden.</para>
+
+      <programlisting>[meine-telefone]
+exten =&gt; 2001,hint,SIP/2001
+
+; Gespraechsuebernahme (PickUp)
+exten =&gt; _*8.,1,PickUp(SIP/${EXTEN:2})</programlisting>
+
+      <para><note>
+          <para>Die Gesprächsübernahme durch die Zeichenfolge
+          "<parameter>*8</parameter>" kann bei Bedarf in der
+          Konfigurationsdatei <filename>features.conf</filename>
+          umkonfiguriert werden.</para>
+        </note>Dem snom-Telefon muss jetzt noch mitgeteilt werden, welche
+      Taste zur Gesprächsübernahme gedrückt werden muss. Satt wie oben
+      beschrieben bei "Ziel"/"Nebenstelle" nur die zu überwachende Nummer
+      einzutragen, tragen sie nun die Nummer gefolgt von einem Pipe-Symbol und
+      der oben definierten Zeichekette für das Pickup ein. Also für obiges
+      Beispiel "2001|*8". Das Telefon wandelt dies wieder in die passende URL
+      um. Jetzt können am überwachten Telefon eingehende Anrufe einfach am
+      überwachenden Telefon angenommen werden, indem die zur blinkenden LED
+      passende Taste gedrückt wird. Das Gespräch wird dann sofort übernommen,
+      die Nummer des Anrufers im Display angezeigt.</para>
+
+      <tip>
+        <para>Um die Anzeige- und Übernahme-Funktionalität korrekt zu nutzen,
+        müssen in den "Erweiterten Einstellungen" des snom-Telefons zwei
+        Einstellungen angepasst werden. Das Setting "Dialog-Info Call Pickup"
+        muss aktiviert sein, "Pakete vom Registrar filtern" muss deaktiviert
+        werden. Die erweiterten Einstellungen sind nur im Admin-Modus des
+        Telefons verfügbar.</para>
+
+        <para>Es wäre natürlich auch schön, wenn man sehen könnte, wer gerade
+        auf der überwachten Leitung anruft, bevor man den Ruf entgegen nimmt.
+        Dies bietet Asterisk von sich aus leider nicht an. Im Internet gibt es
+        aber diverse Patches, die auch das ermöglichen.</para>
+      </tip>
+
+      <para>Sollen die in diesem Kapitel erläuterten Änderungen in Form einer
+      automatischen Konfiguration ins Telefon geladen werden, müssen folgende
+      Einstellungen Teil der speziellen Konfiguration des Telefons
+      werden:</para>
+
+      <programlisting>fkey5: dest &lt;sip:2001@pbx.apfelmus-gmbh.de;user=phone&gt;|*8
+filter_registrar: off
+callpickup_dialoginfo: on</programlisting>
+
+      <important>
+        <para>Die Funktionstasten sind 0-indiziert. Um wie im Beispiel die
+        Funktionstaste 6 zu belegen, muss der Parameter fkey5 gesetzt werden.
+        Die Funktionstaste 1 wird mit fkey0 angesprochen.</para>
+      </important>
+    </section>
+
+    <section id="snom-leds-custom">
+      <title>Gezielte Ansteuerung der LEDs</title>
+
+      <section id="snom-leds-custom-bristuff">
+        <title>Applikation Devstate()</title>
+
+        <indexterm>
+          <primary>Devstate()</primary>
+        </indexterm>
+
+        <para>In Asterisk ist es ebenfalls möglich, die LEDs z.B. auch gezielt
+        aus dem Wählplan anzusteuern. Dazu dient die Applikation
+        "DevState":</para>
+
+        <screen>*CLI&gt; show application Devstate 
+-= Info about application 'Devstate' =-
+[Synopsis] 
+Generate a device state change event given the input parameters 
+
+[Description] 
+Devstate(device|state): 
+Generate a device state change event given the input parameters. Returns 0. State values match the asterisk device states. They are 0 = unknown, 1 = not inuse, 2 = inuse, 3 = busy, 4 = invalid, 5 = unavailable, 6 = ringing
+*CLI&gt;</screen>
+
+        <para>Der Parameter "device" stellt nichts weiter dar, als eine
+        spezielle Extension vom Typ Device-State, die aber im Prinzip exakt so
+        angesprochen wird wie z.B. eine SIP-Extension. Die Device-States
+        sollten im Wählplan gut von regulären Extensions unterscheidbar sein,
+        damit man bei der Wartung und Fehlersuche nicht durcheinander
+        kommt.</para>
+
+        <para>Genau wie oben bereits beschrieben, muss in der
+        snom-Konfiguration die anzusteuernde Leitungsanzeige mit der passenden
+        Extension eingestellt werden. Auch hier muss als Typ der Parameter
+        "Ziel" gewählt werden. Im nachfolgenden Beispiel wird die "9912" zur
+        Ansteuerung der Anzeige P12 genutzt. P6 ist nach wie vor aus dem
+        obigen Beispiel gesetzt und bleibt auch in bekannter Weise
+        funktionsfähig.</para>
+
+        <screenshot>
+          <screeninfo>Gezielte LED-Ansteuerung</screeninfo>
+
+          <mediaobject>
+            <imageobject role="fo">
+              <imagedata fileref="bilder/snom-hint3.png" />
+            </imageobject>
+
+            <imageobject role="html">
+              <imagedata fileref="bilder/snom-hint3.html.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>In der Datei <filename>extensions.conf</filename> muss nun ein
+        weiterer Hint gesetzt werden, diesmal vom Typ DS statt SIP:</para>
+
+        <programlisting>[meine-telefone]
+exten =&gt; 2001,hint,SIP/2001
+exten =&gt; 9912,hint,DS/9912
+
+; Gespraechsuebernahme (PickUp)
+exten =&gt; _*8.,1,PickUpChan(SIP/${EXTEN:2})</programlisting>
+
+        <para>Das ist bereits alles. Wie gehabt nun das Telefon neu anmelden,
+        damit die Subscriptions registriert werden. Mittels <command>core show
+        hints</command> sieht man nun einen weiteren Hint aufgeführt:</para>
+
+        <screen>*CLI&gt; show hints
+    -= Registered Asterisk Dial Plan Hints =-
+   9912                : DS/9912               State:Unavailable     Watchers  1
+   2001                : SIP/2001              State:Idle            Watchers  1
+----------------
+- 2 hints registered
+*CLI&gt;</screen>
+
+        <para>Auch ein <command>show subscriptions</command> sollte einen
+        weiteren Wert anzeigen:</para>
+
+        <screen>*CLI&gt; sip show subscriptions
+Peer             User        Call ID      Extension        Last state     Type
+192.168.0.2      2000        866a9545a90  9912             Idle           dialog-info+xml
+192.168.0.2      2000        866a9545a90  2001             Idle           dialog-info+xml
+2 active SIP subscriptions
+*CLI&gt;</screen>
+
+        <para>Um die Funktionsweise zu testen, kann der Wählplan z.B. um
+        folgenden Code erweitert werden:</para>
+
+        <programlisting>exten =&gt; _*9X,1,Answer()
+exten =&gt; _*9X,n,Devstate(9912,${EXTEN:2})
+exten =&gt; _*9X,n,Wait(1)
+exten =&gt; _*9X,n,Hangup()</programlisting>
+
+        <para>Nun können die verschiedene Device-States über *9&lt;state&gt;
+        überprüft werden, z.B. kann man die LED mit *96 blinken oder mit *92
+        dauerhaft leuchten lassen sowie mit *91 wieder deaktivieren. Ist die
+        Funktionsweise einmal sichergestellt, sind der sinnvollen Anwendung
+        dieses Features natürlich keine Grenzen gesetzt.</para>
+      </section>
+
+      <section id="snom-leds-custom-devstate">
+        <title>Funktion DEVSTATE() ab Asterisk 1.6</title>
+
+        <indexterm>
+          <primary>DEVSTATE()</primary>
+        </indexterm>
+
+        <indexterm>
+          <primary>Funktionen</primary>
+
+          <secondary>DEVSTATE()</secondary>
+        </indexterm>
+
+        <para>Ab Asterisk 1.6 ist die oben beschriebene Funktionalität nicht
+        als Applikation DevState() sondern als Funktion DEVSTATE()
+        eingebaut.</para>
+
+        <para>Siehe dazu auch: Blog-Artikel "Custom Device State" von Russel
+        Bryant (Leiter der Open-Source-Entwicklung bei Digium) unter <ulink
+        url="http://www.asterisk.org/node/48325">http://www.asterisk.org/node/48325</ulink></para>
+
+        <para>Für diejenigen die vor einem Patch nicht zurückschrecken gibt es
+        die Funktion auch als Backport für Asterisk 1.4, siehe <ulink
+        url="http://www.asterisk.org/node/48360">http://www.asterisk.org/node/48360</ulink></para>
+      </section>
+    </section>
+  </section>
+</section>
