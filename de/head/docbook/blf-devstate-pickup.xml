@@ -333,16 +333,16 @@ exten =&gt; _2X,n,VoiceMail(${EXTEN},u)</programlisting></entry>
             <row>
               <entry><programlisting>[interne-benutzer]
 
-exten =&gt; lager,<emphasis role="bold">hint,SIP/21&amp;SIP/22</emphasis>
+exten =&gt; 20,<emphasis role="bold">hint,SIP/21&amp;SIP/22</emphasis>
 
-exten =&gt; _2X,1,Dial(SIP/${EXTEN},40)</programlisting></entry>
+exten =&gt; 20,1,Dial(SIP/21&amp;SIP/22,40)</programlisting></entry>
 
               <entry><programlisting>context interne-benutzer {
   
-  <emphasis role="bold">hint(SIP/21&amp;SIP/22)</emphasis> lager =&gt; {}
+  <emphasis role="bold">hint(SIP/21&amp;SIP/22)</emphasis> 20 =&gt; {}
   
-  _2X =&gt; {
-    Dial(SIP/${EXTEN},40);
+  20 =&gt; {
+    Dial(SIP/21&amp;SIP/22,40);
   }
 }</programlisting></entry>
             </row>
@@ -529,9 +529,7 @@ Extension Changed 22 new state Idle for Notify User 21</screen>
 
       <programlisting>[interne-benutzer]
 
-exten =&gt; 21,hint,SIP/21
-exten =&gt; 21,1,Dial(SIP/${EXTEN},40)
-exten =&gt; 21,n,VoiceMail(${EXTEN},u)
+; ...
 
 ; Gespraechsuebernahme (PickUp)
 <emphasis role="bold">exten =&gt; _*8X.,1,Set(nst=${EXTEN:2})
@@ -541,6 +539,8 @@ exten =&gt; _*8X.,n,Pickup(${nst}@interne-benutzer)</emphasis></programlisting>
       <para>bzw. <filename>extensions.ael</filename>:</para>
 
       <programlisting>context interne-benutzer {
+  
+  // ...
   
   // Gespraechsuebernahme (PickUp)
   <emphasis role="bold">_*8X. =&gt; {
@@ -620,6 +620,106 @@ fkey6: dest 23|*8</programlisting><note>
           <literal>fkey5</literal> gesetzt werden usw. Die Funktionstaste 1
           wird mit <literal>fkey0</literal> angesprochen.</para>
         </note></para>
+    </section>
+
+    <section id="blf-group-pickup">
+      <title>Heranholen von einer Gruppe</title>
+
+      <para>Das Heranholen eines Anrufs von einer Gruppe von Teilnehmern
+      (<foreignphrase lang="en">group pickup</foreignphrase>) ist sehr ähnlich
+      und schnell beschrieben. Entweder baut man sich Pickup-Extensions wie
+      z.B. die folgende:</para>
+
+      <programlisting>context interne-benutzer {
+  
+  // Verkaufsabteilung
+  hint(SIP/21&amp;SIP/22&amp;SIP/23) 20 =&gt; {
+    Dial(SIP/21&amp;SIP/22&amp;SIP/23,40);
+  }
+  
+  // Gespraechsuebernahme (PickUp) von der Gruppe Verkauf
+  <emphasis role="bold">_*820 =&gt; {
+    Verbose(1,${CALLERID(num)} will Anruf von Gruppe Verkauf holen);
+    Pickup(21@interne-benutzer&amp;22@interne-benutzer&amp;23@interne-benutzer);
+  }</emphasis>
+}</programlisting>
+
+      <para>Als zu überwachende Nebenstelle würde man dann am Telefon die
+      <literal>20</literal> eintragen (Snom: <literal>20|*8</literal>).</para>
+
+      <para>Als gute Alternative bietet sich die
+      <literal>PICKUPMARK</literal>-Funktionalität der
+      <literal>Pickup()</literal>-Applikation (<xref
+      linkend="applikationen-pickup" />) an, mit der man flexibler ist.
+      Beispiel:</para>
+
+      <programlisting>context interne-benutzer {
+  
+  // Verkaufsmitarbeiter
+  _2X =&gt; {
+    <emphasis role="bold">Set(__PICKUPMARK=verkauf);</emphasis>
+    Dial(SIP/${EXTEN},40);
+  }
+  hint(SIP/21) 21 =&gt; {}
+  hint(SIP/22) 22 =&gt; {}
+  hint(SIP/23) 23 =&gt; {}
+  
+  // Verkaufsabteilung
+  hint(SIP/21&amp;SIP/22&amp;SIP/23) 20 =&gt; {
+    <emphasis role="bold">Set(__PICKUPMARK=verkauf);</emphasis>
+    Dial(SIP/21&amp;SIP/22&amp;SIP/23,40);
+  }
+  
+  // Gespraechsuebernahme von der Gruppe Verkauf
+  _*820 =&gt; {
+    Verbose(1,${CALLERID(num)} will Anruf von Gruppe Verkauf holen);
+    <emphasis role="bold">Pickup(verkauf@PICKUPMARK);</emphasis>
+  }
+}</programlisting>
+
+      <para>Will man keine Extra-Nebenstelle (im obigen Beispiel die
+      <literal>20</literal>) für die Pickup-Gruppe verbrauchen, so bietet sich
+      für fortgeschrittene Anwender z.B. folgende Konfiguration an:</para>
+
+      <programlisting>context interne-benutzer {
+  
+  // Verkaufsmitarbeiter
+  _2X =&gt; {
+    <emphasis role="bold">Set(__PICKUPMARK=200);</emphasis>
+    // welcher Mitarbeiter zu welcher Pickup-Gruppe gehoert liesse sich
+    // z.B. ueber ein ausgefeiltes AGI-Skript setzen
+    Dial(SIP/${EXTEN}<emphasis role="bold">&amp;Local/**${PICKUPMARK}</emphasis>,40);
+  }
+  hint(SIP/21) 21 =&gt; {}
+  hint(SIP/22) 22 =&gt; {}
+  hint(SIP/23) 23 =&gt; {}
+  
+  // Pickup-Gruppen
+  _**X. =&gt; {
+    Verbose(1,Es klingelt in Pickup-Gruppe ${EXTEN:2});
+  }
+  <emphasis role="bold">hint(SIP/21&amp;SIP/22&amp;SIP/23) **200 =&gt; {}</emphasis>
+  
+  // Gespraechsuebernahme direkt
+  _*8X. =&gt; {
+    Set(nst=${EXTEN:2});
+    Verbose(1,${CALLERID(num)} will Anruf von ${nst} holen);
+    // hier koennte eine Berechtigungspruefung eingebaut werden
+    Pickup(${nst}@interne-benutzer);
+  }
+  
+  // Gespraechsuebernahme von einer Gruppe
+  <emphasis role="bold">_*8**X.</emphasis> =&gt; {
+    Set(pmark=${EXTEN:4});
+    Verbose(1,${CALLERID(num)} will Anruf von Pickup-Gruppe ${pmark} holen);
+    // hier koennte eine Berechtigungspruefung eingebaut werden
+    <emphasis role="bold">Pickup(${pmark}@PICKUPMARK);</emphasis>
+  }
+}</programlisting>
+
+      <para>Als zu überwachende Nebenstelle würde man dann am Telefon die
+      <literal>**200</literal> eintragen (Snom:
+      <literal>**200|*8</literal>).</para>
     </section>
   </section>
 
