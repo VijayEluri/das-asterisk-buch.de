@@ -31,9 +31,9 @@
     </footnote><indexterm>
       <primary>BLF</primary>
     </indexterm><indexterm>
-      <primary>Pickup</primary>
+      <primary>Besetztlampenfeld</primary>
     </indexterm><indexterm>
-      <primary>DEVSTATE()</primary>
+      <primary>Pickup</primary>
     </indexterm><indexterm>
       <primary>Hints</primary>
     </indexterm><indexterm>
@@ -56,8 +56,8 @@
   <formalpara id="blf-beschreibung">
     <title>Beschreibung des Leistungsmerkmals BLF</title>
 
-    <para>Besetztlampenfelder (BLF) sind ein in Deutschland weit verbreitetes
-    Feature traditioneller Telefonanlagen. Dabei handelt es sich um LEDs oder
+    <para>Besetztlampenfelder (BLF) sind ein weit verbreitetes Feature
+    traditioneller Telefonanlagen. Dabei handelt es sich um LEDs oder
     LCD-Anzeigen und zugehörige Tasten am Telefon, mit denen die Nebenstellen
     von einzelnen Kollegen oder ganzen Gruppen überwacht (im Sinne von
     beobachtet) werden. Klingelt ein überwachtes Telefon, dann blinkt am
@@ -144,7 +144,9 @@ mailbox = 2000
     </section>
 
     <section id="blf-hints">
-      <title>Hints</title>
+      <title>Hints<indexterm>
+          <primary>Hints</primary>
+        </indexterm></title>
 
       <para>Als nächstes muß man Asterisk die Zuordnung zwischen Extensions
       und Benutzern (oder Geräten) mitteilen. Dies macht man im Dialplan mit
@@ -264,9 +266,9 @@ exten =&gt; _2X,n,VoiceMail(${EXTEN},u)</programlisting></entry>
 
         <para>Ab Asterisk 1.6 ist diese Schreibweise möglich, auch wenn es
         anfänglich noch zu Problemen kam. Bitte beachten Sie aber, dass
-        während der Interpretation eines Hints noch kein Channel besteht, was
+        während der Interpretierung eines Hints noch kein Channel besteht, was
         bedeutet dass auch keine Channel-Variablen in der Hint-Definition zur
-        Verfügung stehen - mit Ausnahme von
+        Verfügung stehen &ndash; mit Ausnahme von
         <literal>${EXTEN}</literal>.</para>
       </important>
 
@@ -384,18 +386,6 @@ exten =&gt; _2X,1,Dial(SIP/${EXTEN},40)</programlisting></entry>
     Telefon des Benutzers <literal>21</literal> die <literal>22</literal> und
     <literal>23</literal> und umgekehrt.</para>
 
-    <para>Hinter die Nebenstelle hängen wir noch
-    <quote><literal>|*8</literal></quote> (ohne Anführungszeichen) an, das ist
-    für das spätere Pickup wichtig. Damit wird das Snom angewiesen zum
-    Heranholen
-    <literal>*8</literal><replaceable>&lt;Nebenstelle&gt;</replaceable> zu
-    <quote>wählen</quote> obwohl es ihm von Asterisk in der Benachrichtigung
-    nicht so mitgeteilt wird.<footnote>
-        <para>Das wird in neueren Versionen von Asterisk behoben, siehe <ulink
-        url="http://bugs.digium.com/view.php?id=5014">Asterisk Bug
-        5014</ulink>.</para>
-      </footnote></para>
-
     <para>Die Bezeichnung <quote>Kontext</quote> werden Sie vom Snom schon
     kennen, damit ist einer der 12 möglichen SIP-Accounts gemeint. Im
     Normalfall hat man seinen Account als den ersten konfiguriert und wählt
@@ -417,11 +407,10 @@ exten =&gt; _2X,1,Dial(SIP/${EXTEN},40)</programlisting></entry>
 
     <para>Nachdem die Einstellungen gespeichert wurden, ändert das Telefon den
     Eintrag automatisch in eine passende SIP-URI der Form
-    <literal>&lt;sip:2001@<replaceable>x.x.x.x</replaceable>;user=phone&gt;|*8</literal>
+    <literal>&lt;sip:21@<replaceable>x.x.x.x</replaceable>;user=phone&gt;</literal>
     ab. <replaceable>x.x.x.x</replaceable> ist die IP-Adresse der
-    Telefonanlage. Der Zusatz <literal>;user=phone</literal> ist nicht von
-    Bedeutung. <literal>|*8</literal> gehört genaugenommen nicht zur SIP-URI
-    sondern ist eine Snom-spezifische Syntax.</para>
+    Telefonanlage. (Der Zusatz <literal>;user=phone</literal> ist nicht von
+    Bedeutung.)</para>
 
     <screenshot>
       <screeninfo>Snom &ndash; Konfiguration Leitungsüberwachung
@@ -516,7 +505,10 @@ Extension Changed 22 new state Idle for Notify User 21</screen>
   </section>
 
   <section id="blf-pickup">
-    <title>Heranholen eines Anrufs</title>
+    <title>Heranholen eines Anrufs (<quote><foreignphrase
+    lang="en">Pickup</foreignphrase></quote>)<indexterm>
+        <primary>Pickup</primary>
+      </indexterm></title>
 
     <para>In der bisherigen Konfiguration werden Gespräche des überwachten
     Teilnehmers nur angezeigt. Wir wollen aber auch die Möglichkeit schaffen,
@@ -529,32 +521,114 @@ Extension Changed 22 new state Idle for Notify User 21</screen>
     Benutzergruppe (<foreignphrase lang="en">group pickup</foreignphrase>).
     Hier betrachten wir zunächst den ersten, einfacheren Fall.</para>
 
-    <para>Dazu ist es notwendig noch einen weiteren Eintrag in der
-    <filename>extensions.conf</filename> hinzuzufügen:</para>
+    <section id="blf-pickup-extensions.conf">
+      <title>extensions.conf für Pickup</title>
 
-    <programlisting>[interne-benutzer]
+      <para>Für das Pickup ist es notwendig noch einen weiteren Eintrag in der
+      <filename>extensions.conf</filename> hinzuzufügen:</para>
+
+      <programlisting>[interne-benutzer]
 
 exten =&gt; 21,hint,SIP/21
 exten =&gt; 21,1,Dial(SIP/${EXTEN},40)
 exten =&gt; 21,n,VoiceMail(${EXTEN},u)
 
 ; Gespraechsuebernahme (PickUp)
-<emphasis role="bold">exten =&gt; _*8X.,1,Set(pext=${EXTEN:2})
-exten =&gt; _*8X.,n,Verbose(1,User ${CALLERID(num)} tries to pickup ${pext})
-exten =&gt; _*8X.,n,PickUp(${pext}@interne-benutzer)</emphasis></programlisting>
+<emphasis role="bold">exten =&gt; _*8X.,1,Set(nst=${EXTEN:2})
+exten =&gt; _*8X.,n,Verbose(1,${CALLERID(num)} will Anruf von ${nst} holen)
+exten =&gt; _*8X.,n,Pickup(${nst}@interne-benutzer)</emphasis></programlisting>
 
-    <para>bzw. <filename>extensions.ael</filename>:</para>
+      <para>bzw. <filename>extensions.ael</filename>:</para>
 
-    <programlisting>context interne-benutzer {
+      <programlisting>context interne-benutzer {
   
   // Gespraechsuebernahme (PickUp)
   <emphasis role="bold">_*8X. =&gt; {
-    Set(pext=${EXTEN:2});
-    Verbose(1,User ${CALLERID(num)} tries to pickup ${pext});</emphasis>
+    Set(nst=${EXTEN:2});
+    Verbose(1,${CALLERID(num)} will Anruf von ${nst} holen);</emphasis>
     // hier koennte eine Berechtigungspruefung eingebaut werden
-    <emphasis role="bold">PickUp(${pext}@interne-benutzer);
+    <emphasis role="bold">Pickup(${nst}@interne-benutzer);
   }</emphasis>
 }</programlisting>
+
+      <para>Damit haben wir in Asterisk eine Extension definiert die besagt,
+      daß beim Wählen von
+      <literal>*8</literal><replaceable>&lt;Nebenstelle&gt;</replaceable>
+      (also z.B. <literal>*821</literal>) der Anruf herangeholt wird der
+      gerade auf dieser <replaceable>&lt;Nebenstelle&gt;</replaceable> (z.B.
+      <literal>21</literal>) im Context <literal>interne-benutzer</literal>
+      klingelt.<footnote>
+          <para>zur Beschreibung der Applikation <literal>Pickup()</literal>
+          siehe auch <xref linkend="applikationen-pickup" /></para>
+        </footnote></para>
+    </section>
+
+    <section id="blf-pickup-telefon">
+      <title>Konfiguration des Telefons für Pickup<indexterm>
+          <primary>Snom</primary>
+
+          <secondary>Pickup</secondary>
+        </indexterm></title>
+
+      <para>Dem Snom-Telefon muss jetzt noch mitgeteilt werden, welche Nummer
+      zur Gesprächsübernahme gewählt werden muss. Statt wie oben beschrieben
+      (<xref linkend="blf-subscribe" />) bei
+      <quote>Ziel</quote>/<quote>Nebenstelle</quote> nur die zu überwachende
+      Nummer einzutragen, tragen sie nun die Nummer gefolgt von einem
+      <quote><literal>|</literal></quote> (Pipe-Symbol) und der oben
+      definierten Zeichekette <quote><literal>*8</literal></quote> für das
+      Pickup ein. Also für obiges Beispiel
+      <quote><literal>21|*8</literal></quote>. Das Telefon wandelt dies wieder
+      in die passende SIP-URI um. Das Snom wird durch diesen Zusatz, der
+      strenggenommen nicht zur SIP-URI gehört, angewiesen zum Heranholen
+      <literal>*8</literal> vor der Nebenstellennummer zu wählen obwohl es ihm
+      von Asterisk in der Status-Benachrichtigung nicht so mitgeteilt
+      wird.<footnote>
+          <para>Das wird vermutlich in neueren Versionen von Asterisk behoben,
+          siehe <ulink
+          url="http://bugs.digium.com/view.php?id=5014"><citetitle>Asterisk
+          Bug 5014</citetitle></ulink>.</para>
+        </footnote> Jetzt können am überwachenden Telefon einfach am
+      überwachten Telefon eingehende Anrufe angenommen werden, indem die zur
+      blinkenden LED passende Taste gedrückt wird.</para>
+
+      <note>
+        <para>Um die Anzeige- und Übernahme-Funktionalität korrekt zu nutzen,
+        müssen in den <quote>Erweiterten Einstellungen</quote> des Snoms zwei
+        Einstellungen angepasst werden. Das Setting <quote>Dialog-Info Call
+        Pickup</quote> muss aktiviert sein, <quote>Pakete vom Registrar
+        filtern</quote> muss deaktiviert werden. Die erweiterten Einstellungen
+        sind nur im Admin-Modus des Telefons verfügbar.</para>
+      </note>
+
+      <note>
+        <para>Es wäre natürlich auch schön, wenn man sehen könnte, wer gerade
+        auf der überwachten Leitung anruft, bevor man den Ruf entgegennimmt.
+        Dies bietet Asterisk von sich aus leider nicht an. Im Internet gibt es
+        aber diverse Patches, die auch das ermöglichen.</para>
+      </note>
+
+      <para>Sollen die erläuterten Einstellungen in Form einer automatischen
+      Konfiguration ins Snom geladen werden, müssen beispielsweise folgende
+      Parameter in der Geräte-spezifischen Konfiguration
+      stehen:<programlisting>filter_registrar: off
+callpickup_dialoginfo: on
+fkey5: dest 22|*8
+fkey6: dest 23|*8</programlisting><note>
+          <para>Die Funktionstasten sind 0-indiziert. Um wie im Beispiel die
+          Funktionstaste 6 zu belegen, muss der Parameter
+          <literal>fkey5</literal> gesetzt werden usw. Die Funktionstaste 1
+          wird mit <literal>fkey0</literal> angesprochen.</para>
+        </note></para>
+    </section>
+  </section>
+
+  <section id="blf-devstate">
+    <title>Gezielte Ansteuerung der LEDs: DevState<indexterm>
+        <primary>DEVSTATE()</primary>
+      </indexterm></title>
+
+    <para></para>
   </section>
 
   <section>
@@ -589,50 +663,6 @@ exten =&gt; _*8X.,n,PickUp(${pext}@interne-benutzer)</emphasis></programlisting>
 
   <section id="snom-leds">
     <title>Ansteuerung der Leitungstasten und -LEDs</title>
-
-    <section id="snom-leds-pickup">
-      <title>Rufannahme (PickUp) eines angezeigten Gesprächs</title>
-
-      <para>Dem snom-Telefon muss jetzt noch mitgeteilt werden, welche Taste
-      zur Gesprächsübernahme gedrückt werden muss. Satt wie oben beschrieben
-      bei "Ziel"/"Nebenstelle" nur die zu überwachende Nummer einzutragen,
-      tragen sie nun die Nummer gefolgt von einem Pipe-Symbol und der oben
-      definierten Zeichekette für das Pickup ein. Also für obiges Beispiel
-      "2001|*8". Das Telefon wandelt dies wieder in die passende URL um. Jetzt
-      können am überwachten Telefon eingehende Anrufe einfach am überwachenden
-      Telefon angenommen werden, indem die zur blinkenden LED passende Taste
-      gedrückt wird. Das Gespräch wird dann sofort übernommen, die Nummer des
-      Anrufers im Display angezeigt.</para>
-
-      <tip>
-        <para>Um die Anzeige- und Übernahme-Funktionalität korrekt zu nutzen,
-        müssen in den "Erweiterten Einstellungen" des snom-Telefons zwei
-        Einstellungen angepasst werden. Das Setting "Dialog-Info Call Pickup"
-        muss aktiviert sein, "Pakete vom Registrar filtern" muss deaktiviert
-        werden. Die erweiterten Einstellungen sind nur im Admin-Modus des
-        Telefons verfügbar.</para>
-
-        <para>Es wäre natürlich auch schön, wenn man sehen könnte, wer gerade
-        auf der überwachten Leitung anruft, bevor man den Ruf entgegen nimmt.
-        Dies bietet Asterisk von sich aus leider nicht an. Im Internet gibt es
-        aber diverse Patches, die auch das ermöglichen.</para>
-      </tip>
-
-      <para>Sollen die in diesem Kapitel erläuterten Änderungen in Form einer
-      automatischen Konfiguration ins Telefon geladen werden, müssen folgende
-      Einstellungen Teil der speziellen Konfiguration des Telefons
-      werden:</para>
-
-      <programlisting>fkey5: dest &lt;sip:2001@pbx.apfelmus-gmbh.de;user=phone&gt;|*8
-filter_registrar: off
-callpickup_dialoginfo: on</programlisting>
-
-      <important>
-        <para>Die Funktionstasten sind 0-indiziert. Um wie im Beispiel die
-        Funktionstaste 6 zu belegen, muss der Parameter fkey5 gesetzt werden.
-        Die Funktionstaste 1 wird mit fkey0 angesprochen.</para>
-      </important>
-    </section>
 
     <section id="snom-leds-custom">
       <title>Gezielte Ansteuerung der LEDs</title>
