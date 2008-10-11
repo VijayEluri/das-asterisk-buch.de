@@ -5,7 +5,6 @@
   <!--% Copyright (c) 2006 - 2008
 % - Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
 % - Philipp Kempgen <philipp.kempgen@amooma.de>
-% - Norbert A. Richartz <norbert.richartz@secunet.com>
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
 % or any later version published by the Free Software Foundation;
@@ -723,12 +722,234 @@ fkey6: dest 23|*8</programlisting><note>
     </section>
   </section>
 
-  <section id="blf-devstate">
-    <title>Gezielte Ansteuerung der LEDs: DevState<indexterm>
-        <primary>DEVSTATE()</primary>
-      </indexterm></title>
+  <section id="blf-device-state">
+    <title>Gezielte Ansteuerung der LEDs</title>
 
-    <para></para>
+    <subtitle>DEVICE_STATE()<indexterm>
+        <primary>DEVICE_STATE()</primary>
+      </indexterm></subtitle>
+
+    <para>Wie man über Hints Extensions mit dem Status von SIP-Benutzern
+    verknüpfen kann haben wir schon gelernt. Zur Erinnerung:</para>
+
+    <table colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+      <title>Hints für SIP-Benutzer</title>
+
+      <tgroup cols="2">
+        <colspec align="left" colnum="1" colwidth="5*" />
+
+        <colspec align="left" colnum="2" colwidth="4*" />
+
+        <thead valign="middle">
+          <row>
+            <entry align="center"><filename>extensions.conf</filename></entry>
+
+            <entry align="center"><filename>extensions.ael</filename></entry>
+          </row>
+        </thead>
+
+        <tbody valign="top">
+          <row>
+            <entry><programlisting>exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis></programlisting></entry>
+
+            <entry><programlisting><emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {}</programlisting></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>Seit Asterisk 1.6 kann man über Hints aber Extensions auch mit dem
+    Status von <literal>MeetMe</literal>-Konferenzräumen verbinden:</para>
+
+    <table colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+      <title>Hints für MeetMe-Konferenzräume</title>
+
+      <indexterm>
+        <primary>Hints</primary>
+
+        <secondary>MeetMe</secondary>
+      </indexterm>
+
+      <indexterm>
+        <primary>MeetMe</primary>
+
+        <secondary>Hints</secondary>
+      </indexterm>
+
+      <tgroup cols="2">
+        <colspec align="left" colnum="1" colwidth="5*" />
+
+        <colspec align="left" colnum="2" colwidth="4*" />
+
+        <thead valign="middle">
+          <row>
+            <entry align="center"><filename>extensions.conf</filename></entry>
+
+            <entry align="center"><filename>extensions.ael</filename></entry>
+          </row>
+        </thead>
+
+        <tbody valign="top">
+          <row>
+            <entry><programlisting>exten =&gt; 881,<emphasis role="bold">hint,MeetMe:885</emphasis>
+exten =&gt; 881,1,MeetMe(885)</programlisting></entry>
+
+            <entry><programlisting><emphasis role="bold">hint(MeetMe:885)</emphasis> 881 =&gt; {
+  MeetMe(885);
+}</programlisting></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>Der Hint im Beispiel oben schafft die Verknüpfung zwischen der
+    Extension <literal>881</literal> mit dem Status des
+    <literal>MeetMe</literal>-Konferenzraums <literal>885</literal>. Die
+    Nummern sind hier mit Absicht unterschiedlich gewählt; in Wirklichkeit
+    werden sie häufig gleich sein. Man könnte jetzt am Telefon eine Taste mit
+    der Nebenstelle <literal>881</literal> belegen, dann würde die LED den
+    Status des Konferenzraumes anzeigen.</para>
+
+    <para>Das aber nur als kleiner Exkurs da es thematisch passt. Noch
+    interessanter ist, dass man ab Asterisk 1.6 über Hints Extensions auch mit
+    eigenen, <quote>virtuellen Geräten</quote> assoziieren kann. Die
+    Schreibweise ist fast genauso:</para>
+
+    <table colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+      <title>Hints für virtuelle Geräte</title>
+
+      <tgroup cols="2">
+        <colspec align="left" colnum="1" colwidth="5*" />
+
+        <colspec align="left" colnum="2" colwidth="4*" />
+
+        <thead valign="middle">
+          <row>
+            <entry align="center"><filename>extensions.conf</filename></entry>
+
+            <entry align="center"><filename>extensions.ael</filename></entry>
+          </row>
+        </thead>
+
+        <tbody valign="top">
+          <row>
+            <entry><programlisting>exten =&gt; 99,<emphasis role="bold">hint,Custom:mein-status</emphasis></programlisting></entry>
+
+            <entry><programlisting><emphasis role="bold">hint(Custom:mein-status)</emphasis> 99 =&gt; {}</programlisting></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>Den Status dieser <quote><foreignphrase lang="en">Custom
+    Devices</foreignphrase></quote> kann man ganz frei mit der Funktion
+    <literal>DEVICE_STATE()</literal> (siehe <xref
+    linkend="funktionen-device_state" />) von einer beliebigen anderen Stelle
+    im Dialplan aus festlegen.</para>
+
+    <programlisting>Set(DEVICE_STATE(Custom:mein-status)=BUSY);</programlisting>
+
+    <para>An ein Telefon das den Status der Extension abonniert hat wird dann
+    die jeweilige Benachrichtigung geschickt. Die möglichen Werte und die
+    übliche Anzeige am Telefon sind:</para>
+
+    <table colsep="1" rowsep="1" tocentry="0">
+      <title><foreignphrase lang="en">Device States</foreignphrase></title>
+
+      <tgroup cols="3">
+        <colspec align="left" colnum="1" colwidth="2*" />
+
+        <colspec align="left" colnum="2" colwidth="3*" />
+
+        <colspec align="left" colnum="3" colwidth="2*" />
+
+        <thead valign="middle">
+          <row>
+            <entry>Wert</entry>
+
+            <entry>Bedeutung</entry>
+
+            <entry>LED<footnote>
+                <para>Die Anzeige ist abhängig vom jeweiligen Endgerät.</para>
+              </footnote></entry>
+          </row>
+        </thead>
+
+        <tbody valign="top">
+          <row>
+            <entry><literal>UNKNOWN</literal></entry>
+
+            <entry>unbekannt, nicht angemeldet</entry>
+
+            <entry>aus</entry>
+          </row>
+
+          <row>
+            <entry><literal>UNAVAILABLE</literal></entry>
+
+            <entry>nicht erreichbar</entry>
+
+            <entry>aus</entry>
+          </row>
+
+          <row>
+            <entry><literal>NOT_INUSE</literal></entry>
+
+            <entry>frei</entry>
+
+            <entry>aus</entry>
+          </row>
+
+          <row>
+            <entry><literal>INUSE</literal></entry>
+
+            <entry>im Gespräch</entry>
+
+            <entry>leuchtet dauerhaft</entry>
+          </row>
+
+          <row>
+            <entry><literal>BUSY</literal></entry>
+
+            <entry>im Gespräch / besetzt</entry>
+
+            <entry>leuchtet dauerhaft</entry>
+          </row>
+
+          <row>
+            <entry><literal>RINGING</literal></entry>
+
+            <entry>klingelt</entry>
+
+            <entry>blinkt</entry>
+          </row>
+
+          <row>
+            <entry><literal>RINGINUSE</literal></entry>
+
+            <entry>im Gespräch und klingelt (anklopfen)</entry>
+
+            <entry>blinkt</entry>
+          </row>
+
+          <row>
+            <entry><literal>ONHOLD</literal></entry>
+
+            <entry>auf <quote>halten</quote></entry>
+
+            <entry>blinkt langsam</entry>
+          </row>
+
+          <row>
+            <entry><literal>INVALID</literal></entry>
+
+            <entry>ungültig</entry>
+
+            <entry>aus</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
   </section>
 
   <section>
@@ -802,20 +1023,6 @@ Generate a device state change event given the input parameters. Returns 0. Stat
         Ansteuerung der Anzeige P12 genutzt. P6 ist nach wie vor aus dem
         obigen Beispiel gesetzt und bleibt auch in bekannter Weise
         funktionsfähig.</para>
-
-        <screenshot>
-          <screeninfo>Gezielte LED-Ansteuerung</screeninfo>
-
-          <mediaobject>
-            <imageobject role="fo">
-              <imagedata fileref="bilder/snom-hint3.png" />
-            </imageobject>
-
-            <imageobject role="html">
-              <imagedata fileref="bilder/snom-hint3.html.jpg" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
 
         <para>In der Datei <filename>extensions.conf</filename> muss nun ein
         weiterer Hint gesetzt werden, diesmal vom Typ DS statt SIP:</para>
