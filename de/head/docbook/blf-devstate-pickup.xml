@@ -257,7 +257,7 @@ exten =&gt; _2X,n,VoiceMail(${EXTEN},u)</programlisting></entry>
       </table>
 
       <important>
-        <para>Hierbei ist zu beachten daß ein <literal>hint</literal> in
+        <para>Hierbei ist zu beachten dass ein <literal>hint</literal> in
         Asterisk 1.4 nicht mit Pattern<footnote>
             <para><xref linkend="einleitung-regex" /></para>
           </footnote> geschrieben werden kann.<literallayout>exten =&gt; _2X,hint,SIP/${EXTEN}</literallayout>bzw.<literallayout>hint(SIP/${EXTEN}) _2X =&gt; {<replaceable>...</replaceable>}</literallayout>wäre
@@ -363,7 +363,123 @@ exten =&gt; 20,1,Dial(SIP/21&amp;SIP/22,40)</programlisting></entry>
     </section>
   </section>
 
-  <section id="blf-subscribe">
+  <section id="blf-subscriptions">
+    <title>Verfahren für SIP-<foreignphrase
+    lang="en">Subscriptions</foreignphrase></title>
+
+    <note>
+      <para>Dieser Abschnitt ist ein kleiner Exkurs für die
+      Technik-Interessierten. Für die Konfiguration ist er i.d.R. nicht weiter
+      von Bedeutung. Sie können also getrost zum nächsten Abschnitt
+      springen.</para>
+    </note>
+
+    <para>Es gibt in SIP mehrere unterschiedlich Verfahren wie man den Status
+    einer Nebenstelle <quote>abonnieren</quote> kann. Die gebräuchliste
+    SIP-Erweiterung dafür ist <ulink
+    url="http://tools.ietf.org/html/rfc4235"><citetitle><quote><foreignphrase
+    lang="en">Dialog Event Package</foreignphrase></quote></citetitle> (RFC
+    4235)</ulink>, an die sich u.a. auch die 3x0-Snoms halten. Dieser Standard
+    basiert auf <ulink
+    url="http://tools.ietf.org/html/rfc3265"><citetitle><quote><foreignphrase
+    lang="en">SIP Event Notification</foreignphrase></quote></citetitle> (RFC
+    3265)</ulink>. Dabei schickt das Telefon für jede zu überwachende
+    Nebenstelle ein <literal>SUBSCRIBE</literal> an die Telefonanlage und
+    erhält bei jeder Status-Änderung ein <literal>NOTIFY</literal>
+    (<methodname>PUBLISH</methodname> wird von Asterisk noch nicht
+    unterstützt). Der Hauptunterschied sind die unterschiedlichen
+    (XML-)Formate im <quote><foreignphrase
+    lang="en">Body</foreignphrase></quote> der <quote><foreignphrase
+    lang="en">Notifications</foreignphrase></quote>.</para>
+
+    <para>Die von Asterisk (mehr oder weniger) unterstützten Verfahren
+    sind:</para>
+
+    <table align="center" colsep="1" rowsep="1">
+      <title>SIP-Subscriptions &ndash; Verfahren</title>
+
+      <tgroup cols="3">
+        <colspec align="left" colnum="1" colwidth="2*" />
+
+        <colspec align="left" colnum="2" colwidth="2*" />
+
+        <colspec align="left" colnum="3" colwidth="1*" />
+
+        <thead>
+          <row>
+            <entry>Spezifikation</entry>
+
+            <entry>MIME-Typ</entry>
+
+            <entry>Geräte</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><ulink
+            url="http://tools.ietf.org/html/rfc4235"><citetitle><foreignphrase
+            lang="en">SIP Dialog Event Package</foreignphrase></citetitle>
+            (RFC&nbsp;4235)</ulink></entry>
+
+            <entry><literal>application/dialog-info+xml</literal></entry>
+
+            <entry>Snom, Linksys, Aastra, Polycom, Grandstream, Thomson,
+            ...</entry>
+          </row>
+
+          <row>
+            <entry><ulink
+            url="http://tools.ietf.org/html/rfc3863"><citetitle><foreignphrase
+            lang="en">Presence Information Data Format
+            (PIDF)</foreignphrase></citetitle> (RFC&nbsp;3863)</ulink></entry>
+
+            <entry><literal>application/pidf+xml</literal></entry>
+
+            <entry>CounterPath<footnote>
+                <para>früher Xten</para>
+              </footnote> <ulink
+            url="http://www.counterpath.net/eyebeam.html">EyeBeam</ulink>
+            etc., Cisco</entry>
+          </row>
+
+          <row>
+            <entry>Vor-Version von RFC&nbsp;3863 (PIDF, s.o.), XPIDF, CPIM mit
+            Microsoft-Ergänzung<footnote>
+                <para><ulink
+                url="http://msdn.microsoft.com/en-us/library/cc246193.aspx"><citetitle><foreignphrase
+                lang="en">XPIDF Presence Format
+                Example</foreignphrase></citetitle></ulink>, <ulink
+                url="http://msdn.microsoft.com/en-us/library/cc246202.aspx"><citetitle><foreignphrase
+                lang="en">XPIDF Presence Document
+                Format</foreignphrase></citetitle></ulink>, <ulink
+                url="http://softlab-pro-web.technion.ac.il/projects/WatchMe/documents/RTC.doc"><citetitle><foreignphrase
+                lang="en">Microsoft Real Time Communication (RTC)
+                Client</foreignphrase></citetitle></ulink></para>
+              </footnote></entry>
+
+            <entry><literal>application/xpidf+xml</literal></entry>
+
+            <entry>Microsoft RTC/LCS, MSN Messenger, Polycom</entry>
+          </row>
+
+          <row>
+            <entry>Vor-Version von RFC&nbsp;3863 (PIDF, s.o.), XPIDF,
+            CPIM</entry>
+
+            <entry><literal>application/cpim-pidf+xml</literal></entry>
+
+            <entry>?</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para><literal>xpidf+xml</literal> und <literal>cpim-pidf+xml</literal>
+    sind übrigens sehr ähnlich.</para>
+  </section>
+
+  <section id="blf-telefon-konfiguration-snom">
     <title>Konfiguration der Telefone für BLF</title>
 
     <para>Nun müssen noch die überwachenden Telefone konfiguriert werden. Wie
@@ -374,7 +490,7 @@ exten =&gt; 20,1,Dial(SIP/21&amp;SIP/22,40)</programlisting></entry>
       </footnote> nachgelesen werden. Wir zeigen es hier exemplarisch für ein
     Snom 360.</para>
 
-    <para>Melden Sie sich wie gewohnt mit einem Webbrowser am Telefon an und
+    <para>Melden Sie sich wie gewohnt mit einem Webbrowser am Snom an und
     gehen in das Untermenü <quote>Funktionstasten</quote>. Dort belegen Sie
     die Funktionstaste Ihrer Wahl (im Beispiel die P6) mit der Funktion
     <quote>Ziel</quote>/<quote>Nebenstelle</quote><footnote>
@@ -551,7 +667,7 @@ exten =&gt; _*8X.,n,Pickup(${nst}@interne-benutzer)</emphasis></programlisting>
 }</programlisting>
 
       <para>Damit haben wir in Asterisk eine Extension definiert die besagt,
-      daß beim Wählen von
+      dass beim Wählen von
       <literal>*8</literal><replaceable>&lt;Nebenstelle&gt;</replaceable>
       (also z.B. <literal>*821</literal>) der Anruf herangeholt wird der
       gerade auf dieser <replaceable>&lt;Nebenstelle&gt;</replaceable> (z.B.
@@ -587,9 +703,17 @@ exten =&gt; _*8X.,n,Pickup(${nst}@interne-benutzer)</emphasis></programlisting>
           siehe <ulink
           url="http://bugs.digium.com/view.php?id=5014"><citetitle>Asterisk
           Bug 5014</citetitle></ulink>.</para>
-        </footnote> Jetzt können am überwachenden Telefon einfach am
-      überwachten Telefon eingehende Anrufe angenommen werden, indem die zur
-      blinkenden LED passende Taste gedrückt wird.</para>
+        </footnote> (Eine detaillierte technische Beschreibung wie das Snom
+      auf verschiedene Formen der SIP-<literal>NOTIFY</literal>-Nachrichten
+      reagiert findet man unter <ulink
+      url="http://wiki.snom.com/Features/Call_Pick-Up">http://wiki.snom.com/Features/Call_Pick-Up</ulink>.)
+      Andere Telefone haben ähnliche Mechanismen (Grandstream z.B.
+      <literal>**</literal> statt <literal>*8</literal>, dafür muß man ggf.
+      die in diesem Kapitel beschriebenen Extensions anpassen).</para>
+
+      <para>Jetzt können am überwachenden Telefon einfach am überwachten
+      Telefon eingehende Anrufe angenommen werden, indem die zur blinkenden
+      LED passende Taste gedrückt wird.</para>
 
       <note>
         <para>Um die Anzeige- und Übernahme-Funktionalität korrekt zu nutzen,
