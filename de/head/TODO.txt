@@ -1,0 +1,57 @@
+Philipp Kempgen schrieb:
+> Mir ist gerade aufgefallen daﬂ an einigen Stellen im Asterisk-Buch
+> (z.B. voicemailsystem.xml, warteschleifen.xml) mit Goto() zu einer
+> Extension gesprungen wird.
+> 
+> exten => _20[0-3],n,Goto(s-${DIALSTATUS},1)
+> exten => s-NOANSWER,1,VoiceMail(${ZIELNR},u)
+> exten => s-BUSY,1,VoiceMail(${ZIELNR},b)
+> exten => s-ANSWER,1,Hangup()
+> 
+> oder
+> 
+> exten => 20,n,Goto(q-${QUEUESTATUS},1)
+> exten => q-JOINEMPTY,1,Wait(1)
+> exten => q-JOINEMPTY,n,Playback(vm-nobodyavail,noanswer)
+> exten => q-JOINEMPTY,n,Playback(vm-goodbye,noanswer)
+> exten => q-JOINEMPTY,n,Hangup()
+> exten => q-JOINUNAVAIL,1,Goto(q-JOINEMPTY,1)
+> exten => q-LEAVEEMPTY,1,Goto(q-JOINEMPTY,1)
+> exten => q-LEAVEUNAVAIL,1,Goto(q-JOINEMPTY,1)
+> exten => q-TIMEOUT,1,Goto(q-JOINEMPTY,1)
+> exten => q-FULL,1,Busy(5)
+> exten => q-FULL,n,Hangup()
+> 
+> Wenn man dr¸ber nachdenkt ist das ein Sicherheitsloch, da jemand
+> direkt z.B. die Extension "s-BUSY" anrufen kˆnnte.
+> 
+> Das sollte besser mit benannten Priorit‰ten gemacht werden.
+
+[x]
+
+
+Stefan Wintermeyer schrieb:
+> Am 20.10.2008 um 21:41 schrieb Philipp Kempgen:
+>>> Im Zweifelsfall w¸rde ein Warning Kasten ausreichen.
+>>
+>> Man kˆnnte evtl. einen Hinweis bei der Applikation Goto() einf¸gen.
+
+[ ]
+
+
+Stefan Wintermeyer schrieb:
+> Am 20.10.2008 um 21:41 schrieb Philipp Kempgen:
+>> applications.xml, applications_new.xml - was ist eigentlich aktuell?
+>> applications.xml ist includet, aber .._new klingt "neuer". :-)
+> 
+> Ich glaube _new ist die neue Version f¸r 1.6. Hat Sˆren gemacht, aber  
+> ich hatte noch keine Zeit mir das anzuschauen. hmmm... weiﬂ auch nicht.
+
+[ ]
+
+
+AEL
+
+[ ]
+
+
