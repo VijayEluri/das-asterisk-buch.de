@@ -805,41 +805,38 @@ exten =&gt; 20,n,Hangup()                   ; hinterher auflegen</programlisting
     Extension:<programlisting>exten =&gt; 20,n,Wait(2)
 exten =&gt; 20,n,Answer()                   ; abheben
 exten =&gt; 20,n,Set(MUSICCLASS()=default)  ; Musikklasse "default" setzen
-exten =&gt; 20,n,Queue(support,t)           ; in Schlange "support" einreihen
-; zur Erinnerung: die Option t erlaubt es dem Agenten, den Anruf
-; an eine andere Extension weiterzuleiten
+exten =&gt; 20,n,Queue(support)             ; in Schlange "support" einreihen
 ; setzt QUEUESTATUS =
 ; TIMEOUT | FULL | JOINEMPTY | JOINUNAVAIL | LEAVEEMPTY | LEAVEUNAVAIL
-exten =&gt; 20,n,Goto(q-${QUEUESTATUS},1)  ; je nach QUEUESTATUS springen
+exten =&gt; 20,n,Goto(q-${QUEUESTATUS})     ; je nach QUEUESTATUS springen
 
 ; keine Agenten auf der Schlange:
 ; (hier könnte man alternativ auf VoiceMail() leiten)
-exten =&gt; q-JOINEMPTY,1,Wait(1)
-exten =&gt; q-JOINEMPTY,n,Playback(vm-nobodyavail,noanswer)
-exten =&gt; q-JOINEMPTY,n,Playback(vm-goodbye,noanswer)
-exten =&gt; q-JOINEMPTY,n,Hangup()
+exten =&gt; 20,n(q-JOINEMPTY),Wait(1)
+exten =&gt; 20,n,Playback(vm-nobodyavail,noanswer)
+exten =&gt; 20,n,Playback(vm-goodbye,noanswer)
+exten =&gt; 20,n,Hangup()
 
 ; keine Agenten (oder nur nicht-verfügbare) auf der Schlange:
-exten =&gt; q-JOINUNAVAIL,1,Goto(q-JOINEMPTY,1)   ; wie JOINEMPTY behandeln
+exten =&gt; 20,n(q-JOINUNAVAIL),Goto(q-JOINEMPTY)   ; wie JOINEMPTY behandeln
 
 ; alle Agenten haben Schlange verlassen:
-exten =&gt; q-LEAVEEMPTY,1,Goto(q-JOINEMPTY,1)    ; wie JOINEMPTY behandeln
+exten =&gt; 20,n(q-LEAVEEMPTY),Goto(q-JOINEMPTY)    ; wie JOINEMPTY behandeln
 
 ; alle Agenten (auch nicht-verfügbare) haben Schlange verlassen:
-exten =&gt; q-LEAVEUNAVAIL,1,Goto(q-JOINEMPTY,1)  ; wie JOINEMPTY behandeln
+exten =&gt; 20,n(q-LEAVEUNAVAIL),Goto(q-JOINEMPTY)  ; wie JOINEMPTY behandeln
 
 ; kein Agent antwortet:
-exten =&gt; q-TIMEOUT,1,Goto(q-JOINEMPTY,1)       ; wie JOINEMPTY behandeln
+exten =&gt; 20,n(q-TIMEOUT),Goto(q-JOINEMPTY)       ; wie JOINEMPTY behandeln
 
 ; max. Anruferzahl für Schlange erreicht:
 ; (hier könnte man alternativ auf VoiceMail() leiten)
-exten =&gt; q-FULL,1,Busy(5)
-exten =&gt; q-FULL,n,Hangup()</programlisting>Wenn wir diese Extension
-    anrufen, werden wir, da keine Agenten angemeldet sind, die Ansage hören,
-    dass z.Zt. niemand unseren Anruf entgegennehmen kann. (Wenn Sie das
-    verschleiern wollen, setzen Sie in der <filename>queues.conf</filename>
-    die Parameter <code>joinempty=yes</code> und
-    <code>leaveempty=no</code>.)</para>
+exten =&gt; 20,n(q-FULL),Busy(5)
+exten =&gt; 20,n,Hangup()</programlisting>Wenn wir diese Extension anrufen,
+    werden wir, da keine Agenten angemeldet sind, die Ansage hören, dass z.Zt.
+    niemand unseren Anruf entgegennehmen kann. (Wenn Sie das verschleiern
+    wollen, setzen Sie in der <filename>queues.conf</filename> die Parameter
+    <code>joinempty=yes</code> und <code>leaveempty=no</code>.)</para>
 
     <para>Es fehlt also noch eine Extension, unter der sich die Agenten
     einloggen, d.h. anwesend melden:<programlisting>exten =&gt; 25,1,Answer()       ; abheben
