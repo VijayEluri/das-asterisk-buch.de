@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <chapter id="dialplan-grundlagen" lang="en" revision="$Revision$">
-  <!--% Copyright (c) 2006 - 2007 by
+  <!--% Copyright (c) 2006 - 2008 by
 % - Stefan Wintermeyer <sw@amooma.de>
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
@@ -18,13 +18,17 @@
 
   <para>Two important files in <filename>/etc/asterisk</filename> make up the
   dialplan in 1.4. The first is <filename>extensions.conf</filename>, which
-  uses the original and still recommended priority model; the second is
+  uses the original and Digium-recommended priority model; the second is
   <filename>extensions.ael</filename>, which uses the newer Asterisk
   Extensions Language; we'll look at that in more detail in a separate
   chapter. For now, we'll use the traditional priority model, since even in
-  1.4, <filename>extensions.ael</filename> is converted into priority format
-  and added to <filename>extensions.conf</filename> when Asterisk is
-  started.</para>
+  1.4 and 1.6, <filename>extensions.ael</filename> is converted into priority
+  format and added to <filename>extensions.conf</filename> when Asterisk is
+  started.<footnote>
+      <para>The exact definition of "dialplan" is a matter of some debate in
+      the telephony world. In this book, we use the word in its
+      Asterisk-specific sense.</para>
+    </footnote></para>
 
   <section id="der-context">
     <title>Context</title>
@@ -57,6 +61,9 @@ host=dynamic</programlisting>This SIP device called 2000 always initiates
       clear to a beginner how important correct use of contexts really is. If
       you're not sure, please follow the step-by-step example for a simple PBX
       system in the chapter <xref linkend="kapitel-installation" />.</para>
+
+      <para>It pays to take the time necessary to become comfortable with the
+      concept.</para>
     </warning>
 
     <section id="context-syntax">
@@ -128,6 +135,13 @@ Rules, instructions, etc.</programlisting></para>
       <para><programlisting>exten =&gt; <replaceable>Extension</replaceable>,<replaceable>Priority,Application</replaceable>
 </programlisting><emphasis>e.g.</emphasis><programlisting>exten =&gt; 123,1,Answer()
 </programlisting></para>
+
+      <important>
+        <para>The first priority in an extension must always be 1 (one), or
+        Asterisk will never call the extension. Subsequent priorities must be
+        incremented by 1 and not more; Asterisk does not recognize larger
+        increments.</para>
+      </important>
     </section>
 
     <section id="grundlegende-applikationen">
@@ -371,7 +385,7 @@ exten =&gt; _10X,3,Hangup()
         </indexterm></title>
 
       <para>Dialplan patterns always begin with the underscore
-      (<code>_</code>) character:<programlisting>exten =&gt; _<emphasis>Pattern,Priority,Applikation</emphasis></programlisting></para>
+      (<code>_</code>) character:<programlisting>exten =&gt; _<emphasis>Pattern,Priority,Application</emphasis></programlisting></para>
 
       <para>An Asterisk dialplan pattern can have the following
       elements:<variablelist termlength="7">
@@ -706,8 +720,6 @@ exten =&gt; _X.,1,NoOp{Bingo}</programlisting></para>
 
 -= 3 extensions (3 priorities) in 1 context. =-
 *CLI&gt; </screen></para>
-
-        <para></para>
       </section>
     </section>
   </section>
@@ -752,8 +764,8 @@ exten =&gt; 17005551212,1,Dial(SIP/5551212)</programlisting></para>
       before referencing any included contexts. If a matching entry is found,
       that entry is used. If no matching entry is found, Asterisk will look
       for a match in the first included context, then the next, and so on. It
-      is also possible to have nested includes; that is, includes within
-      includes.</para>
+      is also possible to have nested includes; that is, includes
+      <emphasis>within</emphasis> includes.</para>
 
       <para>In case of doubt, you can verify what entry Asterisk is using to
       handle a call by entering <command>dialplan show
@@ -785,7 +797,7 @@ exten =&gt; 17005551212,1,Dial(SIP/5551212)</programlisting></para>
       <para>If we then expand the <code>sales</code> context like
       so:<programlisting>[general]
 
-[verkauf]
+[sales]
 include =&gt; internal
 include =&gt; external
 
