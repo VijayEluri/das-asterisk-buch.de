@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <chapter id="kapitel-programmieren" lang="en" revision="$Revision$">
-  <!--% Copyright (c) 2006 - 2007 by
+  <!--% Copyright (c) 2006 - 2008 by
 % - Stefan Wintermeyer <sw@amooma.de>
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
@@ -33,17 +33,14 @@
       <secondary>Programming How-to</secondary>
     </indexterm>
 
-    <para>A major challenge in writing a book like this one is that every
-    reader comes to it with a different level of previous experience. A book
-    on Asterisk might be read by administrators, programmers, telephone
-    specialists, and hobbyists, all with different levels of practical
-    experience. To take full advantage of Asterisk, a basic level of
-    programming skill and a grasp of the fundamentals is necessary. Through
-    this how-to, we hope to provide the newcomer with the basic understanding
-    needed to make useful dialplans, through the use of plenty of examples and
-    with frequent reference to <xref linkend="applikationen" />. You will
-    probably recognize some of the material from other chapters. This little
-    how-to should give you the overview you need to get started.</para>
+    <para>A book on Asterisk might be read by administrators, programmers,
+    telephone specialists, and hobbyists, all with different levels of
+    practical experience. Whatever your experience level, you need a basic
+    level of programming skill and a grasp of the fundamentals to take full
+    advantage of Asterisk. This how-to should give you the basic understanding
+    you need to make useful dialplans, through the use of plenty of examples
+    and with frequent reference to <xref linkend="applikationen" />. You will
+    probably recognize some of the material from other chapters.</para>
 
     <section id="programmierer-howto-programmstruktur">
       <title>Program structure</title>
@@ -196,8 +193,8 @@ exten =&gt; 1013,n,Hangup()</programlisting></para>
         <primary>GotoIf() conditional</primary>
       </indexterm>
 
-      <para>You can jump to other parts of the dialplan depending on a
-      specific condition being met with <code>GotoIf()</code>:<programlisting>exten =&gt; 1014,1,Answer()
+      <para>You can jump to other parts of the dialplan, if a specific
+      condition is met, with <code>GotoIf()</code>:<programlisting>exten =&gt; 1014,1,Answer()
 exten =&gt; 1014,n,Set(Favoritestation = 0815)
 exten =&gt; 1014,n,NoOp(Check to see if ${Favoritestation} is calling.)
 exten =&gt; 1014,n,GotoIf($[${CALLERID(num) = ${Favoritestation}]?yes,no)
@@ -223,8 +220,8 @@ exten =&gt; 1014,n,Hangup()</programlisting></para>
       </indexterm>
 
       <para>With <code>Gosub()</code> the call is directed to a subroutine; it
-      can be returned to the intiating priority with <code>Return()</code>
-      wieder zurück:<programlisting>exten =&gt; 1015,1,Gosub(cid-set)
+      can be returned to the intiating priority with
+      <code>Return()</code>:<programlisting>exten =&gt; 1015,1,Gosub(cid-set)
 exten =&gt; 1015,n,Dial(SIP/${EXTEN})
 
 exten =&gt; 1015,n(cid-set),Set(CALLERID(all)=Apfelmus GmbH &lt;012345678&gt;)
@@ -298,10 +295,10 @@ exten =&gt; 109,1,Dial(SIP/109)
       <para>Variable names needn't be in all uppercase as in our examples, nor
       are user-defined variables case-sensitive. It is a good idea to use
       uppercase variable names nonetheless because it makes the variables
-      easier to identify and the dialplan code easier to read. The primary
-      disadvantage of this is that it means you cannot distinguish variable
-      names based on case. For example, <code>${FOO}</code> is considered the
-      same as <code>${foo}</code>.<important>
+      easier to identify and the dialplan code easier to read. Unfortunately
+      this means you cannot distinguish variable names based on case. For
+      example, <code>${FOO}</code> is considered the same as
+      <code>${foo}</code>.<important>
           <para>Asterisk system variables such as ${EXTEN} must always be
           uppercase.</para>
         </important></para>
@@ -338,7 +335,7 @@ exten =&gt; 1234,2,Set(FRUIT="Apple")</programlisting></para>
 
         <para>Sometimes a variable will contain reserved characters
         (characters that have special functions and are interpreted
-        differently). For example, if you want to variable to contain the
+        differently). For example, if you want a variable to contain the
         underscore character ("<code>_</code>") you must use an "escape"
         character to tell the dialplan interpreter that it should ignore the
         reserved character. The following characters must be escaped when used
@@ -394,7 +391,7 @@ exten =&gt; 1234,2,Set(FRUIT="Apple")</programlisting></para>
 [globals]
 RINGTIME=90
 
-[from-intern]
+[from-internal]
 exten =&gt; _XXX,1,Dial(SIP/${EXTEN},${RINGTIME})
 exten =&gt; _XXX,n,VoiceMail(${EXTEN})
 </programlisting></para>
@@ -419,7 +416,7 @@ exten =&gt; _XXX,n,VoiceMail(${EXTEN})
 
         <para><code>Set(&lt;variable1&gt;=&lt;value1&gt;[,&lt;variable2&gt;=&lt;value2&gt;][,&lt;option&gt;])</code></para>
 
-        <para>Setting option <parameter> <code>g</code> </parameter>makes the
+        <para>Setting option<parameter> <code>g</code> </parameter>makes the
         variable global; without it, the variable is treated as a local
         channel variable.</para>
 
@@ -518,10 +515,7 @@ exten =&gt; 1234,n,NoOp(${CAKE})</programlisting></para>
           recommended replacements. This will reduce the chance of an
           installation breaking when you upgrade Asterisk.</para>
         </tip>System variables relevant to specific Asterisk functions are
-      covered again in their respective chapters.<footnote>
-          <para>A classic "Which comes first, the chicken or the egg?"
-          problem!</para>
-        </footnote></para>
+      covered again in their respective chapters.</para>
 
       <note>
         <para>Some of the "variables" described here are not really variables
@@ -658,13 +652,13 @@ exten =&gt; 1234,n,NoOp(${CAKE})</programlisting></para>
       </indexterm>
 
       <para>Variables are most useful when we can change their contents at
-      execution time. This gives us the flexibility to impart complex and
-      powerful behavior to our Asterisk system.</para>
+      execution time. This gives us the flexibility to create complex and
+      powerful behavior in our Asterisk system.</para>
 
       <section id="var-substring">
         <title>Substring</title>
 
-        <para>In general, a string consistes of a sequence of individual
+        <para>In general, a string consists of a sequence of individual
         characters. The size of a string is determined by the number of
         characters contained in it. For example, the string "apple tree" has
         10 characters (we must include the space). Any string can be broken
@@ -798,11 +792,10 @@ exten =&gt; h,1,Set(CONNECTIONS=$[${CONNECTIONS} - 1]|g)</programlisting></para>
       <para>To make a context gracefully handle every conceivable
       circumstance, we use the special extension<code> i</code> ("i" stands
       for invalid) which handles all dialed numbers which are not explicitly
-      handled handled within the context. Again, as with the <code>h</code>
-      extension, once the <code>i</code> extension is invoked the
-      <code>${EXTEN}</code> will no longer contain the dialed number. To get
-      the dialed number while in the <code>i</code> extension, use
-      <code>${INVALID_EXTEN}</code>.</para>
+      handled within the context. Again, as with the <code>h</code> extension,
+      once the <code>i</code> extension is invoked <code>${EXTEN}</code> will
+      no longer contain the dialed number. To get the dialed number while in
+      the <code>i</code> extension, use <code>${INVALID_EXTEN}</code>.</para>
 
       <section id="i-extension-beispiel">
         <title>Example</title>
@@ -924,7 +917,7 @@ exten =&gt; T,4,Hangup()</programlisting></para>
       we use the <code>s</code> extension. <warning>
           <para>If you are using an ATA device (<emphasis>analog telephone
           adapter</emphasis>) you don't need the <code>s</code> extension. You
-          can configured the dialled number in the configuration interface
+          can configure the dialled number in the configuration interface
           (often a web interface) for the ATA.</para>
         </warning></para>
 
@@ -948,8 +941,7 @@ exten =&gt; s,5,Hangup()</programlisting>
 exten =&gt; s,1,Dial(SIP/${MACRO_EXTEN},10)
 exten =&gt; s,n,VoiceMail(${MACRO_EXTEN})</programlisting></para>
 
-    <para>Ein solches Macro würde im rest des Dialplanes dann wie folgt
-    aufgerufen werden:<programlisting>[sales]
+    <para>This macro would be called like so:<programlisting>[sales]
 exten =&gt; _2XXX,1,Macro(incoming)
 
 [building-mgr]
