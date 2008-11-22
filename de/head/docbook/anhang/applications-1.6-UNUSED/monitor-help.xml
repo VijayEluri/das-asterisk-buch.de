@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screen>-= Info about application &apos;Monitor&apos; =-
+
+[Synopsis]
+Monitor a channel
+
+[Description]
+  Monitor([file_format[:urlbase],[fname_base],[options]]):
+Used to start monitoring a channel. The channel&apos;s input and output
+voice packets are logged to files until the channel hangs up or
+monitoring is stopped by the StopMonitor application.
+  file_format                optional, if not set, defaults to &quot;wav&quot;
+  fname_base                if set, changes the filename used to the one specified.
+  options:
+    m   - when the recording ends mix the two leg files into one and
+          delete the two leg files.  If the variable MONITOR_EXEC is set, the
+          application referenced in it will be executed instead of
+          sox and the raw leg files will NOT be deleted automatically.
+          sox or MONITOR_EXEC is handed 3 arguments, the two leg files
+          and a target mixed file name which is the same as the leg file names
+          only without the in/out designator.
+          If MONITOR_EXEC_ARGS is set, the contents will be passed on as
+          additional arguments to MONITOR_EXEC
+          Both MONITOR_EXEC and the Mix flag can be set from the
+          administrator interface
+
+    b   - Don&apos;t begin recording unless a call is bridged to another channel
+    i   - Skip recording of input stream (disables m option)
+    o   - Skip recording of output stream (disables m option)
+
+Returns -1 if monitor files can&apos;t be opened or if the channel is already
+monitored, otherwise 0.<screen>

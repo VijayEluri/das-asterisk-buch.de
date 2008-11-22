@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screen>-= Info about application &apos;DISA&apos; =-
+
+[Synopsis]
+DISA (Direct Inward System Access)
+
+[Description]
+DISA(&lt;numeric passcode&gt;[,&lt;context&gt;[,&lt;cid&gt;[,mailbox[,options]]]]) or
+DISA(&lt;filename&gt;[,,,,options])
+The DISA, Direct Inward System Access, application allows someone from
+outside the telephone switch (PBX) to obtain an &quot;internal&quot; system
+dialtone and to place calls from it as if they were placing a call from
+within the switch.
+DISA plays a dialtone. The user enters their numeric passcode, followed by
+the pound sign (#). If the passcode is correct, the user is then given
+system dialtone within &lt;context&gt; on which a call may be placed. If the user
+enters an invalid extension and extension &quot;i&quot; exists in the specified
+context, it will be used.
+
+If you need to present a DISA dialtone without entering a password, simply
+set &lt;passcode&gt; to &quot;no-password&quot;.
+
+Be aware that using this may compromise the security of your PBX.
+
+The arguments to this application (in extensions.conf) allow either
+specification of a single global passcode (that everyone uses), or
+individual passcodes contained in a file.
+
+The file that contains the passcodes (if used) allows a complete
+specification of all of the same arguments available on the command
+line, with the sole exception of the options. The file may contain blank
+lines, or comments starting with &quot;#&quot; or &quot;;&quot;.
+
+&lt;context&gt; specifies the dialplan context in which the user-entered extension
+will be matched. If no context is specified, the DISA application defaults
+the context to &quot;disa&quot;. Presumably a normal system will have a special
+context set up for DISA use with some or a lot of restrictions.
+
+&lt;cid&gt; specifies a new (different) callerid to be used for this call.
+
+&lt;mailbox[@context]&gt; will cause a stutter-dialtone (indication &quot;dialrecall&quot;)
+to be used, if the specified mailbox contains any new messages.
+
+The following options are available:
+  n - the DISA application will not answer initially.
+  p - the extension entered will be considered complete when a &apos;#&apos; is entered.<screen>

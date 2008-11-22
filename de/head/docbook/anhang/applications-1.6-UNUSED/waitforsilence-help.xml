@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screen>-= Info about application &apos;WaitForSilence&apos; =-
+
+[Synopsis]
+Waits for a specified amount of silence
+
+[Description]
+  WaitForSilence(silencerequired[,iterations][,timeout]):
+Wait for Silence: Waits for up to &apos;silencerequired&apos;
+milliseconds of silence, &apos;iterations&apos; times or once if omitted.
+An optional timeout specified the number of seconds to return
+after, even if we do not receive the specified amount of silence.
+Use &apos;timeout&apos; with caution, as it may defeat the purpose of this
+application, which is to wait indefinitely until silence is detected
+on the line.  This is particularly useful for reverse-911-type
+call broadcast applications where you need to wait for an answering
+machine to complete its spiel before playing a message.
+The timeout parameter is specified only to avoid an infinite loop in
+cases where silence is never achieved.  Typically you will want to
+include two or more calls to WaitForSilence when dealing with an answering
+machine; first waiting for the spiel to finish, then waiting for the beep, etc.
+
+Examples:
+  - WaitForSilence(500,2) will wait for 1/2 second of silence, twice
+  - WaitForSilence(1000) will wait for 1 second of silence, once
+  - WaitForSilence(300,3,10) will wait for 300ms silence, 3 times,
+     and returns after 10 sec, even if silence is not detected
+
+Sets the channel variable WAITSTATUS with to one of these values:
+SILENCE - if exited with silence detected
+TIMEOUT - if exited without silence detected after timeout<screen>
