@@ -1,0 +1,117 @@
+  -= Info about application 'Dial' =- 
+
+[Synopsis]
+Place a call and connect to the current channel
+
+[Description]
+  Dial(Technology/resource[&Tech2/resource2...][|timeout][|options][|URL]):
+This application will place calls to one or more specified channels. As soon
+as one of the requested channels answers, the originating channel will be
+answered, if it has not already been answered. These two channels will then
+be active in a bridged call. All other channels that were requested will then
+be hung up.
+  Unless there is a timeout specified, the Dial application will wait
+indefinitely until one of the called channels answers, the user hangs up, or
+if all of the called channels are busy or unavailable. Dialplan executing will
+continue if no requested channels can be called, or if the timeout expires.
+
+  This application sets the following channel variables upon completion:
+    DIALEDTIME   - This is the time from dialing a channel until when it
+                   is disconnected.
+    ANSWEREDTIME - This is the amount of time for actual call.
+    DIALSTATUS   - This is the status of the call:
+                   CHANUNAVAIL | CONGESTION | NOANSWER | BUSY | ANSWER | CANCEL
+                   DONTCALL | TORTURE
+  For the Privacy and Screening Modes, the DIALSTATUS variable will be set to
+DONTCALL if the called party chooses to send the calling party to the 'Go Away'
+script. The DIALSTATUS variable will be set to TORTURE if the called party
+wants to send the caller to the 'torture' script.
+  This application will report normal termination if the originating channel
+hangs up, or if the call is bridged and either of the parties in the bridge
+ends the call.
+  The optional URL will be sent to the called party if the channel supports it.
+  If the OUTBOUND_GROUP variable is set, all peer channels created by this
+application will be put into that group (as in Set(GROUP()=...).
+
+  Options:
+    A(x) - Play an announcement to the called party, using 'x' as the file.
+    C    - Reset the CDR for this call.
+    d    - Allow the calling user to dial a 1 digit extension while waiting for
+           a call to be answered. Exit to that extension if it exists in the
+           current context, or the context defined in the EXITCONTEXT variable,
+           if it exists.
+    D([called][:calling]) - Send the specified DTMF strings *after* the called
+           party has answered, but before the call gets bridged. The 'called'
+           DTMF string is sent to the called party, and the 'calling' DTMF
+           string is sent to the calling party. Both parameters can be used
+           alone.
+    f    - Force the callerid of the *calling* channel to be set as the
+           extension associated with the channel using a dialplan 'hint'.
+           For example, some PSTNs do not allow CallerID to be set to anything
+           other than the number assigned to the caller.
+    g    - Proceed with dialplan execution at the current extension if the
+           destination channel hangs up.
+    G(context^exten^pri) - If the call is answered, transfer the calling party to
+           the specified priority and the called party to the specified priority+1.
+           Optionally, an extension, or extension and context may be specified. 
+           Otherwise, the current extension is used. You cannot use any additional
+           action post answer options in conjunction with this option.
+    h    - Allow the called party to hang up by sending the '*' DTMF digit.
+    H    - Allow the calling party to hang up by hitting the '*' DTMF digit.
+    j    - Jump to priority n+101 if all of the requested channels were busy.
+    L(x[:y][:z]) - Limit the call to 'x' ms. Play a warning when 'y' ms are
+           left. Repeat the warning every 'z' ms. The following special
+           variables can be used with this option:
+           * LIMIT_PLAYAUDIO_CALLER   yes|no (default yes)
+                                      Play sounds to the caller.
+           * LIMIT_PLAYAUDIO_CALLEE   yes|no
+                                      Play sounds to the callee.
+           * LIMIT_TIMEOUT_FILE       File to play when time is up.
+           * LIMIT_CONNECT_FILE       File to play when call begins.
+           * LIMIT_WARNING_FILE       File to play as warning if 'y' is defined.
+                                      The default is to say the time remaining.
+    m([class]) - Provide hold music to the calling party until a requested
+           channel answers. A specific MusicOnHold class can be
+           specified.
+    M(x[^arg]) - Execute the Macro for the *called* channel before connecting
+           to the calling channel. Arguments can be specified to the Macro
+           using '^' as a delimeter. The Macro can set the variable
+           MACRO_RESULT to specify the following actions after the Macro is
+           finished executing.
+           * ABORT        Hangup both legs of the call.
+           * CONGESTION   Behave as if line congestion was encountered.
+           * BUSY         Behave as if a busy signal was encountered. This will also
+                          have the application jump to priority n+101 if the
+                          'j' option is set.
+           * CONTINUE     Hangup the called party and allow the calling party
+                          to continue dialplan execution at the next priority.
+           * GOTO:<context>^<xexten>^<priority> - Transfer the call to the
+                          specified priority. Optionally, an extension, or
+                          extension and priority can be specified.
+           You cannot use any additional action post answer options in conjunction
+           with this option.
+    n    - This option is a modifier for the screen/privacy mode. It specifies
+           that no introductions are to be saved in the priv-callerintros
+           directory.
+    N    - This option is a modifier for the screen/privacy mode. It specifies
+           that if callerID is present, do not screen the call.
+    o    - Specify that the CallerID that was present on the *calling* channel
+           be set as the CallerID on the *called* channel. This was the
+           behavior of Asterisk 1.0 and earlier.
+    p    - This option enables screening mode. This is basically Privacy mode
+           without memory.
+    P([x]) - Enable privacy mode. Use 'x' as the family/key in the database if
+           it is provided. The current extension is used if a database
+           family/key is not specified.
+    r    - Indicate ringing to the calling party. Pass no audio to the calling
+           party until the called channel has answered.
+    S(x) - Hang up the call after 'x' seconds *after* the called party has
+           answered the call.
+    t    - Allow the called party to transfer the calling party by sending the
+           DTMF sequence defined in features.conf.
+    T    - Allow the calling party to transfer the called party by sending the
+           DTMF sequence defined in features.conf.
+    w    - Allow the called party to enable recording of the call by sending
+           the DTMF sequence defined for one-touch recording in features.conf.
+    W    - Allow the calling party to enable recording of the call by sending
+           the DTMF sequence defined for one-touch recording in features.conf.
