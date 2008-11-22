@@ -1,0 +1,24 @@
+  -= Info about application 'PrivacyManager' =- 
+
+[Synopsis]
+Require phone number to be entered, if no CallerID sent
+
+[Description]
+  PrivacyManager([maxretries[|minlength[|options]]]): If no Caller*ID 
+is sent, PrivacyManager answers the channel and asks the caller to
+enter their phone number. The caller is given 3 attempts to do so.
+The application does nothing if Caller*ID was received on the channel.
+  Configuration file privacy.conf contains two variables:
+   maxretries  default 3  -maximum number of attempts the caller is allowed 
+               to input a callerid.
+   minlength   default 10 -minimum allowable digits in the input callerid number.
+If you don't want to use the config file and have an i/o operation with
+every call, you can also specify maxretries and minlength as application
+parameters. Doing so supercedes any values set in privacy.conf.
+The option string may contain the following character: 
+  'j' -- jump to n+101 priority after <maxretries> failed attempts to collect
+         the minlength number of digits.
+The application sets the following channel variable upon completion: 
+PRIVACYMGRSTATUS  The status of the privacy manager's attempt to collect 
+                  a phone number from the user. A text string that is either:
+          SUCCESS | FAILED
