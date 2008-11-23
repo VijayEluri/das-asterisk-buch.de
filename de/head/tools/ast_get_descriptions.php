@@ -79,6 +79,7 @@ if     (strPos($tmp, 'applications') !== false) $mode = 'app';
 elseif (strPos($tmp, 'functions'   ) !== false) $mode = 'fnc';
 elseif (strPos($tmp, 'manager'     ) !== false) $mode = 'mgr';
 elseif (strPos($tmp, 'agi'         ) !== false) $mode = 'agi';
+elseif (strPos($tmp, 'cli'         ) !== false) $mode = 'cli';
 else {
 	echo "\nERROR. Unknown mode.\n\n";
 	exit(1);
@@ -130,6 +131,7 @@ switch ($mode) {
 	case 'fnc': $dir.= 'functions'   ; break;
 	case 'mgr': $dir.= 'manager'     ; break;
 	case 'agi': $dir.= 'agi'         ; break;
+	case 'cli': $dir.= 'cli'         ; break;
 	default : exit(1);
 }
 $dir.= '-'.$ast_vers.'-'.date('Ymd-His');
@@ -150,6 +152,8 @@ switch ($mode) {
 	            $rx1 = 'manager show command %s'  ;  break;
 	case 'agi': $rxn = 'agi show'                 ;
 	            $rx1 = 'agi show %s'              ;  break;
+	case 'cli': $rxn = 'help'                     ;
+	            $rx1 = 'help %s'                  ;  break;
 	default : exit(1);
 }
 if ('x'.$ast_vers <= 'x1.4') {
@@ -170,6 +174,7 @@ switch ($mode) {
 	case 'fnc': $pat = '/^[ \t]*([A-Z][A-Z0-9_]+)[ \t:]/m'   ; break;
 	case 'mgr': $pat = '/^[ \t]*([A-Z][a-zA-Z0-9_]*)[ \t:]/m'; break;
 	case 'agi': $pat = '/^[ \t]*([a-zA-Z][a-zA-Z0-9_]*(?: [a-zA-Z0-9_]+)*)(?:  +|\t| *: *)([^\n\r]+)/m'; break;
+	case 'cli': $pat = '/^[ \t]*([a-zA-Z][a-zA-Z0-9_]*(?: [a-zA-Z0-9_]+)*)(?:  +|\t| *: *)([^\n\r]+)/m'; break;
 	default : exit(1);
 }
 preg_match_all($pat, _un_terminal_color(implode("\n",$out)), $m);
@@ -222,7 +227,7 @@ foreach ($items as $item) {
 	$out = trim($out,"\n\r\0");
 	$out = preg_replace('/ +$/mS', '', $out);
 	
-	$fileb = $dir.'/'. preg_replace('/[^a-zA-Z0-9\-_.]/S', '-', strToLower($item)) .'-help-'.$ast_vers;
+	$fileb = $dir.'/'. preg_replace('/[^a-zA-Z0-9\-_.]/S', '_', strToLower($item)) .'-help-'.$ast_vers;
 	
 	$o = $out ."\n";
 	$fh = fOpen( $fileb.'.txt', 'wb' );
