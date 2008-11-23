@@ -227,7 +227,7 @@ foreach ($items as $item) {
 	$out = trim($out,"\n\r\0");
 	$out = preg_replace('/ +$/mS', '', $out);
 	
-	$fileb = $dir.'/'. preg_replace('/[^a-zA-Z0-9\-_.]/S', '_', strToLower($item)) .'-help-'.$ast_vers;
+	$fileb = $dir.'/'. preg_replace('/[^a-zA-Z0-9\-_.]/S', '-', strToLower($item)) .'-help-'.$ast_vers;
 	
 	$o = $out ."\n";
 	$fh = fOpen( $fileb.'.txt', 'wb' );
