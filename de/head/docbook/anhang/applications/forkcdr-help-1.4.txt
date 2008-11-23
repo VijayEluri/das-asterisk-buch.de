@@ -6,4 +6,20 @@ Forks the Call Data Record
 [Description]
   ForkCDR([options]):  Causes the Call Data Record to fork an additional
 cdr record starting from the time of the fork call
-If the option 'v' is passed all cdr variables will be passed along also.
+  Options:
+    a  - update the answer time on the NEW CDR just after it's been inited..
+         The new CDR may have been answered already, the reset that forkcdr.
+         does will erase the answer time. This will bring it back, but.
+         the answer time will be a copy of the fork/start time. It will.
+         only do this if the initial cdr was indeed already answered..
+    D -  Copy the disposition forward from the old cdr, after the .
+         init..
+    d -  Clear the dstchannel on the new CDR after reset..
+    e -  end the original CDR. Do this after all the necc. data.
+         is copied from the original CDR to the new forked CDR..
+    R -  do NOT reset the new cdr..
+    s(name=val) - Set the CDR var 'name' in the original CDR, with value.
+                  'val'.
+    v  - When the new CDR is forked, it gets a copy of the vars attached
+         to the current CDR. The vars attached to the original CDR are removed
+         unless this option is specified.
