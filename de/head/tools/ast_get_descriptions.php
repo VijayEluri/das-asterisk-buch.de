@@ -75,9 +75,10 @@ if ($tmp >= '1' || $tmp === 'on') {
 }
 
 $tmp = baseName($argv[0]);
-if     (strPos($tmp, 'applications') !== false) $mode = 'a';
-elseif (strPos($tmp, 'functions'   ) !== false) $mode = 'f';
-elseif (strPos($tmp, 'manager'     ) !== false) $mode = 'm';
+if     (strPos($tmp, 'applications') !== false) $mode = 'app';
+elseif (strPos($tmp, 'functions'   ) !== false) $mode = 'fnc';
+elseif (strPos($tmp, 'manager'     ) !== false) $mode = 'mgr';
+elseif (strPos($tmp, 'agi'         ) !== false) $mode = 'agi';
 else {
 	echo "\nERROR. Unknown mode.\n\n";
 	exit(1);
@@ -125,9 +126,10 @@ echo "ASTERISK VERSION: $ast_vers\n";
 
 $dir = dirName(__FILE__).'/';
 switch ($mode) {
-	case 'a': $dir.= 'applications'; break;
-	case 'f': $dir.= 'functions'   ; break;
-	case 'm': $dir.= 'manager'     ; break;
+	case 'app': $dir.= 'applications'; break;
+	case 'fnc': $dir.= 'functions'   ; break;
+	case 'mgr': $dir.= 'manager'     ; break;
+	case 'mgr': $dir.= 'agi'         ; break;
 	default : exit(1);
 }
 $dir.= '-'.$ast_vers.'-'.date('Ymd-His');
@@ -140,29 +142,34 @@ if (! $ok) {
 
 echo "\n";
 switch ($mode) {
-	case 'a': $rxn = 'core show applications'   ;
-	          $rx1 = 'core show application %s' ;  break;
-	case 'f': $rxn = 'core show functions'      ;
-	          $rx1 = 'core show function %s'    ;  break;
-	case 'm': $rxn = 'manager show commands'    ;
-	          $rx1 = 'manager show command %s'  ;  break;
+	case 'app': $rxn = 'core show applications'   ;
+	            $rx1 = 'core show application %s' ;  break;
+	case 'fnc': $rxn = 'core show functions'      ;
+	            $rx1 = 'core show function %s'    ;  break;
+	case 'mgr': $rxn = 'manager show commands'    ;
+	            $rx1 = 'manager show command %s'  ;  break;
+	case 'agi': $rxn = 'agi show'                 ;
+	            $rx1 = 'agi show %s'              ;  break;
 	default : exit(1);
 }
 if ('x'.$ast_vers <= 'x1.4') {
 	if (subStr($rxn,0,5) === 'core ') $rxn = subStr($rxn,5);
 	if (subStr($rx1,0,5) === 'core ') $rx1 = subStr($rx1,5);
 }
+sleep(1);
 $err=0; $out=array();
 exec( 'asterisk -rx '. escapeShellArg($rxn), $out, $err );
 if ($err !== 0) {
 	echo "\nERROR\n".implode("\n",$out)."\n\n";
 	exit(1);
 }
+sleep(1);
 $m = array();
 switch ($mode) {
-	case 'a': $pat = '/^[ \t]*([A-Z][a-zA-Z0-9_]*)[ \t:]/m'; break;
-	case 'f': $pat = '/^[ \t]*([A-Z][A-Z0-9_]+)[ \t:]/m'   ; break;
-	case 'm': $pat = '/^[ \t]*([A-Z][a-zA-Z0-9_]*)[ \t:]/m'; break;
+	case 'app': $pat = '/^[ \t]*([A-Za-z][a-zA-Z0-9_]*)[ \t:]/m'; break;
+	case 'fnc': $pat = '/^[ \t]*([A-Z][A-Z0-9_]+)[ \t:]/m'   ; break;
+	case 'mgr': $pat = '/^[ \t]*([A-Z][a-zA-Z0-9_]*)[ \t:]/m'; break;
+	case 'agi': $pat = '/^[ \t]*([a-zA-Z][a-zA-Z0-9_]*(?: [a-zA-Z0-9_]+)*)(?:  +|\t| *: *)([^\n\r]+)/m'; break;
 	default : exit(1);
 }
 preg_match_all($pat, _un_terminal_color(implode("\n",$out)), $m);
@@ -181,8 +188,17 @@ $cpad = str_pad($c,$cl,' ',STR_PAD_LEFT);
 $i = 0;
 foreach ($items as $item) {
 	++$i;
+	
+	# fix command names which didn't fit into the column
+	if ($mode === 'mgr') {
+		switch (strToLower($item)) {
+			case 'agentcallbacklo': $item = 'AgentCallbackLogin';
+		}
+	}
+	
 	echo '(',str_pad($i,$cl,' ',STR_PAD_LEFT),'/',$cpad,')  ', $item ,"\n";
 	
+	usleep(100);
 	$err=0; $out=array();
 	exec( 'asterisk -rx '. escapeShellArg(sPrintF($rx1,$item)), $out, $err );
 	if ($err !== 0) {
