@@ -74,6 +74,8 @@ if ($tmp >= '1' || $tmp === 'on') {
 	exit(1);
 }
 
+
+/*
 $tmp = baseName($argv[0]);
 if     (strPos($tmp, 'applications') !== false) $mode = 'app';
 elseif (strPos($tmp, 'functions'   ) !== false) $mode = 'fnc';
@@ -82,6 +84,34 @@ elseif (strPos($tmp, 'agi'         ) !== false) $mode = 'agi';
 elseif (strPos($tmp, 'cli'         ) !== false) $mode = 'cli';
 else {
 	echo "\nERROR. Unknown mode.\n\n";
+	exit(1);
+}
+*/
+$tmp = baseName($argv[0]);
+$usage = <<<HEREDOCEND
+Usage:
+$tmp -m mode
+    -m app  : Applications
+    -m fnc  : Functions
+    -m mgr  : Manager Interface commands
+    -m agi  : AGI commands
+    -m cli  : CLI commands
+
+HEREDOCEND;
+$opts = getOpt('m:');
+if (! is_array($opts) || ! array_key_exists('m', $opts)) {
+	echo $usage ,"\n";
+	exit(1);
+}
+switch ($opts['m']) {
+	case 'applications' : $mode = 'app'; break;
+	case 'functions'    : $mode = 'fnc'; break;
+	case 'manager'      : $mode = 'mgr'; break;
+	default             : $mode = $opts['m'];
+}
+if (! in_array($mode, array( 'app', 'fnc', 'mgr', 'agi', 'cli' ), true)) {
+	echo "Invalid mode \"$mode\"!\n";
+	echo $usage ,"\n";
 	exit(1);
 }
 
