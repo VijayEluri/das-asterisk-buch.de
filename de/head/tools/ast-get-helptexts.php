@@ -228,6 +228,7 @@ foreach ($items as $item) {
 	if ($mode === 'mgr') {
 		switch (strToLower($item)) {
 			case 'agentcallbacklo': $item = 'AgentCallbackLogin';
+			case 'action'         : continue;  # skip header line
 		}
 	}
 	
