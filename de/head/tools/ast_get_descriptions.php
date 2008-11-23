@@ -37,7 +37,8 @@ function _xmlent( $str )
 //echo _xmlent('  "  &  \'  <  >   ') ,"\n";
 
 
-exec( 'asterisk -rx '. escapeShellArg('core set verbose 0') .' 1>>/dev/null 2>>/dev/null' );
+@exec( 'asterisk -rx '. escapeShellArg('set verbose 0') .' 1>>/dev/null 2>>/dev/null' );
+@exec( 'asterisk -rx '. escapeShellArg('core set verbose 0') .' 1>>/dev/null 2>>/dev/null' );
 
 
 echo "\n";
@@ -62,10 +63,11 @@ if (preg_match('/^([0-9]+)\.([0-9]+)/', $ast_vers, $m)) {
 echo "ASTERISK VERSION: $ast_vers\n";
 
 
+$dir = dirName(__FILE__).'/';
 switch ($mode) {
-	case 'a': $dir = 'applications'; break;
-	case 'f': $dir = 'functions'   ; break;
-	case 'm': $dir = 'manager'     ; break;
+	case 'a': $dir.= 'applications'; break;
+	case 'f': $dir.= 'functions'   ; break;
+	case 'm': $dir.= 'manager'     ; break;
 	default : exit(1);
 }
 $dir.= '-'.$ast_vers.'-'.date('Ymd-His');
@@ -85,6 +87,10 @@ switch ($mode) {
 	case 'm': $rxn = 'manager show commands'    ;
 	          $rx1 = 'manager show command %s'  ;  break;
 	default : exit(1);
+}
+if ('x'.$ast_vers <= 'x1.4') {
+	if (subStr($rxn,0,5) === 'core ') $rxn = subStr($rxn,5);
+	if (subStr($rx1,0,5) === 'core ') $rx1 = subStr($rx1,5);
 }
 $err=0; $out=array();
 exec( 'asterisk -rx '. escapeShellArg($rxn), $out, $err );
@@ -129,9 +135,9 @@ foreach ($items as $item) {
 	# replace tabs:
 	$out = preg_replace('/\x09/S', '        ', $out);
 	# trim:
-	$out = trim($out);
+	$out = trim($out,"\n\r");
 	
-	$fileb = $dir.'/'.strToLower($item).'-help';
+	$fileb = $dir.'/'.strToLower($item).'-help-'.$ast_vers;
 	
 	$o = $out ."\n";
 	$fh = fOpen( $fileb.'.txt', 'wb' );
@@ -142,6 +148,7 @@ foreach ($items as $item) {
 	fWrite($fh, $o, strLen($o));
 	fClose($fh);
 	
+	/*
 	$o = '<'.'?xml version="1.0" encoding="UTF-8"?'.'>'."\n";
 	$o.= '<screen>'. _xmlent($out) .'<screen>'."\n";
 	$fh = fOpen( $fileb.'.xml', 'wb' );
@@ -151,6 +158,7 @@ foreach ($items as $item) {
 	}
 	fWrite($fh, $o, strLen($o));
 	fClose($fh);
+	*/
 }
 
 
