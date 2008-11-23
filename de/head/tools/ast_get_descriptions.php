@@ -1,6 +1,66 @@
 #!/usr/bin/php -q
 <?php
 
+function fullDeTab( $text, $tabstop=8 )
+{
+	$text = str_replace(
+		array("\r\n", "\r"),
+		array("\n"  , "\n"),
+		$text);
+	$lines = explode("\n", $text);
+	$text = '';
+	foreach ($lines as $line) {
+		$pos = 0;
+		while (($pos = mb_strPos($line, "\t", $pos, 'UTF-8')) !== false) {
+			# "....|..\t"
+			# "....|....|"
+			# spaces needed to next tabstop:
+			$sp = ceil(($pos+1) / $tabstop) * $tabstop - $pos;
+			$line = subStr($line,0,$pos) . str_repeat(' ',$sp) . subStr($line,$pos+1);
+		}
+		$text.= $line ."\n";
+	}
+	return $text;
+}
+
+/*
+$texts = array(
+"
+  -= Info about application 'SendImage' =- 
+[Description]
+The option string may contain the following character:
+	'j' -- jump to priority n+101 if the channel doesn't support image transport
+This application sets the following channel variable upon completion:
+	SENDIMAGESTATUS		The status is the result of the attempt as a text string, one of
+		OK | NOSUPPORT 
+",
+"
+  -= Info about application 'TrySystem' =- 
+[Description]
+  TrySystem(command): Executes a command  by  using  system().
+on any situation.
+Result of execution is returned in the SYSTEMSTATUS channel variable:
+  FAILURE	Could not execute the specified command
+  SUCCESS	Specified command successfully executed
+  APPERROR	Specified command successfully executed, but returned error code
+
+ 	........x
+  	......	x
+   	........	y
+        .........	y
+",
+);
+
+foreach ($texts as $text) {
+	echo ($text);
+	echo fullDeTab( $text, 8 );
+}
+echo "\n\n";
+exit;
+*/
+
+
+
 mb_internal_encoding('UTF-8');
 mb_regex_encoding('UTF-8');
 mb_regex_set_options('pr');  # default: "pr"
@@ -130,12 +190,21 @@ foreach ($items as $item) {
 		exit(1);
 	}
 	$out = implode("\n", $out);
+	
 	# skip ANSI terminal color escape sequences:
 	$out = _un_terminal_color($out);
+	
 	# replace tabs:
-	$out = preg_replace('/\x09/S', '        ', $out);
+	/*
+	for ($ti=5; $ti>=1; --$ti)
+		$out = preg_replace('/^\x09{'.$ti.'}/mS', str_repeat(' ',8*$ti), $out);
+	$out = preg_replace('/\x09/S', str_repeat(' ',4), $out);
+	*/
+	$out = fullDeTab($out, 8);
+	
 	# trim:
 	$out = trim($out,"\n\r\0");
+	$out = preg_replace('/ +$/mS', '', $out);
 	
 	$fileb = $dir.'/'.strToLower($item).'-help-'.$ast_vers;
 	
