@@ -129,7 +129,7 @@ switch ($mode) {
 	case 'app': $dir.= 'applications'; break;
 	case 'fnc': $dir.= 'functions'   ; break;
 	case 'mgr': $dir.= 'manager'     ; break;
-	case 'mgr': $dir.= 'agi'         ; break;
+	case 'agi': $dir.= 'agi'         ; break;
 	default : exit(1);
 }
 $dir.= '-'.$ast_vers.'-'.date('Ymd-His');
@@ -222,7 +222,7 @@ foreach ($items as $item) {
 	$out = trim($out,"\n\r\0");
 	$out = preg_replace('/ +$/mS', '', $out);
 	
-	$fileb = $dir.'/'.strToLower($item).'-help-'.$ast_vers;
+	$fileb = $dir.'/'. preg_replace('/[^a-zA-Z0-9\-_.]/S', '-', strToLower($item)) .'-help-'.$ast_vers;
 	
 	$o = $out ."\n";
 	$fh = fOpen( $fileb.'.txt', 'wb' );
