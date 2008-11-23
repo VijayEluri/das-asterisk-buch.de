@@ -135,7 +135,7 @@ foreach ($items as $item) {
 	# replace tabs:
 	$out = preg_replace('/\x09/S', '        ', $out);
 	# trim:
-	$out = trim($out,"\n\r");
+	$out = trim($out,"\n\r\0");
 	
 	$fileb = $dir.'/'.strToLower($item).'-help-'.$ast_vers;
 	
