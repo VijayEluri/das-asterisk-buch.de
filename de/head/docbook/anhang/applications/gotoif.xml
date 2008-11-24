@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-gotoif" revision="$Revision$">
+
+    <title><code>GotoIf()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>GotoIf()</code></secondary>
+    </indexterm>
+
+    <simpara>Springt bedingt zu der angegebenen Priorität,</simpara>
+
+    <synopsis>GotoIf(<replaceable>Bedingung</replaceable>?<replaceable>PrioWahr</replaceable>:<replaceable>PrioFalsch</replaceable>)</synopsis>
+
+    <simpara>Schickt den Anruf ohne Möglichkeit der Rückkehr an die Priorität
+    <code>PrioWahr</code>, falls die <code>Bedingung</code> wahr ist oder zu
+    <code>PrioFalsch</code>, falls sie falsch ist. Entweder
+    <code>PrioWahr</code> oder <code>PrioFalsch</code> können ausgelassen
+    werden (dann wird ggf. mit der nächsten Priorität weitergemacht), aber
+    nicht beide (und nicht der Doppelpunkt!).</simpara>
+
+    <para>Eine Priorität ist hier eines der Folgenden:<itemizedlist>
+        <listitem>
+          <simpara>eine Priorität, z.B. <code>10</code></simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>eine Extension und eine Priorität, z.B.
+          <code>123,10</code></simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>Context, Extension und Priorität, z.B.
+          <code>incoming,123,10</code></simpara>
+        </listitem>
+
+        <listitem>
+          <simpara>eine benannte Priorität innerhalb der gleichen Extension,
+          z.B. <code>ok</code></simpara>
+        </listitem>
+      </itemizedlist></para>
+
+    <programlisting>exten =&gt; 123,1,GotoIf($[ ${test} = 5 ]?ok:nein)
+exten =&gt; 123,10(ok),Playback(tt-monkeys)
+exten =&gt; 123,20(nein),Playback(tt-weasels)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'GotoIf' =- 
+
+[Synopsis]
+Conditional goto
+
+[Description]
+  GotoIf(condition?[labeliftrue]:[labeliffalse]): This application will cause
+the calling channel to jump to the specified location in the dialplan based on
+the evaluation of the given condition. The channel will continue at
+'labeliftrue' if the condition is true, or 'labeliffalse' if the condition is
+false. The labels are specified with the same syntax as used within the Goto
+application.  If the label chosen by the condition is omitted, no jump is
+performed, but execution continues with the next priority in the dialplan.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-goto" />, <xref
+      linkend="applications-gotoiftime" />, <xref
+      linkend="applications-gosub" />, <xref
+      linkend="applications-gosubif" />, <xref
+      linkend="applications-macro" /></para>
+    </formalpara>
+  
+</section>

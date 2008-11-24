@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-mp3player" revision="$Revision$">
+
+    <title><code>MP3Player()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>MP3Player()</code></secondary>
+    </indexterm>
+
+    <simpara>Gibt eine MP3-Datei oder einen MP3-Stream wieder.</simpara>
+
+    <synopsis>MP3Player(<replaceable>Dateiname</replaceable>)</synopsis>
+
+    <simpara>Verwendet das Programm <code>mpg123</code><footnote>
+        <simpara><ulink url="http://mpg123.org/">http://mpg123.org/</ulink>,
+        <ulink
+        url="http://sourceforge.net/projects/mpg123/">http://sourceforge.net/projects/mpg123/</ulink>,
+        für MacOS X siehe auch <ulink
+        url="http://sourceforge.net/projects/mosx-mpg123/">http://sourceforge.net/projects/mosx-mpg123/</ulink></simpara>
+      </footnote>, um dem Anrufer eine MP3-Datei vorzuspielen. Der angegebene
+    Dateiname kann auch eine URL sein. Der Anrufer kann die Wiedergabe durch
+    Betätigung einer beliebigen Taste stoppen.</simpara>
+
+    <simpara>Die richtige Version von <code>mpg123</code> muss installiert
+    sein, damit diese Anwendung ordnungsgemäß funktioniert. Asterisk arbeitet
+    momentan mit der Version 0.59r ideal.</simpara>
+
+    <note>
+      <simpara>Das häufig als Alternative installierte und auf
+      <filename>mpg123</filename> verlinkte Programm <command>mpg321</command>
+      funktioniert <emphasis>nicht</emphasis> einwandfrei.</simpara>
+    </note>
+
+    <simpara>Liefert -1, falls aufgelegt wird, sonst 0.</simpara>
+
+    <programlisting>; lokale Datei spielen:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,MP3Player(test.mp3)
+
+; Datei von einer URL spielen:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,MP3Player(http://server.tld/test.mp3)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'MP3Player' =- 
+
+[Synopsis]
+Play an MP3 file or stream
+
+[Description]
+  MP3Player(location) Executes mpg123 to play the given location,
+which typically would be a filename or a URL. User can exit by pressing
+any key on the dialpad, or by hanging up.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  
+</section>

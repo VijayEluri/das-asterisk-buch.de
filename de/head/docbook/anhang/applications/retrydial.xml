@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-retrydial" revision="$Revision$">
+
+    <title><code>RetryDial()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>RetryDial()</code></secondary>
+    </indexterm>
+
+    <simpara>Versucht, einen Anruf zu tätigen, und wiederholt den Versuch bei
+    einem Fehlschlag.</simpara>
+
+    <synopsis>RetryDial(<replaceable>Ankündigung</replaceable>,<replaceable>Wartezeit</replaceable>,<replaceable>Versuche</replaceable>,<replaceable>Tech</replaceable>/<replaceable>Res</replaceable>[&amp;<replaceable>Tech2</replaceable>/<replaceable>Res2</replaceable>...][,<replaceable>Timeout</replaceable>[,<replaceable>Optionen</replaceable>[,<replaceable>URL</replaceable>]]])</synopsis>
+
+    <simpara>Versucht, wie <code>Dial()</code>, einen Anruf zu tätigen. Kann
+    kein Channel erreicht werden, wird die Datei <code>Ankündigung</code>
+    (ohne Endung!) abgespielt und <code>Wartezeit</code> Sekunden gewartet,
+    bis der Versuch wiederholt wird. Per Default wir 10 Sekunden gewartet.
+    Nach <code>Versuche</code> Versuchen wird der Anruft mit der nächsten
+    Priorität im Wählplan fortgesetzt. Ist <code>Versuche</code> auf 0 oder -1
+    gesetzt, wird der Anrufversuch endlos wiederholt.</simpara>
+
+    <simpara>In der Wartezeit kann eine einziffrige Extension gewählt werden.
+    Existiert diese Extensions im durch <code>${EXITCONTEXT}</code>
+    spezifizierten Context (oder im aktuellen), wird der Anruf unmittelbar an
+    diese Extension weitergeleitet.</simpara>
+
+    <simpara>Alle Parameter nach <code>Versuche</code> werden direkt an die
+    <code>Dial()</code>-Anwendung weitergeleitet.</simpara>
+
+    <programlisting>; 3-mal versuchen, die Nummer zu erreichen, Wdh. nach 5 Sekunden:
+exten =&gt; 123,1,RetryDial(versuche-zu-verbinden,5,3,IAX2/VOIP/012345678,30)
+; wenn der Anrufer während des Wählens 0 drückt, auf Zap/4 versuchen:
+exten =&gt; 0,1,RetryDial(versuche-zu-verbinden,5,3,Zap/4/012345678,30)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'RetryDial' =- 
+
+[Synopsis]
+Place a call, retrying on failure allowing optional exit extension.
+
+[Description]
+  RetryDial(announce|sleep|retries|dialargs): This application will attempt to
+place a call using the normal Dial application. If no channel can be reached,
+the 'announce' file will be played. Then, it will wait 'sleep' number of
+seconds before retying the call. After 'retires' number of attempts, the
+calling channel will continue at the next priority in the dialplan. If the
+'retries' setting is set to 0, this application will retry endlessly.
+  While waiting to retry a call, a 1 digit extension may be dialed. If that
+extension exists in either the context defined in ${EXITCONTEXT} or the current
+one, The call will jump to that extension immediately.
+  The 'dialargs' are specified in the same format that arguments are provided
+to the Dial application.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-dial" /></para>
+    </formalpara>
+  
+</section>

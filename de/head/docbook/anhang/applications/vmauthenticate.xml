@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-vmauthenticate" revision="$Revision$">
+
+    <title><code>VMAuthenticate()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>VMAuthenticate()</code></secondary>
+    </indexterm>
+
+    <simpara>Authentifiziert den Anrufer über ein
+    Voicemail-Passwort.</simpara>
+
+    <synopsis>VMAuthenticate([<replaceable>Mailbox</replaceable>][@<replaceable>Context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
+
+    <simpara>Verhält sich wie die <code>Authenticate()</code>-Anwendung, mit
+    dem Unterschied, dass die Passwörter aus
+    <filename>voicemail.conf</filename> (im optionalen VM-Context
+    <code>Context</code>) gelesen werden.</simpara>
+
+    <simpara>Ist eine Mailbox angegeben, wird nur das Passwort dieser Mailbox
+    als gültig betrachtet. Ohne Angabe kann sich der Anrufer mit jedem(!)
+    VM-Passwort authentifizieren; die Channelvariable
+    <code>${AUTH_MAILBOX}</code> wird dann mit der authentifizierten Mailbox
+    belegt.</simpara>
+
+    <simpara>Mit der Option <code>s</code> wird die Ansage der Aufforderung
+    unterdrückt.</simpara>
+
+    <programlisting>; als Mailbox die Extension annehmen und authentifizieren:
+exten =&gt; 123,1,VMAuthenticate(${EXTEN}@verkauf)
+exten =&gt; 123,n,SayDigits(${AUTH_MAILBOX})</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'VMAuthenticate' =- 
+
+[Synopsis]
+Authenticate with Voicemail passwords
+
+[Description]
+  VMAuthenticate([mailbox][@context][|options]): This application behaves the
+same way as the Authenticate application, but the passwords are taken from
+voicemail.conf.
+  If the mailbox is specified, only that mailbox's password will be considered
+valid. If the mailbox is not specified, the channel variable AUTH_MAILBOX will
+be set with the authenticated mailbox.
+
+  Options:
+    s - Skip playing the initial prompts.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-authenticate" />,
+      <filename>voicemail.conf</filename></para>
+    </formalpara>
+  
+</section>

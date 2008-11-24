@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-return" revision="$Revision$">
+
+    <title><code>Return()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Return()</code></secondary>
+    </indexterm>
+
+    <simpara>Kehrt von einem Unterprogramm zurück.</simpara>
+
+    <synopsis>Return()</synopsis>
+
+    <simpara>Kehrt von einem Unterprogramm, das mit <code>Gosub()</code> oder
+    <code>GosubIf()</code> aufgerufen wurde, zurück an die Anweisung, die im
+    Dialplan auf den Sprungbefehl folgt.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Playback(tt-monkeys)
+exten =&gt; 123,n,Gosub(mein-unterprogramm,s,1)
+exten =&gt; 123,n,Playback(tt-monkeys)
+exten =&gt; 123,n,Hangup()
+
+[mein-unterprogramm]
+exten =&gt; s,1,Playback(tt-weasels)
+exten =&gt; s,n,Return()</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Return' =- 
+
+[Synopsis]
+Return from gosub routine
+
+[Description]
+Return()
+  Jumps to the last label on the stack, removing it.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-gosub" />, <xref
+      linkend="applications-gosubif" /></para>
+    </formalpara>
+  
+</section>

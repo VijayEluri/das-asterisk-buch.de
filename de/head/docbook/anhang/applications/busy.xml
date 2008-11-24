@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-busy" revision="$Revision$">
+
+    <title><code>Busy()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Busy()</code></secondary>
+    </indexterm>
+
+    <simpara>Zeigt dem Channel besetzt an.</simpara>
+
+    <synopsis>Busy([<replaceable>Timeout</replaceable>])</synopsis>
+
+    <simpara>Fordert den Channel auf, ein Besetzt-Zeichen zu signalisieren und
+    wartet dann, bis der Benutzer auflegt oder auf den Ablauf der optional
+    anzugebenden zeitlichen Frist (<code>Timeout</code>, in
+    Sekunden).</simpara>
+
+    <simpara>Diese Anwendung signalisiert einen Besetzt-Zustand nur dem
+    überbrückten Channel (bridged channel). Jeder spezielle Channeltyp hat
+    seine eigene Art, dem Anrufer besetzt mitzuteilen. Sie können
+    <code>Playtones(busy)</code> verwenden, um dem Anrufer ein Besetztzeichen
+    vorzuspielen.</simpara>
+
+    <simpara>Gibt immer -1 zurück.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Playback(vm-sorry)
+exten =&gt; 123,n,Playtones(busy)
+exten =&gt; 123,n,Busy()</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Busy' =- 
+
+[Synopsis]
+Indicate the Busy condition
+
+[Description]
+  Busy([timeout]): This application will indicate the busy condition to
+the calling channel. If the optional timeout is specified, the calling channel
+will be hung up after the specified number of seconds. Otherwise, this
+application will wait until the calling channel hangs up.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-congestion" />, <xref
+      linkend="applications-progress" />, <xref
+      linkend="applications-playtones" /></para>
+    </formalpara>
+  
+</section>

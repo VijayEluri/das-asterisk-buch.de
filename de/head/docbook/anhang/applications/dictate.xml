@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-dictate" revision="$Revision$">
+
+    <title><code>Dictate()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Dictate()</code></secondary>
+    </indexterm>
+
+    <simpara>Virtuelles Diktiergerät</simpara>
+
+    <synopsis>Dictate([<replaceable>Verzeichnis</replaceable>[,<replaceable>Dateiname</replaceable>]])</synopsis>
+
+    <simpara>Startet ein virtuelles Diktiergerät. Mit den Parametern lassen
+    sich das Verzeichnis für die Aufzeichnungen (Default:
+    <filename>/var/spool/asterisk/dictate/</filename>) und der Dateiname
+    (numerisch!) bestimmen. Aufgezeichnet wird im Format
+    <code>raw</code>.</simpara>
+
+    <para>Der User kann das Diktiergerät mit folgenden Tasten
+    steuern:<variablelist termlength="3">
+        <varlistentry>
+          <term><code>0</code></term>
+
+          <listitem>
+            <simpara>Hilfe</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>1</code></term>
+
+          <listitem>
+            <simpara>Schaltet zwischen Aufnahme- und Abspielmodus hin und
+            her.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>*</code></term>
+
+          <listitem>
+            <simpara>Pause / weiter</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>#</code></term>
+
+          <listitem>
+            <simpara>Datei wählen / neuen Dateinamen eingeben (z.B.
+            <code>1234#</code>)</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>Im Abspielmodus:<variablelist termlength="3">
+        <varlistentry>
+          <term><code>2</code></term>
+
+          <listitem>
+            <simpara>Schaltet die Abspielgeschwindigkeit um (1x, 2x, 3x,
+            4x)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>7</code></term>
+
+          <listitem>
+            <simpara>Ein Stück zurück springen</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>8</code></term>
+
+          <listitem>
+            <simpara>Ein Stück weiter springen</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>Im Aufnahmemodus:<variablelist termlength="3">
+        <varlistentry>
+          <term><code>8</code></term>
+
+          <listitem>
+            <simpara>Aufnahme löschen und neu anfangen</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <programlisting>; Diktiergerät starten:
+exten =&gt; 123,1,Dictate()</programlisting>
+
+    <simpara>Um jedem User sein eigenes Diktiergerät zu geben, könnte man z.B.
+    als Pfad <filename>/var/spool/asterisk/dictate/${EXTEN}</filename>
+    angeben.</simpara>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Dictate' =- 
+
+[Synopsis]
+Virtual Dictation Machine
+
+[Description]
+  Dictate([&lt;base_dir&gt;[|&lt;filename&gt;]])
+Start dictation machine using optional base dir for files.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>8c8
+&lt;   Dictate([&lt;base_dir&gt;[|&lt;filename&gt;]])
+---
+&gt;   Dictate([&lt;base_dir&gt;])</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-record" /></para>
+    </formalpara>
+  
+</section>

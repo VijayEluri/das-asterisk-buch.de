@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-eagi" revision="$Revision$">
+
+    <title><code>EAGI()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>EAGI()</code></secondary>
+    </indexterm>
+
+    <simpara>Ruft eine AGI-konforme Anwendung auf</simpara>
+
+    <synopsis>EAGI(<replaceable>Programm</replaceable>[,<replaceable>Argumente</replaceable>])</synopsis>
+
+    <simpara>(Analog auch <code>AGI()</code>, <code>FastAGI()</code>,
+    <code>DeadAGI()</code>)</simpara>
+
+    <simpara>Führt ein Asterisk-Gateway-Interface-kompatibles Programm
+    <code>Programm</code> auf dem aktuellen Channel aus. Solche externen
+    Programme (die in fast jeder beliebigen Sprache vorliegen können - z.B.
+    Perl, PHP, ...), können den Telefonkanal steuern, Audiodateien abspielen,
+    DTMF-Ziffern auslesen und so weiter. Asterisk kommuniziert dabei mit dem
+    AGI-Program über <code>STDIN</code> und <code>STDOUT</code>. Die
+    spezifizierten <code>Argumente</code> werden an das AGI-Programm
+    durchgereicht.</simpara>
+
+    <simpara>Das <code>Programm</code> muss im zugrundeliegenden Dateisystem
+    als executable (ausführbar) gekennzeichnet sein. Der Pfad zum Programm ist
+    relativ zum Asterisk-AGI-Verzeichnis, standardmäßig
+    <filename>/var/lib/asterisk/agi-bin/</filename>.</simpara>
+
+    <simpara>EAGI() bietet im Gegensatz zu den anderen AGI() Befehlen Zugriff
+    auf den eingehenden Audiostream. Das eingehende Audio-Signal kann dann
+    unter File Descriptor 3<footnote>
+        <para>zu Erinnerung: 0: stdin, 1: stdout, 2:stderr. 3 ist ein frei
+        definierter File descriptor</para>
+      </footnote> eingelesen werden.</simpara>
+
+    <simpara>Liefert -1 mit dem Auflegen oder falls ein Auflegen durch das
+    Programm verlangt wurde oder 0, falls nicht aufgelegt werden
+    soll.</simpara>
+
+    <programlisting>; mein AGI-Skript aufrufen:
+exten =&gt; 123,1,AGI(agi-skript)
+exten =&gt; 123,n,EAGI(eagi-skript)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'EAGI' =- 
+
+[Synopsis]
+Executes an EAGI compliant application
+
+[Description]
+  [E|Dead]AGI(command|args): Executes an Asterisk Gateway Interface compliant
+program on a channel. AGI allows Asterisk to launch external programs
+written in any language to control a telephony channel, play audio,
+read DTMF digits, etc. by communicating with the AGI protocol on stdin
+and stdout.
+  This channel will stop dialplan execution on hangup inside of this
+application, except when using DeadAGI.  Otherwise, dialplan execution
+will continue normally.
+  A locally executed AGI script will receive SIGHUP on hangup from the channel
+except when using DeadAGI. This can be disabled by setting the AGISIGHUP channel
+variable to "no" before executing the AGI application.
+  Using 'EAGI' provides enhanced AGI, with incoming audio available out of band
+on file descriptor 3
+
+  Use the CLI command 'agi show' to list available agi commands
+  This application sets the following channel variable upon completion:
+     AGISTATUS      The status of the attempt to the run the AGI script
+                    text string, one of SUCCESS | FAILED | HANGUP</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>13,19c13,15
+&lt;   This channel will stop dialplan execution on hangup inside of this
+&lt; application, except when using DeadAGI.  Otherwise, dialplan execution
+&lt; will continue normally.
+&lt;   A locally executed AGI script will receive SIGHUP on hangup from the channel
+&lt; except when using DeadAGI. This can be disabled by setting the AGISIGHUP channel
+&lt; variable to "no" before executing the AGI application.
+&lt;   Using 'EAGI' provides enhanced AGI, with incoming audio available out of band
+---
+&gt; Returns -1 on hangup (except for DeadAGI) or if application requested
+&gt;  hangup, or 0 on non-hangup exit. 
+&gt; Using 'EAGI' provides enhanced AGI, with incoming audio available out of band
+22,25c18
+&lt;   Use the CLI command 'agi show' to list available agi commands
+&lt;   This application sets the following channel variable upon completion:
+&lt;      AGISTATUS      The status of the attempt to the run the AGI script
+&lt;                     text string, one of SUCCESS | FAILED | HANGUP
+---
+&gt; Use the CLI command 'show agi' to list available agi commands</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe</title>
+
+      <para><xref linkend="applications-agi" />.</para>
+    </formalpara>
+  
+</section>

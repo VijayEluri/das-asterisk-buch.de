@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-chanisavail" revision="$Revision$">
+
+    <title><code>ChanIsAvail()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>ChanIsAvail()</code></secondary>
+    </indexterm>
+
+    <simpara>Ermittelt, ob ein bestimmter Channel momentan verfügbar
+    ist.</simpara>
+
+    <synopsis>ChanIsAvail(<replaceable>Technology1</replaceable>/<replaceable>Resource1</replaceable>[&amp;<replaceable>Technology2</replaceable>/<replaceable>Resource2</replaceable>...][,<replaceable>Optionen</replaceable>])</synopsis>
+
+    <simpara>Prüft, ob irgendeiner der angeforderten Kanäle verfügbar ist (in
+    der angegebenen Reihenfolge). Liefert 0 zurück bei Erfolg oder -1, falls
+    kein Kanal verfügbar ist.</simpara>
+
+    <simpara>Ist die Option <code>s</code> (für state) angegeben, wird
+    Asterisk den Channel als nicht verfügbar betrachten, wenn er in Gebrauch
+    ist, sogar falls er einen weiteren anderen Anruf aufnehmen kann. Mit der
+    Option <code>j</code> wird, falls der Channel nicht verfügbar ist, zur
+    Priorität n+101 gesprungen.</simpara>
+
+    <note>
+      <simpara>Dass ein Kanal verfügbar ist, bedeutet aber nicht automatisch,
+      dass er auch frei ist oder dass das Endgerät einen Anruf akzeptieren
+      würde. Das erfährt man durch ein <code>Dial()</code> zum
+      Kanal.</simpara>
+    </note>
+
+    <para><code>ChanIsAvail()</code> setzt die folgenden Channelvariablen:
+    <variablelist termlength="18">
+        <varlistentry>
+          <term><code>${AVAILCHAN}</code></term>
+
+          <listitem>
+            <simpara>Der Name des verfügbaren Channels, inklusive der
+            Session-Nummer des Anrufs.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>${AVAILORIGCHAN}</code></term>
+
+          <listitem>
+            <simpara>Der kanonische Channelname, der benutzt wurde um den
+            Channel zu erstellen, d.h. der Channelname ohne eine
+            Session-Nummer.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>${AVAILSTATUS}</code></term>
+
+          <listitem>
+            <para>Der Status-Code des Channels:<variablelist termlength="24">
+                <varlistentry>
+                  <term><code>AST_DEVICE_UNKNOWN</code> (0)</term>
+
+                  <listitem>
+                    <simpara>Unbekannt. Der Channel ist gültig, aber in
+                    unbekanntem Zustand.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>AST_DEVICE_NOT_INUSE</code> (1)</term>
+
+                  <listitem>
+                    <simpara>Channel wird nicht verwendet.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>AST_DEVICE_IN_USE</code> (2)</term>
+
+                  <listitem>
+                    <simpara>Der Channel ist in Gebrauch.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>AST_DEVICE_BUSY</code> (3)</term>
+
+                  <listitem>
+                    <simpara>Besetzt.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>AST_DEVICE_INVALID</code> (4)</term>
+
+                  <listitem>
+                    <simpara>Ungültig. Unbekannter Channel.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>AST_DEVICE_UNAVAILABLE</code> (5)</term>
+
+                  <listitem>
+                    <simpara>Nicht verfügbar. Channel ist nicht
+                    registriert.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>AST_DEVICE_RINGING</code> (6)</term>
+
+                  <listitem>
+                    <simpara>Channel klingelt.</simpara>
+                  </listitem>
+                </varlistentry>
+              </variablelist></para>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <note>
+      <simpara>Diese Anwendung arbeitet auf MGCP-Kanälen nicht
+      ordnungsgemäß.</simpara>
+    </note>
+
+    <programlisting>; Zap/1 und Zap/2 auf Verfügbarkeit prüfen:
+exten =&gt; 123,1,ChanIsAvail(Zap/1&amp;Zap/2,j)
+; hier ausnahmsweise mit Priority jumping, da wir, falls kein Kanal
+; frei ist, noch eine Ansage machen wollen
+
+; mindestens einer der Kanäle verfügbar, auf diesem wählen:
+exten =&gt; 123,2,NoOp(${AVAILORIGCHAN} ist verfuegbar)
+exten =&gt; 123,3,Dial(${AVAILORIGCHAN}/123456)
+
+; wenn wir bei Prio. 102 landen, ist weder Zap/1 noch Zap/2 verfügbar
+exten =&gt; 123,102,Playback(alle-kanaele-belegt)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'ChanIsAvail' =- 
+
+[Synopsis]
+Check channel availability
+
+[Description]
+  ChanIsAvail(Technology/resource[&amp;Technology2/resource2...][|options]): 
+This application will check to see if any of the specified channels are
+available. The following variables will be set by this application:
+  ${AVAILCHAN}     - the name of the available channel, if one exists
+  ${AVAILORIGCHAN} - the canonical channel name that was used to create the channel
+  ${AVAILSTATUS}   - the status code for the available channel
+  Options:
+    s - Consider the channel unavailable if the channel is in use at all
+    j - Support jumping to priority n+101 if no channel is available</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  
+</section>

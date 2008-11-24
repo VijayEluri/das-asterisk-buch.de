@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-controlplayback" revision="$Revision$">
+
+    <title><code>ControlPlayback()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>ControlPlayback()</code></secondary>
+    </indexterm>
+
+    <simpara>Spielt eine Datei ab und kann diese auch schnell vor- und
+    zurückspulen.</simpara>
+
+    <synopsis>ControlPlayback(<replaceable>Datei</replaceable>[,<replaceable>skipms</replaceable>[,<replaceable>ffchar</replaceable>[,<replaceable>rewchar</replaceable>[,<replaceable>stopchar</replaceable>[,<replaceable>pausechar</replaceable>]]]]])</synopsis>
+
+    <simpara>Spielt die angegebene Datei ab und ermöglicht es dem Anrufer,
+    sich durch Betätigen der Tasten <code>ffchar</code> und
+    <code>rewchar</code> in dieser Datei vorwärts und rückwärts zu bewegen.
+    Als Standardeinstellung können die Tasten <code>#</code> und * zum Vor-
+    und Zurückspulen der Datei verwendet werden. Ist <code>stopchar</code>
+    spezifiziert, hält die Anwendung die Wiedergabe an, wenn die
+    stopchar-Taste gedrückt wird. Existiert die Datei nicht, geht die
+    Anwendung zu Priorität n+101 über, falls vorhanden.</simpara>
+
+    <simpara>Die <code>skipms</code>-Option gibt an, wie weit mit jedem
+    Drücken von <code>ffchar</code> oder <code>rewchar</code> in der Datei
+    vor- bzw. zurückgesprungen wird.</simpara>
+
+    <simpara>Die <code>pausechar-Option</code> kann ebenfalls spezifiziert
+    werden, sie erlaubt es, die Wiedergabe der Datei vorübergehend anzuhalten
+    (Pause). Erneutes Drücken von <code>pausechar</code> setzt die Wiedergabe
+    der Datei dann fort.</simpara>
+
+    <simpara>Gibt -1 zurück, falls der Channel während der Wiedergabe
+    aufgelegt wurde.</simpara>
+
+    <programlisting>; dem Anrufer "sinfonie" vorspielen mit Steuerungsmöglichkeit:
+exten =&gt; 123,1,ControlPlayback(sinfonie,5000,#,*,5,0)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'ControlPlayback' =- 
+
+[Synopsis]
+Play a file with fast forward and rewind
+
+[Description]
+  ControlPlayback(file[|skipms[|ff[|rew[|stop[|pause[|restart|options]]]]]]]):
+This application will play back the given filename. By default, the '*' key
+can be used to rewind, and the '#' key can be used to fast-forward.
+Parameters:
+  skipms  - This is number of milliseconds to skip when rewinding or
+            fast-forwarding.
+  ff      - Fast-forward when this DTMF digit is received.
+  rew     - Rewind when this DTMF digit is received.
+  stop    - Stop playback when this DTMF digit is received.
+  pause   - Pause playback when this DTMF digit is received.
+  restart - Restart playback when this DTMF digit is received.
+Options:
+  j - Jump to priority n+101 if the requested file is not found.
+This application sets the following channel variable upon completion:
+  CPLAYBACKSTATUS -  This variable contains the status of the attempt as a text
+                     string, one of: SUCCESS | USERSTOPPED | ERROR</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-playback" />, <xref
+      linkend="applications-background" /></para>
+    </formalpara>
+  
+</section>

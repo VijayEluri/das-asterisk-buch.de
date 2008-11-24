@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-exec" revision="$Revision$">
+
+    <title><code>Exec()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Exec()</code></secondary>
+    </indexterm>
+
+    <simpara>Führt eine Asterisk-Anwendung dynamisch aus.</simpara>
+
+    <synopsis>Exec(<replaceable>Applikationsname</replaceable>(<replaceable>Argumente</replaceable>))</synopsis>
+
+    <simpara>Erlaubt den Aufruf einer beliebigen Anwendung, selbst wenn er
+    nicht fest im Wählplan einprogrammiert ist. Liefert den Wert zurück, den
+    diese Asterisk-Anwendung zurückliefert, oder -2, wenn die aufgerufene
+    Anwendung nicht gefunden werden kann. Die <code>Argumente</code> werden an
+    die aufgerufene Anwendung durchgereicht.</simpara>
+
+    <simpara>Diese Anwendung erlaubt den dynamischen Aufruf von Anwendungen,
+    die aus einer Datenbank oder externen Quelle gelesen werden.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Set(app=SayDigits(12345))
+exten =&gt; 123,2,Exec(${app})</programlisting>
+
+    <important>
+      <para>Bei einem negativen Rückgabewert wird die Ausführung des Dialplans
+      beendet. Will man das nicht, verwendet man
+      <code>TryExec()</code>.</para>
+    </important>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Exec' =- 
+
+[Synopsis]
+Executes dialplan application
+
+[Description]
+Usage: Exec(appname(arguments))
+  Allows an arbitrary application to be invoked even when not
+hardcoded into the dialplan.  If the underlying application
+terminates the dialplan, or if the application cannot be found,
+Exec will terminate the dialplan.
+  To invoke external applications, see the application System.
+  If you would like to catch any error instead, see TryExec.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; Executes dialplan application
+---
+&gt; Executes internal application
+10,14c10,12
+&lt; hardcoded into the dialplan.  If the underlying application
+&lt; terminates the dialplan, or if the application cannot be found,
+&lt; Exec will terminate the dialplan.
+&lt;   To invoke external applications, see the application System.
+&lt;   If you would like to catch any error instead, see TryExec.
+---
+&gt; hardcoded into the dialplan. To invoke external applications
+&gt; see the application System. Returns whatever value the
+&gt; app returns or a non-zero value if the app cannot be found.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-execif" />, <xref
+      linkend="applications-tryexec" />, <xref
+      linkend="applications-system" /></para>
+    </formalpara>
+  
+</section>

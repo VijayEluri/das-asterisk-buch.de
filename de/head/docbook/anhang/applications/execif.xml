@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-execif" revision="$Revision$">
+
+    <title><code>ExecIf()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>ExecIf()</code></secondary>
+    </indexterm>
+
+    <simpara>Führt eine Asterisk-Anwendung unter bestimmten Bedingungen
+    aus.</simpara>
+
+    <synopsis>ExecIf(<replaceable>Ausdruck</replaceable>,<replaceable>Applikation</replaceable>,<replaceable>Argumente</replaceable>)</synopsis>
+
+    <simpara>Ist <code>Ausdruck</code> wahr, wird die angegebene
+    <code>Applikation</code> mit den Parametern <code>Argumente</code>
+    ausgeführt, und deren Ergebnis zurückgeliefert. Siehe
+    <filename>doc/README.variables</filename> (1.2) /
+    <filename>doc/channelvariables.txt</filename> (1.4) für weiterführende
+    Informationen über Standard-Asterisk-Ausdrücke.</simpara>
+
+    <simpara>Ist der <code>Ausdruck</code> nicht wahr (also false), wird die
+    Ausführung mit der nächsten Priorität fortgesetzt.</simpara>
+
+    <programlisting>exten =&gt; 123,1,ExecIf($[${CALLERID(num)} = 101],SayDigits,123)
+exten =&gt; 123,n,SayDigits(678)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'ExecIf' =- 
+
+[Synopsis]
+Executes dialplan application, conditionally
+
+[Description]
+Usage:  ExecIF (&lt;expr&gt;|&lt;app&gt;|&lt;data&gt;)
+If &lt;expr&gt; is true, execute and return the result of &lt;app&gt;(&lt;data&gt;).
+If &lt;expr&gt; is true, but &lt;app&gt; is not found, then the application
+will return a non-zero value.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; Executes dialplan application, conditionally
+---
+&gt; Conditional exec
+12d11
+&lt; </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-exec" /></para>
+    </formalpara>
+  
+</section>

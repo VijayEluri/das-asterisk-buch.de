@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-goto" revision="$Revision$">
+
+    <title><code>Goto()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Goto()</code></secondary>
+    </indexterm>
+
+    <simpara>Springt zu einer bestimmten Priorität, Extension und einem
+    bestimmten Context.</simpara>
+
+    <synopsis>Goto([[<replaceable>Context</replaceable>,]<replaceable>Extension</replaceable>,]<replaceable>Priorität</replaceable>)</synopsis>
+
+    <synopsis>Goto(<replaceable>benannte_Priorität</replaceable>)</synopsis>
+
+    <simpara>Übergibt die Kontrolle des aktuellen Channels ohne Möglichkeit
+    der Rückkehr an die spezifizierte Priorität und setzt optional Extension
+    und Context des Ziels.</simpara>
+
+    <simpara>Optional können Sie die Anwendung dazu benutzen, zu der durch den
+    Parameter <code>benannte_Priorität</code> angegebenen Priorität (also
+    Priorität mit Label) zu gelangen. Benannte Prioritäten funktionieren
+    ausschließlich in der aktuellen Extension.</simpara>
+
+    <simpara>Liefert immer 0 zurück, auch falls der gegebene Context, die geg.
+    Extension oder Priorität nicht gültig sind.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,2,Set(COUNT=1)
+exten =&gt; 123,3,SayNumber(${COUNT})
+exten =&gt; 123,4,Set(COUNT=$[ ${COUNT} + 1 ])
+exten =&gt; 123,5,Goto(3)
+
+; das gleiche mit einer benannten Priorität:
+exten =&gt; 124,1,Answer()
+exten =&gt; 124,2,Set(COUNT=1)
+exten =&gt; 124,3(ansage),SayNumber(${COUNT})
+exten =&gt; 124,4,Set(COUNT=$[ ${COUNT} + 1 ])
+exten =&gt; 124,5,Goto(ansage)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Goto' =- 
+
+[Synopsis]
+Jump to a particular priority, extension, or context
+
+[Description]
+  Goto([[context|]extension|]priority): This application will cause the
+calling channel to continue dialplan execution at the specified priority.
+If no specific extension, or extension and context, are specified, then this
+application will jump to the specified priority of the current extension.
+  If the attempt to jump to another location in the dialplan is not successful,
+then the channel will continue at the next priority of the current extension.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-gotoif" />, <xref
+      linkend="applications-gotoiftime" />, <xref
+      linkend="applications-gosub" />, <xref
+      linkend="applications-gosubif" />, <xref
+      linkend="applications-macro" /></para>
+    </formalpara>
+  
+</section>

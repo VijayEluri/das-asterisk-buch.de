@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-userevent" revision="$Revision$">
+
+    <title><code>UserEvent()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>UserEvent()</code></secondary>
+    </indexterm>
+
+    <simpara>Sendet ein beliebiges Event an das Manager-Interface.</simpara>
+
+    <synopsis>UserEvent(<replaceable>Eventname</replaceable>[,<replaceable>Inhalt</replaceable>])</synopsis>
+
+    <para>Sendet ein beliebiges Event an das Manager-Interface. Das
+    resultierende Event-Paket hat folgendes Format:<programlisting>Event: UserEvent <replaceable>Eventname</replaceable>
+Channel: <replaceable>Channelname</replaceable>
+Uniqueid: <replaceable>Anruf-ID</replaceable>
+[<replaceable>Inhalt</replaceable>]</programlisting></para>
+
+    <simpara>Als Inhalt können weitere Zeilen in der Form <code>Feldname:
+    Wert</code> angegeben werden. Mehrere Zeilen werden durch <code>|</code>
+    (in älteren Asterisk-Versionen durch <code>,</code> oder <code>^</code>)
+    getrennt.</simpara>
+
+    <simpara>Liefert stets 0 zurück.</simpara>
+
+    <programlisting>exten =&gt; 123,1,UserEvent(Test,Hinweis: Ich rufe jetzt ${XY} an.)
+exten =&gt; 123,n,Dial(${XY})</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'UserEvent' =- 
+
+[Synopsis]
+Send an arbitrary event to the manager interface
+
+[Description]
+  UserEvent(eventname[|body]): Sends an arbitrary event to the manager
+interface, with an optional body representing additional arguments.  The
+body may be specified as a | delimeted list of headers. Each additional
+argument will be placed on a new line in the event. The format of the
+event will be:
+    Event: UserEvent
+    UserEvent: &lt;specified event name&gt;
+    [body]
+If no body is specified, only Event and UserEvent headers will be present.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>8,14c8,13
+&lt;   UserEvent(eventname[|body]): Sends an arbitrary event to the manager
+&lt; interface, with an optional body representing additional arguments.  The
+&lt; body may be specified as a | delimeted list of headers. Each additional
+&lt; argument will be placed on a new line in the event. The format of the
+&lt; event will be:
+&lt;     Event: UserEvent
+&lt;     UserEvent: &lt;specified event name&gt;
+---
+&gt;   UserEvent(eventname[|body]): Sends an arbitrary event to the
+&gt; manager interface, with an optional body representing additional
+&gt; arguments.  The format of the event will be:
+&gt;     Event: UserEvent&lt;specified event name&gt;
+&gt;     Channel: &lt;channel name&gt;
+&gt;     Uniqueid: &lt;call uniqueid&gt;
+16,17c15,16
+&lt; If no body is specified, only Event and UserEvent headers will be present.
+&lt; 
+---
+&gt; If the body is not specified, only Event, Channel, and Uniqueid fields
+&gt; will be present.  Returns 0.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><filename>manager.conf</filename>, Asterisk Manager
+      interface</para>
+    </formalpara>
+  
+</section>

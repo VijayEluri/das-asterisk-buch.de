@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-waitexten" revision="$Revision$">
+
+    <title><code>WaitExten()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>WaitExten()</code></secondary>
+    </indexterm>
+
+    <simpara>Wartet auf die Eingabe einer Extension.</simpara>
+
+    <synopsis>WaitExten([<replaceable>Sekunden</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
+
+    <simpara>Wartet die angegebene Anzahl Sekunden auf die Eingabe einer neuen
+    Extension durch den Teilnehmer und liefert dann 0 zurück. Es können auch
+    Sekundenbruchteile übergeben werden (z.B. <code>1.5</code> für 1,5
+    Sekunden). Falls keine Zeitdauer spezifiziert wird, wird die Standardfrist
+    (Default Extension-Timeout) gewartet.</simpara>
+
+    <simpara>Als Option ist <code>m</code> möglich, was dem Anrufer während
+    auf eine Eingabe gewartet wird, Wartemusik vorspielt. Dabei kann optional
+    in runden Klammern die Musikklasse angegeben werden, z.B.
+    <code>m(rock)</code>.</simpara>
+
+    <programlisting>; 10 Sekunden auf die Eingabe einer Extension warten:
+exten =&gt; s,1,Answer()
+exten =&gt; s,n,Playback(enter-ext-of-person)
+exten =&gt; s,n,WaitExten(10)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'WaitExten' =- 
+
+[Synopsis]
+Waits for an extension to be entered
+
+[Description]
+  WaitExten([seconds][|options]): This application waits for the user to enter
+a new extension for a specified number of seconds.
+  Note that the seconds can be passed with fractions of a second. For example,
+'1.5' will ask the application to wait for 1.5 seconds.
+  Options:
+    m[(x)] - Provide music on hold to the caller while waiting for an extension.
+               Optionally, specify the class for music on hold within parenthesis.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-wait" /></para>
+    </formalpara>
+  
+</section>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-agentmonitoroutgoing" revision="$Revision$">
+
+    <title><code>AgentMonitorOutgoing()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>AgentMonitorOutgoing()</code></secondary>
+    </indexterm>
+
+    <simpara>Speichert die ausgehenden Anrufe eines Agenten.</simpara>
+
+    <synopsis>AgentMonitorOutgoing([<replaceable>Optionen</replaceable>])</synopsis>
+
+    <simpara>Zeichnet alle ausgehenden Anrufe eines Agenten auf.</simpara>
+
+    <simpara>Diese Anwendung versucht, die ID eines Agenten, der einen
+    ausgehenden Anruf tätigt, herauszufinden, indem er die ID des Anrufers
+    (Caller ID) des gegenwärtigen Interfaces mit einer von der
+    <code>AgentCallbackLogin()</code>-Anwendung gesetzten globalen Variablen
+    vergleicht. Daher wird dringend empfohlen, diese Anwendung nur in
+    Verbindung mit der <code>AgentCallbackLogin()</code>-Anwendung (und zwar
+    nach dieser!) zu verwenden. Um die Anrufe aufzuzeichnen, werden anstelle
+    der Anwendung Monitor() die Überwachungsfunktionen des
+    <code>chan_agent</code>-Moduls benutzt. Deshalb muss das Aufzeichnen der
+    Anrufe in der <filename>agents.conf</filename>-Datei korrekt konfiguriert
+    sein.</simpara>
+
+    <simpara>Standardmäßig werden aufgezeichnete Anrufe im Verzeichnis
+    <filename>/var/spool/asterisk/monitor/</filename> abgelegt. Diese
+    Einstellung kann durch Anpassung des Parameters <code>savecallsin</code>
+    in der Datei <filename>agents.conf</filename> überschrieben werden. Bitte
+    seien sie sich bewusst, dass die Speicherung von Telefonaten dem
+    Datenschutz und der Wahrung von Persönlichkeitsrechten unterliegen. Sie
+    sollten sich genau darüber informieren, wann und wie sie Telefonate
+    aufzeichnen dürfen. Als allgemeine Regel gilt, dass sie ohne Wissen und
+    Einverständnis der Teilnehmer kein Telefonat aufzeichnen dürfen.</simpara>
+
+    <simpara>Können die ID des Anrufers (caller id) und/oder die ID des
+    Agenten (agent id) nicht ermittelt werden, wird diese Anwendung zur
+    Priorität n+101 springen, falls diese existiert.</simpara>
+
+    <simpara>Falls keine der folgenden Optionen anderes bewirkt, liefert die
+    Anwendung 0 zurück.</simpara>
+
+    <simpara>Der <code>Optionen</code>-Parameter kann aus einem oder mehreren
+    der folgenden Optionen zusammengesetzt sein.</simpara>
+
+    <variablelist termlength="2">
+      <varlistentry>
+        <term><code>d</code></term>
+
+        <listitem>
+          <simpara>Zwingt die Anwendung zur Rückgabe von -1, falls ein Fehler
+          vorliegt und keine Priorität n+101 existiert.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>c</code></term>
+
+        <listitem>
+          <simpara>Ändert den Call Detail Record dahingehend, dass
+          <code><replaceable>Agent</replaceable>/<replaceable>AgentenNr</replaceable></code>
+          als Channel, von dem der Anruf ausgeht, gespeichert wird, damit
+          festgestellt werden kann, von welchem Agenten der Anruf
+          ausging.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>n</code></term>
+
+        <listitem>
+          <simpara>Unterdrückt Warnmeldungen im Falle, dass Caller-ID bzw.
+          Agent-ID unbekannt sind. Diese Option ist hilfreich, wenn ein
+          gemeinsamer Context für Agenten- und Nicht-Agenten-Anrufe erwünscht
+          ist.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <programlisting>; ausgehende Anrufe dieses Agenten aufzeichnen, und den CDR
+; entsprechend anpassen:
+exten =&gt; 123,1,AgentMonitorOutgoing(c)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'AgentMonitorOutgoing' =- 
+
+[Synopsis]
+Record agent's outgoing call
+
+[Description]
+  AgentMonitorOutgoing([options]):
+Tries to figure out the id of the agent who is placing outgoing call based on
+comparison of the callerid of the current interface and the global variable 
+placed by the AgentCallbackLogin application. That's why it should be used only
+with the AgentCallbackLogin app. Uses the monitoring functions in chan_agent 
+instead of Monitor application. That have to be configured in the agents.conf file.
+
+Return value:
+Normally the app returns 0 unless the options are passed. Also if the callerid or
+the agentid are not specified it'll look for n+101 priority.
+
+Options:
+ 'd' - make the app return -1 if there is an error condition and there is
+       no extension n+101
+ 'c' - change the CDR so that the source of the call is 'Agent/agent_id'
+ 'n' - don't generate the warnings when there is no callerid or the
+       agentid is not known.
+             It's handy if you want to have one context for agent and non-agent calls.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-agentcallbacklogin" />,
+      <filename>agents.conf</filename>, <xref
+      linkend="applications-monitor" />, <xref
+      linkend="applications-chanspy" /></para>
+    </formalpara>
+  
+</section>

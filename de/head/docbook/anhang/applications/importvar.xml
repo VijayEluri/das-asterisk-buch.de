@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-importvar" revision="$Revision$">
+
+    <title><code>ImportVar()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>ImportVar()</code></secondary>
+    </indexterm>
+
+    <simpara>Setzt eine Variable basierend auf einer Channelvariable eines
+    anderen Channels.</simpara>
+
+    <synopsis>ImportVar(<replaceable>NeueVariable</replaceable>=<replaceable>Channel</replaceable>,<replaceable>Variable</replaceable>)</synopsis>
+
+    <simpara>Setzt die Variable <code>NeueVariable</code> auf den Wert von
+    <code>Variable</code> des angegebenen Channels. Falls
+    <code>NeueVariable</code> mit dem Zeichen <code>_</code> beginnt, wird
+    einfache Vererbung angenommen. Falls <code>NeueVariable</code> mit
+    <code>__</code> beginnt, wird unbeschränkte Vererbung
+    angenommen.</simpara>
+
+    <programlisting>; Caller-ID vom Channel Zap/1 importieren:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,ImportVar(cid=Zap/1,CALLERID)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'ImportVar' =- 
+
+[Synopsis]
+Import a variable from a channel into a new variable
+
+[Description]
+  ImportVar(newvar=channelname|variable): This application imports a variable
+from the specified channel (as opposed to the current one) and stores it as
+a variable in the current channel (the channel that is calling this
+application). Variables created by this application have the same inheritance
+properties as those created with the Set application. See the documentation for
+Set for more information.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-set" /></para>
+    </formalpara>
+  
+</section>

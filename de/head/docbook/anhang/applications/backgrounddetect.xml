@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-backgrounddetect" revision="$Revision$">
+
+    <title><code>BackgroundDetect()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>BackgroundDetect()</code></secondary>
+    </indexterm>
+
+    <simpara>Spielt eine Audiodatei im Hintergrund und erkennt
+    Sprechen.</simpara>
+
+    <synopsis>BackgroundDetect(<replaceable>SoundDatei</replaceable>[,<replaceable>Stille</replaceable>[,<replaceable>Min</replaceable>[,<replaceable>Max</replaceable>]]])</synopsis>
+
+    <simpara>Ähnlich <code>Background()</code>, versucht jedoch Sprechen zu
+    erkennen.</simpara>
+
+    <simpara>Während der Wiedergabe der Datei wird Eingang von Audio in
+    Empfangsrichtung überwacht. Wird eine Geräuschphase von mehr als
+    <code>Min</code> Millisekunden Dauer und weniger als <code>Max</code>
+    Millisekunden registriert, und darauf folgend eine geräuschlose Phase von
+    wenigstens <code>Stille</code> Millisekunden, wird die Audiowiedergabe
+    abgebrochen und die Ausführung an die Extension <code>talk</code>
+    delegiert, falls diese existiert.</simpara>
+
+    <simpara>Sind <code>Stille</code>, <code>Min</code> und <code>Max</code>
+    nicht spezifiziert, werden jeweils die Standardwerte 1000 ms, 100 ms und
+    unendlich angenommen.</simpara>
+
+    <simpara>Wenn aufgelegt wird, liefert die Anwendung -1 zurück, nach
+    abgeschossener Wiedergabe ohne vorhandene Ausstiegsbedingungen
+    0.</simpara>
+
+    <programlisting>exten =&gt; 123,1,BackgroundDetect(sinfonie)
+exten =&gt; 123,n,Playback(vm-sorry)
+exten =&gt; talk,1,Playback(ja-bitte)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'BackgroundDetect' =- 
+
+[Synopsis]
+Background a file with talk detect
+
+[Description]
+  BackgroundDetect(filename[|sil[|min|[max]]]):  Plays  back  a  given
+filename, waiting for interruption from a given digit (the digit must
+start the beginning of a valid extension, or it will be ignored).
+During the playback of the file, audio is monitored in the receive
+direction, and if a period of non-silence which is greater than 'min' ms
+yet less than 'max' ms is followed by silence for at least 'sil' ms then
+the audio playback is aborted and processing jumps to the 'talk' extension
+if available.  If unspecified, sil, min, and max default to 1000, 100, and
+infinity respectively.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-playback" />, <xref
+      linkend="applications-background" /></para>
+    </formalpara>
+  
+</section>

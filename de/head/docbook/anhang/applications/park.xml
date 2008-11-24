@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-park" revision="$Revision$">
+
+    <title><code>Park()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Park()</code></secondary>
+    </indexterm>
+
+    <simpara>Parkt den aktuellen Anruf.</simpara>
+
+    <synopsis>Park(<replaceable>Extension</replaceable>)</synopsis>
+
+    <simpara>Parkt den aktuellen Anruf (typischerweise in Kombination mit
+    einer beaufsichtigten Übertragung, um die <quote>Parkplatznummer</quote>
+    zu bestimmen). Diese Anwendung ist intern stets registriert und muss nicht
+    explizit im Wählplan eingefügt werden, jedoch müssen Sie den
+    <code>parkedcalls</code>-Context mit der Zeile <code>include =&gt;
+    parkedcalls</code> einbinden. Die Parkkonfiguration wird in
+    <filename>features.conf</filename> vorgenommen.</simpara>
+
+    <programlisting>; den Anruf auf 701 parken:
+include =&gt; parkedcalls
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Park(701)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Park' =- 
+
+[Synopsis]
+Park yourself
+
+[Description]
+Park():Used to park yourself (typically in combination with a supervised
+transfer to know the parking space). This application is always
+registered internally and does not need to be explicitly added
+into the dialplan, although you should include the 'parkedcalls'
+context (or the context specified in features.conf).
+
+If you set the PARKINGEXTEN variable to an extension in your
+parking context, park() will park the call on that extension, unless
+it already exists. In that case, execution will continue at next
+priority.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>12,17c12
+&lt; context (or the context specified in features.conf).
+&lt; 
+&lt; If you set the PARKINGEXTEN variable to an extension in your
+&lt; parking context, park() will park the call on that extension, unless
+&lt; it already exists. In that case, execution will continue at next
+&lt; priority.
+---
+&gt; context.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-parkandannounce" />, <xref
+      linkend="applications-parkedcall" /></para>
+    </formalpara>
+  
+</section>

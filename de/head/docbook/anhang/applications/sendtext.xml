@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-sendtext" revision="$Revision$">
+
+    <title><code>SendText()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>SendText()</code></secondary>
+    </indexterm>
+
+    <simpara>Sendet Text zu dem Channel.</simpara>
+
+    <synopsis>SendText(<replaceable>Text</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
+
+    <simpara>Überträgt den Text auf einem Channel (z.B. zur Anzeige im
+    Display), falls die Übertragung von Text unterstützt wird. Danach wird die
+    Ausführung bei der nächsten Priorität fortgesetzt. Mit der Option
+    <code>j</code> wird, wenn der Channel keine Textübertragung unterstützt,
+    zur Priorität n+101 gesprungen.</simpara>
+
+    <simpara>Der Text sollte bisher bei den meisten Kanälen 7-Bit-ASCII
+    sein.</simpara>
+
+    <simpara>Liefert 0 zurück, wenn der Text fehlerfrei übertragen wurde oder
+    der Channel eine Textübertragung nicht unterstützt, sonst -1. Setzt die
+    Channelvariable <code>SENDTEXTSTATUS</code> auf <code>SUCCESS</code>
+    (Erfolg), <code>FAILURE</code> (Sendefehler) oder <code>UNSUPPORTED</code>
+    (nicht unterstützt).</simpara>
+
+    <programlisting>exten =&gt; 123,1,SendText(Willkommen zu Asterisk)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'SendText' =- 
+
+[Synopsis]
+Send a Text Message
+
+[Description]
+  SendText(text[|options]): Sends text to current channel (callee).
+Result of transmission will be stored in the SENDTEXTSTATUS
+channel variable:
+      SUCCESS      Transmission succeeded
+      FAILURE      Transmission failed
+      UNSUPPORTED  Text transmission not supported by channel
+
+At this moment, text is supposed to be 7 bit ASCII in most channels.
+The option string many contain the following character:
+'j' -- jump to n+101 priority if the channel doesn't support
+       text transport</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-sendimage" />, <xref
+      linkend="applications-sendurl" /></para>
+    </formalpara>
+  
+</section>

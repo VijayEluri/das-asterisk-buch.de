@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-realtime" revision="$Revision$">
+
+    <title><code>RealTime()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>RealTime()</code></secondary>
+    </indexterm>
+
+    <simpara>Holt Informationen vom
+    RealTime-Konfigurationssteuerprogramm.</simpara>
+
+    <synopsis>RealTime(<replaceable>Familie</replaceable>,<replaceable>Spalte</replaceable>,<replaceable>Wert</replaceable>[,<replaceable>Präfix</replaceable>])</synopsis>
+
+    <simpara>Benutzt das RealTime-Konfigurationssteuerprogramm, um Daten in
+    Channelvariablen einzulesen. Alle eindeutigen Spaltennamen aus der
+    angegebenen Familie werden als Channelvariablen gesetzt. Dabei kann ihr
+    Name ein optionales Namenspräfix <code>Präfix</code> erhalten (zum
+    Beispiel würde ein Präfix <code>var_</code> den Spaltennamen
+    <code>test</code> in die Variable <code>${var_test}</code>
+    überführen).</simpara>
+
+    <simpara>Die Channelvariable <code>REALTIMECOUNT</code> wird auf die
+    Anzahl der gelesenen Werte gesetzt.</simpara>
+
+    <para>In der <filename>extconfig.conf</filename>:<programlisting>; Familie =&gt; DBMS,DB-Name,Tabelle
+sipusers =&gt; mysql,asterisk,sip_users</programlisting>In der
+    <filename>extensions.conf</filename>:<programlisting>exten =&gt; 123,1,RealTime(sipusers,ext,5678,var_)</programlisting>Führt
+    das folgende SQL-Query in der Datenbank <code>asterisk</code> aus:</para>
+
+    <simpara><code>SELECT * FROM sip_users WHERE ext = 5678</code></simpara>
+
+    <para>Angenommen die Tabelle hat eine Spalte <code>vorname</code> und eine
+    Spalte <code>nachname</code>, dann können wir die Werte so im CLI
+    ausgeben:<programlisting>exten =&gt; 123,n,NoOp(Der Vorname von Ext. 5678: ${var_vorname})
+exten =&gt; 123,n,NoOp(Der Nachname von Ext. 5678: ${var_nachname})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'RealTime' =- 
+
+[Synopsis]
+Realtime Data Lookup
+
+[Description]
+Use the RealTime config handler system to read data into channel variables.
+RealTime(&lt;family&gt;|&lt;colmatch&gt;|&lt;value&gt;[|&lt;prefix&gt;])
+
+All unique column names will be set as channel variables with optional prefix
+to the name.  For example, a prefix of 'var_' would make the column 'name'
+become the variable ${var_name}.  REALTIMECOUNT will be set with the number
+of values read.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>11,14c11,13
+&lt; All unique column names will be set as channel variables with optional prefix
+&lt; to the name.  For example, a prefix of 'var_' would make the column 'name'
+&lt; become the variable ${var_name}.  REALTIMECOUNT will be set with the number
+&lt; of values read.
+---
+&gt; All unique column names will be set as channel variables with optional prefix to the name.
+&gt; e.g. prefix of 'var_' would make the column 'name' become the variable ${var_name}
+&gt; </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-realtimeupdate" /></para>
+    </formalpara>
+  
+</section>

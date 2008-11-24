@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-set" revision="$Revision$">
+
+    <title><code>Set()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Set()</code></secondary>
+    </indexterm>
+
+    <simpara>Setzt eine Variable auf den angegebenen Wert.</simpara>
+
+    <synopsis>Set(<replaceable>Variable</replaceable>=<replaceable>Wert</replaceable>[,<replaceable>Variable2</replaceable>=<replaceable>Wert2</replaceable>,...][,<replaceable>Optionen</replaceable>])</synopsis>
+
+    <simpara>Setzt die Variable auf den angegebenen Wert. Beginnt der Name der
+    Variablen mit dem Zeichen <code>_</code>, wird einfache Vererbung
+    angenommen (d.h. wird auf Kanäle vererbt, die von diesem Channel erzeugt
+    werden), beginnt er mit <code>__</code>, wird Endlosvererbung angenommen
+    (d.h. wird auf alle Kinder-Kanäle vererbt). Bis zu 24 Variablen können
+    gesetzt werden. Variablen sind normalerweise nur innerhalb eines Channels
+    gültig und werden beim Auflegen gelöscht. Mit der Option <code>g</code>
+    setzt man in Asterisk 1.2 eine Variable (nicht eine Funktion!) global; in
+    1.4 macht man das mit Hilfe der Funktion <code>GLOBAL()</code>.</simpara>
+
+    <programlisting>; die Variable TEST auf "123" setzen:
+exten =&gt; 123,1,Set(TEST=123)
+exten =&gt; 123,n,SayDigits(${TEST})
+
+; die globale Variable TEST2 auf "456" setzen:
+exten =&gt; 123,n,Set(TEST2=456,g)         ; Asterisk 1.2
+exten =&gt; 123,n,Set(GLOBAL(TEST2)=456)   ; Asterisk 1.4</programlisting>
+
+    <note>
+      <para>Ob globale Variablen auch nach einem Reload von Asterisk noch
+      gültig sind, wird durch die Einstellung <code>clearglobalvars</code> in
+      der <filename>extensions.conf</filename> bestimmt.</para>
+    </note>
+
+    <simpara><code>Set()</code> wird auch verwendet, um in Funktionen zu
+    schreiben (siehe <xref linkend="funktionen" />).</simpara>
+
+    <programlisting>exten =&gt; 123,1,Set(CALLERID(name)=Apfelmus)  ; CALLERID(name) setzen
+exten =&gt; 123,n,Set(CALLERID(name)=)          ; CALLERID(name) leeren
+
+exten =&gt; 123,n,Set(DB(mein/test)=ok)         ; in AstDB schreiben
+exten =&gt; 123,n,Set(var=${DB(mein/test)})     ; aus AstDB lesen</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Set' =- 
+
+[Synopsis]
+Set channel variable(s) or function value(s)
+
+[Description]
+  Set(name1=value1|name2=value2|..[|options])
+This function can be used to set the value of channel variables or dialplan
+functions. It will accept up to 24 name/value pairs. When setting variables,
+if the variable name is prefixed with _, the variable will be inherited into
+channels created from the current channel. If the variable name is prefixed
+with __, the variable will be inherited into channels created from the current
+channel and all children channels.
+  Options:
+    g - Set variable globally instead of on the channel
+        (applies only to variables, not functions)</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-importvar" />,
+      <filename>doc/README.variables</filename> (1.2) /
+      <filename>doc/channelvariables.txt</filename> (1.4), <xref
+      linkend="functions-global" /></para>
+    </formalpara>
+  
+</section>

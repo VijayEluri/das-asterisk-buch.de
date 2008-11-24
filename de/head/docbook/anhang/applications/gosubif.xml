@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-gosubif" revision="$Revision$">
+
+    <title><code>GosubIf()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>GosubIf()</code></secondary>
+    </indexterm>
+
+    <simpara>Springt bedingt zu der angegebenen Priorität (mit der Möglichkeit
+    der Rückkehr).</simpara>
+
+    <synopsis>GosubIf(<replaceable>Bedingung</replaceable>?<replaceable>PrioWahr</replaceable>:<replaceable>PrioFalsch</replaceable>)</synopsis>
+
+    <simpara>Springt wie <code>GotoIf()</code> unter einer bestimmten
+    Bedingung im Dialplan, erlaubt es dem Unterprogramm aber, mit
+    <code>Return()</code> zurückzukehren.</simpara>
+
+    <simpara>Gibt 0 zurück oder -1, wenn das Sprungziel ungültig
+    ist.</simpara>
+
+    <programlisting>exten =&gt; telcid,1,Set(CALLERID(all)=Apfelmus &lt;0123456780&gt;)
+exten =&gt; telcid,n,Return()
+exten =&gt; faxcid,1,Set(CALLERID(all)=Apfelmus &lt;0123456785&gt;)
+exten =&gt; faxcid,n,Return()
+
+exten =&gt; _0.,1,GosubIf($[${CHANNEL:4:2} = 43]?faxcid,1:telcid,1)
+exten =&gt; _0.,n,Dial(${TRUNK}/${EXTEN:1},,T)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'GosubIf' =- 
+
+[Synopsis]
+Conditionally jump to label, saving return address
+
+[Description]
+GosubIf(condition?labeliftrue[:labeliffalse])
+  If the condition is true, then jump to labeliftrue.  If false, jumps to
+labeliffalse, if specified.  In either case, a jump saves the return point
+in the dialplan, to be returned to with a Return.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; Conditionally jump to label, saving return address
+---
+&gt; Jump to label, saving return address</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-gosub" />, <xref
+      linkend="applications-goto" />, <xref linkend="applications-gotoif" />,
+      <xref linkend="applications-return" />, <xref
+      linkend="applications-macro" /></para>
+    </formalpara>
+  
+</section>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-transfer" revision="$Revision$">
+
+    <title><code>Transfer()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Transfer()</code></secondary>
+    </indexterm>
+
+    <simpara>Übermittelt den Anruf zu einer anderen Extension.</simpara>
+
+    <synopsis>Transfer([<replaceable>Technologie</replaceable>/]<replaceable>Ziel</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
+
+    <simpara>Verlangt die Übermittlung des Anrufers zu einer gegebenen
+    Extension. Wird <code>Technologie</code> (<code>SIP</code>,
+    <code>IAX2</code> etc.) angegeben, werden nur Anrufe der gleichen
+    Technologie transferiert. Bei SIP-Kanälen, die noch nicht beantwortet
+    wurden, geschieht das mittels einer 302-<code>REDIRECT</code>-Nachricht an
+    den Anrufer, bei beantworteten SIP-Kanälen mit <code>REFER</code>. Ziel
+    kann auch z.B. <code>123456@sip.provider.tld</code> sein.</simpara>
+
+    <simpara>Mit der Option <code>j</code> wird zur Priorität n+101
+    gesprungen, falls der Transfer-Versuch fehlschlägt.</simpara>
+
+    <simpara>Setzt die Channelvariable <code>TRANSFERSTATUS</code> auf
+    <code>SUCCESS</code> (Transfer erfolgreich), <code>FAILURE</code>
+    (Transfer fehlgeschlagen) oder <code>UNSUPPORTED</code> (vom Channel nicht
+    unterstützt).</simpara>
+
+    <programlisting>; Anrufe an Extension 123 zur Extension 130 umleiten:
+exten =&gt; 123,1,Transfer(130)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Transfer' =- 
+
+[Synopsis]
+Transfer caller to remote extension
+
+[Description]
+  Transfer([Tech/]dest[|options]):  Requests the remote caller be transferred
+to a given destination. If TECH (SIP, IAX2, LOCAL etc) is used, only
+an incoming call with the same channel technology will be transfered.
+Note that for SIP, if you transfer before call is setup, a 302 redirect
+SIP message will be returned to the caller.
+
+The result of the application will be reported in the TRANSFERSTATUS
+channel variable:
+       SUCCESS      Transfer succeeded
+       FAILURE      Transfer failed
+       UNSUPPORTED  Transfer unsupported by channel driver
+The option string many contain the following character:
+'j' -- jump to n+101 priority if the channel transfer attempt
+       fails</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  
+</section>

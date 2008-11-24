@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-festival" revision="$Revision$">
+
+    <title><code>Festival()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Festival()</code></secondary>
+    </indexterm>
+
+    <simpara>Verwendet das Sprachsynthese-System (Text-to-speech) Festival, um
+    dem Anrufer Text vorzulesen.</simpara>
+
+    <synopsis>Festival(<replaceable>Text</replaceable>[,<replaceable>Tasten</replaceable>])</synopsis>
+
+    <simpara>Verbindet sich zum lokal laufenden Festival-Server (muss
+    installiert sein), sendet ihm den angegebenen <code>Text</code> und spielt
+    dem Teilnehmer die resultierende Audiodatei vor. Wenn <code>Tasten</code>
+    angegeben wurden und der Anrufer während des Abspielens eine davon drückt,
+    wird der Abspielvorgang beendet und die entsprechende Taste zurückgegeben.
+    Falls als <code>Tasten</code> der Wert <code>any</code> angegeben ist,
+    wird jede Taste erkannt (und an die entsprechende Extension
+    weitergeleitet).</simpara>
+
+    <simpara>Sie müssen den Festival-Server <emphasis>vor</emphasis> Asterisk
+    starten und die <code>Answer()</code>-Anwendung zum Beantworten des
+    Channels verwenden, bevor Sie <code>Festival()</code> aufrufen.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Festival('Hallo Welt',#)</programlisting>
+
+    <para>Alternativ zu der Applikation <code>Festival()</code> kann man auch
+    mit dem <code>System()</code>-Befehl Festivals Programm
+    <command>text2wave</command> aufrufen und die resultierende Audiodatei mit
+    <code>Background()</code> oder <code>Playback()</code> abspielen, etwa so
+    (nur als Beispiel, Verzeichnisse beachten!):<programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,System(echo 'Hallo Welt' | text2wave -o sound.wav -otype wav -)
+exten =&gt; 123,n,Background(sound)</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Festival' =- 
+
+[Synopsis]
+Say text to the user
+
+[Description]
+  Festival(text[|intkeys]):  Connect to Festival, send the argument, get back the waveform,play it to the user, allowing any given interrupt keys to immediately terminate and return
+the value, or 'any' to allow any number back (useful in dialplan)</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><filename>contrib/README.festival</filename></para>
+    </formalpara>
+  
+</section>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-playtones" revision="$Revision$">
+
+    <title><code>Playtones()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Playtones()</code></secondary>
+    </indexterm>
+
+    <simpara>Wiedergabe einer Tonliste.</simpara>
+
+    <synopsis>Playtones(<replaceable>Tonliste</replaceable>)</synopsis>
+
+    <simpara>Spielt eine Liste von Tönen ab. Die Ausführung wird
+    augenblicklich mit dem nächsten Schritt fortgesetzt, während die Töne
+    weiter abgespielt werden. <code>Tonliste</code> ist entweder ein Tonname,
+    der in der <filename>indications.conf</filename> definiert ist, oder eine
+    Liste von Tonfrequenzen und -dauern. Für eine Beschreibung der
+    Spezifikation einer eigenen Tonliste siehe
+    <filename>indications.conf</filename>.</simpara>
+
+    <simpara>Verwendet die <code>StopPlaytones()</code>-Anwendung, um die
+    Wiedergabe der Töne anzuhalten.</simpara>
+
+    <programlisting>; 2 Sekunden Besetzt-, dann 2 Sekunden Stau-Signal spielen:
+exten =&gt; 123,1,Playtones(busy)
+exten =&gt; 123,n,Wait(2)
+exten =&gt; 123,n,StopPlaytones()
+exten =&gt; 123,n,Playtones(congestion)
+exten =&gt; 123,n,Wait(2)
+exten =&gt; 123,n,StopPlaytones()
+exten =&gt; 123,n,Goto(1)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'PlayTones' =- 
+
+[Synopsis]
+Play a tone list
+
+[Description]
+PlayTones(arg): Plays a tone list. Execution will continue with the next step immediately,
+while the tones continue to play.
+Arg is either the tone name defined in the indications.conf configuration file, or a directly
+specified list of frequencies and durations.
+See the sample indications.conf for a description of the specification of a tonelist.
+
+Use the StopPlayTones application to stop the tones playing.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-stopplaytones" />,
+      <filename>indications.conf</filename>, <xref
+      linkend="applications-busy" />, <xref
+      linkend="applications-congestion" />, <xref
+      linkend="applications-progress" />, <xref
+      linkend="applications-ringing" /></para>
+    </formalpara>
+  
+</section>

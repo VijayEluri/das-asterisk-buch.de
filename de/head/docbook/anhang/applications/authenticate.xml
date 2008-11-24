@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-authenticate" revision="$Revision$">
+
+    <title><code>Authenticate()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Authenticate()</code></secondary>
+    </indexterm>
+
+    <simpara>Verlangt zur Fortsetzung eines Vorgangs die Eingabe eines
+    Passworts vom Anrufer.</simpara>
+
+    <synopsis>Authenticate(<replaceable>Passwort</replaceable>[,<replaceable>Optionen</replaceable>[,maxZiffern]])</synopsis>
+
+    <simpara>Verlangt, dass der Anrufer ein gegebenes Passwort korrekt
+    eingibt, um dann mit der Ausführung der nächsten Priorität im Dialplan
+    fortzufahren. <code>Authenticate()</code> gibt dem Anrufer drei Versuche,
+    das Passwort korrekt einzugeben. Andernfalls wird die Verbindung
+    beendet.</simpara>
+
+    <simpara>Falls <code>Passwort</code> mit dem <code>/</code>-Zeichen
+    beginnt, wird es als Datei interpretiert, die eine Liste gültiger
+    Passwörter (genau eins pro Zeile) enthält. Passwörter können auch in der
+    Asterisk-Datenbank (AstDB) gespeichert sein, siehe dazu die Option
+    <code>d</code> weiter unten.</simpara>
+
+    <simpara>Folgende Optionen sind möglich (auch in Kombination):</simpara>
+
+    <variablelist termlength="2">
+      <varlistentry>
+        <term><code>a</code></term>
+
+        <listitem>
+          <simpara>(accountcode) Setzt den Namen des CDR-Felds
+          <code>accountcode</code> und die Variable für den Channel,
+          <code>ACCOUNTCODE</code>, auf das eingegebene Passwort.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>d</code></term>
+
+        <listitem>
+          <simpara>(database) Interpretiert <code>Passwort</code> als
+          Schlüssel der Asterisk-Datenbank. Wenn ein Datenbankschlüssel
+          benutzt wird, kann der mit dem Schlüssel assoziierte Wert beliebig
+          sein.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>r</code></term>
+
+        <listitem>
+          <simpara>(remove) Entfernt den Datenbankschlüssel nach erfolgreicher
+          Verbindung und Eintreten in die Datenbank (nur möglich mit Option
+          <code>d</code>).</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>j</code></term>
+
+        <listitem>
+          <simpara>(jump) Bei falschem Passwort statt aufzulegen zur Priorität
+          n+101 springen, falls diese existiert.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <important>
+      <para>Beachten Sie bei der Option <code>d</code>, dass - wenig
+      nachvollziehbar! - als Parameter
+      <code>/<replaceable>passwoerter</replaceable>/<replaceable>1234</replaceable></code>
+      verlangt wird, wobei <code>passwoerter</code> die Familie ist und
+      <code>1234</code> das Passwort; der unter diesem Schlüssel gespeicherte
+      Wert ist irrelevant. Der gesunde Menschenverstand würde einen
+      Datenbank-Eintrag wie /passwoerter/art =&gt; 1234 erwarten.</para>
+    </important>
+
+    <simpara>Mit Angabe von <code>maxZiffern</code> wird die Eingabe
+    automatisch nach sovielen Ziffern beendet, ohne dass der User
+    <code>#</code> drücken muss (Default: 0 für keine Begrenzung).</simpara>
+
+    <simpara>Liefert 0 zurück, falls der Benutzer nach maximal drei Versuchen
+    ein gültiges Passwort eingegeben hat, sonst -1 (auch nach
+    Auflegen).</simpara>
+
+    <programlisting>; Passwort 1234 verlangen:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,2,Authenticate(1234,j,4)           ; hier ausnahmsweise mit Priority-Jumping
+                                                ; weil wir dem Anrufer noch sagen wollen
+                                                ; dass sein Passwort falsch ist
+exten =&gt; 123,3,Playback(pin-nummer-akzeptiert)
+exten =&gt; 123,103,Playback(pin-nummer-falsch)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Authenticate' =- 
+
+[Synopsis]
+Authenticate a user
+
+[Description]
+  Authenticate(password[|options[|maxdigits]]): This application asks the caller
+to enter a given password in order to continue dialplan execution. If the password
+begins with the '/' character, it is interpreted as a file which contains a list of
+valid passwords, listed 1 password per line in the file.
+  When using a database key, the value associated with the key can be anything.
+Users have three attempts to authenticate before the channel is hung up. If the
+passsword is invalid, the 'j' option is specified, and priority n+101 exists,
+dialplan execution will continnue at this location.
+  Options:
+     a - Set the channels' account code to the password that is entered
+     d - Interpret the given path as database key, not a literal file
+     j - Support jumping to n+101 if authentication fails
+     m - Interpret the given path as a file which contains a list of account
+         codes and password hashes delimited with ':', listed one per line in
+         the file. When one of the passwords is matched, the channel will have
+         its account code set to the corresponding account code in the file.
+     r - Remove the database key upon successful entry (valid with 'd' only)
+     maxdigits  - maximum acceptable number of digits. Stops reading after
+         maxdigits have been entered (without requiring the user to
+         press the '#' key).
+         Defaults to 0 - no limit - wait for the user press the '#' key.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>8,10c8,10
+&lt;   Authenticate(password[|options[|maxdigits]]): This application asks the caller
+&lt; to enter a given password in order to continue dialplan execution. If the password
+&lt; begins with the '/' character, it is interpreted as a file which contains a list of
+---
+&gt;   Authenticate(password[|options]): This application asks the caller to enter a
+&gt; given password in order to continue dialplan execution. If the password begins
+&gt; with the '/' character, it is interpreted as a file which contains a list of
+25,28d24
+&lt;      maxdigits  - maximum acceptable number of digits. Stops reading after
+&lt;          maxdigits have been entered (without requiring the user to
+&lt;          press the '#' key).
+&lt;          Defaults to 0 - no limit - wait for the user press the '#' key.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-vmauthenticate" /></para>
+    </formalpara>
+  
+</section>

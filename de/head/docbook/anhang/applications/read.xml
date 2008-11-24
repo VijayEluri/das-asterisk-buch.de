@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-read" revision="$Revision$">
+
+    <title><code>Read()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Read()</code></secondary>
+    </indexterm>
+
+    <simpara>Liest DTMF-Ziffern eines Anrufers und weist die Eingabe einer
+    Variablen zu.</simpara>
+
+    <synopsis>Read(<replaceable>Variablenname</replaceable>[,<replaceable>Dateiname</replaceable>[,<replaceable>maxZiffern</replaceable>[,<replaceable>Option</replaceable>[,<replaceable>Versuche</replaceable>[,<replaceable>Timeout</replaceable>]]]]])</synopsis>
+
+    <simpara>Liest eine mit <code>#</code> abgeschlossene Reihe von Ziffern
+    von einem Teilnehmer, und legt sie in einer gegebenen Variablen
+    ab.</simpara>
+
+    <simpara>Wenn <code>Dateiname</code> (ohne Endung!) angegeben ist, wird
+    dem Anrufer diese Datei vor dem Einlesen vorgespielt.</simpara>
+
+    <simpara><code>maxZiffern</code> bestimmt die maximal zu akzeptierende
+    Anzahl von Ziffern. Ist der Parameter angegeben, beendet die Anwendung das
+    Einlesen, nachdem <code>maxZiffern</code> Ziffern eingegeben wurden (ohne
+    dass der Teilnehmer mit der <code>#</code>-Taste bestätigen muss).
+    Standardeinstellung ist 0, was bedeutet, dass keine Begrenzung existiert
+    und auf die Eingabe von <code>#</code> gewartet wird. Der größte
+    akzeptierte Wert ist 255.</simpara>
+
+    <simpara>Die Option <code>skip</code> bewirkt sofortige Rückkehr, falls
+    der Channel nicht aktiv ist. <code>noanswer</code> bewirkt Einlesen sogar
+    bei einem inaktiven Channel.</simpara>
+
+    <simpara>Der Anrufer hat maximal <code>Versuche</code> Versuche, innerhalb
+    von <code>Timout</code> Sekunden eine Eingabe zu machen. (Ein Timeout von
+    0 bedeutet unendlich.)</simpara>
+
+    <simpara>Liefert -1 zurück im Falle eines Auflegens oder Fehlers, sonst
+    0.</simpara>
+
+    <programlisting>; eine maximal vierstellige Zahl einlesen (3 Versuche) und dem Anrufer ansagen:
+exten =&gt; 123,1,Read(NUMMER,,4,3)
+exten =&gt; 123,n,SayNumber(${NUMMER})
+exten =&gt; 123,n,Goto(1)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Read' =- 
+
+[Synopsis]
+Read a variable
+
+[Description]
+  Read(variable[|filename][|maxdigits][|option][|attempts][|timeout])
+
+Reads a #-terminated string of digits a certain number of times from the
+user in to the given variable.
+  filename   -- file to play before reading digits or tone with option i
+  maxdigits  -- maximum acceptable number of digits. Stops reading after
+                maxdigits have been entered (without requiring the user to
+                press the '#' key).
+                Defaults to 0 - no limit - wait for the user press the '#' key.
+                Any value below 0 means the same. Max accepted value is 255.
+  option     -- options are 's' , 'i', 'n'
+                's' to return immediately if the line is not up,
+                'i' to play  filename as an indication tone from your indications.conf
+                'n' to read digits even if the line is not up.
+  attempts   -- if greater than 1, that many attempts will be made in the 
+                event no data is entered.
+  timeout    -- An integer number of seconds to wait for a digit response. If greater
+                than 0, that value will override the default timeout.
+
+Read should disconnect if the function fails or errors out.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>12c12
+&lt;   filename   -- file to play before reading digits or tone with option i
+---
+&gt;   filename   -- file to play before reading digits.
+18,21c18,19
+&lt;   option     -- options are 's' , 'i', 'n'
+&lt;                 's' to return immediately if the line is not up,
+&lt;                 'i' to play  filename as an indication tone from your indications.conf
+&lt;                 'n' to read digits even if the line is not up.
+---
+&gt;   option     -- may be 'skip' to return immediately if the line is not up,
+&gt;                 or 'noanswer' to read digits even if the line is not up.
+24,25c22
+&lt;   timeout    -- An integer number of seconds to wait for a digit response. If greater
+&lt;                 than 0, that value will override the default timeout.
+---
+&gt;   timeout    -- if greater than 0, that value will override the default timeout.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-senddtmf" /></para>
+    </formalpara>
+  
+</section>

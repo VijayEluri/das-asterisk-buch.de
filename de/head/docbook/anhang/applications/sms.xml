@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-sms" revision="$Revision$">
+
+    <title><code>SMS()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>SMS()</code></secondary>
+    </indexterm>
+
+    <indexterm>
+      <primary>SMS</primary>
+    </indexterm>
+
+    <simpara>Sendet oder empfängt SMS-Nachrichten.</simpara>
+
+    <synopsis>SMS(<replaceable>Schlange</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
+
+    <simpara>Regelt den Austausch von SMS-Nachrichten mit einem SMS-fähigen
+    Telefon oder über ein SMS-Service-Center nach dem Protokoll ETSI ES 201
+    912 auf analogen oder ISDN-Leitungen. Das Shell-Programm
+    <command>smsq</command> verwendet dazu FSK<footnote>
+        <simpara>Frequency Shift Keying, <xref
+        linkend="glossar-fsk" /></simpara>
+      </footnote> - die Funktion über komprimierte Codecs wie GSM ist daher
+    unwahrscheinlich.</simpara>
+
+    <para>Optionen:<variablelist termlength="3">
+        <varlistentry>
+          <term>a</term>
+
+          <listitem>
+            <simpara>Als antwortende Seite agieren.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>s</term>
+
+          <listitem>
+            <simpara>Als Service-Center agieren, das mit einem Telefon
+            kommuniziert.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <simpara>Alle Sende-/Empfangsschlangen werden in
+    <filename>/var/spool/asterisk/sms/</filename> gespeichert: die Nachrichten
+    vom Service-Center zum Telefon in
+    <filename>sc-me.<replaceable>Schlange</replaceable>/</filename>, die
+    Nachrichten vom Telefon zum SMSC in
+    <filename>me-sc.<replaceable>Schlange</replaceable>/</filename>. In
+    <filename>/var/log/asterisk/sms</filename> wird ein Log
+    geschrieben.</simpara>
+
+    <simpara>Beim Verbinden als Client (<code>a</code>) werden alle im
+    Verzeichnis
+    <filename>me-sc.<replaceable>Schlange</replaceable>/</filename> wartenden
+    Nachrichten gesendet und dann gelöscht; die empfangenen werden in
+    <filename>sc-me.<replaceable>Schlange</replaceable>/</filename> mit einem
+    Timestamp im Dateinamen gespeichert. Wenn wir uns als Service-Center
+    verbinden (<code>s</code>) ist das genau umgekehrt.</simpara>
+
+    <para>Die Nachrichten-Dateien haben folgendes Format, wobei ausgelassene
+    Parameter Default-Werte haben:<programlisting>oa=<replaceable>Originating Address (Absendernummer)</replaceable></programlisting>Nationale
+    Telefonnummer oder internationale mit vorangehendem <code>+</code> (z.B.
+    <code>+49</code>).<programlisting>da=<replaceable>Destination Address (Empfängernummer)</replaceable></programlisting>Nationale
+    Telefonnummer oder internationale mit vorangehendem
+    <code>+</code>.<programlisting>scts=<replaceable>Service Centre Time Stamp (Zeitstempel vom SC)</replaceable></programlisting>Im
+    Format <code>YYYY-MM-DD HH:MM:SS</code> <programlisting>pid=<replaceable>Protocol Identifier (decimal octet value)</replaceable></programlisting><programlisting>dcs=<replaceable>Data coding scheme (decimal octet value)</replaceable></programlisting><programlisting>mr=<replaceable>Message reference (decimal octet value)</replaceable></programlisting><programlisting>ud=<replaceable>Der Nachrichtentext</replaceable></programlisting>Wenn
+    andere Zeichen als 10, 13, 32-126, 128-255 (dezimal) in der Nachricht
+    vorkommen, wird <code>ud=</code> durch <code>ud#</code> ersetzt und die
+    Zeichen folgen hexadezimal kodiert.<programlisting>srr=<replaceable>Status Report Request (0|1)</replaceable></programlisting><programlisting>rp=<replaceable>Return Path (0|1)</replaceable></programlisting><programlisting>vp=<replaceable>Validity Period (Gültigkeitsdauer in Minuten)</replaceable></programlisting>Beim
+    Senden an ein SMSC müssen nur <code>da</code> und <code>ud</code>
+    verwendet werden, <code>oa</code> wird ignoriert; beim Senden an ein
+    Telefon sind nur <code>oa</code> und <code>ud</code> nötig,
+    <code>da</code> wird ignoriert.</para>
+
+    <para>Eine Extension zum Empfangen von Nachrichten könnte so aussehen
+    (wenn 01930100 die Nummer des für uns zuständigen SMSC - hier T-Com -
+    ist):<programlisting>[incoming]
+exten =&gt; _X.,1,GotoIf($["${CALLERIDNUM}" = "01930100"]?sms-me-in,${EXTEN},1) 
+; oder so:
+;exten =&gt; _X./_0193010.,1,Goto(sms-me-in,${EXTEN},1)
+
+[sms-me-in]
+exten =&gt; _X.,1,Wait(1)
+exten =&gt; _X.,n,SMS(me-eingang,a)
+exten =&gt; _X.,n,System(handleincomingsms)
+exten =&gt; _X.,n,Hangup()</programlisting>wobei
+    <code>handleincomingsms</code> z.B. <code>smsq
+    --process=<replaceable>befehl</replaceable> --queue=me-eingang</code> sein
+    könnte, was für jede eingegangene Nachricht einen Befehl ausführt.</para>
+
+    <para>Ausgehende Nachrichten sollten als Dateien geschrieben werden, könne
+    aber auch mit folgendem (veralteten) Aufruf erzeugt werden (0193010 ist
+    die Nummer des SMSC - hier T-Com):<programlisting>[outgoing]
+exten = 0193010,1,Goto(sms-me-out,${CALLERIDNUM},1)
+
+[sms-me-out]
+exten =&gt; _X.,1,Set(CDR(accountcode)=SMS)
+exten =&gt; _X.,n,Set(smsFrom=${CALLERIDNUM})
+exten =&gt; _X.,n,SMS(${smsFrom},s,${EXTEN},${smsText})  ; SMS erzeugen
+exten =&gt; _X.,n,SMS(${smsFrom},s)                       ; senden
+exten =&gt; _X.,n,Hangup()</programlisting></para>
+
+    <simpara>Weitere Informationen und viele Beispiele auf <ulink
+    url="http://www.voip-info.org/wiki/view/Asterisk+cmd+Sms">http://www.voip-info.org/wiki/view/Asterisk+cmd+Sms</ulink>
+    und <ulink
+    url="http://www.pi4tel.de/asterisk/sms.shtml">http://www.pi4tel.de/asterisk/sms.shtml</ulink>.
+    Man kann jedoch nicht erwarten, dass <code>SMS()</code> <quote>out of the
+    box</quote> sofort funktioniert.</simpara>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'SMS' =- 
+
+[Synopsis]
+Communicates with SMS service centres and SMS capable analogue phones
+
+[Description]
+  SMS(name|[a][s]):  SMS handles exchange of SMS data with a call to/from SMS capabale
+phone or SMS PSTN service center. Can send and/or receive SMS messages.
+Works to ETSI ES 201 912 compatible with BT SMS PSTN service in UK
+Typical usage is to use to handle called from the SMS service centre CLI,
+or to set up a call using 'outgoing' or manager interface to connect
+service centre to SMS()
+name is the name of the queue used in /var/spool/asterisk/sms
+Arguments:
+ a: answer, i.e. send initial FSK packet.
+ s: act as service centre talking to a phone.
+Messages are processed as per text file message queues.
+smsq (a separate software) is a command to generate message
+queues and send messages.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  
+</section>

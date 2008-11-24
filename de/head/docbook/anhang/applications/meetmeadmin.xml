@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-meetmeadmin" revision="$Revision$">
+
+    <title><code>MeetMeAdmin()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>MeetMeAdmin()</code></secondary>
+    </indexterm>
+
+    <simpara>Administration von MeetMe-Konferenzen</simpara>
+
+    <synopsis>MeetMeAdmin(<replaceable>KonferenzNr</replaceable>,<replaceable>Befehl</replaceable>[,<replaceable>TeilnehmerNr</replaceable>])</synopsis>
+
+    <para>Führt den angegebenen MeetMe-Administrationsbefehl in der
+    angegebenen Konferenz aus. Der Befehl kann einer der folgenden sein (Die
+    <code>TeilnehmerNr</code> wird nur für den Befehl <code>k</code>
+    benötigt.): <variablelist termlength="3">
+        <varlistentry>
+          <term><code>K</code></term>
+
+          <listitem>
+            <simpara>Wirft alle Teilnehmer aus der Konferenz.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>k</code></term>
+
+          <listitem>
+            <simpara>Wirft den Teilnehmer mit der angegebenen
+            <code>TeilnehmerNr</code> aus der Konferenz</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>e</code></term>
+
+          <listitem>
+            <simpara>Wirft den letzten Teilnehmer, der sich zu der Konferenz
+            verbunden hat, raus</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>L</code></term>
+
+          <listitem>
+            <simpara>Sperrt die Konferenz (d.h. keine neuen
+            Teilnehmer)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>l</code></term>
+
+          <listitem>
+            <simpara>Entsperrt die Konferenz.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>M</code></term>
+
+          <listitem>
+            <simpara>Schaltet die Konferenz für einen User stumm.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>m</code></term>
+
+          <listitem>
+            <simpara>Hebt die Stummschaltung (durch <code>M</code>)
+            auf</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>N</code></term>
+
+          <listitem>
+            <simpara>Schaltet alle Teilnehmer außer dem Administrator
+            stumm</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>n</code></term>
+
+          <listitem>
+            <simpara>Hebt die Stummschaltung (durch <code>N</code>)
+            auf</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <programlisting>; Konferenz 333 fuer den User 3 stummschalten:
+exten =&gt; 123,1,MeetMeAdmin(333,M,3)
+
+; Teilnehmer 3 aus der Konferenz 333 kicken:
+exten =&gt; 123,1,MeetMeAdmin(333,k,3)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'MeetMeAdmin' =- 
+
+[Synopsis]
+MeetMe conference Administration
+
+[Description]
+  MeetMeAdmin(confno,command[,user]): Run admin command for conference
+      'e' -- Eject last user that joined
+      'k' -- Kick one user out of conference
+      'K' -- Kick all users out of conference
+      'l' -- Unlock conference
+      'L' -- Lock conference
+      'm' -- Unmute one user
+      'M' -- Mute one user
+      'n' -- Unmute all users in the conference
+      'N' -- Mute all non-admin users in the conference
+      'r' -- Reset one user's volume settings
+      'R' -- Reset all users volume settings
+      's' -- Lower entire conference speaking volume
+      'S' -- Raise entire conference speaking volume
+      't' -- Lower one user's talk volume
+      'T' -- Raise one user's talk volume
+      'u' -- Lower one user's listen volume
+      'U' -- Raise one user's listen volume
+      'v' -- Lower entire conference listening volume
+      'V' -- Raise entire conference listening volume</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>14,27c14,17
+&lt;       'm' -- Unmute one user
+&lt;       'M' -- Mute one user
+&lt;       'n' -- Unmute all users in the conference
+&lt;       'N' -- Mute all non-admin users in the conference
+&lt;       'r' -- Reset one user's volume settings
+&lt;       'R' -- Reset all users volume settings
+&lt;       's' -- Lower entire conference speaking volume
+&lt;       'S' -- Raise entire conference speaking volume
+&lt;       't' -- Lower one user's talk volume
+&lt;       'T' -- Raise one user's talk volume
+&lt;       'u' -- Lower one user's listen volume
+&lt;       'U' -- Raise one user's listen volume
+&lt;       'v' -- Lower entire conference listening volume
+&lt;       'V' -- Raise entire conference listening volume
+---
+&gt;       'm' -- Unmute conference
+&gt;       'M' -- Mute conference
+&gt;       'n' -- Unmute entire conference (except admin)
+&gt;       'N' -- Mute entire conference (except admin)</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-meetme" />, <xref
+      linkend="applications-meetmecount" /></para>
+    </formalpara>
+  
+</section>

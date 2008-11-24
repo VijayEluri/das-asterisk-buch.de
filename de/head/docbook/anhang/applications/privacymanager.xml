@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-privacymanager" revision="$Revision$">
+
+    <title><code>PrivacyManager()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>PrivacyManager()</code></secondary>
+    </indexterm>
+
+    <simpara>Verlangt die Eingabe der Telefonnummer eines Teilnehmers, falls
+    keine Caller-ID-Informationen empfangen werden.</simpara>
+
+    <synopsis>PrivacyManager([<replaceable>Versuche</replaceable>[,<replaceable>Länge</replaceable>[,<replaceable>Optionen</replaceable>]]])</synopsis>
+
+    <simpara>Wird keine Caller-ID empfangen, wird der Channel beantwortet und
+    der Anrufer aufgefordert, seine Telefonnummer einzugeben. Wird auf dem
+    Channel eine Caller-ID empfangen, tut <code>PrivacyManager()</code>
+    nichts.</simpara>
+
+    <para>Dem Anrufer werden dabei <code>Versuche</code> Versuche (Default: 3)
+    gewährt eine Telefonnummer mit mindestens <code>Länge</code> Stellen
+    (Default: 10) einzugeben. Diese Default-Werte werden aus der Datei
+    <filename>privacy.conf</filename> gelesen. Sie enthält die beiden
+    folgenden Einträge: <variablelist termlength="12">
+        <varlistentry>
+          <term><code>maxretries</code></term>
+
+          <listitem>
+            <simpara>Gibt die Anzahl der Versuche an, die einem Anrufer zur
+            Eingabe einer Caller-ID gewährt werden (Standard: 3).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>minlength</code></term>
+
+          <listitem>
+            <simpara>Gibt die minimale erlaubte Anzahl von Ziffern in der
+            eingegebenen Caller-ID-Nummer an (Standard: 10).</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>Wenn Sie nicht wollen, dass bei jedem Aufruf aus der
+    Datei gelesen werden muss, geben Sie bei <code>PrivacyManager()</code>
+    explizit Werte an.</para>
+
+    <simpara>Mit der Option <code>j</code> wird zur Priorität n+101
+    gesprungen, wenn der Anrufer nicht innerhalb der erlaubten Versuche eine
+    Nummer der erforderlichen Länge eingibt.</simpara>
+
+    <simpara>Die Channel-Variable <code>PRIVACYMGRSTATUS</code> wird entweder
+    auf <code>SUCCESS</code> oder auf <code>FAILED</code> gesetzt.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,PrivacyManager()
+exten =&gt; 123,n,GotoIf($["${PRIVACYMGRSTATUS}" = "FAILED"]?pm-fehler,1)
+exten =&gt; 123,n,Dial(Zap/1)
+
+exten =&gt; pm-fehler,1,Playback(tut-uns-leid)
+exten =&gt; pm-fehler,n,Playback(vm-goodbye)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'PrivacyManager' =- 
+
+[Synopsis]
+Require phone number to be entered, if no CallerID sent
+
+[Description]
+  PrivacyManager([maxretries[|minlength[|options]]]): If no Caller*ID 
+is sent, PrivacyManager answers the channel and asks the caller to
+enter their phone number. The caller is given 3 attempts to do so.
+The application does nothing if Caller*ID was received on the channel.
+  Configuration file privacy.conf contains two variables:
+   maxretries  default 3  -maximum number of attempts the caller is allowed 
+               to input a callerid.
+   minlength   default 10 -minimum allowable digits in the input callerid number.
+If you don't want to use the config file and have an i/o operation with
+every call, you can also specify maxretries and minlength as application
+parameters. Doing so supercedes any values set in privacy.conf.
+The option string may contain the following character: 
+  'j' -- jump to n+101 priority after &lt;maxretries&gt; failed attempts to collect
+         the minlength number of digits.
+The application sets the following channel variable upon completion: 
+PRIVACYMGRSTATUS  The status of the privacy manager's attempt to collect 
+                  a phone number from the user. A text string that is either:
+          SUCCESS | FAILED</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-zapateller" /></para>
+    </formalpara>
+  
+</section>

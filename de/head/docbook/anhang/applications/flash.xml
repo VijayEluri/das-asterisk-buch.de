@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-flash" revision="$Revision$">
+
+    <title><code>Flash()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Flash()</code></secondary>
+    </indexterm>
+
+    <simpara>Flasht einen Zap-Channel.</simpara>
+
+    <synopsis>Flash()</synopsis>
+
+    <simpara>Sendet einen Flash auf einen Zap-Channel. Dies ist nichts weiter
+    als ein Hack für Leute, die Übermittlungen und andere Aktionen, die einen
+    Flash durch ein AGI-Skript benötigen, durchführen möchten.</simpara>
+
+    <sidebar>
+      <simpara>Ein Flash (auch Switch-Hook-Flash oder Link genannt) entspricht
+      dem ganz kurzen Drücken der Gabel für 80 - 500 Millisekunden (je nach
+      Anbieter) an einem analogen Telefon (manche Apparate haben dafür eine
+      eigene Taste), wodurch z.B. Rückfrage-Gespräche o.ä. eingeleitet werden,
+      ohne den aktuellen Anruf aufzulegen.</simpara>
+    </sidebar>
+
+    <simpara>Liefert bei Erfolg 0 zurück, oder -1, falls der Channel kein
+    Zap-Channel ist.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Flash()</programlisting>
+
+    <para>Falls Ihnen auf Ihrer Leitung Link-Transfer bereitgestellt wird
+    (typischerweise ein Zusatzdienst), könnten Sie so einen Anruf auf eine
+    andere externe Nummer umleiten:<programlisting>[macro-link-umleitung]
+exten =&gt; s,1,Playback(transfer)
+exten =&gt; s,n,Flash()
+exten =&gt; s,n,Wait(1)
+exten =&gt; s,n,SendDTMF(${ARG1})
+exten =&gt; s,n,Wait(1)
+exten =&gt; s,n,Hangup()
+
+[externe-apparate]
+; eingehende Anrufe auf 6001 auf die externe Nummer 0261123456 umleiten:
+exten =&gt; 6001,1,Macro(link-umleitung,0261123456)</programlisting>Es kann
+    dazu nötig sein, die Flash-Dauer (Einstellung <code>flash</code>) in der
+    <filename>zapata.conf</filename> auf die Vorgabe Ihres Anbieters zu
+    setzen, z.B. <code>flash=200</code>.</para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Flash' =- 
+
+[Synopsis]
+Flashes a Zap Trunk
+
+[Description]
+  Flash(): Sends a flash on a zap trunk.  This is only a hack for
+people who want to perform transfers and such via AGI and is generally
+quite useless oths application will only work on Zap trunks.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  
+</section>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-voicemailmain" revision="$Revision$">
+
+    <title><code>VoiceMailMain()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>VoiceMailMain()</code></secondary>
+    </indexterm>
+
+    <simpara>Betritt das Voicemailsystem.</simpara>
+
+    <synopsis>VoiceMailMain([<replaceable>Mailbox</replaceable>][@<replaceable>Context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
+
+    <para>alte Syntax:<synopsis>VoiceMailMain([[s|p]<replaceable>Mailbox</replaceable>][@<replaceable>Context</replaceable>])</synopsis></para>
+
+    <simpara>Tritt zum Abrufen von Voicemail-Nachrichten in das
+    Voicemail-System ein. Ohne Angabe der Mailbox wird der Anrufer zur Eingabe
+    der Mailboxnummer aufgefordert.</simpara>
+
+    <simpara>Mit der Option <code>s</code> wird die Überprüfung des Passworts
+    übersprungen. Mit der Option <code>p</code> wird der Benutzer zur Eingabe
+    einer Mailboxnummer aufgefordert, die angegebene Nummer der Eingabe
+    vorangestellt und der daraus resultierende String als Mailboxnummer
+    verwendet. Das ist nützlich bei der Bereitstellung virtueller
+    Voicemailboxen (Virtual Hosting). Mit
+    <code>a(<replaceable>Ordner</replaceable>)</code> wird direkt zum
+    angegebenen Ordner (Default: <code>INBOX</code>) gesprungen.</simpara>
+
+    <simpara>Ist ein Context spezifiziert, werden nur Mailboxen in diesem
+    Voicemail-Context berücksichtigt.</simpara>
+
+    <simpara>Liefert -1 zurück, wenn der Benutzer auflegt, sonst 0.</simpara>
+
+    <programlisting>; zum Voicemail-Menü der Mailbox 123 im Voicemail-Context default gehen:
+exten =&gt; 123,1,VoiceMailMain(123@default)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'VoiceMailMain' =- 
+
+[Synopsis]
+Check Voicemail messages
+
+[Description]
+  VoiceMailMain([mailbox][@context][|options]): This application allows the
+calling party to check voicemail messages. A specific mailbox, and optional
+corresponding context, may be specified. If a mailbox is not provided, the
+calling party will be prompted to enter one. If a context is not specified,
+the 'default' context will be used.
+
+  Options:
+    p    - Consider the mailbox parameter as a prefix to the mailbox that
+           is entered by the caller.
+    g(#) - Use the specified amount of gain when recording a voicemail
+           message. The units are whole-number decibels (dB).
+    s    - Skip checking the passcode for the mailbox.
+    a(#) - Skip folder prompt and go directly to folder specified.
+           Defaults to INBOX</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>20,21d19
+&lt;     a(#) - Skip folder prompt and go directly to folder specified.
+&lt;            Defaults to INBOX</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-voicemail" />,
+      <filename>voicemail.conf</filename></para>
+    </formalpara>
+  
+</section>

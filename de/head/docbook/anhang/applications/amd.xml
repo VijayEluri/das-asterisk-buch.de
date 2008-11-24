@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-amd" revision="$Revision$">
+
+    <title><code>AMD()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>AMD()</code></secondary>
+    </indexterm>
+
+    <simpara>Versucht bei ausgehenden Telefonaten Anrufbeantworter bei der
+    Gegenstelle zu erkennen (Answering Machine Detection).</simpara>
+
+    <synopsis>AMD([<replaceable>initialSilence</replaceable>[,<replaceable>greeting</replaceable>[,<replaceable>afterGreetingSilence</replaceable>[,<replaceable>totalAnalysisTime</replaceable>[,<replaceable>minWordLength</replaceable>[,<replaceable>betweenWordsSilence</replaceable>[,<replaceable>maxNumberOfWords</replaceable>[,<replaceable>silenceThreshold</replaceable>]]]]]]]])</synopsis>
+
+    <simpara>Wird z.B. über ein CallFile ein ausgehender Anruf initiiert, so
+    kann in der aufgerufenen Extension die Applikation <code>AMD()</code>
+    benutzt werden, um bei der Gegenstelle einen Anrufbeantworter zu erkennen.
+    Default-Parameter können in der Datei <filename>amd.conf</filename>
+    eingestellt werden.</simpara>
+
+    <variablelist termlength="22">
+      <varlistentry>
+        <term><code>initialSilence</code></term>
+
+        <listitem>
+          <simpara>Maximale Länge der Stille vor einer Ansage. Wenn länger,
+          dann wird <code>${AMDSTATUS}</code> auf <code>MACHINE</code>
+          gesetzt.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>greeting</code></term>
+
+        <listitem>
+          <simpara>Maximale Länge einer Ansage. Wenn länger, dann wird
+          <code>${AMDSTATUS}</code> auf <code>MACHINE</code>
+          gesetzt.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>afterGreetingSilence</code></term>
+
+        <listitem>
+          <simpara>Maximale Länge der Stille nach der Ansage. Wenn länger,
+          dann wird <code>${AMDSTATUS}</code> auf <code>HUMAN</code>
+          gesetzt.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>totalAnalysisTime</code></term>
+
+        <listitem>
+          <simpara>Maximale Zeit die der AMD Algorithmus bekommt, um die
+          Entscheidung <code>HUMAN</code> oder <code>MACHINE</code> zu
+          treffen.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>minWordsSilence</code></term>
+
+        <listitem>
+          <simpara>Die minimale Länge eines Geräusches, um es als Wort zu
+          registrieren.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>betweenWordsSilence</code></term>
+
+        <listitem>
+          <simpara>Die minimale Länge von Stille nach einem Wort, damit ein
+          neues Wort beginnen kann.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>maxNumberOfWords</code></term>
+
+        <listitem>
+          <simpara>Maximale Anzahl von Wörter in der Ansage. Wenn mehr, dann
+          wird <code>${AMDSTATUS}</code> auf <code>MACHINE</code>
+          gesetzt.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>silenceThreshold</code></term>
+
+        <listitem>
+          <simpara>Schwellenwert der Definition von Stille.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <simpara>Diese Applikation setzt als Ergebnis die Channel-Variablen
+    <code>AMDSTATUS</code> und <code>AMDCAUSE</code>.</simpara>
+
+    <simpara><code>AMDSTATUS</code> kann die folgenden Werte
+    bekommen:</simpara>
+
+    <itemizedlist>
+      <listitem>
+        <simpara><code>MACHINE</code></simpara>
+
+        <simpara>Auf der Gegenseite ist ein Anrufbeantworter.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara><code>HUMAN</code></simpara>
+
+        <simpara>Auf der Gegenseite ist ein Mensch.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara><code>NOTSURE</code></simpara>
+
+        <simpara>Es kann keine genaue Aussage getroffen werden.</simpara>
+      </listitem>
+
+      <listitem>
+        <simpara><code>HANGUP</code></simpara>
+
+        <simpara>Die Gegenseite hat aufgelegt.</simpara>
+      </listitem>
+    </itemizedlist>
+
+    <simpara><code>AMDCAUSE</code> kann die folgenden Werte
+    bekommen:</simpara>
+
+    <itemizedlist>
+      <listitem>
+        <simpara><code>TOOLONG-</code><replaceable>&lt;%d
+        total_time&gt;</replaceable></simpara>
+      </listitem>
+
+      <listitem>
+        <simpara><code>INITIALSILENCE-</code><replaceable>&lt;%d
+        silenceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
+        initialSilence&gt;</replaceable></simpara>
+      </listitem>
+
+      <listitem>
+        <simpara><code>HUMAN-</code><replaceable>&lt;%d
+        silenceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
+        afterGreetingSilence&gt;</replaceable></simpara>
+      </listitem>
+
+      <listitem>
+        <simpara><code>MAXWORDS-</code><replaceable>&lt;%d
+        wordsCount&gt;</replaceable><code>-</code><replaceable>&lt;%d
+        maximumNumberOfWords&gt;</replaceable></simpara>
+      </listitem>
+
+      <listitem>
+        <simpara><code>LONGGREETING-</code><replaceable>&lt;%d
+        voiceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
+        greeting&gt;</replaceable></simpara>
+      </listitem>
+    </itemizedlist>
+
+    <programlisting>; Von einem CallFile wird diese Extension aufgerufen:
+exten =&gt; 10,1,AMD()
+exten =&gt; 10,n,Goto(Status-${AMDSTATUS})
+exten =&gt; 10,n(Status-HUMAN),Playback(spam)
+exten =&gt; 10,n,Hangup()
+exten =&gt; 10,n(Status-MACHINE),Hangup()
+exten =&gt; 10,n(Status-NOTSURE),Hangup()
+exten =&gt; 10,n(Status-HANGUP),Hangup()
+</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'AMD' =- 
+
+[Synopsis]
+Attempts to detect answering machines
+
+[Description]
+  AMD([initialSilence][|greeting][|afterGreetingSilence][|totalAnalysisTime]
+      [|minimumWordLength][|betweenWordsSilence][|maximumNumberOfWords]
+      [|silenceThreshold])
+  This application attempts to detect answering machines at the beginning
+  of outbound calls.  Simply call this application after the call
+  has been answered (outbound only, of course).
+  When loaded, AMD reads amd.conf and uses the parameters specified as
+  default values. Those default values get overwritten when calling AMD
+  with parameters.
+- 'initialSilence' is the maximum silence duration before the greeting. If
+   exceeded then MACHINE.
+- 'greeting' is the maximum length of a greeting. If exceeded then MACHINE.
+- 'afterGreetingSilence' is the silence after detecting a greeting.
+   If exceeded then HUMAN.
+- 'totalAnalysisTime' is the maximum time allowed for the algorithm to decide
+   on a HUMAN or MACHINE.
+- 'minimumWordLength'is the minimum duration of Voice to considered as a word.
+- 'betweenWordsSilence' is the minimum duration of silence after a word to 
+   consider the audio that follows as a new word.
+- 'maximumNumberOfWords'is the maximum number of words in the greeting. 
+   If exceeded then MACHINE.
+- 'silenceThreshold' is the silence threshold.
+This application sets the following channel variable upon completion:
+    AMDSTATUS - This is the status of the answering machine detection.
+                Possible values are:
+                MACHINE | HUMAN | NOTSURE | HANGUP
+    AMDCAUSE - Indicates the cause that led to the conclusion.
+               Possible values are:
+               TOOLONG-&lt;%d total_time&gt;
+               INITIALSILENCE-&lt;%d silenceDuration&gt;-&lt;%d initialSilence&gt;
+               HUMAN-&lt;%d silenceDuration&gt;-&lt;%d afterGreetingSilence&gt;
+               MAXWORDS-&lt;%d wordsCount&gt;-&lt;%d maximumNumberOfWords&gt;
+               LONGGREETING-&lt;%d voiceDuration&gt;-&lt;%d greeting&gt;</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>-- in Version 1.2 nicht vorhanden --</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="call-file" /></para>
+    </formalpara>
+  
+</section>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-congestion" revision="$Revision$">
+
+    <title><code>Congestion()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Congestion()</code></secondary>
+    </indexterm>
+
+    <simpara>Zeigt Stau (Überlastung) auf dem Channel an.</simpara>
+
+    <synopsis>Congestion([<replaceable>Timeout</replaceable>])</synopsis>
+
+    <simpara>Zeigt auf dem Channel Stau an und wartet dann, bis der Teilnehmer
+    auflegt, oder bis die optional spezifizierbare Frist
+    (<code>Timeout</code>, in Sekunden) abgelaufen ist.</simpara>
+
+    <simpara>Diese Anwendung signalisiert Stau lediglich, sie spielt aber dem
+    Teilnehmer keinen Stau-Ton vor. Um einem Anrufer einen Stau-Ton
+    vorzuspielen, kann <code>Playtones(congestion)</code> verwendet
+    werden.</simpara>
+
+    <simpara>Liefert stets -1 zurück.</simpara>
+
+    <programlisting>; bei Caller ID is 0123-123456 immer Stau-Signal spielen:
+exten =&gt; 123,1,GotoIf($[${CALLERID(num)} = 0123123456]?10)
+exten =&gt; 123,n,Playtones(congestion)
+exten =&gt; 123,n,Congestion(5)
+exten =&gt; 123,n,Hangup()
+exten =&gt; 123,10,Dial(Zap/1)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Congestion' =- 
+
+[Synopsis]
+Indicate the Congestion condition
+
+[Description]
+  Congestion([timeout]): This application will indicate the congestion
+condition to the calling channel. If the optional timeout is specified, the
+calling channel will be hung up after the specified number of seconds.
+Otherwise, this application will wait until the calling channel hangs up.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>8c8
+&lt;   Congestion([timeout]): This application will indicate the congestion
+---
+&gt;   Congestion([timeout]): This application will indicate the congenstion</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-busy" />, <xref
+      linkend="applications-progress" />, <xref
+      linkend="applications-playtones" /></para>
+    </formalpara>
+  
+</section>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-realtimeupdate" revision="$Revision$">
+
+    <title><code>RealTimeUpdate()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>RealTimeUpdate()</code></secondary>
+    </indexterm>
+
+    <simpara>Aktualisiert einen Wert mit Hilfe des
+    RealTime-Konfigurationssteuerprogramms.</simpara>
+
+    <synopsis>RealTimeUpdate(<replaceable>Familie</replaceable>,<replaceable>Spalte</replaceable>,<replaceable>Wert</replaceable>,<replaceable>UpdateSpalte</replaceable>,<replaceable>UpdateWert</replaceable>)</synopsis>
+
+    <simpara>Benutzt das RealTime-Konfigurationssteuerprogrammsystem, um einen
+    Wert zu aktualisieren. Das Feld <code>UpdateSpalte</code> in der Zeile,
+    bei der die Spalte <code>UpdateSpalte</code> in der Familie
+    <code>Familie</code> mit <code>Wert</code> übereinstimmt, wird auf den
+    Wert <code>UpdateWert</code> aktualisiert.</simpara>
+
+    <programlisting>; bei der Situation wie im Beispiel zu RealTime() könnten wir diesen
+; Befehl ausführen:
+exten =&gt; 123,1,RealTimeUpdate(sipusers,ext,5678,vorname,Peter)
+; resultierender SQL-Befehl:
+UPDATE sip_users SET vorname = 'Peter' WHERE ext = '5678'</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'RealTimeUpdate' =- 
+
+[Synopsis]
+Realtime Data Rewrite
+
+[Description]
+Use the RealTime config handler system to update a value
+RealTimeUpdate(&lt;family&gt;|&lt;colmatch&gt;|&lt;value&gt;|&lt;newcol&gt;|&lt;newval&gt;)
+
+The column &lt;newcol&gt; in 'family' matching column &lt;colmatch&gt;=&lt;value&gt; will be
+updated to &lt;newval&gt;.  REALTIMECOUNT will be set with the number of rows
+updated or -1 if an error occurs.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>11,13c11
+&lt; The column &lt;newcol&gt; in 'family' matching column &lt;colmatch&gt;=&lt;value&gt; will be
+&lt; updated to &lt;newval&gt;.  REALTIMECOUNT will be set with the number of rows
+&lt; updated or -1 if an error occurs.
+---
+&gt; The column &lt;newcol&gt; in 'family' matching column &lt;colmatch&gt;=&lt;value&gt; will be updated to &lt;newval&gt;</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-realtime" /></para>
+    </formalpara>
+  
+</section>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-record" revision="$Revision$">
+
+    <title><code>Record()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Record()</code></secondary>
+    </indexterm>
+
+    <simpara>Aufnahme von Audio auf einem Channel in eine Datei</simpara>
+
+    <para>ab Asterisk 1.2: <synopsis>Record(<replaceable>Basisname</replaceable>[.<replaceable>Format</replaceable>[,<replaceable>Stille</replaceable>[,<replaceable>maxDauer</replaceable>[,<replaceable>Optionen</replaceable>]]]])</synopsis></para>
+
+    <simpara>Nimmt Audio auf dem Channel auf und speichert es in der Datei
+    <code>Basisname.Format</code>. Existiert diese Datei bereits, wird sie
+    überschrieben.</simpara>
+
+    <para>Optionale Parameter sind: <variablelist termlength="10">
+        <varlistentry>
+          <term><code>format</code></term>
+
+          <listitem>
+            <simpara>Spezifiziert das Dateiformat der Aufnahmedatei
+            (<code>g723</code>, <code>g729</code>, <code>gsm</code>,
+            <code>h263</code>, <code>ulaw</code>, <code>alaw</code>,
+            <code>wav</code>, ...)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>Stille</code></term>
+
+          <listitem>
+            <simpara>Gibt die Dauer in Sekunden an, die geräuschlos
+            verstreichen darf, bevor die Aufnahme beendet wird.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>maxDauer</code></term>
+
+          <listitem>
+            <simpara>Gibt die maximale Aufnahmedauer in Sekunden an. Falls
+            nicht angegeben oder 0, gibt es keine Obergrenze.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>Optionen</code></term>
+
+          <listitem>
+            <para>Kann beliebige der aufgeführten Flags enthalten:
+            <variablelist termlength="3">
+                <varlistentry>
+                  <term><code>s</code></term>
+
+                  <listitem>
+                    <simpara>Nimmt nicht auf, wenn die Leitung bisher nicht
+                    beantwortet wurde.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>n</code></term>
+
+                  <listitem>
+                    <simpara>Antwortet nicht, aber nimmt trotzdem auf, auch
+                    wenn die Leitung bisher nicht beantwortet wurde.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>a</code></term>
+
+                  <listitem>
+                    <simpara>Hängt die Aufnahme an die bereits bestehende
+                    Aufnahme an, statt sie zu überschreiben.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>t</code></term>
+
+                  <listitem>
+                    <simpara>Benutzt die alternative Abschlusstaste
+                    <code>*</code> an Stelle der standardmäßig eingestellten
+                    <code>#</code>-Taste.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>q</code></term>
+
+                  <listitem>
+                    <simpara>Keinen Piep-Ton vor der Aufnahme
+                    spielen.</simpara>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><code>x</code></term>
+
+                  <listitem>
+                    <simpara>Auch die Abbruchtasten <code>#</code> oder
+                    <code>*</code> als DTMF-Töne aufzeichnen. Die Aufnahme
+                    kann dann nur durch Timeout von <code>maxDauer</code> oder
+                    Auflegen beendet werden.</simpara>
+                  </listitem>
+                </varlistentry>
+              </variablelist></para>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <simpara>Enthält der <code>Basisname</code> die Zeichenkette
+    <code>%d</code>, wird diese durch eine Nummerierung ersetzt, die bei jedem
+    erneuten Aufnehmen der Datei um 1 erhöht wird.</simpara>
+
+    <simpara>Der Teilnehmer kann die Taste <code>#</code> benutzen, um die
+    Aufnahme abzubrechen und zur nächsten Priorität überzugehen. Beim Auflegen
+    wird die Aufnahme verworfen.</simpara>
+
+    <simpara>Liefert -1 zurück, wenn der Benutzer auflegt, sonst 0.</simpara>
+
+    <programlisting>; den Namen des Anrufers aufzeichnen:
+exten =&gt; 123,1,Playback(bitte-sprechen-sie-ihren-namen-nach-dem-ton)
+exten =&gt; 123,n,Record(/tmp/name.gsm,3,10)
+exten =&gt; 123,n,Playback(/tmp/name)</programlisting>
+
+    <simpara>Beachten Sie auch die Hinweise bei
+    <code>Monitor()</code>.</simpara>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Record' =- 
+
+[Synopsis]
+Record to a file
+
+[Description]
+  Record(filename.format|silence[|maxduration][|options])
+
+Records from the channel into a given filename. If the file exists it will
+be overwritten.
+- 'format' is the format of the file type to be recorded (wav, gsm, etc).
+- 'silence' is the number of seconds of silence to allow before returning.
+- 'maxduration' is the maximum recording duration in seconds. If missing
+or 0 there is no maximum.
+- 'options' may contain any of the following letters:
+     'a' : append to existing recording rather than replacing
+     'n' : do not answer, but record anyway if line not yet answered
+     'q' : quiet (do not play a beep tone)
+     's' : skip recording if the line is not yet answered
+     't' : use alternate '*' terminator key (DTMF) instead of default '#'
+     'x' : ignore all terminator keys (DTMF) and keep recording until hangup
+
+If filename contains '%d', these characters will be replaced with a number
+incremented by one each time the file is recorded. 
+
+Use 'show file formats' to see the available formats on your system
+
+User can press '#' to terminate the recording and continue to the next priority.
+
+If the user should hangup during a recording, all data will be lost and the
+application will teminate.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>21,22c21
+&lt;      't' : use alternate '*' terminator key (DTMF) instead of default '#'
+&lt;      'x' : ignore all terminator keys (DTMF) and keep recording until hangup
+---
+&gt;      't' : use alternate '*' terminator key instead of default '#'</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-dictate" />, <xref
+      linkend="applications-monitor" />, <xref
+      linkend="applications-mixmonitor" /></para>
+    </formalpara>
+  
+</section>

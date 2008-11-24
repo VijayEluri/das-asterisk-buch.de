@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-agentcallbacklogin" revision="$Revision$">
+
+    <title><code>AgentCallbackLogin()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>AgentCallbackLogin()</code></secondary>
+    </indexterm>
+
+    <simpara>Ermöglicht Login eines Call-Center-Agenten mit Rückruf.</simpara>
+
+    <synopsis>AgentCallbackLogin([<replaceable>Agenten-Nr</replaceable>][,<replaceable>Optionen</replaceable>[,<replaceable>Extension</replaceable>@<replaceable>Context</replaceable>]])</synopsis>
+
+    <simpara>Ermöglicht einem Anruf-Agenten, identifiziert durch die
+    <code>Agenten-Nummer</code>, sich in das Anruf-Warteschlangen-System
+    einzuloggen, um bei einem eingehenden Anruf für ihn zurückgerufen zu
+    werden.</simpara>
+
+    <simpara>Bei einem eingehenden Anruf für diesen Agenten wird Asterisk die
+    spezifizierte zugehörige <code>Extension</code> (gegebenenfalls mit dem
+    optional angegebenem Context <code>Context</code>) aufrufen.</simpara>
+
+    <simpara>Der <code>Optionen</code>-Parameter kann den Wert <code>s</code>
+    enthalten, der ein Silent Login (stille Anmeldung) bewirkt.</simpara>
+
+    <programlisting>; still als Agent 33 (wie in agents.conf definiert) einloggen. Asterisk
+; wird SIP/300 anrufen, sobald für diesen Agenten ein Anruf eingeht:
+exten =&gt; 123,1,AgentCallbackLogin(33,s,${CALLERID(num)})
+
+; wenn wir davon ausgehen, dass die Agentennummer mit der Anrufer-
+; Extension übereinstimmt:
+exten =&gt; 123,1,AgentCallbackLogin(${CALLERID(num)},s,${CALLERID(num)})</programlisting>
+
+    <simpara>Auf <ulink
+    url="http://www.voip-info.org/wiki/index.php?page=Asterisk+cmd+AgentCallbackLogin">http://www.voip-info.org/wiki/index.php?page=Asterisk+cmd+AgentCallbackLogin</ulink>
+    sind viele Beispiele zu finden.</simpara>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'AgentCallbackLogin' =- 
+
+[Synopsis]
+Call agent callback login
+
+[Description]
+  AgentCallbackLogin([AgentNo][|[options][|[exten]@context]]):
+Asks the agent to login to the system with callback.
+The agent's callback extension is called (optionally with the specified
+context).
+The option string may contain zero or more of the following characters:
+      's' -- silent login - do not announce the login ok segment agent logged in/off</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-agentlogin" /></para>
+    </formalpara>
+  
+</section>

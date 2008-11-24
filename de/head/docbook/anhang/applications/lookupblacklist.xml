@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-lookupblacklist" revision="$Revision$">
+
+    <title><code>LookupBlacklist()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>LookupBlacklist()</code></secondary>
+    </indexterm>
+
+    <simpara>Schlägt die Caller-ID-Nummer in der lokalen Blacklist-Datenbank
+    in der AstDB nach.</simpara>
+
+    <synopsis>LookupBlacklist([<replaceable>Optionen</replaceable>])</synopsis>
+
+    <simpara>Sucht die Caller-ID-Nummer (/-Name) des aktiven Channels in der
+    AstDB in der Familie <code>blacklist</code>. Wenn die Option j (jump)
+    angegeben ist, die Nummer gefunden wird und eine Priorität n+101
+    existiert, geht die Ausführung bei dieser Priorität weiter. Wird auf dem
+    Channel keine Caller-ID empfangen, tut die Anwendung nichts.</simpara>
+
+    <simpara>Die Applikation setzt auch die Channelvariable
+    <code>LOOKUPBLSTATUS</code> auf <code>FOUND</code> (gefunden) oder
+    <code>NOTFOUND</code> (nicht gefunden).</simpara>
+
+    <simpara>Um der Blacklist Einträge hinzuzufügen, geben Sie im CLI
+    <code>database put blacklist "<replaceable>Nummer</replaceable>"
+    "1"</code>, bzw. <code>database del blacklist
+    "<replaceable>Nummer</replaceable>"</code> zum Löschen oder <code>database
+    show blacklist</code> für eine Auflistung ein.</simpara>
+
+    <programlisting>; Nummern aus der Schwarzen Liste nicht zulassen,
+; andernfalls die Nummer in der Variablen ${PETER} wählen:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,LookupBlacklist()
+exten =&gt; 123,n,GotoIf($["${LOOKUPBLSTATUS}" = "FOUND"]?black,1)
+exten =&gt; 123,n,Dial(${PETER},30)
+
+exten =&gt; black,1,Playback(tt-allbusy)
+exten =&gt; black,n,Hangup()</programlisting>
+
+    <para>Die Applikation <code>LookupBlacklist()</code> könnte folgendermaßen
+    ersetzt werden:<programlisting>exten =&gt; 123,1,Macro(blacklist,${CALLERID(num)})
+exten =&gt; 123,n,Dial(IAX2/benutzer:passwort@beispiel.de/500)
+
+[macro-blacklist]
+; Aufruf: Macro(blacklist,${CALLERID(num)})
+exten =&gt; s,1,GotoIf(${DB_EXISTS(blacklist/${ARG1})}?black)
+exten =&gt; s,10(black),NoOp(Nummer ${ARG1} ist auf der Blacklist)
+exten =&gt; s,n,Busy(5)
+exten =&gt; s,n,Hangup()</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'LookupBlacklist' =- 
+
+[Synopsis]
+Look up Caller*ID name/number from blacklist database
+
+[Description]
+  LookupBlacklist(options): Looks up the Caller*ID number on the active
+channel in the Asterisk database (family 'blacklist').  
+The option string may contain the following character:
+ 'j' -- jump to n+101 priority if the number/name is found in the blacklist
+This application sets the following channel variable upon completion:
+ LOOKUPBLSTATUS  The status of the Blacklist lookup as a text string, one of
+  FOUND | NOTFOUND
+Example: exten =&gt; 1234,1,LookupBlacklist()</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  
+</section>

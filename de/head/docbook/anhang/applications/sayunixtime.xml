@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-sayunixtime" revision="$Revision$">
+
+    <title><code>SayUnixTime()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>SayUnixTime()</code></secondary>
+    </indexterm>
+
+    <simpara>Zeitansage in einem spezifischen Format</simpara>
+
+    <synopsis>SayUnixTime([<replaceable>Unixzeit</replaceable>][,<replaceable>Zeitzone</replaceable>[,<replaceable>Format</replaceable>]])</synopsis>
+
+    <para>Sagt die angegebene Zeit unter Berücksichtigung der angegebenen
+    Zeitzone und des vorgegebenen Formats. Die Parameter sind: <variablelist
+        termlength="10">
+        <varlistentry>
+          <term><code>Unixzeit</code></term>
+
+          <listitem>
+            <simpara>Unix-Timestamp, also die Anzahl der Sekunden seit dem 1.
+            Januar 1970, 0 Uhr GMT. Kann negative Werte annehmen. Standardwert
+            ist die aktuelle Zeit.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>Zeitzone</code></term>
+
+          <listitem>
+            <simpara>Die Zeitzone. Eine Liste findet sich in
+            <filename>/usr/share/zoneinfo/</filename>. Standardwert ist die
+            Geräteeinstellung.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>Format</code></term>
+
+          <listitem>
+            <simpara>Das Format, in der die Zeit gesprochen werden soll. Eine
+            Liste von Formaten findet sich in
+            <filename>voicemail.conf</filename>. Als Standardformat wird
+            <code>ABdY 'digits/at' IMp</code> verwendet.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <simpara>Liefert 0 zurück oder -1, wenn aufgelegt wird.</simpara>
+
+    <programlisting>exten =&gt; 123,1,SayUnixTime(,,IMp)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'SayUnixTime' =- 
+
+[Synopsis]
+Says a specified time in a custom format
+
+[Description]
+SayUnixTime([unixtime][|[timezone][|format]])
+  unixtime: time, in seconds since Jan 1, 1970.  May be negative.
+              defaults to now.
+  timezone: timezone, see /usr/share/zoneinfo for a list.
+              defaults to machine default.
+  format:   a format the time is to be said in.  See voicemail.conf.
+              defaults to "ABdY 'digits/at' IMp"</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  
+</section>

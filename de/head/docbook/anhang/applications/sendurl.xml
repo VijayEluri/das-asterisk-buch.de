@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-sendurl" revision="$Revision$">
+
+    <title><code>SendURL()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>SendURL()</code></secondary>
+    </indexterm>
+
+    <simpara>Sendet dem Channel eine URL.</simpara>
+
+    <synopsis>SendURL(<replaceable>URL</replaceable>[,<replaceable>Option</replaceable>])</synopsis>
+
+    <simpara>Sendet dem Channel eine URL, die das Gerät aufrufen soll (IAX2).
+    Setzt die Ausführung beim nächsten Schritt fort.</simpara>
+
+    <simpara>Mit der Option <code>j</code> wird, wenn der Channel keine
+    Übertragung von URLs unterstützt, zur Priorität n+101 gesprungen. Mit der
+    Option <code>wait</code> wird vor dem Fortfahren auf eine Bestätigung
+    gewartet, dass die URL geladen wurde.</simpara>
+
+    <simpara>Liefert 0 zurück, wenn die URL fehlerfrei übertragen wurde oder
+    der Channel die Übertragung nicht unterstützt, sonst -1. Setzt die
+    Channelvariable <code>SENDURLSTATUS</code> auf <code>SUCCESS</code>
+    (Erfolg), <code>FAILURE</code> (Sendefehler), <code>UNSUPPORTED</code>
+    (nicht unterstützt) oder <code>NOLOAD</code> (bei <code>wait</code>:
+    Client konnte die URL nicht laden).</simpara>
+
+    <programlisting>exten =&gt; 123,1,SendURL(http://www.asterisk.org/,wait)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'SendURL' =- 
+
+[Synopsis]
+Send a URL
+
+[Description]
+  SendURL(URL[|option]): Requests client go to URL (IAX2) or sends the 
+URL to the client (other channels).
+Result is returned in the SENDURLSTATUS channel variable:
+    SUCCESS       URL successfully sent to client
+    FAILURE       Failed to send URL
+    NOLOAD        Client failed to load URL (wait enabled)
+    UNSUPPORTED   Channel does not support URL transport
+
+If the option 'wait' is specified, execution will wait for an
+acknowledgement that the URL has been loaded before continuing
+
+If jumping is specified as an option (the 'j' flag), the client does not
+support Asterisk "html" transport, and there exists a step with priority
+n + 101, then execution will continue at that step.
+
+SendURL continues normally if the URL was sent correctly or if the channel
+does not support HTML transport.  Otherwise, the channel is hung up.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>13c13
+&lt;     NOLOAD        Client failed to load URL (wait enabled)
+---
+&gt;     NOLOAD        Clien failed to load URL (wait enabled)
+17a18
+&gt; and will return -1 if the peer is unable to load the URL
+19,24c20,26
+&lt; If jumping is specified as an option (the 'j' flag), the client does not
+&lt; support Asterisk "html" transport, and there exists a step with priority
+&lt; n + 101, then execution will continue at that step.
+&lt; 
+&lt; SendURL continues normally if the URL was sent correctly or if the channel
+&lt; does not support HTML transport.  Otherwise, the channel is hung up.
+---
+&gt; Old behaviour (deprecated): 
+&gt;  If the client does not support Asterisk "html" transport, 
+&gt;  and there exists a step with priority n + 101, then execution will
+&gt;  continue at that step.
+&gt;  Otherwise, execution will continue at the next priority level.
+&gt;  SendURL only returns 0 if the URL was sent correctly  or if
+&gt;  the channel does not support HTML transport, and -1 otherwise.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-sendimage" />, <xref
+      linkend="applications-sendtext" /></para>
+    </formalpara>
+  
+</section>

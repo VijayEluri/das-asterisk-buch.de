@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-agentlogin" revision="$Revision$">
+
+    <title><code>AgentLogin()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>AgentLogin()</code></secondary>
+    </indexterm>
+
+    <simpara>Erlaubt es einem Anruf-Agenten, sich in das System
+    einzuloggen/sich am System anzumelden.</simpara>
+
+    <synopsis>AgentLogin([<replaceable>Agenten-Nr</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
+
+    <simpara>Meldet den gegenwärtigen Anrufer als Call Agent (optional durch
+    <code>Agenten-Nr</code> zu identifizieren) im Anruf-Warteschlangen-System
+    an. Solange er als Agent angemeldet ist, kann er Anrufe entgegennehmen und
+    hört bei neuen eingehenden Anrufen einen Piepton auf der Leitung. Der
+    Agent kann den Anruf durch Betätigen der Stern-Taste (<code>*</code>)
+    beenden.</simpara>
+
+    <simpara>Der <code>Optionen</code>-Parameter kann den Wert <code>s</code>
+    enthalten, der ein Silent Login (stille Anmeldung) bewirkt.</simpara>
+
+    <programlisting>; still als Agent 33 (wie in agents.conf definiert) einloggen
+exten =&gt; 123,1,AgentLogin(33,s)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'AgentLogin' =- 
+
+[Synopsis]
+Call agent login
+
+[Description]
+  AgentLogin([AgentNo][|options]):
+Asks the agent to login to the system.  Always returns -1.  While
+logged in, the agent can receive calls and will hear a 'beep'
+when a new call comes in. The agent can dump the call by pressing
+the star key.
+The option string may contain zero or more of the following characters:
+      's' -- silent login - do not announce the login ok segment after agent logged in/off</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-agentcallbacklogin" /></para>
+    </formalpara>
+  
+</section>

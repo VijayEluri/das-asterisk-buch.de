@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-musiconhold" revision="$Revision$">
+
+    <title><code>MusicOnHold()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>MusicOnHold()</code></secondary>
+    </indexterm>
+
+    <simpara>Spielt endlos Wartemusik.</simpara>
+
+    <synopsis>MusicOnHold(<replaceable>class</replaceable>)</synopsis>
+
+    <simpara>Spielt die durch class spezifizierte Wartemusik, wie in
+    <filename>musiconhold.conf</filename> konfiguriert. Wird
+    <code>class</code> nicht angegeben, wird die Standardmusik-Klasse für
+    diesen Channel verwendet. Um die Standardmusik-Klasse für einen Channel
+    einzustellen, können Sie die Funktion <code>MUSICCLASS()</code>
+    verwenden.</simpara>
+
+    <simpara>Liefert -1, falls aufgelegt wird, ansonsten wird sie endlos
+    ausgeführt.</simpara>
+
+    <programlisting>; auf diese Extension könnte man Telefonverkäufer schicken:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,2,Playback(tt-allbusy)
+exten =&gt; 123,3,MusicOnHold(default)
+exten =&gt; 123,4,Goto(2)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'MusicOnHold' =- 
+
+[Synopsis]
+Play Music On Hold indefinitely
+
+[Description]
+MusicOnHold(class): Plays hold music specified by class.  If omitted, the default
+music source for the channel will be used. Set the default 
+class with the SetMusicOnHold() application.
+Returns -1 on hangup.
+Never returns otherwise.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-waitmusiconhold" />, <xref
+      linkend="functions-musicclass" /></para>
+    </formalpara>
+  
+</section>

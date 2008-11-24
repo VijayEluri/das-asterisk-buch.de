@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-mixmonitor" revision="$Revision$">
+
+    <title><code>MixMonitor()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>MixMonitor()</code></secondary>
+    </indexterm>
+
+    <simpara>Schneidet das Gespräch auf dem aktuellen Channel mit (eine
+    Datei)</simpara>
+
+    <synopsis>MixMonitor(<replaceable>Basisname</replaceable>.<replaceable>Format</replaceable>[,<replaceable>Optionen</replaceable>[,<replaceable>Befehl</replaceable>]])</synopsis>
+
+    <simpara>Startet die Audio-Aufzeichnung des aktuellen Channels. Dabei
+    werden im im Gegensatz zu <code>Monitor()</code> direkt beide Kanäle zu
+    einer Datei gemischt.</simpara>
+
+    <para>Optionen:<variablelist termlength="6">
+        <varlistentry>
+          <term><code>a</code></term>
+
+          <listitem>
+            <simpara>Hängt den Audio-Stream an eine bestehende Datei
+            an.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>b</code></term>
+
+          <listitem>
+            <simpara>Startet die Aufnahme erst, nachdem der Anruf mit einem
+            anderen Channel verbunden wurde, also nachdem z.B. durch
+            <code>Dial()</code> tatsächlich ein Gespräch zustande
+            kommt.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>v(<replaceable>x</replaceable>)</code></term>
+
+          <listitem>
+            <simpara>Passt die eingehende Lautstärke um Faktor <code>x</code>
+            an (-4 bis 4).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>V(<replaceable>x</replaceable>)</code></term>
+
+          <listitem>
+            <simpara>Passt die ausgehende Lautstärke um Faktor <code>x</code>
+            an (-4 bis 4).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>W(<replaceable>x</replaceable>)</code></term>
+
+          <listitem>
+            <simpara>Passt die eingehende und ausgehende Lautstärke um Faktor
+            <code>x</code> an (-4 bis 4).</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <simpara><code>Befehl</code> wird (falls angegeben) nach der Aufzeichnung
+    ausgeführt. Die Variable <code>${MIXMONITOR_FILENAME}</code> wird auf den
+    Namen der aufgezeichneten Datei gesetzt.</simpara>
+
+    <simpara>Beachten Sie auch die Hinweise bei
+    <code>Monitor()</code>.</simpara>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'MixMonitor' =- 
+
+[Synopsis]
+Record a call and mix the audio during the recording
+
+[Description]
+  MixMonitor(&lt;file&gt;.&lt;ext&gt;[|&lt;options&gt;[|&lt;command&gt;]])
+
+Records the audio on the current channel to the specified file.
+If the filename is an absolute path, uses that path, otherwise
+creates the file in the configured monitoring directory from
+asterisk.conf.
+
+Valid options:
+ a      - Append to the file instead of overwriting it.
+ b      - Only save audio to the file while the channel is bridged.
+          Note: does not include conferences.
+ v(&lt;x&gt;) - Adjust the heard volume by a factor of &lt;x&gt; (range -4 to 4)
+ V(&lt;x&gt;) - Adjust the spoken volume by a factor of &lt;x&gt; (range -4 to 4)
+ W(&lt;x&gt;) - Adjust the both heard and spoken volumes by a factor of &lt;x&gt;
+         (range -4 to 4)
+
+&lt;command&gt; will be executed when the recording is over
+Any strings matching ^{X} will be unescaped to ${X} and 
+all variables will be evaluated at that time.
+The variable MIXMONITOR_FILENAME will contain the filename used to record.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-monitor" /></para>
+    </formalpara>
+  
+</section>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-sendimage" revision="$Revision$">
+
+    <title><code>SendImage()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>SendImage()</code></secondary>
+    </indexterm>
+
+    <simpara>Sendet eine Bilddatei.</simpara>
+
+    <synopsis>SendImage(<replaceable>Dateiname</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
+
+    <simpara>Sendet eine Bilddatei auf einem Channel. Falls die Übermittlung
+    von Bildern unterstützt wird und die Übertragung fehlschlägt, wird
+    aufgelegt, sonst bei der nächsten Priorität fortgefahren. Mit der Option
+    <code>j</code> wird, wenn der Channel keine Bildübertragung unterstützt,
+    zur Priorität n+101 gesprungen.</simpara>
+
+    <simpara>Liefert 0 zurück, wenn das Bild fehlerfrei übertragen wurde oder
+    der Channel eine Bildübertragung nicht unterstützt, sonst -1. Setzt die
+    Channelvariable <code>SENDIMAGESTATUS</code> entweder auf <code>OK</code>
+    (Erfolg) oder <code>NOSUPPORT</code> (nicht unterstützt).</simpara>
+
+    <programlisting>exten =&gt; 123,1,SendImage(logo.jpg)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'SendImage' =- 
+
+[Synopsis]
+Send an image file
+
+[Description]
+  SendImage(filename): Sends an image on a channel. 
+If the channel supports image transport but the image send
+fails, the channel will be hung up. Otherwise, the dialplan
+continues execution.
+The option string may contain the following character:
+ 'j' -- jump to priority n+101 if the channel doesn't support image transport
+This application sets the following channel variable upon completion:
+ SENDIMAGESTATUS  The status is the result of the attempt as a text string, one of
+  OK | NOSUPPORT</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-sendtext" />, <xref
+      linkend="applications-sendurl" /></para>
+    </formalpara>
+  
+</section>

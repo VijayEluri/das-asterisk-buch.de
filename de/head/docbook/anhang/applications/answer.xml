@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-answer" revision="$Revision$">
+
+    <title><code>Answer()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>Answer()</code></secondary>
+    </indexterm>
+
+    <simpara>Antwortet auf einen klingelnden Channel.</simpara>
+
+    <synopsis>Answer([<replaceable>Verzögerung</replaceable>])</synopsis>
+
+    <simpara>Veranlasst Asterisk zum Beantworten eines Channels, wenn er
+    gerade klingelt. Falls der aktuelle Channel nicht klingelt, tut diese
+    Anwendung nichts.</simpara>
+
+    <simpara>Es ist generell empfehlenswert, <code>Answer()</code> vor dem
+    Aufrufen irgendwelcher anderen Anwendungen auf dem Channel aufzurufen,
+    außer es besteht ein guter Grund, das nicht zu tun. Die meisten
+    Anwendungen verlangen, dass der Channel beantwortet wird, bevor sie
+    aufgerufen werden, und werden andernfalls eventuell nicht in der Lage
+    sein, ihre Arbeit korrekt zu verrichten.</simpara>
+
+    <simpara>Die optionale <code>Verzögerung</code> weist Asterisk an, soviele
+    Millisekunden vor dem Antworten zu warten.</simpara>
+
+    <simpara>Gibt bei Erfolg 0 zurück.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Wait(1)
+exten =&gt; 123,n,Playback(hallo)
+exten =&gt; 123,n,Hangup()</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'Answer' =- 
+
+[Synopsis]
+Answer a channel if ringing
+
+[Description]
+  Answer([delay]): If the call has not been answered, this application will
+answer it. Otherwise, it has no effect on the call. If a delay is specified,
+Asterisk will wait this number of milliseconds before answering the call.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-hangup" /></para>
+    </formalpara>
+  
+</section>

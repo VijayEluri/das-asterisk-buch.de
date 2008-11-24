@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-system" revision="$Revision$">
+
+    <title><code>System()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>System()</code></secondary>
+    </indexterm>
+
+    <simpara>Führt einen Shell-Befehl aus.</simpara>
+
+    <synopsis>System(<replaceable>Befehl</replaceable>)</synopsis>
+
+    <simpara>Führt durch die C-Funktion <code>system()</code> einen Befehl auf
+    der Shell <command>sh</command> aus.</simpara>
+
+    <simpara>Diese Anwendung ist der <code>TrySystem()</code>-Anwendung sehr
+    ähnlich, abgesehen davon, dass sie -1 zurückliefert, falls sie den
+    Systembefehl nicht ausführen kann, wohingegen die
+    <code>TrySystem()</code>-Anwendung stets 0 zurückliefert.</simpara>
+
+    <simpara>Setzt die Channelvariable <code>SYSTEMSTATUS</code> auf
+    <code>SUCCESS</code> (erfolgreich ausgeführt), <code>FAILURE</code>
+    (konnte nicht ausgeführt werden) oder (undokumentiert) auf
+    <code>APPERROR</code> (Befehl ausgeführt aber mit Exit-Code ungleich
+    0).</simpara>
+
+    <programlisting>exten =&gt; s,1,System(echo '${DATETIME} - ${CALLERID} - ${CHANNEL}' &gt;&gt; /var/log/asterisk/anrufe)</programlisting>
+
+    <formalpara>
+      <title>Siehe auch</title>
+
+      <para><xref linkend="applications-trysystem" /></para>
+    </formalpara>
+
+    <note>
+      <para>Als Alternative kann die Applikation <code>Backticks()</code> oder
+      Funktion <code>BACKTICKS()</code> aus dem Modul
+      <code>app_backticks</code><footnote>
+          <simpara>von <ulink
+          url="http://www.pbxfreeware.org/archives/2005/06/index.html">http://www.pbxfreeware.org/archives/2005/06/index.html</ulink>
+          oder <ulink
+          url="http://www.pbxfreeware.org/">http://www.pbxfreeware.org/</ulink></simpara>
+        </footnote> verwenden, mit denen man auch die Ausgabe des Befehls
+      erhält.</para>
+    </note>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'System' =- 
+
+[Synopsis]
+Execute a system command
+
+[Description]
+  System(command): Executes a command  by  using  system(). If the command
+fails, the console should report a fallthrough. 
+Result of execution is returned in the SYSTEMSTATUS channel variable:
+   FAILURE  Could not execute the specified command
+   SUCCESS  Specified command successfully executed
+
+Old behaviour:
+If the command itself executes but is in error, and if there exists
+a priority n + 101, where 'n' is the priority of the current instance,
+then  the  channel  will  be  setup to continue at that priority level.
+Note that this jump functionality has been deprecated and will only occur
+if the global priority jumping option is enabled in extensions.conf.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  
+</section>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-setcallerpres" revision="$Revision$">
+
+    <title><code>SetCallerPres()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>SetCallerPres()</code></secondary>
+    </indexterm>
+
+    <simpara>Setzt Caller-ID-Darstellungsflags (presentation flags).</simpara>
+
+    <synopsis>SetCallerPres(<replaceable>Darstellung</replaceable>)</synopsis>
+
+    <simpara>Setzt die Caller-ID-Darstellungsflags auf einer
+    Q931-PRI-Verbindung.</simpara>
+
+    <para>Gültige Darstellungen sind: <variablelist termlength="23">
+        <varlistentry>
+          <term><code>allowed_not_screened</code></term>
+
+          <listitem>
+            <simpara>Anzeige erlaubt und nicht überprüft.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>allowed_passed_screen</code></term>
+
+          <listitem>
+            <simpara>Anzeige erlaubt und Überprüfung erfolgreich.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>allowed_passed_screen</code></term>
+
+          <listitem>
+            <simpara>Anzeige erlaubt und Überprüfung nicht
+            erfolgreich.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>allowed</code></term>
+
+          <listitem>
+            <simpara>Anzeige erlaubt, Netzwerknummer.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>prohib_not_screened</code></term>
+
+          <listitem>
+            <simpara>Anzeige verboten und nicht überprüft.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>prohib_passed_screen</code></term>
+
+          <listitem>
+            <simpara>Anzeige verboten und Überprüfung erfolgreich.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>prohib_failed_screen</code></term>
+
+          <listitem>
+            <simpara>Anzeige verboten und Überprüfung nicht
+            erfolgreich.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>prohib</code></term>
+
+          <listitem>
+            <simpara>Anzeige verboten, Netzwerknummer.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>unavailable</code></term>
+
+          <listitem>
+            <simpara>Nummer nicht verfügbar.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <simpara>Liefert stets 0 zurück.</simpara>
+
+    <programlisting>exten =&gt; 123,1,SetCallerPres(allowed_not_screened)
+exten =&gt; 123,n,Dial(Zap/4/1234567)</programlisting>
+
+    <simpara>Evtl. müssen Sie <code>usecallingpres=yes</code> in der
+    <filename>zapata.conf</filename> setzen.</simpara>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'SetCallerPres' =- 
+
+[Synopsis]
+Set CallerID Presentation
+
+[Description]
+  SetCallerPres(presentation): Set Caller*ID presentation on a call.
+  Valid presentations are:
+
+      allowed_not_screened    : Presentation Allowed, Not Screened
+      allowed_passed_screen   : Presentation Allowed, Passed Screen
+      allowed_failed_screen   : Presentation Allowed, Failed Screen
+      allowed                 : Presentation Allowed, Network Number
+      prohib_not_screened     : Presentation Prohibited, Not Screened
+      prohib_passed_screen    : Presentation Prohibited, Passed Screen
+      prohib_failed_screen    : Presentation Prohibited, Failed Screen
+      prohib                  : Presentation Prohibited, Network Number
+      unavailable             : Number Unavailable</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  
+</section>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-lookupcidname" revision="$Revision$">
+
+    <title><code>LookupCIDName()</code></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan-Applikationen</primary>
+
+      <secondary><code>LookupCIDName()</code></secondary>
+    </indexterm>
+
+    <simpara>Sucht einen Caller-ID-Namen in der AstDB.</simpara>
+
+    <synopsis>LookupCIDName()</synopsis>
+
+    <simpara>Schlägt die Caller-ID-Nummer des aktiven Channels in der AstDB
+    (Familie <code>cidname</code>) nach und setzt den Caller-ID-Namen - wenn
+    vorhanden - auf den gespeicherten Wert. Diese Anwendung tut nichts, wenn
+    auf dem Channel keine Caller-ID empfangen wird.
+    <code>LookupCIDName()</code> kann nützlich sein, wenn Sie nur eine
+    Caller-ID-Nummer, aber keinen -Namen empfangen, oder wenn Sie den
+    Caller-ID-Namen für einige eingehende Anrufe ändern möchten.</simpara>
+
+    <simpara>Liefert stets 0 zurück.</simpara>
+
+    <simpara>Um der Liste Einträge hinzuzufügen, geben Sie im CLI
+    <code>database put cidname "<replaceable>Nummer</replaceable>"
+    "<replaceable>Name</replaceable>"</code>, bzw. <code>database del cidname
+    "<replaceable>Nummer</replaceable>"</code> zum Löschen oder <code>database
+    show cidname</code> für eine Auflistung ein.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,LookupCIDName()</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about application 'LookupCIDName' =- 
+
+[Synopsis]
+Look up CallerID Name from local database
+
+[Description]
+  LookupCIDName: Looks up the Caller*ID number on the active
+channel in the Asterisk database (family 'cidname') and sets the
+Caller*ID name.  Does nothing if no Caller*ID was received on the
+channel.  This is useful if you do not subscribe to Caller*ID
+name delivery, or if you want to change the names on some incoming
+calls.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+  
+</section>
