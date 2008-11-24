@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-vmauthenticate" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>VMAuthenticate()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>VMAuthenticate()</code></secondary>
+    </indexterm>
+
+    <simpara>Authenticates the caller using the voicemail password of the
+    specified mailbox.</simpara>
+
+    <synopsis><command>VMAuthenticate([<replaceable>mailbox</replaceable>][@<replaceable>context</replaceable>][,<replaceable>options</replaceable>])</command></synopsis>
+
+    <simpara>Behaves just like <command><code>Authenticate()</code></command>
+    except that the passwords are taken from the configuration (and optional
+    context) in <filename>voicemail.conf</filename>.</simpara>
+
+    <simpara>If a mailbox is specified, only the password for that mailbox
+    will be accepted. If it is not provided, any voicemail password will be
+    accepted! The channel variable <code>${AUTH_MAILBOX}</code> is then
+    populated with the name of the authenticated mailbox.</simpara>
+
+    <simpara>Option <code>s</code> suppresses the prompt.</simpara>
+
+    <programlisting>; use the dialed extension as the reference mailbox and authenticate:
+exten =&gt; 123,1,VMAuthenticate(${EXTEN}@sales)
+exten =&gt; 123,n,SayDigits(${AUTH_MAILBOX})</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'VMAuthenticate' =- 
+
+[Synopsis]
+Authenticate with Voicemail passwords
+
+[Description]
+  VMAuthenticate([mailbox][@context][|options]): This application behaves the
+same way as the Authenticate application, but the passwords are taken from
+voicemail.conf.
+  If the mailbox is specified, only that mailbox's password will be considered
+valid. If the mailbox is not specified, the channel variable AUTH_MAILBOX will
+be set with the authenticated mailbox.
+
+  Options:
+    s - Skip playing the initial prompts.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-authenticate" />,
+      <filename>voicemail.conf</filename></para>
+    </formalpara>
+</section>

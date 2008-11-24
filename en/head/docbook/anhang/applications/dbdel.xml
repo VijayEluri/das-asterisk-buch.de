@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-dbdel" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>DBdel()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>DBdel()</code></secondary>
+    </indexterm>
+
+    <simpara>Deletes a key from the Asterisk database (AstDB).</simpara>
+
+    <synopsis><command>DBdel(<replaceable>family/key</replaceable>)</command></synopsis>
+
+    <simpara>Deletes the specified key from the Asterisk database.</simpara>
+
+    <simpara>Returns 0.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Set(DB(test/name)=Richard)    ; save key in AstDB
+exten =&gt; 123,n,Set(name=${DB(test/name)})  ; retrieve key
+exten =&gt; 123,n,DBdel(test/name)            ; delete key</programlisting>
+
+    <important>
+      <simpara><code>DBdel()</code> is deprecated as of Asterisk 1.4; use the
+      <code>DB_DELETE()</code> function instead.</simpara>
+    </important>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'DBdel' =- 
+
+[Synopsis]
+Delete a key from the database
+
+[Description]
+  DBdel(family/key): This application will delete a key from the Asterisk
+database.
+  This application has been DEPRECATED in favor of the DB_DELETE function.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>10d9
+&lt;   This application has been DEPRECATED in favor of the DB_DELETE function.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-dbdeltree" />, <xref
+      linkend="functions-db" />, <xref linkend="functions-db_delete" /></para>
+    </formalpara>
+</section>

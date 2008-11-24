@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-mailboxexists" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>mailboxExists()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>mailboxExists()</code></secondary>
+    </indexterm>
+
+    <simpara>Checks to see if the specified voicemail box exists.</simpara>
+
+    <synopsis><command>mailboxExists(<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][,<replaceable>options</replaceable>])</command></synopsis>
+
+    <simpara>Checks to see if the voicemail box defined in
+    <replaceable>mailbox</replaceable> exists. A voicemail context may be
+    specified if the mailbox being checked is not in the default
+    context.</simpara>
+
+    <simpara>Sets the channel variable <code>VMBOXEXISTSSTATUS</code> to
+    <code>SUCCESS</code> (mailbox found) or <code>FAILED</code> (mailbox not
+    found).</simpara>
+
+    <simpara>Option <code>j</code> enables jumping to priority
+    <replaceable>n</replaceable>+101 on success.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,mailboxExists(123@default)
+exten =&gt; 123,n,Goto(box-${VMBOXEXISTSSTATUS})
+exten =&gt; 123,10(box-SUCCESS),Voicemail(123,u)
+exten =&gt; 123,20(box-FAILED),Playback(sorry)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'mailboxExists' =- 
+
+[Synopsis]
+Check to see if Voicemail mailbox exists
+
+[Description]
+  mailboxExists(mailbox[@context][|options]): Check to see if the specified
+mailbox exists. If no voicemail context is specified, the 'default' context
+will be used.
+  This application will set the following channel variable upon completion:
+    VMBOXEXISTSSTATUS - This will contain the status of the execution of the
+                        mailboxExists application. Possible values include:
+                        SUCCESS | FAILED
+
+  Options:
+    j - Jump to priority n+101 if the mailbox is found.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="functions-vmcount" /></para>
+    </formalpara>
+</section>

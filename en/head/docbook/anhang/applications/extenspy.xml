@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-extenspy" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>ExtenSpy()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>ExtenSpy()</code></secondary>
+    </indexterm>
+
+    <simpara>Eavesdrop on a channel attached to a specific extension and
+    whisper to it if desired.</simpara>
+
+    <synopsis>ExtenSpy(<replaceable>extension</replaceable>[@<replaceable>context</replaceable>][,<replaceable>options</replaceable>])</synopsis>
+
+    <simpara><code>ExtenSpy()</code> can listen to incoming and outgoing audio
+    on channels used by the specified extension. The options:</simpara>
+
+    <variablelist termlength="11">
+      <varlistentry>
+        <term><code>b</code></term>
+
+        <listitem>
+          <simpara>Only listens to channels which belong to a bridged
+          call.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>g(<replaceable>grp</replaceable>)</code></term>
+
+        <listitem>
+          <simpara>Only listens to channels where the channel variable
+          <code>${SPYGROUP}</code> is set to <code>grp</code>.
+          <code>${SPYGROUP}</code> can contain a <code>:</code> separated list
+          of values.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>q</code></term>
+
+        <listitem>
+          <simpara>Do not play a tone or say the channel name when listening
+          starts on a channel.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>r([<replaceable>name</replaceable>])</code></term>
+
+        <listitem>
+          <simpara>Records the listening session to the spool directory. A
+          filename may be specified if desired; <filename>chanspy</filename>
+          is the default.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>v([<replaceable>value</replaceable>])</code></term>
+
+        <listitem>
+          <simpara>Sets the initial volume. The value may be between -4 and
+          4.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>w</code></term>
+
+        <listitem>
+          <simpara>Enables "whisper" mode. Lets the spying channel talk to the
+          spyed-on channel.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>W</code></term>
+
+        <listitem>
+          <simpara>Enables "private whisper mode". The "spying" channel can
+          whisper to the spyed-on channel, but cannot listen.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <para>The following key controls are available while
+    listening:<variablelist termlength="6">
+        <varlistentry>
+          <term><code>#</code></term>
+
+          <listitem>
+            <simpara>Stepwise volume adjustment (-4 to 4)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>*</code></term>
+
+          <listitem>
+            <simpara>Switch to another channel</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'ExtenSpy' =- 
+
+[Synopsis]
+Listen to a channel, and optionally whisper into it
+
+[Description]
+  ExtenSpy(exten[@context][|options]): This application is used to listen to the
+audio from an Asterisk channel. This includes the audio coming in and
+out of the channel being spied on. Only channels created by outgoing calls for the
+specified extension will be selected for spying. If the optional context is not
+supplied, the current channel's context will be used.
+  While spying, the following actions may be performed:
+    - Dialing # cycles the volume level.
+    - Dialing * will stop spying and look for another channel to spy on.
+  Options:
+    b             - Only spy on channels involved in a bridged call.
+    g(grp)        - Match only channels where their ${SPYGROUP} variable is set to
+                    contain 'grp' in an optional : delimited list.
+    q             - Don't play a beep when beginning to spy on a channel, or speak the
+                    selected channel name.
+    r[(basename)] - Record the session to the monitor spool directory. An
+                    optional base for the filename may be specified. The
+                    default is 'chanspy'.
+    v([value])    - Adjust the initial volume in the range from -4 to 4. A
+                    negative value refers to a quieter setting.
+    w             - Enable 'whisper' mode, so the spying channel can talk to
+                    the spied-on channel.
+    W             - Enable 'private whisper' mode, so the spying channel can
+                    talk to the spied-on channel but cannot listen to that
+                    channel.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>-- not available in Version 1.2 --</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-chanspy" />, <xref
+      linkend="applications-zapbarge" />, <xref
+      linkend="applications-zapscan" />, <xref
+      linkend="applications-monitor" /></para>
+    </formalpara>
+</section>

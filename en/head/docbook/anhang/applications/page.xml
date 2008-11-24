@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-page" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>Page()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>Page()</code></secondary>
+    </indexterm>
+
+    <simpara>Pages an extension.</simpara>
+
+    <synopsis><command>Page(<replaceable>technology</replaceable>/<replaceable>resource</replaceable>[&amp;<replaceable>technology2</replaceable>/<replaceable>resource2</replaceable>[&amp;<replaceable>...</replaceable>]][,<replaceable>options</replaceable>])</command></synopsis>
+
+    <simpara>The designated devices are dropped into a dynamically generated
+    conference room with their microphones muted. The only device that can
+    send audio is that of the person paging. When the page is finished the
+    room is struck. Options:</simpara>
+
+    <variablelist termlength="3">
+      <varlistentry>
+        <term><code>d</code></term>
+
+        <listitem>
+          <simpara>Activates full duplex audio.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>q</code></term>
+
+        <listitem>
+          <simpara>Suppresses the notification tone at the beginning of the
+          page.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>r</code></term>
+
+        <listitem>
+          <simpara>The page is recorded to a file.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <programlisting>exten =&gt; 123,1,Page(SIP/2000&amp;SIP/2001&amp;SIP/2002)</programlisting>
+
+    <tip>
+      <para>Most devices treat a page like any other call. If the device is
+      not explicitly instructed to auto-answer, it will simply ring, and the
+      intended recipient will not hear the message. SIP devices can be told to
+      auto-answer, often by setting a SIP header. Every device is different;
+      review the administration manuals for your SIP phone.</para>
+    </tip>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'Page' =- 
+
+[Synopsis]
+Pages phones
+
+[Description]
+Page(Technology/Resource&amp;Technology2/Resource2[|options])
+  Places outbound calls to the given technology / resource and dumps
+them into a conference bridge as muted participants.  The original
+caller is dumped into the conference as a speaker and the room is
+destroyed when the original caller leaves.  Valid options are:
+        d - full duplex audio
+        q - quiet, do not play beep to caller
+        r - record the page into a file (see 'r' for app_meetme)</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>14,15c14
+&lt;         q - quiet, do not play beep to caller
+&lt;         r - record the page into a file (see 'r' for app_meetme)
+---
+&gt;    q - quiet, do not play beep to caller</screen></para>
+      </formalpara>
+    </note>
+</section>

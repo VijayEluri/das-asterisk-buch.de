@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-meetmeadmin" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>MeetMeAdmin()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>MeetMeAdmin()</code></secondary>
+    </indexterm>
+
+    <simpara>Administers a MeetMe conference.</simpara>
+
+    <synopsis><command>MeetMeAdmin(<replaceable>conference</replaceable>,<replaceable>command</replaceable>[,<replaceable>participant</replaceable>])</command></synopsis>
+
+    <para>Executes a command in the specified conference. The command may be
+    one of the following (the
+    <code><replaceable>participant</replaceable></code> is required only for
+    the kick command (<code>k)</code>): <variablelist termlength="3">
+        <varlistentry>
+          <term><code>K</code></term>
+
+          <listitem>
+            <simpara>Kicks all participants out of the conference.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>k</code></term>
+
+          <listitem>
+            <simpara>Kicks <code><replaceable>participant</replaceable></code>
+            out of the conference.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>e</code></term>
+
+          <listitem>
+            <simpara>Kicks the last participant who joined out of the
+            conference.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>L</code></term>
+
+          <listitem>
+            <simpara>Locks the conference to new participants.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>l</code></term>
+
+          <listitem>
+            <simpara>Unlocks the conference.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>M</code></term>
+
+          <listitem>
+            <simpara>Mute a conference participant.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>m</code></term>
+
+          <listitem>
+            <simpara>Unmute a muted participant.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>N</code></term>
+
+          <listitem>
+            <simpara>Mute everyone except the conference
+            administrator.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>n</code></term>
+
+          <listitem>
+            <simpara>Unmute everyone mute by <code>N</code>.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <programlisting>; Mute participant 3 in conference 333
+exten =&gt; 123,1,MeetMeAdmin(333,M,3)
+
+; Kick participant 3 out of conference 333:
+exten =&gt; 123,1,MeetMeAdmin(333,k,3)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'MeetMeAdmin' =- 
+
+[Synopsis]
+MeetMe conference Administration
+
+[Description]
+  MeetMeAdmin(confno,command[,user]): Run admin command for conference
+      'e' -- Eject last user that joined
+      'k' -- Kick one user out of conference
+      'K' -- Kick all users out of conference
+      'l' -- Unlock conference
+      'L' -- Lock conference
+      'm' -- Unmute one user
+      'M' -- Mute one user
+      'n' -- Unmute all users in the conference
+      'N' -- Mute all non-admin users in the conference
+      'r' -- Reset one user's volume settings
+      'R' -- Reset all users volume settings
+      's' -- Lower entire conference speaking volume
+      'S' -- Raise entire conference speaking volume
+      't' -- Lower one user's talk volume
+      'T' -- Raise one user's talk volume
+      'u' -- Lower one user's listen volume
+      'U' -- Raise one user's listen volume
+      'v' -- Lower entire conference listening volume
+      'V' -- Raise entire conference listening volume</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>14,27c14,17
+&lt;       'm' -- Unmute one user
+&lt;       'M' -- Mute one user
+&lt;       'n' -- Unmute all users in the conference
+&lt;       'N' -- Mute all non-admin users in the conference
+&lt;       'r' -- Reset one user's volume settings
+&lt;       'R' -- Reset all users volume settings
+&lt;       's' -- Lower entire conference speaking volume
+&lt;       'S' -- Raise entire conference speaking volume
+&lt;       't' -- Lower one user's talk volume
+&lt;       'T' -- Raise one user's talk volume
+&lt;       'u' -- Lower one user's listen volume
+&lt;       'U' -- Raise one user's listen volume
+&lt;       'v' -- Lower entire conference listening volume
+&lt;       'V' -- Raise entire conference listening volume
+---
+&gt;       'm' -- Unmute conference
+&gt;       'M' -- Mute conference
+&gt;       'n' -- Unmute entire conference (except admin)
+&gt;       'N' -- Mute entire conference (except admin)</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-meetme" />, <xref
+      linkend="applications-meetmecount" /></para>
+    </formalpara>
+</section>

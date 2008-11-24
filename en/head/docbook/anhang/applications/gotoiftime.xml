@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-gotoiftime" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>GotoIfTime()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>GotoIfTime()</code></secondary>
+    </indexterm>
+
+    <simpara>Jumps to the specified priority if the time condition is
+    met.</simpara>
+
+    <synopsis><command>GotoIfTime(<replaceable>times</replaceable>,<replaceable>daysofweek</replaceable>,<replaceable>daysofmonth</replaceable>,<replaceable>months</replaceable>?[[<replaceable>context</replaceable>,]<replaceable>extension</replaceable>,]<replaceable>priority</replaceable>)</command></synopsis>
+
+    <simpara>Jumps to the specified priority if the current time falls within
+    the specified time window. Each element may be defined with a "*" (always)
+    or a <code>"-"</code> (range).</simpara>
+
+    <para>Die Parameter zu dieser Anwendung sind: <variablelist
+        termlength="15">
+        <varlistentry>
+          <term><code>times</code></term>
+
+          <listitem>
+            <simpara>Time interval, in 24 hour format with hours and minutes,
+            <emphasis>e.g.</emphasis> <code>9:00-17:00</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>daysofweek</code></term>
+
+          <listitem>
+            <simpara>Weekdays (<code>mon</code>, <code>tue</code>,
+            <code>wed</code>, <code>thu</code>, <code>fri</code>,
+            <code>sat</code>, <code>sun</code>), <emphasis>e.g.</emphasis>
+            <code>mon-fri</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>daysofmonth</code></term>
+
+          <listitem>
+            <simpara>Days of the month (1-31), <emphasis>e.g.</emphasis>
+            <code>1-15</code></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>months</code></term>
+
+          <listitem>
+            <simpara>Months of the year (<code>jan</code>, <code>feb</code>,
+            <code>mar</code>, <code>apr</code>, <code>mai</code>,
+            <code>jun</code>, <code>jul</code>, <code>aug</code>,
+            <code>sep</code>, <code>oct</code>, <code>nov</code>,
+            <code>dec</code>), <emphasis>e.g.</emphasis>
+            <code>apr-oct</code></simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <programlisting>; During business hours, jump to incoming-open context.
+; We are open Monday to Friday from 9:00 to 18:00 (9 a.m. to 6 p.m.):
+exten =&gt; s,1,GotoIfTime(09:00-17:59,mon-fri,*,*?incoming-open,s,1)
+; Also Saturdays from 9 to 12:
+exten =&gt; s,n,GotoIfTime(09:00-11:59,sat,*,*?incoming-open,s,1)
+; After hours go to incoming-closed:
+exten =&gt; s,n,Goto(incoming-closed,s,1)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'GotoIfTime' =- 
+
+[Synopsis]
+Conditional Goto based on the current time
+
+[Description]
+  GotoIfTime(&lt;times&gt;|&lt;weekdays&gt;|&lt;mdays&gt;|&lt;months&gt;?[[context|]exten|]priority):
+This application will have the calling channel jump to the specified location
+in the dialplan if the current time matches the given time specification.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>9,10c9,12
+&lt; This application will have the calling channel jump to the specified location
+&lt; in the dialplan if the current time matches the given time specification.
+---
+&gt; This application will have the calling channel jump to the speicified location
+&gt; int the dialplan if the current time matches the given time specification.
+&gt; Further information on the time specification can be found in examples
+&gt; illustrating how to do time-based context includes in the dialplan.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-gotoif" />, <xref
+      linkend="applications-execiftime" />, <xref
+      linkend="functions-iftime" /></para>
+    </formalpara>
+</section>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-busy" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>Busy()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>Busy()</code></secondary>
+    </indexterm>
+
+    <simpara>Sets the channel as "busy".</simpara>
+
+    <synopsis><command>Busy([<replaceable>timeout</replaceable>])</command></synopsis>
+
+    <simpara>Instructs the channel to indicate busy and waits until the caller
+    hangs up or the timeout expires (<emphasis>timeout</emphasis>, in
+    seconds).</simpara>
+
+    <simpara>This application indicates a busy state only on the bridged
+    channel. Every channel type has its own way of indicating that a device is
+    busy. To play an actual busy tone, use
+    <code><command>Playtones(busy)</command></code>.</simpara>
+
+    <simpara>Always returns -1.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Playback(vm-sorry)
+exten =&gt; 123,n,Playtones(busy)
+exten =&gt; 123,n,Busy()</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'Busy' =- 
+
+[Synopsis]
+Indicate the Busy condition
+
+[Description]
+  Busy([timeout]): This application will indicate the busy condition to
+the calling channel. If the optional timeout is specified, the calling channel
+will be hung up after the specified number of seconds. Otherwise, this
+application will wait until the calling channel hangs up.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-congestion" />, <xref
+      linkend="applications-progress" />, <xref
+      linkend="applications-playtones" /></para>
+    </formalpara>
+</section>

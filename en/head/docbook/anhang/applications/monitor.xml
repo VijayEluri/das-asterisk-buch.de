@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-monitor" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>Monitor()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>Monitor()</code></secondary>
+    </indexterm>
+
+    <simpara>Records the current channel in two separate files.</simpara>
+
+    <synopsis><command>Monitor([<replaceable>format</replaceable>[,<replaceable>fileprefix</replaceable>[,<replaceable>options</replaceable>]]])</command></synopsis>
+
+    <simpara>Starts audio recording on the current channel. Incoming and
+    outgoing audio packets are written to separate files until the channel is
+    hung up or monitoring is stopped with
+    <code><command>StopMonitor()</command></code>.</simpara>
+
+    <simpara>The parameter <replaceable>format</replaceable> sets the file
+    format. If this is not specified, <code>wav</code> is used.</simpara>
+
+    <simpara>The parameter <replaceable>fileprefix</replaceable> specifies the
+    filename without extension. If this is not specified, the filename is
+    assembled out of the channel name and a number, for example,<code>
+    IAX2[foo@bar]-3</code>. Incoming audio is written to
+    <filename><replaceable>fileprefix</replaceable>-in.<replaceable>format</replaceable></filename>,
+    outgoing audio in
+    <filename><replaceable>fileprefix</replaceable>-out.<replaceable>format</replaceable></filename>,
+    both in <filename>/var/spool/asterisk/monitor/</filename>.</simpara>
+
+    <para>Two options may be specified: <variablelist termlength="3">
+        <varlistentry>
+          <term><code>m</code></term>
+
+          <listitem>
+            <simpara>After recording is complete, mixes the incoming and
+            outgoing audio files into a single file and deletes the originals.
+            Requires that <command>soxmix</command> from the
+            <command>sox</command> package be installed on the
+            server.<footnote>
+                <simpara><ulink
+                url="http://sox.sourceforge.net/">http://sox.sourceforge.net/</ulink>,
+                see also an explanation in <xref
+                linkend="musiconhold.conf" />, version 12.17.7 or newer. You
+                may check your installed version with <command>soxmix
+                -help</command></simpara>
+              </footnote>If the variable <code>${MONITOR_EXEC}</code> is
+            defined, this application is executed instead of
+            <command>soxmix</command> and the original incoming and outgoing
+            audio files are not deleted.<footnote>
+                <para>depends on Asterisk version; older versions do not
+                delete automatically. It's best to check with a proper
+                test.</para>
+              </footnote>. <command>soxmix</command> (or
+            <command>${MONITOR_EXEC}</command> if specified) is passed three
+            values: the names of the incoming and outgoing audio files and the
+            name of the mixed file, which is the fileprefix without
+            <code>-in</code>/<code>-out</code>. If
+            <code>${MONITOR_EXEC_ARGS}</code> is set, the contents are used as
+            arguments to <code>${MONITOR_EXEC}</code>.</simpara>
+
+            <important>
+              <para>Note that <command>soxmix</command> attempts to determine
+              the file type based on the file extension. Formats such as
+              <code>gsm</code> and <code>wav</code> are normally not a
+              problem, but for other formats such as <code>alaw</code> and
+              <code>ulaw</code>, it expects the file extensions
+              <code>.al</code> and <code>.ul</code> respectively. To resolve
+              this, read the manual pages for sox (/soxmix) and use
+              <code>${MONITOR_EXEC_ARGS}</code> or write a small wrapper
+              script that reads the format parameter and call it in
+              <code>${MONITOR_EXEC}</code>.</para>
+            </important>
+
+            <note>
+              <simpara>If you wanted a single mixed sound file,
+              <code>MixMonitor()</code> is usually the better option, as it
+              mixes on-the-fly and thereby avoids a spike in CPU load at the
+              end of the recording.</simpara>
+            </note>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>b</code></term>
+
+          <listitem>
+            <simpara>Saves audio to the file only while the channel is
+            bridged, <emphasis>i.e.</emphasis> once a conversation has
+            actually begun, and only until it is hung up.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <simpara>Returns 0 on success, or -1 on failure (such as a failure to open
+    the audio files for writing, or the channel is already being monitored,
+    <emphasis>etc.</emphasis>)</simpara>
+
+    <programlisting>; record the conversation and mix the audio afterwards:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Monitor(gsm,,mb)
+exten =&gt; 123,n,SayDigits(123456789)
+exten =&gt; 123,n,Hangup()
+
+; as above, only with our own wrapper script that calls soxmix:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Set(MONITOR_EXEC=/path/to/my-soxmix-wrapper.sh)
+exten =&gt; 123,n,Monitor(gsm,,mb)
+exten =&gt; 123,n,SayDigits(123456789)
+exten =&gt; 123,n,Hangup()</programlisting>
+
+    <important>
+      <para>Before recording conversations, make sure you are complying with
+      the relevant legislation in your jurisdiction. In most cases, both
+      parties must be aware they are being recorded.<footnote>
+          <simpara>see also <ulink
+          url="http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues">http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues</ulink></simpara>
+        </footnote></para>
+    </important>
+
+    <note>
+      <simpara>Some Asterisk users who routinely need to record many
+      conversations (50-500) report much better performance if call recordings
+      are written to a RAM disk (fewer and shorter seek operations) before
+      being copied to a hard disk when the conversation is over.</simpara>
+    </note>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'Monitor' =- 
+
+[Synopsis]
+Monitor a channel
+
+[Description]
+Monitor([file_format[:urlbase]|[fname_base]|[options]]):
+Used to start monitoring a channel. The channel's input and output
+voice packets are logged to files until the channel hangs up or
+monitoring is stopped by the StopMonitor application.
+  file_format  optional, if not set, defaults to "wav"
+  fname_base   if set, changes the filename used to the one specified.
+  options:
+    m   - when the recording ends mix the two leg files into one and
+          delete the two leg files.  If the variable MONITOR_EXEC is set, the
+          application referenced in it will be executed instead of
+          soxmix and the raw leg files will NOT be deleted automatically.
+          soxmix or MONITOR_EXEC is handed 3 arguments, the two leg files
+          and a target mixed file name which is the same as the leg file names
+          only without the in/out designator.
+          If MONITOR_EXEC_ARGS is set, the contents will be passed on as
+          additional arguements to MONITOR_EXEC
+          Both MONITOR_EXEC and the Mix flag can be set from the
+          administrator interface
+
+    b   - Don't begin recording unless a call is bridged to another channel
+
+Returns -1 if monitor files can't be opened or if the channel is already
+monitored, otherwise 0.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-changemonitor" />, <xref
+      linkend="applications-stopmonitor" />, <xref
+      linkend="applications-pausemonitor" />, <xref
+      linkend="applications-unpausemonitor" />, <xref
+      linkend="applications-mixmonitor" />, <xref
+      linkend="applications-record" /></para>
+    </formalpara>
+</section>

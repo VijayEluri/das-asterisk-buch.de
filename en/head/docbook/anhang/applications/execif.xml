@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-execif" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>ExecIf()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>ExecIf()</code></secondary>
+    </indexterm>
+
+    <simpara>Executes an Asterisk application under specific
+    conditions.</simpara>
+
+    <synopsis><command>ExecIf(<replaceable>expression</replaceable>,<replaceable>application</replaceable>,<replaceable>arguments</replaceable>)</command></synopsis>
+
+    <simpara>If <replaceable>expression</replaceable> evaluates to
+    <code>true</code>, the defined <replaceable>application</replaceable> is
+    executed with the provided <replaceable>arguments</replaceable>, and the
+    return value is returned. See <filename>doc/README.variables</filename>
+    (1.2) / <filename>doc/channelvariables.txt</filename> (1.4) for more
+    information about standard expressions for Asterisk.</simpara>
+
+    <simpara>If expression evaluates to <code>false</code>, execution moves to
+    the next priority in the extension.</simpara>
+
+    <programlisting>exten =&gt; 123,1,ExecIf($[${CALLERID(num)} = 101],SayDigits,123)
+exten =&gt; 123,n,SayDigits(678)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'ExecIf' =- 
+
+[Synopsis]
+Executes dialplan application, conditionally
+
+[Description]
+Usage:  ExecIF (&lt;expr&gt;|&lt;app&gt;|&lt;data&gt;)
+If &lt;expr&gt; is true, execute and return the result of &lt;app&gt;(&lt;data&gt;).
+If &lt;expr&gt; is true, but &lt;app&gt; is not found, then the application
+will return a non-zero value.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; Executes dialplan application, conditionally
+---
+&gt; Conditional exec
+12d11
+&lt; </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-exec" /></para>
+    </formalpara>
+</section>

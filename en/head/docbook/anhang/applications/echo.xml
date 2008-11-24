@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-echo" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>Echo()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>Echo()</code></secondary>
+    </indexterm>
+
+    <simpara>Repeats incoming audio to the caller.</simpara>
+
+    <synopsis><command>Echo()</command></synopsis>
+
+    <simpara>Takes any incoming audio and returns it on the same channel. This
+    application is used primarily for troubleshooting and testing of delay
+    (latency) and sound quality on VoIP connections. The caller can end the
+    call by pressing "#".</simpara>
+
+    <simpara>Returns 0 if the caller ends the call with <code>"#"</code> or -1
+    if the caller hangs up.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Echo()
+exten =&gt; 123,n,Playback(vm-goodbye)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'Echo' =- 
+
+[Synopsis]
+Echo audio, video, or DTMF back to the calling party
+
+[Description]
+  Echo(): This application will echo any audio, video, or DTMF frames read from
+the calling channel back to itself. If the DTMF digit '#' is received, the
+application will exit.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; Echo audio, video, or DTMF back to the calling party
+---
+&gt; Echo audio read back to the user
+8,10c8,10
+&lt;   Echo(): This application will echo any audio, video, or DTMF frames read from
+&lt; the calling channel back to itself. If the DTMF digit '#' is received, the
+&lt; application will exit.
+---
+&gt;   Echo():  Echo audio read from channel back to the channel. 
+&gt; User can exit the application by either pressing the '#' key, 
+&gt; or hanging up.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-milliwatt" /></para>
+    </formalpara>
+</section>

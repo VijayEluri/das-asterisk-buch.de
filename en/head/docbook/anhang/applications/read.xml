@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-read" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>Read()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>Read()</code></secondary>
+    </indexterm>
+
+    <simpara>Reads DTMF input from a caller and assigns the result to a
+    variable.</simpara>
+
+    <synopsis><command>Read(<replaceable>variable</replaceable>[,<replaceable>filename</replaceable>[,<replaceable>maxDigits</replaceable>[,<replaceable>option</replaceable>[,<replaceable>attempts</replaceable>[,<replaceable>timeout</replaceable>]]]]])</command></synopsis>
+
+    <simpara>Reads a DTMF sequence ending in <code>"#"</code> from the caller
+    and places it in the specified variable.</simpara>
+
+    <simpara>If <replaceable>filename</replaceable> is specified (without file
+    extension!), this audio file is played back to the caller before input is
+    read.</simpara>
+
+    <simpara>The argument <replaceable>maxDigits</replaceable> defines the
+    maximum number of digits allowed. If provided, the application stops
+    reading when this number of digits has been entered, without the caller
+    having to enter <code>"#"</code> to end the call. The default setting is 0
+    and means there is no preset limit and "<code>#</code>" is expected; the
+    absolute maximum number of digits allowed is 255.</simpara>
+
+    <simpara>The option <code>skip</code> causes the application to end
+    immediately if the channel is inactive. The option <code>noanswer</code>
+    enables reading even if the channel is inactive.</simpara>
+
+    <simpara>The caller has up to <replaceable>attempts</replaceable> attempts
+    within <replaceable>timeout</replaceable> seconds to enter a sequence. A
+    <replaceable>timeout</replaceable> of zero means there is no time
+    limit.</simpara>
+
+    <simpara>Returns -1 if the channel is hung up, otherwise returns
+    0.</simpara>
+
+    <programlisting>; Read a 4 digit number, allowing up to 3 attempts, and say this number back to the caller:
+exten =&gt; 123,1,Read(NUMBER,,4,3)
+exten =&gt; 123,n,SayNumber(${NUMBER})
+exten =&gt; 123,n,Goto(1)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'Read' =- 
+
+[Synopsis]
+Read a variable
+
+[Description]
+  Read(variable[|filename][|maxdigits][|option][|attempts][|timeout])
+
+Reads a #-terminated string of digits a certain number of times from the
+user in to the given variable.
+  filename   -- file to play before reading digits or tone with option i
+  maxdigits  -- maximum acceptable number of digits. Stops reading after
+                maxdigits have been entered (without requiring the user to
+                press the '#' key).
+                Defaults to 0 - no limit - wait for the user press the '#' key.
+                Any value below 0 means the same. Max accepted value is 255.
+  option     -- options are 's' , 'i', 'n'
+                's' to return immediately if the line is not up,
+                'i' to play  filename as an indication tone from your indications.conf
+                'n' to read digits even if the line is not up.
+  attempts   -- if greater than 1, that many attempts will be made in the 
+                event no data is entered.
+  timeout    -- An integer number of seconds to wait for a digit response. If greater
+                than 0, that value will override the default timeout.
+
+Read should disconnect if the function fails or errors out.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>12c12
+&lt;   filename   -- file to play before reading digits or tone with option i
+---
+&gt;   filename   -- file to play before reading digits.
+18,21c18,19
+&lt;   option     -- options are 's' , 'i', 'n'
+&lt;                 's' to return immediately if the line is not up,
+&lt;                 'i' to play  filename as an indication tone from your indications.conf
+&lt;                 'n' to read digits even if the line is not up.
+---
+&gt;   option     -- may be 'skip' to return immediately if the line is not up,
+&gt;                 or 'noanswer' to read digits even if the line is not up.
+24,25c22
+&lt;   timeout    -- An integer number of seconds to wait for a digit response. If greater
+&lt;                 than 0, that value will override the default timeout.
+---
+&gt;   timeout    -- if greater than 0, that value will override the default timeout.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-senddtmf" /></para>
+    </formalpara>
+</section>

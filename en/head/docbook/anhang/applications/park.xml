@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-park" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>Park()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>Park()</code></secondary>
+    </indexterm>
+
+    <simpara>Parks the current call.</simpara>
+
+    <synopsis><command>Park(<replaceable>extension</replaceable>)</command></synopsis>
+
+    <simpara>Parks the active call, typically in combination with an attended
+    transfer so that you can know where the call has been parked. This
+    application is registered internally so it shouldn't be necessary to add
+    it into the dialplan, though you should make sure it is enabled in
+    features.conf. You may include the context with the <code>include =&gt;
+    parkedcalls</code> statement.</simpara>
+
+    <programlisting>; park the call in parking space 701:
+include =&gt; parkedcalls
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Park(701)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'Park' =- 
+
+[Synopsis]
+Park yourself
+
+[Description]
+Park():Used to park yourself (typically in combination with a supervised
+transfer to know the parking space). This application is always
+registered internally and does not need to be explicitly added
+into the dialplan, although you should include the 'parkedcalls'
+context (or the context specified in features.conf).
+
+If you set the PARKINGEXTEN variable to an extension in your
+parking context, park() will park the call on that extension, unless
+it already exists. In that case, execution will continue at next
+priority.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>12,17c12
+&lt; context (or the context specified in features.conf).
+&lt; 
+&lt; If you set the PARKINGEXTEN variable to an extension in your
+&lt; parking context, park() will park the call on that extension, unless
+&lt; it already exists. In that case, execution will continue at next
+&lt; priority.
+---
+&gt; context.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-parkandannounce" />, <xref
+      linkend="applications-parkedcall" /></para>
+    </formalpara>
+</section>

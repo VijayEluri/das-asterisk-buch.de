@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-sipaddheader" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>SIPAddHeader()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>SIPAddHeader()</code></secondary>
+    </indexterm>
+
+    <simpara>Adds a SIP header to the SIP dialog.</simpara>
+
+    <synopsis>SIPAddHeader(<replaceable>header</replaceable>: <replaceable>value</replaceable>)</synopsis>
+
+    <simpara>Adds a SIP header as specified to SIP calls initiated using
+    <command>Dial()</command>. Non-standard SIP headers should be preceded
+    with <code>an X-</code> as in<code>
+    X-Asterisk-Accountcode:</code>.</simpara>
+
+    <simpara>Should be used with caution as different SIP devices expect
+    different headers and respond differently to them. May produce unexpected
+    behavior.</simpara>
+
+    <simpara>Returns 0.</simpara>
+
+    <programlisting>exten =&gt; 123,1,SIPAddHeader(X-Asterisk-Account: ${CDR(accountcode)})
+exten =&gt; 123,n,Dial(SIP/123)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'SIPAddHeader' =- 
+
+[Synopsis]
+Add a SIP header to the outbound call
+
+[Description]
+  SIPAddHeader(Header: Content)
+Adds a header to a SIP call placed with DIAL.
+Remember to user the X-header if you are adding non-standard SIP
+headers, like "X-Asterisk-Accountcode:". Use this with care.
+Adding the wrong headers may jeopardize the SIP dialog.
+Always returns 0</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="functions-sip_header" /></para>
+    </formalpara>
+</section>

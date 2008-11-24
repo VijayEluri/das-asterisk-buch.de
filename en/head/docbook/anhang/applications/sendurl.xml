@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-sendurl" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>SendURL()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>SendURL()</code></secondary>
+    </indexterm>
+
+    <simpara>Sends a URL to the channel.</simpara>
+
+    <synopsis><command>SendURL(<replaceable>URL</replaceable>[,<replaceable>options</replaceable>])</command></synopsis>
+
+    <simpara>Sends the channel a URL for the device to call up, then hands the
+    channel to the next priority.</simpara>
+
+    <simpara>If the channel does not support URL transmission, option
+    <code>j</code> makes the channel jump to priority
+    <replaceable>n</replaceable>+101 if it exists. Option <code>wait</code>
+    makes the application wait for confirmation that the URL was loaded before
+    continuing to the next priority.</simpara>
+
+    <simpara>Returns 0 if the URL is transmitted without errors, otherwise -1.
+    Sets the channel variable <code>SENDURLSTATUS</code> to
+    <code>SUCCESS</code>, <code>FAILURE</code>, <code>UNSUPPORTED</code> or
+    <code>NOLOAD</code> (requires option <code>wait</code>; the client could
+    not load the URL successfully).</simpara>
+
+    <programlisting>exten =&gt; 123,1,SendURL(http://www.mobileweather.org/index.xml,wait)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'SendURL' =- 
+
+[Synopsis]
+Send a URL
+
+[Description]
+  SendURL(URL[|option]): Requests client go to URL (IAX2) or sends the 
+URL to the client (other channels).
+Result is returned in the SENDURLSTATUS channel variable:
+    SUCCESS       URL successfully sent to client
+    FAILURE       Failed to send URL
+    NOLOAD        Client failed to load URL (wait enabled)
+    UNSUPPORTED   Channel does not support URL transport
+
+If the option 'wait' is specified, execution will wait for an
+acknowledgement that the URL has been loaded before continuing
+
+If jumping is specified as an option (the 'j' flag), the client does not
+support Asterisk "html" transport, and there exists a step with priority
+n + 101, then execution will continue at that step.
+
+SendURL continues normally if the URL was sent correctly or if the channel
+does not support HTML transport.  Otherwise, the channel is hung up.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>13c13
+&lt;     NOLOAD        Client failed to load URL (wait enabled)
+---
+&gt;     NOLOAD        Clien failed to load URL (wait enabled)
+17a18
+&gt; and will return -1 if the peer is unable to load the URL
+19,24c20,26
+&lt; If jumping is specified as an option (the 'j' flag), the client does not
+&lt; support Asterisk "html" transport, and there exists a step with priority
+&lt; n + 101, then execution will continue at that step.
+&lt; 
+&lt; SendURL continues normally if the URL was sent correctly or if the channel
+&lt; does not support HTML transport.  Otherwise, the channel is hung up.
+---
+&gt; Old behaviour (deprecated): 
+&gt;  If the client does not support Asterisk "html" transport, 
+&gt;  and there exists a step with priority n + 101, then execution will
+&gt;  continue at that step.
+&gt;  Otherwise, execution will continue at the next priority level.
+&gt;  SendURL only returns 0 if the URL was sent correctly  or if
+&gt;  the channel does not support HTML transport, and -1 otherwise.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-sendimage" />, <xref
+      linkend="applications-sendtext" /></para>
+    </formalpara>
+</section>

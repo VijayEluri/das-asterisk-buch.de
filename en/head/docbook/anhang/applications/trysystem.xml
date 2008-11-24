@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-trysystem" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>TrySystem()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>TrySystem()</code></secondary>
+    </indexterm>
+
+    <simpara>Tries to execute a shell command.</simpara>
+
+    <synopsis><command>TrySystem(<replaceable>command</replaceable>)</command></synopsis>
+
+    <simpara>Like <code>System()</code>, it executes a command on the shell
+    (<command>sh</command> or its equivalents), but always returns 0. In
+    contrast, <command><code>System()</code></command> returns -1 on
+    error.</simpara>
+
+    <simpara>Sets the channel variable <code>SYSTEMSTATUS</code> to
+    <code>SUCCESS</code>, <code>FAILURE</code> or <code>APPERROR</code>
+    (command was run but returned an exit code other than 0).</simpara>
+
+    <programlisting>exten =&gt; 123,1,TrySystem(echo 'Hey World' &gt; /tmp/hey.txt)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'TrySystem' =- 
+
+[Synopsis]
+Try executing a system command
+
+[Description]
+  TrySystem(command): Executes a command  by  using  system().
+on any situation.
+Result of execution is returned in the SYSTEMSTATUS channel variable:
+   FAILURE  Could not execute the specified command
+   SUCCESS  Specified command successfully executed
+   APPERROR Specified command successfully executed, but returned error code
+
+Old behaviour:
+If  the command itself executes but is in error, and if
+there exists a priority n + 101, where 'n' is the priority of the current
+instance, then  the  channel  will  be  setup  to continue at that
+priority level.  Otherwise, System will terminate.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-system" /></para>
+    </formalpara>
+</section>

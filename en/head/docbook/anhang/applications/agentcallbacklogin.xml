@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-agentcallbacklogin" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>AgentCallbackLogin()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>AgentCallbackLogin()</code></secondary>
+    </indexterm>
+
+    <simpara>Allows call agent login with callback.</simpara>
+
+    <synopsis><command>AgentCallbackLogin([<replaceable>agentid</replaceable>][,<replaceable>options</replaceable>[,<replaceable>extension</replaceable>@<replaceable>context</replaceable>]])</command></synopsis>
+
+    <simpara>Allows an agent identified through the agentid to log into the
+    queue. A call in the queue will cause the agent's phone to ring (this is
+    in contrast to <command>AgentLogin()</command>, in which the agent's phone
+    is off-hook and new calls are indicated by a tone).</simpara>
+
+    <simpara>For an incoming call for the specified agent, the specified
+    extension (at the specified context, if provided) is called.</simpara>
+
+    <simpara>The option<code> s</code> makes the login silent; the agent login
+    is not reported.</simpara>
+
+    <programlisting>; logs in Agent 33 silently. Calls for this agent go to SIP/300:
+exten =&gt; 123,1,AgentCallbackLogin(33,s,${CALLERID(num)})
+
+; Assuming that the agent number is the same as the agent extension, we can do:
+exten =&gt; 123,1,AgentCallbackLogin(${CALLERID(num)},s,${CALLERID(num)})</programlisting>
+
+    <simpara>Numerous examples are available at <ulink
+    url="http://www.voip-info.org/wiki/index.php?page=Asterisk+cmd+AgentCallbackLogin">http://www.voip-info.org/wiki/index.php?page=Asterisk+cmd+AgentCallbackLogin</ulink>.</simpara>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'AgentCallbackLogin' =- 
+
+[Synopsis]
+Call agent callback login
+
+[Description]
+  AgentCallbackLogin([AgentNo][|[options][|[exten]@context]]):
+Asks the agent to login to the system with callback.
+The agent's callback extension is called (optionally with the specified
+context).
+The option string may contain zero or more of the following characters:
+      's' -- silent login - do not announce the login ok segment agent logged in/off</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-agentlogin" /></para>
+    </formalpara>
+</section>

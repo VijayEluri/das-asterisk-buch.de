@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-macro" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>Macro()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>Macro()</code></secondary>
+    </indexterm>
+
+    <simpara>Executes a previously defined macro.</simpara>
+
+    <synopsis>Macro(<replaceable>macroname</replaceable>[,<replaceable>arg1</replaceable>[,<replaceable>arg2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
+
+    <simpara>Executes a macro defined in the context
+    <code>macro-<replaceable>macroname</replaceable></code> by handing the
+    channel over to the <code>s</code> extension in the macro and returning
+    after the macro has finished running.</simpara>
+
+    <simpara>The called extension, context and priority are passed to the
+    macro in the variables<code> ${MACRO_EXTEN}</code>,
+    <code>${MACRO_CONTEXT}</code> and <code>${MACRO_PRIORITY}</code>. The
+    arguments are passed to the macro in <code>${ARG1}</code>,
+    <code>${ARG2}</code>, and so on.</simpara>
+
+    <simpara><command><code>Macro()</code></command> returns -1 if any step in
+    the macro returns -1, otherwise it returns 0. If the variable
+    <code>${MACRO_OFFSET}</code> is set when the macro finishes, the
+    application will continue executing at priority
+    <replaceable>n</replaceable>+1+<code>MACRO_OFFSET</code> if it exists,
+    otherwise it will continue at <replaceable>n</replaceable>+1.</simpara>
+
+    <simpara>If <code><command>Goto()</command></code> is called from within
+    the macro, macro execution ends and the call continues in the priority
+    specified in <command>Goto()</command>.</simpara>
+
+    <programlisting>; define a macro that counts down from the provided value:
+[macro-countdown]
+exten =&gt; s,1,Set(COUNT=${ARG1})
+exten =&gt; s,n,While($[ ${COUNT} &gt; 0])
+exten =&gt; s,n,SayNumber(${COUNT})
+exten =&gt; s,n,Set(COUNT=$[ ${COUNT} - 1 ])
+exten =&gt; s,n,EndWhile()
+
+[default]
+exten =&gt; 123,1,Macro(countdown,3)   ; call the macro "countdown" with ARG1=3
+exten =&gt; 124,1,Macro(countdown,5)   ; call the macro "countdown" with ARG1=5</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'Macro' =- 
+
+[Synopsis]
+Macro Implementation
+
+[Description]
+  Macro(macroname|arg1|arg2...): Executes a macro using the context
+'macro-&lt;macroname&gt;', jumping to the 's' extension of that context and
+executing each step, then returning when the steps end. 
+The calling extension, context, and priority are stored in ${MACRO_EXTEN}, 
+${MACRO_CONTEXT} and ${MACRO_PRIORITY} respectively.  Arguments become
+${ARG1}, ${ARG2}, etc in the macro context.
+If you Goto out of the Macro context, the Macro will terminate and control
+will be returned at the location of the Goto.
+If ${MACRO_OFFSET} is set at termination, Macro will attempt to continue
+at priority MACRO_OFFSET + N + 1 if such a step exists, and N + 1 otherwise.
+WARNING: Because of the way Macro is implemented (it executes the priorities
+         contained within it via sub-engine), and a fixed per-thread
+         memory stack allowance, macros are limited to 7 levels
+         of nesting (macro calling macro calling macro, etc.); It
+         may be possible that stack-intensive applications in deeply nested macros
+         could cause asterisk to crash earlier than this limit.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>22,23c22,23
+&lt;          may be possible that stack-intensive applications in deeply nested macros
+&lt;          could cause asterisk to crash earlier than this limit.
+---
+&gt;          may be possible that stack-intensive applications in deeply nested
+&gt;          macros could cause asterisk to crash earlier than this limit.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-goto" />, <xref
+      linkend="applications-gosub" /></para>
+    </formalpara>
+</section>

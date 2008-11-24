@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-deadagi" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>DeadAGI()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>DeadAGI()</code></secondary>
+    </indexterm>
+
+    <simpara>Runs an AGI compliant program on an inactive channel.</simpara>
+
+    <synopsis><command>DeadAGI(<replaceable>program</replaceable>,<replaceable>arguments</replaceable>)</command></synopsis>
+
+    <simpara>Runs an AGI compliant program on an inactive (on hook) channel.
+    With AGI (Asterisk Gateway Interface), you can manipulate channels with
+    programs written in practically any conceivable language. AGI programs can
+    control a channel, play audio, interpret and store DTMF tones; AGI
+    programs exchange data with Asterisk on <code>STDIN</code> und
+    <code>STDOUT</code>. The specified arguments are passed unadulterated to
+    the AGI program.</simpara>
+
+    <simpara>This application was developed for use on inactive (on hook)
+    channels, because the standard AGI interface will not work on a channel
+    after it is hung up. It is not necessary for the channel to be "dead" at
+    the time of execution, however!</simpara>
+
+    <simpara>The command <code><command>show agi</command></code>, entered on
+    the CLI, will give a list of the available AGI commands.</simpara>
+
+    <simpara>Returns -1 if the application causes a hang-up, or returns 0 on
+    exit without hang-up.</simpara>
+
+    <programlisting>; run AGI on a hung-up channel:
+exten =&gt; h,1,DeadAGI(agi-test)</programlisting>
+
+    <important>
+      <simpara>The channel will be treated as active as long as the AGI
+      program is running. This can have implications for CDRs.</simpara>
+
+      <para>Note also that DeadAGI applications receive a <code>SIGHUP</code>
+      signal when the channel is hung up, and it may need to be explicitly
+      ignored in your AGI program:<informaltable colsep="none" rowsep="none">
+          <tgroup cols="2">
+            <colspec colnum="1" colwidth="50pt" />
+
+            <tbody>
+              <row>
+                <entry>Perl</entry>
+
+                <entry><programlisting>$SIG{HUP} = "IGNORE";</programlisting></entry>
+              </row>
+
+              <row>
+                <entry>PHP</entry>
+
+                <entry><programlisting>pcntl_signal(SIGHUP, SIG_IGN);</programlisting>(PHP
+                must be compiled with <code>--enable-pcntl</code>; it is not
+                by default!)</entry>
+              </row>
+
+              <row>
+                <entry>Ruby</entry>
+
+                <entry><programlisting>trap('SIGHUP','IGNORE')</programlisting></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable></para>
+
+      <simpara>It is also important for the AGI program to stop communicating
+      after the hang-up, or it will receive a <code>SIGPIPE</code> signal and
+      end (unless the signal is explicitly ignored as in the example
+      above).</simpara>
+    </important>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'DeadAGI' =- 
+
+[Synopsis]
+Executes AGI on a hungup channel
+
+[Description]
+  [E|Dead]AGI(command|args): Executes an Asterisk Gateway Interface compliant
+program on a channel. AGI allows Asterisk to launch external programs
+written in any language to control a telephony channel, play audio,
+read DTMF digits, etc. by communicating with the AGI protocol on stdin
+and stdout.
+  This channel will stop dialplan execution on hangup inside of this
+application, except when using DeadAGI.  Otherwise, dialplan execution
+will continue normally.
+  A locally executed AGI script will receive SIGHUP on hangup from the channel
+except when using DeadAGI. This can be disabled by setting the AGISIGHUP channel
+variable to "no" before executing the AGI application.
+  Using 'EAGI' provides enhanced AGI, with incoming audio available out of band
+on file descriptor 3
+
+  Use the CLI command 'agi show' to list available agi commands
+  This application sets the following channel variable upon completion:
+     AGISTATUS      The status of the attempt to the run the AGI script
+                    text string, one of SUCCESS | FAILED | HANGUP</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>13,19c13,15
+&lt;   This channel will stop dialplan execution on hangup inside of this
+&lt; application, except when using DeadAGI.  Otherwise, dialplan execution
+&lt; will continue normally.
+&lt;   A locally executed AGI script will receive SIGHUP on hangup from the channel
+&lt; except when using DeadAGI. This can be disabled by setting the AGISIGHUP channel
+&lt; variable to "no" before executing the AGI application.
+&lt;   Using 'EAGI' provides enhanced AGI, with incoming audio available out of band
+---
+&gt; Returns -1 on hangup (except for DeadAGI) or if application requested
+&gt;  hangup, or 0 on non-hangup exit. 
+&gt; Using 'EAGI' provides enhanced AGI, with incoming audio available out of band
+22,25c18
+&lt;   Use the CLI command 'agi show' to list available agi commands
+&lt;   This application sets the following channel variable upon completion:
+&lt;      AGISTATUS      The status of the attempt to the run the AGI script
+&lt;                     text string, one of SUCCESS | FAILED | HANGUP
+---
+&gt; Use the CLI command 'show agi' to list available agi commands</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-agi" />, <xref
+      linkend="applications-fastagi" /></para>
+    </formalpara>
+</section>

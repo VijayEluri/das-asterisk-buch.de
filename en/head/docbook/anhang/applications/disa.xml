@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-disa" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>DISA()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>DISA()</code></secondary>
+    </indexterm>
+
+    <simpara>Direct Inward System Access lets outside callers enter the system
+    and provides them with an internal dial tone.</simpara>
+
+    <synopsis>DISA(<replaceable>password</replaceable>[,<replaceable>context</replaceable>[,<replaceable>callerid</replaceable>[,<replaceable>mailbox</replaceable>[@<replaceable>voicemail-context</replaceable>]]]])</synopsis>
+
+    <synopsis>DISA(<replaceable>password-file</replaceable>[,<replaceable>callerid</replaceable>[,<replaceable>mailbox</replaceable>[@<replaceable>voicemail-context</replaceable>]]])</synopsis>
+
+    <simpara>Provides an internal dial tone to outside callers such that they
+    can make calls as though calling from an internal extension. Upon hearing
+    the dial tone, an access code must be entered followed by the "#" key. If
+    it is correct, the caller hears another dial tone; this is the system dial
+    tone and the caller can now dial and initiate calls.</simpara>
+
+    <caution>
+      <para>This type of access represents a serious and real security risk
+      and should be planned and considered carefully before use, if it must be
+      used at all!</para>
+    </caution>
+
+    <simpara>The <replaceable>password</replaceable> option is a numeric
+    access code that must be entered in order for the caller to be able to
+    make calls out. Following this particular syntax, all the users that call
+    in will use the same access code. If you want to allow unsecured access,
+    enter the string "<code>no-password</code>" instead of an actual
+    password.</simpara>
+
+    <simpara>The <replaceable>context</replaceable> option specifies the
+    context in which the initiated call will be placed. If it is not provided,
+    <code><command>DISA()</command></code> assumes the context named
+    <code>disa</code>.</simpara>
+
+    <simpara>The <emphasis>callerid</emphasis> option sets the mailbox number
+    (and the optional <emphasis>voicemail-context</emphasis>) of a mailbox. If
+    the mailbox contains new messages the caller will hear a stuttered dial
+    tone to indicate this.</simpara>
+
+    <simpara>Alternatively, you may use password-file to define multiple
+    access passwords. Each line of this file can contain either an access code
+    or a combination of an access code and a context, separated by the "|"
+    (pipe) character. If no context is specified, <code>disa</code> is
+    assumed.</simpara>
+
+    <simpara>If the caller successfully authenticates with a valid access
+    code, <command>DISA()</command> will start the call in the specified
+    context.</simpara>
+
+    <programlisting>; Allow outside callers to dial 800 numbers, provided they know the
+; password (1234). Set the caller ID so that the call appears to be
+; coming from inside the company:
+[incoming]
+exten =&gt; 123,1,DISA(1234,disa,Widgets Inc &lt;212-555-3412&gt;)
+[disa]
+exten =&gt; _0800XXXXXXXX,1,Dial(Zap/4/${EXTEN})</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'DISA' =- 
+
+[Synopsis]
+DISA (Direct Inward System Access)
+
+[Description]
+DISA(&lt;numeric passcode&gt;[|&lt;context&gt;]) or DISA(&lt;filename&gt;)
+The DISA, Direct Inward System Access, application allows someone from 
+outside the telephone switch (PBX) to obtain an "internal" system 
+dialtone and to place calls from it as if they were placing a call from 
+within the switch.
+DISA plays a dialtone. The user enters their numeric passcode, followed by
+the pound sign (#). If the passcode is correct, the user is then given
+system dialtone on which a call may be placed. Obviously, this type
+of access has SERIOUS security implications, and GREAT care must be
+taken NOT to compromise your security.
+
+There is a possibility of accessing DISA without password. Simply
+exchange your password with "no-password".
+
+    Example: exten =&gt; s,1,DISA(no-password|local)
+
+Be aware that using this compromises the security of your PBX.
+
+The arguments to this application (in extensions.conf) allow either
+specification of a single global passcode (that everyone uses), or
+individual passcodes contained in a file. It also allows specification
+of the context on which the user will be dialing. If no context is
+specified, the DISA application defaults the context to "disa".
+Presumably a normal system will have a special context set up
+for DISA use with some or a lot of restrictions. 
+
+The file that contains the passcodes (if used) allows specification
+of either just a passcode (defaulting to the "disa" context, or
+passcode|context on each line of the file. The file may contain blank
+lines, or comments starting with "#" or ";". In addition, the
+above arguments may have |new-callerid-string appended to them, to
+specify a new (different) callerid to be used for this call, for
+example: numeric-passcode|context|"My Phone" &lt;(234) 123-4567&gt; or 
+full-pathname-of-passcode-file|"My Phone" &lt;(234) 123-4567&gt;.  Last
+but not least, |mailbox[@context] may be appended, which will cause
+a stutter-dialtone (indication "dialrecall") to be used, if the
+specified mailbox contains any new messages, for example:
+numeric-passcode|context||1234 (w/a changing callerid).  Note that
+in the case of specifying the numeric-passcode, the context must be
+specified if the callerid is specified also.
+
+If login is successful, the application looks up the dialed number in
+the specified (or default) context, and executes it if found.
+If the user enters an invalid extension and extension "i" (invalid) 
+exists in the context, it will be used. Also, if you set the 5th argument
+to 'NOANSWER', the DISA application will not answer initially.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>8c8
+&lt; DISA(&lt;numeric passcode&gt;[|&lt;context&gt;]) or DISA(&lt;filename&gt;)
+---
+&gt; DISA(&lt;numeric passcode&gt;[|&lt;context&gt;]) or disa(&lt;filename&gt;)
+28c28
+&lt; individual passcodes contained in a file. It also allows specification
+---
+&gt; individual passcodes contained in a file. It also allow specification
+52,53c52
+&lt; exists in the context, it will be used. Also, if you set the 5th argument
+&lt; to 'NOANSWER', the DISA application will not answer initially.
+---
+&gt; exists in the context, it will be used.</screen></para>
+      </formalpara>
+    </note>
+</section>

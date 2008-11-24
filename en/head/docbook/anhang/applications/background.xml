@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-background" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>Background()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>Background()</code></secondary>
+    </indexterm>
+
+    <simpara>Plays a sound file while listening for DTMF input from the
+    caller.</simpara>
+
+    <synopsis><command>Background(<replaceable>soundfile1</replaceable>[&amp;<replaceable>soundfile2</replaceable>...][,<replaceable>options</replaceable>[,<replaceable>language</replaceable>]])</command></synopsis>
+
+    <simpara>Plays the specified sound files while waiting for the caller to
+    dial an extension. Playback stops the moment the first digit is pressed.
+    Filenames must be provided without file extensions; Asterisk chooses the
+    file format with the minimum transcoding cost.</simpara>
+
+    <simpara>Allowed options may not be combined:</simpara>
+
+    <variablelist termlength="2">
+      <varlistentry>
+        <term><code>skip</code></term>
+
+        <listitem>
+          <simpara>Playback is skipped if the channel is not in the
+          <code>up</code> state when the application is run. If skip is
+          specified, the application ends immediately when the channel is hung
+          up.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>noanswer</code></term>
+
+        <listitem>
+          <simpara>The channel is only answered after the specified sound file
+          has been played. The default behavior is to answer the channel
+          automatically before playing the sound file. Note that not all
+          channel types allow playback of a message before being
+          answered.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <simpara>The <code>language</code> parameter can be used to specify a
+    language for the sound file(s) played, in the event this should be
+    different than the language currently specified for the channel.</simpara>
+
+    <simpara>Returns -1 if hung up or if the specified sound file does not
+    exist, otherwise returns 0.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Background(please-enter-extension)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'BackGround' =- 
+
+[Synopsis]
+Play an audio file while waiting for digits of an extension to go to.
+
+[Description]
+  Background(filename1[&amp;filename2...][|options[|langoverride][|context]]):
+This application will play the given list of files while waiting for an
+extension to be dialed by the calling channel. To continue waiting for digits
+after this application has finished playing files, the WaitExten application
+should be used. The 'langoverride' option explicitly specifies which language
+to attempt to use for the requested sound files. If a 'context' is specified,
+this is the dialplan context that this application will use when exiting to a
+dialed extension.  If one of the requested sound files does not exist, call processing will be
+terminated.
+  Options:
+    s - Causes the playback of the message to be skipped
+          if the channel is not in the 'up' state (i.e. it
+          hasn't been answered yet). If this happens, the
+          application will return immediately.
+    n - Don't answer the channel before playing the files.
+    m - Only break if a digit hit matches a one digit
+          extension in the destination context.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; Play an audio file while waiting for digits of an extension to go to.
+---
+&gt; Play a file while awaiting extension
+12c12
+&lt; should be used. The 'langoverride' option explicitly specifies which language
+---
+&gt; should be used. The 'langoverride' option explicity specifies which language
+18c18
+&lt;     s - Causes the playback of the message to be skipped
+---
+&gt;     s - causes the playback of the message to be skipped
+20c20
+&lt;           hasn't been answered yet). If this happens, the
+---
+&gt;           hasn't been answered yet.) If this happens, the
+22,24c22,24
+&lt;     n - Don't answer the channel before playing the files.
+&lt;     m - Only break if a digit hit matches a one digit
+&lt;           extension in the destination context.
+---
+&gt;     n - don't answer the channel before playing the files
+&gt;     m - only break if a digit hit matches a one digit
+&gt;           extension in the destination context</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-playback" />, <xref
+      linkend="applications-backgrounddetect" />, CLI-Befehl <code>show
+      translation</code></para>
+    </formalpara>
+</section>

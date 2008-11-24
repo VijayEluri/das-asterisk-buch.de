@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-removequeuemember" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>RemoveQueueMember()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>RemoveQueueMember()</code></secondary>
+    </indexterm>
+
+    <simpara>Removes queue members dynamically.</simpara>
+
+    <synopsis><command>RemoveQueueMember(<replaceable>queue</replaceable>[,<replaceable>interface</replaceable>[,<replaceable>options</replaceable>]])</command></synopsis>
+
+    <simpara>Removes a member from the queue dynamically. If
+    <replaceable>interface</replaceable> is not provided, the application
+    removes the current interface (<emphasis>i.e.</emphasis>, the interface
+    that is active in the current priority) from the specified
+    queue.</simpara>
+
+    <simpara>If the interface is not in the specified queue and priority
+    <replaceable>n</replaceable>+101 exists, the application jumps to this
+    priority; otherwise returns an error.</simpara>
+
+    <simpara>Returns -1 on error, otherwise returns 0.</simpara>
+
+    <programlisting>; Remove SIP/3000 from the support queue:
+exten =&gt; 123,1,RemoveQueueMember(support,SIP/3000)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'RemoveQueueMember' =- 
+
+[Synopsis]
+Dynamically removes queue members
+
+[Description]
+   RemoveQueueMember(queuename[|interface[|options]]):
+Dynamically removes interface to an existing queue
+If the interface is NOT in the queue and there exists an n+101 priority
+then it will then jump to this priority.  Otherwise it will return an error
+The option string may contain zero or more of the following characters:
+       'j' -- jump to +101 priority when appropriate.
+  This application sets the following channel variable upon completion:
+     RQMSTATUS      The status of the attempt to remove a queue member as a
+                     text string, one of
+           REMOVED | NOTINQUEUE | NOSUCHQUEUE 
+Example: RemoveQueueMember(techsupport|SIP/3000)</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-addqueuemember" />, <xref
+      linkend="applications-queue" />, <filename>queues.conf</filename></para>
+    </formalpara>
+</section>

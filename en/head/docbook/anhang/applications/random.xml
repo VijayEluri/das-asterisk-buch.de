@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-random" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>Random()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>Random()</code></secondary>
+    </indexterm>
+
+    <simpara>Jumps to a priority randomly.</simpara>
+
+    <synopsis><command>Random([<replaceable>probability</replaceable>]:[[<replaceable>context</replaceable>,]<replaceable>extension</replaceable>,]<replaceable>priority</replaceable>)</command></synopsis>
+
+    <simpara>Jumps to the specified priority, extension and context based on
+    the <replaceable>probability</replaceable> provided, which must be a whole
+    number between 1 and 100; in <replaceable>probability</replaceable>
+    percent of cases, the call will jump to the specified priority.</simpara>
+
+    <programlisting>; Game of chance with 20% chance of winning:
+exten =&gt; 123,1,Random(20:won,1)
+exten =&gt; 123,n,Goto(lost,1)
+
+exten =&gt; won,1,Playback(hooray)
+exten =&gt; won,n,Goto(123,1)
+
+exten =&gt; lost,1,Playback(sorry)
+exten =&gt; lost,n,Goto(123,1)</programlisting>
+
+    <important>
+      <simpara>This application is deprecated as of 1.4; use the Asterisk
+      function <code>RAND()</code> instead.</simpara>
+    </important>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'Random' =- 
+
+[Synopsis]
+Conditionally branches, based upon a probability
+
+[Description]
+Random([probability]:[[context|]extension|]priority)
+  probability := INTEGER in the range 1 to 100
+DEPRECATED: Use GotoIf($[${RAND(1,100)} &gt; &lt;number&gt;]?&lt;label&gt;)</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>10d9
+&lt; DEPRECATED: Use GotoIf($[${RAND(1,100)} &gt; &lt;number&gt;]?&lt;label&gt;)</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="functions-rand" /></para>
+    </formalpara>
+</section>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-mixmonitor" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>MixMonitor()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>MixMonitor()</code></secondary>
+    </indexterm>
+
+    <simpara>Records the audio on the current channel but mixes it before
+    writing it to a file.</simpara>
+
+    <synopsis><command>MixMonitor(<replaceable>fileprefix</replaceable>.<replaceable>format</replaceable>[,<replaceable>options</replaceable>[,<replaceable>command</replaceable>]])</command></synopsis>
+
+    <simpara>Starts recording the audio on the current channel. Instead of
+    recording each direction in a separate file the way
+    <code><command>Monitor()</command></code> would, mixes the two audio
+    streams on-the-fly and writes the result to the specified file.</simpara>
+
+    <para>Options:<variablelist termlength="6">
+        <varlistentry>
+          <term><code>a</code></term>
+
+          <listitem>
+            <simpara>Appends the audio stream to an existing file.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>b</code></term>
+
+          <listitem>
+            <simpara>Saves audio to the file only while the channel is
+            bridged, <emphasis>i.e.</emphasis> once a conversation has
+            actually begun, and only until it is hung up.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>v(<replaceable>x</replaceable>)</code></term>
+
+          <listitem>
+            <simpara>Adjusts the heard volume by an increment of
+            <code>x</code> (range -4 to 4).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>V(<replaceable>x</replaceable>)</code></term>
+
+          <listitem>
+            <simpara>Adjusts the spoken volume by an increment of
+            <code>x</code> (range -4 to 4).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>W(<replaceable>x</replaceable>)</code></term>
+
+          <listitem>
+            <simpara>Adjusts both heard and spoken volume by an increment of
+            <code>x</code> (range -4 to 4).</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <simpara>The <replaceable>command</replaceable> (if provided) is executed
+    after recording. The variable <code>${MIXMONITOR_FILENAME}</code> is set
+    to the filename used for the recording.</simpara>
+
+    <simpara>See also additional information in the description to
+    <code><command>Monitor()</command></code>.</simpara>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'MixMonitor' =- 
+
+[Synopsis]
+Record a call and mix the audio during the recording
+
+[Description]
+  MixMonitor(&lt;file&gt;.&lt;ext&gt;[|&lt;options&gt;[|&lt;command&gt;]])
+
+Records the audio on the current channel to the specified file.
+If the filename is an absolute path, uses that path, otherwise
+creates the file in the configured monitoring directory from
+asterisk.conf.
+
+Valid options:
+ a      - Append to the file instead of overwriting it.
+ b      - Only save audio to the file while the channel is bridged.
+          Note: does not include conferences.
+ v(&lt;x&gt;) - Adjust the heard volume by a factor of &lt;x&gt; (range -4 to 4)
+ V(&lt;x&gt;) - Adjust the spoken volume by a factor of &lt;x&gt; (range -4 to 4)
+ W(&lt;x&gt;) - Adjust the both heard and spoken volumes by a factor of &lt;x&gt;
+         (range -4 to 4)
+
+&lt;command&gt; will be executed when the recording is over
+Any strings matching ^{X} will be unescaped to ${X} and 
+all variables will be evaluated at that time.
+The variable MIXMONITOR_FILENAME will contain the filename used to record.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-monitor" /></para>
+    </formalpara>
+</section>

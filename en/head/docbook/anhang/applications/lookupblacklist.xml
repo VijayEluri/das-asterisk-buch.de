@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-lookupblacklist" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>LookupBlacklist()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>LookupBlacklist()</code></secondary>
+    </indexterm>
+
+    <simpara>Checks the caller ID of a call against the local number blacklist
+    in the Asterisk database (AstDB).</simpara>
+
+    <synopsis><command>LookupBlacklist([<replaceable>options</replaceable>])</command></synopsis>
+
+    <simpara>Searches for the caller ID number (or name) of the active channel
+    in the <code>blacklist</code> family of the AstDB.des aktiven Channels in
+    der AstDB in der Familie <code>blacklist</code>. If the option j is given,
+    the number exists in the AstDB and the priority
+    <replaceable>n</replaceable>+101 exists, the channel is handed to that
+    priority. If no caller ID is available, the application does
+    nothing.</simpara>
+
+    <simpara>Sets the channel variable <code>LOOKUPBLSTATUS</code> to
+    <code>FOUND</code> or <code>NOTFOUND</code>.</simpara>
+
+    <simpara>To add numbers to the blacklist from the CLI, enter
+    <code>database put blacklist "<replaceable>number</replaceable>"
+    "1"</code>; similarly <code>database del blacklist
+    "<replaceable>number</replaceable>"</code> to delete the entry and
+    <code>database show blacklist</code> for a listing of all the entries in
+    the database.</simpara>
+
+    <programlisting>; Block calls from numbers in the blacklist,
+; otherwise dial the number in the variable ${PETER}:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,LookupBlacklist()
+exten =&gt; 123,n,GotoIf($["${LOOKUPBLSTATUS}" = "FOUND"]?black,1)
+exten =&gt; 123,n,Dial(${PETER},30)
+
+exten =&gt; black,1,Playback(tt-allbusy)
+exten =&gt; black,n,Hangup()</programlisting>
+
+    <para>You can accomplish the same effect as <code>LookupBlacklist()</code>
+    with the following dialplan entries:<programlisting>exten =&gt; 123,1,Macro(blacklist,${CALLERID(num)})
+exten =&gt; 123,n,Dial(IAX2/user:secret@widgets.biz/500)
+
+[macro-blacklist]
+; Aufruf: Macro(blacklist,${CALLERID(num)})
+exten =&gt; s,1,GotoIf(${DB_EXISTS(blacklist/${ARG1})}?black)
+exten =&gt; s,10(black),NoOp(${ARG1} is in the blacklist)
+exten =&gt; s,n,Busy(5)
+exten =&gt; s,n,Hangup()</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'LookupBlacklist' =- 
+
+[Synopsis]
+Look up Caller*ID name/number from blacklist database
+
+[Description]
+  LookupBlacklist(options): Looks up the Caller*ID number on the active
+channel in the Asterisk database (family 'blacklist').  
+The option string may contain the following character:
+ 'j' -- jump to n+101 priority if the number/name is found in the blacklist
+This application sets the following channel variable upon completion:
+ LOOKUPBLSTATUS  The status of the Blacklist lookup as a text string, one of
+  FOUND | NOTFOUND
+Example: exten =&gt; 1234,1,LookupBlacklist()</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+</section>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-sendimage" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>SendImage()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>SendImage()</code></secondary>
+    </indexterm>
+
+    <simpara>Sends an image file to the channel.</simpara>
+
+    <synopsis><command>SendImage(<replaceable>filename</replaceable>[,<replaceable>options</replaceable>])</command></synopsis>
+
+    <simpara>Sends an image file to the channel. If images are supported and
+    the transmission fails, the application hangs up; otherwise it continues
+    on the next priority. If option <code>j</code> is set, the application
+    jumps to priority <replaceable>n</replaceable>+101, if it
+    exists.</simpara>
+
+    <simpara>Returns 0 on successful transmission of the image or if the
+    channel does not support images, otherwise returns -1. Sets the channel
+    variable <code>SENDIMAGESTATUS</code> to <code>OK</code> or
+    <code>NOSUPPORT</code>.</simpara>
+
+    <programlisting>exten =&gt; 123,1,SendImage(logo.jpg)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'SendImage' =- 
+
+[Synopsis]
+Send an image file
+
+[Description]
+  SendImage(filename): Sends an image on a channel. 
+If the channel supports image transport but the image send
+fails, the channel will be hung up. Otherwise, the dialplan
+continues execution.
+The option string may contain the following character:
+ 'j' -- jump to priority n+101 if the channel doesn't support image transport
+This application sets the following channel variable upon completion:
+ SENDIMAGESTATUS  The status is the result of the attempt as a text string, one of
+  OK | NOSUPPORT</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-sendtext" />, <xref
+      linkend="applications-sendurl" /></para>
+    </formalpara>
+</section>

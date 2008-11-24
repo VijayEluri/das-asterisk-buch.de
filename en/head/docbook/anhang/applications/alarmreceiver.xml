@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-alarmreceiver" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>AlarmReceiver()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>AlarmReceiver()</code></secondary>
+    </indexterm>
+
+    <simpara>Receives alarm reports from a burglar or fire alarm
+    panel.</simpara>
+
+    <synopsis><command>AlarmReceiver()</command></synopsis>
+
+    <simpara>Emulates an alarm receiver and allows Asterisk to receive and
+    process alarm reports in proprietary alarm panel signalling formats from
+    burglar and fire alarm panels. Only Ademco Contact ID formatted alarm
+    reports are supported at this time.</simpara>
+
+    <simpara>Once <command><code>AlarmReceiver()</code></command> is called,
+    Asterisk performs a handshake with the connected alarm panel, waits for it
+    to transmit events, then validates and stores them. When the panel has
+    hung up, <command>AlarmReceiver()</command> runs the system command
+    specified in the <code>eventcmd</code> of
+    <filename>alarmreceiver.conf</filename>. The
+    <filename>alarmreceiver.conf</filename> also contains DTMF timing settings
+    and acknowledgement tone volume.</simpara>
+
+    <simpara>This application has not been certified for use in critical
+    environments where it is the only means of polling alarm events. Use it at
+    your own risk! Before implementing, be sure to test it
+    thoroughly.</simpara>
+
+    <simpara>Always returns 0.</simpara>
+
+    <programlisting>; Process alarm events:
+exten =&gt; s,1,AlarmReceiver()</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'AlarmReceiver' =- 
+
+[Synopsis]
+Provide support for receiving alarm reports from a burglar or fire alarm panel
+
+[Description]
+  AlarmReceiver(): Only 1 signalling format is supported at this time: Ademco
+Contact ID. This application should be called whenever there is an alarm
+panel calling in to dump its events. The application will handshake with the
+alarm panel, and receive events, validate them, handshake them, and store them
+until the panel hangs up. Once the panel hangs up, the application will run the
+system command specified by the eventcmd setting in alarmreceiver.conf and pipe
+the events to the standard input of the application. The configuration file also
+contains settings for DTMF timing, and for the loudness of the acknowledgement
+tones.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; Provide support for receiving alarm reports from a burglar or fire alarm panel
+---
+&gt; Provide support for receving alarm reports from a burglar or fire alarm panel</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><filename>alarmreceiver.conf</filename></para>
+    </formalpara>
+</section>

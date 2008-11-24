@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-endwhile" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>EndWhile()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>EndWhile()</code></secondary>
+    </indexterm>
+
+    <simpara>Ends a while loop.</simpara>
+
+    <synopsis><command>EndWhile()</command></synopsis>
+
+    <simpara>Returns to the previously called
+    <command><code>While()</code></command> statement. For a complete
+    description of while loops in Asterisk, see <xref
+    linkend="applications-while" />.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Set(i=1)
+exten =&gt; 123,n,While($[${i} &lt; 5])
+exten =&gt; 123,n,SayNumber(${i})
+exten =&gt; 123,n,Set(i=$[${i} + 1])
+exten =&gt; 123,n,EndWhile()
+exten =&gt; 123,n,Hangup()</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'EndWhile' =- 
+
+[Synopsis]
+End a while loop
+
+[Description]
+Usage:  EndWhile()
+Return to the previous called While</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; End a while loop
+---
+&gt; End A While Loop
+10a11
+&gt; </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-while" />, <xref
+      linkend="applications-gotoif" /></para>
+    </formalpara>
+</section>

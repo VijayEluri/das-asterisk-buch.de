@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-controlplayback" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>ControlPlayback()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>ControlPlayback()</code></secondary>
+    </indexterm>
+
+    <simpara>Plays a sound file with fast forward and rewind
+    controls.</simpara>
+
+    <synopsis><command>ControlPlayback(<replaceable>soundfile</replaceable>[,<replaceable>skipms</replaceable>[,<replaceable>ffchar</replaceable>[,<replaceable>rewchar</replaceable>[,<replaceable>stopchar</replaceable>[,<replaceable>pausechar</replaceable>]]]]])</command></synopsis>
+
+    <simpara>Plays the specified file; the caller can manipulate playback by
+    pressing the defined keys<code> <replaceable>ffchar</replaceable></code>
+    and <code><replaceable>rewchar</replaceable></code>. The defaults are
+    "<code>#"</code> (forward) and "*" (backward). Playback is stopped when
+    <code><replaceable>stopchar</replaceable></code> is pressed (if it is
+    defined). If the file does not exist, the application jumps to priority
+    <replaceable>n</replaceable>+101, if it exists.</simpara>
+
+    <simpara>The <replaceable>pausechar</replaceable> option is similar in
+    behavior to <replaceable>stopchar</replaceable> except that playback can
+    be resumed by pressing <replaceable>pausechar</replaceable> a second
+    time.</simpara>
+
+    <simpara>The <code><replaceable>skipms</replaceable></code> defines how
+    far forward or backward <command>ControlPlayback()</command> will skip in
+    the file when <code><replaceable>ffchar</replaceable></code> or
+    <code><replaceable>rewchar</replaceable></code> is pressed.</simpara>
+
+    <simpara>Returns -1 if the caller hangs up during playback.</simpara>
+
+    <programlisting>; play "symphony" to the caller with playback control:
+exten =&gt; 123,1,ControlPlayback(symphony,5000,#,*,5,0)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'ControlPlayback' =- 
+
+[Synopsis]
+Play a file with fast forward and rewind
+
+[Description]
+  ControlPlayback(file[|skipms[|ff[|rew[|stop[|pause[|restart|options]]]]]]]):
+This application will play back the given filename. By default, the '*' key
+can be used to rewind, and the '#' key can be used to fast-forward.
+Parameters:
+  skipms  - This is number of milliseconds to skip when rewinding or
+            fast-forwarding.
+  ff      - Fast-forward when this DTMF digit is received.
+  rew     - Rewind when this DTMF digit is received.
+  stop    - Stop playback when this DTMF digit is received.
+  pause   - Pause playback when this DTMF digit is received.
+  restart - Restart playback when this DTMF digit is received.
+Options:
+  j - Jump to priority n+101 if the requested file is not found.
+This application sets the following channel variable upon completion:
+  CPLAYBACKSTATUS -  This variable contains the status of the attempt as a text
+                     string, one of: SUCCESS | USERSTOPPED | ERROR</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-playback" />, <xref
+      linkend="applications-background" /></para>
+    </formalpara>
+</section>

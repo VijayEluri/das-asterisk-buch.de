@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-realtimeupdate" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>RealTimeUpdate()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>RealTimeUpdate()</code></secondary>
+    </indexterm>
+
+    <simpara>Updates a value in the realtime configuration database.</simpara>
+
+    <synopsis><command>RealTimeUpdate(<replaceable>family</replaceable>,<replaceable>column</replaceable>,<replaceable>value</replaceable>,<replaceable>columnUpdate</replaceable>,<replaceable>valueUpdate</replaceable>)</command></synopsis>
+
+    <simpara>Updates a value in the realtime configuration database. Updates
+    the field <replaceable>columnUpdate</replaceable> with the value
+    <replaceable>valueUpdate</replaceable> in the record matching
+    <replaceable>family</replaceable>, <replaceable>column</replaceable> and
+    <replaceable>value</replaceable>.</simpara>
+
+    <programlisting>; As in our RealTime() example, we can update the record like so:
+exten =&gt; 123,1,RealTimeUpdate(sipusers,ext,5678,firstname,Richard)
+; resulting SQL command:
+; UPDATE sip_users SET firstname = 'Richard' WHERE ext = '5678'</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'RealTimeUpdate' =- 
+
+[Synopsis]
+Realtime Data Rewrite
+
+[Description]
+Use the RealTime config handler system to update a value
+RealTimeUpdate(&lt;family&gt;|&lt;colmatch&gt;|&lt;value&gt;|&lt;newcol&gt;|&lt;newval&gt;)
+
+The column &lt;newcol&gt; in 'family' matching column &lt;colmatch&gt;=&lt;value&gt; will be
+updated to &lt;newval&gt;.  REALTIMECOUNT will be set with the number of rows
+updated or -1 if an error occurs.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>11,13c11
+&lt; The column &lt;newcol&gt; in 'family' matching column &lt;colmatch&gt;=&lt;value&gt; will be
+&lt; updated to &lt;newval&gt;.  REALTIMECOUNT will be set with the number of rows
+&lt; updated or -1 if an error occurs.
+---
+&gt; The column &lt;newcol&gt; in 'family' matching column &lt;colmatch&gt;=&lt;value&gt; will be updated to &lt;newval&gt;</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-realtime" /></para>
+    </formalpara>
+</section>

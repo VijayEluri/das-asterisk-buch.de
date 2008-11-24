@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-zapras" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>ZapRAS()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>ZapRAS()</code></secondary>
+    </indexterm>
+
+    <simpara>Starts the Zaptel ISDN Remote Access Server.</simpara>
+
+    <synopsis><command>ZapRAS(<replaceable>args</replaceable>)</command></synopsis>
+
+    <simpara>Starts an ISDN RAS Server using <command>pppd</command> on the
+    current channel. The channel must be available (<emphasis>i.e.</emphasis>
+    PRI Source) and a Zap channel. There is no modem emulation.</simpara>
+
+    <simpara>The point-to-point daemon <command>pppd</command> must be
+    configured to recognize a Zap interface. The
+    <replaceable>args</replaceable> are a "|" delimited list of
+    parameters.<footnote>
+        <simpara>The list is long and complex and would not be appropriate in
+        this summary. For more details, see <ulink
+        url="http://www.voip-info.org/wiki/view/Asterisk+cmd+ZapRAS">http://www.voip-info.org/wiki/view/Asterisk+cmd+ZapRAS</ulink></simpara>
+      </footnote>Returns -1.</simpara>
+
+    <simpara>This application is only intended for use with ISDN lines, and
+    your kernel must be patched and configured to support
+    <command><code>ZapRAS()</code></command>, as well as be configured to
+    support PPP.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,ZapRAS(debug|64000|noauth|netmask|255.255.255.0|10.0.0.1:10.0.0.2)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'ZapRAS' =- 
+
+[Synopsis]
+Executes Zaptel ISDN RAS application
+
+[Description]
+  ZapRAS(args): Executes a RAS server using pppd on the given channel.
+The channel must be a clear channel (i.e. PRI source) and a Zaptel
+channel to be able to use this function (No modem emulation is included).
+Your pppd must be patched to be zaptel aware. Arguments should be
+separated by | characters.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+</section>

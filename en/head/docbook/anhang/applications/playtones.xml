@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-playtones" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>Playtones()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>Playtones()</code></secondary>
+    </indexterm>
+
+    <simpara>Plays back one or more tones.</simpara>
+
+    <synopsis><command>Playtones(<replaceable>tones</replaceable>)</command></synopsis>
+
+    <simpara>Plays a list of one or more tones. <command>Playtones()</command>
+    runs in the background, i.e. it will continue to play tones while
+    execution of the dialplan continues. The argument
+    <code><replaceable>tones</replaceable></code> is either a tone name as
+    defined in <filename>indications.conf</filename> or a list of tone
+    frequencies and durations. For an explanation on how to define your own
+    tones, see <filename>indications.conf</filename>.</simpara>
+
+    <simpara>Use <code><command>StopPlaytones()</command></code> to stop
+    playing tones.</simpara>
+
+    <programlisting>; Two seconds "busy", then two seconds "congestion" tones:
+exten =&gt; 123,1,Playtones(busy)
+exten =&gt; 123,n,Wait(2)
+exten =&gt; 123,n,StopPlaytones()
+exten =&gt; 123,n,Playtones(congestion)
+exten =&gt; 123,n,Wait(2)
+exten =&gt; 123,n,StopPlaytones()
+exten =&gt; 123,n,Goto(1)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'PlayTones' =- 
+
+[Synopsis]
+Play a tone list
+
+[Description]
+PlayTones(arg): Plays a tone list. Execution will continue with the next step immediately,
+while the tones continue to play.
+Arg is either the tone name defined in the indications.conf configuration file, or a directly
+specified list of frequencies and durations.
+See the sample indications.conf for a description of the specification of a tonelist.
+
+Use the StopPlayTones application to stop the tones playing.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-stopplaytones" />,
+      <filename>indications.conf</filename>, <xref
+      linkend="applications-busy" />, <xref
+      linkend="applications-congestion" />, <xref
+      linkend="applications-progress" />, <xref
+      linkend="applications-ringing" /></para>
+    </formalpara>
+</section>

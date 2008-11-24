@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-playback" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>Playback()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>Playback()</code></secondary>
+    </indexterm>
+
+    <simpara>Plays a sound file to the caller.</simpara>
+
+    <synopsis><command>Playback(<replaceable>filename</replaceable>[,<replaceable>options</replaceable>])</command></synopsis>
+
+    <simpara>Plays <code><replaceable>filename</replaceable></code> (in the
+    directory <filename>/var/lib/asterisk/sounds/</filename>) to the caller.
+    The filename does not include an extension; Asterisk automatically selects
+    the format with the lowest transcoding cost. Options may be
+    specified.</simpara>
+
+    <simpara>The option <code>skip</code> causes the message to be skipped if
+    the channel is not in the up state.</simpara>
+
+    <simpara>Answers the channel before the audio file is played, unless
+    <code>noanswer</code> is specified. Note that not alle channels support
+    playback when 'on hook'.</simpara>
+
+    <simpara>Returns -1 when the channel is hung up. If the file cannot be
+    found, jumps to priority <replaceable>n</replaceable>+101 if it
+    exists.</simpara>
+
+    <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Playback(tt-weasels)</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'Playback' =- 
+
+[Synopsis]
+Play a file
+
+[Description]
+  Playback(filename[&amp;filename2...][|option]):  Plays back given filenames (do not put
+extension). Options may also be included following a pipe symbol. The 'skip'
+option causes the playback of the message to be skipped if the channel
+is not in the 'up' state (i.e. it hasn't been  answered  yet). If 'skip' is 
+specified, the application will return immediately should the channel not be
+off hook.  Otherwise, unless 'noanswer' is specified, the channel will
+be answered before the sound is played. Not all channels support playing
+messages while still on hook. If 'j' is specified, the application
+will jump to priority n+101 if present when a file specified to be played
+does not exist.
+This application sets the following channel variable upon completion:
+ PLAYBACKSTATUS    The status of the playback attempt as a text string, one of
+               SUCCESS | FAILED</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-background" /></para>
+    </formalpara>
+</section>

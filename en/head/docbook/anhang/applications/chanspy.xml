@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-chanspy" lang="en" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>ChanSpy()</literal></title>
+
+    <indexterm significance="preferred">
+      <primary>Dialplan Applications</primary>
+
+      <secondary><code>ChanSpy()</code></secondary>
+    </indexterm>
+
+    <simpara>Enables eavesdropping on a channel.</simpara>
+
+    <synopsis><command>ChanSpy([<replaceable>channelprefix</replaceable>[,<replaceable>options</replaceable>]])</command></synopsis>
+
+    <simpara>Allows eavesdropping on a conversation on any specified channel
+    (this is different from <code>ZapBarge()</code>/<code>ZapScan()</code>
+    which are bound to Zap channels only). Note that this application only
+    listens on single channels, rather than the conversation <emphasis>per
+    se</emphasis>, even though it does capture incoming and outgoing audio on
+    the channel.</simpara>
+
+    <warning>
+      <para>Be aware that listening to calls may be subject to freedom of
+      information and privacy legislation in your jurisdiction. As a matter of
+      professional practice you should know the terms under which it is lawful
+      to eavesdrop on telephone calls. In most jurisdictions it is illegal to
+      eavesdrop on a call without the knowledge of the participants.</para>
+    </warning>
+
+    <simpara>If <emphasis>channelprefix</emphasis> is specified, only channels
+    with a name beginning with that string are available for
+    listening.</simpara>
+
+    <para><code>Options</code> may be combined:<variablelist termlength="11">
+        <varlistentry>
+          <term><code>b</code></term>
+
+          <listitem>
+            <simpara>(bridged) Restrict to bridged (<emphasis>i.e.</emphasis>
+            connected) channels.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>g(<replaceable>grp</replaceable>)</code></term>
+
+          <listitem>
+            <simpara>(group) Restrict to channels whose ${SPYGROUP} channel
+            variable contains the value
+            <code><replaceable>grp</replaceable></code> in a "<code>:</code>"
+            (colon) delimited list.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>q</term>
+
+          <listitem>
+            <simpara>(quiet) Do not play beep tones (nor announce the channel
+            name) when switching channels.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>r([<replaceable>name</replaceable>])</code></term>
+
+          <listitem>
+            <para>(record) Record the spying session in a file in the
+            <filename>/var/spool/asterisk/monitor/</filename> directory. The
+            default filename prefix is <filename>chanspy</filename>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>v[(<replaceable>value</replaceable>)]</code></term>
+
+          <listitem>
+            <para>(volume) Set the initial volume. The range of allowed values
+            is <code>from -4</code> (quiet) bis <code>4</code> (loud).</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>w</code></term>
+
+          <listitem>
+            <simpara>(whisper) Activate whisper mode. Allows the user on the
+            spying channel to speak to the channel user on the spied-on
+            channel, without the remote user hearing. (This option is
+            available as of Asterisk 1.4.)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>W</code></term>
+
+          <listitem>
+            <simpara>(private whisper) Private whisper mode. Like
+            <code>w</code>, except that the spying channel cannot hear the
+            spied-on channel (it's not immediately clear where this would be
+            useful, but Asterisk has found myriad applications!)</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <para>While listening, the following keypad input is
+    accepted:<variablelist termlength="6">
+        <varlistentry>
+          <term><code>#</code></term>
+
+          <listitem>
+            <simpara>Increases volume stepwise (from -4 to 4)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>*</code></term>
+
+          <listitem>
+            <simpara>Switches to another channel</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code><replaceable>X..X</replaceable>#</code></term>
+
+          <listitem>
+            <simpara>A set of digits of arbitrary length, ended with
+            <code>#</code>, is attached to
+            <code><replaceable>channelprefix</replaceable></code>. For
+            example, if the extension invokes <code>ChanSpy(Agent)</code> and
+            the user on the spying channel dials <code>1234#</code>, the
+            spying channel will begin spying on the channel
+            <code>Agent/1234</code>.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+
+    <programlisting>; Eavesdrop on an agent:
+exten =&gt; 123,1,ChanSpy(Agent)
+exten =&gt; 123,n,Hangup()
+
+; Example using g:
+; for calls to 0, set SPYGROUP 10005:
+exten =&gt; _0.,1,Set(SPYGROUP=10005)
+;...
+; Listen to channels in SPYGROUP 10005:
+exten =&gt; 123,1,ChanSpy(,g(10005))
+exten =&gt; 123,n,Hangup()</programlisting>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about application 'ChanSpy' =- 
+
+[Synopsis]
+Listen to a channel, and optionally whisper into it
+
+[Description]
+  ChanSpy([chanprefix][|options]): This application is used to listen to the
+audio from an Asterisk channel. This includes the audio coming in and
+out of the channel being spied on. If the 'chanprefix' parameter is specified,
+only channels beginning with this string will be spied upon.
+  While spying, the following actions may be performed:
+    - Dialing # cycles the volume level.
+    - Dialing * will stop spying and look for another channel to spy on.
+    - Dialing a series of digits followed by # builds a channel name to append
+      to 'chanprefix'. For example, executing ChanSpy(Agent) and then dialing
+      the digits '1234#' while spying will begin spying on the channel
+      'Agent/1234'.
+  Options:
+    b             - Only spy on channels involved in a bridged call.
+    g(grp)        - Match only channels where their ${SPYGROUP} variable is set to
+                    contain 'grp' in an optional : delimited list.
+    q             - Don't play a beep when beginning to spy on a channel, or speak the
+                    selected channel name.
+    r[(basename)] - Record the session to the monitor spool directory. An
+                    optional base for the filename may be specified. The
+                    default is 'chanspy'.
+    v([value])    - Adjust the initial volume in the range from -4 to 4. A
+                    negative value refers to a quieter setting.
+    w             - Enable 'whisper' mode, so the spying channel can talk to
+                    the spied-on channel.
+    W             - Enable 'private whisper' mode, so the spying channel can
+                    talk to the spied-on channel but cannot listen to that
+                    channel.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>5c5,6
+&lt; Listen to a channel, and optionally whisper into it
+---
+&gt; Listen to the audio of an active channel
+&gt; 
+9c10
+&lt; audio from an Asterisk channel. This includes the audio coming in and
+---
+&gt; audio from an active Asterisk channel. This includes the audio coming in and
+12c13
+&lt;   While spying, the following actions may be performed:
+---
+&gt;   While Spying, the following actions may be performed:
+17c18
+&lt;       the digits '1234#' while spying will begin spying on the channel
+---
+&gt;       the digits '1234#' while spying will begin spying on the channel,
+20,24c21,24
+&lt;     b             - Only spy on channels involved in a bridged call.
+&lt;     g(grp)        - Match only channels where their ${SPYGROUP} variable is set to
+&lt;                     contain 'grp' in an optional : delimited list.
+&lt;     q             - Don't play a beep when beginning to spy on a channel, or speak the
+&lt;                     selected channel name.
+---
+&gt;     b - Only spy on channels involved in a bridged call.
+&gt;     g(grp) - Match only channels where their ${SPYGROUP} variable is set to
+&gt;              'grp'.
+&gt;     q - Don't play a beep when beginning to spy on a channel.
+28,34c28,29
+&lt;     v([value])    - Adjust the initial volume in the range from -4 to 4. A
+&lt;                     negative value refers to a quieter setting.
+&lt;     w             - Enable 'whisper' mode, so the spying channel can talk to
+&lt;                     the spied-on channel.
+&lt;     W             - Enable 'private whisper' mode, so the spying channel can
+&lt;                     talk to the spied-on channel but cannot listen to that
+&lt;                     channel.
+---
+&gt;     v([value]) - Adjust the initial volume in the range from -4 to 4. A
+&gt;                  negative value refers to a quieter setting.</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-extenspy" />, <xref
+      linkend="applications-zapbarge" />, <xref
+      linkend="applications-zapscan" />, <xref
+      linkend="applications-monitor" /></para>
+    </formalpara>
+</section>
