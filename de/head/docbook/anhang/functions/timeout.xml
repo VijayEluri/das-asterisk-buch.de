@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-timeout" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>TIMEOUT()</literal><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>TIMEOUT()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>TIMEOUT(<replaceable>Art</replaceable>)</synopsis>
+
+    <para>Liest/setzt einen Timeout auf einem Kanal. Diese Arten von Timeouts
+    sind möglich:<variablelist termlength="10">
+        <varlistentry>
+          <term><code>absolute</code></term>
+
+          <listitem>
+            <simpara>Die gesamte, maximale Zeit, die ein Anruf dauern darf.
+            Beim Erreichen dieser Dauer wird auf die Extension <code>T</code>
+            (absolute timeout) weitergeleitet oder aufgelegt. Ein Wert von 0
+            bedeutet keine Begrenzung. Mit dem Aufruf dieser Funktion wird die
+            vorangehende Einstellung ungültig und neu gesetzt. Der Timeout
+            beginnt zum Zeitpunkt des Aufrufs dieser Funktion, nicht mit dem
+            Beginn des Anrufs.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>digit</code></term>
+
+          <listitem>
+            <simpara>Die maximale Zeit, die zwischen dem Eintippen von Ziffern
+            erlaubt ist. Beim Überschreiten wird die Eingabe des Users als
+            beendet angesehen. Wenn dann die Extension nicht existiert, wird
+            auf die Extension <code>i</code> (invalid) weitergeleitet oder
+            aufgelegt. Der Default ist 5 Sekunden.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>response</code></term>
+
+          <listitem>
+            <simpara>Die maximale Zeit, die auf eine Eingabe vom User gewartet
+            wird. Wenn der User keine Extension tippt, wird auf die Extension
+            <code>t</code> (timeout) weitergeleitet oder aufgelegt. Default:
+            10 Sekunden.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist><programlisting>; absoluten Timeout abfragen:
+exten =&gt; 123,1,Set(foo=${TIMEOUT(absolute)})
+
+; Anruf-Dauer auf maximal 60 Sekunden begrenzen:
+exten =&gt; 123,1,Set(TIMEOUT(absolute)=60)
+exten =&gt; 123,n,Dial(SIP/${EXTEN})
+exten =&gt; T,1,Playback(tut-uns-leid) 
+exten =&gt; T,n,Playback(auf-wiederhoeren) 
+exten =&gt; T,n,Hangup()</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'TIMEOUT' =- 
+
+[Syntax]
+TIMEOUT(timeouttype)
+
+[Synopsis]
+Gets or sets timeouts on the channel.
+
+[Description]
+Gets or sets various channel timeouts. The timeouts that can be
+manipulated are:
+
+absolute: The absolute maximum amount of time permitted for a call.  A
+     setting of 0 disables the timeout.
+
+digit:    The maximum amount of time permitted between digits when the
+          user is typing in an extension.  When this timeout expires,
+          after the user has started to type in an extension, the
+          extension will be considered complete, and will be
+          interpreted.  Note that if an extension typed in is valid,
+          it will not have to timeout to be tested, so typically at
+          the expiry of this timeout, the extension will be considered
+          invalid (and thus control would be passed to the 'i'
+          extension, or if it doesn't exist the call would be
+          terminated).  The default timeout is 5 seconds.
+
+response: The maximum amount of time permitted after falling through a
+     series of priorities for a channel in which the user may
+     begin typing an extension.  If the user does not type an
+     extension in this amount of time, control will pass to the
+     't' extension if it exists, and if not the call would be
+     terminated.  The default timeout is 10 seconds.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>- keine - </screen></para>
+      </formalpara>
+    </note>
+</section>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-callerid" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>CALLERID()</literal><indexterm significance="preferred">
+        <primary>Dialplan-Funktionen</primary>
+
+        <secondary><code>CALLERID()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>CALLERID(<replaceable>Feld</replaceable>)</synopsis>
+
+    <para>Gibt Informationen über den Anrufer zurück oder setzt diese.
+    <code>Feld</code> ist eines der folgenden:<variablelist termlength="8">
+        <varlistentry>
+          <term><code>name</code></term>
+
+          <listitem>
+            <simpara>Name des Anrufers, alphanumerischer String. Sie sollten
+            sich auf wenige Zeichen - z.B. 15 - beschränken.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>num</code></term>
+
+          <listitem>
+            <simpara>Nummer, nur Ziffern. (manchmal findet man auch
+            <code>number</code>, evtl. abhängig von der
+            Asterisk-Version)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>all</code></term>
+
+          <listitem>
+            <simpara>Name und Nummer mit der Nummer in spitzen Klammern, z.B.:
+            "<code>Peter Meier &lt;012345&gt;</code>"</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>ani</code></term>
+
+          <listitem>
+            <simpara>ANI<footnote>
+                <simpara>Automatic Number Identification</simpara>
+              </footnote>-Nummer, für ausgehende Anrufe</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>dnid</code></term>
+
+          <listitem>
+            <simpara>DNID<footnote>
+                <simpara>Dialed/Destination Number Identification
+                Service</simpara>
+              </footnote>-Nummer. Die gewählte Nummer (manchmal findet man
+            auch <code>dnis</code>, evtl. abhängig von der
+            Asterisk-Version)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>rdnis</code></term>
+
+          <listitem>
+            <simpara>RDNIS<footnote>
+                <simpara>Redirected Dialed Number Identification
+                Service</simpara>
+              </footnote>-Nummer. Die Nummer, die auf die aktuelle Extension
+            umgeleitet hat, z.B. falls die Nummer einer Voicemailbox nicht die
+            gewählte Extension ist.</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>Ab Asterisk 1.4 muss z.B. statt der Variablen
+    <code>${CALLERIDNUM}</code> die Funktion <code>${CALLERID(num)}</code>
+    verwendet werden, statt <code>${RDNIS}</code>
+    <code>$(CALLERID(rdnis))</code> etc. Die Applikation
+    <code>SetCIDName()</code> wird durch
+    <code>Set(CALLERID(name)=<replaceable>Name</replaceable>)</code> ersetzt,
+    <code>SetCallerID()</code> durch
+    <code>Set(CALLERID(all)=<replaceable>Name</replaceable>
+    &lt;<replaceable>Nummer</replaceable>&gt;)</code> etc.<programlisting>; die Variable foo auf die Anruferkennung setzen:
+exten =&gt; 123,1,Set(foo=${CALLERID(all)})
+
+; den Anrufernamen auf "Peter Meier" setzen:
+exten =&gt; 123,1,Set(CALLERID(name)="Peter Meier") </programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Interner Hilfetext zu dieser Applikation in Asterisk
+        1.4:</title>
+
+        <para><screen>  -= Info about function 'CALLERID' =- 
+
+[Syntax]
+CALLERID(datatype[,&lt;optional-CID&gt;])
+
+[Synopsis]
+Gets or sets Caller*ID data on the channel.
+
+[Description]
+Gets or sets Caller*ID data on the channel.  The allowable datatypes
+are "all", "name", "num", "ANI", "DNID", "RDNIS".
+Uses channel callerid by default or optional callerid, if specified.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>Differenz zum internen Hilfetext in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; CALLERID(datatype[,&lt;optional-CID&gt;])
+---
+&gt; CALLERID(datatype)
+13d12
+&lt; Uses channel callerid by default or optional callerid, if specified.</screen></para>
+      </formalpara>
+    </note>
+</section>
