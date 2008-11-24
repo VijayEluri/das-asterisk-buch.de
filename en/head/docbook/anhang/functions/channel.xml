@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-channel" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>CHANNEL()</literal><indexterm significance="preferred">
+        <primary>Dialplan Functions</primary>
+
+        <secondary><code>CHANNEL()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>CHANNEL(<replaceable>field</replaceable>)</synopsis>
+
+    <simpara><emphasis>(beginning Asterisk 1.4)</emphasis></simpara>
+
+    <para>Reads/sets specific channel parameters. The
+    <replaceable>field</replaceable> is one of the following (only reading is
+    possible unless otherwise noted):<variablelist>
+        <varlistentry>
+          <term><code>audioreadformat</code></term>
+
+          <listitem>
+            <simpara>The format for incoming audio on the channel</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>audionativeformat</code></term>
+
+          <listitem>
+            <simpara>The native audio format of the channel</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>audiowriteformat</code></term>
+
+          <listitem>
+            <simpara>The format for outgoing audio on the channel</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>callgroup</code></term>
+
+          <listitem>
+            <simpara>Extensions in Asterisk can be sorted into call groups
+            numbered from 0 - 63, <emphasis>e.g.</emphasis> as a client
+            number.<footnote>
+                <simpara>This limit of 64 call groups appears to be completely
+                arbitrary and may not be sufficient for all users.</simpara>
+              </footnote></simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>channeltype</code></term>
+
+          <listitem>
+            <simpara>The channel driver, or "technology" of the current
+            channel, <emphasis>e.g.</emphasis>: IAX or SIP</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>language</code></term>
+
+          <listitem>
+            <simpara>The language for voice prompts. May be set as well as
+            read</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>musicclass</code></term>
+
+          <listitem>
+            <simpara>The music-on-hold class, as defined in
+            <filename>musiconhold.conf</filename>. May be set as well as
+            read</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>state</code></term>
+
+          <listitem>
+            <para>State of the channel (<code>Down</code>, <code>Rsrvd</code>,
+            <code>OffHook</code>, <code>Dialing</code>, <code>Ring</code>,
+            <code>Ringing</code>, <code>Up</code>, <code>Busy</code>,
+            <code>Dialing Offhook</code>, <code>Pre-ring</code>,
+            <code>Unknown</code>)</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>tonezone</code></term>
+
+          <listitem>
+            <simpara>The "tone zone" defines the standard tone indications
+            (dialing, ringing, busy, <emphasis>etc.</emphasis>) for specific
+            regions and countries. This is set in the configuration file for
+            the channel driver (<emphasis>e.g.</emphasis>
+            <filename>zaptel.conf</filename>) with the parameters
+            <code>loadzone</code> and <code>defaultzone</code>. Possible
+            values are (as defined in <filename>indications.conf</filename>):
+            <code>at</code>, <code>au</code>, <code>be</code>,
+            <code>br</code>, <code>ch</code>, <code>cl</code>,
+            <code>cn</code>, <code>cz</code>, <code>de</code>,
+            <code>dk</code>, <code>ee</code>, <code>es</code>,
+            <code>fi</code>, <code>fr</code>, <code>gr</code>,
+            <code>hu</code>, <code>it</code>, <code>lt</code>,
+            <code>mx</code>, <code>ml</code>, <code>no</code>,
+            <code>nz</code>, <code>pl</code>, <code>pt</code>,
+            <code>ru</code>, <code>se</code>, <code>sg</code>,
+            <code>uk</code>, <code>us</code>, <code>us-old</code>,
+            <code>tw</code>, <code>ve</code>, <code>za</code>.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>videonativeformat</code></term>
+
+          <listitem>
+            <simpara>The native video format of the channel</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist>In addition to the field described above, specific
+    channel drivers can make others available. To learn more about these, look
+    in the documentation for the specific channel driver. Fields which are
+    unavailable on the current channel will return an empty
+    string.<programlisting>; Query the channel type:
+exten =&gt; 123,1,Set(foo=${CHANNEL(channeltype)})
+
+; Change language to English:
+exten =&gt; 123,1,Set(CHANNEL(language)=en)</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about function 'CHANNEL' =- 
+
+[Syntax]
+CHANNEL(item)
+
+[Synopsis]
+Gets/sets various pieces of information about the channel.
+
+[Description]
+Gets/set various pieces of information about the channel.
+Standard items (provided by all channel technologies) are:
+R/O  audioreadformat     format currently being read
+R/O  audionativeformat   format used natively for audio
+R/O  audiowriteformat    format currently being written
+R/W  callgroup           call groups for call pickup
+R/O  channeltype         technology used for channel
+R/W  language            language for sounds played
+R/W  musicclass          class (from musiconhold.conf) for hold music
+R/W  rxgain              set rxgain level on channel drivers that support it
+R/O  state               state for channel
+R/W  tonezone            zone for indications played
+R/W  txgain              set txgain level on channel drivers that support it
+R/O  videonativeformat   format used natively for video
+
+Additional items may be available from the channel driver providing
+the channel; see its documentation for details.
+
+Any item requested that is not available on the current channel will
+return an empty string.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>-- not available in Version 1.2 --</screen></para>
+      </formalpara>
+    </note>
+</section>

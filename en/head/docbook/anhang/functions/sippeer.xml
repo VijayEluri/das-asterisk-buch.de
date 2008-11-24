@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-sippeer" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>SIPPEER()</literal><indexterm significance="preferred">
+        <primary>Dialplan Functions</primary>
+
+        <secondary><code>SIPPEER()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>SIPPEER(<replaceable>peername</replaceable>[,<replaceable>field</replaceable>])</synopsis>
+
+    <para>Returns information about a SIP peer. The
+    <replaceable>field</replaceable> may be one of:<variablelist
+        termlength="15">
+        <varlistentry>
+          <term><code>ip</code></term>
+
+          <listitem>
+            <simpara>The IP address of the peer (default)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>mailbox</code></term>
+
+          <listitem>
+            <simpara>The configured mailbox</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>context</code></term>
+
+          <listitem>
+            <simpara>The configured context</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>expire</code></term>
+
+          <listitem>
+            <simpara>The expiry time (in Unix time) for the
+            connection.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>dynamic</code></term>
+
+          <listitem>
+            <simpara>Whether or not <code>dynamic</code> is set
+            (<code>yes</code>|<code>no</code>).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>callerid_name</code></term>
+
+          <listitem>
+            <simpara>The configured CID name</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>callerid_num</code></term>
+
+          <listitem>
+            <simpara>The configured CID number</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>codecs</code></term>
+
+          <listitem>
+            <simpara>Available codecs</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>status</code></term>
+
+          <listitem>
+            <simpara>The status (when <code>qualify=yes</code> is
+            set)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>regexten</code></term>
+
+          <listitem>
+            <simpara>The registration extension</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>limit</code></term>
+
+          <listitem>
+            <simpara>Maximum number of calls</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>curcalls</code></term>
+
+          <listitem>
+            <simpara>Number of current calls (only if a limit is
+            set)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>language</code></term>
+
+          <listitem>
+            <simpara>The default language for this peer</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>useragent</code></term>
+
+          <listitem>
+            <simpara>The useragent of the peer</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>codec[<replaceable>x</replaceable>]</code></term>
+
+          <listitem>
+            <simpara>Preferred codec number <code>x</code> (beginning with
+            0)</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>accountcode</code></term>
+
+          <listitem>
+            <simpara>The billing account code in the CDR for conversations
+            with this peer</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist><programlisting>; The IP address of peer 2001:
+exten =&gt; 123,1,Set(sip_ip=${SIPPEER(2001,ip)})
+; the preferred codec of the peer:
+exten =&gt; 123,n,Set(sip_ip=${SIPPEER(2001,codec[0])})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about function 'SIPPEER' =- 
+
+[Syntax]
+SIPPEER(&lt;peername&gt;[|item])
+
+[Synopsis]
+Gets SIP peer information
+
+[Description]
+Valid items are:
+- ip (default)          The IP address.
+- mailbox               The configured mailbox.
+- context               The configured context.
+- expire                The epoch time of the next expire.
+- dynamic               Is it dynamic? (yes/no).
+- callerid_name         The configured Caller ID name.
+- callerid_num          The configured Caller ID number.
+- codecs                The configured codecs.
+- status                Status (if qualify=yes).
+- regexten              Registration extension
+- limit                 Call limit (call-limit)
+- curcalls              Current amount of calls 
+                        Only available if call-limit is set
+- language              Default language for peer
+- accountcode           Account code for this peer
+- useragent             Current user agent id for peer
+- codec[x]              Preferred codec index number 'x' (beginning with zero).</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; SIPPEER(&lt;peername&gt;[|item])
+---
+&gt; SIPPEER(&lt;peername&gt;[:item])</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="functions-iaxpeer" /></para>
+    </formalpara>
+</section>

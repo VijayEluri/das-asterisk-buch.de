@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-enumlookup" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>ENUMLOOKUP()</literal><indexterm significance="preferred">
+        <primary>Dialplan Functions</primary>
+
+        <secondary><code>ENUMLOOKUP()</code></secondary>
+      </indexterm></title>
+
+    <para>Asterisk 1.2:<synopsis>ENUMLOOKUP(<replaceable>number</replaceable>[,<replaceable>service</replaceable>[,<replaceable>optionsANDentrynumber</replaceable>[,<replaceable>zone-suffix</replaceable>]]])</synopsis></para>
+
+    <para>Asterisk 1.4:<synopsis>ENUMLOOKUP(<replaceable>number</replaceable>[,<replaceable>service</replaceable>[,<replaceable>options</replaceable>,<replaceable>entrynumber</replaceable>[,<replaceable>Zonen-Suffix</replaceable>]]])</synopsis></para>
+
+    <para>Looks up a number with ENUM (<xref linkend="glossar-enum" />). The
+    <replaceable>service</replaceable> can be <code>sip</code> (default),
+    <code>iax2</code>, <code>h323</code>, <code>tel</code> or
+    <code>ALL</code>. The option <code>c</code> returns the number of entries.
+    The <replaceable>entrynumber</replaceable> (default <code>1</code>)
+    selects the entry from the list of results. The
+    <replaceable>zone-suffix</replaceable> (default: <code>e164.arpa</code>)
+    is the ENUM zone. Comprehensive descriptions and examples may be found in
+    <filename>doc/README.enum</filename> (1.2) /
+    <filename>doc/enum.txt</filename> (1.4).<programlisting>; in Asterisk 1.2:
+exten =&gt; 123,1,Set(foo=${ENUMLOOKUP(+${CALLERID(num)},sip,1,freenum.org)})
+
+; in Asterisk 1.4:
+exten =&gt; 123,1,Set(foo=${ENUMLOOKUP(+${CALLERID(num)},sip,,1,freenum.org)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about function 'ENUMLOOKUP' =- 
+
+[Syntax]
+ENUMLOOKUP(number[|Method-type[|options[|record#[|zone-suffix]]]])
+
+[Synopsis]
+ENUMLOOKUP allows for general or specific querying of NAPTR records or counts of NAPTR types for ENUM or ENUM-like DNS pointers
+
+[Description]
+Option 'c' returns an integer count of the number of NAPTRs of a certain RR type.
+Combination of 'c' and Method-type of 'ALL' will return a count of all NAPTRs for the record.
+Defaults are: Method-type=sip, no options, record=1, zone-suffix=e164.arpa
+
+For more information, see doc/enum.txt</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>5c5
+&lt; ENUMLOOKUP(number[|Method-type[|options[|record#[|zone-suffix]]]])
+---
+&gt; ENUMLOOKUP(number[,Method-type[,options|record#[,zone-suffix]]])
+15c15
+&lt; For more information, see doc/enum.txt
+---
+&gt; For more information, see README.enum</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><filename>enum.conf</filename></para>
+    </formalpara>
+</section>

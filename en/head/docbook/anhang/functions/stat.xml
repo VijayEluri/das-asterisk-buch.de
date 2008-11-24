@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-stat" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>STAT()</literal><indexterm significance="preferred">
+        <primary>Dialplan Functions</primary>
+
+        <secondary><code>STAT()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>STAT(<replaceable>flag</replaceable>,<replaceable>filename</replaceable>)</synopsis>
+
+    <simpara><emphasis>(beginning Asterisk 1.4)</emphasis></simpara>
+
+    <para>Returns status information about a file (compare the shell commands
+    <command>test</command> and <command>stat</command>). The
+    <code><replaceable>filename</replaceable></code> refers to an inode, so it
+    can be a directory or a specific file. The
+    <code><replaceable>flag</replaceable></code> can be one of the
+    following:<variablelist>
+        <varlistentry>
+          <term><code>d</code></term>
+
+          <listitem>
+            <simpara>Tests to see if <replaceable>filename</replaceable> is a
+            directory.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>e</code></term>
+
+          <listitem>
+            <simpara>Tests if the file exists.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>f</code></term>
+
+          <listitem>
+            <simpara>Tests if <replaceable>filename</replaceable> is a regular
+            file (as opposed to a special file, such as a block special file,
+            character special file, symbolic link, named pipe, or
+            socket).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>m</code></term>
+
+          <listitem>
+            <simpara>Returns the mode of <replaceable>filename</replaceable>
+            (octal), <emphasis>i.e.</emphasis> the permissions:
+            <emphasis>e.g.</emphasis> 0754.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>s</code></term>
+
+          <listitem>
+            <simpara>Returns the file size in bytes.</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>A</code></term>
+
+          <listitem>
+            <simpara>Returns the last access time (in Unix time).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>C</code></term>
+
+          <listitem>
+            <simpara>Returns the last inode change time (in Unix
+            time).</simpara>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><code>M</code></term>
+
+          <listitem>
+            <simpara>Returns the last modified time (in Unix time).</simpara>
+          </listitem>
+        </varlistentry>
+      </variablelist><programlisting>; See when /etc/crontab was last changed:
+exten =&gt; 123,1,Set(foo=${STAT(M,/etc/crontab)})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about function 'STAT' =- 
+
+[Syntax]
+STAT(&lt;flag&gt;,&lt;filename&gt;)
+
+[Synopsis]
+Does a check on the specified file
+
+[Description]
+flag may be one of the following:
+  d - Checks if the file is a directory
+  e - Checks if the file exists
+  f - Checks if the file is a regular file
+  m - Returns the file mode (in octal)
+  s - Returns the size (in bytes) of the file
+  A - Returns the epoch at which the file was last accessed
+  C - Returns the epoch at which the inode was last changed
+  M - Returns the epoch at which the file was last modified</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>-- not available in Version 1.2 --</screen></para>
+      </formalpara>
+    </note>
+</section>

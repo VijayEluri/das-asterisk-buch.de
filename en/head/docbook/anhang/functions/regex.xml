@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-regex" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>REGEX()</literal><indexterm significance="preferred">
+        <primary>Dialplan Functions</primary>
+
+        <secondary><code>REGEX()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>REGEX("<replaceable>expression</replaceable>" <replaceable>string</replaceable>)</synopsis>
+
+    <para>Returns 1, if <replaceable>string</replaceable> matches the regular
+    expression <replaceable>expression</replaceable>, otherwise returns 0. The
+    regular expression may include <code>^</code> (matches the beginning) and
+    <code>$</code> (matches the end). Variables are evaluated first.</para>
+
+    <para>The parser in Asterisk 1.2 does not behave consistently and can be
+    confused by expressions containing special characters such as
+    <code>$</code> or angle brackets. An ugly workaround is to define a
+    variable (for example <code>${dollar}</code>) and have it contain the
+    special character (for example, "<code>$</code>").</para>
+
+    <para><programlisting>; Test to see if the string "b3" matches the regular expression "[abc][0-9]":
+exten =&gt; 123,1,Set(foo=${REGEX("[abc][0-9]" b3)})   ; returns 1
+
+; Test to see if ${str} ends in 0, for Asterisk 1.4:
+exten =&gt; 123,1,Set(foo=${REGEX("0$" ${str})})
+
+; in Asterisk 1.2, using the workaround described above:
+exten =&gt; 123,1,Set(foo=${REGEX("0${dollar}" ${str})})</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about function 'REGEX' =- 
+
+[Syntax]
+REGEX("&lt;regular expression&gt;" &lt;data&gt;)
+
+[Synopsis]
+Regular Expression
+
+[Description]
+Returns 1 if data matches regular expression, or 0 otherwise.
+Please note that the space following the double quotes separating the regex from the data
+is optional and if present, is skipped. If a space is desired at the beginning of the data,
+then put two spaces there; the second will not be skipped.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>-- not available in Version 1.2 --</screen></para>
+      </formalpara>
+    </note>
+</section>

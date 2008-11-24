@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-strptime" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>STRPTIME()</literal><indexterm significance="preferred">
+        <primary>Dialplan Functions</primary>
+
+        <secondary><code>STRPTIME()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>STRPTIME(<replaceable>datetime</replaceable>|<replaceable>timezone</replaceable>|<replaceable>format</replaceable>)</synopsis>
+
+    <simpara><emphasis>(beginning Asterisk 1.4)</emphasis></simpara>
+
+    <para>Converts a formatted date and time string into a Unix
+    timestamp.<programlisting>; Save the date/time in the format YYYY-MM-DD HH:MM:SS in the variable ${time}:
+exten =&gt; 123,1,Set(time=${STRFTIME(${EPOCH},America/Los_Angeles,"%Y-%m-%d %H:%M:%S")})
+; Convert ${time} into Unix time:
+exten =&gt; 123,n,Set(timestamp=${STRPTIME(${time}|America/Los_Angeles|%Y-%m-%d %H:%M:%S)} </programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about function 'STRPTIME' =- 
+
+[Syntax]
+STRPTIME(&lt;datetime&gt;|&lt;timezone&gt;|&lt;format&gt;)
+
+[Synopsis]
+Returns the epoch of the arbitrary date/time string structured as described in the format.
+
+[Description]
+This is useful for converting a date into an EPOCH time, possibly to pass to
+an application like SayUnixTime or to calculate the difference between two
+date strings.
+
+Example:
+  ${STRPTIME(2006-03-01 07:30:35|America/Chicago|%Y-%m-%d %H:%M:%S)} returns 1141219835</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>-- not available in Version 1.2 --</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="functions-strftime" /></para>
+    </formalpara>
+</section>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-vmcount" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>VMCOUNT()</literal><indexterm significance="preferred">
+        <primary>Dialplan Functions</primary>
+
+        <secondary><code>VMCOUNT()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>VMCOUNT(<replaceable>VM-box</replaceable>[@<replaceable>context</replaceable>][|<replaceable>folder</replaceable>])</synopsis>
+
+    <para>Returns the number of voice mail messages in the specified mailbox.
+    The default context is <code>default</code>, the default folder is
+    <code>INBOX</code>.<programlisting>; Query for the number of messages in mailbox 456:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Set(count=${VMCOUNT(456)})
+exten =&gt; 123,n,Playback(vm-youhave)          ; "You have"
+exten =&gt; 123,n,GotoIf($[ ${count} = 0 ]?none:new)
+
+exten =&gt; 123,10(none),Playback(vm-no)       ; "no"
+exten =&gt; 123,n,Goto(continue)
+
+exten =&gt; 123,20(new),SayNumber($COUNT)      ; count
+exten =&gt; 123,n,Goto(continue)
+
+exten =&gt; 123,30(continue),Playback(vm-INBOX)   ; "new"
+exten =&gt; 123,n,Playback(vm-messages)         ; "messages"
+exten =&gt; 123,n,Playback(vm-goodbye)          ; "Goodbye!"
+exten =&gt; 123,n,Hangup()</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about function 'VMCOUNT' =- 
+
+[Syntax]
+VMCOUNT(vmbox[@context][|folder])
+
+[Synopsis]
+Counts the voicemail in a specified mailbox
+
+[Description]
+  context - defaults to "default"
+  folder  - defaults to "INBOX"</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <simpara>See also <xref linkend="applications-mailboxexists" /></simpara>
+</section>

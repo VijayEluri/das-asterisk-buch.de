@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-rand" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>RAND()</literal><indexterm significance="preferred">
+        <primary>Dialplan Functions</primary>
+
+        <secondary><code>RAND()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>RAND(<replaceable>min</replaceable>,<replaceable>max</replaceable>)</synopsis>
+
+    <simpara><emphasis>(beginning Asterisk 1.4)</emphasis></simpara>
+
+    <para>Returns a randomly-generated number between <code>min</code> and
+    <code>max</code> inclusive. The default for <code>min</code> is 0, for
+    <code>max</code> the default is the largest integer supported by the
+    system (usually 2147483647).<programlisting>; Choose a random number between 1 and 10 (inclusive):
+exten =&gt; 123,1,Set(coincidence=${RAND(1,10)})
+
+; Game of chance:
+exten =&gt; 123,1,GotoIf($[${RAND(0,100)} &lt; 25]?won:lost)
+exten =&gt; won,1,Playback(won)
+exten =&gt; won,n,Goto(123,1)
+exten =&gt; lost,1,Playback(lost)
+exten =&gt; lost,n,Goto(123,1)</programlisting></para>
+
+    <note>
+      <para>If you are using versions prior to Asterisk 1.4, use the
+      application <code><command>Random()</command></code>.</para>
+    </note>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about function 'RAND' =- 
+
+[Syntax]
+RAND([min][|max])
+
+[Synopsis]
+Choose a random number in a range
+
+[Description]
+Choose a random number between min and max.  Min defaults to 0, if not
+specified, while max defaults to RAND_MAX (2147483647 on many systems).
+  Example:  Set(junky=${RAND(1|8)}); 
+  Sets junky to a random number between 1 and 8, inclusive.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>-- not available in Version 1.2 --</screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="applications-random" /></para>
+    </formalpara>
+</section>

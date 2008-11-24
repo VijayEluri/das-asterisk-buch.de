@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-odbc_user_database" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>ODBC_USER_DATABASE()</literal><indexterm
+        significance="preferred">
+        <primary>Dialplan Functions</primary>
+
+        <secondary><code>ODBC_USER_DATABASE()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>ODBC_USER_DATABASE(<replaceable>var1</replaceable>[,<replaceable>var2</replaceable>[,...]])</synopsis>
+
+    <para>Runs the SQL query defined in <filename>func_odbc.conf</filename>
+    and returns the result, if any. The values defined in
+    <filename>func_odbc.conf</filename>, such as <code>${VAL1}</code>,
+    <code>${VAL2}</code>, ..., <code>${ARG1}</code>, <code>${ARG2}</code>, ...
+    are replaced by the corresponding values provided when the function is
+    called.</para>
+
+    <para><filename>func_odbc.conf</filename>:<programlisting>[USER_DATABASE]
+dsn=my_database
+read=SELECT name FROM list WHERE number='${ARG1}'
+write=UPDATE list SET name=${ARG1} WHERE number='${VAL1}'</programlisting><filename>extensions.conf</filename>:<programlisting>; Query (read):
+exten =&gt; 123,1,Set(Name=${ODBC_USER_DATABASE(${EXTEN})})
+
+; Update (write):
+exten =&gt; 123,1,Set(ODBC_USER_DATABASE(${CALLERID(name)})=1000)</programlisting></para>
+</section>

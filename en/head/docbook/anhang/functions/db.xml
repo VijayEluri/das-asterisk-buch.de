@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-db" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+    <title><literal>DB()</literal><indexterm significance="preferred">
+        <primary>Dialplan Functions</primary>
+
+        <secondary><code>DB()</code></secondary>
+      </indexterm></title>
+
+    <synopsis>DB(<replaceable>family</replaceable>/<replaceable>key</replaceable>)</synopsis>
+
+    <para>Reads/sets a value in the Asterisk DB (AstDB). When reading, either
+    a value is returned, or an empty string if the key does not exist. The
+    output can be found in the variable
+    <code>DB_RESULT</code>.<programlisting>; Set open/source in the AstDB and then query it:
+exten =&gt; 123,1,Set(DB(open/source)=${yes})
+exten =&gt; 123,n,Set(var=${DB(open/source)})
+exten =&gt; 123,n,GotoIf($[[${DB(open/source)} = 1]?opensource:closedsource)</programlisting></para>
+
+    <note>
+      <formalpara>
+        <title>Internal help for this application in Asterisk 1.4:</title>
+
+        <para><screen>  -= Info about function 'DB' =- 
+
+[Syntax]
+DB(&lt;family&gt;/&lt;key&gt;)
+
+[Synopsis]
+Read from or write to the Asterisk database
+
+[Description]
+This function will read from or write a value to the Asterisk database.  On a
+read, this function returns the corresponding value from the database, or blank
+if it does not exist.  Reading a database value will also set the variable
+DB_RESULT.  If you wish to find out if an entry exists, use the DB_EXISTS
+function.</screen></para>
+      </formalpara>
+
+      <formalpara>
+        <title>diff output to internal help in Asterisk 1.2:</title>
+
+        <para><screen>- none - </screen></para>
+      </formalpara>
+    </note>
+
+    <formalpara>
+      <title>See also</title>
+
+      <para><xref linkend="functions-db_exists" />, <xref
+      linkend="functions-db_delete" />, <xref
+      linkend="applications-dbdeltree" /></para>
+    </formalpara>
+</section>
