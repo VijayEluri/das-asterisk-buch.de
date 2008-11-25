@@ -1,4 +1,4 @@
--= Info about application 'Dial' =-
+  -= Info about application 'Dial' =-
 
 [Synopsis]
 Place a call and connect to the current channel
@@ -50,7 +50,8 @@ however, the variable will be unset after use.
            DTMF string is sent to the called party, and the 'calling' DTMF
            string is sent to the calling party. Both parameters can be used
            alone.
-    e    - execute the 'h' extension for peer after the call ends
+    e    - execute the 'h' extension for peer after the call ends. This
+           operation will not be performed if the peer was parked
     f    - Force the callerid of the *calling* channel to be set as the
            extension associated with the channel using a dialplan 'hint'.
            For example, some PSTNs do not allow CallerID to be set to anything
@@ -64,14 +65,18 @@ however, the variable will be unset after use.
            Optionally, an extension, or extension and context may be specified.
            Otherwise, the current extension is used. You cannot use any additional
            action post answer options in conjunction with this option.
-    h    - Allow the called party to hang up by sending the '*' DTMF digit.
-    H    - Allow the calling party to hang up by hitting the '*' DTMF digit.
+    h    - Allow the called party to hang up by sending the '*' DTMF digit, or
+           whatever sequence was defined in the featuremap section for
+           'disconnect' in features.conf
+    H    - Allow the calling party to hang up by hitting the '*' DTMF digit, or
+           whatever sequence was defined in the featuremap section for
+           'disconnect' in features.conf
     i    - Asterisk will ignore any forwarding requests it may receive on this
            dial attempt.
     k    - Allow the called party to enable parking of the call by sending
-           the DTMF sequence defined for call parking in features.conf.
+           the DTMF sequence defined for call parking in the featuremap section of features.conf.
     K    - Allow the calling party to enable parking of the call by sending
-           the DTMF sequence defined for call parking in features.conf.
+           the DTMF sequence defined for call parking in the featuremap section of features.conf.
     L(x[:y][:z]) - Limit the call to 'x' ms. Play a warning when 'y' ms are
            left. Repeat the warning every 'z' ms. The following special
            variables can be used with this option:
@@ -130,9 +135,11 @@ however, the variable will be unset after use.
     S(x) - Hang up the call after 'x' seconds *after* the called party has
            answered the call.
     t    - Allow the called party to transfer the calling party by sending the
-           DTMF sequence defined in features.conf.
+           DTMF sequence defined in the blindxfer setting in the featuremap section
+           of features.conf.
     T    - Allow the calling party to transfer the called party by sending the
-           DTMF sequence defined in features.conf.
+           DTMF sequence defined in the blindxfer setting in the featuremap section
+           of features.conf.
     U(x[^arg]) - Execute via Gosub the routine 'x' for the *called* channel before connecting
            to the calling channel. Arguments can be specified to the Gosub
            using '^' as a delimiter. The Gosub routine can set the variable
@@ -149,10 +156,14 @@ however, the variable will be unset after use.
            with this option. Also, pbx services are not run on the peer (called) channel,
            so you will not be able to set timeouts via the TIMEOUT() function in this routine.
     w    - Allow the called party to enable recording of the call by sending
-           the DTMF sequence defined for one-touch recording in features.conf.
+           the DTMF sequence defined in the automon setting in the featuremap section
+           of features.conf.
     W    - Allow the calling party to enable recording of the call by sending
-           the DTMF sequence defined for one-touch recording in features.conf.
+           the DTMF sequence defined in the automon setting in the featuremap section
+           of features.conf.
     x    - Allow the called party to enable recording of the call by sending
-           the DTMF sequence defined for one-touch automixmonitor in features.conf
+           the DTMF sequence defined in the automixmon setting in the featuremap section
+           of features.conf.
     X    - Allow the calling party to enable recording of the call by sending
-           the DTMF sequence defined for one-touch automixmonitor in features.conf
+           the DTMF sequence defined in the automixmon setting in the featuremap section
+           of features.conf.
