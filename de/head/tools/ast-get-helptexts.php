@@ -138,12 +138,21 @@ $err=0; $out=array();
 exec( 'asterisk -rx '. escapeShellArg('core show version'), $out, $err );
 if ($err !== 0) {
 	echo "\nERROR\n".implode("\n",$out)."\n\n";
-	exit(1);
+	$out = array();
 }
 $out = _un_terminal_color(implode("\n", $out));
 if (! preg_match('/Asterisk ([0-9.\-a-zA-Z]+)/', $out, $m)) {
-	echo "\nERROR. Failed to get version.\n\n";
-	exit(1);
+	$err=0; $out=array();
+	exec( 'asterisk -rx '. escapeShellArg('show version'), $out, $err );
+	if ($err !== 0) {
+		echo "\nERROR\n".implode("\n",$out)."\n\n";
+		$out = array();
+	}
+	$out = _un_terminal_color(implode("\n", $out));
+	if (! preg_match('/Asterisk ([0-9.\-a-zA-Z]+)/', $out, $m)) {
+		echo "\nERROR. Failed to get version.\n\n";
+		exit(1);
+	}
 }
 $ast_vers = $m[1];
 if (preg_match('/^SVN-branch-/i', $ast_vers, $m)) {
@@ -189,6 +198,10 @@ switch ($mode) {
 if ('x'.$ast_vers <= 'x1.4') {
 	if (subStr($rxn,0,5) === 'core ') $rxn = subStr($rxn,5);
 	if (subStr($rx1,0,5) === 'core ') $rx1 = subStr($rx1,5);
+	if (subStr($rxn,0,13) === 'manager show ') $rxn = 'show manager '. subStr($rxn,13);
+	if (subStr($rx1,0,13) === 'manager show ') $rx1 = 'show manager '. subStr($rx1,13);
+	if (subStr($rxn,0,9) === 'agi show ') $rxn = 'show agi '. subStr($rxn,9);
+	if (subStr($rx1,0,9) === 'agi show ') $rx1 = 'show agi '. subStr($rx1,9);
 }
 sleep(1);
 $err=0; $out=array();
