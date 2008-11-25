@@ -217,8 +217,8 @@ switch ($mode) {
 	case 'app': $pat = '/^[ \t]*([A-Za-z][a-zA-Z0-9_]*)[ \t:]/m'; break;
 	case 'fnc': $pat = '/^[ \t]*([A-Z][A-Z0-9_]+)[ \t:]/m'   ; break;
 	case 'mgr': $pat = '/^[ \t]*([A-Z][a-zA-Z0-9_]*)[ \t:]/m'; break;
-	case 'agi': $pat = '/^[ \t]*([a-zA-Z][a-zA-Z0-9_]*(?: [a-zA-Z0-9_]+)*)(?:  +|\t| *: *)([^\n\r]+)/m'; break;
-	case 'cli': $pat = '/^[ \t]*([a-zA-Z][a-zA-Z0-9_]*(?: [a-zA-Z0-9_]+)*)(?:  +|\t| *: *)([^\n\r]+)/m'; break;
+	case 'agi': $pat = '/^[ \t]*(?:Dead|Yes|No)?[ \t]*([a-zA-Z][a-zA-Z0-9_]*(?: [a-zA-Z0-9_]+)*)(?:  +|\t| *: *)([^\n\r]+)/m'; break;
+	case 'cli': $pat = '/^[ \t]*([a-z][a-z0-9_]*(?: [a-z0-9_\\|\\[\\]\\{\\}]+)*)(?: +|\t| *: *)([^\n\r]+)/m'; break;
 	default : exit(1);
 }
 preg_match_all($pat, _un_terminal_color(implode("\n",$out)), $m);
@@ -231,20 +231,57 @@ $items = $m[1];
 unset($m);
 sort($items);
 
-$c = count($items);
+
+# fix command names which didn't fit into the column
+#
+$items2 = array();
+foreach ($items as $item) {
+	switch ($mode) {
+		case 'mgr':
+			switch (strToLower($item)) {
+				case 'action'         : break;  # skip header line
+				case 'agentcallbacklo': $items2[] = 'AgentCallbackLogin' ; break;
+				case 'coreshowchannel': $items2[] = 'CoreShowChannels'   ; break;
+				case 'dahdidialoffhoo': $items2[] = 'DAHDIDialOffhook'   ; break;
+				case 'dahdishowchanne': $items2[] = 'DAHDIShowChannels'  ; break;
+				case 'voicemailusersl': $items2[] = 'VoicemailUsersList' ; break;
+				default               : $items2[] = $item;  # copy
+			}
+			break;
+		case 'agi':
+			if ($item === 'Command') continue;  # skip header line
+			$items2[] = $item;  # copy
+			break;
+		case 'cli':
+			switch (strToLower($item)) {
+				case 'ael set debug {read|tokens|mac': $items2[] = 'ael set debug {read|tokens|macros|contexts|off}'     ; break;
+				case 'core set {debug|verbose} [off|': $items2[] = 'core set {debug|verbose} [off|atleast]'              ; break;
+				case 'core show applications [like|d': $items2[] = 'core show applications [like|describing]'            ; break;
+				case 'core show channels [concise|ve': $items2[] = 'core show channels [concise|verbose|count]'          ; break;
+				case 'core show codecs [audio|video|': $items2[] = 'core show codecs [audio|video|image]'                ; break;
+				case 'dahdi show channels [trunkgrou': $items2[] = 'dahdi show channels [trunkgroup|group|context]'      ; break;
+				case 'dialplan set extenpatternmatch': $items2[] = 'dialplan set extenpatternmatch true'                 ; break;
+				                                       $items2[] = 'dialplan set extenpatternmatch false'                ; break;
+				case 'dundi show peers [registered|i': $items2[] = 'dundi show peers [registered|include|exclude|begin]' ; break;
+				case 'sip show {channels|subscriptio': $items2[] = 'sip show {channels|subscriptions}'                   ; break;
+				default:
+					$items2[] = $item;  # copy
+			}
+			break;
+		default:
+			$items2[] = $item;  # copy
+	}
+}
+unset($items);
+sort($items2);
+
+
+$c = count($items2);
 $cl = strLen($c);
 $cpad = str_pad($c,$cl,' ',STR_PAD_LEFT);
 $i = 0;
-foreach ($items as $item) {
+foreach ($items2 as $item) {
 	++$i;
-	
-	# fix command names which didn't fit into the column
-	if ($mode === 'mgr') {
-		switch (strToLower($item)) {
-			case 'agentcallbacklo': $item = 'AgentCallbackLogin';
-			case 'action'         : continue;  # skip header line
-		}
-	}
 	
 	echo '(',str_pad($i,$cl,' ',STR_PAD_LEFT),'/',$cpad,')  ', $item ,"\n";
 	
