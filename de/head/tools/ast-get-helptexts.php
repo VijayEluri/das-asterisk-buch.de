@@ -154,14 +154,15 @@ if (! preg_match('/Asterisk ([0-9.\-a-zA-Z]+)/', $out, $m)) {
 		exit(1);
 	}
 }
-$ast_vers = $m[1];
-if (preg_match('/^SVN-branch-/i', $ast_vers, $m)) {
+$ast_vers_full = $m[1];
+$ast_vers = $ast_vers_full;
+if (preg_match('/^SVN-branch-/i', $ast_vers_full, $m)) {
 	$ast_vers = subStr($ast_vers, strLen($m[0]));
 }
-if (preg_match('/^([0-9]+)\.([0-9]+)/', $ast_vers, $m)) {
+if (preg_match('/^([0-9]+)\.([0-9]+)/', $ast_vers_full, $m)) {
 	$ast_vers = $m[1].'.'.$m[2];
 }
-echo "ASTERISK VERSION: $ast_vers\n";
+echo "ASTERISK VERSION: $ast_vers_full => $ast_vers\n";
 
 
 $dir = dirName(__FILE__).'/';
@@ -248,13 +249,60 @@ foreach ($items as $item) {
 	echo '(',str_pad($i,$cl,' ',STR_PAD_LEFT),'/',$cpad,')  ', $item ,"\n";
 	
 	usleep(100);
-	$err=0; $out=array();
-	exec( 'asterisk -rx '. escapeShellArg(sPrintF($rx1,$item)), $out, $err );
-	if ($err !== 0) {
-		echo "\nERROR\n".implode("\n",$out)."\n\n";
-		exit(1);
+	$run_rx = true;
+	
+	if ($mode === 'cli'
+	&&  'x'.$ast_vers      <= 'x1.2'
+	&&  'x'.$ast_vers_full <= 'x1.2.30.2'  //FIXME
+	) {
+		switch ($item) {
+			case 'iax2 set jitter':
+				# `asterisk -rx 'help iax2 set jitter'` does not return
+				# http://bugs.digium.com/view.php?id=13963
+				$out = <<<HEREDOCEND
+Usage: iax set jitter [callid] <value>
+       If used with a callid, it sets the jitter buffer to the given static
+value (until its next calculation).  If used without a callid, the value is used
+to establish the maximum excess jitter buffer that is permitted before the jitter
+buffer size is reduced.
+HEREDOCEND;
+				$run_rx = false;
+				break;
+			case 'moh classes show':
+				# `asterisk -rx 'help moh classes show'` does not return
+				# http://bugs.digium.com/view.php?id=13964
+				$out = <<<HEREDOCEND
+Lists all MOH classes
+HEREDOCEND;
+				$run_rx = false;
+				break;
+			case 'moh files show':
+				# `asterisk -rx 'help moh files show'` does not return
+				# http://bugs.digium.com/view.php?id=13964
+				$out = <<<HEREDOCEND
+Lists all loaded file-based MOH classes and their files
+HEREDOCEND;
+				$run_rx = false;
+				break;
+			case 'moh reload':
+				# `asterisk -rx 'help moh reload'` does not return
+				# http://bugs.digium.com/view.php?id=13964
+				$out = <<<HEREDOCEND
+Music On Hold
+HEREDOCEND;
+				$run_rx = false;
+				break;
+		}
 	}
-	$out = implode("\n", $out);
+	if ($run_rx) {
+		$err=0; $out=array();
+		exec( 'asterisk -rx '. escapeShellArg(sPrintF($rx1,$item)), $out, $err );
+		if ($err !== 0) {
+			echo "\nERROR\n".implode("\n",$out)."\n\n";
+			exit(1);
+		}
+		$out = implode("\n", $out);
+	}
 	
 	# skip ANSI terminal color escape sequences:
 	$out = _un_terminal_color($out);
