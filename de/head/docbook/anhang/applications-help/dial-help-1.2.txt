@@ -21,7 +21,7 @@ continue if no requested channels can be called, or if the timeout expires.
     ANSWEREDTIME - This is the amount of time for actual call.
     DIALSTATUS   - This is the status of the call:
                    CHANUNAVAIL | CONGESTION | NOANSWER | BUSY | ANSWER | CANCEL
-                   DONTCALL | TORTURE
+                   DONTCALL | TORTURE | INVALIDARGS
   For the Privacy and Screening Modes, the DIALSTATUS variable will be set to
 DONTCALL if the called party chooses to send the calling party to the 'Go Away'
 script. The DIALSTATUS variable will be set to TORTURE if the called party
@@ -32,6 +32,9 @@ ends the call.
   The optional URL will be sent to the called party if the channel supports it.
   If the OUTBOUND_GROUP variable is set, all peer channels created by this
 application will be put into that group (as in Set(GROUP()=...).
+  If the OUTBOUND_GROUP_ONCE variable is set, all peer channels created by this
+application will be put into that group (as in Set(GROUP()=...). Unlike OUTBOUND_GROUP,
+however, the variable will be unset after use.
 
   Options:
     A(x) - Play an announcement to the called party, using 'x' as the file.
@@ -85,7 +88,7 @@ application will be put into that group (as in Set(GROUP()=...).
                           'j' option is set.
            * CONTINUE     Hangup the called party and allow the calling party
                           to continue dialplan execution at the next priority.
-           * GOTO:<context>^<xexten>^<priority> - Transfer the call to the
+           * GOTO:<context>^<exten>^<priority> - Transfer the call to the
                           specified priority. Optionally, an extension, or
                           extension and priority can be specified.
            You cannot use any additional action post answer options in conjunction

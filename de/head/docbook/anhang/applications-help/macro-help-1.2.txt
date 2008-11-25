@@ -14,6 +14,11 @@ If you Goto out of the Macro context, the Macro will terminate and control
 will be returned at the location of the Goto.
 If ${MACRO_OFFSET} is set at termination, Macro will attempt to continue
 at priority MACRO_OFFSET + N + 1 if such a step exists, and N + 1 otherwise.
+Extensions: While a macro is being executed, it becomes the current context.
+            This means that if a hangup occurs, for instance, that the macro
+            will be searched for an 'h' extension, NOT the context from which
+            the macro was called. So, make sure to define all appropriate
+            extensions in your macro! (you can use 'catch' in AEL)
 WARNING: Because of the way Macro is implemented (it executes the priorities
          contained within it via sub-engine), and a fixed per-thread
          memory stack allowance, macros are limited to 7 levels
