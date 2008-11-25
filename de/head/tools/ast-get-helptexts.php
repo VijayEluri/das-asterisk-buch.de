@@ -253,7 +253,7 @@ foreach ($items as $item) {
 	
 	if ($mode === 'cli'
 	&&  'x'.$ast_vers      <= 'x1.2'
-	&&  'x'.$ast_vers_full <= 'x1.2.30.2'  //FIXME
+	//&&  'x'.$ast_vers_full <= 'x1.2.30.2'  //FIXME
 	) {
 		switch ($item) {
 			case 'iax2 set jitter':
