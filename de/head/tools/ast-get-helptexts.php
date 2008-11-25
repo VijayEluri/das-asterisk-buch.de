@@ -200,8 +200,8 @@ if ('x'.$ast_vers <= 'x1.4') {
 	if (subStr($rx1,0,5) === 'core ') $rx1 = subStr($rx1,5);
 	if (subStr($rxn,0,13) === 'manager show ') $rxn = 'show manager '. subStr($rxn,13);
 	if (subStr($rx1,0,13) === 'manager show ') $rx1 = 'show manager '. subStr($rx1,13);
-	if (subStr($rxn,0,9) === 'agi show ') $rxn = 'show agi '. subStr($rxn,9);
-	if (subStr($rx1,0,9) === 'agi show ') $rx1 = 'show agi '. subStr($rx1,9);
+	if (subStr($rxn,0,8) === 'agi show') $rxn = 'show agi'. subStr($rxn,8);
+	if (subStr($rx1,0,8) === 'agi show') $rx1 = 'show agi'. subStr($rx1,8);
 }
 sleep(1);
 $err=0; $out=array();
