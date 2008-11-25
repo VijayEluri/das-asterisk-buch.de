@@ -240,12 +240,18 @@ foreach ($items as $item) {
 		case 'mgr':
 			switch (strToLower($item)) {
 				case 'action'         : break;  # skip header line
-				case 'agentcallbacklo': $items2[] = 'AgentCallbackLogin' ; break;
-				case 'coreshowchannel': $items2[] = 'CoreShowChannels'   ; break;
-				case 'dahdidialoffhoo': $items2[] = 'DAHDIDialOffhook'   ; break;
-				case 'dahdishowchanne': $items2[] = 'DAHDIShowChannels'  ; break;
-				case 'voicemailusersl': $items2[] = 'VoicemailUsersList' ; break;
-				default               : $items2[] = $item;  # copy
+				case         'agentcallbacklo':
+				 $items2[] = 'AgentCallbackLogin' ; break;
+				case         'coreshowchannel':
+				 $items2[] = 'CoreShowChannels'   ; break;
+				case         'dahdidialoffhoo':
+				 $items2[] = 'DAHDIDialOffhook'   ; break;
+				case         'dahdishowchanne':
+				 $items2[] = 'DAHDIShowChannels'  ; break;
+				case         'voicemailusersl':
+				 $items2[] = 'VoicemailUsersList' ; break;
+				default                       :
+				 $items2[] = $item;  # copy
 			}
 			break;
 		case 'agi':
@@ -254,17 +260,25 @@ foreach ($items as $item) {
 			break;
 		case 'cli':
 			switch (strToLower($item)) {
-				case 'ael set debug {read|tokens|mac': $items2[] = 'ael set debug {read|tokens|macros|contexts|off}'     ; break;
-				case 'core set {debug|verbose} [off|': $items2[] = 'core set {debug|verbose} [off|atleast]'              ; break;
-				case 'core show applications [like|d': $items2[] = 'core show applications [like|describing]'            ; break;
-				case 'core show channels [concise|ve': $items2[] = 'core show channels [concise|verbose|count]'          ; break;
-				case 'core show codecs [audio|video|': $items2[] = 'core show codecs [audio|video|image]'                ; break;
-				case 'dahdi show channels [trunkgrou': $items2[] = 'dahdi show channels [trunkgroup|group|context]'      ; break;
-				case 'dialplan set extenpatternmatch': $items2[] = 'dialplan set extenpatternmatch true'                 ; break;
-				                                       $items2[] = 'dialplan set extenpatternmatch false'                ; break;
-				case 'dundi show peers [registered|i': $items2[] = 'dundi show peers [registered|include|exclude|begin]' ; break;
-				case 'sip show {channels|subscriptio': $items2[] = 'sip show {channels|subscriptions}'                   ; break;
-				default:
+				case         'ael set debug {read|tokens|mac':
+				 $items2[] = 'ael set debug {read|tokens|macros|contexts|off}'     ; break;
+				case         'core set {debug|verbose} [off|':
+				 $items2[] = 'core set {debug|verbose} [off|atleast]'              ; break;
+				case         'core show applications [like|d':
+				 $items2[] = 'core show applications [like|describing]'            ; break;
+				case         'core show channels [concise|ve':
+				 $items2[] = 'core show channels [concise|verbose|count]'          ; break;
+				case         'core show codecs [audio|video|':
+				 $items2[] = 'core show codecs [audio|video|image]'                ; break;
+				case         'dahdi show channels [trunkgrou':
+				 $items2[] = 'dahdi show channels [trunkgroup|group|context]'      ; break;
+				case         'dialplan set extenpatternmatch':
+				 $items2[] = 'dialplan set extenpatternmatch [true|false]'         ; break;
+				case         'dundi show peers [registered|i':
+				 $items2[] = 'dundi show peers [registered|include|exclude|begin]' ; break;
+				case         'sip show {channels|subscriptio':
+				 $items2[] = 'sip show {channels|subscriptions}'                   ; break;
+				default                                      :
 					$items2[] = $item;  # copy
 			}
 			break;
@@ -276,11 +290,55 @@ unset($items);
 sort($items2);
 
 
-$c = count($items2);
+
+function _expand_cli_cmd( $combined_cmd )
+{
+	$cmds = array();
+	
+	# expand "{...|...|...}"
+	if (preg_match_all('/\\{([^\\}]*)\\}/S', $combined_cmd, $mm, PREG_SET_ORDER+PREG_OFFSET_CAPTURE)) {
+		print_r($mm);
+	}
+	
+}
+
+
+# expand item names
+#
+$items3 = array();
+foreach ($items2 as $item) {
+	switch ($mode) {
+		case 'cli':
+			switch (strToLower($item)) {
+				
+				
+				default:
+					if (preg_match('/[\\|\\[\\]\\{\\}]/S', $item)) {
+						/*
+						echo "\n ITEM \"$item\" NEEDS TO BE EXPANDED!\n";
+						//_expand_cli_cmd($item);
+						echo "\n\n";
+						exit(1);
+						*/
+						# skip that crap
+						continue;  //FIXME
+					}
+					$items3[] = $item;  # copy
+			}
+			break;
+		default:
+			$items3[] = $item;  # copy
+	}
+}
+unset($items2);
+sort($items3);
+
+
+$c = count($items3);
 $cl = strLen($c);
 $cpad = str_pad($c,$cl,' ',STR_PAD_LEFT);
 $i = 0;
-foreach ($items2 as $item) {
+foreach ($items3 as $item) {
 	++$i;
 	
 	echo '(',str_pad($i,$cl,' ',STR_PAD_LEFT),'/',$cpad,')  ', $item ,"\n";
