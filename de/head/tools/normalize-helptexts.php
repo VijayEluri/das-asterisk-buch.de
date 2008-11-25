@@ -2,11 +2,11 @@
 <?php
 
 $dirs = array(
-	dirName(__FILE__) .'/../docbook/anhang/applications/',
-	dirName(__FILE__) .'/../docbook/anhang/functions/',
-	dirName(__FILE__) .'/../docbook/anhang/manager/',
-	dirName(__FILE__) .'/../docbook/anhang/agi/',
-	dirName(__FILE__) .'/../docbook/anhang/cli/',
+	dirName(__FILE__) .'/../docbook/anhang/applications-help/',
+	dirName(__FILE__) .'/../docbook/anhang/functions-help/',
+	dirName(__FILE__) .'/../docbook/anhang/manager-help/',
+	dirName(__FILE__) .'/../docbook/anhang/agi-help/',
+	dirName(__FILE__) .'/../docbook/anhang/cli-help/',
 );
 
 foreach ($dirs as $dir) {
