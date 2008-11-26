@@ -155,7 +155,10 @@ switch ($lang) {
 $container_xml = <<<HEREDOCEND
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- AUTO-GENERATED FILE. DO NOT EDIT. -->
+<note lang="$lang">
 %s
+</note>
+
 HEREDOCEND;
 
 $help_or_diff_container_xml = <<<HEREDOCEND
@@ -168,7 +171,7 @@ $help_or_diff_container_xml = <<<HEREDOCEND
 HEREDOCEND;
 
 $help_or_diff_avail_xml = <<<HEREDOCEND
-<screen lang="en">%s</screen>
+<screen lang="en" xml:space="preserve" format="linespecific">%s</screen>
 HEREDOCEND;
 
 $help_or_diff_not_avail_xml = <<<HEREDOCEND
@@ -420,5 +423,8 @@ foreach ($items as $itemname => $item) {
 	
 	//echo $out ,"\n\n\n";
 }
+
+# generated files should be included like so:
+# <xi:include href="appname-help.xml" xmlns:xi="http://www.w3.org/2001/XInclude" parse="xml" xpointer="xpointer(/note/*)" />
 
 
