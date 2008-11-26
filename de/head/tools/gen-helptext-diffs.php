@@ -156,7 +156,6 @@ $container_xml = <<<HEREDOCEND
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- AUTO-GENERATED FILE. DO NOT EDIT. -->
 %s
-
 HEREDOCEND;
 
 $help_or_diff_container_xml = <<<HEREDOCEND
