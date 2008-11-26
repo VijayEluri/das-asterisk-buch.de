@@ -72,14 +72,24 @@ $ids = array(
 	'cli' => 'cli-%s',
 );
 
-$dirs = array(
+$dirs_help = array(
 	'app' => 'applications-help',
 	'fnc' => 'functions-help',
 	'mgr' => 'manager-help',
 	'agi' => 'agi-help',
 	'cli' => 'cli-help',
 );
-$dir = dirName(__FILE__).'/../docbook/anhang/'.$dirs[$mode].'/';
+
+$dirs_out = array(
+	'app' => 'applications',
+	'fnc' => 'functions',
+	'mgr' => 'manager',
+	'agi' => 'agi',
+	'cli' => 'cli',
+);
+
+$dir_help = dirName(__FILE__).'/../docbook/anhang/'.$dirs_help[$mode].'/';
+$dir_out  = dirName(__FILE__).'/../docbook/anhang/'.$dirs_out[$mode].'/';
 
 switch ($lang) {
 	case 'de':
@@ -195,7 +205,7 @@ function _diff_files( $file_a, $file_b )
 
 # get list of items
 #
-$files = glob( $dir.'*-help-1.*.txt');
+$files = glob( $dir_help.'*-help-1.*.txt');
 $items = array();
 foreach ($files as $file) {
 	if (fileSize($file) < 2) continue;
@@ -321,7 +331,7 @@ foreach ($items as $itemname => $item) {
 		}
 	}
 	
-	echo $itemname ,'  ', $main_output,"\n\n";
+	echo str_pad($itemname, 35, ' ') ,'  (main: ', $ast_vers_main_help ,')' ,"\n";
 	
 	$out = '';
 	//if (true) {
@@ -403,8 +413,13 @@ foreach ($items as $itemname => $item) {
 	
 	$out = sPrintF($container_xml, str_replace('%','%%', $out));
 	
-	echo $out;
-	echo "\n\n\n";
+	
+	$filename = $dir_out . $itemname .'-help.xml';
+	$fh = @fOpen($filename, 'wb');
+	@fWrite($fh, $out, strLen($out));
+	@fClose($fh);
+	
+	//echo $out ,"\n\n\n";
 }
 
 
