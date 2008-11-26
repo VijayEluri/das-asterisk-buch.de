@@ -150,12 +150,23 @@ switch ($lang) {
 		break;
 }
 
+switch ($lang) {
+	case 'de':
+		$in_asterisk_text = 'in Asterisk %s';
+		break;
+	case 'en':
+		$in_asterisk_text = 'in Asterisk %s';
+		break;
+}
+
 
 
 $container_xml = <<<HEREDOCEND
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE note PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <!-- AUTO-GENERATED FILE. DO NOT EDIT. -->
-<note lang="$lang">
+<note lang="$lang" revision="$Revision: 0 $">
 %s
 </note>
 
@@ -163,15 +174,20 @@ HEREDOCEND;
 
 $help_or_diff_container_xml = <<<HEREDOCEND
 
-<formalpara>
-  <title>%s</title>
-  <para>%s</para>
-</formalpara>
+  <formalpara>
+    <title>%s</title>
+
+    <para>%s</para>
+  </formalpara>
 
 HEREDOCEND;
 
-$help_or_diff_avail_xml = <<<HEREDOCEND
-<screen lang="en" xml:space="preserve" format="linespecific">%s</screen>
+$help_avail_xml = <<<HEREDOCEND
+<screen lang="en-US">%s</screen>
+HEREDOCEND;
+
+$diff_avail_xml = <<<HEREDOCEND
+<screen lang="en-US" language="diff-u">%s</screen>
 HEREDOCEND;
 
 $help_or_diff_not_avail_xml = <<<HEREDOCEND
@@ -185,21 +201,39 @@ function file_to_shortname( $filename )
 	return preg_replace('/-help-\\d+\\.\\d+(?:\\.\\d+)?\\.txt$/S', '', baseName($filename));
 }
 
+function _preg_grep_o( $pattern, $input )
+{
+	if (preg_match( $pattern, $input, $m )) {
+		return $m[0];
+	} else {
+		return false;
+	}
+}
+
 function _diff_files( $file_a, $file_b )
 {
+	global $in_asterisk_text;
+	
 	if (! file_exists($file_a)) return false;
 	if (! file_exists($file_b)) return false;
-	$cmd = 'diff --text --normal --unidirectional-new-file '. escapeShellArg($file_a) .' '. escapeShellArg($file_b) .' 2>>/dev/null';
+	
+	$label_a = sPrintF($in_asterisk_text, _preg_grep_o('/\\d+\\.\\d+(?:\\.\\d+)?/S', baseName($file_a,'.txt')));
+	$label_b = sPrintF($in_asterisk_text, _preg_grep_o('/\\d+\\.\\d+(?:\\.\\d+)?/S', baseName($file_b,'.txt')));
+	
+	$cmd = 'diff --text --minimal --suppress-common-lines --unified=3 -T --label '. escapeShellArg($label_a) .' '. escapeShellArg($file_a) .' --label '. escapeShellArg($label_b) .' '. escapeShellArg($file_b) .' 2>&1';
 	$err=0; $out=array();
 	exec($cmd, $out, $err);
 	if ($err == 0) {  # no difference
 		return '';
 	}
 	if ($err == 1) {  # diff generated
-		return implode("\n", $out);
+		$out = implode("\n", $out);
+		$out = preg_replace('/^(\\+|-)\\t/mS', '$1  ', $out);
+		$out = preg_replace('/^\\t/mS', '   ', $out);
+		return $out;
 	}
 	if ($err != 0) {
-		//var_export($out);
+		var_export($out);
 		return false;
 	}
 }
@@ -339,7 +373,7 @@ foreach ($items as $itemname => $item) {
 	//if (true) {
 		$title = sPrintF($help_title, $of, $ast_vers_main_help);
 		$help = rTrim(@file_get_contents($items[$itemname]['v'.$ast_vers_main_help]), "\n\r");
-		$content = sPrintF($help_or_diff_avail_xml, str_replace('%','%%', _xmlent($help)));
+		$content = sPrintF($help_avail_xml, str_replace('%','%%', _xmlent($help)));
 		$out.= sPrintF($help_or_diff_container_xml, $title, $content);
 	//}
 	
@@ -370,7 +404,7 @@ foreach ($items as $itemname => $item) {
 			if ($diff === false) {echo "ERROR.\n"; exit(1);}
 			$diff = rTrim($diff,"\n\r");
 			if ($diff != '') {
-				$content = sPrintF($help_or_diff_avail_xml, str_replace('%','%%', _xmlent($diff)));
+				$content = sPrintF($diff_avail_xml, str_replace('%','%%', _xmlent($diff)));
 			} else {
 				$content = sPrintF($help_or_diff_not_avail_xml, str_replace('%','%%', _xmlent($no_difference_text)));
 			}
@@ -405,7 +439,7 @@ foreach ($items as $itemname => $item) {
 			if ($diff === false) {echo "ERROR.\n"; exit(1);}
 			$diff = rTrim($diff,"\n\r");
 			if ($diff != '') {
-				$content = sPrintF($help_or_diff_avail_xml, str_replace('%','%%', _xmlent($diff)));
+				$content = sPrintF($diff_avail_xml, str_replace('%','%%', _xmlent($diff)));
 			} else {
 				$content = sPrintF($help_or_diff_not_avail_xml, str_replace('%','%%', _xmlent($no_difference_text)));
 			}
