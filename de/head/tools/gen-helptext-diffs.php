@@ -173,6 +173,25 @@ function file_to_shortname( $filename )
 	return preg_replace('/-help-\\d+\\.\\d+(?:\\.\\d+)?\\.txt$/S', '', baseName($filename));
 }
 
+function _diff_files( $file_a, $file_b )
+{
+	if (! file_exists($file_a)) return false;
+	if (! file_exists($file_b)) return false;
+	$cmd = 'diff --text --normal --unidirectional-new-file '. escapeShellArg($file_a) .' '. escapeShellArg($file_b) .' 2>>/dev/null';
+	$err=0; $out=array();
+	exec($cmd, $out, $err);
+	if ($err == 0) {  # no difference
+		return '';
+	}
+	if ($err == 1) {  # diff generated
+		return implode("\n", $out);
+	}
+	if ($err != 0) {
+		//var_export($out);
+		return false;
+	}
+}
+
 
 # get list of items
 #
@@ -333,8 +352,16 @@ foreach ($items as $itemname => $item) {
 				$to_vers_text.= ' (<xref linkend="'. sPrintF($ids[$mode], $othername) .'" />)';
 			}
 			$title = sPrintF($help_diff_title, $from_vers_text, $to_vers_text);
-			$diff = 'DIFF';
-			$content = sPrintF($help_or_diff_avail_xml, str_replace('%','%%', _xmlent($diff)));
+			$diff = _diff_files(
+				$items[$itemname]['v'.'1.2'],
+				$items[$itemname]['v'.'1.4'] );
+			if ($diff === false) {echo "ERROR.\n"; exit(1);}
+			$diff = rTrim($diff,"\n\r");
+			if ($diff != '') {
+				$content = sPrintF($help_or_diff_avail_xml, str_replace('%','%%', _xmlent($diff)));
+			} else {
+				$content = sPrintF($help_or_diff_not_avail_xml, str_replace('%','%%', _xmlent($no_difference_text)));
+			}
 		}
 		$out.= sPrintF($help_or_diff_container_xml, $title, $content);
 	}
@@ -360,8 +387,16 @@ foreach ($items as $itemname => $item) {
 				$to_vers_text.= ' (<xref linkend="'. sPrintF($ids[$mode], $othername) .'" />)';
 			}
 			$title = sPrintF($help_diff_title, $from_vers_text, $to_vers_text);
-			$diff = 'DIFF';
-			$content = sPrintF($help_or_diff_avail_xml, str_replace('%','%%', _xmlent($diff)));
+			$diff = _diff_files(
+				$items[$itemname]['v'.'1.4'],
+				$items[$itemname]['v'.'1.6'] );
+			if ($diff === false) {echo "ERROR.\n"; exit(1);}
+			$diff = rTrim($diff,"\n\r");
+			if ($diff != '') {
+				$content = sPrintF($help_or_diff_avail_xml, str_replace('%','%%', _xmlent($diff)));
+			} else {
+				$content = sPrintF($help_or_diff_not_avail_xml, str_replace('%','%%', _xmlent($no_difference_text)));
+			}
 		}
 		$out.= sPrintF($help_or_diff_container_xml, $title, $content);
 	}
