@@ -50,7 +50,7 @@ if (! in_array($mode, array( 'app', 'fnc', 'mgr', 'agi', 'cli' ), true)) {
 	echo $usage ,"\n";
 	exit(1);
 }
-if (! in_array($mode, array( 'app', 'fnc', 'mgr' ), true)) {
+if (! in_array($mode, array( 'app', 'fnc', 'mgr', 'agi' ), true)) {
 	echo "Mode \"$mode\" not implemented!\n";
 	echo $usage ,"\n";
 	exit(1);
@@ -160,13 +160,14 @@ switch ($lang) {
 }
 
 
+$svn_revision_keyword = '$Revision: 0 $';
 
 $container_xml = <<<HEREDOCEND
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE note PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <!-- AUTO-GENERATED FILE. DO NOT EDIT. -->
-<note lang="$lang" revision="$Revision: 0 $">
+<note lang="$lang" revision="$svn_revision_keyword">
 %s
 </note>
 
