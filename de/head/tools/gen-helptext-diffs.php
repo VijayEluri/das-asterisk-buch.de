@@ -160,7 +160,7 @@ switch ($lang) {
 }
 
 
-$svn_revision_keyword = '$Revision: 0 $';
+$svn_revision_keyword = '$'.'Revision: 0 '.'$';
 
 $container_xml = <<<HEREDOCEND
 <?xml version="1.0" encoding="UTF-8"?>
