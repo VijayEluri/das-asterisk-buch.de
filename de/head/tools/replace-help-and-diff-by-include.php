@@ -110,6 +110,8 @@ sleep(2);
 
 
 
+$svn_revision_keyword = '$'.'Revision: 0 '.'$';
+
 $files = glob( $dir.'*-help.xml');
 foreach ($files as $file) {
 	$short = baseName($file, '-help.xml');
@@ -135,7 +137,7 @@ foreach ($files as $file) {
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<section id="applications-$short" lang="$lang" revision="$Revision: 0 $">
+<section id="applications-$short" lang="$lang" revision="$svn_revision_keyword">
   <!--
 % Copyright (c) 2006 - 2008 by 
 % Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
@@ -190,7 +192,7 @@ HEREDOCEND;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<section id="functions-$short" lang="$lang" revision="$Revision: 0 $">
+<section id="functions-$short" lang="$lang" revision="$svn_revision_keyword">
   <!--
 % Copyright (c) 2006 - 2008 by 
 % Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
