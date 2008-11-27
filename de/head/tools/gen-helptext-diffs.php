@@ -50,7 +50,7 @@ if (! in_array($mode, array( 'app', 'fnc', 'mgr', 'agi', 'cli' ), true)) {
 	echo $usage ,"\n";
 	exit(1);
 }
-if (! in_array($mode, array( 'app', 'fnc' ), true)) {
+if (! in_array($mode, array( 'app', 'fnc', 'mgr' ), true)) {
 	echo "Mode \"$mode\" not implemented!\n";
 	echo $usage ,"\n";
 	exit(1);
@@ -274,6 +274,7 @@ function _is_avail( &$items, $item, $vers )
 foreach ($items as $itemname => $item) {
 	switch ($mode) {
 		case 'app':
+		case 'mgr':
 			if (subStr($itemname,0,3)==='zap') {
 				$othervers = '1.6';
 				if (! _is_avail( &$items, $itemname, $othervers )) {
