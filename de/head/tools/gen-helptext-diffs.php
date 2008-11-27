@@ -391,11 +391,11 @@ foreach ($items as $itemname => $item) {
 			$to_vers_text = '1.4';
 			$othername = file_to_shortname( $items[$itemname]['v'.'1.2'] );
 			if ($othername !== $itemname) {
-				$to_vers_text.= ' (<xref linkend="'. sPrintF($ids[$mode], $othername) .'" />)';
+				$from_vers_text .= ' (<xref linkend="'. sPrintF($ids[$mode], $othername) .'" />)';
 			}
 			$othername = file_to_shortname( $items[$itemname]['v'.'1.4'] );
 			if ($othername !== $itemname) {
-				$to_vers_text.= ' (<xref linkend="'. sPrintF($ids[$mode], $othername) .'" />)';
+				$to_vers_text   .= ' (<xref linkend="'. sPrintF($ids[$mode], $othername) .'" />)';
 			}
 			$title = sPrintF($help_diff_title, $from_vers_text, $to_vers_text);
 			$diff = _diff_files(
@@ -426,11 +426,11 @@ foreach ($items as $itemname => $item) {
 			$to_vers_text = '1.6';
 			$othername = file_to_shortname( $items[$itemname]['v'.'1.4'] );
 			if ($othername !== $itemname) {
-				$to_vers_text.= ' (<xref linkend="'. sPrintF($ids[$mode], $othername) .'" />)';
+				$from_vers_text .= ' (<xref linkend="'. sPrintF($ids[$mode], $othername) .'" />)';
 			}
 			$othername = file_to_shortname( $items[$itemname]['v'.'1.6'] );
 			if ($othername !== $itemname) {
-				$to_vers_text.= ' (<xref linkend="'. sPrintF($ids[$mode], $othername) .'" />)';
+				$to_vers_text   .= ' (<xref linkend="'. sPrintF($ids[$mode], $othername) .'" />)';
 			}
 			$title = sPrintF($help_diff_title, $from_vers_text, $to_vers_text);
 			$diff = _diff_files(
