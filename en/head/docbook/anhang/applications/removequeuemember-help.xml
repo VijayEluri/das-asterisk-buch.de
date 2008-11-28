@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE note PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<!-- AUTO-GENERATED FILE. DO NOT EDIT. -->
+<note lang="en" revision="$Revision$">
+
+  <formalpara>
+    <title>Internal help for this application in Asterisk 1.4:</title>
+
+    <para><screen lang="en-US">  -= Info about application &apos;RemoveQueueMember&apos; =-
+
+[Synopsis]
+Dynamically removes queue members
+
+[Description]
+   RemoveQueueMember(queuename[|interface[|options]]):
+Dynamically removes interface to an existing queue
+If the interface is NOT in the queue and there exists an n+101 priority
+then it will then jump to this priority.  Otherwise it will return an error
+The option string may contain zero or more of the following characters:
+       &apos;j&apos; -- jump to +101 priority when appropriate.
+  This application sets the following channel variable upon completion:
+     RQMSTATUS      The status of the attempt to remove a queue member as a
+                     text string, one of
+           REMOVED | NOTINQUEUE | NOSUCHQUEUE
+Example: RemoveQueueMember(techsupport|SIP/3000)</screen></para>
+  </formalpara>
+
+  <formalpara>
+    <title>Diff of the internal help from Asterisk 1.2 to 1.4:</title>
+
+    <para>- none -</para>
+  </formalpara>
+
+  <formalpara>
+    <title>Diff of the internal help from Asterisk 1.4 to 1.6:</title>
+
+    <para><screen lang="en-US" language="diff-u">--- in Asterisk 1.4
++++ in Asterisk 1.6
+@@ -4,14 +4,11 @@
+   Dynamically removes queue members
+
+   [Description]
+-     RemoveQueueMember(queuename[|interface[|options]]):
++     RemoveQueueMember(queuename[,interface[,options]]):
+   Dynamically removes interface to an existing queue
+-  If the interface is NOT in the queue and there exists an n+101 priority
+-  then it will then jump to this priority.  Otherwise it will return an error
+-  The option string may contain zero or more of the following characters:
+-         &apos;j&apos; -- jump to +101 priority when appropriate.
++  If the interface is NOT in the queue it will return an error.
+     This application sets the following channel variable upon completion:
+        RQMSTATUS      The status of the attempt to remove a queue member as a
+                        text string, one of
+              REMOVED | NOTINQUEUE | NOSUCHQUEUE
+-  Example: RemoveQueueMember(techsupport|SIP/3000)
++  Example: RemoveQueueMember(techsupport,SIP/3000)</screen></para>
+  </formalpara>
+
+</note>
