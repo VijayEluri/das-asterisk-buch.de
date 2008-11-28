@@ -61,45 +61,7 @@ exten =&gt; s,n,EndWhile()
 exten =&gt; 123,1,Macro(countdown,3)   ; call the macro "countdown" with ARG1=3
 exten =&gt; 124,1,Macro(countdown,5)   ; call the macro "countdown" with ARG1=5</programlisting>
 
-    <note>
-      <formalpara>
-        <title>Internal help for this application in Asterisk 1.4:</title>
-
-        <para><screen>  -= Info about application 'Macro' =- 
-
-[Synopsis]
-Macro Implementation
-
-[Description]
-  Macro(macroname|arg1|arg2...): Executes a macro using the context
-'macro-&lt;macroname&gt;', jumping to the 's' extension of that context and
-executing each step, then returning when the steps end. 
-The calling extension, context, and priority are stored in ${MACRO_EXTEN}, 
-${MACRO_CONTEXT} and ${MACRO_PRIORITY} respectively.  Arguments become
-${ARG1}, ${ARG2}, etc in the macro context.
-If you Goto out of the Macro context, the Macro will terminate and control
-will be returned at the location of the Goto.
-If ${MACRO_OFFSET} is set at termination, Macro will attempt to continue
-at priority MACRO_OFFSET + N + 1 if such a step exists, and N + 1 otherwise.
-WARNING: Because of the way Macro is implemented (it executes the priorities
-         contained within it via sub-engine), and a fixed per-thread
-         memory stack allowance, macros are limited to 7 levels
-         of nesting (macro calling macro calling macro, etc.); It
-         may be possible that stack-intensive applications in deeply nested macros
-         could cause asterisk to crash earlier than this limit.</screen></para>
-      </formalpara>
-
-      <formalpara>
-        <title>diff output to internal help in Asterisk 1.2:</title>
-
-        <para><screen>22,23c22,23
-&lt;          may be possible that stack-intensive applications in deeply nested macros
-&lt;          could cause asterisk to crash earlier than this limit.
----
-&gt;          may be possible that stack-intensive applications in deeply nested
-&gt;          macros could cause asterisk to crash earlier than this limit.</screen></para>
-      </formalpara>
-    </note>
+    <xi:include href="macro-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
 
     <formalpara>
       <title>See also</title>
