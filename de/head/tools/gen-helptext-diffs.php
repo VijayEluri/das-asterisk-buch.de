@@ -395,17 +395,18 @@ foreach ($items as $itemname => $item) {
 	
 	$title = $versions_title;
 	$content = '';
+	$nbsp = '&#x00A0;';  # non-breaking space
 	$was_renamed = false;
 	if (true
 	&&  _is_avail(&$items, $itemname, '1.2')) {
 		$content.= str_repeat('&#x2014;',8);  # em dash
 	} else {
-		$content.= str_repeat(' '       ,8);
+		$content.= str_repeat($nbsp     ,8);
 	}
 	if (_is_avail(&$items, $itemname, '1.2')) {
-		$content.= '| <emphasis role="bold">1.2</emphasis>';
+		$content.= '|'.$nbsp.'<emphasis role="bold">1.2</emphasis>';
 		if (subStr(baseName($items[$itemname]['v1.2']), 0, strLen($itemname)) === $itemname) {
-			$content.= ' ';
+			$content.= $nbsp;
 		} else {
 			$content.= '*';
 			$was_renamed = true;
@@ -413,51 +414,50 @@ foreach ($items as $itemname => $item) {
 		//$content.= '('. subStr(baseName($items[$itemname]['v1.2']) .')';
 		$content.= '|';
 	} else {
-		$content.= '|     |';
+		$content.= '|'.str_repeat($nbsp,5).'|';
 	}
 	if (_is_avail(&$items, $itemname, '1.2')
 	&&  _is_avail(&$items, $itemname, '1.4')) {
 		$content.= str_repeat('&#x2014;',8);  # em dash
 	} else {
-		$content.= str_repeat(' '       ,8);
+		$content.= str_repeat($nbsp     ,8);
 	}
 	if (_is_avail(&$items, $itemname, '1.4')) {
-		$content.= '| <emphasis role="bold">1.4</emphasis>';
+		$content.= '|'.$nbsp.'<emphasis role="bold">1.4</emphasis>';
 		if (subStr(baseName($items[$itemname]['v1.4']), 0, strLen($itemname)) === $itemname) {
-			$content.= ' ';
+			$content.= $nbsp;
 		} else {
 			$content.= '*';
 			$was_renamed = true;
 		}
 		$content.= '|';
 	} else {
-		$content.= '|     |';
+		$content.= '|'.str_repeat($nbsp,5).'|';
 	}
 	if (_is_avail(&$items, $itemname, '1.4')
 	&&  _is_avail(&$items, $itemname, '1.6')) {
 		$content.= str_repeat('&#x2014;',8);  # em dash
 	} else {
-		$content.= str_repeat(' '       ,8);
+		$content.= str_repeat($nbsp     ,8);
 	}
 	if (_is_avail(&$items, $itemname, '1.6')) {
-		$content.= '| <emphasis role="bold">1.6</emphasis>';
+		$content.= '|'.$nbsp.'<emphasis role="bold">1.6</emphasis>';
 		if (subStr(baseName($items[$itemname]['v1.6']), 0, strLen($itemname)) === $itemname) {
-			$content.= ' ';
+			$content.= $nbsp;
 		} else {
 			$content.= '*';
 			$was_renamed = true;
 		}
 		$content.= '|';
 	} else {
-		$content.= '|     |';
+		$content.= '|'.str_repeat($nbsp,5).'|';
 	}
 	if (_is_avail(&$items, $itemname, '1.6')
 	&&  true                                ) {
 		$content.= str_repeat('&#x2014;',8);  # em dash
 	} else {
-		//$content.= str_repeat(' '       ,8);
+		//$content.= str_repeat($nbsp     ,8);
 	}
-	$content = str_replace(' ', '&#x00A0;', $content);  # non-breaking space
 	$content = '<literallayout class="monospaced">'. $content .'</literallayout>';
 	if ($was_renamed) $content.= "\n". ' (* '.$renamed_text.')';
 	$out.= sPrintF($help_or_diff_container_xml, $title, $content);
