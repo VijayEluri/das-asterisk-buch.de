@@ -457,7 +457,7 @@ foreach ($items as $itemname => $item) {
 	} else {
 		//$content.= str_repeat(' '       ,8);
 	}
-	//$content = str_replace(' ', '&#x00A0;', $content);  # non-breaking space
+	$content = str_replace(' ', '&#x00A0;', $content);  # non-breaking space
 	$content = '<literallayout class="monospaced">'. $content .'</literallayout>';
 	if ($was_renamed) $content.= "\n". ' (* '.$renamed_text.')';
 	$out.= sPrintF($help_or_diff_container_xml, $title, $content);
