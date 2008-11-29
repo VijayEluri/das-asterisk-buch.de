@@ -93,6 +93,24 @@ $dir_out  = dirName(__FILE__).'/../docbook/anhang/'.$dirs_out[$mode].'/';
 
 switch ($lang) {
 	case 'de':
+		$versions_title = 'Asterisk-Versionen:';
+		break;
+	case 'en':
+		$versions_title = 'Asterisk versions:';
+		break;
+}
+
+switch ($lang) {
+	case 'de':
+		$renamed_text = 'anderer Name';
+		break;
+	case 'en':
+		$renamed_text = 'different name';
+		break;
+}
+
+switch ($lang) {
+	case 'de':
 		$help_title = 'Interner Hilfetext %s in Asterisk %s:';
 		switch ($mode) {
 			case 'app': $of = 'zu dieser Applikation'   ; break;
@@ -158,6 +176,7 @@ switch ($lang) {
 		$in_asterisk_text = 'in Asterisk %s';
 		break;
 }
+
 
 
 $svn_revision_keyword = '$'.'Revision: 0 '.'$';
@@ -372,7 +391,79 @@ foreach ($items as $itemname => $item) {
 	echo str_pad($itemname, 35, ' ') ,'  (main: ', $ast_vers_main_help ,')' ,"\n";
 	
 	$out = '';
-	//if (true) {
+	
+	
+	$title = $versions_title;
+	$content = '';
+	$was_renamed = false;
+	if (true
+	&&  _is_avail(&$items, $itemname, '1.2')) {
+		$content.= str_repeat('&#x2014;',8);  # em dash
+	} else {
+		$content.= str_repeat(' '       ,8);
+	}
+	if (_is_avail(&$items, $itemname, '1.2')) {
+		$content.= '| <emphasis role="bold">1.2</emphasis>';
+		if (subStr(baseName($items[$itemname]['v1.2']), 0, strLen($itemname)) === $itemname) {
+			$content.= ' ';
+		} else {
+			$content.= '*';
+			$was_renamed = true;
+		}
+		//$content.= '('. subStr(baseName($items[$itemname]['v1.2']) .')';
+		$content.= '|';
+	} else {
+		$content.= '|     |';
+	}
+	if (_is_avail(&$items, $itemname, '1.2')
+	&&  _is_avail(&$items, $itemname, '1.4')) {
+		$content.= str_repeat('&#x2014;',8);  # em dash
+	} else {
+		$content.= str_repeat(' '       ,8);
+	}
+	if (_is_avail(&$items, $itemname, '1.4')) {
+		$content.= '| <emphasis role="bold">1.4</emphasis>';
+		if (subStr(baseName($items[$itemname]['v1.4']), 0, strLen($itemname)) === $itemname) {
+			$content.= ' ';
+		} else {
+			$content.= '*';
+			$was_renamed = true;
+		}
+		$content.= '|';
+	} else {
+		$content.= '|     |';
+	}
+	if (_is_avail(&$items, $itemname, '1.4')
+	&&  _is_avail(&$items, $itemname, '1.6')) {
+		$content.= str_repeat('&#x2014;',8);  # em dash
+	} else {
+		$content.= str_repeat(' '       ,8);
+	}
+	if (_is_avail(&$items, $itemname, '1.6')) {
+		$content.= '| <emphasis role="bold">1.6</emphasis>';
+		if (subStr(baseName($items[$itemname]['v1.6']), 0, strLen($itemname)) === $itemname) {
+			$content.= ' ';
+		} else {
+			$content.= '*';
+			$was_renamed = true;
+		}
+		$content.= '|';
+	} else {
+		$content.= '|     |';
+	}
+	if (_is_avail(&$items, $itemname, '1.6')
+	&&  true                                ) {
+		$content.= str_repeat('&#x2014;',8);  # em dash
+	} else {
+		//$content.= str_repeat(' '       ,8);
+	}
+	//$content = str_replace(' ', '&#x00A0;', $content);  # non-breaking space
+	$content = '<literallayout class="monospaced">'. $content .'</literallayout>';
+	if ($was_renamed) $content.= "\n". ' (* '.$renamed_text.')';
+	$out.= sPrintF($help_or_diff_container_xml, $title, $content);
+	
+	
+	//if (true) {  # we have already checked that it's available in Asterisk $ast_vers_main_help
 		$title = sPrintF($help_title, $of, $ast_vers_main_help);
 		$help = rTrim(@file_get_contents($items[$itemname]['v'.$ast_vers_main_help]), "\n\r");
 		$content = sPrintF($help_avail_xml, str_replace('%','%%', _xmlent($help)));
