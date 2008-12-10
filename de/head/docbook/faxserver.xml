@@ -6,6 +6,8 @@
 % - Stefan Wintermeyer <sw@amooma.de>
 % - Mathias Päzolt <mathias@paezolt.de>
 % - Michael Kiberu <m.kiberu@kipya.com>
+% - Peter Kozak <peter.kozak@amooma.de>
+% - Philipp Kempgen <philipp.kempgen@amooma.de>
 
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
@@ -19,12 +21,12 @@
 
   <para>Es gibt eine Reihe von Ansätzen und Projekten, mit Asterisk einen
   Faxserver zu implementieren. Lange Zeit war app_rxfax von <ulink
-  url="http://www.soft-switch.org/"><citetitle>http://www.soft-switch.org/</citetitle></ulink>
-  die von vielen angepriesene Lösung. Allerdings gilt diese Variante als
+  url="http://www.soft-switch.org/">http://www.soft-switch.org/</ulink> die
+  von vielen angepriesene Lösung. Allerdings gilt diese Variante als
   fehleranfällig. Faxe werden regelmäßig unvollständig übertragen.</para>
 
   <para>Deshalb beschreiben wir hier das Projekt IAXmodem (siehe <ulink
-  url="http://iaxmodem.sourceforge.net/"><citetitle>http://iaxmodem.sourceforge.net/</citetitle></ulink>).</para>
+  url="http://iaxmodem.sourceforge.net/">http://iaxmodem.sourceforge.net/</ulink>).</para>
 
   <section id="faxserver-mit-iaxmodem-und-hylafax">
     <title>Faxserver mit IAXmodem und Hylafax</title>
@@ -32,10 +34,12 @@
     <para>Die Software IAXmodem emuliert ein Modem, das von einer beliebigen
     Faxsoftware angesteuert werden kann. Für die Faxserversoftware nehmen wir
     das populäre <ulink
-    url="http://www.hylafax.org/"><citetitle>Hylafax</citetitle></ulink>. Als
-    Plattform benutzen wir für diese Installationsanleitung das im restlichen
-    Buch ebenfalls verwendete Debian Linux mit einem Asterisk 1.4 (siehe <xref
-    linkend="installation-1.4-debian-4.0" />).</para>
+    url="http://www.hylafax.org/"><citetitle>HylaFax</citetitle></ulink> oder
+    <ulink
+    url="http://hylafax.sourceforge.net/"><citetitle>HylaFax+</citetitle></ulink>.
+    Als Plattform benutzen wir für diese Installationsanleitung das im
+    restlichen Buch ebenfalls verwendete Debian Linux mit einem Asterisk 1.4
+    (siehe <xref linkend="installation-1.4-debian-4.0" />).</para>
 
     <section id="installation-iaxmodem">
       <title>Installation IAXmodem</title>
@@ -67,8 +71,8 @@ debian:~#
 debian:/usr/src# </screen></para>
 
       <para>Die Sourcen zu IAXmodem können mit einem normalen Browser auf der
-      Webseite <citetitle><ulink
-      url="http://iaxmodem.sourceforge.net">http://iaxmodem.sourceforge.net</ulink></citetitle>
+      Webseite <ulink
+      url="http://iaxmodem.sourceforge.net">http://iaxmodem.sourceforge.net</ulink>
       heruntergeladen werden (in diesem Beispiel ist es die Version 0.3.0).
       Nach dem Download muss der TarBall in das Verzeichnis /usr/src kopiert
       und mit <command>tar -xzf iaxmodem-0.3.0.tar.gz</command> enpackt
@@ -602,8 +606,7 @@ host=mein-voip-provider.de
 qualify=yes
 context=fax-in
 
-[...]
-</programlisting>
+[...]</programlisting>
 
       <para>Der entsprechende Context in der
       <filename>extensions.conf</filename> sieht dann so aus:</para>
@@ -628,8 +631,7 @@ exten =&gt; _X.,1,Dial(IAX2/iaxmodem)</programlisting>
       aus:</para>
 
       <programlisting>[fax-out]
-exten =&gt; _X.,1,Dial(SIP/123456/${EXTEN})
-</programlisting>
+exten =&gt; _X.,1,Dial(SIP/123456/${EXTEN})</programlisting>
 
       <para>Testen können wir das Senden mit <command>sendfax -n -d
       &lt;Faxnummer&gt; &lt;datei.txt&gt;</command></para>
@@ -653,8 +655,7 @@ exten =&gt; _X.,1,Dial(SIP/123456/${EXTEN})
   == Spawn extension (fax-out, 06912345678, 2) exited non-zero on 'IAX2/iaxmodem-3'
     -- Executing Hangup("IAX2/iaxmodem-3", "") in new stack
   == Spawn extension (fax-out, h, 1) exited non-zero on 'IAX2/iaxmodem-3'
-    -- Hungup 'IAX2/iaxmodem-3'
-</screen>
+    -- Hungup 'IAX2/iaxmodem-3'</screen>
 
       <para>Das Kommando <command>faxstat -s</command> gibt während des
       Sendens folgende Zeilen aus:</para>
@@ -665,16 +666,15 @@ Modem ttyIAX0 (123456): Sending job 7
 
 JID  Pri S  Owner Number       Pages Dials     TTS Status
 7    127 R   root 06912345678  0:1   0:12
-debian:~# 
-</screen>
+debian:~# </screen>
 
       <para>Fertig! Jetzt können Sie über Asterisk mit Hylafax Faxe versenden
       und empfangen.</para>
 
       <para>Auf der Hylafax-Webseite <ulink
-      url="http://www.hylafax.org"><citetitle>http://www.hylafax.org</citetitle></ulink>
-      finden Sie viele Hinweise und Howtos, wie Sie Ihren neuen Faxserver
-      möglichst einfach in Ihre bestehende Büroinfrastruktur einbinden.</para>
+      url="http://www.hylafax.org">http://www.hylafax.org</ulink> finden Sie
+      viele Hinweise und Howtos, wie Sie Ihren neuen Faxserver möglichst
+      einfach in Ihre bestehende Büroinfrastruktur einbinden.</para>
     </section>
 
     <section id="fax-email-versand">
@@ -805,7 +805,7 @@ Jun 02 02:51:47.01: [ 3320]: RECV FAX (000000033): recvq/fax000000016.tif from I
 
             <answer>
               <para>Ja, dieses finden Sie unter <ulink
-              url="http://www.hylafax.org/content/FAQ"><citetitle>http://www.hylafax.org/content/FAQ</citetitle></ulink>.</para>
+              url="http://www.hylafax.org/content/FAQ">http://www.hylafax.org/content/FAQ</ulink>.</para>
             </answer>
           </qandaentry>
         </qandadiv>
