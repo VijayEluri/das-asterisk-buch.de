@@ -15,31 +15,38 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>FIXMEFIXMEFIXMEApplication()</literal></title>
+  <title><literal>SendFAX()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>FIXMEFIXMEFIXMEApplication()</code></secondary>
-    </indexterm>
+    <secondary><code>SendFAX()</code></secondary>
+  </indexterm>
 
-    <simpara>DOES SOMETHING</simpara>
+  <simpara>Sendet ein Fax.</simpara>
 
-    <synopsis>FIXMEFIXMEFIXMEApplication(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>SendFAX(<replaceable>Datei</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Sendet eine TIFF-Datei als Fax.</simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,FIXMEFIXMEFIXMEApplication()
+  <programlisting>exten =&gt; 123,1,Set(LOCALSTATIONID=Meine Firma)
+exten =&gt; 123,n,Set(LOCALHEADERINFO=Meine Firma - Wir sind fuer Sie da)
+exten =&gt; 123,n,SendFAX(/tmp/angebot.tiff)
+exten =&gt; 123,n,Verbose(1,###       FAXSTATUS: ${FAXSTATUS})
+exten =&gt; 123,n,Verbose(1,###        FAXERROR: ${FAXERROR})
+exten =&gt; 123,n,Verbose(1,###         FAXMODE: ${FAXMODE})
+exten =&gt; 123,n,Verbose(1,###        FAXPAGES: ${FAXPAGES})
+exten =&gt; 123,n,Verbose(1,###      FAXBITRATE: ${FAXBITRATE})
+exten =&gt; 123,n,Verbose(1,###   FAXRESOLUTION: ${FAXRESOLUTION})
+exten =&gt; 123,n,Verbose(1,### REMOTESTATIONID: ${REMOTESTATIONID})
 exten =&gt; 123,n,Hangup()</programlisting>
 
-    <xi:include href="sendfax-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="sendfax-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <formalpara>
+    <title>Siehe auch</title>
 
-      <para><xref linkend="applications-FIXMEFIXMEFIXME" />, <xref
-      linkend="applications-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+    <para><xref linkend="applications-receivefax" /></para>
+  </formalpara>
 </section>

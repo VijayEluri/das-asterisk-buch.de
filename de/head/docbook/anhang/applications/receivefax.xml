@@ -15,31 +15,49 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>FIXMEFIXMEFIXMEApplication()</literal></title>
+  <title><literal>ReceiveFAX()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>FIXMEFIXMEFIXMEApplication()</code></secondary>
-    </indexterm>
+    <secondary><code>ReceiveFAX()</code></secondary>
+  </indexterm>
 
-    <simpara>DOES SOMETHING</simpara>
+  <simpara>Empfängt ein Fax.</simpara>
 
-    <synopsis>FIXMEFIXMEFIXMEApplication(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>ReceiveFAX(<replaceable>Dateiname</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <simpara><literal>SendFax()</literal> und <literal>ReceiveFax()</literal>
+  ersetzen den bekannten Patch zum Faxen<indexterm>
+      <primary>Fax</primary>
+    </indexterm> mit <literal>TxFax()</literal> und
+  <literal>RxFax()</literal>. Sie verwenden ebenfalls die SpanDSP<indexterm>
+      <primary>SpanDSP</primary>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,FIXMEFIXMEFIXMEApplication()
+      <secondary>Fax</secondary>
+    </indexterm>-Library.</simpara>
+
+  <simpara><literal>ReceiveFax()</literal> empfängt ein eingehendes Fax und
+  speichert es als TIFF-Datei.</simpara>
+
+  <programlisting>exten =&gt; 123,1,Verbose(1,### Eingehendes Fax ${CDR(uniqueid)})
+exten =&gt; 123,n,Set(LOCALSTATIONID=Meine Firma)
+exten =&gt; 123,n,ReceiveFAX(/tmp/fax-${CDR(uniqueid)}.tif)
+exten =&gt; 123,n,Verbose(1,###       FAXSTATUS: ${FAXSTATUS})
+exten =&gt; 123,n,Verbose(1,###        FAXERROR: ${FAXERROR})
+exten =&gt; 123,n,Verbose(1,###         FAXMODE: ${FAXMODE})
+exten =&gt; 123,n,Verbose(1,###        FAXPAGES: ${FAXPAGES})
+exten =&gt; 123,n,Verbose(1,###      FAXBITRATE: ${FAXBITRATE})
+exten =&gt; 123,n,Verbose(1,###   FAXRESOLUTION: ${FAXRESOLUTION})
+exten =&gt; 123,n,Verbose(1,### REMOTESTATIONID: ${REMOTESTATIONID})
 exten =&gt; 123,n,Hangup()</programlisting>
 
-    <xi:include href="receivefax-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="receivefax-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <formalpara>
+    <title>Siehe auch</title>
 
-      <para><xref linkend="applications-FIXMEFIXMEFIXME" />, <xref
-      linkend="applications-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+    <para><xref linkend="applications-sendfax" /></para>
+  </formalpara>
 </section>
