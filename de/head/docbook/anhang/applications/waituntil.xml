@@ -15,31 +15,67 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>FIXMEFIXMEFIXMEApplication()</literal></title>
+  <title><literal>WaitUntil()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>FIXMEFIXMEFIXMEApplication()</code></secondary>
-    </indexterm>
+    <secondary><code>WaitUntil()</code></secondary>
+  </indexterm>
 
-    <simpara>DOES SOMETHING</simpara>
+  <simpara>Wartet bis zu einer vorgegebenen Zeit.</simpara>
 
-    <synopsis>FIXMEFIXMEFIXMEApplication(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>WaitUntil(<replaceable>Unixzeit</replaceable>)</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Wartet bis zu einer bestimmten Uhrzeit (Unix-Timestamp).</simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,FIXMEFIXMEFIXMEApplication()
-exten =&gt; 123,n,Hangup()</programlisting>
+  <para>Setzt danach die Channel-Variable <literal>WAITUNTILSTATUS</literal>
+  auf einen der folgenden Werte:<variablelist termlength="12">
+      <varlistentry>
+        <term><literal>OK</literal></term>
 
-    <xi:include href="waituntil-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+        <listitem>
+          <simpara>Erfolgreich gewartet.</simpara>
+        </listitem>
+      </varlistentry>
 
-    <formalpara>
-      <title>Siehe auch</title>
+      <varlistentry>
+        <term><literal>FAILURE</literal></term>
 
-      <para><xref linkend="applications-FIXMEFIXMEFIXME" />, <xref
-      linkend="applications-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+        <listitem>
+          <simpara>Ungültige Zeitangabe.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>HANGUP</literal></term>
+
+        <listitem>
+          <simpara>Erfolgreich gewartet.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>PAST</literal></term>
+
+        <listitem>
+          <simpara>Erfolgreich gewartet.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
+
+  <programlisting>exten =&gt; s,1,Answer()
+exten =&gt; s,n,WaitUntil(${STRPTIME(2008-12-06 14:30:00|Europe/Berlin|%Y-%m-%d %H:%M:%S)})
+exten =&gt; s,n,SayUnixTime()</programlisting>
+
+  <para>Anders gesagt: Eine Applikation die niemand braucht.</para>
+
+  <xi:include href="waituntil-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-waituntil" /></para>
+  </formalpara>
 </section>
