@@ -15,261 +15,265 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>MeetMe()</literal></title>
+  <title><literal>MeetMe()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>MeetMe()</code></secondary>
-    </indexterm>
+    <secondary><code>MeetMe()</code></secondary>
+  </indexterm>
 
-    <simpara>Nimmt den Anrufer in eine MeetMe-Konferenz auf.</simpara>
+  <simpara>Nimmt den Anrufer in eine MeetMe-Konferenz auf.</simpara>
 
-    <synopsis>MeetMe([<replaceable>KonferenzNr</replaceable>][,<replaceable>Optionen</replaceable>[,<replaceable>PIN</replaceable>]])</synopsis>
+  <synopsis>MeetMe([<replaceable>KonferenzNr</replaceable>][,<replaceable>Optionen</replaceable>[,<replaceable>PIN</replaceable>]])</synopsis>
 
-    <simpara>Verbindet den Anrufer auf dem aktuellen Channel zu einer
-    MeetMe-Konferenz, angegeben durch den Parameter <code>KonferenzNr</code>.
-    Ohne Angabe der Konferenznummer wird der Teilnehmer zur Eingabe derselben
-    aufgefordert.</simpara>
+  <simpara>Verbindet den Anrufer auf dem aktuellen Channel zu einer
+  MeetMe-Konferenz, angegeben durch den Parameter <code>KonferenzNr</code>.
+  Ohne Angabe der Konferenznummer wird der Teilnehmer zur Eingabe derselben
+  aufgefordert.</simpara>
 
-    <simpara>Wird als <code>PIN</code>-Parameter die PIN-Nummer der Konferenz
-    (statisch in <filename>meetme.conf</filename> oder dynamisch vom Ersteller
-    festgelegt) übergeben, so wird der Anrufer direkt in die Konferenz
-    geleitet. Ansonsten muss der Anrufer die PIN eingeben, um beitreten zu
-    können.</simpara>
+  <simpara>Wird als <code>PIN</code>-Parameter die PIN-Nummer der Konferenz
+  (statisch in <filename>meetme.conf</filename> oder dynamisch vom Ersteller
+  festgelegt) übergeben, so wird der Anrufer direkt in die Konferenz geleitet.
+  Ansonsten muss der Anrufer die PIN eingeben, um beitreten zu
+  können.</simpara>
 
-    <important>
-      <simpara>Damit MeetMe-Konferenzen funktionieren, muss ein passendes
-      Zaptel-Interface installiert sein. Alternativ kann auch der
-      <code>ztdummy</code>-Treiber für Timing-Zwecke verwendet
-      werden.</simpara>
-    </important>
+  <important>
+    <simpara>Damit MeetMe-Konferenzen funktionieren, muss ein passendes
+    Zaptel-Interface installiert sein. Alternativ kann auch der
+    <code>ztdummy</code>-Treiber für Timing-Zwecke verwendet werden.</simpara>
+  </important>
 
-    <simpara>Die <code>Optionen</code> können sich aus folgenden Zeichen
-    zusammensetzen:</simpara>
+  <simpara>Die <code>Optionen</code> können sich aus folgenden Zeichen
+  zusammensetzen:</simpara>
 
-    <variablelist termlength="3">
-      <varlistentry>
-        <term><code>a</code></term>
+  <variablelist termlength="3">
+    <varlistentry>
+      <term><code>a</code></term>
 
-        <listitem>
-          <simpara>Aktiviert den Administrator-Modus.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Aktiviert den Administrator-Modus.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>A</code></term>
+    <varlistentry>
+      <term><code>A</code></term>
 
-        <listitem>
-          <simpara>Markiert den eintretenden User als besonderen Teilnehmer
-          (siehe <code>w</code> und <code>x</code>).</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Markiert den eintretenden User als besonderen Teilnehmer
+        (siehe <code>w</code> und <code>x</code>).</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>b</code></term>
+    <varlistentry>
+      <term><code>b</code></term>
 
-        <listitem>
-          <simpara>Startet das in <code>${MEETME_AGI_BACKGROUND}</code>
-          spezifizierte AGI-Skript, standardmäßig
-          <filename>conf-background.agi</filename>. (Funktioniert nur dann
-          korrekt, wenn alle Kanäle in einer Konferenz Zap-Kanäle sind.) Das
-          Skript erhält alle DTMF-Tanstendrücke, wodurch die Kombination mit
-          Optionen, die auch das Abfangen von Tasten zur Folge haben
-          (<code>p</code>), nicht möglich ist.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Startet das in <code>${MEETME_AGI_BACKGROUND}</code>
+        spezifizierte AGI-Skript, standardmäßig
+        <filename>conf-background.agi</filename>. (Funktioniert nur dann
+        korrekt, wenn alle Kanäle in einer Konferenz Zap-Kanäle sind.) Das
+        Skript erhält alle DTMF-Tanstendrücke, wodurch die Kombination mit
+        Optionen, die auch das Abfangen von Tasten zur Folge haben
+        (<code>p</code>), nicht möglich ist.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>c</code></term>
+    <varlistentry>
+      <term><code>c</code></term>
 
-        <listitem>
-          <simpara>Kündigt beim Betreten die Zahl der Teilnehmer an.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Kündigt beim Betreten die Zahl der Teilnehmer an.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>d</code></term>
+    <varlistentry>
+      <term><code>d</code></term>
 
-        <listitem>
-          <simpara>Legt dynamisch einen neuen Konferenzraum an.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Legt dynamisch einen neuen Konferenzraum an.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>D</code></term>
+    <varlistentry>
+      <term><code>D</code></term>
 
-        <listitem>
-          <simpara>Legt dynamisch einen neuen Konferenzraum an, wobei die
-          Festlegung der PIN verlangt wird. (Wenn der User keine PIN will,
-          muss er <code>#</code> drücken.)</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Legt dynamisch einen neuen Konferenzraum an, wobei die
+        Festlegung der PIN verlangt wird. (Wenn der User keine PIN will, muss
+        er <code>#</code> drücken.)</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>e</code></term>
+    <varlistentry>
+      <term><code>e</code></term>
 
-        <listitem>
-          <simpara>Wählt eine leere Konferenz aus.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Wählt eine leere Konferenz aus.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>E</code></term>
+    <varlistentry>
+      <term><code>E</code></term>
 
-        <listitem>
-          <simpara>Wählt eine leere Konferenz aus, die keine PIN
-          verlangt.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Wählt eine leere Konferenz aus, die keine PIN
+        verlangt.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>i</code></term>
+    <varlistentry>
+      <term><code>i</code></term>
 
-        <listitem>
-          <simpara>Kündigt Betreten oder Verlassen eines Teilnehmers an (nur
-          mit Zap-Kanälen).</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Kündigt Betreten oder Verlassen eines Teilnehmers an (nur mit
+        Zap-Kanälen).</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>m</code></term>
+    <varlistentry>
+      <term><code>m</code></term>
 
-        <listitem>
-          <simpara>Aktiviert den Monitor-Modus (nur hören, nicht
-          sprechen).</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Aktiviert den Monitor-Modus (nur hören, nicht
+        sprechen).</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>M</code></term>
+    <varlistentry>
+      <term><code>M</code></term>
 
-        <listitem>
-          <simpara>Aktiviert Wartemusik (Music on Hold), wenn nur ein
-          Teilnehmer in der Konferenz ist.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Aktiviert Wartemusik (Music on Hold), wenn nur ein Teilnehmer
+        in der Konferenz ist.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>p</code></term>
+    <varlistentry>
+      <term><code>p</code></term>
 
-        <listitem>
-          <simpara>Ermöglicht es dem Teilnehmer, die Konferenz durch Drücken
-          von <code>#</code> zu verlassen.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Ermöglicht es dem Teilnehmer, die Konferenz durch Drücken von
+        <code>#</code> zu verlassen.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>P</code></term>
+    <varlistentry>
+      <term><code>P</code></term>
 
-        <listitem>
-          <simpara>Fragt immer nach der PIN, auch wenn sie hier im Befehl
-          angegeben ist.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Fragt immer nach der PIN, auch wenn sie hier im Befehl
+        angegeben ist.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>q</code></term>
+    <varlistentry>
+      <term><code>q</code></term>
 
-        <listitem>
-          <simpara>Aktiviert den ruhigen Modus (spielt keine
-          Eintritts-/Austrittsklänge ab).</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Aktiviert den ruhigen Modus (spielt keine
+        Eintritts-/Austrittsklänge ab).</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>r</code></term>
+    <varlistentry>
+      <term><code>r</code></term>
 
-        <listitem>
-          <simpara>Zeichnet eine Konferenz auf. Datei:
-          <code>${MEETME_RECORDINGFILE}</code>, Format:
-          <code>${MEETME_RECORDINGFORMAT}</code>. Der Standard-Dateiname
-          lautet
-          <code>meetme-conf-rec-${<replaceable>KonferenzNr</replaceable>}-${<replaceable>UniqueID</replaceable>}</code>,
-          wobei <code>UniqueID</code> eine einmalige ID ist. Das
-          Standardformat ist <code>wav</code>. (Funktioniert nur mit
-          Zap-Kanälen)</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Zeichnet eine Konferenz auf. Datei:
+        <code>${MEETME_RECORDINGFILE}</code>, Format:
+        <code>${MEETME_RECORDINGFORMAT}</code>. Der Standard-Dateiname lautet
+        <code>meetme-conf-rec-${<replaceable>KonferenzNr</replaceable>}-${<replaceable>UniqueID</replaceable>}</code>,
+        wobei <code>UniqueID</code> eine einmalige ID ist. Das Standardformat
+        ist <code>wav</code>. (Funktioniert nur mit Zap-Kanälen)</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>s</code></term>
+    <varlistentry>
+      <term><code>s</code></term>
 
-        <listitem>
-          <simpara>Wechselt beim Drücken von <code>*</code> ins (Teilnehmer-
-          oder Administrator-)Menü.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Wechselt beim Drücken von <code>*</code> ins (Teilnehmer-
+        oder Administrator-)Menü.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>t</code></term>
+    <varlistentry>
+      <term><code>t</code></term>
 
-        <listitem>
-          <simpara>Aktiviert den Nur-Sprechen-Modus (nur reden, nicht
-          hören).</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Aktiviert den Nur-Sprechen-Modus (nur reden, nicht
+        hören).</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>T</code></term>
+    <varlistentry>
+      <term><code>T</code></term>
 
-        <listitem>
-          <simpara>Aktiviert die Sprecher-Erkennung (wird zum
-          Manager-Inferface gesendet und in der MeetMe-Liste im CLI
-          angezeigt).</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Aktiviert die Sprecher-Erkennung (wird zum Manager-Inferface
+        gesendet und in der MeetMe-Liste im CLI angezeigt).</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>v</code></term>
+    <varlistentry>
+      <term><code>v</code></term>
 
-        <listitem>
-          <simpara>Aktiviert den Video-Modus (bisher ohne Funktion).</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Aktiviert den Video-Modus (bisher ohne Funktion).</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>w</code></term>
+    <varlistentry>
+      <term><code>w</code></term>
 
-        <listitem>
-          <simpara>Wartet, bis ein gekennzeichneter Teilnehmer (siehe
-          <code>A</code>) die Konferenz betritt. Bis dahin hören alle
-          Teilnehmer Wartemusik.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Wartet, bis ein gekennzeichneter Teilnehmer (siehe
+        <code>A</code>) die Konferenz betritt. Bis dahin hören alle Teilnehmer
+        Wartemusik.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>x</code></term>
+    <varlistentry>
+      <term><code>x</code></term>
 
-        <listitem>
-          <simpara>Schließt die Konferenz, wenn sie vom letzten
-          gekennzeichneten Teilnehmer (siehe <code>A</code>) verlassen
-          wird.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Schließt die Konferenz, wenn sie vom letzten gekennzeichneten
+        Teilnehmer (siehe <code>A</code>) verlassen wird.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>X</code></term>
+    <varlistentry>
+      <term><code>X</code></term>
 
-        <listitem>
-          <simpara>Ermöglicht es dem Teilnehmer, die Konferenz durch Eingabe
-          einer einziffrigen Extension im Context
-          <code>${MEETME_EXIT_CONTEXT}</code> zu verlassen, oder durch Eingabe
-          der Nummer einer Extension des aktuellen Contexts, falls diese
-          Variable nicht definiert ist.</simpara>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+      <listitem>
+        <simpara>Ermöglicht es dem Teilnehmer, die Konferenz durch Eingabe
+        einer einziffrigen Extension im Context
+        <code>${MEETME_EXIT_CONTEXT}</code> zu verlassen, oder durch Eingabe
+        der Nummer einer Extension des aktuellen Contexts, falls diese
+        Variable nicht definiert ist.</simpara>
+      </listitem>
+    </varlistentry>
+  </variablelist>
 
-    <simpara>Die Option <code>X</code> funktioniert nicht zusammen mit
-    <code>p</code> oder <code>s</code>.</simpara>
+  <simpara>Die Option <code>X</code> funktioniert nicht zusammen mit
+  <code>p</code> oder <code>s</code>.</simpara>
 
-    <simpara>Verwenden Sie <code>e</code> (oder <code>E</code>) zusammen mit
-    <code>d</code> (oder <code>D</code>), um dynamisch einen neuen
-    Konferenzraum zu eröffnen, wobei Asterisk automatisch die
-    <code>KonferenzNr</code> festlegt. Sie müssen dann natürlich den anderen
-    Teilnehmern die Nummer mitteilen oder entsprechende Dialplan-Logik
-    einsetzen.</simpara>
+  <simpara>Verwenden Sie <code>e</code> (oder <code>E</code>) zusammen mit
+  <code>d</code> (oder <code>D</code>), um dynamisch einen neuen Konferenzraum
+  zu eröffnen, wobei Asterisk automatisch die <code>KonferenzNr</code>
+  festlegt. Sie müssen dann natürlich den anderen Teilnehmern die Nummer
+  mitteilen oder entsprechende Dialplan-Logik einsetzen.</simpara>
 
-    <xi:include href="meetme-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="meetme-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-meetmecount" />, <xref
+    linkend="applications-meetmeadmin" />, <xref
+    linkend="applications-meetmechanneladmin" />, <xref
+    linkend="functions-meetme_info" /></para>
+  </formalpara>
 </section>
