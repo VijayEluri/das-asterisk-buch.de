@@ -15,27 +15,111 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>JABBER_STATUS()</literal><indexterm significance="preferred">
+  <title><literal>JABBER_STATUS()</literal><indexterm significance="preferred">
       <primary>Dialplan-Funktionen</primary>
 
       <secondary><code>JABBER_STATUS()</code></secondary>
     </indexterm></title>
 
-    <synopsis>JABBER_STATUS(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>JABBER_STATUS(<replaceable>jabber</replaceable>,<replaceable>buddy</replaceable>[/<replaceable>resource</replaceable>])</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Gibt den Status des Jabber-Benutzers
+  <replaceable>buddy</replaceable> zurück. Zum Verbinden wird die Definition
+  <replaceable>jabber</replaceable> aus <filename>jabber.conf</filename>
+  verwendet. Die Jabber-ID <replaceable>buddy</replaceable> kann optional
+  durch die Angabe <replaceable>resource</replaceable> ergänzt
+  werden.<footnote>
+      <para>Zur Erklärung dieser Jabber-Begriffe siehe <ulink
+      url="http://de.wikipedia.org/wiki/Jabber">http://de.wikipedia.org/wiki/Jabber</ulink>,
+      <ulink
+      url="http://de.wikipedia.org/wiki/Jabber_Identifier">http://de.wikipedia.org/wiki/Jabber_Identifier</ulink></para>
+    </footnote></simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(JABBER_STATUS()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <para>Mögliche Rückgabewerte sind:<variablelist termlength="3">
+      <varlistentry>
+        <term>1</term>
 
-    <xi:include href="jabber_status-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+        <listitem>
+          <para>Online, Angemeldet</para>
+        </listitem>
+      </varlistentry>
 
-    <formalpara>
-      <title>Siehe auch</title>
+      <varlistentry>
+        <term>2</term>
 
-      <para><xref linkend="functions-FIXMEFIXMEFIXME" />, <xref
-      linkend="functions-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+        <listitem>
+          <para>Chatty, Gesprächig</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>3</term>
+
+        <listitem>
+          <para>Away, Abwesend</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>4</term>
+
+        <listitem>
+          <para>XAway, Extended Away, Not available, Länger abwesend, Nicht
+          verfügbar</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>5</term>
+
+        <listitem>
+          <para>DND, Do not disturb, Nicht stören</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>6</term>
+
+        <listitem>
+          <para>Offline, Abgemeldet</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>7</term>
+
+        <listitem>
+          <para>Not in roster, Nicht im <quote>Roster</quote>
+          (Kontaktliste)</para>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
+
+  <programlisting>123 =&gt; {
+    Set(status=${JABBER_STATUS(asterisk,philipp@example.com/home)});
+    Verbose(1,### Der Jabber-Status von philipp ist: ${status});
+    if ("${status}" = "1") {
+        Verbose(1,### anwesend. per Jabber anrufen);
+        Dial(Gtalk/asterisk-gmail/buddy@gmail.com);
+    }
+    else if ("${status}" = "5") {
+        Verbose(1,### DND);
+        VoiceMail(${EXTEN});
+    }
+    else {
+        Verbose(1,### per SIP anrufen);
+        Dial(SIP/philipp);
+    }
+}</programlisting>
+
+  <xi:include href="jabber_status-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-jabberstatus" />, <xref
+    linkend="applications-jabbersend" />,
+    <filename>jabber.conf</filename></para>
+  </formalpara>
 </section>
