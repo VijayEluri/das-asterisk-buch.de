@@ -15,27 +15,34 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>EXCEPTION()</literal><indexterm significance="preferred">
+  <title><literal>EXCEPTION()</literal><indexterm significance="preferred">
       <primary>Dialplan-Funktionen</primary>
 
       <secondary><code>EXCEPTION()</code></secondary>
     </indexterm></title>
 
-    <synopsis>EXCEPTION(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>EXCEPTION(<replaceable>Feld</replaceable>)</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Dient zum Abfragen der Details einer <quote>Exception</quote>
+  (Ausnahme). Das Feld <literal>reason</literal> ist einer der folgenden
+  Werte: <literal>INVALID</literal>, <literal>ERROR</literal>,
+  <literal>RESPONSETIMEOUT</literal>, <literal>ABSOLUTETIMEOUT</literal> oder
+  ein eigener mit <literal>RaiseException()</literal> gesetzter
+  Wert.</simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(EXCEPTION()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <programlisting>exten =&gt; e,1,Verbose(1,### Eine Exception ist aufgetreten)
+exten =&gt; e,n,Verbose(1,###     Grund: ${EXCEPTION(reason)})
+exten =&gt; e,n,Verbose(1,###   Context: ${EXCEPTION(context)})
+exten =&gt; e,n,Verbose(1,### Extension: ${EXCEPTION(exten)})
+exten =&gt; e,n,Verbose(1,###  Priority: ${EXCEPTION(priority)})
+exten =&gt; e,n,Hangup()</programlisting>
 
-    <xi:include href="exception-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="exception-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <formalpara>
+    <title>Siehe auch</title>
 
-      <para><xref linkend="functions-FIXMEFIXMEFIXME" />, <xref
-      linkend="functions-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+    <para><xref linkend="applications-raiseexception" /></para>
+  </formalpara>
 </section>
