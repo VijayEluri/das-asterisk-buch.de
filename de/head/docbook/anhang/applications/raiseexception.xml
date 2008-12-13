@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<section id="applications-raiseexception" lang="de" revision="$Revision$">
+<section id="applications-raiseexception" lang="de"
+         revision="$Revision$">
   <!--
 % Copyright (c) 2006 - 2008 by 
 % Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
@@ -15,31 +16,52 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>FIXMEFIXMEFIXMEApplication()</literal></title>
+  <title><literal>RaiseException()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>FIXMEFIXMEFIXMEApplication()</code></secondary>
-    </indexterm>
+    <secondary><code>RaiseException()</code></secondary>
+  </indexterm>
 
-    <simpara>DOES SOMETHING</simpara>
+  <simpara>Löst eine <quote>Exception</quote> (Ausnahme) aus.</simpara>
 
-    <synopsis>FIXMEFIXMEFIXMEApplication(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>RaiseException(<replaceable>Grund</replaceable>)</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <simpara><literal>RaiseException()</literal> löst eine Exception aus,
+  springt also zur Extension <literal>e</literal> im aktuellen Kontext, wo die
+  Ausnahme dann mit der Funktion <literal>EXCEPTION()</literal> abgefragt und
+  behandelt werden kann. Falls keine <literal>e</literal>-Extension existiert
+  wird der Kanal aufgelegt.</simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,FIXMEFIXMEFIXMEApplication()
-exten =&gt; 123,n,Hangup()</programlisting>
+  <programlisting>123 =&gt; {
+    // ...
+    if ("${eingabe}" = "") {
+        RaiseException(KEINEEINGABE);
+    }
+    // ...
+}
 
-    <xi:include href="raiseexception-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+e =&gt; {
+    Verbose(1,### Eine Exception ist aufgetreten);
+    if ("${EXCEPTION(reason)}" = "KEINEEINGABE") {
+        Playback(sie-haben-nichts-eingegeben);
+    }
+    else if ("${EXCEPTION(reason)}" = "RESPONSETIMEOUT") {
+        Playback(ein-timeout-ist-aufgetreten);
+    }
+    else {
+        Playback(ein-anderer-fehler-ist-aufgetreten);
+    }
+    Hangup();
+}</programlisting>
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <xi:include href="raiseexception-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-      <para><xref linkend="applications-FIXMEFIXMEFIXME" />, <xref
-      linkend="applications-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="functions-exception" /></para>
+  </formalpara>
 </section>
