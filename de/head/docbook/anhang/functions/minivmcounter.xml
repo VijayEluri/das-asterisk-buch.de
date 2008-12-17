@@ -15,27 +15,72 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>MINIVMCOUNTER()</literal><indexterm significance="preferred">
+  <title><literal>MINIVMCOUNTER()</literal><indexterm significance="preferred">
       <primary>Dialplan-Funktionen</primary>
 
       <secondary><code>MINIVMCOUNTER()</code></secondary>
     </indexterm></title>
 
-    <synopsis>MINIVMCOUNTER(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>MINIVMCOUNTER(<replaceable>benutzer@domain</replaceable>,<replaceable>zaehlername</replaceable>)</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <synopsis>MINIVMCOUNTER(<replaceable>benutzer@domain</replaceable>,<replaceable>zaehlername</replaceable>,<replaceable>operand</replaceable>)</synopsis>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(MINIVMCOUNTER()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <simpara>Liest den Zähler <replaceable>zaehlername</replaceable> eines
+  Benutzer-Accounts im Mini-VoiceMail-System (<xref linkend="minivm" />) bzw.
+  setzt ihn hoch oder runter oder auf einen bestimmten Wert.</simpara>
 
-    <xi:include href="minivmcounter-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <para><replaceable>operand</replaceable> wird nur zum Setzen benötigt, nicht
+  zum Lesen. Mögliche Werte:<variablelist termlength="3">
+      <varlistentry>
+        <term><literal>s</literal></term>
 
-    <formalpara>
-      <title>Siehe auch</title>
+        <listitem>
+          <para>Zähler auf einen bestimmten Wert setzen (<foreignphrase
+          lang="en">set</foreignphrase>)</para>
+        </listitem>
+      </varlistentry>
 
-      <para><xref linkend="functions-FIXMEFIXMEFIXME" />, <xref
-      linkend="functions-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+      <varlistentry>
+        <term><literal>i</literal></term>
+
+        <listitem>
+          <para>Zähler um einen bestimmten Wert erhöhen (<foreignphrase
+          lang="en">increment</foreignphrase>)</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>d</literal></term>
+
+        <listitem>
+          <para>Zähler um einen bestimmten Wert vermindern (<foreignphrase
+          lang="en">decrement</foreignphrase>)</para>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
+
+  <simpara>Die Zähler werden in Text-Dateien in den Mini-VM-Verzeichnissen
+  gespeichert.</simpara>
+
+  <programlisting>123 =&gt; {
+    Set(MINIVMCOUNTER(philipp.kempgen@localdomain,testzaehler,s)=5);
+    Verbose(1,### Zaehler: ${MINIVMCOUNTER(philipp.kempgen@localdomain,testzaehler)});
+    Set(MINIVMCOUNTER(philipp.kempgen@localdomain,testzaehler,i)=1);
+    Verbose(1,### Zaehler: ${MINIVMCOUNTER(philipp.kempgen@localdomain,testzaehler)});
+    Hangup()
+}</programlisting>
+
+  <xi:include href="minivmcounter-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="functions-minivmaccount" />, <xref
+    linkend="applications-minivmaccmess" />, <xref
+    linkend="applications-minivmdelete" />, <xref
+    linkend="applications-minivmgreet" />, <xref
+    linkend="applications-minivmnotify" />, <xref
+    linkend="applications-minivmrecord" /></para>
+  </formalpara>
 </section>
