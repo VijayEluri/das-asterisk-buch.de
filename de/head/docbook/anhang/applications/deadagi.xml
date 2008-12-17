@@ -15,89 +15,78 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>DeadAGI()</literal></title>
+  <title><literal>DeadAGI()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>DeadAGI()</code></secondary>
-    </indexterm>
+    <secondary><code>DeadAGI()</code></secondary>
+  </indexterm>
 
-    <simpara>Führt ein AGI-konformes Skript auf einem toten (aufgelegten)
-    Channel aus.</simpara>
+  <simpara>Führt ein AGI-konformes Skript auf einem toten (aufgelegten)
+  Channel aus.</simpara>
 
-    <synopsis>DeadAGI(<replaceable>Programm</replaceable>,<replaceable>Argumente</replaceable>)</synopsis>
+  <synopsis>DeadAGI(<replaceable>Skript</replaceable>[,<replaceable>Parameter1</replaceable>[,<replaceable>Parameter2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
 
-    <simpara>Führt ein AGI-konformes Skript auf einem toten (aufgelegten)
-    Channel aus. Mit Hilfe von AGI kann Asterisk externe Programme in nahezu
-    jeder beliebigen Sprache ausführen (starten), um einen Telefonkanal zu
-    steuern, Audio abzuspielen, DTMF-Ziffern auszulesen usw., indem es nach
-    dem AGI-Protokoll auf <code>STDIN</code> und <code>STDOUT</code> mit
-    diesen kommuniziert. Die übergebenen <code>Argumente</code> werden an das
-    AGI-Programm durchgereicht.</simpara>
+  <simpara><literal>DeadAGI()</literal> funktioniert wie
+  <literal>AGI()</literal> (<xref linkend="applications-agi" />), wurde aber
+  speziell für tote (d.h. aufgelegte) Kanäle entwickelt, weil das
+  Standard-AGI-Interface nicht funktioniert, nachdem der Channel aufgelegt
+  wurde. Dass der Channel <quote>tot</quote> ist, ist allerdings keine
+  Voraussetzung für den Start eines DeadAGI-Skripts.</simpara>
 
-    <simpara>Diese Anwendung wurde speziell für tote Kanäle entwickelt, weil
-    das Standard AGI-Interface nicht funktioniert, nachdem der Channel
-    aufgelegt wurde. Dass der Channel <quote>tot</quote> ist, ist allerdings
-    keine Voraussetzung für den Start eines DeadAGI-Skripts!</simpara>
+  <simpara>Liefert -1 zurück, falls die Anwendung ein Auflegen angefordert
+  hat, oder 0 beim Austritt ohne Auflegen.</simpara>
 
-    <simpara>Benutzen Sie den Befehl <code>show agi</code> auf der
-    Kommandozeilen-Schnittstelle, um eine Liste aller verfügbaren AGI-Befehle
-    zu erhalten.</simpara>
-
-    <simpara>Liefert -1 zurück, falls die Anwendung ein Auflegen angefordert
-    hat, oder 0 beim Austritt ohne Auflegen.</simpara>
-
-    <programlisting>; mit einem bereits aufgelegten (h) Kanal noch ein AGI-Skript ausführen:
+  <programlisting>; mit einem bereits aufgelegten (h) Kanal noch ein AGI-Skript ausführen:
 exten =&gt; h,1,DeadAGI(agi-test)</programlisting>
 
-    <important>
-      <simpara>Der Channel wird solange als aktiv angesehen wird, bis das
-      Skript beendet wird, was z.B. für CDRs von Bedeutung sein
-      kann.</simpara>
+  <important>
+    <simpara>Der Channel wird solange als aktiv angesehen wird, bis das Skript
+    beendet wird, was z.B. für CDRs von Bedeutung sein kann.</simpara>
 
-      <para>Beachten Sie, dass auch DeadAGI-Skripte beim Auflegen des Channels
-      ein <code>SIGHUP</code>-Signal erhalten, was ggf. ignoriert werden
-      muss:<informaltable colsep="none" rowsep="none">
-          <tgroup cols="2">
-            <colspec colnum="1" colwidth="50pt" />
+    <para>Beachten Sie, dass auch DeadAGI-Skripte beim Auflegen des Channels
+    ein <code>SIGHUP</code>-Signal erhalten, was ggf. ignoriert werden
+    muss:<informaltable colsep="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="50pt" />
 
-            <tbody>
-              <row>
-                <entry>Perl</entry>
+          <tbody>
+            <row>
+              <entry>Perl</entry>
 
-                <entry><programlisting>$SIG{HUP} = "IGNORE";</programlisting></entry>
-              </row>
+              <entry><programlisting>$SIG{HUP} = "IGNORE";</programlisting></entry>
+            </row>
 
-              <row>
-                <entry>PHP</entry>
+            <row>
+              <entry>PHP</entry>
 
-                <entry><programlisting>pcntl_signal(SIGHUP, SIG_IGN);</programlisting>(PHP
-                muss mit <code>--enable-pcntl</code> kompiliert worden sein,
-                was per Default nicht der Fall ist!)</entry>
-              </row>
+              <entry><programlisting>pcntl_signal(SIGHUP, SIG_IGN);</programlisting>(PHP
+              muss mit <code>--enable-pcntl</code> kompiliert worden sein, was
+              per Default nicht der Fall ist!)</entry>
+            </row>
 
-              <row>
-                <entry>Ruby</entry>
+            <row>
+              <entry>Ruby</entry>
 
-                <entry><programlisting>trap('SIGHUP','IGNORE')</programlisting></entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable></para>
+              <entry><programlisting>trap('SIGHUP','IGNORE')</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
 
-      <simpara>Es ist auch wichtig, dass Sie nach dem Auflegen nicht mehr mit
-      Asterisk kommunizieren, sonst erhält das Skript ein
-      <code>SIGPIPE</code>, was das Skript beendet, sofern Sie es nicht
-      ignorieren.</simpara>
-    </important>
+    <simpara>Es ist auch wichtig, dass Sie nach dem Auflegen nicht mehr mit
+    Asterisk kommunizieren, sonst erhält das Skript ein <code>SIGPIPE</code>,
+    was das Skript beendet, sofern Sie es nicht ignorieren.</simpara>
+  </important>
 
-    <xi:include href="deadagi-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="deadagi-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <formalpara>
+    <title>Siehe auch</title>
 
-      <para><xref linkend="applications-agi" />, <xref
-      linkend="applications-fastagi" /></para>
-    </formalpara>
+    <para><xref linkend="applications-agi" />, <xref
+    linkend="applications-eagi" /></para>
+  </formalpara>
 </section>
