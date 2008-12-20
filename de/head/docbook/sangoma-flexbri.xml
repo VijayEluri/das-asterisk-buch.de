@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<article id="sangoma-flexbri" lang="de" revision="$Revision: 0 $">
+  <!--
+% Copyright (c) 2008 - 2009
+% - Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% - Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title>Sangoma B700 FlexBRI</title>
+
+  <articleinfo>
+    <indexterm>
+      <primary>FlexBRI</primary>
+    </indexterm>
+
+    <indexterm>
+      <primary>Sangoma</primary>
+
+      <secondary>FlexBRI (B700)</secondary>
+    </indexterm>
+
+    <date>$Revision: 0 $</date>
+
+    <author>
+      <firstname>Philipp</firstname>
+
+      <surname>Kempgen</surname>
+    </author>
+
+    <keywordset>
+      <keyword>Sangoma</keyword>
+
+      <keyword>B700</keyword>
+
+      <keyword>FlexBRI</keyword>
+
+      <keyword>Installation</keyword>
+    </keywordset>
+  </articleinfo>
+
+  <para>Die 2009 erschienene, neu entwickelte
+  B700-<quote>FlexBRI</quote>-Karte<footnote>
+      <para><ulink
+      url="http://www.sangoma.com/products_and_solutions/hardware/digital_analog_hybrids/flex_bri.html">http://www.sangoma.com/products_and_solutions/hardware/digital_analog_hybrids/flex_bri.html</ulink></para>
+    </footnote> vom bekannten kanadischen Hersteller Sangoma ist die erste
+  hybride Karte mit 4 BRI-ISDN-Ports (also 8 B-Kanälen) und 2 analogen Ports,
+  also genau das, worauf viele schon lange gewartet haben. Die Karte ist
+  verfügbar für PCI<footnote>
+      <para><ulink
+      url="http://de.wikipedia.org/wiki/Peripheral_Component_Interconnect">http://de.wikipedia.org/wiki/Peripheral_Component_Interconnect</ulink></para>
+    </footnote>- und PCI-Express<footnote>
+      <para>abgekürzt: PCIx oder PCI-E (nicht PCI-X), <ulink
+      url="http://de.wikipedia.org/wiki/PCI-Express">http://de.wikipedia.org/wiki/PCI-Express</ulink></para>
+    </footnote>-Steckplätze (<quote>Slots</quote>) mit 5 V oder 3,3 V. Sie
+  verwendet die hervorragenden Hardware-Echounterdrückung (Echo Cancellation)
+  von Octasic.</para>
+
+  <para>Die FlexBRI ist perfekt für kleine bis mittelgroße Installationen
+  geeignet wo z.B. zusätzlich zur VoIP-Anbindung &#8211; oder auch
+  ausschließlich &#8211; 8 B-Kanäle ins öffentliche ISDN-Netz und ein internes
+  analoges Fax betrieben werden sollen. Es sind aber auch andere Szenarien
+  denkbar &#8211; die 4 ISDN-Ports lassen sich paarweise auf TE<footnote>
+      <para>Terminal Equipment, Endeinrichtung, d.h. unsere Seite agiert als
+      Endgerät, also <emphasis>extern</emphasis></para>
+    </footnote> oder NT<footnote>
+      <para>Network Termination, Netzabschluß, die Seite die einem Endgerät
+      eine Teilnehmeranschlußleitung (TAL, engl.: local loop) bereitstellt,
+      also <emphasis>intern</emphasis></para>
+    </footnote> einstellen und die 2 analogen Ports paarweise auf FXO<footnote>
+      <para>Foreign Exchange Office, <emphasis>extern</emphasis></para>
+    </footnote> oder FXS<footnote>
+      <para>Foreign Exchange Station, liefern Betriebsstrom und Wählton, also
+      <emphasis>intern</emphasis></para>
+    </footnote>.</para>
+
+  <section id="sangoma-flexbri-installation-hardware">
+    <title>Installation der FlexBRI-Karte</title>
+
+    <para>Geliefert wird die B700 in einer kleinen blauen Box, komplett mit
+    Port-Splitter-Kabeln. Die Y-Kabel werden benötigt um aus den ISDN- und der
+    analogen Buchse jeweils 2 Leitungen mit <quote>RJ-45</quote><footnote>
+        <para>8P8C</para>
+      </footnote>- bzw. <quote>RJ-11</quote><footnote>
+        <para>6P4C</para>
+      </footnote>-Steckern herauszuführen. Außerdem liegt eine CD bei mit
+    Handbüchern, Treibern, Firmware etc. und auch dem Hinweis zur
+    Registrierung bei Sangoma wodurch man dann lebenslange Gewährleistung
+    erhält. Daß man beim Auspacken der Karte darauf achtet geerdet zu sein
+    versteht sich von selbst.</para>
+
+    <para>Ob die ISDN-Ports auf TE- oder NT-Modus eingestellt sind wird
+    dadurch bestimmt wie die 2 BRI-Module in die Karte eingesteckt sind. Durch
+    die Sichtfenster kann man das gut erkennen. Das linke Modul ist zuständig
+    für Port 1 und 2, das rechte für 3 und 4. Ggf. steckt man die Module
+    andersrum rein. In dieser Anleitung stellen wir beide Module auf TE, da
+    wir die Karte ans öffentliche ISDN-Netz anschließen wollen. Für den
+    TE-Modus müssen alle Leitungswiderstände (termination resistors)
+    ausgeschaltet sein (für NT an), siehe <ulink
+    url="http://wiki.sangoma.com/sangoma-wanpipe-smg-asterisk-bri-installation#HardwareInstallation">http://wiki.sangoma.com/sangoma-wanpipe-smg-asterisk-bri-installation#HardwareInstallation</ulink>.</para>
+
+    <para>Auf der Karte gibt es 8 kleine Schalter für die Wiederstände,
+    jeweils einer für ein Adernpaar, also 2 für einen ISDN-Port bzw. 4 für
+    eine Buchse an der Karte, da die Karte ja in einer Buchse 2 Ports
+    herausführt. Es müssen pro BRI-Modul also die jeweiligen DIP-Schalter 1-4
+    bzw. 5-8 alle gleich eingestellt sein.</para>
+
+    <para>Auf dem Analog-Modul im <quote>FXO/FXS</quote>-Steckplatz muß FXS zu
+    lesen sein.</para>
+
+    <para>Jetzt baut man die Karte ein und fährt danach den Rechner
+    hoch.</para>
+  </section>
+
+  <section id="sangoma-flexbri-woomera">
+    <title>Installation der Software</title>
+
+    <para></para>
+  </section>
+</article>
