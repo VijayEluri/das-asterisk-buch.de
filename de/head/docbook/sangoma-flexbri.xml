@@ -116,13 +116,108 @@
     <para>Auf dem Analog-Modul im <quote>FXO/FXS</quote>-Steckplatz muß FXS zu
     lesen sein.</para>
 
-    <para>Jetzt baut man die Karte ein und fährt danach den Rechner
-    hoch.</para>
+    <para>Jetzt baut man die Karte ein und fährt danach den Rechner hoch (auf
+    dem wir für diese Anleitung zuvor ein frisches Debian 5
+    <quote>Lenny</quote> in Minimal-Installation eingerichtet haben).</para>
+
+    <para>Kontrolle:<screen>debian:~# <command>lspci -nn | grep 1923</command>
+00:06.0 Network controller [0280]: Sangoma Technologies Corp. A200/Remora FXO/FXS Analog AFT card [1923:0040]</screen>Da
+    ist sie (<literal>1923</literal> ist der PCI-Hersteller-Code von Sangoma).
+    Bitte nicht von der etwas anderen Bezeichnung in der
+    <literal>lspci</literal>-Ausgabe verwirren lassen.</para>
   </section>
 
-  <section id="sangoma-flexbri-woomera">
-    <title>Installation der Software</title>
+  <section id="sangoma-flexbri-zaptel-asterisk">
+    <title>Installation von Zaptel und Asterisk</title>
 
     <para></para>
+  </section>
+
+  <section id="sangoma-flexbri-wanpipe">
+    <title>Installation von Wanpipe</title>
+
+    <para>Zunächst muß man eine Build-Umgebung (Compiler usw.), die
+    Kernel-Header, udev und lksctp installieren:<screen>debian:~# <command>aptitude install build-essential</command>
+<replaceable>[...]</replaceable>
+debian:~# <command>aptitude install libncurses5-dev flex bison</command>
+<replaceable>[...]</replaceable>
+debian:~# <command>aptitude install linux-headers-`uname -r`</command>
+<replaceable>[...]</replaceable>
+debian:~# <command>aptitude install udev lksctp-tools libsctp-dev</command></screen></para>
+
+    <para>Dann laden wir die Quellen von Zaptel herunter:<screen>debian:~# <command>cd /usr/src/</command>
+debian:/usr/src# <command>wget http://downloads.digium.com/pub/zaptel/releases/zaptel-1.4.12.1.tar.gz</command>
+debian:/usr/src# <command>tar xzf zaptel-1.4.12.1.tar.gz</command> </screen></para>
+
+    <para>Als nächstes installieren wir die aktuelle Version von Wanpipe,
+    siehe <ulink
+    url="http://wiki.sangoma.com/wanpipe-linux-drivers">http://wiki.sangoma.com/wanpipe-linux-drivers</ulink>.<screen>debian:~# <command>cd /usr/src/</command>
+debian:/usr/src# <command>wget ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-3.5.0.8.tgz</command></screen>(Die
+    URL steht hier nur zur Veranschaulichung. Version 3.5.0.8 &#8211; ab der
+    die B700 FlexBRI unterstützt wird &#8211; war noch nicht in diesem
+    Verzeichnis verfügbar, bzw. nur auf der beiliegenden CD. Siehe auch:
+    <ulink
+    url="http://wiki.sangoma.com/sangoma-wanpipe-b700">http://wiki.sangoma.com/sangoma-wanpipe-b700</ulink>.)</para>
+
+    <para><screen>debian:/usr/src# <command>tar xzf wanpipe-3.5.0.8.tgz</command>
+debian:/usr/src# <command>cd wanpipe-3.5.0.8</command></screen></para>
+
+    <para>Das Skript <literal>Setup</literal> kümmert sich um die Kompilierung
+    und würde melden falls man notwendige Software nicht installiert
+    hat.<screen>debian:/usr/src/wanpipe-3.5.0.9# <command>./Setup install</command>
+        ----------------------------------------------------------
+                  WANPIPE v3.5.0.9 Installation Script
+            Copyright (c) 1995-2008, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+[...]
+Would you like to install WANPIPE now? [y] (y/n) <emphasis role="bold"><userinput>y</userinput></emphasis></screen><screen>[...]
+Verifying files and fixing permissions ...Done
+Checking for C developement tools ...(gcc) OK
+Checking for C++ developement tools ...OK
+Checking for Make utility ...OK
+Checking for ncurses library ... OK
+Checking for Perl developement tools ...OK
+Checking for AWK ...OK
+Checking for FLEX ...OK
+Checking for Patch ...OK
+Checking for libtermcap-devel...OK
+Checking for bison...OK
+
+Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen>[...]
+Please specify absolute path name of your linux directory
+
+Press Enter for Default: /lib/modules/2.6.26-1-686/build
+
+#&gt;<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis>
+Setting linux directory to /lib/modules/2.6.26-1-686/build</screen><screen>
+Upgrading WANPIPE kernel documentation ...Done.
+
+
+Upgrading WANPIPE kernel headers ...Done.
+
+Upgrading WANPIPE kernel drivers ...Done.
+
+WANPIPE device drivers upgraded successfully!
+
+Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen>[...]
+        Please Select Compilation Mode
+[...]
+
+7. SMG (BRI) + TDM Voice (Zaptel)
+       Default for: Asterisk BRI + PRI + Analog
+
+[...]
+
+Please select (1,2,3,4,5,6,7,8 or 9) [Default: 1]: <emphasis role="bold"><userinput>7</userinput></emphasis>
+Enabling the AFT TE1 Support</screen><screen>
+Looking for zaptel directory in /usr/src ...
+-------------------------------------------
+1 : /usr/src/zaptel-1.4.12.1 
+------------------------------------------ 
+------------------------------------------ 
+m : Enter zaptel path manually
+
+(ctrl-c to Exit)
+Please select working zaptel directory [1-1][m]: <emphasis role="bold"><userinput>1</userinput></emphasis></screen></para>
   </section>
 </article>
