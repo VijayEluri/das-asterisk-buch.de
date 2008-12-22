@@ -128,9 +128,19 @@
   </section>
 
   <section id="sangoma-flexbri-zaptel-asterisk">
-    <title>Installation von Zaptel und Asterisk</title>
+    <title>Quellen von Zaptel und Asterisk</title>
 
-    <para></para>
+    <para>Wanpipe, also der Sangoma-Treiber, beinhaltet ein Skript namens
+    <literal>Setup</literal> das sich um die Installation kümmert. Dieses
+    Skript führt auch verschiedene Tests in den Source-Verzeichnissen von
+    Zaptel und Asterisk durch. Man sollte also vor der Installation von
+    Wanpipe die Quellen von Zaptel und Asterisk herunterladen.</para>
+
+    <screen>debian:~# <command>cd /usr/src/</command>
+debian:/usr/src# <command>wget http://downloads.digium.com/pub/zaptel/releases/zaptel-1.4.12.1.tar.gz</command>
+debian:/usr/src# <command>tar xzf zaptel-1.4.12.1.tar.gz</command> 
+debian:/usr/src# <command>wget http://downloads.digium.com/pub/asterisk/releases/asterisk-1.4.22.tar.gz</command>
+debian:/usr/src# <command>tar xzf asterisk-1.4.22.tar.gz</command> </screen>
   </section>
 
   <section id="sangoma-flexbri-wanpipe">
@@ -145,22 +155,22 @@ debian:~# <command>aptitude install linux-headers-`uname -r`</command>
 <replaceable>[...]</replaceable>
 debian:~# <command>aptitude install udev lksctp-tools libsctp-dev</command></screen></para>
 
-    <para>Dann laden wir die Quellen von Zaptel herunter:<screen>debian:~# <command>cd /usr/src/</command>
-debian:/usr/src# <command>wget http://downloads.digium.com/pub/zaptel/releases/zaptel-1.4.12.1.tar.gz</command>
-debian:/usr/src# <command>tar xzf zaptel-1.4.12.1.tar.gz</command> </screen></para>
+    <para>Auch logrotate sollte vorher vorhanden sein damit das Skript
+    automatisch eine entsprechende logrotate-Definition erstellen
+    kann:<screen>debian:~# <command>aptitude install logrotate</command></screen></para>
 
     <para>Als nächstes installieren wir die aktuelle Version von Wanpipe,
     siehe <ulink
     url="http://wiki.sangoma.com/wanpipe-linux-drivers">http://wiki.sangoma.com/wanpipe-linux-drivers</ulink>.<screen>debian:~# <command>cd /usr/src/</command>
-debian:/usr/src# <command>wget ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-3.5.0.8.tgz</command></screen>(Die
+debian:/usr/src# <command>wget ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-3.5.0.9.tgz</command></screen>(Die
     URL steht hier nur zur Veranschaulichung. Version 3.5.0.8 &#8211; ab der
     die B700 FlexBRI unterstützt wird &#8211; war noch nicht in diesem
     Verzeichnis verfügbar, bzw. nur auf der beiliegenden CD. Siehe auch:
     <ulink
     url="http://wiki.sangoma.com/sangoma-wanpipe-b700">http://wiki.sangoma.com/sangoma-wanpipe-b700</ulink>.)</para>
 
-    <para><screen>debian:/usr/src# <command>tar xzf wanpipe-3.5.0.8.tgz</command>
-debian:/usr/src# <command>cd wanpipe-3.5.0.8</command></screen></para>
+    <para><screen>debian:/usr/src# <command>tar xzf wanpipe-3.5.0.9.tgz</command>
+debian:/usr/src# <command>cd wanpipe-3.5.0.9</command></screen></para>
 
     <para>Das Skript <literal>Setup</literal> kümmert sich um die Kompilierung
     und würde melden falls man notwendige Software nicht installiert
@@ -169,8 +179,8 @@ debian:/usr/src# <command>cd wanpipe-3.5.0.8</command></screen></para>
                   WANPIPE v3.5.0.9 Installation Script
             Copyright (c) 1995-2008, Sangoma Technologies Inc.
         ----------------------------------------------------------
-[...]
-Would you like to install WANPIPE now? [y] (y/n) <emphasis role="bold"><userinput>y</userinput></emphasis></screen><screen>[...]
+<replaceable>[...]</replaceable>
+Would you like to install WANPIPE now? [y] (y/n) <emphasis role="bold"><userinput>y</userinput></emphasis></screen><screen><replaceable>[...]</replaceable>
 Verifying files and fixing permissions ...Done
 Checking for C developement tools ...(gcc) OK
 Checking for C++ developement tools ...OK
@@ -183,13 +193,13 @@ Checking for Patch ...OK
 Checking for libtermcap-devel...OK
 Checking for bison...OK
 
-Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen>[...]
+Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen><replaceable>[...]</replaceable>
 Please specify absolute path name of your linux directory
 
 Press Enter for Default: /lib/modules/2.6.26-1-686/build
 
-#&gt;<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis>
-Setting linux directory to /lib/modules/2.6.26-1-686/build</screen><screen>
+#&gt;<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen>Setting linux directory to /lib/modules/2.6.26-1-686/build
+
 Upgrading WANPIPE kernel documentation ...Done.
 
 
@@ -199,17 +209,16 @@ Upgrading WANPIPE kernel drivers ...Done.
 
 WANPIPE device drivers upgraded successfully!
 
-Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen>[...]
+Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen><replaceable>[...]</replaceable>
         Please Select Compilation Mode
-[...]
+<replaceable>[...]</replaceable>
 
 7. SMG (BRI) + TDM Voice (Zaptel)
        Default for: Asterisk BRI + PRI + Analog
 
-[...]
+<replaceable>[...]</replaceable>
 
-Please select (1,2,3,4,5,6,7,8 or 9) [Default: 1]: <emphasis role="bold"><userinput>7</userinput></emphasis>
-Enabling the AFT TE1 Support</screen><screen>
+Please select (1,2,3,4,5,6,7,8 or 9) [Default: 1]: <emphasis role="bold"><userinput>7</userinput></emphasis></screen><screen>Enabling the AFT TE1 Support</screen><screen>
 Looking for zaptel directory in /usr/src ...
 -------------------------------------------
 1 : /usr/src/zaptel-1.4.12.1 
@@ -218,6 +227,194 @@ Looking for zaptel directory in /usr/src ...
 m : Enter zaptel path manually
 
 (ctrl-c to Exit)
-Please select working zaptel directory [1-1][m]: <emphasis role="bold"><userinput>1</userinput></emphasis></screen></para>
+Please select working zaptel directory [1-1][m]: <emphasis role="bold"><userinput>1</userinput></emphasis></screen><screen>
+Enabling the TDM Voice Asterisk Support
+                                                      
+Zaptel HW HDLC Support Detected: Enabling DCHAN Feature
+Native Zaptel HW HDLC Support Detected - No patch required
+Zaptel source unmodified
+                        
+Checking for UDEV Zaptel compatibility...OK
+  UDEV permissions not found/or not used 
+
+Checking for SCTP Utilities....OK.</screen><screen>
+Looking for Asteris/CallWeaver directory in /usr/src ...
+-------------------------------------------
+1 : /usr/src/asterisk-1.4.22 
+------------------------------------------ 
+------------------------------------------ 
+m : Enter Asterisk/CallWeaver path manually
+
+(ctrl-c to Exit)
+Please select working Asterisk/CallWeaver directory [1-1][m]: <emphasis
+          role="bold"><userinput>1</userinput></emphasis></screen><screen>Source kernel name:2.6.26-1-686
+
+Checking for SMP support ...Enabled.
+
+Checking current processor type ...i686
+
+Wan Update Flags:  -DAF_WANPIPE_2612_FORCE_UPDATE -DWANPIPE_MOD_266_FORCE_UPDATE
+
+
+--------------------------------------------------
+CFLAGS: gcc -Wp,-MD,.wanpipe.o.d -nostdinc -iwithprefix include -D__LINUX__ -Dlinux -D__KERNEL__ -I/lib/modules/2.6.26-1-686/build/include  -DMODULE   -DAF_WANPIPE_2612_FORCE_UPDATE -DWANPIPE_MOD_266_FORCE_UPDATE  -4.1 -g -O2  
+--------------------------------------------------
+
+Checking for REGPARM kernel option ...Enabled.
+
+Compiling General WANPIPE Driver for 2.6.X Kernel .....Done.
+
+
+WAN HWEC module enabled and compiled!
+
+Linking Wanpipe Driver and protocols ...Done.
+
+Updating Kernel Modules ...Done.
+
+Visually Confirm that driver compilation was successful! (y/n) <emphasis
+          role="bold"><userinput>y</userinput></emphasis></screen><screen><replaceable>[...]</replaceable>
+
+WANPIPE META CONFIGURATION
+
+There are two configuration files associated with WANPIPE.  
+
+1) /usr/src/wanpipe-3.5.0.9/wanrouter.rc: 
+        - defines locations of important files such as lock
+          and configuration files as well as start/stop 
+          order of multiple WANPIPE devices.
+2) /usr/src/wanpipe-3.5.0.9/wanpipe1.conf:
+        - main configuration file for each WANPIPE device.
+        - defines interfaces, hardware and protocol information.
+        - this file can be created using the 'wancfg' GUI
+          utility or manually based on sample files located
+          in /etc/wanpipe/samples.
+          
+Please read the WanpipeInstallation.(pdf/txt) manual for further
+information.
+
+Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen>
+Please specify a desired location for WANPIPE configuration files.
+
+        (Press Enter for Default: /etc/wanpipe)
+
+&lt;specify path:&gt;<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen>
+Please specify a desired location for WANPIPE interface files.
+
+        (Press Enter for Default: /etc/wanpipe/interfaces)
+
+&lt;specify path:&gt;<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen>
+Please specify a location for WANPIPE binary, firmware files.
+
+        (Press Enter for Default: /etc/wanpipe/firmware)
+
+&lt;specify path:&gt;<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen><replaceable>[...]</replaceable>
+
+WANPIPE UTILITIES SETUP
+
+WANPIPE utilities are used to:
+        1) create configuration files: for Zaptel and Asterisk
+                /usr/sbin/wancfg_zaptel #Zaptel and Asterisk
+                /usr/sbin/wancfg_smg    #BRI/SS7, Zaptel and Asterisk
+                /usr/sbin/wancfg_tdmapi #TDM API
+        2) create WANPIPE WAN/IP configuration files.
+                (/usr/sbin/wancfg)
+        3) start,stop,restart individual/all devices and interfaces.
+                (/usr/sbin/wanrouter)
+        4) debug line, protocol and driver problems.
+                (/usr/sbin/wanpipemon)
+        5) aid in WANPIPE API development
+                (/etc/wanpipe/api)
+
+Refer to the WanpipeInstallation.(pdf/txt) for more information.
+
+Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen>
+Compiling WANPIPE Utilities ...Done.
+
+
+Compiling WANPIPE WanCfg Utility ...
+Done.
+
+
+Compiling WANPIPE Misc Utilities ...Done.
+
+
+Compiling WANPIPE LibSangoma TDM API library ...Done.
+
+
+Compiling WANPIPE API Development Utilities ...Failed!
+
+        ERROR: Failed to compile WANPIPE API Tools !!!
+        
+Please contact Sangoma Technologies
+Press [Enter] to continue...
+
+Compiling WANPIPE HWEC Utilities ...Done.
+
+        WANPIPE Environment Setup Complete !!!
+
+Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen>Installing WANPIPE Files ... !
+Installing  WANPIPE Utilities in /usr/sbin
+Installing wanrouter.rc in /etc/wanpipe
+Installing wanpipe libraries in /etc/wanpipe
+Installing firmware in /etc/wanpipe/firmware
+Installing documentation in /usr/share/doc/wanpipe
+Installing sample api code in /etc/wanpipe/api
+Installing AFT Firmware update utility in /etc/wanpipe/util
+Installing driver headers in /etc/wanpipe/api/include/linux
+Installing Hardware Echo Cancel Utilites
+Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen><screen><replaceable>[...]</replaceable>
+
+WANPIPE BOOTSTRAP CONFIGURATION
+
+Your system uses System V -style initialization scripts.  You have an option
+to add router start-up script to those scripts so that the router will start
+automatically when system enters multi-user mode and shut down when it enters
+single-user mode or when it is halted.
+
+i.e. By selecting this option WANPIPE will startup on system bootup and 
+     stop on system shutdown.
+
+Would you like to install WANPIPE start-up scripts? (y/n) <emphasis
+          role="bold"><userinput>y</userinput></emphasis></screen><screen>[...]
+Current boot level is 2
+
+Wanrouter boot scripts configuration...
+
+Removing existing wanrouter boot scripts...OK
+Enabling wanrouter boot scripts ...(level:8)
+Enabling wanrouter shutdown scripts ...(level:91)
+Would you like to auto-execute ztcfg after wanrouter start? (y/n) <emphasis
+          role="bold"><userinput>y</userinput></emphasis></screen><screen>[...]
+Installing Sangoma Media Gateway Daemon...
+
+Installing SMG Daemon...
+
+
+Checking Syslog ....
+ found /etc/rsyslog.conf 
+Stopping enhanced syslogd: rsyslogd.
+Starting enhanced syslogd: rsyslogd.
+Stopping enhanced syslogd: rsyslogd.
+Starting enhanced syslogd: rsyslogd.
+Ok
+
+Checking logrotate ...
+Error: Logrotate dir: /etc/logrotate.d not found !
+OK.
+
+Checking for SCTP Utilities....
+OK.
+
+Checking for SCTP modules...
+OK.
+
+Compiling Sangoma MGD ...
+[...]
+install -D -m 755 sangoma_mgd /usr/sbin/sangoma_mgd
+BRI control scripts installed
+install -D -m 755 ../sangoma_bri/smg_ctrl /usr/sbin/smg_ctrl
+sangoma_mgd Installed
+Ok.
+Compiling Woomera Channel ...</screen></para>
   </section>
 </article>
