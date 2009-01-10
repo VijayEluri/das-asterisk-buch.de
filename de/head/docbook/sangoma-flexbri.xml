@@ -132,19 +132,26 @@
   </section>
 
   <section id="sangoma-flexbri-zaptel-asterisk">
-    <title>Quellen von Zaptel/Dahdi und Asterisk</title>
+    <title>Quellen von Zaptel<remark>/Dahdi</remark> und Asterisk</title>
 
     <para>Wanpipe, also der Sangoma-Treiber, beinhaltet ein Skript namens
     <literal>Setup</literal> das sich um die Installation kümmert. Dieses
     Skript führt auch verschiedene Tests in den Source-Verzeichnissen von
-    Zaptel bzw. Dahdi und Asterisk durch. Man sollte also vor der Installation
-    von Wanpipe die Quellen von Zaptel und Asterisk herunterladen und auch
-    direkt wie gewohnt installieren.</para>
+    Zaptel<remark> bzw. Dahdi</remark> und Asterisk durch. Man sollte also vor
+    der Installation von Wanpipe die Quellen von Zaptel<remark>/Dahdi</remark>
+    und Asterisk herunterladen und auch direkt wie gewohnt
+    installieren.</para>
 
-    <note>
+    <important>
       <para>Digium hat bekanntlich ab Asterisk 1.4.22 Zaptel durch DAHDI
       ersetzt um alle ein bißchen zu verwirren.</para>
-    </note>
+
+      <para>Momentan gibt es noch keine Wanpipe-Treiber die gleichzeitig die
+      FlexBRI-Karte und Dahdi unterstützen. Wir verwenden daher bis auf
+      weiteres Asterisk 1.4.21<footnote>
+          <para>Asterisk 1.4.21.1 und 1.4.21.2 haben andere Probleme.</para>
+        </footnote>.</para>
+    </important>
 
     <para>Zaptel (bis Asterisk 1.4.21):<screen>debian:~# <command>cd /usr/src/</command>
 debian:/usr/src# <command>wget http://downloads.digium.com/pub/zaptel/releases/zaptel-1.4.12.1.tar.gz</command>
@@ -159,6 +166,7 @@ debian:/usr/src/zaptel-1.4.12.1# <command>make config</command>
 I think that the zaptel hardware you have on your system is:
 pci:0000:00:06.0     wanpipe-     1923:0040 Sangoma Technologies Corp. A200/Remora FXO/FXS Analog AFT card</screen></para>
 
+    <!-- <![CDATA[
     <para>DAHDI (ab Asterisk 1.4.22)<indexterm>
         <primary>DAHDI</primary>
 
@@ -182,19 +190,20 @@ debian:/usr/src/dahdi-tools-2.1.0.2# <command>make config</command>
 <replaceable>[...]</replaceable>
 I think that the DAHDI hardware you have on your system is:
 pci:0000:00:06.0     wanpipe-     1923:0040 Sangoma Technologies Corp. A200/Remora FXO/FXS Analog AFT card</screen></para>
+]]> -->
 
     <para>Asterisk:<screen>debian:~# <command>cd /usr/src/</command>
-debian:/usr/src# <command>wget http://downloads.digium.com/pub/asterisk/releases/asterisk-1.4.22.tar.gz</command>
-debian:/usr/src# <command>tar xzf asterisk-1.4.22.tar.gz</command> 
-debian:/usr/src# <command>rm asterisk-1.4.22.tar.gz</command> 
-debian:/usr/src# <command>cd asterisk-1.4.22/</command>
-debian:/usr/src/asterisk-1.4.22# <command>./configure</command> 
-debian:/usr/src/asterisk-1.4.22# <command>make</command>
-debian:/usr/src/asterisk-1.4.22# <command>make install</command>
-debian:/usr/src/asterisk-1.4.22# <command>make samples</command>
-debian:/usr/src/asterisk-1.4.22# <command>make config</command>
-debian:/usr/src/asterisk-1.4.22# <command>update-rc.d -f asterisk remove</command>
-debian:/usr/src/asterisk-1.4.22# <command>update-rc.d asterisk defaults 50 15</command></screen></para>
+debian:/usr/src# <command>wget http://downloads.digium.com/pub/asterisk/releases/asterisk-1.4.21.tar.gz</command>
+debian:/usr/src# <command>tar xzf asterisk-1.4.21.tar.gz</command> 
+debian:/usr/src# <command>rm asterisk-1.4.21.tar.gz</command> 
+debian:/usr/src# <command>cd asterisk-1.4.21/</command>
+debian:/usr/src/asterisk-1.4.21# <command>./configure</command> 
+debian:/usr/src/asterisk-1.4.21# <command>make</command>
+debian:/usr/src/asterisk-1.4.21# <command>make install</command>
+debian:/usr/src/asterisk-1.4.21# <command>make samples</command>
+debian:/usr/src/asterisk-1.4.21# <command>make config</command>
+debian:/usr/src/asterisk-1.4.21# <command>update-rc.d -f asterisk remove</command>
+debian:/usr/src/asterisk-1.4.21# <command>update-rc.d asterisk defaults 50 15</command></screen></para>
   </section>
 
   <section id="sangoma-flexbri-wanpipe">
@@ -323,7 +332,7 @@ Checking for SCTP Utilities....OK.</screen>
     <screen>
 Looking for Asteris/CallWeaver directory in /usr/src ...
 -------------------------------------------
-1 : /usr/src/asterisk-1.4.22 
+1 : /usr/src/asterisk-1.4.21 
 ------------------------------------------ 
 ------------------------------------------ 
 m : Enter Asterisk/CallWeaver path manually
@@ -586,6 +595,32 @@ wancfg_smg configurator can create all wanpipe config files
 for ZAPTEL as well as for SMG BRI.
 Optionally: the configurator can also create Asterisk zapata.conf
 -----------------------------------------------------
-Would you like to configure wanpipe devices for ZAPTEL &amp; BRI? (y/n) </screen>
+Would you like to configure wanpipe devices for ZAPTEL &amp; BRI? (y/n) <emphasis
+        role="bold"><userinput>y</userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+
+Generating configuration files for Sangoma Media Gateway
+FATAL: Error inserting wanpipe (/lib/modules/2.6.26-1-686/kernel/drivers/net/wan/wanpipe.ko): Unknown symbol in module, or unknown parameter (see dmesg)
+---------------------------------------------
+Configuring T1/E1 cards [A101/A102/A104/A108]
+---------------------------------------------
+------------------------------------
+Configuring ISDN BRI cards [A500/B700]
+------------------------------------
+
+No Sangoma ISDN BRI cards detected
+
+Press any key to continue: <emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+
+    <screen>
+###################################################################
+#                             SUMMARY                             #
+###################################################################
+
+
+
+No Sangoma voice compatible cards found/configured
+</screen>
   </section>
 </article>
