@@ -313,7 +313,11 @@ I think that the DAHDI hardware you have on your system is:
 pci:0000:00:06.0     wanpipe-     1923:0040 Sangoma Technologies Corp. A200/Remora FXO/FXS Analog AFT card</screen></para>
 ]]> -->
 
-    <para>Asterisk:<screen>debian:~# <command>cd /usr/src/</command>
+    <para>Asterisk<footnote>
+        <para>Falls vorher bereits eine ‰ltere Version von Asterisk
+        installiert war muﬂ man zuerst die alten Module entfernen:<screen>debian:~# <command>rm -rf /usr/lib/asterisk/modules</command></screen></para>
+      </footnote>:<screen>debian:~# <command>aptitude install libssl-dev libncurses5-dev libcurl3-dev</command>
+debian:~# <command>cd /usr/src/</command>
 debian:/usr/src# <command>wget http://downloads.digium.com/pub/asterisk/releases/asterisk-1.4.21.tar.gz</command>
 debian:/usr/src# <command>tar xzf asterisk-1.4.21.tar.gz</command> 
 debian:/usr/src# <command>rm asterisk-1.4.21.tar.gz</command> 
@@ -336,10 +340,11 @@ debian:/usr/src/asterisk-1.4.21# <command>update-rc.d asterisk defaults 50 15</c
 
     <title>Installation von Wanpipe</title>
 
-    <para>Eine Build-Umgebung haben wir bereits. Dazu brauchen wir noch die
-    Kernel-Header, udev und lksctp:<screen>debian:~# <command>aptitude install libncurses5-dev flex bison</command>
-debian:~# <command>aptitude install linux-headers-`uname -r`</command>
-debian:~# <command>aptitude install udev lksctp-tools libsctp-dev</command></screen></para>
+    <para>Eine Build-Umgebung haben wir bereits<footnote>
+        <para>H‰tten wir sie noch nicht m¸ﬂten wir sie so
+        installieren:<screen>debian:~# <command>aptitude install build-essential flex bison libncurses5-dev</command>
+debian:~# <command>aptitude install linux-headers-`uname -r`</command></screen></para>
+      </footnote>. Auﬂerdem brauchen wir noch udev und lksctp:<screen>debian:~# <command>aptitude install udev lksctp-tools libsctp-dev</command></screen></para>
 
     <para>Auch logrotate sollte vorher vorhanden sein damit das Skript
     automatisch eine entsprechende logrotate-Definition erstellen
@@ -391,16 +396,18 @@ Checking for Patch ...OK
 Checking for libtermcap-devel...OK
 Checking for bison...OK
 
-Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
     <screen><replaceable>[...]</replaceable>
 Please specify absolute path name of your linux directory
 
-Press Enter for Default: /lib/modules/2.6.26-1-686/build
+<remark>Press Enter for Default: /lib/modules/2.6.26-1-686/build</remark>
+Press Enter for Default: /lib/modules/2.6.26.custom.1/build
 
-#&gt;<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+#&gt;<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
-    <screen>Setting linux directory to /lib/modules/2.6.26-1-686/build
+    <screen><remark>Setting linux directory to /lib/modules/2.6.26-1-686/build</remark>
+Setting linux directory to /lib/modules/2.6.26.custom.1/build
 
 Upgrading WANPIPE kernel documentation ...Done.
 
@@ -411,7 +418,7 @@ Upgrading WANPIPE kernel drivers ...Done.
 
 WANPIPE device drivers upgraded successfully!
 
-Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
     <screen><replaceable>[...]</replaceable>
         Please Select Compilation Mode
@@ -461,18 +468,14 @@ m : Enter Asterisk/CallWeaver path manually
 Please select working Asterisk/CallWeaver directory [1-1][m]: <emphasis
         role="bold"><userinput>1</userinput></emphasis></screen>
 
-    <screen>Source kernel name:2.6.26-1-686
+    <screen><remark>Source kernel name:2.6.26-1-686</remark>
+Source kernel name:2.6.26.custom.1
 
 Checking for SMP support ...Enabled.
 
 Checking current processor type ...i686
 
-Wan Update Flags:  -DAF_WANPIPE_2612_FORCE_UPDATE -DWANPIPE_MOD_266_FORCE_UPDATE
-
-
---------------------------------------------------
-CFLAGS: gcc -Wp,-MD,.wanpipe.o.d -nostdinc -iwithprefix include -D__LINUX__ -Dlinux -D__KERNEL__ -I/lib/modules/2.6.26-1-686/build/include  -DMODULE   -DAF_WANPIPE_2612_FORCE_UPDATE -DWANPIPE_MOD_266_FORCE_UPDATE  -4.1 -g -O2  
---------------------------------------------------
+<replaceable>[...]</replaceable>
 
 Checking for REGPARM kernel option ...Enabled.
 
@@ -508,28 +511,28 @@ There are two configuration files associated with WANPIPE.
 Please read the WanpipeInstallation.(pdf/txt) manual for further
 information.
 
-Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
     <screen>
 Please specify a desired location for WANPIPE configuration files.
 
         (Press Enter for Default: /etc/wanpipe)
 
-&lt;specify path:&gt;<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+&lt;specify path:&gt;<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
     <screen>
 Please specify a desired location for WANPIPE interface files.
 
         (Press Enter for Default: /etc/wanpipe/interfaces)
 
-&lt;specify path:&gt;<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+&lt;specify path:&gt;<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
     <screen>
 Please specify a location for WANPIPE binary, firmware files.
 
         (Press Enter for Default: /etc/wanpipe/firmware)
 
-&lt;specify path:&gt;<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+&lt;specify path:&gt;<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
     <screen><replaceable>[...]</replaceable>
 
@@ -551,7 +554,7 @@ WANPIPE utilities are used to:
 
 Refer to the WanpipeInstallation.(pdf/txt) for more information.
 
-Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
     <screen>
 Compiling WANPIPE Utilities ...Done.
@@ -578,7 +581,7 @@ Compiling WANPIPE HWEC Utilities ...Done.
 
         WANPIPE Environment Setup Complete !!!
 
-Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
     <screen>Installing WANPIPE Files ... !
 Installing  WANPIPE Utilities in /usr/sbin
@@ -590,7 +593,7 @@ Installing sample api code in /etc/wanpipe/api
 Installing AFT Firmware update utility in /etc/wanpipe/util
 Installing driver headers in /etc/wanpipe/api/include/linux
 Installing Hardware Echo Cancel Utilites
-Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
     <screen><replaceable>[...]</replaceable>
 
@@ -623,7 +626,10 @@ Installing Sangoma Media Gateway Daemon...
 
 Installing SMG Daemon...
 
+Warning: asterisk is running
+Would you like to stop asterisk? (y/n) <emphasis role="bold"><userinput>y</userinput></emphasis></screen>
 
+    <screen>
 Checking Syslog ....
  found /etc/rsyslog.conf 
 Stopping enhanced syslogd: rsyslogd.
@@ -687,7 +693,7 @@ Append sample config in Asterisk Extensions and Iax Conf (y/n) <emphasis
 Asterisk extensions.conf file updated with woomera config
 cat: ./conf_bri/woomera_iax.conf: Datei oder Verzeichnis nicht gefunden
 Asterisk iax.conf file updated with bri guest config
-Press [Enter] to continue...<emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
     <screen><replaceable>[...]</replaceable>
 
@@ -718,20 +724,21 @@ Optionally: the configurator can also create Asterisk zapata.conf
 Would you like to configure wanpipe devices for ZAPTEL &amp; BRI? (y/n) <emphasis
         role="bold"><userinput>y</userinput></emphasis></screen>
 
+    <!-- <![CDATA[
     <screen><replaceable>[...]</replaceable>
 
 Generating configuration files for Sangoma Media Gateway
 FATAL: Error inserting wanpipe (/lib/modules/2.6.26-1-686/kernel/drivers/net/wan/wanpipe.ko): Unknown symbol in module, or unknown parameter (see dmesg)
----------------------------------------------
+&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;-
 Configuring T1/E1 cards [A101/A102/A104/A108]
----------------------------------------------
-------------------------------------
+&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;-
+&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;
 Configuring ISDN BRI cards [A500/B700]
-------------------------------------
+&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;&#x2D;
 
 No Sangoma ISDN BRI cards detected
 
-Press any key to continue: <emphasis role="bold"><userinput><replaceable> enter</replaceable></userinput></emphasis></screen>
+Press any key to continue: <emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
     <screen>
 ###################################################################
@@ -742,5 +749,114 @@ Press any key to continue: <emphasis role="bold"><userinput><replaceable> enter<
 
 No Sangoma voice compatible cards found/configured
 </screen>
+]]> -->
+
+    <screen><replaceable>[...]</replaceable>
+
+Generating configuration files for Sangoma Media Gateway
+<replaceable>[...]</replaceable>
+---------------------------------------------
+Configuring T1/E1 cards [A101/A102/A104/A108]
+---------------------------------------------
+------------------------------------
+Configuring ISDN BRI cards [A500/B700]
+------------------------------------
+DYDBG dev: [1 . AFT-B700-SH : SLOT=6 : BUS=0 : IRQ=10 : PORT=1 : HWEC=16 : V=34
+]
+DYDBG card_model 700 port 1</screen>
+
+    <para>Jetzt geht es um die Konfiguration der BRI-Ports. Zur Erinnerung:
+    <quote>Point to multipoint</quote> = Mehrger‰teanschluﬂ, also
+    <quote>normales</quote> ISDN, <quote>Point to point</quote> =
+    Anlagenanschluﬂ:</para>
+
+    <screen>-----------------------------------------------------------
+AFT-700 detected on slot:6 bus:0
+-----------------------------------------------------------
+
+Would you like to configure AFT-700 port 1 on slot:6 bus:0
+ 1. YES
+ 2. NO
+ 3. Exit
+[1-3]:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Configuring port 1 on AFT-700 [slot:6 bus:0 span:1]
+
+Select connection type for port 1
+ 1. Point to multipoint
+ 2. Point to point
+[1-2, ENTER='Point to multipoint']:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Input the group for this port
+: <emphasis role="bold"><userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Select dialplan context for group:1
+ 1. from-pstn
+ 2. Custom
+[1-2]:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Configuring span:1 as TEI:127
+ 1. YES - Keep this setting
+ 2. NO  - Specify a different TEI
+[1-2, ENTER='YES']:<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <para>Das gleiche nochmal f¸r Port 2, 3 und 4:</para>
+
+    <screen><replaceable>[...]</replaceable>
+
+Would you like to configure AFT-700 port 2 on slot:6 bus:0
+ 1. YES
+ 2. NO
+ 3. Exit
+[1-3]:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Configuring port 2 on AFT-700 [slot:6 bus:0 span:2]
+
+Select connection type for port 2
+ 1. Point to multipoint
+ 2. Point to point
+[1-2, ENTER='Point to multipoint']:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Input the group for this port
+def="1": <emphasis role="bold"><userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Configuring span:2 as TEI:127
+ 1. YES - Keep this setting
+ 2. NO  - Specify a different TEI
+[1-2, ENTER='YES']:<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+
+DYDBG dev: [5 . AFT-B700-SH : SLOT=6 : BUS=0 : IRQ=10 : PORT=5 : HWEC=16 : V=34
+]
+DYDBG card_model 700 port 5
+
+ISBN BRI card configuration complete
+
+Press any key to continue: <emphasis role="bold"><userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <para>Dann der Analog-Port:</para>
+
+    <screen>-----------------------------------------------------------
+AFT-700 Analog detected on slot:6 bus:0
+-----------------------------------------------------------
+
+Would you like to configure AFT-700 on slot:6 bus:0
+ 1. YES
+ 2. NO
+[1-2]:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Would you like to enable hardware DTMF detection?
+ 1. YES
+ 2. NO
+[1-2, ENTER='YES']:</screen>
   </section>
 </article>
