@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<article id="sangoma-flexbri" lang="de" revision="$Revision: 0 $">
+<article id="sangoma-b700-flexbri" lang="de" revision="$Revision: 0 $">
   <!--
 % Copyright (c) 2008 - 2009
 % - Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
@@ -96,12 +96,7 @@
       <para>Network Termination, Netzabschluß, die Seite die einem Endgerät
       eine Teilnehmeranschlußleitung (TAL, engl.: local loop) bereitstellt,
       also <emphasis>intern</emphasis></para>
-    </footnote> einstellen und die 2 analogen Ports paarweise auf FXO<footnote>
-      <para>Foreign Exchange Office, <emphasis>extern</emphasis></para>
-    </footnote> oder FXS<footnote>
-      <para>Foreign Exchange Station, liefern Betriebsstrom und Wählton, also
-      <emphasis>intern</emphasis></para>
-    </footnote>.</para>
+    </footnote> einstellen.</para>
 
   <section id="sangoma-flexbri-installation-hardware">
     <title>Einbauen der FlexBRI-Karte</title>
@@ -135,8 +130,12 @@
     DIP-Doppel-Schalter Sw1 und Sw2 bzw. Sw3 und Sw4 alle gleich eingestellt
     sein.</para>
 
-    <para>Auf dem Analog-Modul im <quote>FXO/FXS</quote>-Steckplatz muß FXS zu
-    lesen sein.</para>
+    <para>Es wird ein FXS<footnote>
+        <para>FXS = Foreign Exchange Station, liefern Betriebsstrom und
+        Wählton, also <emphasis>intern</emphasis>, das Gegenteil wäre FXO =
+        Foreign Exchange Office, also <emphasis>extern</emphasis></para>
+      </footnote>-Analog-Modul mitgeliefert. Auf dem Modul im
+    <quote>FXO/FXS</quote>-Steckplatz muß also FXS zu lesen sein.</para>
 
     <para>Jetzt baut man die Karte ein und fährt danach den Rechner hoch (auf
     dem wir für diese Anleitung zuvor ein frisches Debian 5
@@ -149,11 +148,78 @@
     <literal>lspci</literal>-Ausgabe verwirren lassen.</para>
   </section>
 
+  <section id="wanpipe-kernel">
+    <title>Kernel für Wanpipe vorbereiten</title>
+
+    <para>In dem von Debian mitgelieferten Linux-Kernel ist eine Funktion
+    namens <quote>Module versioning support</quote><footnote>
+        <para>Für Erfahrene: <literal>CONFIG_MODVERSIONS</literal> im
+        Abschnitt <quote>Loadable module support</quote></para>
+      </footnote> aktiviert. Prinzipiell eine gute Sache, aber leider ist
+    Wanpipe - also die Sangoma-Treiber - damit noch nicht kompatibel. Bis auf
+    weiteres muß man also den Kernel entsprechend umkonfigurieren:<screen>debian:~# <command>aptitude install kernel-package fakeroot</command>
+debian:~# <command>aptitude install linux-source</command>
+<replaceable>[...]</replaceable>
+Hinweis: Wähle »linux-source-2.6.26« anstelle des
+         virtuellen Pakets »linux-source«.
+Die folgenden NEUEN Pakete werden zusätzlich installiert:
+  linux-source-2.6.26 
+<replaceable>[...]</replaceable>
+debian:~# <command>cd /usr/src/</command>
+debian:/usr/src# <command>tar xjf linux-source-2.6.26.tar.bz2</command> 
+debian:/usr/src# <command>cd linux-source-2.6.26</command>
+debian:/usr/src/linux-source-2.6.26# <command>make menuconfig</command></screen>Im
+    interaktiven Dialog den Menüpunkt <quote><literal>Enable loadable module
+    support</literal></quote> mittels der Pfeiltasten auswählen und mit Enter
+    aufrufen und darin den Punkt <quote><literal>Module versioning
+    support</literal></quote> mit der Leertaste deaktivieren. Dann mit dem
+    Rechtspfeil auf <quote><literal>Exit</literal></quote>, Enter, nochmal auf
+    <quote><literal>Exit</literal></quote>, Enter,
+    <quote><literal>Yes</literal></quote>, Enter.</para>
+
+    <para>Zum Kompilieren eines Kernels nach Debian-Art<footnote>
+        <para>siehe <ulink
+        url="http://kernel-handbook.alioth.debian.org/ch-common-tasks.html#s-common-building">http://kernel-handbook.alioth.debian.org/ch-common-tasks.html#s-common-building</ulink></para>
+      </footnote> benutzt man <literal>make-kpkg</literal> aus dem Paket
+    <literal>kernel-package</literal>.<screen>debian:/usr/src/linux-source-2.6.26# <command>aptitude install kernel-package fakeroot</command>
+debian:/usr/src/linux-source-2.6.26# <command>aptitude install zlib1g-dev</command>
+debian:/usr/src/linux-source-2.6.26# <command>make-kpkg clean</command>
+debian:/usr/src/linux-source-2.6.26# fakeroot make-kpkg --initrd --append-to-version=.custom.1 kernel_image kernel_headers</screen>Jetzt
+    heißt es warten. Lange.</para>
+
+    <para>Danach den neuen Kernel installieren:<screen>debian:/usr/src/linux-source-2.6.26# <command>cd ..</command>
+debian:/usr/src# <command>dpkg -i linux-image-2.6.26.custom.1_2.6.26.custom.1-10.00.Custom_i386.deb</command> 
+Wähle vormals abgewähltes Paket linux-image-2.6.26.custom.1.
+(Lese Datenbank ... 36469 Dateien und Verzeichnisse sind derzeit installiert.)
+Entpacke linux-image-2.6.26.custom.1 (aus linux-image-2.6.26.custom.1_2.6.26.custom.1-10.00.Custom_i386.deb) ...
+Done.
+Richte linux-image-2.6.26.custom.1 ein (2.6.26.custom.1-10.00.Custom) ...
+Running depmod.
+Finding valid ramdisk creators.
+Using mkinitramfs-kpkg to build the ramdisk.
+Running postinst hook script update-grub.
+Searching for GRUB installation directory ... found: /boot/grub
+Searching for default file ... found: /boot/grub/default
+Testing for an existing GRUB menu.lst file ... found: /boot/grub/menu.lst
+Searching for splash image ... none found, skipping ...
+Found kernel: /boot/vmlinuz-2.6.26.custom.1
+Found kernel: /boot/vmlinuz-2.6.26-1-686
+Updating /boot/grub/menu.lst ... done
+
+debian:/usr/src# <command>dpkg -i linux-headers-2.6.26.custom.1_2.6.26.custom.1-10.00.Custom_i386.deb</command> 
+Wähle vormals abgewähltes Paket linux-headers-2.6.26.custom.1.
+(Lese Datenbank ... 39017 Dateien und Verzeichnisse sind derzeit installiert.)
+Entpacke linux-headers-2.6.26.custom.1 (aus linux-headers-2.6.26.custom.1_2.6.26.custom.1-10.00.Custom_i386.deb) ...
+Richte linux-headers-2.6.26.custom.1 ein (2.6.26.custom.1-10.00.Custom) ...
+debian:/usr/src# <command>reboot</command> </screen><screen>debian:~# <command>uname -r</command>
+2.6.26.custom.1</screen></para>
+  </section>
+
   <section id="sangoma-flexbri-zaptel-asterisk">
     <title>Quellen von Zaptel<remark>/Dahdi</remark> und Asterisk</title>
 
     <para>Wanpipe, also der Sangoma-Treiber, beinhaltet ein Skript namens
-    <literal>Setup</literal> das sich um die Installation kümmert. Dieses
+    <filename>Setup</filename> das sich um die Installation kümmert. Dieses
     Skript führt auch verschiedene Tests in den Source-Verzeichnissen von
     Zaptel<remark> bzw. Dahdi</remark> und Asterisk durch. Man sollte also vor
     der Installation von Wanpipe die Quellen von Zaptel<remark>/Dahdi</remark>
@@ -170,6 +236,12 @@
           <para>Asterisk 1.4.21.1 und 1.4.21.2 haben andere Probleme.</para>
         </footnote>.</para>
     </important>
+
+    <note>
+      <para>Im folgenden werden alle Schritte als User <literal>root</literal>
+      durchgeführt.<screen>demo@debian:~$ <command>su -</command>
+debian:~# </screen></para>
+    </note>
 
     <para>Zaptel (bis Asterisk 1.4.21):<screen>debian:~# <command>cd /usr/src/</command>
 debian:/usr/src# <command>wget http://downloads.digium.com/pub/zaptel/releases/zaptel-1.4.12.1.tar.gz</command>
