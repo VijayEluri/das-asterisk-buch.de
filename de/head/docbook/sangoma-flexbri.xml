@@ -991,11 +991,14 @@ Sangoma cards configuration complete, exiting...</screen>
       steht. 1 - 4 sind die BRI-Ports, 5 der Analog-Port.</para>
     </section>
 
-    <section id="sangoma-flexbri-konfiguration-media-gateway">
-      <title>Sangoma Media Gateway / Woomera</title>
+    <section id="sangoma-flexbri-konfiguration-smg">
+      <title>Sangoma Media Gateway (SMG) / Woomera</title>
 
-      <para>Auch an der Datei <filename>/etc/sangoma_mgd.conf</filename>
-      müssen wir nichts ändern.</para>
+      <para>An der Datei <filename>/etc/sangoma_mgd.conf</filename> müssen wir
+      nichts ändern. Auch die <filename>/etc/wanpipe/smg_bri.conf</filename>
+      kann so bleiben wie sie ist. Für eine detaillierte Beschreibung der
+      Parameter siehe <ulink
+      url="http://wiki.sangoma.com/BriAdvancedOptions">http://wiki.sangoma.com/BriAdvancedOptions</ulink>.</para>
     </section>
 
     <section id="sangoma-flexbri-konfiguration-zaptel">
@@ -1070,31 +1073,52 @@ group=2
     </section>
   </section>
 
-  <section>
-    <title>Wichtige Befehle</title>
+  <section id="wanpipe-wanrouter-befehle">
+    <sectioninfo>
+      <indexterm>
+        <primary>Wanpipe</primary>
 
-    <para></para>
+        <secondary>Befehle</secondary>
+      </indexterm>
 
-    <screen>debian:~# <command>wanrouter summary</command>
+      <indexterm>
+        <primary>Wanrouter</primary>
+
+        <secondary>Befehle</secondary>
+      </indexterm>
+    </sectioninfo>
+
+    <title>Wichtige Befehle für Wanpipe</title>
+
+    <para>Folgende Befehle sind beim Arbeiten mit Wanpipe/wanrouter nützlich
+    uns zeigen uns z.B. Informationen über unsere FlexBRI-Karte.</para>
+
+    <para><literal><command>wanrouter version</command></literal> oder
+    <literal><command>/etc/init.d/wanrouter version</command></literal> zeigt
+    die installierte Version von Wanpipe:<screen>debian:~# <command>wanrouter version</command>
+
+WANPIPE Release: 3.5.0.10</screen></para>
+
+    <para><literal><command>wanrouter summary</command></literal> oder
+    <literal><command>/etc/init.d/wanrouter summary</command></literal> zeigt
+    eine Übersicht über die Konfigurationsdateien
+    <filename>/etc/wanpipe/wanpipe<replaceable>*</replaceable>.conf</filename><footnote>
+        <para>Ausgabe hier etwas in der Breite gekürzt.</para>
+      </footnote>:<screen>debian:~# <command>wanrouter summary</command>
 
 Configuration File Summary in : /etc/wanpipe/
 
-Device          Protocol	Type   Cpu/Io Slot/Irq  Bus	State
-------------------------------------------------------------------------
-wanpipe1	WAN_AFT_ISDN_BRI	PCI	A	6	0	Connecting
-wanpipe2	WAN_AFT_ISDN_BRI	PCI	A	6	0	Connecting
-wanpipe3	WAN_AFT_ISDN_BRI	PCI	A	6	0	Connecting
-wanpipe4	WAN_AFT_ISDN_BRI	PCI	A	6	0	Connecting
-wanpipe5	WAN_AFT_ANALOG	PCI	A	6	0	Inactive
-debian:~# </screen>
+Device    Protocol          Type Cpu/Io Slot/Irq Bus State
+---------------------------------------------------------------
+wanpipe1  WAN_AFT_ISDN_BRI  PCI  A      6        0   Connecting
+wanpipe2  WAN_AFT_ISDN_BRI  PCI  A      6        0   Connecting
+wanpipe3  WAN_AFT_ISDN_BRI  PCI  A      6        0   Connecting
+wanpipe4  WAN_AFT_ISDN_BRI  PCI  A      6        0   Connecting
+wanpipe5  WAN_AFT_ANALOG    PCI  A      6        0   Inactive</screen></para>
 
-    <screen>debian:~# <command>wanrouter version</command>
-
-WANPIPE Release: 3.5.0.10
-
-debian:~# </screen>
-
-    <screen>debian:~# <command>wanrouter status</command>
+    <para><literal><command>wanrouter status</command></literal> oder
+    <literal><command>/etc/init.d/wanrouter status</command></literal> zeigt
+    den Status aller aktiven Ports:<screen>debian:~# <command>wanrouter status</command>
 
 Devices currently active:
         wanpipe1 wanpipe2 wanpipe3 wanpipe4
@@ -1114,8 +1138,34 @@ Device name | Protocol | Station | Status        |
 wanpipe1    | AFT ISDN | N/A     | Connecting    |
 wanpipe2    | AFT ISDN | N/A     | Connecting    |
 wanpipe3    | AFT ISDN | N/A     | Connecting    |
-wanpipe4    | AFT ISDN | N/A     | Connecting    |
+wanpipe4    | AFT ISDN | N/A     | Connecting    |</screen></para>
 
-debian:~# </screen>
+    <para><literal><command>wanrouter hwprobe</command></literal> oder
+    <literal><command>/etc/init.d/wanrouter hwprobe</command></literal> zeigt
+    Informationen über die installierte Wanpipe-Hardware:<screen>debian:~# <command>wanrouter hwprobe</command>
+
+-------------------------------
+| Wanpipe Hardware Probe Info |
+-------------------------------
+1 . AFT-B700-SH : SLOT=6 : BUS=0 : IRQ=17 : PORT=1 : HWEC=16 : V=34
+2 . AFT-B700-SH : SLOT=6 : BUS=0 : IRQ=17 : PORT=2 : HWEC=16 : V=34
+3 . AFT-B700-SH : SLOT=6 : BUS=0 : IRQ=17 : PORT=3 : HWEC=16 : V=34
+4 . AFT-B700-SH : SLOT=6 : BUS=0 : IRQ=17 : PORT=4 : HWEC=16 : V=34
+5 . AFT-B700-SH : SLOT=6 : BUS=0 : IRQ=17 : PORT=5 : HWEC=16 : V=34
+
+Card Cnt: B700=1 </screen></para>
+
+    <para>Und dann gibt es natürlich die ganz normalen Befehle
+    <command><literal>/etc/init.d/wanrouter
+    </literal>{<literal>start</literal>|<literal>stop</literal>|<literal>restart</literal>}</command>
+    wie bei jedem Skript in <filename>/etc/init.d/</filename> zum
+    Starten/Stoppen des Dienstes.</para>
+
+    <para>Durch Aufruf von <literal><command>wanrouter</command></literal>
+    ohne weitere Optionen erhält man eine Liste aller möglichen
+    Befehle.</para>
+
+    <para>Mit <literal><command>wanpipemon -g</command></literal> bekommt man
+    ein grafisches Menü zur Analyse der BRI-Ports.</para>
   </section>
 </article>
