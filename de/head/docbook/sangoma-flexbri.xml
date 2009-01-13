@@ -175,7 +175,10 @@ debian:~# <command>aptitude install bzip2</command></screen></para>
     weiteres muß man also den Kernel entsprechend umkonfigurieren. Klingt
     kompliziert, ist es aber nicht.</para>
 
-    <para>Kernel-Quellen installieren, entpacken und umkonfigurieren:<screen>debian:~# <command>aptitude install linux-source</command>
+    <para>Kernel-Quellen installieren, entpacken und umkonfigurieren:<screen>debian:~# <command>aptitude search linux-source</command>
+v   linux-source        <replaceable>[...]</replaceable> -                                                           
+v   linux-source-2.6    <replaceable>[...]</replaceable> -                                                           
+i   linux-source-2.6.26 <replaceable>[...]</replaceable> - Linux kernel source for version 2.6.26 with Debian patches</screen><screen>debian:~# <command>aptitude install linux-source</command>
 <replaceable>[...]</replaceable>
 Hinweis: Wähle »linux-source-2.6.26« anstelle des
          virtuellen Pakets »linux-source«.
@@ -194,14 +197,18 @@ debian:/usr/src/linux-source-2.6.26# <command>make menuconfig</command></screen>
     <quote><literal>Exit</literal></quote>, Enter,
     <quote><literal>Yes</literal></quote>, Enter.</para>
 
-    <para>Pakete installieren die vom Kernel zum Bauen benötigt
-    werden<footnote>
+    <para>Pakete installieren die vom Kernel<footnote>
+        <para>genauer: <literal>lguest</literal></para>
+      </footnote> zum Bauen benötigt werden<footnote>
         <para><quote>build dependencies</quote></para>
       </footnote>:<screen>debian:/usr/src/linux-source-2.6.26# <command>aptitude install zlib1g-dev</command></screen></para>
 
     <para>Zum Kompilieren eines Kernels nach Debian-Art<footnote>
         <para>für Interessierte: <ulink
-        url="http://kernel-handbook.alioth.debian.org/ch-common-tasks.html#s-common-building">http://kernel-handbook.alioth.debian.org/ch-common-tasks.html#s-common-building</ulink></para>
+        url="http://kernel-handbook.alioth.debian.org/ch-common-tasks.html#s-common-building">http://kernel-handbook.alioth.debian.org/ch-common-tasks.html#s-common-building</ulink>,
+        allerdings benutzen wir <literal>--append-to-version</literal> statt
+        <literal>--revision</literal> damit unser neuer Kernel direkt dem
+        Namen nach erkennbar ist</para>
       </footnote> benutzt man <literal>make-kpkg</literal> aus dem Paket
     <literal>kernel-package</literal> und <literal>fakeroot</literal>:<screen>debian:/usr/src/linux-source-2.6.26# <command>aptitude install kernel-package fakeroot</command>
 debian:/usr/src/linux-source-2.6.26# <command>make-kpkg clean</command>
@@ -236,7 +243,11 @@ Richte linux-headers-2.6.26.custom.1 ein (2.6.26.custom.1-10.00.Custom) ...
 debian:/usr/src# <command>reboot &amp;&amp; exit</command></screen></para>
 
     <para>Nach dem Neustart wieder per <literal>ssh</literal> auf den Rechner
-    gehen und überprüfen ob der richtige Kernel läuft.<screen>debian:~# <command>uname -r</command>
+    gehen und überprüfen ob der richtige Kernel läuft<footnote>
+        <para><filename>/lib/modules/`uname -r`/build</filename> ist jetzt
+        übrigens ein symbolischer Link der auf
+        <filename>/usr/src/linux-source-2.6.26</filename> zeigt.</para>
+      </footnote>:<screen>debian:~# <command>uname -r</command>
 2.6.26.custom.1</screen></para>
   </section>
 
@@ -262,7 +273,8 @@ debian:/usr/src# <command>reboot &amp;&amp; exit</command></screen></para>
         </footnote>.</para>
     </important>
 
-    <para>Zaptel (bis Asterisk 1.4.21):<screen>debian:~# <command>cd /usr/src/</command>
+    <para>Zaptel (bis Asterisk 1.4.21):<screen>debian:~# <command>aptitude install libnewt-dev</command>
+debian:~# <command>cd /usr/src/</command>
 debian:/usr/src# <command>wget http://downloads.digium.com/pub/zaptel/releases/zaptel-1.4.12.1.tar.gz</command>
 debian:/usr/src# <command>tar xzf zaptel-1.4.12.1.tar.gz</command> 
 debian:/usr/src# <command>rm zaptel-1.4.12.1.tar.gz</command> 
