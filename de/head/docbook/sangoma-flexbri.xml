@@ -1031,9 +1031,11 @@ lrwxrwxrwx 1 root root  18 10. Jan 12:00 S50asterisk -&gt; ../init.d/asterisk</s
 
       <para>An der Datei <filename>/etc/sangoma_mgd.conf</filename> müssen wir
       nichts ändern. Auch die <filename>/etc/wanpipe/smg_bri.conf</filename>
-      kann so bleiben wie sie ist. Für eine detaillierte Beschreibung der
+      kann fast so bleiben wie sie ist. Für eine detaillierte Beschreibung der
       Parameter siehe <ulink
-      url="http://wiki.sangoma.com/BriAdvancedOptions">http://wiki.sangoma.com/BriAdvancedOptions</ulink>.</para>
+      url="http://wiki.sangoma.com/BriAdvancedOptions">http://wiki.sangoma.com/BriAdvancedOptions</ulink>.
+      Das einige was wir hier ändern ist:<programlisting>national_prefix=0
+international_prefix=00</programlisting></para>
     </section>
 
     <section id="sangoma-flexbri-konfiguration-zaptel">
@@ -1059,14 +1061,25 @@ fxoks=2
           ändern damit es nach einem erneuten Aufruf von
           <literal>setup-sangoma</literal> erhalten bleibt.</para>
         </footnote></para>
+
+      <para>Bitte nicht wundern warum hier <literal>fxo</literal> steht.
+      <literal>fxoks</literal> ist die Signalisierung für FXS<footnote>
+          <para>und umgekehrt wäre <literal>fxsks</literal> für FXO</para>
+        </footnote>.</para>
     </section>
 
     <section id="sangoma-flexbri-konfiguration-asterisk">
       <title>Asterisk</title>
 
-      <para>Wie nicht anders zu erwarten ist die
-      <filename>/etc/asterisk/zapata.conf</filename> auch schon für die 2
-      analogen Kanäle konfiguriert. Ausschnitt:<programlisting>;Sangoma A700 [slot:6 bus:0 span:1]  &lt;wanpipe5&gt;
+      <para>Im folgenden die Einstellungen in der Asterisk-Konfiguration für
+      die Sangoma B700 FlexBRI.</para>
+
+      <section id="flexbri-asterisk-zapata">
+        <title>zapata.conf für die FlexBRI</title>
+
+        <para>Wie nicht anders zu erwarten ist die
+        <filename>/etc/asterisk/zapata.conf</filename> auch schon für die 2
+        analogen Kanäle konfiguriert. Ausschnitt:<programlisting>;Sangoma A700 [slot:6 bus:0 span:1]  &lt;wanpipe5&gt;
 
 context=from-internal
 group=1
@@ -1078,10 +1091,14 @@ group=1
 signalling = fxo_ks
 channel =&gt; 2
 </programlisting></para>
+      </section>
 
-      <para>Auch die Konfiguration der BRI-Kanäle in der
-      <filename>/etc/asterisk/woomera.conf</filename> für
-      <filename>chan_woomera</filename> ist fertig:<programlisting>[settings]
+      <section id="flexbri-asterisk-woomera">
+        <title>woomera.conf für die FlexBRI</title>
+
+        <para>Auch die Konfiguration der BRI-Kanäle in der
+        <filename>/etc/asterisk/woomera.conf</filename> für
+        <filename>chan_woomera</filename> ist fertig:<programlisting>[settings]
 debug=2
 
 [default]
@@ -1097,19 +1114,33 @@ progress_enable=0
 context=from-pstn
 group=1
 </programlisting></para>
+      </section>
 
-      <para>Die <filename>/etc/asterisk/extensions.conf</filename> sollte wohl
-      auch automatisch erzeugt werden, dies passiert jedoch momentan noch
-      nicht, daher müssen wir das noch selber erledigen.<programlisting>; Kontext(e) fuer Anrufe die von den BRI-Ports der FlexBRI
+      <section id="flexbri-asterisk-extensions">
+        <title>extensions.conf für die FlexBRI</title>
+
+        <para>Die <filename>/etc/asterisk/extensions.conf</filename> sollte
+        wohl auch automatisch erzeugt werden, dies passiert jedoch momentan
+        noch nicht, daher müssen wir das noch selber
+        erledigen.<programlisting>; Kontext(e) fuer Anrufe die von den BRI-Ports der FlexBRI
 ; eingehen. Der Name entspricht dem/den in der
 ; /etc/asterisk/woomera.conf eingestellten context.
 
 [from-pstn]
-exten =&gt; _X.,1,Verbose(1,### Eingehender Anruf an ${EXTEN})
+
+exten =&gt; _X.,1,Verbose(1,### Eingehender Anruf von ${CALLERID(num)} an ${EXTEN})
+exten =&gt; _X.,n,Ringing()
+exten =&gt; _X.,n,Wait(8)
+exten =&gt; _X.,n,Answer()
 exten =&gt; _X.,n,Playback(demo-congrats)
 exten =&gt; _X.,n,Hangup()
-exten =&gt; 99,1,Verbose(1,### Eingehendes Fax)
-exten =&gt; 99,n,Dial(WOOMERA/......................)
+
+exten =&gt; 123456,1,Verbose(1,### Eingehender Anruf von ${CALLERID(num)} an ${EXTEN})
+exten =&gt; 123456,n,Dial(SIP/10)
+exten =&gt; 123456,n,Hangup()
+
+exten =&gt; 99,1,Verbose(1,### Eingehendes Fax von ${CALLERID(num)})
+exten =&gt; 99,n,Dial(Zap/1,60)  ; interne analoge Leitung 1
 exten =&gt; 99,n,Hangup()
 
 ; Kontext(e) fuer Anrufe von intern, also z.B. vom analogen
@@ -1117,9 +1148,11 @@ exten =&gt; 99,n,Hangup()
 ; /etc/asterisk/zapata.conf eingestellten context
 
 [from-internal]
+
 exten =&gt; _X.,1,Verbose(1,### Anruf von intern an ${EXTEN})
-exten =&gt; _X.,n,Dial(WOOMERA/g1/${EXTEN})
+exten =&gt; _X.,n,Dial(WOOMERA/g1/${EXTEN})  ; Gruppe 1
 exten =&gt; _X.,n,Hangup()</programlisting></para>
+      </section>
     </section>
   </section>
 
