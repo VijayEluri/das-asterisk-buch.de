@@ -29,7 +29,7 @@
     <indexterm>
       <primary>Sangoma</primary>
 
-      <secondary>FlexBRI (B700), B700</secondary>
+      <secondary>FlexBRI (B700)</secondary>
     </indexterm>
 
     <date>$Revision$</date>
@@ -79,8 +79,10 @@
     </footnote> ist die erste hybride Karte mit 4 BRI-ISDN-Ports (also 8
   B-Kanälen) und 2 analogen FXS-Ports, also genau das, worauf viele schon
   lange gewartet haben. Die Karte ist verfügbar für PCI<footnote>
-      <para><ulink
-      url="http://de.wikipedia.org/wiki/Peripheral_Component_Interconnect">http://de.wikipedia.org/wiki/Peripheral_Component_Interconnect</ulink></para>
+      <para>
+        <ulink
+        url="http://de.wikipedia.org/wiki/Peripheral_Component_Interconnect">http://de.wikipedia.org/wiki/Peripheral_Component_Interconnect</ulink>
+      </para>
     </footnote>- und PCI-Express<footnote>
       <para>abgekürzt: PCIx oder PCI-E (nicht PCI-X), <ulink
       url="http://de.wikipedia.org/wiki/PCI-Express">http://de.wikipedia.org/wiki/PCI-Express</ulink></para>
@@ -89,10 +91,10 @@
   von <ulink url="http://www.octasic.com/">Octasic</ulink>.</para>
 
   <para>Die FlexBRI ist perfekt für kleine bis mittelgroße Installationen
-  geeignet wo z.B. zusätzlich zur VoIP-Anbindung &ndash; oder auch
-  ausschließlich &ndash; bis zu 8 B-Kanäle ins öffentliche ISDN-Netz und ein
+  geeignet wo z.B. zusätzlich zur VoIP-Anbindung &#8211; oder auch
+  ausschließlich &#8211; bis zu 8 B-Kanäle ins öffentliche ISDN-Netz und ein
   internes analoges Fax betrieben werden sollen. Es sind aber auch andere
-  Szenarien denkbar &ndash; die 4 ISDN-Ports lassen sich paarweise auf
+  Szenarien denkbar &#8211; die 4 ISDN-Ports lassen sich paarweise auf
   TE<footnote>
       <para>Terminal Equipment, Endeinrichtung, d.h. unsere Seite agiert als
       Endgerät, also <emphasis>extern</emphasis></para>
@@ -153,19 +155,28 @@
     url="http://de.wikipedia.org/wiki/Molex">Molex-Stecker</ulink>
     angeschlossen werden.</para>
 
-    <para>Für die Installation wird ein frisch installiertes Debian GNU/Linux
-    4 (a.k.a Etch) vorausgesetzt. Ein ISO-Image für die Installation finden
-    Sie auf <ulink
+    <!-- <![CDATA[
+    <para>Für diese Anleitung installieren wir auf dem Rechner ein frisches
+    Debian 5 <quote>Lenny</quote> (4 <quote>Etch</quote> funktioniert
+    ebenfalls) von <ulink
+    url="http://www.debian.org/">http://www.debian.org/</ulink>.</para>
+]]> -->
+
+    <para>Für diese Anleitung wird ein frisch installiertes Debian GNU/Linux 4
+    (<quote>Etch</quote>) vorausgesetzt. Ein ISO-Image für die Installation
+    finden Sie auf <ulink
     url="http://www.debian.org/releases/etch/debian-installer/">http://www.debian.org/releases/etch/debian-installer/</ulink>.
-    Ich empfehle das etwa 140 MB große Netzinstallations-CD-Image. Eine Debian
-    GNU/Linux-Installationsanleitung befindet sich unter <ulink
+    Ich empfehle das etwa 140 MB große Netzinstallations-CD-Image. Eine
+    Debian-GNU/Linux-Installationsanleitung befindet sich unter <ulink
     url="http://www.debian.org/releases/etch/i386/">http://www.debian.org/releases/etch/i386/</ulink>.
     Ein allgemeines Anwenderhandbuch steht unter <ulink
-    url="http://debiananwenderhandbuch.de/"><citetitle>http://debiananwenderhandbuch.de.</citetitle></ulink></para>
+    url="http://debiananwenderhandbuch.de/">http://debiananwenderhandbuch.de.</ulink></para>
 
-    <para><emphasis>Bitte loggen Sie sich nach der Installation als Benutzer
-    root am System an und führen Sie alle hier angegebenen Befehle mit diesem
-    Benutzer aus.</emphasis></para>
+    <para>
+      <emphasis>Bitte loggen Sie sich nach der Installation als Benutzer
+      <literal>root</literal> am System ein und führen Sie alle hier
+      angegebenen Befehle mit diesem Benutzer aus.</emphasis>
+    </para>
 
     <para>Als Erstes stellen Sie mit einem <command>apt-get update</command>
     sicher, dass <code>apt-get</code> alle aktuellen Paketlisten zur Verfügung
@@ -256,19 +267,27 @@ debian:/usr/src# <command>cd linux-source-2.6.26</command></screen></para>
     <para>Die Konfiguration des Kernels ändern<footnote>
         <para>Alternativ zu diesem <literal>sed</literal>-Befehl könnte man
         auch das interaktive Menü benutzen:<screen>debian:/usr/src/linux-source-2.6.26# <command>make menuconfig</command></screen>Im
-        interaktiven Dialog den Menüpunkt <quote><literal>Enable loadable
-        module support</literal></quote> mittels der Pfeiltasten auswählen,
-        mit Enter aufrufen und darin den Punkt <quote><literal>Module
-        versioning support</literal></quote> mit der Leertaste deaktivieren.
-        Dann mit dem Rechtspfeil auf <quote><literal>Exit</literal></quote>,
-        Enter, nochmal auf <quote><literal>Exit</literal></quote>, Enter,
-        <quote><literal>Yes</literal></quote>, Enter.</para>
+        interaktiven Dialog den Menüpunkt <quote>
+            <literal>Enable loadable module support</literal>
+          </quote> mittels der Pfeiltasten auswählen, mit Enter aufrufen und
+        darin den Punkt <quote>
+            <literal>Module versioning support</literal>
+          </quote> mit der Leertaste deaktivieren. Dann mit dem Rechtspfeil
+        auf <quote>
+            <literal>Exit</literal>
+          </quote>, Enter, nochmal auf <quote>
+            <literal>Exit</literal>
+          </quote>, Enter, <quote>
+            <literal>Yes</literal>
+          </quote>, Enter.</para>
       </footnote>:<screen>debian:/usr/src/linux-source-2.6.26# <command>sed -i 's/^ *\(CONFIG_MODVERSIONS\).*/# \1/' .config</command></screen></para>
 
     <para>Pakete installieren die vom Kernel<footnote>
         <para>genauer: <literal>lguest</literal></para>
       </footnote> zum Bauen benötigt werden<footnote>
-        <para><quote>build dependencies</quote></para>
+        <para>
+          <quote>build dependencies</quote>
+        </para>
       </footnote>:<screen>debian:/usr/src/linux-source-2.6.26# <command>aptitude install zlib1g-dev</command></screen></para>
 
     <para>Zum Kompilieren eines Kernels nach Debian-Art<footnote>
@@ -281,8 +300,8 @@ debian:/usr/src# <command>cd linux-source-2.6.26</command></screen></para>
     <literal>kernel-package</literal> und <literal>fakeroot</literal>:<screen>debian:/usr/src/linux-source-2.6.26# <command>aptitude install kernel-package fakeroot</command>
 debian:/usr/src/linux-source-2.6.26# <command>make-kpkg clean</command>
 debian:/usr/src/linux-source-2.6.26# <command>fakeroot make-kpkg --initrd --append-to-version=.custom.1 kernel_image kernel_headers</command></screen>Jetzt
-    heißt es warten. Je nach CPU-Power auch mal etwas länger als 10
-    Minuten.</para>
+    heißt es warten. Je nach CPU-Power auch mal etwas länger als 10 Minuten.
+    :-)</para>
 
     <para>Danach den neuen Kernel und die zugehörigen Kernel-Header
     installieren:<screen>debian:/usr/src/linux-source-2.6.26# <command>cd ..</command>
@@ -311,8 +330,8 @@ Entpacke linux-headers-2.6.26.custom.1 (aus linux-headers-2.6.26.custom.1_2.6.26
 Richte linux-headers-2.6.26.custom.1 ein (2.6.26.custom.1-10.00.Custom) ...
 debian:/usr/src# <command>shutdown -r now</command></screen></para>
 
-    <para>Nach dem Neustart wieder als root einloggen und überprüfen ob der
-    richtige Kernel läuft<footnote>
+    <para>Nach dem Neustart wieder als <literal>root</literal> einloggen und
+    überprüfen ob der richtige Kernel läuft<footnote>
         <para><filename>/lib/modules/`uname -r`/build</filename> ist jetzt
         übrigens ein symbolischer Link der auf
         <filename>/usr/src/linux-source-2.6.26</filename> zeigt.</para>
@@ -426,8 +445,8 @@ debian:~# <command>aptitude install linux-headers-`uname -r`</command></screen><
     siehe <ulink
     url="http://wiki.sangoma.com/wanpipe-linux-drivers">http://wiki.sangoma.com/wanpipe-linux-drivers</ulink>.<screen>debian:~# <command>cd /usr/src/</command>
 debian:/usr/src# <command>wget ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-3.5.0.9.tgz</command></screen>(Die
-    URL steht hier nur zur Veranschaulichung. Version 3.5.0.8 &ndash; ab der
-    die B700 FlexBRI unterstützt wird &ndash; war noch nicht in diesem
+    URL steht hier nur zur Veranschaulichung. Version 3.5.0.8 &#8211; ab der
+    die B700 FlexBRI unterstützt wird &#8211; war noch nicht in diesem
     Verzeichnis verfügbar, bzw. nur auf der beiliegenden CD. Siehe auch:
     <ulink
     url="http://wiki.sangoma.com/sangoma-wanpipe-b700">http://wiki.sangoma.com/sangoma-wanpipe-b700</ulink>.
@@ -1064,8 +1083,9 @@ lrwxrwxrwx 1 root root  18 10. Jan 12:00 S50asterisk -&gt; ../init.d/asterisk</s
     Sangoma B700 FlexBRI bereits für uns angelegt. Daher soll sie hier nur der
     Vollständigkeit halber erwähnt werden. Wenn man im Setup alles richtig
     eingegeben hat muß man nichts verändern. Sollte man die Konfiguration der
-    Ports erneut vornehmen wollen kann man später
-    <literal><command>setup-sangoma</command></literal> aufrufen.</para>
+    Ports erneut vornehmen wollen kann man später <literal>
+        <command>setup-sangoma</command>
+      </literal> aufrufen.</para>
 
     <section id="sangoma-flexbri-konfiguration-wanpipe">
       <title>Wanpipe</title>
@@ -1073,8 +1093,10 @@ lrwxrwxrwx 1 root root  18 10. Jan 12:00 S50asterisk -&gt; ../init.d/asterisk</s
       <para>Die Wanpipe-Konfiguration befindet sich im Verzeichnis
       <filename>/etc/wanpipe/</filename>. Darin gibt es mehrere Dateien
       <filename>wanpipe<replaceable>X</replaceable>.conf</filename>, wobei
-      <literal><replaceable>X</replaceable></literal> für die Nummer des Ports
-      steht. 1 - 4 sind die BRI-Ports, 5 der Analog-Port.</para>
+      <literal>
+          <replaceable>X</replaceable>
+        </literal> für die Nummer des Ports steht. 1 - 4 sind die BRI-Ports, 5
+      der Analog-Port.</para>
     </section>
 
     <section id="sangoma-flexbri-konfiguration-smg">
@@ -1229,15 +1251,19 @@ exten =&gt; _X.,n,Hangup()</programlisting></para>
     <para>Folgende Befehle sind beim Arbeiten mit Wanpipe/wanrouter nützlich
     uns zeigen uns z.B. Informationen über unsere FlexBRI-Karte.</para>
 
-    <para><literal><command>wanrouter version</command></literal> oder
-    <literal><command>/etc/init.d/wanrouter version</command></literal> zeigt
-    die installierte Version von Wanpipe:<screen>debian:~# <command>wanrouter version</command>
+    <para><literal>
+        <command>wanrouter version</command>
+      </literal> oder <literal>
+        <command>/etc/init.d/wanrouter version</command>
+      </literal> zeigt die installierte Version von Wanpipe:<screen>debian:~# <command>wanrouter version</command>
 
 WANPIPE Release: 3.5.0.10</screen></para>
 
-    <para><literal><command>wanrouter summary</command></literal> oder
-    <literal><command>/etc/init.d/wanrouter summary</command></literal> zeigt
-    eine Übersicht über die Konfigurationsdateien
+    <para><literal>
+        <command>wanrouter summary</command>
+      </literal> oder <literal>
+        <command>/etc/init.d/wanrouter summary</command>
+      </literal> zeigt eine Übersicht über die Konfigurationsdateien
     <filename>/etc/wanpipe/wanpipe<replaceable>*</replaceable>.conf</filename><footnote>
         <para>Ausgabe hier etwas in der Breite gekürzt.</para>
       </footnote>:<screen>debian:~# <command>wanrouter summary</command>
@@ -1252,9 +1278,12 @@ wanpipe3  WAN_AFT_ISDN_BRI  PCI  A      6        0   Connecting
 wanpipe4  WAN_AFT_ISDN_BRI  PCI  A      6        0   Connecting
 wanpipe5  WAN_AFT_ANALOG    PCI  A      6        0   Inactive</screen></para>
 
-    <para><literal><command>wanrouter status</command></literal> oder
-    <literal><command>/etc/init.d/wanrouter status</command></literal> zeigt
-    den Status aller <emphasis>aktiven</emphasis> Ports<footnote>
+    <para><literal>
+        <command>wanrouter status</command>
+      </literal> oder <literal>
+        <command>/etc/init.d/wanrouter status</command>
+      </literal> zeigt den Status aller <emphasis>aktiven</emphasis>
+    Ports<footnote>
         <para>Ausgabe hier etwas in der Breite gekürzt.</para>
       </footnote>:<screen>debian:~# <command>wanrouter status</command>
 
@@ -1280,9 +1309,12 @@ wanpipe3    | AFT ISDN | N/A     | Disconnected  |
 wanpipe4    | AFT ISDN | N/A     | Disconnected  |
 wanpipe5    | A-ANALOG | N/A     | Connected     |</screen></para>
 
-    <para><literal><command>wanrouter hwprobe</command></literal> oder
-    <literal><command>/etc/init.d/wanrouter hwprobe</command></literal> zeigt
-    Informationen über die installierte Wanpipe-Hardware:<screen>debian:~# <command>wanrouter hwprobe</command>
+    <para><literal>
+        <command>wanrouter hwprobe</command>
+      </literal> oder <literal>
+        <command>/etc/init.d/wanrouter hwprobe</command>
+      </literal> zeigt Informationen über die installierte
+    Wanpipe-Hardware:<screen>debian:~# <command>wanrouter hwprobe</command>
 
 -------------------------------
 | Wanpipe Hardware Probe Info |
@@ -1295,9 +1327,10 @@ wanpipe5    | A-ANALOG | N/A     | Connected     |</screen></para>
 
 Card Cnt: B700=1 </screen></para>
 
-    <para><literal><command>wanrouter hwprobe verbose</command></literal>
-    funktioniert wie <command>wanrouter hwprobe</command>, zeigt aber noch
-    zusätzliche Informationen wie den TE/NT-Modus:<screen>debian:~# <command>wanrouter hwprobe verbose</command>
+    <para><literal>
+        <command>wanrouter hwprobe verbose</command>
+      </literal> funktioniert wie <command>wanrouter hwprobe</command>, zeigt
+    aber noch zusätzliche Informationen wie den TE/NT-Modus:<screen>debian:~# <command>wanrouter hwprobe verbose</command>
 
 -----------------------------------------
 | Wanpipe Hardware Probe Info (verbose) |
@@ -1322,16 +1355,20 @@ Card Cnt: B700=1 </screen></para>
     wie bei jedem Skript in <filename>/etc/init.d/</filename> zum
     Starten/Stoppen des Dienstes.</para>
 
-    <para>Durch Aufruf von <literal><command>wanrouter</command></literal>
-    ohne weitere Optionen erhält man eine Liste aller möglichen
+    <para>Durch Aufruf von <literal>
+        <command>wanrouter</command>
+      </literal> ohne weitere Optionen erhält man eine Liste aller möglichen
     Befehle.</para>
 
-    <para>Mit <literal><command>wanpipemon -g</command></literal> bekommt man
-    ein grafisches Menü zur Analyse der Wanpipe-Ports.</para>
+    <para>Mit <literal>
+        <command>wanpipemon -g</command>
+      </literal> bekommt man ein grafisches Menü zur Analyse der
+    Wanpipe-Ports.</para>
 
-    <para>Mittels <literal><command>cat /proc/interrupts</command></literal>
-    kann man prüfen ob sich die Karte PCI-Interrupts mit anderen Geräten
-    (Festplatte, Netzwerkkarte, ...) teilen muß.<screen>debian:~# <command>cat /proc/interrupts</command> 
+    <para>Mittels <literal>
+        <command>cat /proc/interrupts</command>
+      </literal> kann man prüfen ob sich die Karte PCI-Interrupts mit anderen
+    Geräten (Festplatte, Netzwerkkarte, ...) teilen muß.<screen>debian:~# <command>cat /proc/interrupts</command> 
 <replaceable>[...]</replaceable>
  17:    1979007   IO-APIC-fasteoi   wanpipe1, wanpipe2, wanpipe3, wanpipe4, wanpipe5</screen></para>
 
