@@ -59,14 +59,14 @@
 
   <para><inlinemediaobject id="sangoma-b700-flexbri-image">
       <imageobject role="fo">
-        <imagedata align="right"
-                   fileref="../bilder/sangoma-b700-flexbri.jpg"
+        <imagedata align="right" fileref="../bilder/sangoma-b700-flexbri.jpg"
                    scalefit="1" srccredit="(c) 2008, Philipp Kempgen"
                    valign="top" width="50%" />
       </imageobject>
 
       <imageobject role="html">
-        <imagedata align="right" fileref="../bilder/sangoma-b700-flexbri.html.jpg"
+        <imagedata align="right"
+                   fileref="../bilder/sangoma-b700-flexbri.html.jpg"
                    scalefit="0" srccredit="(c) 2008, Philipp Kempgen"
                    valign="top" />
       </imageobject>
@@ -226,8 +226,11 @@ debian:~# </screen></para>
     Compiler usw.:<screen>debian:~# <command>aptitude install build-essential</command>
 debian:~# <command>aptitude install libncurses5-dev flex bison</command>
 debian:~# <command>aptitude install bzip2</command></screen></para>
+
+    <para>Und auch die Linux-Kernel-Header:<screen>debian:~# <command>aptitude install linux-headers-`uname -r`</command></screen></para>
   </section>
 
+  <!-- <![CDATA[
   <section id="wanpipe-kernel">
     <title>Kernel für Wanpipe vorbereiten</title>
 
@@ -280,13 +283,13 @@ debian:/usr/src# <command>cd linux-source-2.6.26</command></screen></para>
     <para>Zum Kompilieren eines Kernels nach Debian-Art<footnote>
         <para>für Interessierte: <ulink
         url="http://kernel-handbook.alioth.debian.org/ch-common-tasks.html#s-common-building">http://kernel-handbook.alioth.debian.org/ch-common-tasks.html#s-common-building</ulink>,
-        allerdings benutzen wir <literal>--append-to-version</literal> statt
-        <literal>--revision</literal> damit unser neuer Kernel direkt dem
+        allerdings benutzen wir <literal>&#x2D;&#x2D;append-to-version</literal> statt
+        <literal>&#x2D;&#x2D;revision</literal> damit unser neuer Kernel direkt dem
         Namen nach erkennbar ist</para>
       </footnote> benutzt man <literal>make-kpkg</literal> aus dem Paket
     <literal>kernel-package</literal> und <literal>fakeroot</literal>:<screen>debian:/usr/src/linux-source-2.6.26# <command>aptitude install kernel-package fakeroot</command>
 debian:/usr/src/linux-source-2.6.26# <command>make-kpkg clean</command>
-debian:/usr/src/linux-source-2.6.26# <command>fakeroot make-kpkg --initrd --append-to-version=.custom.1 kernel_image kernel_headers</command></screen>Jetzt
+debian:/usr/src/linux-source-2.6.26# <command>fakeroot make-kpkg &#x2D;&#x2D;initrd &#x2D;&#x2D;append-to-version=.custom.1 kernel_image kernel_headers</command></screen>Jetzt
     heißt es warten. Je nach CPU-Power auch mal etwas länger als 10 Minuten.
     :-)</para>
 
@@ -325,6 +328,7 @@ debian:/usr/src# <command>shutdown -r now</command></screen></para>
       </footnote>:<screen>debian:~# <command>uname -r</command>
 2.6.26.custom.1</screen></para>
   </section>
+]]> -->
 
   <section id="sangoma-flexbri-zaptel-asterisk">
     <title>Quellen von Zaptel und Asterisk</title>
@@ -433,26 +437,42 @@ debian:~# <command>aptitude install linux-headers-`uname -r`</command></screen><
     automatisch eine entsprechende logrotate-Definition erstellen
     kann:<screen>debian:~# <command>aptitude install logrotate</command></screen></para>
 
-    <para>Als nächstes installieren wir die aktuelle Version von Wanpipe,
-    siehe <ulink
-    url="http://wiki.sangoma.com/wanpipe-linux-drivers">http://wiki.sangoma.com/wanpipe-linux-drivers</ulink>
-    bzw. insbesonders <ulink
-    url="http://wiki.sangoma.com/sangoma-wanpipe-b700">http://wiki.sangoma.com/sangoma-wanpipe-b700</ulink>.<screen>debian:~# <command>cd /usr/src/</command>
-debian:/usr/src# <command>wget ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-3.5.0.9.tgz</command></screen>(Die
-    URL steht hier nur zur Veranschaulichung. Version 3.5.0.8 &#8211; ab der
-    die B700 FlexBRI unterstützt wird &#8211; war noch nicht in diesem
-    Verzeichnis verfügbar, bzw. nur auf der beiliegenden CD. Siehe auch:
-    <ulink
-    url="http://wiki.sangoma.com/sangoma-wanpipe-b700">http://wiki.sangoma.com/sangoma-wanpipe-b700</ulink>.
-    Wir verwenden hier die Version 3.5.0.10 aus einem anderen
-    Verzeichnis.)</para>
+    <para>Als nächstes installieren wir die aktuelle Version von
+    Wanpipe.</para>
 
+    <important>
+      <para>Die FlexBRI wird ab Wanpipe 3.5.0.8 unterstützt. Die empfohlene
+      Version von Wanpipe ist normalerweise auf den Seiten <ulink
+      url="http://wiki.sangoma.com/wanpipe-linux-drivers">http://wiki.sangoma.com/wanpipe-linux-drivers</ulink>
+      bzw. insbesondere <ulink
+      url="http://wiki.sangoma.com/sangoma-wanpipe-b700">http://wiki.sangoma.com/sangoma-wanpipe-b700</ulink>
+      angegeben. Die Tarballs der Releases befinden sich im FTP-Verzeichnis
+      <ulink
+      url="ftp://ftp.sangoma.com/linux/current_wanpipe/">ftp://ftp.sangoma.com/linux/current_wanpipe/</ulink>.
+      Dort steht allerdings noch nicht die neuste Version die für die
+      FlexBRI-Karte erforderlich ist. Bis 3.5.0.10 war es noch erforderlich
+      den Kernel neu zu kompilieren<footnote>
+          <para>ohne <literal>CONFIG_MODVERSIONS</literal></para>
+        </footnote>. Dies wurde in 3.5.0.11 behoben. (Nochmal vielen Dank an
+      Sangoma!)</para>
+    </important>
+
+    <!-- <![CDATA[
     <screen>debian:~# <command>cd /usr/src/</command>
 debian:/usr/src# <command>wget ftp://ftp.sangoma.com/linux/custom/DavidYS/wanpipe-3.5.0.10.tgz</command></screen>
 
     <screen>debian:/usr/src# <command>tar xzf wanpipe-3.5.0.10.tgz</command> 
 debian:/usr/src# <command>rm wanpipe-3.5.0.10.tgz</command> 
 debian:/usr/src# <command>cd wanpipe-3.5.0.10/</command> </screen>
+]]> -->
+
+    <screen>debian:~# <command>cd /usr/src/</command>
+debian:/usr/src# <command>wget ftp://ftp.sangoma.com/linux/custom/konrad/wanpipe-b700.3.5.0.11.tgz</command></screen>
+
+    <screen>debian:/usr/src# <command>tar xzf wanpipe-b700.3.5.0.11.tgz</command> 
+debian:/usr/src# <command>rm wanpipe-b700.3.5.0.11.tgz</command> 
+debian:/usr/src# <command>mv wanpipe-b700.3.5.0.11 wanpipe-3.5.0.11</command>
+debian:/usr/src# <command>cd wanpipe-3.5.0.11/</command> </screen>
 
     <para>Das Skript <filename>Setup</filename> kümmert sich um die
     Kompilierung und würde melden falls man notwendige Software nicht
@@ -460,9 +480,9 @@ debian:/usr/src# <command>cd wanpipe-3.5.0.10/</command> </screen>
     <quote>Compilation Mode</quote> verwenden wir Nr. 7 (<quote>SMG (BRI) +
     TDM Voice</quote>).</para>
 
-    <screen>debian:/usr/src/wanpipe-3.5.0.10# <command>./Setup install</command>
+    <screen>debian:/usr/src/wanpipe-3.5.0.11# <command>./Setup install</command>
         ----------------------------------------------------------
-                  WANPIPE v3.5.0.10 Installation Script
+                  WANPIPE v3.5.0.13<footnote><para>Bitte nicht wundern wenn hier evtl. eine minimal falsche Versionsnummer steht.</para></footnote> Installation Script
             Copyright (c) 1995-2008, Sangoma Technologies Inc.
         ----------------------------------------------------------
 <replaceable>[...]</replaceable>
@@ -486,13 +506,13 @@ Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter
     <screen><replaceable>[...]</replaceable>
 Please specify absolute path name of your linux directory
 
-<!-- <![CDATA[Press Enter for Default: /lib/modules/2.6.26-1-686/build]]> -->
-Press Enter for Default: /lib/modules/2.6.26.custom.1/build
+<!-- <![CDATA[Press Enter for Default: /lib/modules/2.6.26.custom.1/build]]> -->
+Press Enter for Default: /lib/modules/2.6.26-1-686/build
 
 #&gt;<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
 
-    <screen><!-- <![CDATA[Setting linux directory to /lib/modules/2.6.26-1-686/build]]> -->
-Setting linux directory to /lib/modules/2.6.26.custom.1/build
+    <screen><!-- <![CDATA[Setting linux directory to /lib/modules/2.6.26.custom.1/build]]> -->
+Setting linux directory to /lib/modules/2.6.26-1-686/build
 
 Upgrading WANPIPE kernel documentation ...Done.
 
@@ -553,8 +573,8 @@ m : Enter Asterisk/CallWeaver path manually
 Please select working Asterisk/CallWeaver directory [1-1][m]: <emphasis
         role="bold"><userinput>1</userinput></emphasis></screen>
 
-    <screen><!-- <![CDATA[Source kernel name:2.6.26-1-686]]> -->
-Source kernel name:2.6.26.custom.1
+    <screen><!-- <![CDATA[Source kernel name:2.6.26.custom.1]]> -->
+Source kernel name:2.6.26-1-686
 
 Checking for SMP support ...Enabled.
 
@@ -582,11 +602,11 @@ WANPIPE META CONFIGURATION
 
 There are two configuration files associated with WANPIPE.  
 
-1) /usr/src/wanpipe-3.5.0.9/wanrouter.rc: 
+1) /usr/src/wanpipe-3.5.0.11/wanrouter.rc: 
         - defines locations of important files such as lock
           and configuration files as well as start/stop 
           order of multiple WANPIPE devices.
-2) /usr/src/wanpipe-3.5.0.9/wanpipe1.conf:
+2) /usr/src/wanpipe-3.5.0.11/wanpipe1.conf:
         - main configuration file for each WANPIPE device.
         - defines interfaces, hardware and protocol information.
         - this file can be created using the 'wancfg' GUI
@@ -1053,11 +1073,11 @@ Sangoma cards configuration complete, exiting...</screen>
 
     <para>Durch einen kleinen Fehler im <filename>Setup</filename>-Skript
     wurde das Start-Skript <filename>/etc/init.d/smg_ctrl</filename> noch
-    nicht im Runlevel 2 verlinkt, das holen wir jetzt noch nach:<screen>debian:/usr/src/wanpipe-3.5.0.10# <command>update-rc.d -f smg_ctrl remove</command>
-debian:/usr/src/wanpipe-3.5.0.10# <command>update-rc.d smg_ctrl defaults 16 20</command></screen></para>
+    nicht im Runlevel 2 verlinkt, das holen wir jetzt noch nach:<screen>debian:/usr/src/wanpipe-3.5.0.11# <command>update-rc.d -f smg_ctrl remove</command>
+debian:/usr/src/wanpipe-3.5.0.11# <command>update-rc.d smg_ctrl defaults 16 20</command></screen></para>
 
     <para>Im Default-Runlevel 2 sollten jetzt folgende Einträge
-    stehen:<screen>debian:/usr/src/wanpipe-3.5.0.10# <command>ls -l /etc/rc2.d/</command>
+    stehen:<screen>debian:/usr/src/wanpipe-3.5.0.11# <command>ls -l /etc/rc2.d/</command>
 <replaceable>[...]</replaceable>
 lrwxrwxrwx 1 root root  19 10. Jan 12:00 S14wanrouter -&gt; ../init.d/wanrouter
 lrwxrwxrwx 1 root root  16 10. Jan 12:00 S15zaptel -&gt; ../init.d/zaptel
@@ -1251,7 +1271,7 @@ exten =&gt; _X.,n,Hangup()</programlisting></para>
         <command>/etc/init.d/wanrouter version</command>
       </literal> zeigt die installierte Version von Wanpipe:<screen>debian:~# <command>wanrouter version</command>
 
-WANPIPE Release: 3.5.0.10</screen></para>
+WANPIPE Release: 3.5.0.11</screen></para>
 
     <para><literal>
         <command>wanrouter summary</command>
