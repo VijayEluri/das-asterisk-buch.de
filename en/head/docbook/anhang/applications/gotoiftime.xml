@@ -15,69 +15,68 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>GotoIfTime()</literal></title>
+  <title><literal>GotoIfTime()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>GotoIfTime()</code></secondary>
-    </indexterm>
+    <secondary><code>GotoIfTime()</code></secondary>
+  </indexterm>
 
-    <simpara>Jumps to the specified priority if the time condition is
-    met.</simpara>
+  <simpara>Jumps to the specified priority if the time condition is
+  met.</simpara>
 
-    <synopsis><command>GotoIfTime(<replaceable>times</replaceable>,<replaceable>daysofweek</replaceable>,<replaceable>daysofmonth</replaceable>,<replaceable>months</replaceable>?[[<replaceable>context</replaceable>,]<replaceable>extension</replaceable>,]<replaceable>priority</replaceable>)</command></synopsis>
+  <synopsis><synopsis>GotoIfTime(<replaceable>times</replaceable>,<replaceable>daysofweek</replaceable>,<replaceable>daysofmonth</replaceable>,<replaceable>months</replaceable>?[[<replaceable>context</replaceable>,]<replaceable>extension</replaceable>,]<replaceable>priority</replaceable>)</synopsis></synopsis>
 
-    <simpara>Jumps to the specified priority if the current time falls within
-    the specified time window. Each element may be defined with a "*" (always)
-    or a <code>"-"</code> (range).</simpara>
+  <simpara>Jumps to the specified priority if the current time falls within
+  the specified time window. Each element may be defined with a "*" (always)
+  or a <code>"-"</code> (range).</simpara>
 
-    <para>Die Parameter zu dieser Anwendung sind: <variablelist
-        termlength="15">
-        <varlistentry>
-          <term><code>times</code></term>
+  <para>The arguments for this applications are: <variablelist termlength="15">
+      <varlistentry>
+        <term><code>times</code></term>
 
-          <listitem>
-            <simpara>Time interval, in 24 hour format with hours and minutes,
-            <emphasis>e.g.</emphasis> <code>9:00-17:00</code></simpara>
-          </listitem>
-        </varlistentry>
+        <listitem>
+          <simpara>Time interval, in 24 hour format with hours and minutes,
+          <emphasis>e.g.</emphasis> <code>9:00-17:00</code></simpara>
+        </listitem>
+      </varlistentry>
 
-        <varlistentry>
-          <term><code>daysofweek</code></term>
+      <varlistentry>
+        <term><code>daysofweek</code></term>
 
-          <listitem>
-            <simpara>Weekdays (<code>mon</code>, <code>tue</code>,
-            <code>wed</code>, <code>thu</code>, <code>fri</code>,
-            <code>sat</code>, <code>sun</code>), <emphasis>e.g.</emphasis>
-            <code>mon-fri</code></simpara>
-          </listitem>
-        </varlistentry>
+        <listitem>
+          <simpara>Weekdays (<code>mon</code>, <code>tue</code>,
+          <code>wed</code>, <code>thu</code>, <code>fri</code>,
+          <code>sat</code>, <code>sun</code>), <emphasis>e.g.</emphasis>
+          <code>mon-fri</code></simpara>
+        </listitem>
+      </varlistentry>
 
-        <varlistentry>
-          <term><code>daysofmonth</code></term>
+      <varlistentry>
+        <term><code>daysofmonth</code></term>
 
-          <listitem>
-            <simpara>Days of the month (1-31), <emphasis>e.g.</emphasis>
-            <code>1-15</code></simpara>
-          </listitem>
-        </varlistentry>
+        <listitem>
+          <simpara>Days of the month (1-31), <emphasis>e.g.</emphasis>
+          <code>1-15</code></simpara>
+        </listitem>
+      </varlistentry>
 
-        <varlistentry>
-          <term><code>months</code></term>
+      <varlistentry>
+        <term><code>months</code></term>
 
-          <listitem>
-            <simpara>Months of the year (<code>jan</code>, <code>feb</code>,
-            <code>mar</code>, <code>apr</code>, <code>mai</code>,
-            <code>jun</code>, <code>jul</code>, <code>aug</code>,
-            <code>sep</code>, <code>oct</code>, <code>nov</code>,
-            <code>dec</code>), <emphasis>e.g.</emphasis>
-            <code>apr-oct</code></simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist></para>
+        <listitem>
+          <simpara>Months of the year (<code>jan</code>, <code>feb</code>,
+          <code>mar</code>, <code>apr</code>, <code>mai</code>,
+          <code>jun</code>, <code>jul</code>, <code>aug</code>,
+          <code>sep</code>, <code>oct</code>, <code>nov</code>,
+          <code>dec</code>), <emphasis>e.g.</emphasis>
+          <code>apr-oct</code></simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
 
-    <programlisting>; During business hours, jump to incoming-open context.
+  <programlisting>; During business hours, jump to incoming-open context.
 ; We are open Monday to Friday from 9:00 to 18:00 (9 a.m. to 6 p.m.):
 exten =&gt; s,1,GotoIfTime(09:00-17:59,mon-fri,*,*?incoming-open,s,1)
 ; Also Saturdays from 9 to 12:
@@ -85,13 +84,14 @@ exten =&gt; s,n,GotoIfTime(09:00-11:59,sat,*,*?incoming-open,s,1)
 ; After hours go to incoming-closed:
 exten =&gt; s,n,Goto(incoming-closed,s,1)</programlisting>
 
-    <xi:include href="gotoiftime-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="gotoiftime-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>See also</title>
+  <formalpara>
+    <title>See also</title>
 
-      <para><xref linkend="applications-gotoif" />, <xref
-      linkend="applications-execiftime" />, <xref
-      linkend="functions-iftime" /></para>
-    </formalpara>
+    <para><xref linkend="applications-gotoif" />, <xref
+    linkend="applications-execiftime" />, <xref
+    linkend="functions-iftime" /></para>
+  </formalpara>
 </section>

@@ -15,50 +15,50 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>Festival()</literal></title>
+  <title><literal>Festival()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>Festival()</code></secondary>
-    </indexterm>
+    <secondary><code>Festival()</code></secondary>
+  </indexterm>
 
-    <simpara>Uses the free Festival text-to-speech (TTS) engine to read text
-    to the caller.</simpara>
+  <simpara>Uses the free Festival text-to-speech (TTS) engine to read text to
+  the caller.</simpara>
 
-    <synopsis><command>Festival(<replaceable>text</replaceable>[,<replaceable>keys</replaceable>])</command></synopsis>
+  <synopsis><synopsis>Festival(<replaceable>text</replaceable>[,<replaceable>keys</replaceable>])</synopsis></synopsis>
 
-    <simpara>Connects to the locally running Festival server (which must be
-    installed separately), sends it the specified text and plays the resulting
-    audio back to the caller. If <replaceable>keys</replaceable> are defined,
-    pressing of the defined keys will interrupt playback and return the value
-    of the key depressed; if <code>any</code> is provided as the value to
-    <replaceable>keys</replaceable>, all keys will be recognized and the call
-    will be passed to the appropriate extension in the dialplan.</simpara>
+  <simpara>Connects to the locally running Festival server (which must be
+  installed separately), sends it the specified text and plays the resulting
+  audio back to the caller. If <replaceable>keys</replaceable> are defined,
+  pressing of the defined keys will interrupt playback and return the value of
+  the key depressed; if <code>any</code> is provided as the value to
+  <replaceable>keys</replaceable>, all keys will be recognized and the call
+  will be passed to the appropriate extension in the dialplan.</simpara>
 
-    <simpara>Festival must be started <emphasis>before</emphasis> Asterisk,
-    and the channel must be answered with
-    <code><command>Answer()</command></code>, in order for this application to
-    work..</simpara>
+  <simpara>Festival must be started <emphasis>before</emphasis> Asterisk, and
+  the channel must be answered with <code><command>Answer()</command></code>,
+  in order for this application to work..</simpara>
 
-    <programlisting>exten =&gt; 123,1,Answer()
+  <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Festival('Hello World',#)</programlisting>
 
-    <para>As an alternative to the application
-    <command><code>Festival()</code></command>, you may also use the
-    <code><command>System()</command></code> command to call Festival's
-    command-line program<command> text2wave</command> and play back the
-    resulting audio stream with <command><code>Background()</code></command>
-    or <command><code>Playback()</code></command>, like so (for example only;
-    pay attention to pathnames!):<programlisting>exten =&gt; 123,1,Answer()
+  <para>As an alternative to the application
+  <command><code>Festival()</code></command>, you may also use the
+  <code><command>System()</command></code> command to call Festival's
+  command-line program<command> text2wave</command> and play back the
+  resulting audio stream with <command><code>Background()</code></command> or
+  <command><code>Playback()</code></command>, like so (for example only; pay
+  attention to pathnames!):<programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,System(echo 'Hello World' | text2wave -o sound.wav -otype wav -)
 exten =&gt; 123,n,Background(sound)</programlisting></para>
 
-    <xi:include href="festival-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="festival-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>See also</title>
+  <formalpara>
+    <title>See also</title>
 
-      <para><filename>contrib/README.festival</filename></para>
-    </formalpara>
+    <para><filename>contrib/README.festival</filename></para>
+  </formalpara>
 </section>
