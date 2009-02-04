@@ -15,166 +15,165 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>AMD()</literal></title>
+  <title><literal>AMD()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>AMD()</code></secondary>
-    </indexterm>
+    <secondary><code>AMD()</code></secondary>
+  </indexterm>
 
-    <simpara>Answering machine detection. Attempts to detect an answering
-    machine at the remote end of a call.</simpara>
+  <simpara>Answering machine detection. Attempts to detect an answering
+  machine at the remote end of a call.</simpara>
 
-    <synopsis><command>AMD([<replaceable>initialSilence</replaceable>[,<replaceable>greeting</replaceable>[,<replaceable>afterGreetingSilence</replaceable>[,<replaceable>totalAnalysisTime</replaceable>[,<replaceable>minWordLength</replaceable>[,<replaceable>betweenWordsSilence</replaceable>[,<replaceable>maxNumberOfWords</replaceable>[,<replaceable>silenceThreshold</replaceable>]]]]]]]])</command></synopsis>
+  <synopsis><synopsis>AMD([<replaceable>initialSilence</replaceable>[,<replaceable>greeting</replaceable>[,<replaceable>afterGreetingSilence</replaceable>[,<replaceable>totalAnalysisTime</replaceable>[,<replaceable>minWordLength</replaceable>[,<replaceable>betweenWordsSilence</replaceable>[,<replaceable>maxNumberOfWords</replaceable>[,<replaceable>silenceThreshold</replaceable>]]]]]]]])</synopsis></synopsis>
 
-    <simpara>If a call is initiated through a <filename>.call</filename> file,
-    you can use <code>AMD()</code> to sense an answering machine at the remote
-    end. Defaults are set in <filename>amd.conf</filename>.</simpara>
+  <simpara>If a call is initiated through a <filename>.call</filename> file,
+  you can use <code>AMD()</code> to sense an answering machine at the remote
+  end. Defaults are set in <filename>amd.conf</filename>.</simpara>
 
-    <variablelist termlength="22">
-      <varlistentry>
-        <term><code>initialSilence</code></term>
-
-        <listitem>
-          <simpara>Maximum duration of silence preceding the remote
-          announcement. If this is exceeded, sets <code>${AMDSTATUS}</code> to
-          <code>MACHINE</code>.</simpara>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><code>greeting</code></term>
-
-        <listitem>
-          <simpara>Maximum duration of an announcement. If this is exceeded,
-          sets <code>${AMDSTATUS}</code> to <code>MACHINE</code>.</simpara>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><code>afterGreetingSilence</code></term>
-
-        <listitem>
-          <simpara>Maximum duration of silence following the remote
-          announcement. If this is exceeded, sets <code>${AMDSTATUS}</code> to
-          <code>HUMAN</code>.</simpara>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><code>totalAnalysisTime</code></term>
-
-        <listitem>
-          <simpara>Maximum duration AMD() is allowed to determine whether
-          remote end is <code>HUMAN</code> or <code>MACHINE</code>.</simpara>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><code>minWordsSilence</code></term>
-
-        <listitem>
-          <simpara>Minimum allowed duration of a sound for it to be considered
-          a word.</simpara>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><code>betweenWordsSilence</code></term>
-
-        <listitem>
-          <simpara>Minimum allowed duration of silence between
-          words.</simpara>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><code>maxNumberOfWords</code></term>
-
-        <listitem>
-          <simpara>Maximum number of words in the announcement. If this is
-          exceeded, sets <code>${AMDSTATUS}</code> to
-          <code>MACHINE</code>.</simpara>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><code>silenceThreshold</code></term>
-
-        <listitem>
-          <simpara>The silence threshold.</simpara>
-        </listitem>
-      </varlistentry>
-    </variablelist>
-
-    <simpara>This application delivers its output in the channel variables
-    <code>AMDSTATUS</code> and <code>AMDCAUSE</code>.</simpara>
-
-    <simpara><code>AMDSTATUS</code> can be assigned the following
-    values:</simpara>
-
-    <itemizedlist>
-      <listitem>
-        <simpara><code>MACHINE</code></simpara>
-
-        <simpara>The remote end is a machine.</simpara>
-      </listitem>
+  <variablelist termlength="22">
+    <varlistentry>
+      <term><code>initialSilence</code></term>
 
       <listitem>
-        <simpara><code>HUMAN</code></simpara>
-
-        <simpara>The remote end is a human.</simpara>
+        <simpara>Maximum duration of silence preceding the remote
+        announcement. If this is exceeded, sets <code>${AMDSTATUS}</code> to
+        <code>MACHINE</code>.</simpara>
       </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>greeting</code></term>
 
       <listitem>
-        <simpara><code>NOTSURE</code></simpara>
-
-        <simpara>Threshold cases are indicated with NOTSURE.</simpara>
+        <simpara>Maximum duration of an announcement. If this is exceeded,
+        sets <code>${AMDSTATUS}</code> to <code>MACHINE</code>.</simpara>
       </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>afterGreetingSilence</code></term>
 
       <listitem>
-        <simpara><code>HANGUP</code></simpara>
-
-        <simpara>The remote end has hung up.</simpara>
+        <simpara>Maximum duration of silence following the remote
+        announcement. If this is exceeded, sets <code>${AMDSTATUS}</code> to
+        <code>HUMAN</code>.</simpara>
       </listitem>
-    </itemizedlist>
+    </varlistentry>
 
-    <simpara><code>AMDCAUSE</code> can be assigned the following
-    values:</simpara>
-
-    <itemizedlist>
-      <listitem>
-        <simpara><code>TOOLONG-</code><replaceable>&lt;%d
-        total_time&gt;</replaceable></simpara>
-      </listitem>
+    <varlistentry>
+      <term><code>totalAnalysisTime</code></term>
 
       <listitem>
-        <simpara><code>INITIALSILENCE-</code><replaceable>&lt;%d
-        silenceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
-        initialSilence&gt;</replaceable></simpara>
+        <simpara>Maximum duration AMD() is allowed to determine whether remote
+        end is <code>HUMAN</code> or <code>MACHINE</code>.</simpara>
       </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>minWordsSilence</code></term>
 
       <listitem>
-        <simpara><code>HUMAN-</code><replaceable>&lt;%d
-        silenceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
-        afterGreetingSilence&gt;</replaceable></simpara>
+        <simpara>Minimum allowed duration of a sound for it to be considered a
+        word.</simpara>
       </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>betweenWordsSilence</code></term>
 
       <listitem>
-        <simpara><code>MAXWORDS-</code><replaceable>&lt;%d
-        wordsCount&gt;</replaceable><code>-</code><replaceable>&lt;%d
-        maximumNumberOfWords&gt;</replaceable></simpara>
+        <simpara>Minimum allowed duration of silence between words.</simpara>
       </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>maxNumberOfWords</code></term>
 
       <listitem>
-        <simpara><code>LONGGREETING-</code><replaceable>&lt;%d
-        voiceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
-        greeting&gt;</replaceable></simpara>
+        <simpara>Maximum number of words in the announcement. If this is
+        exceeded, sets <code>${AMDSTATUS}</code> to
+        <code>MACHINE</code>.</simpara>
       </listitem>
-    </itemizedlist>
+    </varlistentry>
 
-    <programlisting>; This extension is called through a .call file:
+    <varlistentry>
+      <term><code>silenceThreshold</code></term>
+
+      <listitem>
+        <simpara>The silence threshold.</simpara>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <simpara>This application delivers its output in the channel variables
+  <code>AMDSTATUS</code> and <code>AMDCAUSE</code>.</simpara>
+
+  <simpara><code>AMDSTATUS</code> can be assigned the following
+  values:</simpara>
+
+  <itemizedlist>
+    <listitem>
+      <simpara><code>MACHINE</code></simpara>
+
+      <simpara>The remote end is a machine.</simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>HUMAN</code></simpara>
+
+      <simpara>The remote end is a human.</simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>NOTSURE</code></simpara>
+
+      <simpara>Threshold cases are indicated with NOTSURE.</simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>HANGUP</code></simpara>
+
+      <simpara>The remote end has hung up.</simpara>
+    </listitem>
+  </itemizedlist>
+
+  <simpara><code>AMDCAUSE</code> can be assigned the following
+  values:</simpara>
+
+  <itemizedlist>
+    <listitem>
+      <simpara><code>TOOLONG-</code><replaceable>&lt;%d
+      total_time&gt;</replaceable></simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>INITIALSILENCE-</code><replaceable>&lt;%d
+      silenceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
+      initialSilence&gt;</replaceable></simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>HUMAN-</code><replaceable>&lt;%d
+      silenceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
+      afterGreetingSilence&gt;</replaceable></simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>MAXWORDS-</code><replaceable>&lt;%d
+      wordsCount&gt;</replaceable><code>-</code><replaceable>&lt;%d
+      maximumNumberOfWords&gt;</replaceable></simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>LONGGREETING-</code><replaceable>&lt;%d
+      voiceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
+      greeting&gt;</replaceable></simpara>
+    </listitem>
+  </itemizedlist>
+
+  <programlisting>; This extension is called through a .call file:
 exten =&gt; 10,1,AMD()
 exten =&gt; 10,n,Goto(Status-${AMDSTATUS})
 exten =&gt; 10,n(Status-HUMAN),Playback(message)
@@ -184,11 +183,12 @@ exten =&gt; 10,n(Status-NOTSURE),Hangup()
 exten =&gt; 10,n(Status-HANGUP),Hangup()
 </programlisting>
 
-    <xi:include href="amd-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="amd-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>See also</title>
+  <formalpara>
+    <title>See also</title>
 
-      <para><xref linkend="call-file" /></para>
-    </formalpara>
+    <para><xref linkend="call-file" /></para>
+  </formalpara>
 </section>

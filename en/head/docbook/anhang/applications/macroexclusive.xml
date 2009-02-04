@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<section id="applications-macroexclusive" lang="en" revision="$Revision$">
+<section id="applications-macroexclusive" lang="en"
+         revision="$Revision$">
   <!--
 % Copyright (c) 2006 - 2008 by 
 % Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
@@ -15,45 +16,44 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>MacroExclusive()</literal></title>
+  <title><literal>MacroExclusive()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>MacroExclusive()</code></secondary>
-    </indexterm>
+    <secondary><code>MacroExclusive()</code></secondary>
+  </indexterm>
 
-    <simpara>Executes a previously defined macro but allows only a single
-    instance of the macro to execute at any given point in time.</simpara>
+  <simpara>Executes a previously defined macro but allows only a single
+  instance of the macro to execute at any given point in time.</simpara>
 
-    <synopsis><command>MacroExclusive(<replaceable>macroname</replaceable>[,<replaceable>arg1</replaceable>[,<replaceable>arg2</replaceable>[,<replaceable>...</replaceable>]]])</command></synopsis>
+  <synopsis><synopsis>MacroExclusive(<replaceable>macroname</replaceable>[,<replaceable>arg1</replaceable>[,<replaceable>arg2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis></synopsis>
 
-    <simpara>Executes - same as <code>Macro()</code> - a macro defined in
-    <code>macro-<replaceable>macroname</replaceable></code>, by handing the
-    channel over to the <code>s</code> extension in the macro and returning
-    after the macro has finished running, but allows only a single instance to
-    run at any given time! If the same macro is called at the same time from
-    elsewhere in the dialplan, this second instance must wait until the first
-    instance has completed.</simpara>
+  <simpara>Executes - same as <code>Macro()</code> - a macro defined in
+  <code>macro-<replaceable>macroname</replaceable></code>, by handing the
+  channel over to the <code>s</code> extension in the macro and returning
+  after the macro has finished running, but allows only a single instance to
+  run at any given time! If the same macro is called at the same time from
+  elsewhere in the dialplan, this second instance must wait until the first
+  instance has completed.</simpara>
 
-    <simpara>The called extension, context and priority are passed to the
-    macro in the variables<code> ${MACRO_EXTEN}</code>,
-    <code>${MACRO_CONTEXT}</code> and <code>${MACRO_PRIORITY}</code>. The
-    arguments are passed to the macro in <code>${ARG1}</code>,
-    <code>${ARG2}</code>, and so on.</simpara>
+  <simpara>The called extension, context and priority are passed to the macro
+  in the variables<code> ${MACRO_EXTEN}</code>, <code>${MACRO_CONTEXT}</code>
+  and <code>${MACRO_PRIORITY}</code>. The arguments are passed to the macro in
+  <code>${ARG1}</code>, <code>${ARG2}</code>, and so on.</simpara>
 
-    <simpara><command><code>Macro()</code></command> returns -1 if any step in
-    the macro returns -1, otherwise it returns 0. If the variable
-    <code>${MACRO_OFFSET}</code> is set when the macro finishes, the
-    application will continue executing at priority
-    <replaceable>n</replaceable>+1+<code>MACRO_OFFSET</code> if it exists,
-    otherwise it will continue at <replaceable>n</replaceable>+1.</simpara>
+  <simpara><command><code>Macro()</code></command> returns -1 if any step in
+  the macro returns -1, otherwise it returns 0. If the variable
+  <code>${MACRO_OFFSET}</code> is set when the macro finishes, the application
+  will continue executing at priority
+  <replaceable>n</replaceable>+1+<code>MACRO_OFFSET</code> if it exists,
+  otherwise it will continue at <replaceable>n</replaceable>+1.</simpara>
 
-    <simpara>If <code><command>Goto()</command></code> is called from within
-    the macro, macro execution ends and the call continues in the priority
-    specified in <command>Goto()</command>.</simpara>
+  <simpara>If <code><command>Goto()</command></code> is called from within the
+  macro, macro execution ends and the call continues in the priority specified
+  in <command>Goto()</command>.</simpara>
 
-    <programlisting>; define a macro that counts down from the provided value:
+  <programlisting>; define a macro that counts down from the provided value:
 [macro-countdown]
 exten =&gt; s,1,Set(COUNT=${ARG1})
 exten =&gt; s,n,While($[ ${COUNT} &gt; 0])
@@ -65,13 +65,14 @@ exten =&gt; s,n,EndWhile()
 exten =&gt; 123,1,MacroExclusive(countdown,3)   ; call the macro "countdown" with ARG1=3
 exten =&gt; 124,1,MacroExclusive(countdown,5)   ; call the macro "countdown" with ARG1=5</programlisting>
 
-    <xi:include href="macroexclusive-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="macroexclusive-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>See also</title>
+  <formalpara>
+    <title>See also</title>
 
-      <para><xref linkend="applications-macro" />, <xref
-      linkend="applications-goto" />, <xref linkend="applications-gosub" />,
-      <filename>doc/macroexclusive.txt</filename></para>
-    </formalpara>
+    <para><xref linkend="applications-macro" />, <xref
+    linkend="applications-goto" />, <xref linkend="applications-gosub" />,
+    <filename>doc/macroexclusive.txt</filename></para>
+  </formalpara>
 </section>

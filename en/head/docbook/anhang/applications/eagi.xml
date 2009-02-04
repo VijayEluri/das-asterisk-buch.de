@@ -23,47 +23,44 @@
     <secondary><code>EAGI()</code></secondary>
   </indexterm>
 
-  <remark>FIXME NEEDSTRANSLATION - was modified in de</remark>
-
   <simpara>Calls an AGI-compliant application.</simpara>
 
-  <synopsis><synopsis>EAGI(<replaceable>program</replaceable>[,<replaceable>arguments</replaceable>])</synopsis></synopsis>
+  <synopsis><synopsis>EAGI(<replaceable>program</replaceable>[,<replaceable>argument1</replaceable>[,<replaceable>argument2</replaceable>[,...]]])</synopsis></synopsis>
 
   <simpara>(Similar to <code><command>AGI()</command></code>,
   <command><code>FastAGI()</code></command>,
   <command><code>DeadAGI()</code></command>)</simpara>
 
-  <simpara>Runs an Asterisk Gateway Interface compliant program called
-  <code>program</code> on the current channel. AGI scripts or programs can be
-  implemented in almost any conceivable language (e.g. Perl, PHP) and may be
-  used to manipulate the channel, play sound files, interpret DTMF tones, and
-  so on. Asterisk communicates with the AGI program over
-  <filename>stdin</filename> and <filename>stdout</filename>. The arguments
-  are passed directly to the AGI program at execution time.</simpara>
+  <simpara><literal>EAGI()</literal> (Extended AGI) works just like regular
+  <literal>AGI()</literal> (<xref linkend="applications-agi" />), but also
+  provides access to the incoming audio stream. The incoming audio stream is
+  provided on file descriptor 3.<footnote>
+      <para>a reminder: 0: stdin, 1: stdout, 2:stderr. File descriptor 3 is
+      freely assignable.</para>
+    </footnote></simpara>
+
+  <simpara>AGI scripts or programs can be implemented in almost any
+  conceivable language (e.g. Perl, PHP) and may be used to manipulate the
+  channel, play sound files, interpret DTMF tones, and so on. Asterisk
+  communicates with the AGI program over <filename>stdin</filename> and
+  <filename>stdout</filename>. The arguments are passed directly to the AGI
+  program at execution time.</simpara>
 
   <simpara>The AGI program must be flagged as executable in the filesystem.
   The path is relative to the Asterisk AGI directory, which is at
-  <filename>/var/lib/asterisk/agi-bin/</filename> by default.</simpara>
+  <filename>/var/lib/asterisk/agi-bin/</filename> by default, or it may be
+  stated as an absolute path.</simpara>
 
   <simpara>To run AGI programs on inactive channels (as in the case of an
   <code>h</code>-extension, where the channel is on-hook), used
-  <code><command>DeadAGI()</command></code> instead. To run AGI programs on
-  another server in the network, use
-  <code><command>FastAGI()</command></code>.</simpara>
+  <code><command>DeadAGI()</command></code> instead.</simpara>
 
-  <simpara>Use <code><command>EAGI()</command></code> when you need access to
-  the incoming audio stream. The incoming audio stream is provided on file
-  descriptor 3.</simpara>
-
-  <simpara><footnote>
-      <para>a reminder: 0: stdin, 1: stdout, 2:stderr. File descriptor 3 is
-      freely assignable.</para>
-    </footnote>Returns -1 on hang-up or if the AGI program requests a hang-up;
+  <simpara>Returns -1 on hang-up or if the AGI program requests a hang-up;
   returns 0 if no hang-up is requested.</simpara>
 
   <programlisting>; call my AGI script:
-exten =&gt; 123,1,AGI(agi-script)
-exten =&gt; 123,n,EAGI(eagi-script)</programlisting>
+exten =&gt; 123,1,AGI(agi-script.agi)
+exten =&gt; 123,n,EAGI(eagi-script.agi)</programlisting>
 
   <xi:include href="eagi-help.xml" xpointer="xpointer(/note/*)"
               xmlns:xi="http://www.w3.org/2001/XInclude" />

@@ -15,40 +15,44 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>MusicOnHold()</literal></title>
+  <title><literal>MusicOnHold()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>MusicOnHold()</code></secondary>
-    </indexterm>
+    <secondary><code>MusicOnHold()</code></secondary>
+  </indexterm>
 
-    <remark>FIXME NEEDSTRANSLATION - was modified in de</remark>
+  <simpara>Plays music on the channel.</simpara>
 
-    <simpara>Plays music indefinitely.</simpara>
+  <synopsis>MusicOnHold(<replaceable>class</replaceable>[<replaceable>,duration</replaceable>])</synopsis>
 
-    <synopsis>MusicOnHold(<replaceable>class</replaceable>)</synopsis>
+  <simpara>Plays music belonging to the specified
+  <replaceable>class</replaceable>, as configured in
+  <filename>musiconhold.conf</filename>. If
+  <code><replaceable>class</replaceable></code> is not specified, the default
+  class for the channel is used. To set the default class for the channel, use
+  the function <code>MUSICCLASS()</code>.</simpara>
 
-    <simpara>Plays music belonging to the specified
-    <replaceable>class</replaceable>, as configured in
-    <filename>musiconhold.conf</filename>. If
-    <code><replaceable>class</replaceable></code> is not specified, the
-    default class for the channel is used. To set the default class for the
-    channel, use the function <code>MUSICCLASS()</code>.</simpara>
+  <simpara>The <replaceable>duration</replaceable> parameter was added in
+  Asterisk 1.6. If it is omitted, music plays until the channel is hung up. If
+  you want to fix the duration in Asterisk 1.4, use
+  <literal>WaitMusicOnHold()</literal>.</simpara>
 
-    <simpara>Returns only -1 when the channel is hung up.</simpara>
+  <simpara>Returns only -1 when the channel is hung up.</simpara>
 
-    <programlisting>; send telemarketers to this extension and hope they are very patient:
+  <programlisting>; send telemarketers to this extension and hope they are very patient:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Playback(tt-allbusy)
 exten =&gt; 123,n,MusicOnHold(default)</programlisting>
 
-    <xi:include href="musiconhold-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="musiconhold-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>See also</title>
+  <formalpara>
+    <title>See also</title>
 
-      <para><xref linkend="applications-waitmusiconhold" />, <xref
-      linkend="functions-musicclass" /></para>
-    </formalpara>
+    <para><xref linkend="applications-waitmusiconhold" />, <xref
+    linkend="functions-musicclass" /></para>
+  </formalpara>
 </section>

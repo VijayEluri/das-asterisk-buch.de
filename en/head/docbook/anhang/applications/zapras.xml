@@ -15,40 +15,38 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>ZapRAS()</literal></title>
+  <title><literal>ZapRAS()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>ZapRAS()</code></secondary>
-    </indexterm>
+    <secondary><code>ZapRAS()</code></secondary>
+  </indexterm>
 
-    <remark>FIXME NEEDSTRANSLATION - was modified in de</remark>
+  <simpara>Starts the Zaptel ISDN Remote Access Server.</simpara>
 
-    <simpara>Starts the Zaptel ISDN Remote Access Server.</simpara>
+  <synopsis><synopsis>ZapRAS(<replaceable>args</replaceable>)</synopsis></synopsis>
 
-    <synopsis><command>ZapRAS(<replaceable>args</replaceable>)</command></synopsis>
+  <simpara>Starts an ISDN RAS Server using <command>pppd</command> on the
+  current channel. The channel must be available and a Zap channel. There is
+  no modem emulation.</simpara>
 
-    <simpara>Starts an ISDN RAS Server using <command>pppd</command> on the
-    current channel. The channel must be available (<emphasis>i.e.</emphasis>
-    PRI Source) and a Zap channel. There is no modem emulation.</simpara>
+  <simpara>The point-to-point daemon <command>pppd</command> must be
+  configured to recognize a Zap interface. The <replaceable>args</replaceable>
+  are a "|" delimited list of parameters.<footnote>
+      <simpara>The list is long and complex and would not be appropriate in
+      this summary. For more details, see <ulink
+      url="http://www.voip-info.org/wiki/view/Asterisk+cmd+ZapRAS">http://www.voip-info.org/wiki/view/Asterisk+cmd+ZapRAS</ulink></simpara>
+    </footnote>Returns -1.</simpara>
 
-    <simpara>The point-to-point daemon <command>pppd</command> must be
-    configured to recognize a Zap interface. The
-    <replaceable>args</replaceable> are a "|" delimited list of
-    parameters.<footnote>
-        <simpara>The list is long and complex and would not be appropriate in
-        this summary. For more details, see <ulink
-        url="http://www.voip-info.org/wiki/view/Asterisk+cmd+ZapRAS">http://www.voip-info.org/wiki/view/Asterisk+cmd+ZapRAS</ulink></simpara>
-      </footnote>Returns -1.</simpara>
+  <simpara>This application is only intended for use with ISDN lines, and your
+  kernel must be patched and configured to support
+  <command><code>ZapRAS()</code></command>, as well as be configured to
+  support PPP.</simpara>
 
-    <simpara>This application is only intended for use with ISDN lines, and
-    your kernel must be patched and configured to support
-    <command><code>ZapRAS()</code></command>, as well as be configured to
-    support PPP.</simpara>
-
-    <programlisting>exten =&gt; 123,1,Answer()
+  <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,ZapRAS(debug|64000|noauth|netmask|255.255.255.0|10.0.0.1:10.0.0.2)</programlisting>
 
-    <xi:include href="zapras-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="zapras-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 </section>

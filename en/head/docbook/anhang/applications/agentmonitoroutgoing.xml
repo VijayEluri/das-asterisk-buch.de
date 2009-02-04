@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<section id="applications-agentmonitoroutgoing" lang="en" revision="$Revision$">
+<section id="applications-agentmonitoroutgoing" lang="en"
+         revision="$Revision$">
   <!--
 % Copyright (c) 2006 - 2008 by 
 % Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
@@ -15,93 +16,92 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>AgentMonitorOutgoing()</literal></title>
+  <title><literal>AgentMonitorOutgoing()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>AgentMonitorOutgoing()</code></secondary>
-    </indexterm>
+    <secondary><code>AgentMonitorOutgoing()</code></secondary>
+  </indexterm>
 
-    <simpara>Records the outgoing calls of an agent.</simpara>
+  <simpara>Records the outgoing calls of an agent.</simpara>
 
-    <synopsis><command>AgentMonitorOutgoing([<replaceable>options</replaceable>])</command></synopsis>
+  <synopsis><synopsis>AgentMonitorOutgoing([<replaceable>options</replaceable>])</synopsis></synopsis>
 
-    <simpara>Records all the outgoing calls of an agent.</simpara>
+  <simpara>Records all the outgoing calls of an agent.</simpara>
 
-    <simpara>This application attempts to determine the ID of an agent making
-    an outgoing call by comparing the caller ID of the agent with a global
-    variable set by the <command>AgentCallbackLogin()</command> application.
-    As such, it should be used with <command>AgentCallbackLogin()</command>,
-    and always in a later priority. This application uses monitoring functions
-    in <code>chan_agent</code> instead of <command>Monitor()</command>, so
-    call recording must be configured in
-    <filename>agents.conf</filename>.</simpara>
+  <simpara>This application attempts to determine the ID of an agent making an
+  outgoing call by comparing the caller ID of the agent with a global variable
+  set by the <command>AgentCallbackLogin()</command> application. As such, it
+  should be used with <command>AgentCallbackLogin()</command>, and always in a
+  later priority. This application uses monitoring functions in
+  <code>chan_agent</code> instead of <command>Monitor()</command>, so call
+  recording must be configured in <filename>agents.conf</filename>.</simpara>
 
-    <simpara>By default, recordings are saved in
-    <filename>/var/spool/asterisk/monitor/</filename>. You can override this
-    behavior with the parameter <code>savecallsin</code> in
-    <filename>agents.conf</filename>.</simpara>
+  <simpara>By default, recordings are saved in
+  <filename>/var/spool/asterisk/monitor/</filename>. You can override this
+  behavior with the parameter <code>savecallsin</code> in
+  <filename>agents.conf</filename>.</simpara>
 
-    <warning>
-      <para>Be aware that recording of calls may be subject to freedom of
-      information and privacy legislation in your jurisdiction. As a matter of
-      professional practice you should know the terms under which it is lawful
-      to record telephone calls. In most jurisdictions it is illegal to record
-      a call without the knowledge of the participants.</para>
-    </warning>
+  <warning>
+    <para>Be aware that recording of calls may be subject to freedom of
+    information and privacy legislation in your jurisdiction. As a matter of
+    professional practice you should know the terms under which it is lawful
+    to record telephone calls. In most jurisdictions it is illegal to record a
+    call without the knowledge of the participants.</para>
+  </warning>
 
-    <simpara>If the caller ID and/or agent id for the agent cannot be
-    determined, the call jumps to priority <emphasis>n</emphasis>+101, if it
-    exists.</simpara>
+  <simpara>If the caller ID and/or agent id for the agent cannot be
+  determined, the call jumps to priority <emphasis>n</emphasis>+101, if it
+  exists.</simpara>
 
-    <simpara>Unless the options specify otherwise, the application returns
-    0.</simpara>
+  <simpara>Unless the options specify otherwise, the application returns
+  0.</simpara>
 
-    <simpara>The following options may be used:</simpara>
+  <simpara>The following options may be used:</simpara>
 
-    <variablelist termlength="2">
-      <varlistentry>
-        <term><code>d</code></term>
+  <variablelist termlength="2">
+    <varlistentry>
+      <term><code>d</code></term>
 
-        <listitem>
-          <simpara>Forces the return of -1 in the event of error if there is
-          no <emphasis>n</emphasis>+101 priority.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Forces the return of -1 in the event of error if there is no
+        <emphasis>n</emphasis>+101 priority.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>c</code></term>
+    <varlistentry>
+      <term><code>c</code></term>
 
-        <listitem>
-          <simpara>Changes the call detail record so that the source of the
-          call is <code>agent/agentid</code> rather than the caller
-          ID.</simpara>
-        </listitem>
-      </varlistentry>
+      <listitem>
+        <simpara>Changes the call detail record so that the source of the call
+        is <code>agent/agentid</code> rather than the caller ID.</simpara>
+      </listitem>
+    </varlistentry>
 
-      <varlistentry>
-        <term><code>n</code></term>
+    <varlistentry>
+      <term><code>n</code></term>
 
-        <listitem>
-          <simpara>Suppresses error messages if the caller ID and/or agent ID
-          cannot be determined. This is useful if a common context for agent
-          and non-agent calls is desired.</simpara>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+      <listitem>
+        <simpara>Suppresses error messages if the caller ID and/or agent ID
+        cannot be determined. This is useful if a common context for agent and
+        non-agent calls is desired.</simpara>
+      </listitem>
+    </varlistentry>
+  </variablelist>
 
-    <programlisting>; record outgoing calls of this agent and adjust the CDR accordingly
+  <programlisting>; record outgoing calls of this agent and adjust the CDR accordingly
 exten =&gt; 123,1,AgentMonitorOutgoing(c)</programlisting>
 
-    <xi:include href="agentmonitoroutgoing-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="agentmonitoroutgoing-help.xml"
+              xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>See also</title>
+  <formalpara>
+    <title>See also</title>
 
-      <para><xref linkend="applications-agentcallbacklogin" />,
-      <filename>agents.conf</filename>, <xref
-      linkend="applications-monitor" />, <xref
-      linkend="applications-chanspy" /></para>
-    </formalpara>
+    <para><xref linkend="applications-agentcallbacklogin" />,
+    <filename>agents.conf</filename>, <xref linkend="applications-monitor" />,
+    <xref linkend="applications-chanspy" /></para>
+  </formalpara>
 </section>

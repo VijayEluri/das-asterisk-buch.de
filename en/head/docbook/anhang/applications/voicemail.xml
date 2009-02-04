@@ -15,64 +15,65 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>VoiceMail()</literal></title>
+  <title><literal>VoiceMail()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>VoiceMail()</code></secondary>
-    </indexterm>
+    <secondary><code>VoiceMail()</code></secondary>
+  </indexterm>
 
-    <simpara>Allows the caller to leave a voice mail message in the specified
-    mailbox.</simpara>
+  <simpara>Allows the caller to leave a voice mail message in the specified
+  mailbox.</simpara>
 
-    <synopsis><command>VoiceMail(<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>...</replaceable>]],<replaceable>options</replaceable>)</command></synopsis>
+  <synopsis><synopsis>VoiceMail(<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>...</replaceable>]],<replaceable>options</replaceable>)</synopsis></synopsis>
 
-    <para>old syntax:<synopsis><command>VoiceMail([s|u|b]<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>...</replaceable>]])</command></synopsis></para>
+  <para>old syntax:<synopsis><synopsis>VoiceMail([s|u|b]<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>mailbox</replaceable>[@<replaceable>context</replaceable>][&amp;<replaceable>...</replaceable>]])</synopsis></synopsis></para>
 
-    <simpara>Allows the caller to leave a voice mail message in the specified
-    mailbox. The mailbox must already be configured in
-    <filename>voicemail.conf</filename>. If more than mailbox is listed, the
-    greeting from the first mailbox is the one that is played. If the mailbox
-    does not exist, dialplan execution ends.</simpara>
+  <simpara>Allows the caller to leave a voice mail message in the specified
+  mailbox. The mailbox must already be configured in
+  <filename>voicemail.conf</filename>. If more than mailbox is listed, the
+  greeting from the first mailbox is the one that is played. If the mailbox
+  does not exist, dialplan execution ends.</simpara>
 
-    <simpara>The option <code>s</code> (silent) suppresses the prompt. The
-    option <code>u</code> plays the "unavailable" message, if it exists. The
-    option <code>b</code> plays (busy) message, if it exists (file
-    <filename>busy</filename> instead of
-    <filename>unavail</filename>).</simpara>
+  <simpara>The option <code>s</code> (silent) suppresses the prompt. The
+  option <code>u</code> plays the "unavailable" message, if it exists. The
+  option <code>b</code> plays (busy) message, if it exists (file
+  <filename>busy</filename> instead of
+  <filename>unavail</filename>).</simpara>
 
-    <warning>
-      <para>You cannot mix syntax types. If you do, the application will fail
-      as though the mailbox does not exist. We recommend always using the new
-      syntax.</para>
-    </warning>
+  <warning>
+    <para>You cannot mix syntax types. If you do, the application will fail as
+    though the mailbox does not exist. We recommend always using the new
+    syntax.</para>
+  </warning>
 
-    <simpara>If option <code>j</code> is set, jumps to extension
-    <replaceable>n</replaceable>+101, if it exists, on failure.</simpara>
+  <simpara>If option <code>j</code> is set, jumps to extension
+  <replaceable>n</replaceable>+101, if it exists, on failure.</simpara>
 
-    <simpara>If the caller presses <code>0</code> during the prompt, the call
-    goes to extension <code>o</code> (small letter "o", for operator) in the
-    current context.</simpara>
+  <simpara>If the caller presses <code>0</code> during the prompt, the call
+  goes to extension <code>o</code> (small letter "o", for operator) in the
+  current context.</simpara>
 
-    <simpara>If the caller presses <code>*</code> during the prompt, the call
-    goes to extension <code>a</code> (small letter "a", for assistant) in the
-    current context.</simpara>
+  <simpara>If the caller presses <code>*</code> during the prompt, the call
+  goes to extension <code>a</code> (small letter "a", for assistant) in the
+  current context.</simpara>
 
-    <simpara>Returns -1 in case of error (the mailbox could not be found or
-    the caller hung up) otherwise returns 0. Sets the channel variable
-    <code>VMSTATUS</code> to <code>SUCCESS</code>, <code>USEREXIT</code> (the
-    caller cancelled the message) or <code>FAILED</code>.</simpara>
+  <simpara>Returns -1 in case of error (the mailbox could not be found or the
+  caller hung up) otherwise returns 0. Sets the channel variable
+  <code>VMSTATUS</code> to <code>SUCCESS</code>, <code>USEREXIT</code> (the
+  caller cancelled the message) or <code>FAILED</code>.</simpara>
 
-    <programlisting>; send the caller to mailbox 123, play the unavailable message:
+  <programlisting>; send the caller to mailbox 123, play the unavailable message:
 exten =&gt; 123,1,VoiceMail(123,u)</programlisting>
 
-    <xi:include href="voicemail-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="voicemail-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>See also</title>
+  <formalpara>
+    <title>See also</title>
 
-      <para><xref linkend="applications-voicemailmain" />,
-      <filename>voicemail.conf</filename></para>
-    </formalpara>
+    <para><xref linkend="applications-voicemailmain" />,
+    <filename>voicemail.conf</filename></para>
+  </formalpara>
 </section>

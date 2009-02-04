@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-waituntil" lang="de" revision="$Revision: 1200 $">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>WaitUntil()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>WaitUntil()</code></secondary>
+  </indexterm>
+
+  <simpara>Waits until the specified time.</simpara>
+
+  <synopsis>WaitUntil(<replaceable>unix_time</replaceable>)</synopsis>
+
+  <simpara>Waits until the specified number of seconds from the start of the
+  epoch (also called "Unix time").</simpara>
+
+  <para>Sets the channel variable <literal>WAITUNTILSTATUS</literal> to one of
+  the following values:<variablelist termlength="12">
+      <varlistentry>
+        <term><literal>OK</literal></term>
+
+        <listitem>
+          <simpara>Time elapsed.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>FAILURE</literal></term>
+
+        <listitem>
+          <simpara>Invalid time specification.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>HANGUP</literal></term>
+
+        <listitem>
+          <simpara>Time elapsed.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>PAST</literal></term>
+
+        <listitem>
+          <simpara>Time elapsed.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
+
+  <programlisting>exten =&gt; s,1,Answer()
+exten =&gt; s,n,WaitUntil(${STRPTIME(2008-12-06 14:30:00|Europe/Berlin|%Y-%m-%d %H:%M:%S)})
+exten =&gt; s,n,SayUnixTime()</programlisting>
+
+  <xi:include href="waituntil-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>See also</title>
+
+    <para><xref linkend="applications-waituntil" /></para>
+  </formalpara>
+</section>

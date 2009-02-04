@@ -15,127 +15,126 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>ChanIsAvail()</literal></title>
+  <title><literal>ChanIsAvail()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>ChanIsAvail()</code></secondary>
-    </indexterm>
+    <secondary><code>ChanIsAvail()</code></secondary>
+  </indexterm>
 
-    <simpara>Indicates whether the specified channel is available.</simpara>
+  <simpara>Indicates whether the specified channel is available.</simpara>
 
-    <synopsis><command>ChanIsAvail(<replaceable>technology1</replaceable>/<replaceable>resource1</replaceable>[&amp;<replaceable>technology2</replaceable>/<replaceable>resource2</replaceable>...][,<replaceable>options</replaceable>])</command></synopsis>
+  <synopsis><synopsis>ChanIsAvail(<replaceable>technology1</replaceable>/<replaceable>resource1</replaceable>[&amp;<replaceable>technology2</replaceable>/<replaceable>resource2</replaceable>...][,<replaceable>options</replaceable>])</synopsis></synopsis>
 
-    <simpara>Verifies that the one or more of the queried channels is
-    available, in the order specified. Returns 0 on success or -1 on
-    failure.</simpara>
+  <simpara>Verifies that the one or more of the queried channels is available,
+  in the order specified. Returns 0 on success or -1 on failure.</simpara>
 
-    <simpara>If the <code>s</code> (state) option is given, Asterisk will
-    treat the channel as unavailable if it is in use, even if it is capable of
-    taking another call. Option <code>j</code> sets priority jumping to
-    <emphasis>n</emphasis>+101 if the channel is unavailable.</simpara>
+  <simpara>If the <code>s</code> (state) option is given, Asterisk will treat
+  the channel as unavailable if it is in use, even if it is capable of taking
+  another call. Option <code>j</code> sets priority jumping to
+  <emphasis>n</emphasis>+101 if the channel is unavailable.</simpara>
 
-    <note>
-      <simpara>The mere fact of a channel being available does not
-      automatically mean that it is free for use or that the device on the
-      channel will accept a call. That is determined using a
-      <code><command>Dial()</command></code> to the channel.</simpara>
-    </note>
+  <note>
+    <simpara>The mere fact of a channel being available does not automatically
+    mean that it is free for use or that the device on the channel will accept
+    a call. That is determined using a <code><command>Dial()</command></code>
+    to the channel.</simpara>
+  </note>
 
-    <para><code><command>ChanIsAvail()</command></code> sets the following
-    channel variables: <variablelist termlength="18">
-        <varlistentry>
-          <term><code>${AVAILCHAN}</code></term>
+  <para><code><command>ChanIsAvail()</command></code> sets the following
+  channel variables: <variablelist termlength="18">
+      <varlistentry>
+        <term><code>${AVAILCHAN}</code></term>
 
-          <listitem>
-            <simpara>The name of the accessible channel, including the session
-            number of the call.</simpara>
-          </listitem>
-        </varlistentry>
+        <listitem>
+          <simpara>The name of the accessible channel, including the session
+          number of the call.</simpara>
+        </listitem>
+      </varlistentry>
 
-        <varlistentry>
-          <term><code>${AVAILORIGCHAN}</code></term>
+      <varlistentry>
+        <term><code>${AVAILORIGCHAN}</code></term>
 
-          <listitem>
-            <simpara>The canonical channel name (<emphasis>i.e.</emphasis>,
-            the channel name without session number).</simpara>
-          </listitem>
-        </varlistentry>
+        <listitem>
+          <simpara>The canonical channel name (<emphasis>i.e.</emphasis>, the
+          channel name without session number).</simpara>
+        </listitem>
+      </varlistentry>
 
-        <varlistentry>
-          <term><code>${AVAILSTATUS}</code></term>
+      <varlistentry>
+        <term><code>${AVAILSTATUS}</code></term>
 
-          <listitem>
-            <para>Status code of the channel:<variablelist termlength="24">
-                <varlistentry>
-                  <term><code>AST_DEVICE_UNKNOWN</code> (0)</term>
+        <listitem>
+          <para>Status code of the channel:<variablelist termlength="24">
+              <varlistentry>
+                <term><code>AST_DEVICE_UNKNOWN</code> (0)</term>
 
-                  <listitem>
-                    <simpara>Status of the channel is unknown. It is a valid
-                    channel, but we don't know about its state.</simpara>
-                  </listitem>
-                </varlistentry>
+                <listitem>
+                  <simpara>Status of the channel is unknown. It is a valid
+                  channel, but we don't know about its state.</simpara>
+                </listitem>
+              </varlistentry>
 
-                <varlistentry>
-                  <term><code>AST_DEVICE_NOT_INUSE</code> (1)</term>
+              <varlistentry>
+                <term><code>AST_DEVICE_NOT_INUSE</code> (1)</term>
 
-                  <listitem>
-                    <simpara>The channel is not in use.</simpara>
-                  </listitem>
-                </varlistentry>
+                <listitem>
+                  <simpara>The channel is not in use.</simpara>
+                </listitem>
+              </varlistentry>
 
-                <varlistentry>
-                  <term><code>AST_DEVICE_IN_USE</code> (2)</term>
+              <varlistentry>
+                <term><code>AST_DEVICE_IN_USE</code> (2)</term>
 
-                  <listitem>
-                    <simpara>The channel is in use.</simpara>
-                  </listitem>
-                </varlistentry>
+                <listitem>
+                  <simpara>The channel is in use.</simpara>
+                </listitem>
+              </varlistentry>
 
-                <varlistentry>
-                  <term><code>AST_DEVICE_BUSY</code> (3)</term>
+              <varlistentry>
+                <term><code>AST_DEVICE_BUSY</code> (3)</term>
 
-                  <listitem>
-                    <simpara>The channel is busy.</simpara>
-                  </listitem>
-                </varlistentry>
+                <listitem>
+                  <simpara>The channel is busy.</simpara>
+                </listitem>
+              </varlistentry>
 
-                <varlistentry>
-                  <term><code>AST_DEVICE_INVALID</code> (4)</term>
+              <varlistentry>
+                <term><code>AST_DEVICE_INVALID</code> (4)</term>
 
-                  <listitem>
-                    <simpara>The channel is unknown.</simpara>
-                  </listitem>
-                </varlistentry>
+                <listitem>
+                  <simpara>The channel is unknown.</simpara>
+                </listitem>
+              </varlistentry>
 
-                <varlistentry>
-                  <term><code>AST_DEVICE_UNAVAILABLE</code> (5)</term>
+              <varlistentry>
+                <term><code>AST_DEVICE_UNAVAILABLE</code> (5)</term>
 
-                  <listitem>
-                    <simpara>The channel is not available and not
-                    registered.</simpara>
-                  </listitem>
-                </varlistentry>
+                <listitem>
+                  <simpara>The channel is not available and not
+                  registered.</simpara>
+                </listitem>
+              </varlistentry>
 
-                <varlistentry>
-                  <term><code>AST_DEVICE_RINGING</code> (6)</term>
+              <varlistentry>
+                <term><code>AST_DEVICE_RINGING</code> (6)</term>
 
-                  <listitem>
-                    <simpara>The channel is ringing.</simpara>
-                  </listitem>
-                </varlistentry>
-              </variablelist></para>
-          </listitem>
-        </varlistentry>
-      </variablelist></para>
+                <listitem>
+                  <simpara>The channel is ringing.</simpara>
+                </listitem>
+              </varlistentry>
+            </variablelist></para>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
 
-    <note>
-      <simpara>This application does not behave as expected on MGCP
-      channels.</simpara>
-    </note>
+  <note>
+    <simpara>This application does not behave as expected on MGCP
+    channels.</simpara>
+  </note>
 
-    <programlisting>; Check the availability of Zap/1 and Zap/2:
+  <programlisting>; Check the availability of Zap/1 and Zap/2:
 exten =&gt; 123,1,ChanIsAvail(Zap/1&amp;Zap/2,j)
 ; As an exception, using priority jumping, because we want to announce
 ; something to the caller if no channel is available
@@ -147,5 +146,6 @@ exten =&gt; 123,3,Dial(${AVAILORIGCHAN}/123456)
 ; if the call goes to priority 102 landen, neither Zap/1 nor Zap/2 is available
 exten =&gt; 123,102,Playback(all-channels-busy)</programlisting>
 
-    <xi:include href="chanisavail-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="chanisavail-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 </section>

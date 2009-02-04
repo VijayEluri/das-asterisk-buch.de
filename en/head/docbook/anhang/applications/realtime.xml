@@ -15,48 +15,49 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>RealTime()</literal></title>
+  <title><literal>RealTime()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>RealTime()</code></secondary>
-    </indexterm>
+    <secondary><code>RealTime()</code></secondary>
+  </indexterm>
 
-    <simpara>Gets configuration information from the realtime configuration
-    database.</simpara>
+  <simpara>Gets configuration information from the realtime configuration
+  database.</simpara>
 
-    <synopsis><command>RealTime(<replaceable>family</replaceable>,<replaceable>column</replaceable>,<replaceable>value</replaceable>[,<replaceable>prefix</replaceable>])</command></synopsis>
+  <synopsis><synopsis>RealTime(<replaceable>family</replaceable>,<replaceable>column</replaceable>,<replaceable>value</replaceable>[,<replaceable>prefix</replaceable>])</synopsis></synopsis>
 
-    <simpara>Retrieves configuration settings from the realtime configuration
-    database into channel variables. All unique column names are set as
-    channel variables. Optionally, the argument
-    <replaceable>prefix</replaceable> is prepended to the column name to form
-    the variable name (in the example in the internal help, the prefix
-    <code>var_</code> to the column name <code>test</code> results in the
-    variable <code>${var_test}</code>).</simpara>
+  <simpara>Retrieves configuration settings from the realtime configuration
+  database into channel variables. All unique column names are set as channel
+  variables. Optionally, the argument <replaceable>prefix</replaceable> is
+  prepended to the column name to form the variable name (in the example in
+  the internal help, the prefix <code>var_</code> to the column name
+  <code>test</code> results in the variable
+  <code>${var_test}</code>).</simpara>
 
-    <simpara>Sets the channel variable <code>REALTIMECOUNT</code> to the
-    number of values read.</simpara>
+  <simpara>Sets the channel variable <code>REALTIMECOUNT</code> to the number
+  of values read.</simpara>
 
-    <para>In <filename>extconfig.conf</filename>:<programlisting>; Family =&gt; DBMS,database,table
+  <para>In <filename>extconfig.conf</filename>:<programlisting>; Family =&gt; DBMS,database,table
 sipusers =&gt; mysql,asterisk,sip_users</programlisting>In
-    <filename>extensions.conf</filename>:<programlisting>exten =&gt; 123,1,RealTime(sipusers,ext,5678,var_)</programlisting>This
-    executes the following SQL query in the database
-    <code>asterisk</code>:</para>
+  <filename>extensions.conf</filename>:<programlisting>exten =&gt; 123,1,RealTime(sipusers,ext,5678,var_)</programlisting>This
+  executes the following SQL query in the database
+  <code>asterisk</code>:</para>
 
-    <simpara><code>SELECT * FROM sip_users WHERE ext = 5678</code></simpara>
+  <simpara><code>SELECT * FROM sip_users WHERE ext = 5678</code></simpara>
 
-    <para>Assuming the table has the columns <code>firstname</code> and<code>
-    lastname</code>, we can print those values to the CLI this
-    way:<programlisting>exten =&gt; 123,n,NoOp(The first name of the user at ext. 5678 is: ${var_firstname})
+  <para>Assuming the table has the columns <code>firstname</code> and<code>
+  lastname</code>, we can print those values to the CLI this
+  way:<programlisting>exten =&gt; 123,n,NoOp(The first name of the user at ext. 5678 is: ${var_firstname})
 exten =&gt; 123,n,NoOp(The last name of the user at ext. 5678 is: ${var_lastname})</programlisting></para>
 
-    <xi:include href="realtime-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="realtime-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>See also</title>
+  <formalpara>
+    <title>See also</title>
 
-      <para><xref linkend="applications-realtimeupdate" /></para>
-    </formalpara>
+    <para><xref linkend="applications-realtimeupdate" /></para>
+  </formalpara>
 </section>

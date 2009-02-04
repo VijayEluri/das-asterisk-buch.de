@@ -15,104 +15,101 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>Monitor()</literal></title>
+  <title><literal>Monitor()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>Monitor()</code></secondary>
-    </indexterm>
+    <secondary><code>Monitor()</code></secondary>
+  </indexterm>
 
-    <simpara>Records the current channel in two separate files.</simpara>
+  <simpara>Records the current channel in two separate files.</simpara>
 
-    <synopsis><command>Monitor([<replaceable>format</replaceable>[,<replaceable>fileprefix</replaceable>[,<replaceable>options</replaceable>]]])</command></synopsis>
+  <synopsis><synopsis>Monitor([<replaceable>format</replaceable>[,<replaceable>fileprefix</replaceable>[,<replaceable>options</replaceable>]]])</synopsis></synopsis>
 
-    <simpara>Starts audio recording on the current channel. Incoming and
-    outgoing audio packets are written to separate files until the channel is
-    hung up or monitoring is stopped with
-    <code><command>StopMonitor()</command></code>.</simpara>
+  <simpara>Starts audio recording on the current channel. Incoming and
+  outgoing audio packets are written to separate files until the channel is
+  hung up or monitoring is stopped with
+  <code><command>StopMonitor()</command></code>.</simpara>
 
-    <simpara>The parameter <replaceable>format</replaceable> sets the file
-    format. If this is not specified, <code>wav</code> is used.</simpara>
+  <simpara>The parameter <replaceable>format</replaceable> sets the file
+  format. If this is not specified, <code>wav</code> is used.</simpara>
 
-    <simpara>The parameter <replaceable>fileprefix</replaceable> specifies the
-    filename without extension. If this is not specified, the filename is
-    assembled out of the channel name and a number, for example,<code>
-    IAX2[foo@bar]-3</code>. Incoming audio is written to
-    <filename><replaceable>fileprefix</replaceable>-in.<replaceable>format</replaceable></filename>,
-    outgoing audio in
-    <filename><replaceable>fileprefix</replaceable>-out.<replaceable>format</replaceable></filename>,
-    both in <filename>/var/spool/asterisk/monitor/</filename>.</simpara>
+  <simpara>The parameter <replaceable>fileprefix</replaceable> specifies the
+  filename without extension. If this is not specified, the filename is
+  assembled out of the channel name and a number, for example,<code>
+  IAX2[foo@bar]-3</code>. Incoming audio is written to
+  <filename><replaceable>fileprefix</replaceable>-in.<replaceable>format</replaceable></filename>,
+  outgoing audio in
+  <filename><replaceable>fileprefix</replaceable>-out.<replaceable>format</replaceable></filename>,
+  both in <filename>/var/spool/asterisk/monitor/</filename>.</simpara>
 
-    <para>Two options may be specified: <variablelist termlength="3">
-        <varlistentry>
-          <term><code>m</code></term>
+  <para>Two options may be specified: <variablelist termlength="3">
+      <varlistentry>
+        <term><code>m</code></term>
 
-          <listitem>
-            <simpara>After recording is complete, mixes the incoming and
-            outgoing audio files into a single file and deletes the originals.
-            Requires that <command>soxmix</command> from the
-            <command>sox</command> package be installed on the
-            server.<footnote>
-                <simpara><ulink
-                url="http://sox.sourceforge.net/">http://sox.sourceforge.net/</ulink>,
-                see also an explanation in <xref
-                linkend="musiconhold.conf" />, version 12.17.7 or newer. You
-                may check your installed version with <command>soxmix
-                -help</command></simpara>
-              </footnote>If the variable <code>${MONITOR_EXEC}</code> is
-            defined, this application is executed instead of
-            <command>soxmix</command> and the original incoming and outgoing
-            audio files are not deleted.<footnote>
-                <para>depends on Asterisk version; older versions do not
-                delete automatically. It's best to check with a proper
-                test.</para>
-              </footnote>. <command>soxmix</command> (or
-            <command>${MONITOR_EXEC}</command> if specified) is passed three
-            values: the names of the incoming and outgoing audio files and the
-            name of the mixed file, which is the fileprefix without
-            <code>-in</code>/<code>-out</code>. If
-            <code>${MONITOR_EXEC_ARGS}</code> is set, the contents are used as
-            arguments to <code>${MONITOR_EXEC}</code>.</simpara>
+        <listitem>
+          <simpara>After recording is complete, mixes the incoming and
+          outgoing audio files into a single file and deletes the originals.
+          Requires that <command>soxmix</command> from the
+          <command>sox</command> package be installed on the server.<footnote>
+              <simpara><ulink
+              url="http://sox.sourceforge.net/">http://sox.sourceforge.net/</ulink>,
+              see also an explanation in <xref linkend="musiconhold.conf" />,
+              version 12.17.7 or newer. You may check your installed version
+              with <command>soxmix -help</command></simpara>
+            </footnote>If the variable <code>${MONITOR_EXEC}</code> is
+          defined, this application is executed instead of
+          <command>soxmix</command> and the original incoming and outgoing
+          audio files are not deleted.<footnote>
+              <para>depends on Asterisk version; older versions do not delete
+              automatically. It's best to check with a proper test.</para>
+            </footnote>. <command>soxmix</command> (or
+          <command>${MONITOR_EXEC}</command> if specified) is passed three
+          values: the names of the incoming and outgoing audio files and the
+          name of the mixed file, which is the fileprefix without
+          <code>-in</code>/<code>-out</code>. If
+          <code>${MONITOR_EXEC_ARGS}</code> is set, the contents are used as
+          arguments to <code>${MONITOR_EXEC}</code>.</simpara>
 
-            <important>
-              <para>Note that <command>soxmix</command> attempts to determine
-              the file type based on the file extension. Formats such as
-              <code>gsm</code> and <code>wav</code> are normally not a
-              problem, but for other formats such as <code>alaw</code> and
-              <code>ulaw</code>, it expects the file extensions
-              <code>.al</code> and <code>.ul</code> respectively. To resolve
-              this, read the manual pages for sox (/soxmix) and use
-              <code>${MONITOR_EXEC_ARGS}</code> or write a small wrapper
-              script that reads the format parameter and call it in
-              <code>${MONITOR_EXEC}</code>.</para>
-            </important>
+          <important>
+            <para>Note that <command>soxmix</command> attempts to determine
+            the file type based on the file extension. Formats such as
+            <code>gsm</code> and <code>wav</code> are normally not a problem,
+            but for other formats such as <code>alaw</code> and
+            <code>ulaw</code>, it expects the file extensions <code>.al</code>
+            and <code>.ul</code> respectively. To resolve this, read the
+            manual pages for sox (/soxmix) and use
+            <code>${MONITOR_EXEC_ARGS}</code> or write a small wrapper script
+            that reads the format parameter and call it in
+            <code>${MONITOR_EXEC}</code>.</para>
+          </important>
 
-            <note>
-              <simpara>If you wanted a single mixed sound file,
-              <code>MixMonitor()</code> is usually the better option, as it
-              mixes on-the-fly and thereby avoids a spike in CPU load at the
-              end of the recording.</simpara>
-            </note>
-          </listitem>
-        </varlistentry>
+          <note>
+            <simpara>If you wanted a single mixed sound file,
+            <code>MixMonitor()</code> is usually the better option, as it
+            mixes on-the-fly and thereby avoids a spike in CPU load at the end
+            of the recording.</simpara>
+          </note>
+        </listitem>
+      </varlistentry>
 
-        <varlistentry>
-          <term><code>b</code></term>
+      <varlistentry>
+        <term><code>b</code></term>
 
-          <listitem>
-            <simpara>Saves audio to the file only while the channel is
-            bridged, <emphasis>i.e.</emphasis> once a conversation has
-            actually begun, and only until it is hung up.</simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist></para>
+        <listitem>
+          <simpara>Saves audio to the file only while the channel is bridged,
+          <emphasis>i.e.</emphasis> once a conversation has actually begun,
+          and only until it is hung up.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
 
-    <simpara>Returns 0 on success, or -1 on failure (such as a failure to open
-    the audio files for writing, or the channel is already being monitored,
-    <emphasis>etc.</emphasis>)</simpara>
+  <simpara>Returns 0 on success, or -1 on failure (such as a failure to open
+  the audio files for writing, or the channel is already being monitored,
+  <emphasis>etc.</emphasis>)</simpara>
 
-    <programlisting>; record the conversation and mix the audio afterwards:
+  <programlisting>; record the conversation and mix the audio afterwards:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Monitor(gsm,,mb)
 exten =&gt; 123,n,SayDigits(123456789)
@@ -125,32 +122,33 @@ exten =&gt; 123,n,Monitor(gsm,,mb)
 exten =&gt; 123,n,SayDigits(123456789)
 exten =&gt; 123,n,Hangup()</programlisting>
 
-    <important>
-      <para>Before recording conversations, make sure you are complying with
-      the relevant legislation in your jurisdiction. In most cases, both
-      parties must be aware they are being recorded.<footnote>
-          <simpara>see also <ulink
-          url="http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues">http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues</ulink></simpara>
-        </footnote></para>
-    </important>
+  <important>
+    <para>Before recording conversations, make sure you are complying with the
+    relevant legislation in your jurisdiction. In most cases, both parties
+    must be aware they are being recorded.<footnote>
+        <simpara>see also <ulink
+        url="http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues">http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues</ulink></simpara>
+      </footnote></para>
+  </important>
 
-    <note>
-      <simpara>Some Asterisk users who routinely need to record many
-      conversations (50-500) report much better performance if call recordings
-      are written to a RAM disk (fewer and shorter seek operations) before
-      being copied to a hard disk when the conversation is over.</simpara>
-    </note>
+  <note>
+    <simpara>Some Asterisk users who routinely need to record many
+    conversations (50-500) report much better performance if call recordings
+    are written to a RAM disk (fewer and shorter seek operations) before being
+    copied to a hard disk when the conversation is over.</simpara>
+  </note>
 
-    <xi:include href="monitor-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="monitor-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>See also</title>
+  <formalpara>
+    <title>See also</title>
 
-      <para><xref linkend="applications-changemonitor" />, <xref
-      linkend="applications-stopmonitor" />, <xref
-      linkend="applications-pausemonitor" />, <xref
-      linkend="applications-unpausemonitor" />, <xref
-      linkend="applications-mixmonitor" />, <xref
-      linkend="applications-record" /></para>
-    </formalpara>
+    <para><xref linkend="applications-changemonitor" />, <xref
+    linkend="applications-stopmonitor" />, <xref
+    linkend="applications-pausemonitor" />, <xref
+    linkend="applications-unpausemonitor" />, <xref
+    linkend="applications-mixmonitor" />, <xref
+    linkend="applications-record" /></para>
+  </formalpara>
 </section>

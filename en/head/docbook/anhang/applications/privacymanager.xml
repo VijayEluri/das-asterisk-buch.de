@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<section id="applications-privacymanager" lang="en" revision="$Revision$">
+<section id="applications-privacymanager" lang="en"
+         revision="$Revision$">
   <!--
 % Copyright (c) 2006 - 2008 by 
 % Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
@@ -15,61 +16,61 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>PrivacyManager()</literal></title>
+  <title><literal>PrivacyManager()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>PrivacyManager()</code></secondary>
-    </indexterm>
+    <secondary><code>PrivacyManager()</code></secondary>
+  </indexterm>
 
-    <simpara>Requests the input of the caller's telephone number, if caller ID
-    cannot be obtained.</simpara>
+  <simpara>Requests the input of the caller's telephone number, if caller ID
+  cannot be obtained.</simpara>
 
-    <synopsis><command>PrivacyManager([<replaceable>maxRetries</replaceable>[,<replaceable>minLength</replaceable>[,<replaceable>options</replaceable>]]])</command></synopsis>
+  <synopsis><synopsis>PrivacyManager([<replaceable>maxRetries</replaceable>[,<replaceable>minLength</replaceable>[,<replaceable>options</replaceable>]]])</synopsis></synopsis>
 
-    <simpara>If no caller ID is received, the channel is answered and the
-    caller is asked to enter his own telephone number. If caller ID is present
-    on the line, <code><command>PrivacyManager()</command></code> has no
-    effect.</simpara>
+  <simpara>If no caller ID is received, the channel is answered and the caller
+  is asked to enter his own telephone number. If caller ID is present on the
+  line, <code><command>PrivacyManager()</command></code> has no
+  effect.</simpara>
 
-    <para>The caller has <replaceable>maxRetries</replaceable> (default is 3)
-    number of attempts to provide a valid number of at least
-    <replaceable>minLength</replaceable> (default is 10) digits in length. The
-    default values are set in <filename>privacy.conf</filename>, which may
-    contain the following entries:<variablelist termlength="12">
-        <varlistentry>
-          <term><code>maxretries</code></term>
+  <para>The caller has <replaceable>maxRetries</replaceable> (default is 3)
+  number of attempts to provide a valid number of at least
+  <replaceable>minLength</replaceable> (default is 10) digits in length. The
+  default values are set in <filename>privacy.conf</filename>, which may
+  contain the following entries:<variablelist termlength="12">
+      <varlistentry>
+        <term><code>maxretries</code></term>
 
-          <listitem>
-            <simpara>The maximum number of times the caller can attempt to
-            enter a number complying with the length limit set by
-            <replaceable>minLength</replaceable> (usually 3).</simpara>
-          </listitem>
-        </varlistentry>
+        <listitem>
+          <simpara>The maximum number of times the caller can attempt to enter
+          a number complying with the length limit set by
+          <replaceable>minLength</replaceable> (usually 3).</simpara>
+        </listitem>
+      </varlistentry>
 
-        <varlistentry>
-          <term><code>minlength</code></term>
+      <varlistentry>
+        <term><code>minlength</code></term>
 
-          <listitem>
-            <simpara>The minimum number of digits a number entered must have
-            to be accepted (usually 10).</simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist>If you want to prevent <code>PrivacyManager()</code> from
-    reading from the configuration file every time it is called, you can set
-    values in the command in the dialplan.</para>
+        <listitem>
+          <simpara>The minimum number of digits a number entered must have to
+          be accepted (usually 10).</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>If you want to prevent <code>PrivacyManager()</code> from
+  reading from the configuration file every time it is called, you can set
+  values in the command in the dialplan.</para>
 
-    <simpara>If option <code>j</code> is set, it jumps to
-    <replaceable>n</replaceable>+101 if the caller fails to provide a valid
-    number within the number of allowed attempts.</simpara>
+  <simpara>If option <code>j</code> is set, it jumps to
+  <replaceable>n</replaceable>+101 if the caller fails to provide a valid
+  number within the number of allowed attempts.</simpara>
 
-    <simpara>The channel variable <code>PRIVACYMGRSTATUS</code> is set to
-    <code>SUCCESS</code> or <code>FAILED</code> and indicates whether the
-    privacy manager was able to get a valid phone number from the
-    caller.</simpara>
+  <simpara>The channel variable <code>PRIVACYMGRSTATUS</code> is set to
+  <code>SUCCESS</code> or <code>FAILED</code> and indicates whether the
+  privacy manager was able to get a valid phone number from the
+  caller.</simpara>
 
-    <programlisting>exten =&gt; 123,1,Answer()
+  <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,PrivacyManager()
 exten =&gt; 123,n,GotoIf($["${PRIVACYMGRSTATUS}" = "FAILED"]?pm-failed,1)
 exten =&gt; 123,n,Dial(Zap/1)
@@ -77,11 +78,12 @@ exten =&gt; 123,n,Dial(Zap/1)
 exten =&gt; pm-failed,1,Playback(sorry)
 exten =&gt; pm-failed,n,Playback(vm-goodbye)</programlisting>
 
-    <xi:include href="privacymanager-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="privacymanager-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>See also</title>
+  <formalpara>
+    <title>See also</title>
 
-      <para><xref linkend="applications-zapateller" /></para>
-    </formalpara>
+    <para><xref linkend="applications-zapateller" /></para>
+  </formalpara>
 </section>

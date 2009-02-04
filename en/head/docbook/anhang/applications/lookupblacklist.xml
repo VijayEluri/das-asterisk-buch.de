@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<section id="applications-lookupblacklist" lang="en" revision="$Revision$">
+<section id="applications-lookupblacklist" lang="en"
+         revision="$Revision$">
   <!--
 % Copyright (c) 2006 - 2008 by 
 % Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
@@ -15,38 +16,36 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>LookupBlacklist()</literal></title>
+  <title><literal>LookupBlacklist()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan Applications</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan Applications</primary>
 
-      <secondary><code>LookupBlacklist()</code></secondary>
-    </indexterm>
+    <secondary><code>LookupBlacklist()</code></secondary>
+  </indexterm>
 
-    <simpara>Checks the caller ID of a call against the local number blacklist
-    in the Asterisk database (AstDB).</simpara>
+  <simpara>Checks the caller ID of a call against the local number blacklist
+  in the Asterisk database (AstDB).</simpara>
 
-    <synopsis><command>LookupBlacklist([<replaceable>options</replaceable>])</command></synopsis>
+  <synopsis><synopsis>LookupBlacklist([<replaceable>options</replaceable>])</synopsis></synopsis>
 
-    <simpara>Searches for the caller ID number (or name) of the active channel
-    in the <code>blacklist</code> family of the AstDB.des aktiven Channels in
-    der AstDB in der Familie <code>blacklist</code>. If the option j is given,
-    the number exists in the AstDB and the priority
-    <replaceable>n</replaceable>+101 exists, the channel is handed to that
-    priority. If no caller ID is available, the application does
-    nothing.</simpara>
+  <simpara>Searches for the caller ID number (or name) of the active channel
+  in the <code>blacklist</code> family of the AstDB. If the option j is given,
+  the number exists in the AstDB and the priority
+  <replaceable>n</replaceable>+101 exists, the channel is handed to that
+  priority. If no caller ID is available, the application does
+  nothing.</simpara>
 
-    <simpara>Sets the channel variable <code>LOOKUPBLSTATUS</code> to
-    <code>FOUND</code> or <code>NOTFOUND</code>.</simpara>
+  <simpara>Sets the channel variable <code>LOOKUPBLSTATUS</code> to
+  <code>FOUND</code> or <code>NOTFOUND</code>.</simpara>
 
-    <simpara>To add numbers to the blacklist from the CLI, enter
-    <code>database put blacklist "<replaceable>number</replaceable>"
-    "1"</code>; similarly <code>database del blacklist
-    "<replaceable>number</replaceable>"</code> to delete the entry and
-    <code>database show blacklist</code> for a listing of all the entries in
-    the database.</simpara>
+  <simpara>To add numbers to the blacklist from the CLI, enter <code>database
+  put blacklist "<replaceable>number</replaceable>" "1"</code>; similarly
+  <code>database del blacklist "<replaceable>number</replaceable>"</code> to
+  delete the entry and <code>database show blacklist</code> for a listing of
+  all the entries in the database.</simpara>
 
-    <programlisting>; Block calls from numbers in the blacklist,
+  <programlisting>; Block calls from numbers in the blacklist,
 ; otherwise dial the number in the variable ${PETER}:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,LookupBlacklist()
@@ -56,8 +55,8 @@ exten =&gt; 123,n,Dial(${PETER},30)
 exten =&gt; black,1,Playback(tt-allbusy)
 exten =&gt; black,n,Hangup()</programlisting>
 
-    <para>You can accomplish the same effect as <code>LookupBlacklist()</code>
-    with the following dialplan entries:<programlisting>exten =&gt; 123,1,Macro(blacklist,${CALLERID(num)})
+  <para>You can accomplish the same effect as <code>LookupBlacklist()</code>
+  with the following dialplan entries:<programlisting>exten =&gt; 123,1,Macro(blacklist,${CALLERID(num)})
 exten =&gt; 123,n,Dial(IAX2/user:secret@widgets.biz/500)
 
 [macro-blacklist]
@@ -67,5 +66,6 @@ exten =&gt; s,10(black),NoOp(${ARG1} is in the blacklist)
 exten =&gt; s,n,Busy(5)
 exten =&gt; s,n,Hangup()</programlisting></para>
 
-    <xi:include href="lookupblacklist-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="lookupblacklist-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 </section>

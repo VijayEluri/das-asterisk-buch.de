@@ -23,17 +23,17 @@
     <secondary><code>DeadAGI()</code></secondary>
   </indexterm>
 
-  <remark>FIXME NEEDSTRANSLATION - was modified in de</remark>
-
   <simpara>Runs an AGI compliant program on an inactive channel.</simpara>
 
   <synopsis>DeadAGI(<replaceable>program</replaceable>,<replaceable>arguments</replaceable>)</synopsis>
+
+  <synopsis>DeadAGI(<replaceable>program</replaceable>[,<replaceable>argument1</replaceable>[,<replaceable>argument2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
 
   <simpara>Runs an AGI compliant program on an inactive (on hook) channel.
   With AGI (Asterisk Gateway Interface), you can manipulate channels with
   programs written in practically any conceivable language. AGI programs can
   control a channel, play audio, interpret and store DTMF tones; AGI programs
-  exchange data with Asterisk on <code>STDIN</code> und <code>STDOUT</code>.
+  exchange data with Asterisk on <code>stdin</code> und <code>stdout</code>.
   The specified arguments are passed unadulterated to the AGI
   program.</simpara>
 
@@ -41,9 +41,6 @@
   channels, because the standard AGI interface will not work on a channel
   after it is hung up. It is not necessary for the channel to be "dead" at the
   time of execution, however!</simpara>
-
-  <simpara>The command <code><command>show agi</command></code>, entered on
-  the CLI, will give a list of the available AGI commands.</simpara>
 
   <simpara>Returns -1 if the application causes a hang-up, or returns 0 on
   exit without hang-up.</simpara>
@@ -72,8 +69,9 @@ exten =&gt; h,1,DeadAGI(agi-test)</programlisting>
               <entry>PHP</entry>
 
               <entry><programlisting>pcntl_signal(SIGHUP, SIG_IGN);</programlisting>(PHP
-              must be compiled with <code>--enable-pcntl</code>; it is not by
-              default!)</entry>
+              must be compiled with process control enabled using
+              <code>--enable-pcntl</code>; this is not always the
+              case!)</entry>
             </row>
 
             <row>
