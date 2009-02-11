@@ -20,22 +20,26 @@
 
       <secondary><code>AST_CONFIG()</code></secondary>
     </indexterm></title>
+    <synopsis>AST_CONFIG(<replaceable>Datei</replaceable>,<replaceable>Kategorie</replaceable>,<replaceable>Variablenname</replaceable>,[<replaceable>index</replaceable>])</synopsis>
 
-    <synopsis>AST_CONFIG(<replaceable>param</replaceable>)</synopsis>
+    <simpara>Diese Funktion liest einen bestimmten Wert aus einer Konfigurationsdatei und gibt diesen zurück.
+	     Der Wert ist der tatsächliche Wert der zum Zeitpunkt des Funktionsaufrufes in der Datei steht, 
+	     egal ob, z.B. nach einer Konfigurationsänderung, ein Reload von Asterisk durchgeführt wurde oder nicht.
+	     Was bedeutet, das die Werte die von dieser Funktion zurückgegeben werden, nicht unbedingt mit den 
+	     Konfigurationseinstellungen die Asterisk im Moment verwendet übereinstimmen müssen.
+	     Der optionale <code>index</code>-Parameter wird benutzt, wenn mehr als ein Vorkommen dieser Variable 
+	     in der Kategorie existiert. Der Indexzähler fängt mit 0 an, das heist das die erste gefundene Variable 
+	     mit 0 ausgelesen werden muss. Desweiteren kann mit <code>index</code> die Anzahl der vorhanden Variablen 
+	     mit herausgefunden werden, dazu muss nur als <code>index</code> der Wert <code>count</code> übergeben werden.
+    </simpara>
 
-    <simpara>FULL DESCRIPTION</simpara>
-
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
+    <programlisting>; Gibt den <code>type</code> des Sip-Accounts anhand der Callerid auf der CLI aus
 exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(AST_CONFIG()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+exten =&gt; 123,n,Verbose(1,${AST_CONFIG(sip.conf,${CALLERID(num)},type)})
+exten =&gt; 123,n,Hangup()
+</programlisting>
 
     <xi:include href="ast_config-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
 
-    <formalpara>
-      <title>Siehe auch</title>
 
-      <para><xref linkend="functions-FIXMEFIXMEFIXME" />, <xref
-      linkend="functions-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
 </section>
