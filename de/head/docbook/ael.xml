@@ -82,12 +82,29 @@
   Versuch.</para>
 
   <section id="ael-cli">
+    <sectioninfo>
+      <keywordset>
+        <keyword>ael</keyword>
+
+        <keyword>cli</keyword>
+      </keywordset>
+    </sectioninfo>
+
     <title>CLI-Befehle für AEL</title>
 
+    <indexterm>
+      <primary>AEL</primary>
+
+      <secondary>CLI</secondary>
+    </indexterm>
+
     <para>Der wichtigste Befehl auf dem Asterisk-CLI für AEL ist
-    <command><literal>ael reload</literal></command>, was die
-    <filename>extensions.ael</filename> neu einliest wenn man etwas geändert
-    hat.</para>
+    <command><literal>ael reload</literal></command><indexterm>
+        <primary>AEL</primary>
+
+        <secondary>reload</secondary>
+      </indexterm>, was die <filename>extensions.ael</filename> neu einliest
+    wenn man etwas geändert hat.</para>
 
     <screen>*CLI&gt; <command>ael reload</command> </screen>
 
@@ -151,6 +168,10 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
 
     <title>extensions.conf &lt;-&gt; extensions.ael</title>
 
+    <indexterm>
+      <primary>extensions.ael</primary>
+    </indexterm>
+
     <para>Wir wollen hier übersichtlich darstellen wie AEL im Vergleich zur
     herkömmlichen <filename>extensions.conf</filename> aussieht. Das kann man
     am besten an Beispielen veranschaulichen. Es wird vorausgesetzt dass Sie
@@ -166,7 +187,25 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
     </section>
 
     <section id="ael-contexts-extensions-priorities">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>contexts</keyword>
+
+          <keyword>extensions</keyword>
+
+          <keyword>priorities</keyword>
+        </keywordset>
+      </sectioninfo>
+
       <title>Kontexte, Extensions, Prioritäten</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Contexte, Extensions, Prioritäten</secondary>
+      </indexterm>
 
       <para>Der Unterschied in der Schreibweise von Contexten, Extensions und
       Prioritäten bestimmt das ganze Erscheinungsbild. In AEL werden
@@ -276,6 +315,85 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
       </important>
     </section>
 
+    <section id="ael-labels">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>label</keyword>
+
+          <keyword>labels</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Labels</title>
+
+      <para></para>
+    </section>
+
+    <section id="ael-comments">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>kommentare</keyword>
+
+          <keyword>comments</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Kommentare</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Kommentare</secondary>
+      </indexterm>
+
+      <para>Kommentare werden in AEL durch
+      <quote><literal>//</literal></quote> (zwei Schrägstriche)
+      eingeleitet.</para>
+
+      <important>
+        <para>Bitte verwenden Sie für Kommentare <emphasis
+        role="bold">nicht</emphasis> den C-Stil (<literal>/*</literal> ...
+        <literal>*/</literal>). Für mehrzeilige Kommentare leiten Sie bitte
+        jede Zeile separat mit <quote><literal>//</literal></quote>
+        ein.</para>
+      </important>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting><emphasis role="bold">;</emphasis> ein Kommentar
+exten =&gt; 10,1,Dial(SIP/anna) <emphasis role="bold">;</emphasis> Dial</programlisting></entry>
+
+              <entry><programlisting><emphasis role="bold">//</emphasis> ein Kommentar
+10 =&gt; {
+  Dial(SIP/anna);  <emphasis role="bold">//</emphasis> Dial
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+
     <section id="ael-include-contexts">
       <sectioninfo>
         <keywordset>
@@ -290,6 +408,12 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
       </sectioninfo>
 
       <title>Includes &#8211; Andere contexte einbinden</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Includes</secondary>
+      </indexterm>
 
       <para>Wie aus <xref linkend="includes-im-dialplan" /> und <xref
       linkend="include-zeitgesteuert" /> bekannt kann man in Contexte andere
@@ -383,6 +507,12 @@ context von-extern {
 
       <title>Globale Variablen</title>
 
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Globale Variablen</secondary>
+      </indexterm>
+
       <para>Globale Variablen (siehe <xref
       linkend="programmierer-howto-variablen" />) können in AEL im speziellen
       Block <literal>globals</literal> gesetzt werden.</para>
@@ -408,11 +538,11 @@ context von-extern {
             <row>
               <entry><programlisting><emphasis role="bold">[globals]</emphasis>
 KUCHEN=Marmorkuchen
-BEISPIEL=5</programlisting></entry>
+KLINGELZEIT=60</programlisting></entry>
 
               <entry><programlisting><emphasis role="bold">globals {</emphasis>
   KUCHEN=Marmorkuchen;
-  BEISPIEL=5;
+  KLINGELZEIT=60;
 <emphasis role="bold">}</emphasis></programlisting></entry>
             </row>
           </tbody>
@@ -420,44 +550,89 @@ BEISPIEL=5</programlisting></entry>
       </informaltable>
     </section>
 
-    <section id="ael-set-variables">
-      <title>Variablen setzen</title>
+    <section id="ael-expressions-assignments">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
 
-      <para></para>
-    </section>
+          <keyword>expressions</keyword>
 
-    <section>
-      <title></title>
+          <keyword>assignments</keyword>
 
-      <para></para>
-    </section>
+          <keyword>ausdrücke</keyword>
 
-    <section>
-      <title></title>
+          <keyword>zuweisungen</keyword>
+        </keywordset>
+      </sectioninfo>
 
-      <para></para>
-    </section>
+      <title>Ausdrücke und Zuweisungen</title>
 
-    <section>
-      <title></title>
+      <indexterm>
+        <primary>AEL</primary>
 
-      <para></para>
-    </section>
+        <secondary>Ausdrücke und Zuweisungen</secondary>
+      </indexterm>
 
-    <section id="ael-comments">
-      <title>Kommentare</title>
+      <para>In AEL werden intern automatisch die Ausdrücke (expressions) in
+      Kontroll-Strukturen wie <literal>if()</literal>,
+      <literal>while()</literal>, der (mittleren) Abbruchbedingung in
+      <literal>for()</literal> sowie der rechten Seite von Zuweisungen
+      (assignments) so behandelt als stünden sie in einem
+      <literal>$[<replaceable>...</replaceable>]</literal> Ausdruck.</para>
 
-      <para>Kommentare werden in AEL durch
-      <quote><literal>//</literal></quote> (zwei Schrägstriche)
-      eingeleitet.</para>
+      <para>Das klingt zuerst kompliziert, entspicht aber dem ganz normalen
+      Verhalten wie man es von anderen Programmiersprachen kennt. Bei
+      Zuweisungen ist dieses Verhalten allerdings untypisch für Asterisk und
+      kann leicht so merkwürdigen Fehlern führen. Man muss bedenken dass auch
+      AEL eben keine <quote>richtige</quote> Programmiersprache ist und z.B.
+      Strings nie als solche mit Anführungszeichen gekennzeichnet werden. Wir
+      empfehlen daher, Zuweisungen nicht so zu schreiben:<informaltable
+          colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="5*" />
 
-      <important>
-        <para>Bitte verwenden Sie für Kommentare <emphasis
-        role="bold">nicht</emphasis> den C-Stil (<literal>/*</literal> ...
-        <literal>*/</literal>). Für mehrzeilige Kommentare leiten Sie bitte
-        jede Zeile separat mit <quote><literal>//</literal></quote>
-        ein.</para>
-      </important>
+            <colspec align="left" colnum="2" colwidth="4*" />
+
+            <tbody valign="top">
+              <row>
+                <entry></entry>
+
+                <entry><programlisting>context test {
+  123 =&gt; {
+    <emphasis role="bold">ergebnis=10/2</emphasis>;
+    NoOp(ergebnis ist ${ergebnis});
+  }
+}</programlisting></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>sondern nach wie vor die Applikation
+      <literal>Set()</literal> (siehe <xref linkend="applications-set" />) zu
+      verwenden:<informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+          tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="5*" />
+
+            <colspec align="left" colnum="2" colwidth="4*" />
+
+            <tbody valign="top">
+              <row>
+                <entry></entry>
+
+                <entry><programlisting>context test {
+  123 =&gt; {
+    <emphasis role="bold">Set(ergebnis=$[ 10 / 2 ])</emphasis>;
+    NoOp(ergebnis ist ${ergebnis});
+  }
+}</programlisting></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable></para>
+
+      <para>Für Sprachkonstrukte wie <literal>if()</literal>,
+      <literal>while()</literal>, usw. ist dieses Verhalten allerdings
+      gut:</para>
 
       <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
                      tocentry="0">
@@ -478,17 +653,118 @@ BEISPIEL=5</programlisting></entry>
 
           <tbody valign="top">
             <row>
-              <entry><programlisting><emphasis role="bold">;</emphasis> ein Kommentar
-exten =&gt; 10,1,Dial(SIP/anna) <emphasis role="bold">;</emphasis> Dial</programlisting></entry>
+              <entry><programlisting>exten =&gt; 50,1,Set(a=test)
+exten =&gt; 50,n,<emphasis role="bold">ExecIf($["${a}" = "101"]</emphasis>,SayDigits,123)</programlisting></entry>
+            </row>
 
-              <entry><programlisting><emphasis role="bold">//</emphasis> ein Kommentar
-10 =&gt; {
-  Dial(SIP/anna);  <emphasis role="bold">//</emphasis> Dial
+            <row>
+              <entry></entry>
+
+              <entry><programlisting>50 =&gt; {
+  Set(a=test);
+  <emphasis role="bold">if ("${a}" = "test")</emphasis> {
+    SayDigits(123);
+  }
 }</programlisting></entry>
             </row>
           </tbody>
         </tgroup>
       </informaltable>
+    </section>
+
+    <section>
+      <title>Kontrollstrukturen</title>
+
+      <para></para>
+    </section>
+
+    <section id="ael-conditionals">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>bedingungen</keyword>
+
+          <keyword>conditionals</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Bedingte Anweisungen (conditionals)</title>
+
+      <para>Bedingte Anweisungen<footnote>
+          <para><ulink
+          url="http://de.wikipedia.org/wiki/Bedingte_Anweisung">http://de.wikipedia.org/wiki/Bedingte_Anweisung</ulink></para>
+        </footnote> (conditionals<footnote>
+          <para><ulink
+          url="http://en.wikipedia.org/wiki/Conditional_(programming)">http://en.wikipedia.org/wiki/Conditional_(programming)</ulink></para>
+        </footnote>) gehören zu den Kontrollstrukturen (control structures)
+      eines Programmablaufs.</para>
+
+      <para>In AEL gibt es sowohl <emphasis
+      role="bold"><code>if</code></emphasis>- als auch <emphasis
+      role="bold"><code>switch</code></emphasis>-Blöcke. Das ist ein riesiger
+      Vorteil, denn es erleichtert die Lesbarkeit ganz entscheidend.
+      Vergleichen Sie selbst:</para>
+
+      <para></para>
+
+      <para></para>
+    </section>
+
+    <section id="ael-loops">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>schleifen</keyword>
+
+          <keyword>loops</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Schleifen (loops)</title>
+
+      <para>Schleifen (loops) gehören &#8211; wie bedingte Anweisungen &#8211;
+      zu den Kontrollstrukturen (control structures) eines
+      Programmablaufs.</para>
+
+      <para>In AEL gibt es <emphasis role="bold"><code>for</code></emphasis>-
+      und <emphasis
+      role="bold"><code>while</code></emphasis>-Schleifen.</para>
+
+      <para></para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para></para>
     </section>
 
     <section id="ael-hints">
