@@ -151,8 +151,6 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
 
     <title>extensions.conf &lt;-&gt; extensions.ael</title>
 
-    <?dbhtml stop-chunking?>
-
     <para>Wir wollen hier übersichtlich darstellen wie AEL im Vergleich zur
     herkömmlichen <filename>extensions.conf</filename> aussieht. Das kann man
     am besten an Beispielen veranschaulichen. Es wird vorausgesetzt dass Sie
@@ -270,6 +268,162 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
           </tgroup>
         </informaltable>denn man hat ja sowieso bei den meisten Extensions
       mehrere Befehle und erreicht so ein einheitliches Format.</para>
+
+      <important>
+        <para>Die öffnende geschweifte Klammer
+        <quote><literal>{</literal></quote> eines Blocks muß immer auf der
+        gleichen Zeile stehen, nicht auf einer eigenen!</para>
+      </important>
+    </section>
+
+    <section id="ael-include-contexts">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>includes</keyword>
+
+          <keyword>include</keyword>
+
+          <keyword>context</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Includes &#8211; Andere contexte einbinden</title>
+
+      <para>Wie aus <xref linkend="includes-im-dialplan" /> und <xref
+      linkend="include-zeitgesteuert" /> bekannt kann man in Contexte andere
+      Contexte einbinden.</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[verkauf]
+exten =&gt; 2001,1,Dial(SIP/anna)
+exten =&gt; 2002,1,Dial(SIP/hans)
+
+[lager]
+exten =&gt; 3001,1,Dial(SIP/lisa)
+
+[tag]
+<emphasis role="bold">include =&gt;</emphasis> verkauf
+<emphasis role="bold">include =&gt;</emphasis> lager
+
+[nacht]
+exten =&gt; _.,1,VoiceMail(${EXTEN},u)
+
+[von-extern]
+<emphasis role="bold">include =&gt;</emphasis> tag|09:00-17:00|mon-fri|*|*
+&#8232;<emphasis role="bold">include =&gt;</emphasis> tag|09:00-14:00|sat|*|*
+<emphasis role="bold">include =&gt;</emphasis> nacht</programlisting></entry>
+
+              <entry><programlisting>context verkauf {
+  2001 =&gt; {
+    Dial(SIP/anna);
+  }
+  2002 =&gt; {
+    Dial(SIP/hans);
+  }
+}
+context tag {
+  <emphasis role="bold">includes {</emphasis>
+    verkauf;
+    lager;
+  <emphasis role="bold">}</emphasis>
+}
+context nacht {
+  _. =&gt; {
+    VoiceMail(${EXTEN},u);
+  }
+}
+context von-extern {
+  <emphasis role="bold">includes {</emphasis>
+    tag|09:00-17:00|mon-fri|*|*;
+    tag|09:00-14:00|sat|*|*;
+    nacht;
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>Bitte beachten Sie in AEL das <quote><literal>s</literal></quote>
+      in <quote><literal>includes</literal></quote>.</para>
+    </section>
+
+    <section id="ael-global-variables">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>global</keyword>
+
+          <keyword>variables</keyword>
+
+          <keyword>globals</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Globale Variablen</title>
+
+      <para>Globale Variablen (siehe <xref
+      linkend="programmierer-howto-variablen" />) können in AEL im speziellen
+      Block <literal>globals</literal> gesetzt werden.</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting><emphasis role="bold">[globals]</emphasis>
+KUCHEN=Marmorkuchen
+BEISPIEL=5</programlisting></entry>
+
+              <entry><programlisting><emphasis role="bold">globals {</emphasis>
+  KUCHEN=Marmorkuchen;
+  BEISPIEL=5;
+<emphasis role="bold">}</emphasis></programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+
+    <section id="ael-set-variables">
+      <title>Variablen setzen</title>
+
+      <para></para>
     </section>
 
     <section>
@@ -375,19 +529,19 @@ exten =&gt; 10,1,Dial(SIP/anna) <emphasis role="bold">;</emphasis> Dial</program
             <row>
               <entry><programlisting>[interne-benutzer]
 
-exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
-exten =&gt; 21,1,Dial(SIP/${EXTEN},40)
+exten =&gt; 21,<emphasis role="bold">hint,SIP/anna</emphasis>
+exten =&gt; 21,1,Dial(SIP/anna)
 
-exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
-exten =&gt; 22,1,Dial(SIP/${EXTEN},40)</programlisting></entry>
+exten =&gt; 22,<emphasis role="bold">hint,SIP/lisa</emphasis>
+exten =&gt; 22,1,Dial(SIP/lisa)</programlisting></entry>
 
               <entry><programlisting>context interne-benutzer {
   
-  <emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {
-    Dial(SIP/${EXTEN},40);
+  <emphasis role="bold">hint(SIP/anna)</emphasis> 21 =&gt; {
+    Dial(SIP/anna);
   }
-  <emphasis role="bold">hint(SIP/22)</emphasis> 22 =&gt; {
-    Dial(SIP/${EXTEN},40);
+  <emphasis role="bold">hint(SIP/lisa)</emphasis> 22 =&gt; {
+    Dial(SIP/lisa);
   }
 }</programlisting></entry>
             </row>
