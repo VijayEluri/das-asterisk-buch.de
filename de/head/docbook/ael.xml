@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<chapter id="ael" lang="de" revision="$Revision: 0 $">
+  <!--
+% Copyright (c) 2009 - Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <chapterinfo>
+    <date>$Revision: 0 $</date>
+
+    <author>
+      <firstname>Philipp</firstname>
+
+      <surname>Kempgen</surname>
+    </author>
+
+    <keywordset>
+      <keyword>AEL</keyword>
+
+      <keyword>Asterisk Extension Language</keyword>
+    </keywordset>
+  </chapterinfo>
+
+  <title>AEL</title>
+
+  <subtitle>Asterisk Extension Language</subtitle>
+
+  <indexterm significance="preferred">
+    <primary>AEL</primary>
+  </indexterm>
+
+  <indexterm significance="preferred">
+    <primary>Asterisk Extension Language</primary>
+  </indexterm>
+
+  <indexterm>
+    <primary>Dialplan</primary>
+
+    <secondary>AEL</secondary>
+  </indexterm>
+
+  <indexterm>
+    <primary>extensions.ael</primary>
+  </indexterm>
+
+  <para>Seit Asterisk 1.4 hat man die Möglichkeit den aus <xref
+  linkend="dialplan-grundlagen" /> und <xref
+  linkend="kapitel-programmieren" /> bekannten <quote>Dialplan</quote> nicht
+  nur im Format <filename>extensions.conf</filename> zu schreiben sondern kann
+  sich alternativ auch für AEL, die <quote>Asterisk Extension
+  Language</quote>, entscheiden. Die Datei dafür heißt
+  <filename>extensions.ael</filename>.</para>
+
+  <para>AEL ist vor allem für diejenigen interessant die sich immer schon
+  geärgert haben daß eine größere <filename>extensions.conf</filename> schwer
+  zu lesen ist. AEL ähnelt mehr einer <quote>richtigen</quote>
+  Skript-Programmiersprache. Übrigens schließen sich
+  <filename>extensions.conf</filename> und <filename>extensions.ael</filename>
+  nicht gegenseitig aus, man kann auch beide benutzen, also Kontexte in der
+  einen oder in der anderen Datei definieren.</para>
+
+  <para>Es sei auch noch auf das bei Asterisk mitgelieferte
+  Kommandozeilen-Werkzeug
+  <command><filename>aelparse</filename></command><indexterm
+      significance="preferred">
+      <primary>aelparse</primary>
+    </indexterm> hingewiesen mit dem man jederzeit seine
+  <filename>extensions.ael</filename> wieder in das
+  <filename>extensions.conf</filename>-Format konvertieren könnte. Wir werden
+  später noch darauf eingehen (siehe <xref linkend="aelparse" />).</para>
+
+  <para>Für erfahrende Leser sei noch gesagt dass hier wie üblich mit AEL
+  immer AEL2 gemeint ist, denn die erste Version war nur ein experimenteller
+  Versuch.</para>
+
+  <section id="ael-cli">
+    <title>CLI-Befehle für AEL</title>
+
+    <para>Der wichtigste Befehl auf dem Asterisk-CLI für AEL ist
+    <command><literal>ael reload</literal></command>, was die
+    <filename>extensions.ael</filename> neu einliest wenn man etwas geändert
+    hat.</para>
+
+    <screen>*CLI&gt; <command>ael reload</command> </screen>
+
+    <para>Der aus <xref linkend="dialplan-show" /> bekannte Befehl
+    <command><literal>dialplan show</literal></command> zeigt den Dialplan an,
+    so wie Asterisk ihn aus <filename>extensions.conf</filename> und
+    <filename>extensions.ael</filename> eingelesen und ggf. kombiniert hat. In
+    Klammern wird für jede Zeile auch immer <literal>pbx_config</literal> bzw.
+    <literal>pbx_ael</literal> angezeigt, je nachdem woher die Zeile
+    stammt.</para>
+  </section>
+
+  <section id="aelparse">
+    <sectioninfo>
+      <keywordset>
+        <keyword>aelparse</keyword>
+
+        <keyword>AEL</keyword>
+      </keywordset>
+    </sectioninfo>
+
+    <title>aelparse</title>
+
+    <indexterm significance="preferred">
+      <primary>aelparse</primary>
+    </indexterm>
+
+    <para>Bei Asterisk wird das Kommandozeilen-Werkzeug
+    <command><filename>aelparse</filename></command> mitgeliefert, mit dem man
+    jederzeit seine <filename>extensions.ael</filename> wieder in das
+    <filename>extensions.conf</filename>-Format konvertieren könnte falls man
+    das jemals wollen sollte. <command><filename>aelparse</filename></command>
+    ist also so eine Art Test-Compiler für die im Vergleich zu
+    <filename>extensions.conf</filename> etwas höhere Programmiersprache
+    AEL.</para>
+
+    <para><literal>aelparse</literal> liest immer automatisch die Datei
+    <filename>/etc/asterisk/extensions.ael</filename>, außer man ruft es mit
+    der Option <literal>-d</literal> auf, dann wird in dem Verzeichnis in dem
+    man sich gerade befindet nach der <filename>extensions.ael</filename>
+    gesucht.</para>
+
+    <para>Ohne die Option <literal>-n</literal> werde viele Informationen
+    ausgegeben die hauptsächlich für die Entwickler von Asterisk interessant
+    sind. Für eine übersichtliche Ausgabe ruft man <literal>aelparse</literal>
+    immer mit <literal>-n</literal> auf, oder mit <literal>-q</literal> für
+    noch weniger Zeilen.</para>
+
+    <para>Mit der Option <literal>-w</literal> wird der eingelesene Dialplan
+    in die Datei <filename>extensions.conf.aeldump</filename> im aktuellen
+    Verzeichnis ausgegeben.<screen>asterisk:/etc/asterisk# <command>aelparse -q -w</command>
+LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 priorities</screen></para>
+  </section>
+
+  <section id="extensions.ael">
+    <sectioninfo>
+      <keywordset>
+        <keyword>extensions.ael</keyword>
+      </keywordset>
+    </sectioninfo>
+
+    <title>extensions.conf &lt;-&gt; extensions.ael</title>
+
+    <?dbhtml stop-chunking?>
+
+    <para>Wir wollen hier übersichtlich darstellen wie AEL im Vergleich zur
+    herkömmlichen <filename>extensions.conf</filename> aussieht. Das kann man
+    am besten an Beispielen veranschaulichen. Es wird vorausgesetzt dass Sie
+    bereits mit der Dialplan-Programmierung vertraut sind.</para>
+
+    <section id="ael-command-termination">
+      <title>Zeilenende/Befehlsende</title>
+
+      <para>Befehle müssen in AEL immer mit
+      <quote><literal>;</literal></quote> (Semikolon) abgeschlossen werden, da
+      theoretisch auch mehrere Befehle in einer Zeile stehen könnten (was
+      jedoch unüblich ist).</para>
+    </section>
+
+    <section id="ael-contexts-extensions-priorities">
+      <title>Kontexte, Extensions, Prioritäten</title>
+
+      <para>Der Unterschied in der Schreibweise von Contexten, Extensions und
+      Prioritäten bestimmt das ganze Erscheinungsbild. In AEL werden
+      geschweifte Klammern (<quote><literal>{</literal> ...
+      <literal>}</literal></quote>) verwendet. Die Angabe von Prioritäten
+      (<literal>1</literal>, <literal>n</literal>) ist nicht mehr
+      erforderlich. In der <filename>extensions.ael</filename> hat man also
+      endlich nicht mehr den zweifelhaften Charme früher BASIC-Programme in
+      denen man noch die Zeilennummern angeben musste, und man erspart sich
+      auch das überflüssige mehrfache Tippen der gleichen Extension für
+      mehrere Zeilen bzw. Befehle.</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting><emphasis role="bold">[interne-benutzer]</emphasis>
+
+<emphasis role="bold">exten =&gt; 21,1,</emphasis>Dial(SIP/anna)
+<emphasis role="bold">exten =&gt; 21,n,</emphasis>VoiceMail(anna)
+
+<emphasis role="bold">exten =&gt; 22,1,</emphasis>Dial(SIP/lisa)
+<emphasis role="bold">exten =&gt; 22,n,</emphasis>VoiceMail(lisa)
+
+<emphasis role="bold">exten =&gt; _3X,1,</emphasis>Dial(SIP/${EXTEN})</programlisting></entry>
+
+              <entry><programlisting><emphasis role="bold">context interne-benutzer {</emphasis>
+  
+  <emphasis role="bold">21 =&gt; {</emphasis>
+    Dial(SIP/anna);
+    VoiceMail(anna);
+  <emphasis role="bold">}</emphasis>
+  <emphasis role="bold">22 =&gt; {</emphasis>
+    Dial(SIP/lisa);
+    VoiceMail(lisa);
+  <emphasis role="bold">}</emphasis>
+  <emphasis role="bold">_3X =&gt; {</emphasis>
+    Dial(SIP/${EXTEN});
+  <emphasis role="bold">}</emphasis>
+<emphasis role="bold">}</emphasis></programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>Bei einer Extension in der nur ein Befehl ausgeführt wird könnte
+      man in AEL die geschweiften Klammern übrigens auch weglassen und
+      nur<informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+          tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="5*" />
+
+            <colspec align="left" colnum="2" colwidth="4*" />
+
+            <tbody valign="top">
+              <row>
+                <entry></entry>
+
+                <entry><programlisting>context default {
+  23 =&gt; Playback(tt-monkeys);
+}</programlisting></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>schreiben. Gewöhnen Sie sich das bitte aber erst gar
+      nicht an, und verwenden Sie immer die volle Schreibweise<informaltable
+          colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="5*" />
+
+            <colspec align="left" colnum="2" colwidth="4*" />
+
+            <tbody valign="top">
+              <row>
+                <entry></entry>
+
+                <entry><programlisting>context default {
+  23 =&gt; <emphasis role="bold">{</emphasis>
+    Playback(tt-monkeys);
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>denn man hat ja sowieso bei den meisten Extensions
+      mehrere Befehle und erreicht so ein einheitliches Format.</para>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title></title>
+
+      <para></para>
+    </section>
+
+    <section id="ael-comments">
+      <title>Kommentare</title>
+
+      <para>Kommentare werden in AEL durch
+      <quote><literal>//</literal></quote> (zwei Schrägstriche)
+      eingeleitet.</para>
+
+      <important>
+        <para>Bitte verwenden Sie für Kommentare <emphasis
+        role="bold">nicht</emphasis> den C-Stil (<literal>/*</literal> ...
+        <literal>*/</literal>). Für mehrzeilige Kommentare leiten Sie bitte
+        jede Zeile separat mit <quote><literal>//</literal></quote>
+        ein.</para>
+      </important>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting><emphasis role="bold">;</emphasis> ein Kommentar
+exten =&gt; 10,1,Dial(SIP/anna) <emphasis role="bold">;</emphasis> Dial</programlisting></entry>
+
+              <entry><programlisting><emphasis role="bold">//</emphasis> ein Kommentar
+10 =&gt; {
+  Dial(SIP/anna);  <emphasis role="bold">//</emphasis> Dial
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+
+    <section id="ael-hints">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>hints</keyword>
+
+          <keyword>hint</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Hints</title>
+
+      <para>Wie sogenannte <quote>Hints</quote> in AEL geschrieben werden
+      erklären wir ausführlich in <xref linkend="blf-hints-pickup" />. Hier
+      nur ein einfaches Beispiel:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[interne-benutzer]
+
+exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
+exten =&gt; 21,1,Dial(SIP/${EXTEN},40)
+
+exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
+exten =&gt; 22,1,Dial(SIP/${EXTEN},40)</programlisting></entry>
+
+              <entry><programlisting>context interne-benutzer {
+  
+  <emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {
+    Dial(SIP/${EXTEN},40);
+  }
+  <emphasis role="bold">hint(SIP/22)</emphasis> 22 =&gt; {
+    Dial(SIP/${EXTEN},40);
+  }
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>... und eines mit Pattern:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[interne-benutzer]
+
+exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
+exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
+
+exten =&gt; _2X,1,Dial(SIP/${EXTEN},40)</programlisting></entry>
+
+              <entry><programlisting>context interne-benutzer {
+  
+  <emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {}
+  <emphasis role="bold">hint(SIP/22)</emphasis> 22 =&gt; {}
+  
+  _2X =&gt; {
+    Dial(SIP/${EXTEN},40);
+  }
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+
+    <section id="ael-match-caller-id">
+      <title>Filtern nach Anrufernummer</title>
+
+      <para>Man braucht es zwar in der Praxis eher selten, aber die Syntax für
+      eine vielzitierte Ex-Girlfriend-Extension sähe so aus:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>exten =&gt; 10<emphasis role="bold">/55555</emphasis>,1,Busy()
+exten =&gt; 10,1,Dial(SIP/philipp)</programlisting></entry>
+
+              <entry><programlisting>10<emphasis role="bold">/55555</emphasis> =&gt; {
+  Busy();
+}
+10 =&gt; {
+  Dial(SIP/philipp);
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>Wenn also die Ex-Freundin von der Nummer (Caller-ID) 55555 anruft
+      würde sie auf <literal>Busy()</literal> geleitet, alle anderen Anrufer
+      jedoch nicht.</para>
+
+      <para>Übrigens sind hier auch Pattern erlaubt. Mit
+      <literal>/_0123.</literal> könnte man also direkt einen ganzen
+      Vorwahl-Bereich matchen.</para>
+    </section>
+  </section>
+</chapter>
