@@ -23,19 +23,29 @@
 
     <synopsis>TRYLOCK(<replaceable>param</replaceable>)</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+    <simpara> Mit dieser Funktion ist es möglich einige Passagen des Rufnummernplanes zu serialisieren.
+    Die Funktion ist LOCK() sehr ähnlich, der einzige Unterschied besteht darin, das nicht 3 Sekunden
+    gewartet wird, wenn der Mutex schon gesperrt ist. Das heist das immer nur ein Anrufer nach dem 
+    anderen das mit dem LOCK-Mechnismus "gesicherte" Stück Rufnummernplan durchlaufen kann.
+    Diese Technologie ist aus der Threadprogrammierung auch in Form eines <code>Mutex</code> bekannt. 
+    Als Paramter muss der frei wählbare Name des Mutexes übergeben werden.
+    Wenn der Mutex normal gelockt werden konnte liefert die Funktion <code>1</code> zurück.
+    Der Mutex ist wieder frei, wenn der Channel aufgelegt wurde oder UNLOCK() aufgerufen wurde.
+    </simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(TRYLOCK()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+    <programlisting>; Sperre das Ausführen eines Systembefehles durch einen mutex
+exten =&gt; 123,1,GotoIf(${TRYLOCK(lock1)}?locked,1)
+exten =&gt; 123,n,System(kritisches-skript.sh)
+exten =&gt; 123,n,Hangup()
+exten =&gt; locked,1,Verbose(1, Der Mutex ist schon Gelockt)
+    </programlisting>
 
     <xi:include href="trylock-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
 
     <formalpara>
       <title>Siehe auch</title>
 
-      <para><xref linkend="functions-FIXMEFIXMEFIXME" />, <xref
-      linkend="functions-FIXMEFIXMEFIXME" /></para>
+      <para><xref linkend="functions-lock" />, <xref
+      linkend="functions-unlock" /></para>
     </formalpara>
 </section>
