@@ -21,21 +21,18 @@
       <secondary><code>VALID_EXTEN()</code></secondary>
     </indexterm></title>
 
-    <synopsis>VALID_EXTEN(<replaceable>param</replaceable>)</synopsis>
+    <synopsis>VALID_EXTEN([<replaceable>context</replaceable>],<replaceable>extension</replaceable>[,<replaceable>priority</replaceable>])</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+    <simpara>Diese Funktion prüft, ob die angegebene Extension in Context existiert. 
+             Wenn kein <code>context</code> übergeben wurde, wird der Momentane benutzt.
+             Wenn kein <code>priority</code> angegeben wurde, wird <code>1</code> benutzt.</simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(VALID_EXTEN()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+    <programlisting>; Prüfe ob eine Gültige nummer gewählt wurde, ansonsten spiele "invalid" ab
+exten =&gt; _20X,1,GotoIf(${VALID_EXTEN(,${EXTEN},)}?inval,1)
+exten =&gt; _20X,n,Dial(...)
+exten =&gt; black,1,Playback(invalid)
+exten =&gt; black,n,Hangup()
+    </programlisting>
 
     <xi:include href="valid_exten-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
-
-    <formalpara>
-      <title>Siehe auch</title>
-
-      <para><xref linkend="functions-FIXMEFIXMEFIXME" />, <xref
-      linkend="functions-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
 </section>
