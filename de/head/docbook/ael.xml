@@ -321,7 +321,7 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
 
             <tbody valign="top">
               <row>
-                <entry> </entry>
+                <entry></entry>
 
                 <entry><programlisting>context default {
   23 =&gt; Playback(tt-monkeys);
@@ -339,7 +339,7 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
 
             <tbody valign="top">
               <row>
-                <entry> </entry>
+                <entry></entry>
 
                 <entry><programlisting>context default {
   23 =&gt; <emphasis role="bold">{</emphasis>
@@ -734,6 +734,12 @@ exten =&gt; 50,n,<emphasis role="bold">ExecIf($["${a}" = "101"]</emphasis>,SayDi
 
       <title>Labels, goto und jump</title>
 
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Labels, goto, jump</secondary>
+      </indexterm>
+
       <para>Als hartgesottener
       <filename>extensions.conf</filename>-Programmierer ist man (zwangsweise)
       daran gewöhnt mit <code>Goto()</code>, <code>GotoIf()</code>,
@@ -927,6 +933,10 @@ context cntxt2 {
           <keyword>bedingungen</keyword>
 
           <keyword>conditionals</keyword>
+
+          <keyword>if</keyword>
+
+          <keyword>switch</keyword>
         </keywordset>
       </sectioninfo>
 
@@ -935,7 +945,7 @@ context cntxt2 {
       <indexterm>
         <primary>AEL</primary>
 
-        <secondary>Bedingte Anweisungen (conditionals)</secondary>
+        <secondary>if, switch</secondary>
       </indexterm>
 
       <para>Bedingte Anweisungen<footnote>
@@ -1041,21 +1051,85 @@ exten =&gt; 90,30(ende),NoOp(Fertig)
           <tbody valign="top">
             <row>
               <entry><programlisting>
-exten =&gt; 20,1,Set(x=5)
-exten =&gt; 20,n,<emphasis role="bold">GotoIf($[ ${x} = 5 ]?ja:nein)</emphasis>
-exten =&gt; 20,10(ja),Playback(tt-monkeys)
-exten =&gt; 20,11,Playback(beep)
-exten =&gt; 20,12,Goto(ende)
+exten =&gt; 70,1,Dial(SIP/anna)
+exten =&gt; 70,n,<emphasis role="bold">Goto(70-${DIALSTATUS},10)</emphasis>
 
-exten =&gt; 20,20(nein),Playback(tt-weasels)
-exten =&gt; 20,21,Playback(beeperr)
-exten =&gt; 20,22,Goto(ende)
-exten =&gt; 20,30(ende),NoOp(Fertig)
+exten =&gt; 70-<emphasis role="bold">BUSY</emphasis>,10,NoOp(besetzt)
+exten =&gt; 70-<emphasis role="bold">BUSY</emphasis>,11,Goto(ende)
+
+exten =&gt; 70-<emphasis role="bold">NOANSWER</emphasis>,10,NoOp(hebt nicht ab)
+exten =&gt; 70-<emphasis role="bold">NOANSWER</emphasis>,11,Goto(ende)
+
+exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,10,NoOp(was anderes)
+exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,11,Goto(ende)
+
+exten =&gt; 70,n(ende),NoOp(Fertig)
  </programlisting></entry>
 
-              <entry><programlisting>20 =&gt; {
-  Set(x=5);
-  switch ("")
+              <entry><programlisting>70 =&gt; {
+  Dial(SIP/anna);
+  <emphasis role="bold">switch ("${DIALSTATUS}") {</emphasis>
+    <emphasis role="bold">case "BUSY":</emphasis>
+      NoOp(besetzt);
+      <emphasis role="bold">break;</emphasis>
+    <emphasis role="bold">case "NOANSWER":</emphasis>
+      NoOp(hebt nicht ab);
+      <emphasis role="bold">break;</emphasis>
+    <emphasis role="bold">default:</emphasis>
+      NoOp(was anderes);
+  <emphasis role="bold">}</emphasis>
+  
+  NoOp(Fertig);
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <important>
+        <para>Bitte denken Sie bei den <code>case</code>-Sprungpunkten im
+        <code>switch</code>-Block in AEL immer an die
+        <code>break</code>-Anweisungen! Ohne diese Begrenzung läuft die
+        Programmausführung einfach nach unten weiter, also zum nächsten
+        <code>case</code> oder <code>default</code> &#8211; eben zur nächsten
+        Zeile.</para>
+      </important>
+
+      <para>Dass das Äquivalent einer einfachen <code>switch</code>-Anweisung
+      in der traditionellen <filename>extensions.conf</filename> eine mittlere
+      Katasthrophe ist braucht wohl nicht groß erwähnt zu werden.
+      Verschachtelte <code>if</code>- oder <code>switch</code>-Blöcke wären
+      vollkommen unübersichtlich und unwartbar.</para>
+
+      <para>Übrigens gibt es &#8211; falls man das wirklich mal brauchen
+      sollte &#8211; in switch-Blöcken nicht nur <code>case</code>-Vergleiche
+      sondern auch <code>pattern</code>:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <tbody valign="top">
+            <row>
+              <entry></entry>
+
+              <entry><programlisting>_22. =&gt; {
+  <emphasis role="bold">switch (${EXTEN}) {</emphasis>
+    <emphasis role="bold">case 224:</emphasis>
+      NoOp(224);
+      <emphasis role="bold">break;</emphasis>
+    <emphasis role="bold">case 225:</emphasis>
+      NoOp(225);
+      <emphasis role="bold">break;</emphasis>
+    <emphasis role="bold">pattern 22[6-8]:</emphasis>
+      NoOp(226 bis 228);
+      break;
+    <emphasis role="bold">default:</emphasis>
+      NoOp(was anderes);
+  <emphasis role="bold">}</emphasis>
 }</programlisting></entry>
             </row>
           </tbody>
@@ -1078,7 +1152,7 @@ exten =&gt; 20,30(ende),NoOp(Fertig)
 
           <tbody valign="top">
             <row>
-              <entry> </entry>
+              <entry></entry>
 
               <entry><programlisting>20 =&gt; {
   <emphasis role="bold">ifTime (</emphasis>08:00-18:00|mon-fri|*|*<emphasis
@@ -1164,6 +1238,10 @@ exten =&gt; 20,30(ende),NoOp(Fertig)
           <keyword>schleifen</keyword>
 
           <keyword>loops</keyword>
+
+          <keyword>for</keyword>
+
+          <keyword>while</keyword>
         </keywordset>
       </sectioninfo>
 
@@ -1172,7 +1250,7 @@ exten =&gt; 20,30(ende),NoOp(Fertig)
       <indexterm>
         <primary>AEL</primary>
 
-        <secondary>Schleifen (loops)</secondary>
+        <secondary>for, while</secondary>
       </indexterm>
 
       <para>Schleifen (loops) gehören &#8211; wie bedingte Anweisungen &#8211;
