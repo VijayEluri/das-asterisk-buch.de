@@ -1072,32 +1072,88 @@ exten =&gt; 20,30(ende),NoOp(Fertig)
       <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
                      tocentry="0">
         <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="1*" />
+          <colspec align="left" colnum="1" colwidth="5*" />
 
-          <colspec align="left" colnum="2" colwidth="2*" />
+          <colspec align="left" colnum="2" colwidth="4*" />
 
           <tbody valign="top">
             <row>
-              <entry><filename>.conf</filename></entry>
+              <entry> </entry>
 
-              <entry><synopsis><emphasis role="bold"><code>Goto(</code></emphasis>[[<replaceable>context</replaceable><emphasis
-                    role="bold"><code>,</code></emphasis>]<replaceable>extension</replaceable><emphasis
-                    role="bold"><code>,</code></emphasis>]<replaceable>label</replaceable><emphasis
-                    role="bold"><code>)</code></emphasis></synopsis></entry>
-            </row>
-
-            <row>
-              <entry><filename>.ael</filename></entry>
-
-              <entry><synopsis><emphasis role="bold"><code>goto </code></emphasis>[[<replaceable>context</replaceable><emphasis
-                    role="bold"><code>|</code></emphasis>]<replaceable>extension</replaceable><emphasis
-                    role="bold"><code>|</code></emphasis>]<replaceable>label</replaceable></synopsis></entry>
+              <entry><programlisting>20 =&gt; {
+  <emphasis role="bold">ifTime (</emphasis>08:00-18:00|mon-fri|*|*<emphasis
+                    role="bold">) {</emphasis>
+    Dial(SIP/20);
+  <emphasis role="bold">} else {</emphasis>
+    Playback(ansage-geschlossen);
+    Voicemail(20,s);
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
             </row>
           </tbody>
         </tgroup>
       </informaltable>
 
+      <para>Die Syntax der Zeitangabe entspricht der von
+      <code>GotoIfTime()</code>.</para>
+
       <bridgehead id="ael-random"><code>random</code></bridgehead>
+
+      <para><code>random(){...}</code> ist ein Sprachkonstrukt bei dem man in
+      Klammern einen ganzzahligen Prozentwert von 1 bis 99 angibt der bestimmt
+      mit welcher Wahrscheinlichkeit der Code-Block ausgeführt wird.</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <tbody valign="top">
+            <row>
+              <entry></entry>
+
+              <entry><programlisting>20 =&gt; {
+  <emphasis role="bold">random (</emphasis>42<emphasis role="bold">) {</emphasis>
+    NoOp(Chance: 42 %);
+  <emphasis role="bold">} else {</emphasis>
+    NoOp(Chance: 58 %);
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>Das Sprachkonstrukt <code>random</code> ist eigentlich
+      überflüssig, denn mit einem normalen <code>if</code> und der Funktion
+      <code>RAND()</code> (<xref linkend="functions-rand" />) kann man das
+      gleiche erreichen:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <tbody valign="top">
+            <row>
+              <entry></entry>
+
+              <entry><programlisting>20 =&gt; {
+  <emphasis role="bold">if (</emphasis>${RAND(0,100)} &lt; 42<emphasis
+                    role="bold">) {</emphasis>
+    NoOp(Chance: 42 %);
+  <emphasis role="bold">} else {</emphasis>
+    NoOp(Chance: 58 %);
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
     </section>
 
     <section id="ael-loops">
