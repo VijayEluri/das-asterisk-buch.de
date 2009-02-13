@@ -724,7 +724,7 @@ exten =&gt; 50,n,<emphasis role="bold">ExecIf($["${a}" = "101"]</emphasis>,SayDi
       </informaltable>
     </section>
 
-    <section id="ael-labels">
+    <section id="ael-labels-goto-jump">
       <sectioninfo>
         <keywordset>
           <keyword>ael</keyword>
@@ -735,15 +735,226 @@ exten =&gt; 50,n,<emphasis role="bold">ExecIf($["${a}" = "101"]</emphasis>,SayDi
         </keywordset>
       </sectioninfo>
 
-      <title>Labels FIXME</title>
+      <title>Labels, goto und jump</title>
 
       <para>Als hartgesottener
       <filename>extensions.conf</filename>-Programmierer ist man (zwangsweise)
       daran gewöhnt mit <code>Goto()</code>, <code>GotoIf()</code>,
-      <code>Gosub()</code> und <code>GosubIf()</code> zu Prioritäten oder
-      Labels zu springen. (Eigentlich ist das aber nur eine Behelfslösung weil
-      es in der <filename>extensions.conf</filename> keine sauberen
-      Kontroll-Strukturen für den Programmablauf gibt.)</para>
+      <code>Gosub()</code> und <code>GosubIf()</code> zu
+      <quote>Prioritäten</quote> oder Labels (Markern) zu springen.
+      (Eigentlich ist das aber nur eine Behelfslösung weil es in der
+      <filename>extensions.conf</filename> keine sauberen Kontroll-Strukturen
+      für den Programmablauf gibt.)</para>
+
+      <para>Labels befinden sich immer innerhalb einer Extension und werden in
+      AEL auf einer eigenen Zeile geschrieben. Bitte beachten Sie den
+      Doppelpunkt (<quote><code>:</code></quote>) am Zeilenende:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[beispiel]
+
+exten =&gt; 10,1<emphasis role="bold">(anfang)</emphasis>,NoOp()
+exten =&gt; 10,n,Wait(1)
+exten =&gt; 10,n,SayNumber(1)
+exten =&gt; 10,n,NoOp(Endlosschleife)
+; zu einem Label in der
+; gleichen Extension gehen:
+exten =&gt; 10,n,<emphasis role="bold">Goto(anfang)</emphasis>
+
+
+exten =&gt; 20,1,SayNumber(20)
+; zu einem Label in einer
+; anderen Extension im
+; gleichen Kontext gehen:
+exten =&gt; 20,n,<emphasis role="bold">Goto(10,anfang)</emphasis>
+
+
+exten =&gt; 30,1,SayNumber(30)
+; zu einem Label in einem
+; anderen Kontext gehen:
+exten =&gt; 30,n,<emphasis role="bold">Goto(cntxt2,40,vierzig)</emphasis>
+
+
+[cntxt2]
+
+exten =&gt; 40,1<emphasis role="bold">(vierzig)</emphasis>,NoOp()
+exten =&gt; 40,n,SayNumber(40)
+
+ </programlisting></entry>
+
+              <entry><programlisting>context beispiel {
+  10 =&gt; {
+   <emphasis role="bold">anfang:</emphasis>
+    Wait(1);
+    SayNumber(10);
+    NoOp(Endlosschleife);
+    // zu einem Label in der
+    // gleichen Extension gehen:
+    <emphasis role="bold">goto anfang</emphasis>;
+  }
+  20 =&gt; {
+    SayNumber(20);
+    // zu einem Label in einer
+    // anderen Extension im
+    // gleichen Kontext gehen:
+    <emphasis role="bold">goto 10|anfang</emphasis>;
+  }
+  30 =&gt; {
+    SayNumber(30);
+    // zu einem Label in einem
+    // anderen Kontext gehen:
+    <emphasis role="bold">goto cntxt2|40|vierzig</emphasis>;
+  }
+}
+context cntxt2 {
+  40 =&gt; {
+   <emphasis role="bold">vierzig:</emphasis>
+    SayNumber(40);
+  }
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>In dem obigen Beispiel sehen wir auch eine andere Syntax für die
+      Sprünge. Während man in der <filename>extensions.conf</filename> auf die
+      Applikation <code>Goto()</code> (siehe <xref
+      linkend="applications-goto" />) angewiesen ist sollte man diese in AEL
+      nicht mehr verwenden (kann man aber problemlos). Dafür gibt es jetzt das
+      neue Sprachkonstrukt <code>goto</code>.</para>
+
+      <para>Ein Vergleich der Syntax von <code>Goto()</code> und
+      <code>goto</code> zeigt, dass es hier keinen großen Erklärungsbedarf
+      gibt:<informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+          tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="1*" />
+
+            <colspec align="left" colnum="2" colwidth="2*" />
+
+            <tbody valign="top">
+              <row>
+                <entry><filename>.conf</filename></entry>
+
+                <entry><synopsis><emphasis role="bold"><code>Goto(</code></emphasis>[[<replaceable>context</replaceable><emphasis
+                      role="bold"><code>,</code></emphasis>]<replaceable>extension</replaceable><emphasis
+                      role="bold"><code>,</code></emphasis>]<replaceable>label</replaceable><emphasis
+                      role="bold"><code>)</code></emphasis></synopsis></entry>
+              </row>
+
+              <row>
+                <entry><filename>.ael</filename></entry>
+
+                <entry><synopsis><emphasis role="bold"><code>goto </code></emphasis>[[<replaceable>context</replaceable><emphasis
+                      role="bold"><code>|</code></emphasis>]<replaceable>extension</replaceable><emphasis
+                      role="bold"><code>|</code></emphasis>]<replaceable>label</replaceable></synopsis></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable></para>
+
+      <para>Dass man in AEL natürlich nicht auf Idee kommen sollte zu einer
+      Priorität anhand ihrer Nummer zu springen versteht sich auch von selbst,
+      denn wie der AEL-Kompiler die Befehlszeilen in Prioritäten umsetzt solle
+      beim Schreiben von AEL nicht interessieren. Weil es aber vorkommt dass
+      man zu einer anderen Extension (im gleichen oder in einem anderen
+      Context) springen will gibt es in AEL zusätzlich zu <code>goto</code>
+      auch noch die Anweisung <code>jump</code>.<informaltable colsep="0"
+          frame="none" pgwide="1" rowsep="0" tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="1*" />
+
+            <colspec align="left" colnum="2" colwidth="2*" />
+
+            <tbody valign="top">
+              <row>
+                <entry><filename>.conf</filename></entry>
+
+                <entry><synopsis><emphasis role="bold"><code>Goto(</code></emphasis>[<replaceable>context</replaceable><emphasis
+                      role="bold"><code>,</code></emphasis>]<replaceable>extension</replaceable><emphasis
+                      role="bold"><code>,</code></emphasis><emphasis
+                      role="bold"><code>1</code></emphasis><emphasis
+                      role="bold"><code>)</code></emphasis></synopsis></entry>
+              </row>
+
+              <row>
+                <entry><filename>.ael</filename> (schlecht)</entry>
+
+                <entry><synopsis><emphasis role="bold"><code>goto </code></emphasis>[<replaceable>context</replaceable><emphasis
+                      role="bold"><code>|</code></emphasis>]<replaceable>extension</replaceable><emphasis
+                      role="bold"><code>|</code></emphasis><emphasis
+                      role="bold"><code>1</code></emphasis></synopsis></entry>
+              </row>
+
+              <row>
+                <entry><filename>.ael</filename> (gut)</entry>
+
+                <entry><synopsis><emphasis role="bold"><code>jump </code></emphasis><replaceable>extension</replaceable>[<emphasis
+                      role="bold"><code>@</code></emphasis><replaceable>context</replaceable>]</synopsis></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable></para>
+
+      <para>Im folgenden (<xref linkend="ael-conditionals" /> und <xref
+      linkend="ael-loops" />) werden wir aber lernen dass man in AEL eh nicht
+      mehr darauf angewiesen ist den Kontrolfluss (control flow) des Programms
+      durch goto-Sprünge zu definieren da es echte Kontrollstrukturen
+      gibt.</para>
+    </section>
+
+    <section id="ael-conditionals">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>bedingungen</keyword>
+
+          <keyword>conditionals</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Bedingte Anweisungen (conditionals)</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Bedingte Anweisungen (conditionals)</secondary>
+      </indexterm>
+
+      <para>Bedingte Anweisungen<footnote>
+          <para><ulink
+          url="http://de.wikipedia.org/wiki/Bedingte_Anweisung">http://de.wikipedia.org/wiki/Bedingte_Anweisung</ulink></para>
+        </footnote> (conditionals<footnote>
+          <para><ulink
+          url="http://en.wikipedia.org/wiki/Conditional_(programming)">http://en.wikipedia.org/wiki/Conditional_(programming)</ulink></para>
+        </footnote>) gehören zu den Kontrollstrukturen (control structures)
+      eines Programmablaufs.</para>
+
+      <para>In AEL gibt es sowohl <emphasis
+      role="bold"><code>if</code></emphasis>- als auch <emphasis
+      role="bold"><code>switch</code></emphasis>-Blöcke. Das ist ein riesiger
+      Vorteil, denn es erleichtert die Lesbarkeit ganz entscheidend.
+      Vergleichen Sie selbst:</para>
 
       <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
                      tocentry="0">
@@ -797,45 +1008,6 @@ exten =&gt; 20,30(ende),NoOp(Ende)
           </tbody>
         </tgroup>
       </informaltable>
-
-      <para></para>
-
-      <para></para>
-    </section>
-
-    <section id="ael-conditionals">
-      <sectioninfo>
-        <keywordset>
-          <keyword>ael</keyword>
-
-          <keyword>bedingungen</keyword>
-
-          <keyword>conditionals</keyword>
-        </keywordset>
-      </sectioninfo>
-
-      <title>Bedingte Anweisungen (conditionals)</title>
-
-      <indexterm>
-        <primary>AEL</primary>
-
-        <secondary>Bedingte Anweisungen (conditionals)</secondary>
-      </indexterm>
-
-      <para>Bedingte Anweisungen<footnote>
-          <para><ulink
-          url="http://de.wikipedia.org/wiki/Bedingte_Anweisung">http://de.wikipedia.org/wiki/Bedingte_Anweisung</ulink></para>
-        </footnote> (conditionals<footnote>
-          <para><ulink
-          url="http://en.wikipedia.org/wiki/Conditional_(programming)">http://en.wikipedia.org/wiki/Conditional_(programming)</ulink></para>
-        </footnote>) gehören zu den Kontrollstrukturen (control structures)
-      eines Programmablaufs.</para>
-
-      <para>In AEL gibt es sowohl <emphasis
-      role="bold"><code>if</code></emphasis>- als auch <emphasis
-      role="bold"><code>switch</code></emphasis>-Blöcke. Das ist ein riesiger
-      Vorteil, denn es erleichtert die Lesbarkeit ganz entscheidend.
-      Vergleichen Sie selbst:</para>
 
       <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
                      tocentry="0">
