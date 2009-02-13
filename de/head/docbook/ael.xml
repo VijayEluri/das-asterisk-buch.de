@@ -191,6 +191,12 @@
     immer mit <literal>-n</literal> auf, oder mit <literal>-q</literal> für
     noch weniger Zeilen.</para>
 
+    <tip>
+      <para><command><filename>aelparse</filename></command> ist gut geeignet
+      um Syntaxfehler in der <filename>extensions.ael</filename> zu
+      finden.</para>
+    </tip>
+
     <para>Mit der Option <literal>-w</literal> wird der eingelesene Dialplan
     in die Datei <filename>extensions.conf.aeldump</filename> im aktuellen
     Verzeichnis ausgegeben.<screen>asterisk:/etc/asterisk# <command>aelparse -q -w</command>
@@ -351,8 +357,9 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
           </tgroup>
         </informaltable>denn man hat ja sowieso bei den meisten Extensions
       mehrere Befehle und erreicht so ein einheitliches Format. Nur in wenigen
-      Fällen (<code>goto</code>, <code>jump</code>, siehe FIXME) kann die
-      kurze Schreibweise sinnvoll sein.</para>
+      Fällen (<code>jump</code>, siehe <xref
+      linkend="ael-labels-goto-jump" />) kann die kurze Schreibweise sinnvoll
+      sein.</para>
 
       <important>
         <para>Die öffnende geschweifte Klammer <quote><code>{</code></quote>
@@ -801,6 +808,8 @@ exten =&gt; 30,n,<emphasis role="bold">Goto(cntxt2,40,vierzig)</emphasis>
 exten =&gt; 40,1<emphasis role="bold">(vierzig)</emphasis>,NoOp()
 exten =&gt; 40,n,SayNumber(40)
 
+exten =&gt; 50,1,<emphasis role="bold">Goto(40,1)</emphasis>
+exten =&gt; 60,1,<emphasis role="bold">Goto(beispiel,10,1)</emphasis>
  </programlisting></entry>
 
               <entry><programlisting>context beispiel {
@@ -832,6 +841,8 @@ context cntxt2 {
    <emphasis role="bold">vierzig:</emphasis>
     SayNumber(40);
   }
+  50 =&gt; <emphasis role="bold">jump 40</emphasis>;
+  60 =&gt; <emphasis role="bold">jump 10@beispiel</emphasis>;
 }</programlisting></entry>
             </row>
           </tbody>
@@ -1224,9 +1235,9 @@ exten =&gt; 70,n(ende),NoOp(Fertig)
 
               <entry><programlisting>20 =&gt; {
   <emphasis role="bold">random (</emphasis>42<emphasis role="bold">) {</emphasis>
-    NoOp(Chance: 42 %);
+    NoOp(42 % Chance);
   <emphasis role="bold">} else {</emphasis>
-    NoOp(Chance: 58 %);
+    NoOp(58 % Chance);
   <emphasis role="bold">}</emphasis>
 }</programlisting></entry>
             </row>
@@ -1253,9 +1264,9 @@ exten =&gt; 70,n(ende),NoOp(Fertig)
               <entry><programlisting>20 =&gt; {
   <emphasis role="bold">if (</emphasis>${RAND(0,100)} &lt; 42<emphasis
                     role="bold">) {</emphasis>
-    NoOp(Chance: 42 %);
+    NoOp(42 % Chance);
   <emphasis role="bold">} else {</emphasis>
-    NoOp(Chance: 58 %);
+    NoOp(58 % Chance);
   <emphasis role="bold">}</emphasis>
 }</programlisting></entry>
             </row>
@@ -1316,13 +1327,22 @@ exten =&gt; 70,n(ende),NoOp(Fertig)
 
           <tbody valign="top">
             <row>
-              <entry><programlisting>exten =&gt; 30,1,Set(x=0)
-exten =&gt; 30,n,NoOp(x ist ${x})</programlisting></entry>
+              <entry><programlisting>exten =&gt; 30,1,<emphasis role="bold">Set(x=0)</emphasis>
+exten =&gt; 30,n(einstieg),<emphasis role="bold">GotoIf($[${x} &lt; 3]?:ende)</emphasis>
+exten =&gt; 30,n,NoOp(x ist ${x})
+exten =&gt; 30,n,Playback(beep)
+exten =&gt; 30,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
+exten =&gt; 30,n,<emphasis role="bold">Goto(einstieg)</emphasis>
+exten =&gt; 30,n(ende),NoOp(Fertig)
+ </programlisting></entry>
 
               <entry><programlisting>30 =&gt; {
-  for (x=0; ${x} &lt; 3; x=${x} + 1) {
+  <emphasis role="bold">for (x=0; ${x} &lt; 3; x=${x} + 1) {</emphasis>
     NoOp(x ist ${x});
-  }
+    Playback(beep);
+  <emphasis role="bold">}</emphasis>
+  
+  NoOp(Fertig);
 }</programlisting></entry>
             </row>
           </tbody>
@@ -1350,49 +1370,107 @@ exten =&gt; 30,n,NoOp(x ist ${x})</programlisting></entry>
 
           <tbody valign="top">
             <row>
-              <entry><programlisting></programlisting></entry>
+              <entry><programlisting>
+exten =&gt; 40,1,<emphasis role="bold">Set(y=5)</emphasis>
+exten =&gt; 40,n(einstieg),<emphasis role="bold">GotoIf($[${y} &gt;= 0]?:ende)</emphasis>
+exten =&gt; 40,n,NoOp(y ist ${y})
+exten =&gt; 40,n,Playback(beep)
+exten =&gt; 40,n,<emphasis role="bold">Set(y=$[${y} - 1])</emphasis>
+exten =&gt; 40,n,<emphasis role="bold">Goto(einstieg)</emphasis>
+exten =&gt; 40,n(ende),NoOp(Fertig)
+ </programlisting></entry>
 
               <entry><programlisting>40 =&gt; {
-  y=5;
-  while (${y} &gt;= 0) {
+  <emphasis role="bold">y=5;</emphasis>
+  <emphasis role="bold">while (${y} &gt;= 0) {</emphasis>
     NoOp(y ist ${y});
-    y=${y} - 1;
-  }
+    Playback(beep);
+    <emphasis role="bold">y=${y} - 1;</emphasis>
+  <emphasis role="bold">}</emphasis>
+  NoOp(Fertig);
 }</programlisting></entry>
             </row>
           </tbody>
         </tgroup>
       </informaltable>
 
-      <para></para>
+      <para>Auch die aus anderen Sprachen bekannten Befehle <code>break</code>
+      und <code>continue</code> lassen sich in Schleifen nutzen.
+      <code>break</code> springt zum Ende des Schleifenblocks,
+      <code>continue</code> zum Anfang.</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>exten =&gt; 30,1,Set(x=0)
+exten =&gt; 30,n(einstieg),GotoIf($[${x} &lt; 3]?:ende)
+exten =&gt; 30,n,NoOp(x ist ${x})
+exten =&gt; 30,n,Playback(beep)
+
+exten =&gt; 30,n,<emphasis role="bold">GotoIf($[${x} &gt; 5]?ende:)</emphasis>
+exten =&gt; 30,n,Set(x=$[${x} + 1])
+exten =&gt; 30,n,Goto(einstieg)
+exten =&gt; 30,n(ende),NoOp(Fertig)
+ </programlisting></entry>
+
+              <entry><programlisting>50 =&gt; {
+  for (x=0; ${x} &lt; 10; x=${x} + 1) {
+    NoOp(x ist ${x});
+    Playback(beep);
+    <emphasis role="bold">if (${x} &gt; 5) {
+      break;
+    }</emphasis>
+  }
+  NoOp(Fertig);
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
     </section>
 
-    <section>
-      <title></title>
+    <section id="ael-macros">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
 
-      <para></para>
-    </section>
+          <keyword>macro</keyword>
 
-    <section>
-      <title></title>
+          <keyword>makro</keyword>
+        </keywordset>
+      </sectioninfo>
 
-      <para></para>
-    </section>
+      <title>Makros (macros)</title>
 
-    <section>
-      <title></title>
+      <indexterm>
+        <primary>AEL</primary>
 
-      <para></para>
-    </section>
+        <secondary>Macros</secondary>
+      </indexterm>
 
-    <section>
-      <title></title>
+      <indexterm>
+        <primary>Macros</primary>
 
-      <para></para>
-    </section>
+        <secondary>AEL</secondary>
+      </indexterm>
 
-    <section>
-      <title></title>
+      <para>macro ... FIXME</para>
 
       <para></para>
     </section>
@@ -1489,8 +1567,8 @@ exten =&gt; 22,1,Dial(SIP/lisa)
 exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
 exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
 
-exten =&gt; _2X,1,Dial(SIP/${EXTEN},40)
 
+exten =&gt; _2X,1,Dial(SIP/${EXTEN})
 
  </programlisting></entry>
 
@@ -1500,7 +1578,7 @@ exten =&gt; _2X,1,Dial(SIP/${EXTEN},40)
   <emphasis role="bold">hint(SIP/22)</emphasis> 22 =&gt; {}
   
   _2X =&gt; {
-    Dial(SIP/${EXTEN},40);
+    Dial(SIP/${EXTEN});
   }
 }</programlisting></entry>
             </row>
@@ -1521,7 +1599,8 @@ exten =&gt; _2X,1,Dial(SIP/${EXTEN},40)
       <title>Filtern nach Anrufernummer</title>
 
       <para>Man braucht es zwar in der Praxis eher selten, aber die Syntax für
-      eine vielzitierte Ex-Girlfriend-Extension sähe so aus:</para>
+      eine (vielzitierte) <quote>Ex-Girlfriend Extension</quote> sähe so
+      aus:</para>
 
       <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
                      tocentry="0">
@@ -1547,30 +1626,29 @@ exten =&gt; 10<emphasis role="bold">/55555</emphasis>,1,NoOp(Ex-Freundin)
 exten =&gt; 10<emphasis role="bold">/55555</emphasis>,n,Busy()
 
 
-exten =&gt; 10,1,Dial(SIP/philipp)
-exten =&gt; 10,n,Voicemail(philipp)
+exten =&gt; 10,1,Dial(SIP/karl)
+exten =&gt; 10,n,Voicemail(karl)
  </programlisting></entry>
 
               <entry><programlisting>10<emphasis role="bold">/55555</emphasis> =&gt; {
-  NoOp(Ex-girlfriend);
+  NoOp(Ex-Freundin);
   Busy();
 }
 10 =&gt; {
-  Dial(SIP/philipp);
-  Voicemail(philipp);
+  Dial(SIP/karl);
+  Voicemail(karl);
 }</programlisting></entry>
             </row>
           </tbody>
         </tgroup>
       </informaltable>
 
-      <para>Wenn also die Ex-Freundin von der Nummer (Caller-ID) 55555 anruft
-      würde sie auf <literal>Busy()</literal> geleitet, alle anderen Anrufer
-      jedoch nicht.</para>
+      <para>Wenn also die Ex-Freundin von der Nummer (Caller-ID)
+      <literal>55555</literal> anruft würde sie auf <literal>Busy()</literal>
+      geleitet, alle anderen Anrufer jedoch nicht.</para>
 
-      <para>Übrigens sind hier auch Pattern erlaubt. Mit
-      <literal>/_0123.</literal> könnte man also direkt einen ganzen
-      Vorwahl-Bereich matchen.</para>
+      <para>Übrigens sind hier auch Pattern erlaubt. Mit <code>/_0123.</code>
+      könnte man also direkt einen ganzen Vorwahl-Bereich matchen.</para>
     </section>
   </section>
 </chapter>
