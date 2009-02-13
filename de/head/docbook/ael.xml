@@ -1214,7 +1214,35 @@ exten =&gt; 70,n(ende),NoOp(Fertig)
       </informaltable>
 
       <para>Die Syntax der Zeitangabe entspricht der von
-      <code>GotoIfTime()</code>.</para>
+      <code>GotoIfTime()</code>. <code>ifTime</code> ist eigentlich
+      überflüssig, denn mit einem normalen <code>if</code> und der Funktion
+      <code>IFTIME()</code> (<xref linkend="functions-iftime" />) kann man das
+      gleiche erreichen. Ist nur etwas länger:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <tbody valign="top">
+            <row>
+              <entry></entry>
+
+              <entry><programlisting>20 =&gt; {
+  <emphasis role="bold">if (</emphasis>${IFTIME(08:00-18:00|mon-fri|*|*?1:0)}<emphasis
+                    role="bold">) {</emphasis>
+    Dial(SIP/20);
+  <emphasis role="bold">} else {</emphasis>
+    Playback(ansage-geschlossen);
+    Voicemail(20,s);
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
 
       <bridgehead id="ael-random"><code>random</code></bridgehead>
 
@@ -1248,7 +1276,7 @@ exten =&gt; 70,n(ende),NoOp(Fertig)
       <para>Das Sprachkonstrukt <code>random</code> ist eigentlich
       überflüssig, denn mit einem normalen <code>if</code> und der Funktion
       <code>RAND()</code> (<xref linkend="functions-rand" />) kann man das
-      gleiche erreichen:</para>
+      gleiche erreichen. Ist nur etwas länger:</para>
 
       <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
                      tocentry="0">
