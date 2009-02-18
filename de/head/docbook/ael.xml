@@ -1334,98 +1334,12 @@ exten =&gt; 70,n(ende),NoOp(Fertig)
       und <emphasis role="bold"><code>while</code></emphasis>-Schleifen, wie
       aus anderen Programmiersprachen bekannt.</para>
 
-      <bridgehead id="ael-for"><code>for</code></bridgehead>
-
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>exten =&gt; 30,1,<emphasis role="bold">Set(x=0)</emphasis>
-exten =&gt; 30,n(einstieg),<emphasis role="bold">GotoIf($[${x} &lt; 3]?:ende)</emphasis>
-exten =&gt; 30,n,NoOp(x ist ${x})
-exten =&gt; 30,n,Playback(beep)
-exten =&gt; 30,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
-exten =&gt; 30,n,<emphasis role="bold">Goto(einstieg)</emphasis>
-exten =&gt; 30,n(ende),NoOp(Fertig)
- </programlisting></entry>
-
-              <entry><programlisting>30 =&gt; {
-  <emphasis role="bold">for (x=0; ${x} &lt; 3; x=${x} + 1) {</emphasis>
-    NoOp(x ist ${x});
-    Playback(beep);
-  <emphasis role="bold">}</emphasis>
-  
-  NoOp(Fertig);
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
-
       <bridgehead id="ael-while"><code>while</code></bridgehead>
 
       <para>Ein <code>while</code>-Block in AEL entspricht in etwa der
       Verwendung von <code>While()</code> (<xref
       linkend="applications-while" />) und <code>EndWhile()</code> (<xref
       linkend="applications-endwhile" />).</para>
-
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting> 
-exten =&gt; 40,1,Set(y=5)
-exten =&gt; 40,n,<emphasis role="bold">While($[${y} &lt;= 5])</emphasis>
-exten =&gt; 40,n,NoOp(y ist ${y})
-exten =&gt; 40,n,Playback(beep)
-exten =&gt; 40,n,<emphasis role="bold">Set(y=$[${y} + 1])</emphasis>
-exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
-exten =&gt; 40,n,NoOp(Fertig)
- </programlisting></entry>
-
-              <entry><programlisting>40 =&gt; {
-  y=0;
-  <emphasis role="bold">while (${y} &lt;= 5) {</emphasis>
-    NoOp(y ist ${y});
-    Playback(beep);
-    <emphasis role="bold">y=${y} + 1</emphasis>;
-  <emphasis role="bold">}</emphasis>
-  NoOp(Fertig);
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
 
       <para>Auch die aus anderen Sprachen bekannten Befehle <code>break</code>
       und <code>continue</code> lassen sich in Schleifen nutzen.
@@ -1454,25 +1368,88 @@ exten =&gt; 40,n,NoOp(Fertig)
 
           <tbody valign="top">
             <row>
-              <entry><programlisting>exten =&gt; 30,1,Set(x=0)
-exten =&gt; 30,n(einstieg),GotoIf($[${x} &lt; 3]?:ende)
-exten =&gt; 30,n,NoOp(x ist ${x})
-exten =&gt; 30,n,Playback(beep)
+              <entry><programlisting> 
+exten =&gt; 40,1,Set(x=5)
+exten =&gt; 40,n,<emphasis role="bold">While($[${x} &lt;= 9])</emphasis>
+exten =&gt; 40,n,NoOp(x ist ${x})
 
-exten =&gt; 30,n,<emphasis role="bold">GotoIf($[${x} &gt; 5]?ende:)</emphasis>
-exten =&gt; 30,n,Set(x=$[${x} + 1])
-exten =&gt; 30,n,Goto(einstieg)
-exten =&gt; 30,n(ende),NoOp(Fertig)
+exten =&gt; 40,n,ExecIf($[${x} &gt; 5],<emphasis role="bold">ExitWhile</emphasis>)
+exten =&gt; 40,n,Playback(beep)
+exten =&gt; 40,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
+exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
+exten =&gt; 40,n,NoOp(Fertig)
  </programlisting></entry>
 
-              <entry><programlisting>50 =&gt; {
-  for (x=0; ${x} &lt; 10; x=${x} + 1) {
+              <entry><programlisting>30 =&gt; {
+  x=0;
+  <emphasis role="bold">while (${x} &lt;= 9) {</emphasis>
+    NoOp(x ist ${x});
+    if (${x} &gt; 5) {
+      <emphasis role="bold">break</emphasis>;
+    }
+    Playback(beep);
+    <emphasis role="bold">y=${x} + 1</emphasis>;
+  <emphasis role="bold">}</emphasis>
+  NoOp(Fertig);
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <note>
+        <para>In AEL brauchen wir hier nur deshalb mehr Zeilen weil wir darauf
+        verzichten in dem <code>if</code>-Block vor dem <code>break</code>
+        noch einen zweiten Befehl wir <code>NoOp()</code> auszuführen. Dann
+        nämlich reicht im <filename>.conf</filename>-Format nicht mehr ein
+        <code>ExecIf()</code> sondern man braucht ein kompliziertes
+        mehrzeiliges Konstrukt mit <code>GotoIf()</code>.</para>
+      </note>
+
+      <bridgehead id="ael-for"><code>for</code></bridgehead>
+
+      <para>Zusätzlich zu <code>while</code> gibt es in AEL auch
+      <code>for</code>-Schleifen. Diese habe keine Entsprechung im
+      <filename>.conf</filename>-Format. (Allerdings läßt sich jede
+      <code>for</code>-Schleife als <code>while</code>-Schleife
+      schreiben.)</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting> 
+exten =&gt; 40,1,<emphasis role="bold">Set(x=5)</emphasis>
+exten =&gt; 40,n,<emphasis role="bold">While($[${x} &lt;= 5])</emphasis>
+exten =&gt; 40,n,NoOp(x ist ${x})
+exten =&gt; 40,n,Playback(beep)
+exten =&gt; 40,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
+exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
+exten =&gt; 40,n,NoOp(Fertig)
+ </programlisting></entry>
+
+              <entry><programlisting>40 =&gt; {
+  <emphasis role="bold">for (x=0; ${x}&lt;=5; x=${x}+1) {</emphasis>
+    
     NoOp(x ist ${x});
     Playback(beep);
-    <emphasis role="bold">if (${x} &gt; 5) {
-      break;
-    }</emphasis>
-  }
+    
+  <emphasis role="bold">}</emphasis>
   NoOp(Fertig);
 }</programlisting></entry>
             </row>
