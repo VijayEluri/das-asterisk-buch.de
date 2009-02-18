@@ -1379,6 +1379,11 @@ exten =&gt; 30,n(ende),NoOp(Fertig)
 
       <bridgehead id="ael-while"><code>while</code></bridgehead>
 
+      <para>Ein <code>while</code>-Block in AEL entspricht in etwa der
+      Verwendung von <code>While()</code> (<xref
+      linkend="applications-while" />) und <code>EndWhile()</code> (<xref
+      linkend="applications-endwhile" />).</para>
+
       <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
                      tocentry="0">
         <tgroup cols="2">
@@ -1399,21 +1404,21 @@ exten =&gt; 30,n(ende),NoOp(Fertig)
           <tbody valign="top">
             <row>
               <entry><programlisting> 
-exten =&gt; 40,1,<emphasis role="bold">Set(y=5)</emphasis>
-exten =&gt; 40,n(einstieg),<emphasis role="bold">GotoIf($[${y} &gt;= 0]?:ende)</emphasis>
+exten =&gt; 40,1,Set(y=5)
+exten =&gt; 40,n,<emphasis role="bold">While($[${y} &lt;= 5])</emphasis>
 exten =&gt; 40,n,NoOp(y ist ${y})
 exten =&gt; 40,n,Playback(beep)
-exten =&gt; 40,n,<emphasis role="bold">Set(y=$[${y} - 1])</emphasis>
-exten =&gt; 40,n,<emphasis role="bold">Goto(einstieg)</emphasis>
-exten =&gt; 40,n(ende),NoOp(Fertig)
+exten =&gt; 40,n,<emphasis role="bold">Set(y=$[${y} + 1])</emphasis>
+exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
+exten =&gt; 40,n,NoOp(Fertig)
  </programlisting></entry>
 
               <entry><programlisting>40 =&gt; {
-  <emphasis role="bold">y=5;</emphasis>
-  <emphasis role="bold">while (${y} &gt;= 0) {</emphasis>
+  y=0;
+  <emphasis role="bold">while (${y} &lt;= 5) {</emphasis>
     NoOp(y ist ${y});
     Playback(beep);
-    <emphasis role="bold">y=${y} - 1;</emphasis>
+    <emphasis role="bold">y=${y} + 1</emphasis>;
   <emphasis role="bold">}</emphasis>
   NoOp(Fertig);
 }</programlisting></entry>
@@ -1425,7 +1430,10 @@ exten =&gt; 40,n(ende),NoOp(Fertig)
       <para>Auch die aus anderen Sprachen bekannten Befehle <code>break</code>
       und <code>continue</code> lassen sich in Schleifen nutzen.
       <code>break</code> springt zum Ende des Schleifenblocks,
-      <code>continue</code> zum Anfang.</para>
+      <code>continue</code> zum Anfang. Das ist also die Entsprechung zu
+      <code>ExitWhile()</code> (<xref linkend="applications-exitwhile" />)
+      bzw. <code>ContinueWhile()</code> (<xref
+      linkend="applications-continuewhile" />).</para>
 
       <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
                      tocentry="0">
