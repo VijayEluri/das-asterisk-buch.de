@@ -21,14 +21,25 @@
       <secondary><code>HASH()</code></secondary>
     </indexterm></title>
 
-  <synopsis>HASH(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>HASH(<replaceable>name</replaceable>[,<replaceable>schluessel</replaceable>])</synopsis>
 
-  <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Implementiert assoziative Arrays, auch bekannt als
+  Hashes.</simpara>
 
-  <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(HASH()=FIXMEFIXMEFIXME)
+  <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Set(HASH(warenkorb,aepfel)=5)
+exten =&gt; 123,n,Set(HASH(warenkorb,birnen)=3)
+exten =&gt; 123,n,Set(HASH(warenkorb,kartoffeln)=2)
+exten =&gt; 123,n,Verbose(1,Im Warenkorb sind folgende Artikel:)
+exten =&gt; 123,n,Verbose(1,  ${HASH(warenkorb,aepfel)} Aepfel)
+exten =&gt; 123,n,Verbose(1,  ${HASH(warenkorb,birnen)} Birnen)
+exten =&gt; 123,n,Verbose(1,  ${HASH(warenkorb,kartoffeln)} Kartoffeln)
 exten =&gt; 123,n,Hangup()</programlisting>
+
+  <para>Beim Zuweisen aus ODBC-Funktionen muss man den Schlüssel nicht
+  angeben.</para>
+
+  <programlisting>exten =&gt; 456,1,Set(HASH(ergebnis)=ODBC_...)</programlisting>
 
   <xi:include href="hash-help.xml" xpointer="xpointer(/note/*)"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -36,7 +47,8 @@ exten =&gt; 123,n,Hangup()</programlisting>
   <formalpara>
     <title>Siehe auch</title>
 
-    <para><xref linkend="functions-hashkeys" />, <xref
-    linkend="applications-clearhash" /></para>
+    <para><xref linkend="functions-odbc_sql" />, <xref
+    linkend="applications-odbc_user_database" />, <xref
+    linkend="applications-odbc_fetch" /></para>
   </formalpara>
 </section>
