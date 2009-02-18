@@ -15,27 +15,33 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>FILE()</literal><indexterm significance="preferred">
+  <title><literal>FILE()</literal><indexterm significance="preferred">
       <primary>Dialplan-Funktionen</primary>
 
       <secondary><code>FILE()</code></secondary>
     </indexterm></title>
 
-    <synopsis>FILE(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>FILE(<replaceable>dateiname</replaceable>,<replaceable>anfang</replaceable>[,<replaceable>laenge</replaceable>])</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Gibt ein Stück aus einer Datei zurück. Das Lesen beginnt bei der
+  Byte-Position <replaceable>anfang</replaceable>. Mit Angabe von
+  <replaceable>laenge</replaceable> werden nur soviele Bytes gelesen. Wenn
+  <replaceable>anfang</replaceable> negativ ist wird die Anfangsposition von
+  Ende der Datei aus gerechnet.</simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(FILE()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <programlisting>; die ersten 4 Zeichen aus einer Datei lesen:
+exten =&gt; 123,1,Set(string=${FILE(/etc/beispiel.txt,0,4)})
+exten =&gt; 123,n,Verbose(1,string ist ${string})
+; die letzten 4 Zeichen aus einer Datei lesen:
+exten =&gt; 123,n,Set(string=${FILE(/etc/beispiel.txt,-4)})
+exten =&gt; 123,n,Verbose(1,string ist ${string})</programlisting>
 
-    <xi:include href="file-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="file-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <formalpara>
+    <title>Siehe auch</title>
 
-      <para><xref linkend="functions-FIXMEFIXMEFIXME" />, <xref
-      linkend="functions-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+    <para></para>
+  </formalpara>
 </section>
