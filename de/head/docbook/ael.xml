@@ -1498,9 +1498,66 @@ exten =&gt; 30,n(ende),NoOp(Fertig)
         <secondary>AEL</secondary>
       </indexterm>
 
-      <para>macro ... FIXME</para>
+      <para>In AEL muss man sich keine Gedanken machen ob man die nicht mehr
+      empfohlene Applikation <code>Macro()</code> (<xref
+      linkend="applications-macro" />) oder <code>Gosub()</code> (<xref
+      linkend="applications-gosub" />) verwenden soll, denn Makros gibt es in
+      AEL als Sprachkonstrukt <code>macro</code>.</para>
 
-      <para></para>
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting><emphasis role="bold">[macro-countdown]</emphasis>
+exten =&gt; s,1,Set(c=${ARG1})
+exten =&gt; s,n,While($[ ${c} &gt; 0])
+exten =&gt; s,n,SayNumber(${c})
+exten =&gt; s,n,Set(c=$[ ${c} - 1 ])
+exten =&gt; s,n,EndWhile()
+
+[default]
+
+exten =&gt; 123,1,<emphasis role="bold">Macro(countdown,3)</emphasis>
+
+exten =&gt; 124,1,<emphasis role="bold">Macro(countdown,5)</emphasis>
+ </programlisting></entry>
+
+              <entry><programlisting><emphasis role="bold">macro countdown( count ) {</emphasis>
+  
+  for (c=${count}; ${c}&gt;0; c=${c}-1) {
+    SayNumber(${c});
+  }
+<emphasis role="bold">}</emphasis>
+
+context default {
+  123 =&gt; {
+    <emphasis role="bold">&amp;countdown(3)</emphasis>;
+  }
+  124 =&gt; <emphasis role="bold">&amp;countdown(5)</emphasis>;
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>Intern macht der AEL-Compiler aus <code>macro</code> automatisch
+      eine <code>Gosub()</code>-Subroutine, was uns aber wie gesagt
+      glücklicherweise nicht interessieren muss.</para>
     </section>
 
     <section id="ael-hints">
