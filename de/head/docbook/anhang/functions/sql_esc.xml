@@ -15,27 +15,44 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>SQL_ESC()</literal><indexterm significance="preferred">
+  <title><literal>SQL_ESC()</literal><indexterm significance="preferred">
       <primary>Dialplan-Funktionen</primary>
 
       <secondary><code>SQL_ESC()</code></secondary>
     </indexterm></title>
 
-    <synopsis>SQL_ESC(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>SQL_ESC(<replaceable>string</replaceable>)</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <simpara><quote>Escaped</quote> (d.h. maskiert) einfache
+  Anführungszeichen<footnote>
+      <para>Typographisch ist es zwar nicht korrekt hier von einfachen
+      Anführungszeichen zu sprechen, denn es handelt sich um Apostrophen, aber
+      das lassen wir mal außer Acht. Jeder Programmierer weiß was gemeint
+      ist.</para>
+    </footnote> (<literal>'</literal>) in SQL-Befehlen. Dies ist hilfreich bei
+  Verwendung der
+  <literal>ODBC_<replaceable>...</replaceable>()</literal>-Datenbank-Funktionen
+  (siehe <xref linkend="functions-odbc_function" />).</simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(SQL_ESC()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <important>
+    <para>Das ist ein gutes Beispiel warum man <emphasis>nie</emphasis>
+    doppelte Anführungszeichen (<literal>"</literal>) zum Begrenzen von
+    Strings in SQL-Befehlen verwenden sollte, denn diese würden hier
+    <emphasis>nicht</emphasis> maskiert. Also nochmal: Verwenden Sie,
+    ANSI-SQL-konform, einfache Anführungszeichen!</para>
+  </important>
 
-    <xi:include href="sql_esc-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <programlisting>exten =&gt; 123,1,Set(name=philipp)
+exten =&gt; 123,n,Set(telnr=${ODBC_SQL(SELECT `telnr` FROM `liste` WHERE `name`='${SQL_ESC(name)}')}
+exten =&gt; 123,n,Verbose(1,Telefonnummer ist: ${telnr})</programlisting>
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <xi:include href="sql_esc-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-      <para><xref linkend="functions-FIXMEFIXMEFIXME" />, <xref
-      linkend="functions-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="functions-odbc_function" />, <xref
+    linkend="functions-odbc_sql" /></para>
+  </formalpara>
 </section>
