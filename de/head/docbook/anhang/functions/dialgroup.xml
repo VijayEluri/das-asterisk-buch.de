@@ -15,27 +15,40 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>DIALGROUP()</literal><indexterm significance="preferred">
+  <title><literal>DIALGROUP()</literal><indexterm significance="preferred">
       <primary>Dialplan-Funktionen</primary>
 
       <secondary><code>DIALGROUP()</code></secondary>
     </indexterm></title>
 
-    <synopsis>DIALGROUP(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>DIALGROUP(<replaceable>gruppenname</replaceable>[,<replaceable>operation</replaceable>])</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Implementiert eine extrem simple Queue. Zu einer
+  <quote>Dialgroup</quote> kann man mit der
+  <replaceable>operation</replaceable> <literal>add</literal> Mitglieder
+  hinzufügen und mit <literal>del</literal> entfernen. Ohne Angabe einer
+  <replaceable>operation</replaceable> wird die gesamte Liste der Mitglieder
+  durch den neuen Wert ersetzt.</simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(DIALGROUP()=FIXMEFIXMEFIXME)
+  <programlisting>exten =&gt; 123,1,Set(DIALGROUP(beispiel,add)=SIP/108)
+exten =&gt; 123,n,Set(DIALGROUP(beispiel)=SIP/109)
+exten =&gt; 123,n,Set(DIALGROUP(beispiel,add)=Local/105)
+exten =&gt; 123,n,Set(DIALGROUP(beispiel,add)=SIP/104)
+exten =&gt; 123,n,Set(DIALGROUP(beispiel,del)=Local/105)
+exten =&gt; 123,n,Set(DIALGROUP(beispiel,add)=Local/102)
+exten =&gt; 123,n,Set(DIALGROUP(beispiel,add)=Local/101)
+exten =&gt; 123,n,Verbose(1,Gruppe ist: ${DIALGROUP(beispiel)})
+exten =&gt; 123,n,Dial(${DIALGROUP(beispiel)})
 exten =&gt; 123,n,Hangup()</programlisting>
 
-    <xi:include href="dialgroup-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <para>Effektiv entspricht das einem<programlisting>exten =&gt; 123,1,Dial(SIP/109&amp;SIP/104&amp;Local/102&amp;Local/101)</programlisting></para>
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <xi:include href="dialgroup-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-      <para><xref linkend="functions-FIXMEFIXMEFIXME" />, <xref
-      linkend="functions-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-queue" /></para>
+  </formalpara>
 </section>
