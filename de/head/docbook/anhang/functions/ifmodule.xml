@@ -15,27 +15,38 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>IFMODULE()</literal><indexterm significance="preferred">
+  <title><literal>IFMODULE()</literal><indexterm significance="preferred">
       <primary>Dialplan-Funktionen</primary>
 
       <secondary><code>IFMODULE()</code></secondary>
     </indexterm></title>
 
-    <synopsis>IFMODULE(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>IFMODULE(<replaceable>modulname</replaceable>)</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Prüft ob ein Asterisk-Modul geladen wurde und verfügbar ist.
+  Asterisk-Module sind <quote>Shared-Object</quote>-Dateien, daher muss man
+  den Modulnamen immer mit <quote><filename>.so</filename></quote> am Ende
+  angeben. Gibt <literal>1</literal> zurück wenn das Modul geladen wurde,
+  andernfalls <literal>0</literal>.</simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(IFMODULE()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <programlisting>exten =&gt; 123,1,Verbose(1, app_queue.so geladen?: ${IFMODULE(app_queue.so)})
+exten =&gt; 123,n,Verbose(1, res_agi.so   geladen?: ${IFMODULE(res_agi.so)})
+exten =&gt; 123,n,Verbose(1, chan_sip.so  geladen?: ${IFMODULE(chan_sip.so)})
+exten =&gt; 123,n,Verbose(1, beispiel.so  geladen?: ${IFMODULE(beispiel.so)})</programlisting>
 
-    <xi:include href="ifmodule-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <tip>
+    <para>Welche Asterisk-Module geladen werden sollen wird in der Datei
+    <filename>modules.conf</filename> festgelegt. Eine Liste aller geladenen
+    Module kann man auf dem CLI mit dem Befehl <literal><command>module
+    show</command></literal> anzeigen.</para>
+  </tip>
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <xi:include href="ifmodule-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-      <para><xref linkend="functions-FIXMEFIXMEFIXME" />, <xref
-      linkend="functions-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para></para>
+  </formalpara>
 </section>
