@@ -21,14 +21,24 @@
       <secondary><code>LOCAL()</code></secondary>
     </indexterm></title>
 
-  <synopsis>LOCAL(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>LOCAL(<replaceable>variablenname</replaceable>)</synopsis>
 
-  <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Setzt eine lokale Variabe, die nur im lokalen Gültigkeitsbereich
+  des Gosub-Stacks definiert ist.</simpara>
 
-  <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(LOCAL()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <programlisting>macro beispiel( x ) {
+    Verbose(1,x ist ${x});
+    LOCAL(y)=x+x;
+    Verbose(1,y ist ${y});
+}
+context default {
+    123 =&gt; {
+        &amp;beispiel(4);
+        // y wird zwar im Macro gesetzt, ist
+        // aber hier nicht definiert
+        Verbose(1,y ist ${y});
+    }
+}</programlisting>
 
   <xi:include href="local-help.xml" xpointer="xpointer(/note/*)"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
