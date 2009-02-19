@@ -15,27 +15,31 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>IAXVAR()</literal><indexterm significance="preferred">
+  <title><literal>IAXVAR()</literal><indexterm significance="preferred">
       <primary>Dialplan-Funktionen</primary>
 
       <secondary><code>IAXVAR()</code></secondary>
     </indexterm></title>
 
-    <synopsis>IAXVAR(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>IAXVAR(<replaceable>variablenname</replaceable>)</synopsis>
 
-    <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Liest oder setzt eine Variable im IAX-Protokoll.</simpara>
 
-    <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(IAXVAR()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <programlisting>; auf dem einen Server eine Variable setzen:
+exten =&gt; 123,1,Set(IAXVAR(beispiel)=Hallo)
+exten =&gt; 123,n,Dial(IAX/456@andererserver)
 
-    <xi:include href="iaxvar-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+; auf dem anderen Server die Variable auslesen:
+exten =&gt; 456,1,Verbose(1,beispiel: ${IAXVAR(beispiel)})
+exten =&gt; 456,n,Hangup()</programlisting>
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <xi:include href="iaxvar-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-      <para><xref linkend="functions-FIXMEFIXMEFIXME" />, <xref
-      linkend="functions-FIXMEFIXMEFIXME" /></para>
-    </formalpara>
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-sipaddheader" />, <xref
+    linkend="functions-sip_header" /></para>
+  </formalpara>
 </section>
