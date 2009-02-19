@@ -21,14 +21,41 @@
       <secondary><code>QUEUE_MEMBER()</code></secondary>
     </indexterm></title>
 
-  <synopsis>QUEUE_MEMBER(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>QUEUE_MEMBER(<replaceable>warteschlange</replaceable>,<replaceable>feld</replaceable>)</synopsis>
 
-  <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Gibt die Anzahl der Mitglieder (Agenten) einer Warteschlange
+  zurück.</simpara>
 
-  <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(QUEUE_MEMBER()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <variablelist termlength="8">
+    <varlistentry>
+      <term><literal>count</literal></term>
+
+      <listitem>
+        <para>Gibt die Gesamtanzahl der Mitglieder zurück.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><literal>logged</literal></term>
+
+      <listitem>
+        <para>Gibt die Anzahl der eingeloggten Mitglieder zurück.</para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><literal>free</literal></term>
+
+      <listitem>
+        <para>Gibt die Anzahl der freien, eingeloggten Mitglieder, die einen
+        Anruf entgegennehmen könnten, zurück.</para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <programlisting>exten =&gt; 123,1,Set(free=${QUEUE_MEMBER(support,free)})
+exten =&gt; 123,n,Verbose(1,In der support-Queue sind ${free} Mitglieder frei)
+exten =&gt; 123,n,Queue(support)</programlisting>
 
   <xi:include href="queue_member-help.xml" xpointer="xpointer(/note/*)"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
