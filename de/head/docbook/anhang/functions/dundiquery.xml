@@ -21,14 +21,29 @@
       <secondary><code>DUNDIQUERY()</code></secondary>
     </indexterm></title>
 
-  <synopsis>DUNDIQUERY(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>DUNDIQUERY(<replaceable>Nummer</replaceable>[|<replaceable>DUNDi-Context</replaceable>[|<replaceable>Optionen</replaceable>]])</synopsis>
 
-  <simpara>FULL DESCRIPTION</simpara>
+  <para>Schlägt eine Telefonnummer mit DUNDi (<xref
+  linkend="glossar-dundi" />) nach. Wird kein <code>DUNDi-Context</code>
+  angegeben, wird <code>e164</code> angenommen. Mit der Option <code>b</code>
+  (bypass) wird der interne DUNDi-Cache umgangen. Anders als bei
+  <code>DUNDILOOKUP()</code> (<xref linkend="functions-dundilookup" />) wird
+  hier nicht einfach der erste Treffer zurückgegeben sondern eine numerische
+  ID der Ergebnismenge, aus der sich die Treffer dann mit
+  <code>DUNDIRESULT()</code> (<xref linkend="functions-dundiresult" />)
+  abfragen lassen.</para>
 
-  <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(DUNDIQUERY()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <programlisting>; die Nummer 456 nachschlagen:
+123 =&gt; {
+    Set(resultid=${DUNDIQUERY(456)});
+    Set(count=${DUNDIRESULT(resultid|getnum)});
+    Verbose(1,Anzahl der DUNDi-Ergebnisse: ${count});
+    for (i=1; i&lt;=${count}; i=${i}+1) {
+        Set(device=${DUNDIRESULT(resultid|${i})});
+        Verbose(1,DUNDi-Ergebnis ${i}: ${device});
+        Dial(${device});
+    }
+}</programlisting>
 
   <xi:include href="dundiquery-help.xml" xpointer="xpointer(/note/*)"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
