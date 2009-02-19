@@ -23,14 +23,20 @@
       <secondary><code>QUEUE_MEMBER_PENALTY()</code></secondary>
     </indexterm></title>
 
-  <synopsis>QUEUE_MEMBER_PENALTY(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>QUEUE_MEMBER_PENALTY(<replaceable>warteschlange</replaceable>,<replaceable>interface</replaceable>)</synopsis>
 
-  <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Liest/setzt Malus-Punkte eines Mitglieds einer Warteschlange.
+  <replaceable>interface</replaceable> ist z.B. <literal>SIP/456</literal>,
+  <literal>Agent/456</literal> oder <literal>Local/456</literal>. An ein
+  Mitglied mit <quote>penalty</quote> werden nur nachrangig Anrufe
+  durchgestellt.</simpara>
 
-  <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(QUEUE_MEMBER_PENALTY()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <programlisting>; penalty von SIP/456 in der "support"-Queue abfragen:
+exten =&gt; 123,1,Verbose(1,penalty: ${QUEUE_MEMBER_PENALTY(support,SIP/456)})
+; penalty von SIP/456 in der "support"-Queue setzen:
+exten =&gt; 123,n,Set(QUEUE_MEMBER_PENALTY(support,SIP/456)=3)
+; penalty von SIP/456 in der "support"-Queue abfragen:
+exten =&gt; 123,n,Verbose(1,penalty: ${QUEUE_MEMBER_PENALTY(support,SIP/456)})</programlisting>
 
   <xi:include href="queue_member_penalty-help.xml"
               xpointer="xpointer(/note/*)"
