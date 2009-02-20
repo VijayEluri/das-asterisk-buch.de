@@ -31,7 +31,16 @@
 
   <programlisting>exten =&gt; 123,1,Set(resultid=${ODBC_HOLE_BEISPIEL_LISTE()})
 exten =&gt; 123,n,Set(HASH(zeile)=${ODBC_FETCH(${resultid})})
-exten =&gt; 123,n,Verbose(1,Schluessel in der Zeile: ${HASHKEYS(zeile)})</programlisting>
+exten =&gt; 123,n,Verbose(1,Schluessel in der Zeile: ${HASHKEYS(zeile)})
+exten =&gt; 123,n,Set(HASH(zeile)=${ODBC_FETCH(${resultid})})
+exten =&gt; 123,n,Verbose(1,Schluessel in der Zeile: ${HASHKEYS(zeile)})
+exten =&gt; 123,n,ODBCFinish(resultid)</programlisting>
+
+  <important>
+    <para>Mit <code>ODBCFinish()</code> (<xref
+    linkend="applications-odbcfinish" />) wird die Ergebnismenge (result set)
+    sauber geschlossen.</para>
+  </important>
 
   <xi:include href="odbc_fetch-help.xml" xpointer="xpointer(/note/*)"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -42,6 +51,7 @@ exten =&gt; 123,n,Verbose(1,Schluessel in der Zeile: ${HASHKEYS(zeile)})</progra
     <para><xref linkend="functions-odbc_function" />, <xref
     linkend="functions-odbc_sql" />, <xref
     linkend="functions-odbc_user_database" />, <xref
+    linkend="applications-odbcfinish" />, <xref
     linkend="functions_hash" /></para>
   </formalpara>
 </section>
