@@ -21,14 +21,32 @@
       <secondary><code>ENUMQUERY()</code></secondary>
     </indexterm></title>
 
-  <synopsis>ENUMQUERY(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>ENUMQUERY(<replaceable>Nummer</replaceable>[,<replaceable>Dienst</replaceable>[,<replaceable>Zonen-Suffix</replaceable>]])</synopsis>
 
-  <simpara>FULL DESCRIPTION</simpara>
+  <simpara>Schlägt eine Nummer mit ENUM (<xref linkend="glossar-enum" />)
+  nach. Anders als bei <code>ENUMLOOKUP()</code> (<xref
+  linkend="functions-enumlookup" />) wird hier nicht direkt ein Treffer
+  zurückgegeben sondern eine numerische ID der Ergebnismenge, aus der sich die
+  Treffer dann mit <code>ENUMRESULT()</code> (<xref
+  linkend="functions-enumresult" />) abfragen lassen.
+  <code><replaceable>Dienst</replaceable></code> kann u.a. <code>sip</code>
+  (Default), <code>iax2</code>, <code>h323</code>, <code>tel</code> oder
+  <code>ALL</code> sein. <code><replaceable>Zonen-Suffix</replaceable></code>
+  (Default: <code>e164.arpa</code>) ist die ENUM-Zone. Ausführliche
+  Beschreibung und Beispiele in <filename>doc/README.enum</filename> (1.2)
+  bzw. <filename>doc/enum.txt</filename> (1.4).</simpara>
 
-  <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
-exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(ENUMQUERY()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+  <programlisting>; die Nummer 456 nachschlagen:
+123 =&gt; {
+    Set(resultid=${ENUMQUERY(456,sip)});
+    Set(count=${ENUMRESULT(resultid|getnum)});
+    Verbose(1,Anzahl der ENUM-Ergebnisse: ${count});
+    for (i=1; i&lt;=${count}; i=${i}+1) {
+        Set(device=${ENUMRESULT(resultid|${i})});
+        Verbose(1,ENUM-Ergebnis ${i}: ${device});
+        Dial(${device});
+    }
+}</programlisting>
 
   <xi:include href="enumquery-help.xml" xpointer="xpointer(/note/*)"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
