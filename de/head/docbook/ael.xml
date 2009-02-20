@@ -1,9 +1,11 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="ISO-8859-15"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <chapter id="ael" lang="de" revision="$Revision$">
   <!--
-% Copyright (c) 2009 - Philipp Kempgen <philipp.kempgen@amooma.de>
+% Copyright (c) 2009 
+% - Philipp Kempgen <philipp.kempgen@amooma.de>
+% - Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
 % or any later version published by the Free Software Foundation;
@@ -57,7 +59,7 @@
   nur im Format <filename>extensions.conf</filename> zu schreiben sondern kann
   sich alternativ auch für AEL, die <quote>Asterisk Extension
   Language</quote>, entscheiden. Die Datei dafür heißt
-  <filename>extensions.ael</filename>.</para>
+  <filename>extensions.ael</filename>. </para>
 
   <para>AEL ist vor allem für diejenigen interessant die sich immer schon
   geärgert haben daß eine größere <filename>extensions.conf</filename> schwer
@@ -65,7 +67,9 @@
   Skript-Programmiersprache. Übrigens schließen sich
   <filename>extensions.conf</filename> und <filename>extensions.ael</filename>
   nicht gegenseitig aus, man kann auch beide benutzen, also Kontexte in der
-  einen oder in der anderen Datei definieren.</para>
+  einen oder in der anderen Datei definieren. Wenn beide Dateien vorhanden
+  sind, überschreibt die <filename>extensions.conf</filename> Teile die in der
+  <filename>extensions.ael</filename> parallel vorhanden sind.</para>
 
   <para>Kleiner Vorgeschmack als <quote>Teaser</quote>:<informaltable
       colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
@@ -85,16 +89,12 @@
         <tbody valign="top">
           <row>
             <entry><programlisting><emphasis role="bold">[meine-telefone]</emphasis>
-
-
 <emphasis role="bold">exten =&gt; 20,1,</emphasis>Answer()
 <emphasis role="bold">exten =&gt; 20,n,</emphasis>Playback(beep)
 <emphasis role="bold">exten =&gt; 20,n,</emphasis>Hangup()
-
- </programlisting></entry>
+</programlisting></entry>
 
             <entry><programlisting><emphasis role="bold">context meine-telefone {</emphasis>
-  
   <emphasis role="bold">20 =&gt; {</emphasis>
     Answer();
     Playback(beep);
@@ -115,9 +115,11 @@
   <filename>extensions.conf</filename>-Format konvertieren könnte. Wir werden
   später noch darauf eingehen (siehe <xref linkend="aelparse" />).</para>
 
-  <para>Für erfahrende Leser sei noch gesagt dass hier wie üblich mit AEL
-  immer AEL2 gemeint ist, denn die erste Version war nur ein experimenteller
-  Versuch.</para>
+  <note>
+    <para>Am Rande sei noch gesagt dass hier wie bei Asterisk üblich mit AEL
+    immer AEL2 gemeint ist, denn die erste Version war nur ein experimenteller
+    Versuch.</para>
+  </note>
 
   <section id="ael-cli">
     <sectioninfo>
@@ -141,8 +143,9 @@
         <primary>AEL</primary>
 
         <secondary>reload</secondary>
-      </indexterm>, was die <filename>extensions.ael</filename> neu einliest
-    wenn man etwas geändert hat.</para>
+      </indexterm>, welcher die <filename>extensions.ael</filename> neu
+    einliest. Wichtig wenn man etwas verändert hat und nur den Dialplan
+    reloaden, aber nicht Asterisk neu starten will.</para>
 
     <screen>*CLI&gt; <command>ael reload</command> </screen>
 
@@ -283,22 +286,16 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
           <tbody valign="top">
             <row>
               <entry><programlisting><emphasis role="bold">[interne-benutzer]</emphasis>
-
-
 <emphasis role="bold">exten =&gt; 21,1,</emphasis>Dial(SIP/anna)
 <emphasis role="bold">exten =&gt; 21,n,</emphasis>VoiceMail(anna)
-
 
 <emphasis role="bold">exten =&gt; 22,1,</emphasis>Dial(SIP/lisa)
 <emphasis role="bold">exten =&gt; 22,n,</emphasis>VoiceMail(lisa)
 
-
 <emphasis role="bold">exten =&gt; _3X,1,</emphasis>Dial(SIP/${EXTEN})
-
- </programlisting></entry>
+</programlisting></entry>
 
               <entry><programlisting><emphasis role="bold">context interne-benutzer {</emphasis>
-  
   <emphasis role="bold">21 =&gt; {</emphasis>
     Dial(SIP/anna);
     VoiceMail(anna);
@@ -330,7 +327,7 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
                 <entry> </entry>
 
                 <entry><programlisting>context default {
-  23 =&gt; Playback(tt-monkeys);
+  23 =&gt; Playback(hello-world);
 }</programlisting></entry>
               </row>
             </tbody>
@@ -349,7 +346,7 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
 
                 <entry><programlisting>context default {
   23 =&gt; <emphasis role="bold">{</emphasis>
-    Playback(tt-monkeys);
+    Playback(hello-world);
   <emphasis role="bold">}</emphasis>
 }</programlisting></entry>
               </row>
@@ -417,9 +414,8 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
           <tbody valign="top">
             <row>
               <entry><programlisting><emphasis role="bold">;</emphasis> ein Kommentar
-
 exten =&gt; 10,1,Dial(SIP/anna) <emphasis role="bold">;</emphasis> Dial
- </programlisting></entry>
+</programlisting></entry>
 
               <entry><programlisting><emphasis role="bold">//</emphasis> ein Kommentar
 10 =&gt; {
@@ -444,7 +440,7 @@ exten =&gt; 10,1,Dial(SIP/anna) <emphasis role="bold">;</emphasis> Dial
         </keywordset>
       </sectioninfo>
 
-      <title>Includes &#8211; Andere contexte einbinden</title>
+      <title>Includes &ndash; Andere contexte einbinden</title>
 
       <indexterm>
         <primary>AEL</primary>
@@ -476,36 +472,24 @@ exten =&gt; 10,1,Dial(SIP/anna) <emphasis role="bold">;</emphasis> Dial
           <tbody valign="top">
             <row>
               <entry><programlisting>[verkauf]
-
 exten =&gt; 2001,1,Dial(SIP/anna)
-
-
 exten =&gt; 2002,1,Dial(SIP/hans)
 
-
 [lager]
-
 exten =&gt; 3001,1,Dial(SIP/lisa)
 
-
 [tag]
-
 <emphasis role="bold">include =&gt;</emphasis> verkauf
 <emphasis role="bold">include =&gt;</emphasis> lager
 
-
 [nacht]
-
 exten =&gt; _.,1,VoiceMail(${EXTEN},u)
 
-
 [von-extern]
-
 <emphasis role="bold">include =&gt;</emphasis> tag|09:00-17:00|mon-fri|*|*
 &#8232;<emphasis role="bold">include =&gt;</emphasis> tag|09:00-14:00|sat|*|*
 <emphasis role="bold">include =&gt;</emphasis> nacht
-
- </programlisting></entry>
+</programlisting></entry>
 
               <entry><programlisting>context verkauf {
   2001 =&gt; {
@@ -515,22 +499,26 @@ exten =&gt; _.,1,VoiceMail(${EXTEN},u)
     Dial(SIP/hans);
   }
 }
+
 context lager {
   3001 =&gt; {
     Dial(SIP/lisa);
   }
 }
+
 context tag {
   <emphasis role="bold">includes {</emphasis>
     verkauf;
     lager;
   <emphasis role="bold">}</emphasis>
 }
+
 context nacht {
   _. =&gt; {
     VoiceMail(${EXTEN},u);
   }
 }
+
 context von-extern {
   <emphasis role="bold">includes {</emphasis>
     tag|09:00-17:00|mon-fri|*|*;
@@ -543,8 +531,10 @@ context von-extern {
         </tgroup>
       </informaltable>
 
-      <para>Bitte beachten Sie in AEL das <quote><code>s</code></quote> in
-      <quote><code>includes</code></quote>.</para>
+      <important>
+        <para>Bitte beachten Sie in AEL das <quote><code>s</code></quote> am
+        Ende von <quote><code>includes</code></quote>.</para>
+      </important>
     </section>
 
     <section id="ael-global-variables">
@@ -594,7 +584,7 @@ context von-extern {
               <entry><programlisting><emphasis role="bold">[globals]</emphasis>
 KUCHEN=Marmorkuchen
 KLINGELZEIT=60
- </programlisting></entry>
+</programlisting></entry>
 
               <entry><programlisting><emphasis role="bold">globals {</emphasis>
   KUCHEN=Marmorkuchen;
@@ -709,12 +699,9 @@ KLINGELZEIT=60
 
           <tbody valign="top">
             <row>
-              <entry><programlisting> 
-exten =&gt; 50,1,Set(a=test)
+              <entry><programlisting>exten =&gt; 50,1,Set(a=test)
 exten =&gt; 50,n,<emphasis role="bold">ExecIf($["${a}" = "101"]</emphasis>,SayDigits,123)
-
-
- </programlisting></entry>
+</programlisting></entry>
 
               <entry><programlisting>50 =&gt; {
   Set(a=test);
@@ -780,62 +767,66 @@ exten =&gt; 50,n,<emphasis role="bold">ExecIf($["${a}" = "101"]</emphasis>,SayDi
           <tbody valign="top">
             <row>
               <entry><programlisting>[beispiel]
-
+; zu einem Label in der
+; gleichen Extension gehen:
+;
 exten =&gt; 10,1<emphasis role="bold">(anfang)</emphasis>,NoOp()
 exten =&gt; 10,n,Wait(1)
 exten =&gt; 10,n,SayNumber(1)
 exten =&gt; 10,n,NoOp(Endlosschleife)
-; zu einem Label in der
-; gleichen Extension gehen:
 exten =&gt; 10,n,<emphasis role="bold">Goto(anfang)</emphasis>
 
-
-exten =&gt; 20,1,SayNumber(20)
 ; zu einem Label in einer
 ; anderen Extension im
 ; gleichen Kontext gehen:
+;
+exten =&gt; 20,1,SayNumber(20)
 exten =&gt; 20,n,<emphasis role="bold">Goto(10,anfang)</emphasis>
 
-
-exten =&gt; 30,1,SayNumber(30)
 ; zu einem Label in einem
 ; anderen Kontext gehen:
+;
+exten =&gt; 30,1,SayNumber(30)
 exten =&gt; 30,n,<emphasis role="bold">Goto(cntxt2,40,vierzig)</emphasis>
 
-
 [cntxt2]
-
 exten =&gt; 40,1<emphasis role="bold">(vierzig)</emphasis>,NoOp()
 exten =&gt; 40,n,SayNumber(40)
 
 exten =&gt; 50,1,<emphasis role="bold">Goto(40,1)</emphasis>
 exten =&gt; 60,1,<emphasis role="bold">Goto(beispiel,10,1)</emphasis>
- </programlisting></entry>
+</programlisting></entry>
 
               <entry><programlisting>context beispiel {
+  // zu einem Label in der
+  // gleichen Extension gehen:
+  //
   10 =&gt; {
    <emphasis role="bold">anfang:</emphasis>
     Wait(1);
     SayNumber(10);
     NoOp(Endlosschleife);
-    // zu einem Label in der
-    // gleichen Extension gehen:
     <emphasis role="bold">goto anfang</emphasis>;
   }
+
+  // zu einem Label in einer
+  // anderen Extension im
+  // gleichen Kontext gehen:
+  //
   20 =&gt; {
     SayNumber(20);
-    // zu einem Label in einer
-    // anderen Extension im
-    // gleichen Kontext gehen:
     <emphasis role="bold">goto 10|anfang</emphasis>;
   }
+
+  // zu einem Label in einem
+  // anderen Kontext gehen:
+  //
   30 =&gt; {
     SayNumber(30);
-    // zu einem Label in einem
-    // anderen Kontext gehen:
     <emphasis role="bold">goto cntxt2|40|vierzig</emphasis>;
   }
 }
+
 context cntxt2 {
   40 =&gt; {
    <emphasis role="bold">vierzig:</emphasis>
@@ -930,7 +921,7 @@ context cntxt2 {
         </informaltable></para>
 
       <para>Im folgenden (<xref linkend="ael-conditionals" /> und <xref
-      linkend="ael-loops" />) werden wir aber lernen dass man in AEL eh nicht
+      linkend="ael-loops" />) werden wir aber lernen dass man in AEL nicht
       mehr darauf angewiesen ist den Kontrolfluss (control flow) des Programms
       durch goto-Sprünge zu definieren da es echte Kontrollstrukturen
       gibt.</para>
@@ -996,11 +987,10 @@ context cntxt2 {
 
           <tbody valign="top">
             <row>
-              <entry><programlisting> 
-exten =&gt; 90,1,Dial(SIP/anna)
+              <entry><programlisting>exten =&gt; 90,1,Dial(SIP/anna)
 exten =&gt; 90,n,<emphasis role="bold">GotoIf($["${DIALSTATUS}" = "BUSY"]?b:n)</emphasis>
 exten =&gt; 90,10(b),Answer()
-exten =&gt; 90,11,Playback(tt-weasels)
+exten =&gt; 90,11,Playback(hello-world)
 exten =&gt; 90,12,Voicemail(anna,b)
 exten =&gt; 90,13,<emphasis role="bold">Goto</emphasis>(ende)
 
@@ -1008,13 +998,13 @@ exten =&gt; 90,20(n),Dial(SIP/lisa)
 exten =&gt; 90,21,Playback(beeperr)
 exten =&gt; 90,22,<emphasis role="bold">Goto</emphasis>(ende)
 exten =&gt; 90,30(ende),NoOp(Fertig)
- </programlisting></entry>
+</programlisting></entry>
 
               <entry><programlisting>90 =&gt; {
   Dial(SIP/anna);
   <emphasis role="bold">if ("${DIALSTATUS}" = "BUSY") {</emphasis>
     Answer();
-    Playback(tt-weasels)
+    Playback(hello-world)
     Voicemail(anna,b);
   <emphasis role="bold">}</emphasis>
   <emphasis role="bold">else {</emphasis>
@@ -1029,8 +1019,8 @@ exten =&gt; 90,30(ende),NoOp(Fertig)
       </informaltable>
 
       <para>Wer an AEL gewöhnt ist empfindet das unübersichtliche
-      Herumspringen mit <code>GotoIf()</code> zu recht als Gewürge, mal ganz
-      zu schweigen davon dass man bei einem Befehl wie
+      Herumspringen mit <code>GotoIf()</code> zu recht als Umständlich, mal
+      ganz zu schweigen davon dass man bei einem Befehl wie
       <code>GotoIf($["${DIALSTATUS}" = "BUSY"]?b:n)</code> nicht auf den
       ersten Blick sieht ob all die Klammern richtig sind.</para>
 
@@ -1061,13 +1051,12 @@ exten =&gt; 90,30(ende),NoOp(Fertig)
 
           <tbody valign="top">
             <row>
-              <entry><programlisting> 
-exten =&gt; 70,1,Dial(SIP/anna)
+              <entry><programlisting>exten =&gt; 70,1,Dial(SIP/anna)
 exten =&gt; 70,n,<emphasis role="bold">Goto(70-${DIALSTATUS},10)</emphasis>
+exten =&gt; 70,n(ende),NoOp(Fertig)
 
 exten =&gt; 70-<emphasis role="bold">BUSY</emphasis>,10,NoOp(besetzt)
 exten =&gt; 70-<emphasis role="bold">BUSY</emphasis>,11,<emphasis role="bold">Goto</emphasis>(ende)
-
 exten =&gt; 70-<emphasis role="bold">NOANSWER</emphasis>,10,NoOp(hebt nicht ab)
 exten =&gt; 70-<emphasis role="bold">NOANSWER</emphasis>,11,<emphasis
                     role="bold">Goto</emphasis>(ende)
@@ -1075,9 +1064,7 @@ exten =&gt; 70-<emphasis role="bold">NOANSWER</emphasis>,11,<emphasis
 exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,10,NoOp(was anderes)
 exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,11,<emphasis
                     role="bold">Goto</emphasis>(ende)
-
-exten =&gt; 70,n(ende),NoOp(Fertig)
- </programlisting></entry>
+</programlisting></entry>
 
               <entry><programlisting>70 =&gt; {
   Dial(SIP/anna);
@@ -1104,7 +1091,7 @@ exten =&gt; 70,n(ende),NoOp(Fertig)
         <code>switch</code>-Block in AEL immer an die
         <code>break</code>-Anweisungen! Ohne diese Begrenzung läuft die
         Programmausführung einfach nach unten weiter, also zum nächsten
-        <code>case</code> oder <code>default</code> &#8211; eben zur nächsten
+        <code>case</code> oder <code>default</code> &ndash; eben zur nächsten
         Zeile.</para>
       </important>
 
@@ -1114,8 +1101,8 @@ exten =&gt; 70,n(ende),NoOp(Fertig)
       Verschachtelte <code>if</code>- oder <code>switch</code>-Blöcke wären
       vollkommen unübersichtlich und unwartbar.</para>
 
-      <para>Übrigens gibt es &#8211; falls man das wirklich mal brauchen
-      sollte &#8211; in switch-Blöcken nicht nur <code>case</code>-Vergleiche
+      <para>Übrigens gibt es &ndash; falls man das wirklich mal brauchen
+      sollte &ndash; in switch-Blöcken nicht nur <code>case</code>-Vergleiche
       sondern auch <code>pattern</code>:</para>
 
       <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
@@ -1137,8 +1124,7 @@ exten =&gt; 70,n(ende),NoOp(Fertig)
 
           <tbody valign="top">
             <row>
-              <entry><programlisting> 
-exten =&gt; _70,1,NoOp(Gewaehlt: ${EXTEN})
+              <entry><programlisting>exten =&gt; _70,1,NoOp(Gewaehlt: ${EXTEN})
 exten =&gt; _70,n,<emphasis role="bold">Goto(70-${EXTEN},10)</emphasis>
 
 exten =&gt; 70-<emphasis role="bold">703</emphasis>,10,NoOp(703)
@@ -1155,8 +1141,7 @@ exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphas
 exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,11,<emphasis
                     role="bold">Goto</emphasis>(ende)
 
-exten =&gt; 70,n(ende),NoOp(Fertig)
- </programlisting></entry>
+exten =&gt; 70,n(ende),NoOp(Fertig) </programlisting></entry>
 
               <entry><programlisting>_70. =&gt; {
   NoOp(Gewaehlt: ${EXTEN});
@@ -1326,7 +1311,7 @@ exten =&gt; 70,n(ende),NoOp(Fertig)
         <secondary>for, while</secondary>
       </indexterm>
 
-      <para>Schleifen (loops) gehören &#8211; wie bedingte Anweisungen &#8211;
+      <para>Schleifen (loops) gehören &ndash; wie bedingte Anweisungen &ndash;
       zu den Kontrollstrukturen (control structures) eines
       Programmablaufs.</para>
 
@@ -1368,8 +1353,7 @@ exten =&gt; 70,n(ende),NoOp(Fertig)
 
           <tbody valign="top">
             <row>
-              <entry><programlisting> 
-exten =&gt; 40,1,Set(x=5)
+              <entry><programlisting>exten =&gt; 40,1,Set(x=5)
 exten =&gt; 40,n,<emphasis role="bold">While($[${x} &lt;= 9])</emphasis>
 exten =&gt; 40,n,NoOp(x ist ${x})
 
@@ -1378,8 +1362,7 @@ exten =&gt; 40,n,ExecIf($[${x} &gt; 5],<emphasis role="bold">ExitWhile</emphasis
 exten =&gt; 40,n,Playback(beep)
 exten =&gt; 40,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
 exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
-exten =&gt; 40,n,NoOp(Fertig)
- </programlisting></entry>
+exten =&gt; 40,n,NoOp(Fertig) </programlisting></entry>
 
               <entry><programlisting>30 =&gt; {
   x=0;
@@ -1434,15 +1417,13 @@ exten =&gt; 40,n,NoOp(Fertig)
 
           <tbody valign="top">
             <row>
-              <entry><programlisting> 
-exten =&gt; 40,1,<emphasis role="bold">Set(x=5)</emphasis>
+              <entry><programlisting>exten =&gt; 40,1,<emphasis role="bold">Set(x=5)</emphasis>
 exten =&gt; 40,n,<emphasis role="bold">While($[${x} &lt;= 5])</emphasis>
 exten =&gt; 40,n,NoOp(x ist ${x})
 exten =&gt; 40,n,Playback(beep)
 exten =&gt; 40,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
 exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
-exten =&gt; 40,n,NoOp(Fertig)
- </programlisting></entry>
+exten =&gt; 40,n,NoOp(Fertig) </programlisting></entry>
 
               <entry><programlisting>40 =&gt; {
   <emphasis role="bold">for (x=0; ${x}&lt;=5; x=${x}+1) {</emphasis>
@@ -1517,14 +1498,11 @@ exten =&gt; s,n,Set(c=$[ ${c} - 1 ])
 exten =&gt; s,n,EndWhile()
 
 [default]
-
 exten =&gt; 123,1,<emphasis role="bold">Macro(countdown,3)</emphasis>
-
 exten =&gt; 124,1,<emphasis role="bold">Macro(countdown,5)</emphasis>
  </programlisting></entry>
 
               <entry><programlisting><emphasis role="bold">macro countdown( count ) {</emphasis>
-  
   for (c=${count}; ${c}&gt;0; c=${c}-1) {
     SayNumber(${c});
   }
@@ -1589,17 +1567,13 @@ context default {
           <tbody valign="top">
             <row>
               <entry><programlisting>[interne-benutzer]
-
 exten =&gt; 21,<emphasis role="bold">hint,SIP/anna</emphasis>
 exten =&gt; 21,1,Dial(SIP/anna)
 
 exten =&gt; 22,<emphasis role="bold">hint,SIP/lisa</emphasis>
-exten =&gt; 22,1,Dial(SIP/lisa)
-
- </programlisting></entry>
+exten =&gt; 22,1,Dial(SIP/lisa) </programlisting></entry>
 
               <entry><programlisting>context interne-benutzer {
-  
   <emphasis role="bold">hint(SIP/anna)</emphasis> 21 =&gt; {
     Dial(SIP/anna);
   }
@@ -1634,17 +1608,12 @@ exten =&gt; 22,1,Dial(SIP/lisa)
           <tbody valign="top">
             <row>
               <entry><programlisting>[interne-benutzer]
-
 exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
 exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
 
-
-exten =&gt; _2X,1,Dial(SIP/${EXTEN})
-
- </programlisting></entry>
+exten =&gt; _2X,1,Dial(SIP/${EXTEN}) </programlisting></entry>
 
               <entry><programlisting>context interne-benutzer {
-  
   <emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {}
   <emphasis role="bold">hint(SIP/22)</emphasis> 22 =&gt; {}
   
@@ -1670,8 +1639,8 @@ exten =&gt; _2X,1,Dial(SIP/${EXTEN})
       <title>Filtern nach Anrufernummer</title>
 
       <para>Man braucht es zwar in der Praxis eher selten, aber die Syntax für
-      eine (vielzitierte) <quote>Ex-Girlfriend Extension</quote> sähe so
-      aus:</para>
+      eine (in der Asterisk Community vielzitierte) <quote>Ex-Girlfriend
+      Extension</quote> sähe so aus:</para>
 
       <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
                      tocentry="0">
@@ -1692,14 +1661,11 @@ exten =&gt; _2X,1,Dial(SIP/${EXTEN})
 
           <tbody valign="top">
             <row>
-              <entry><programlisting> 
-exten =&gt; 10<emphasis role="bold">/55555</emphasis>,1,NoOp(Ex-Freundin)
+              <entry><programlisting>exten =&gt; 10<emphasis role="bold">/55555</emphasis>,1,NoOp(Ex-Freundin)
 exten =&gt; 10<emphasis role="bold">/55555</emphasis>,n,Busy()
 
-
 exten =&gt; 10,1,Dial(SIP/karl)
-exten =&gt; 10,n,Voicemail(karl)
- </programlisting></entry>
+exten =&gt; 10,n,Voicemail(karl) </programlisting></entry>
 
               <entry><programlisting>10<emphasis role="bold">/55555</emphasis> =&gt; {
   NoOp(Ex-Freundin);
@@ -1721,5 +1687,27 @@ exten =&gt; 10,n,Voicemail(karl)
       <para>Übrigens sind hier auch Pattern erlaubt. Mit <code>/_0123.</code>
       könnte man also direkt einen ganzen Vorwahl-Bereich matchen.</para>
     </section>
+  </section>
+
+  <section>
+    <title>extensions.ael oder extensions.conf?</title>
+
+    <para>Zwangsläufig stellt sich jeder Entwickler von Asterisk Dialplänen
+    die Frage, ob es besser ist in AEL oder im traditionellen Stil zu
+    schreiben. Leider bleibt an dieser Stelle Digium eine klare Antwort
+    schuldig. Es ist also nicht klar, ob es eine strategische Ausrichtung
+    gibt. Für ein gutes Verständnis von Asterisk ist die Einführung in die
+    <filename>extensions.conf</filename> unverzichtbar. Schon alleine deshalb,
+    weil noch ein Grossteil der Dokumentation die man im Web findet für die
+    extensions.conf geschrieben ist.</para>
+
+    <para>Wer nur hin und wieder mal in den Dialplan schaut und an sonsten mit
+    Asterisk nichts zu tun hat, fährt sicherlich die nächste Zeit mit der
+    konventionellen <filename>extensions.conf</filename> besser. Für
+    Entwickler, die aber sehr viel mit Asterisk arbeiten ist die neue AEL
+    Variante viel zu verführerisch, als das man den Sprung nicht wagt. Selbst
+    auf die Gefahr, das Digium AEL irgendwann nicht mehr unstützen sollte (was
+    sehr unwahrscheinlich ist), hat man mit <command>aelparse</command> ein
+    Tool an der Hand, mit der man wieder in die alte Welt zurück kann.</para>
   </section>
 </chapter>
