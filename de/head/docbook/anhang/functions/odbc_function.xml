@@ -30,7 +30,22 @@
     <literal>ODBC_<replaceable>...</replaceable>()</literal>-Funktionen.</para>
   </important>
 
-  <simpara>FULL DESCRIPTION. FIXME</simpara>
+  <simpara>In der Asterisk-Konfigurationsdatei
+  <filename>func_odbc.conf</filename> können eigene Funktionen zum Lesen aus
+  einer und zum Schreiben in eine ODBC-Datenbank definiert werden. Diese
+  Funktionen stehen dann im Dialplan als <quote>normale</quote> Funktionen zur
+  Verfügung.</simpara>
+
+  <programlisting>; Beispiel einer func_odbc.conf
+
+[ANTI_EXFREUNDIN]
+dsn=mysql
+read=SELECT COUNT(*) FROM `exfreundinnen` WHERE `callerid`='${SQL_ESC(${ARG1})}'
+
+
+
+
+</programlisting>
 
   <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
 exten =&gt; 123,1,Answer()
@@ -50,6 +65,7 @@ exten =&gt; 123,n,Hangup()</programlisting>
     <title>Siehe auch</title>
 
     <para><xref linkend="functions-odbc_sql" />, <xref
-    linkend="functions-sql_esc" />, <xref linkend="functions-hash" /></para>
+    linkend="functions-odbc_fetch" />, <xref linkend="functions-sql_esc" />,
+    <xref linkend="functions-hash" /></para>
   </formalpara>
 </section>
