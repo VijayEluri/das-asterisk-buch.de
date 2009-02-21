@@ -21,14 +21,28 @@
       <secondary><code>REALTIME()</code></secondary>
     </indexterm></title>
 
-  <synopsis>REALTIME(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>
+  REALTIME(<replaceable>family</replaceable>/<replaceable>fieldmatch</replaceable>[/<replaceable>value</replaceable>[/<replaceable>delim1</replaceable>[/<replaceable>delim2</replaceable>]]]) - zum Lesen.
+  REALTIME(<replaceable>family</replaceable>/<replaceable>fieldmatch</replaceable>/<replaceable>value</replaceable>/<replaceable>field</replaceable>) - zum Schreiben.
+  </synopsis>
 
-  <simpara>FULL DESCRIPTION. FIXME</simpara>
+  <simpara>Mit dieser Funktion kann man Werte mithilfe des RealTime-
+	  Konfigurationssteuerprogrammes auslesen und auch schreiben. 
+	  Wenn mit der Funktion ein Wert ausgelesen wird, dann wird eine
+	  separierte Zeichenkette zurückgegeben. Der Seperator zwischen 
+	  dem Namen und dem Wert kann mit delim2 angegeben werden. Die
+  	  einzelnen Ergebnisse werden mit delim1 Seperiert. Der Standart
+	  für delim1 ist '|' und für delim2 '='. Wenn nichts gefunden
+	  wird, liefert die Funktion 'NULL' zurück. Wenn mit der Funktion 
+	  geschrieben wird, wird immer 'NULL' zurückgegeben.
+  </simpara>
 
-  <programlisting>; FIXMEFIXMEFIXME EXAMPLE DIALPLAN
+<programlisting>; Lesen und Schreiben mit REALTIME
 exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(REALTIME()=FIXMEFIXMEFIXME)
-exten =&gt; 123,n,Hangup()</programlisting>
+exten =&gt; 123,n,Set(${Data} = ${REALTIME(sipusers,ext,5678)})
+exten =&gt; 123,n,Set(${REALTIME(sipusers,ext,5678)} = 1234)
+exten =&gt; 123,n,Hangup()
+</programlisting>
 
   <xi:include href="realtime-help.xml" xpointer="xpointer(/note/*)"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -39,6 +53,7 @@ exten =&gt; 123,n,Hangup()</programlisting>
     <para><xref linkend="functions-realtime" />, <xref
     linkend="functions-realtime_store" />, <xref
     linkend="functions-realtime_destroy" />, <xref
-    linkend="functions-odbc_function" /></para>
+    linkend="functions-odbc_function" />, <xref 
+    linkend="applications-realtime" /></para>
   </formalpara>
 </section>
