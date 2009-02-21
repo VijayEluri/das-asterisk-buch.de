@@ -25,17 +25,23 @@
   <synopsis>QUEUE_VARIABLES(<replaceable>warteschlange</replaceable>)</synopsis>
 
   <simpara>Liefert Informationen über eine Warteschlange. Die Werte werden als
-  Channel-Variablen gesetzt. Damit diese Funktion benutzt werden kann muss für
-  die betreffende Queue die Einstellung <literal>setqueuevar</literal> in der
-  <filename>queues.conf</filename> aktiviert sein.</simpara>
+  Channel-Variablen gesetzt. Damit diese Funktion benutzt werden kann muss in
+  der <filename>queues.conf</filename> für die betreffende Queue die
+  Einstellung <literal>setqueuevar=yes</literal> aktiviert sein. Bei Erfolg
+  wird <literal>0</literal> zurückgegeben bzw. <literal>-1</literal> wenn die
+  Queue nicht definiert oder <literal>setqueuevar</literal> nicht aktiviert
+  ist.</simpara>
 
-  <important>
-    <para>FIXME. <ulink
-    url="http://bugs.digium.com/view.php?id=14506">http://bugs.digium.com/view.php?id=14506</ulink></para>
-  </important>
-
-  <programlisting>exten =&gt; 123,1,Answer()
-exten =&gt; 123,n,Set(QUEUE_VARIABLES()=FIXMEFIXMEFIXME)
+  <programlisting>; Werte fuer die Queue "techsupport" abfragen:
+exten =&gt; 123,1,Set(err=${QUEUE_VARIABLES(techsupport)})
+exten =&gt; 123,n,Verbose(1,Strategie: ${QUEUESTRATEGY})
+exten =&gt; 123,n,Verbose(1,Maximal erlaubte Anrufer: ${QUEUEMAX})
+exten =&gt; 123,n,Verbose(1,Aktuelle Anruferanzahl: ${QUEUECALLS})
+exten =&gt; 123,n,Verbose(1,Erfolgreiche Anrufe: ${QUEUECOMPLETED})
+exten =&gt; 123,n,Verbose(1,Abgebrochene Anrufe: ${QUEUEABANDONED})
+exten =&gt; 123,n,Verbose(1,Durchschnittliche Wartezeit: ${QUEUEHOLDTIME})
+exten =&gt; 123,n,Verbose(1,Gesetztes Service-Level: ${QUEUESRVLEVEL})
+exten =&gt; 123,n,Verbose(1,Service-Level-Einhaltung: ${QUEUESRVLEVELPERF})
 exten =&gt; 123,n,Hangup()</programlisting>
 
   <xi:include href="queue_variables-help.xml" xpointer="xpointer(/note/*)"
