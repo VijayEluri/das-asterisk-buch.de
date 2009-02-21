@@ -79,8 +79,8 @@
   sind, überschreibt die <filename>extensions.conf</filename> Teile die in der
   <filename>extensions.ael</filename> parallel vorhanden sind.</para>
 
-  <para>Kleiner Vorgeschmack als <quote>Teaser</quote>:<informaltable
-      colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+  <para>Kleiner Vorgeschmack:<informaltable colsep="0" frame="none" pgwide="1"
+      rowsep="0" tocentry="0">
       <tgroup cols="2">
         <colspec align="left" colnum="1" colwidth="5*" />
 
@@ -294,6 +294,7 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
           <tbody valign="top">
             <row>
               <entry><programlisting><emphasis role="bold">[interne-benutzer]</emphasis>
+
 <emphasis role="bold">exten =&gt; 21,1,</emphasis>Dial(SIP/anna)
 <emphasis role="bold">exten =&gt; 21,n,</emphasis>VoiceMail(anna)
 
@@ -804,7 +805,8 @@ exten =&gt; 40,1<emphasis role="bold">(vierzig)</emphasis>,NoOp()
 exten =&gt; 40,n,SayNumber(40)
 
 exten =&gt; 50,1,<emphasis role="bold">Goto(40,1)</emphasis>
-exten =&gt; 60,1,<emphasis role="bold">Goto(beispiel,10,1)</emphasis></programlisting></entry>
+exten =&gt; 60,1,<emphasis role="bold">Goto(beispiel,10,1)</emphasis>
+</programlisting></entry>
 
               <entry><programlisting>context beispiel {
   
@@ -1000,6 +1002,7 @@ context cntxt2 {
             <row>
               <entry><programlisting>exten =&gt; 90,1,Dial(SIP/anna)
 exten =&gt; 90,n,<emphasis role="bold">GotoIf($["${DIALSTATUS}" = "BUSY"]?b:n)</emphasis>
+
 exten =&gt; 90,10(b),Answer()
 exten =&gt; 90,11,Playback(hello-world)
 exten =&gt; 90,12,Voicemail(anna,b)
@@ -1368,13 +1371,12 @@ exten =&gt; 70,n(ende),NoOp(Fertig) </programlisting></entry>
               <entry><programlisting>exten =&gt; 40,1,Set(x=5)
 exten =&gt; 40,n,<emphasis role="bold">While($[${x} &lt;= 9])</emphasis>
 exten =&gt; 40,n,NoOp(x ist ${x})
-
 exten =&gt; 40,n,ExecIf($[${x} &gt; 5],<emphasis role="bold">ExitWhile</emphasis>)
-
 exten =&gt; 40,n,Playback(beep)
 exten =&gt; 40,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
 exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
-exten =&gt; 40,n,NoOp(Fertig) </programlisting></entry>
+exten =&gt; 40,n,NoOp(Fertig)
+</programlisting></entry>
 
               <entry><programlisting>30 =&gt; {
   x=0;
@@ -1435,14 +1437,13 @@ exten =&gt; 40,n,NoOp(x ist ${x})
 exten =&gt; 40,n,Playback(beep)
 exten =&gt; 40,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
 exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
-exten =&gt; 40,n,NoOp(Fertig) </programlisting></entry>
+exten =&gt; 40,n,NoOp(Fertig)
+</programlisting></entry>
 
               <entry><programlisting>40 =&gt; {
   <emphasis role="bold">for (x=0; ${x}&lt;=5; x=${x}+1) {</emphasis>
-    
     NoOp(x ist ${x});
     Playback(beep);
-    
   <emphasis role="bold">}</emphasis>
   NoOp(Fertig);
 }</programlisting></entry>
@@ -1512,7 +1513,7 @@ exten =&gt; s,n,EndWhile()
 [default]
 exten =&gt; 123,1,<emphasis role="bold">Macro(countdown,3)</emphasis>
 exten =&gt; 124,1,<emphasis role="bold">Macro(countdown,5)</emphasis>
- </programlisting></entry>
+</programlisting></entry>
 
               <entry><programlisting><emphasis role="bold">macro countdown( count ) {</emphasis>
   for (c=${count}; ${c}&gt;0; c=${c}-1) {
@@ -1583,7 +1584,8 @@ exten =&gt; 21,<emphasis role="bold">hint,SIP/anna</emphasis>
 exten =&gt; 21,1,Dial(SIP/anna)
 
 exten =&gt; 22,<emphasis role="bold">hint,SIP/lisa</emphasis>
-exten =&gt; 22,1,Dial(SIP/lisa) </programlisting></entry>
+exten =&gt; 22,1,Dial(SIP/lisa)
+</programlisting></entry>
 
               <entry><programlisting>context interne-benutzer {
   <emphasis role="bold">hint(SIP/anna)</emphasis> 21 =&gt; {
@@ -1623,7 +1625,8 @@ exten =&gt; 22,1,Dial(SIP/lisa) </programlisting></entry>
 exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
 exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
 
-exten =&gt; _2X,1,Dial(SIP/${EXTEN}) </programlisting></entry>
+exten =&gt; _2X,1,Dial(SIP/${EXTEN})
+</programlisting></entry>
 
               <entry><programlisting>context interne-benutzer {
   <emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {}
@@ -1677,7 +1680,8 @@ exten =&gt; _2X,1,Dial(SIP/${EXTEN}) </programlisting></entry>
 exten =&gt; 10<emphasis role="bold">/55555</emphasis>,n,Busy()
 
 exten =&gt; 10,1,Dial(SIP/karl)
-exten =&gt; 10,n,Voicemail(karl) </programlisting></entry>
+exten =&gt; 10,n,Voicemail(karl)
+</programlisting></entry>
 
               <entry><programlisting>10<emphasis role="bold">/55555</emphasis> =&gt; {
   NoOp(Ex-Freundin);
