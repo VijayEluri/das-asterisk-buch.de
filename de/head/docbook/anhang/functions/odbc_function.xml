@@ -22,7 +22,7 @@
       <secondary><code>ODBC_<replaceable>*</replaceable>()</code></secondary>
     </indexterm></title>
 
-  <synopsis>ODBC_<replaceable>funktionsname</replaceable>(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>ODBC_<replaceable>funktionsname</replaceable>(<replaceable>arg1</replaceable>[,<replaceable>arg2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
 
   <important>
     <para>Diese Funktionsbeschreibung dient als Platzhalter für eigene, vom
@@ -199,9 +199,16 @@ Connected: yes</screen></para>
   <bridgehead id="func_odbc-anti-exfreundin">Beispiel um Anrufe von
   Exfreundinnen nicht durchzustellen:</bridgehead>
 
-  <programlisting>[ANTI_EXFREUNDIN]
+  <para>MySQL-Tabelle:<programlisting>CREATE TABLE `exfreundinnen` (
+ `callerid` varchar(20) character set ascii NOT NULL,
+ `vorname`  varchar(50) collate utf8_unicode_ci NOT NULL,
+ `nachname` varchar(50) collate utf8_unicode_ci NOT NULL,
+ UNIQUE KEY `callerid` (`callerid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;</programlisting></para>
+
+  <para><filename>func_odbc.conf</filename>:<programlisting>[ANTI_EXFREUNDIN]
 dsn = meine_db_verbindung
-read = SELECT COUNT(*) FROM `exfreundinnen` WHERE `callerid`='${SQL_ESC(${ARG1})}'</programlisting>
+read = SELECT COUNT(*) FROM `exfreundinnen` WHERE `callerid`='${SQL_ESC(${ARG1})}'</programlisting></para>
 
   <para>Die Argumente des Aufrufs im Dialplan werden hier als
   <code>${ARG1}</code>, <code>${ARG2}</code> usw. übergeben. Dabei ist wichtig
@@ -211,31 +218,41 @@ read = SELECT COUNT(*) FROM `exfreundinnen` WHERE `callerid`='${SQL_ESC(${ARG1})
 
   <para>Die obige Funktion zum Lesen (<literal>read</literal>) würde im
   Dialplan folgendermaßen aufgerufen:<programlisting>20 =&gt; {
+    // Lesen:
     <emphasis role="bold">Set(ARRAY(anz)=${ODBC_ANTI_EXFREUNDIN(${CALLERID(num)})})</emphasis>;
     Verbose(1,### ODBC-Ergebnis: ${anz});
     if ("${anz}" != "0") {
-        Busy();
+        Busy(5);
     }
     else {
         Dial(SIP/xyz);
     }
+    Hangup();
 }</programlisting></para>
 
   <bridgehead id="func_odbc-inverssuche">Beispiel für Rückwärtssuche aus einer
   Kontaktliste:</bridgehead>
 
-  <para><filename>func_odbc.conf</filename>:</para>
+  <para>MySQL-Tabelle:<programlisting>CREATE TABLE `kontakte` (
+ `telnr`    varchar(20) character set ascii NOT NULL,
+ `vorname`  varchar(50) collate utf8_unicode_ci NOT NULL,
+ `nachname` varchar(50) collate utf8_unicode_ci NOT NULL,
+ UNIQUE KEY `telnr` (`telnr`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;</programlisting></para>
 
-  <programlisting>[RUECKWAERTSSUCHE]
+  <para><filename>func_odbc.conf</filename>:<programlisting>[RUECKWAERTSSUCHE]
 dsn = meine_db_verbindung
-read = SELECT `vorname`, `nachname` FROM `kontakte` WHERE `callerid`='${SQL_ESC(${ARG1})}'</programlisting>
+read = SELECT `vorname`, `nachname` FROM `kontakte` WHERE `telnr`='${SQL_ESC(${ARG1})}'</programlisting></para>
 
   <para>Dialplan:</para>
 
-  <programlisting>21 =&gt; {
+  <programlisting>_X. =&gt; {
+    // Lesen:
     <emphasis role="bold">Set(ARRAY(vn,nn)=${ODBC_RUECKWAERTSSUCHE(${CALLERID(num)})})</emphasis>;
     Verbose(1,### ODBC-Ergebnis: ${vn}\,${nn});
     Set(CALLERID(name)=${vn} ${nn});
+    Dial(SIP/${EXTEN});
+    Hangup();
 }</programlisting>
 
   <tip>
@@ -246,6 +263,54 @@ read = SELECT `vorname`, `nachname` FROM `kontakte` WHERE `callerid`='${SQL_ESC(
 Verbose(1,### Vorname  : ${HASH(kontakt,vorname)});
 Verbose(1,### Nachname : ${HASH(kontakt,nachname)});</programlisting></para>
   </tip>
+
+  <bridgehead id="func_odbc-dnd">Beispiel für Nicht-Stören-Funktion
+  (DND):</bridgehead>
+
+  <para>MySQL-Tabelle:<programlisting>CREATE TABLE `dndstates` (
+ `extension` varchar(4) character set ascii NOT NULL,
+ `dnd`       tinyint(1) unsigned NOT NULL default '0',
+ `modified`  int(10) unsigned NOT NULL default '0',
+ PRIMARY KEY  (`extension`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;</programlisting></para>
+
+  <para><filename>func_odbc.conf</filename>:<programlisting>[DND]
+dsn = meine_db_verbindung
+read = SELECT `dnd`, `modified` FROM `dndstates` WHERE `extension`='${SQL_ESC(${ARG1})}'
+write = REPLACE INTO `dndstates` SET `extension`='${SQL_ESC(${ARG1})}', `dnd`='${SQL_ESC(${VAL1})}', `modified`='${SQL_ESC(${VAL2})}'</programlisting></para>
+
+  <para>Dialplan:<programlisting>// DND aktivieren/deaktivieren
+_*2[01] =&gt; {
+    Set(an_aus=${EXTEN:2:1});
+    Set(nst=${CALLERID(num)});
+    if (${LEN(${nst})} &lt; 5) {
+        Verbose(1,### Setze DND fuer Nst. ${nst} auf ${an_aus});
+        <emphasis role="bold">// Schreiben:</emphasis>
+        <emphasis role="bold">Set(ODBC_DND(${nst})=${an_aus}\,${EPOCH})</emphasis>;
+    }
+    Hangup();
+}
+
+// Nst. anrufen
+_X. =&gt; {
+    <emphasis role="bold">// Lesen:</emphasis>
+    <emphasis role="bold">Set(ARRAY(dnd,modified)=${ODBC_DND(${EXTEN})})</emphasis>;
+    if ("${dnd}" = "1") {
+        Verbose(1,### DND fuer Nst. ${EXTEN} ist aktiviert seit ${STRFTIME(${modified},Europe/Berlin,%c)});
+        Busy(5);
+    }
+    else {
+        Verbose(1,### DND fuer Nst. ${EXTEN} ist nicht aktiviert);
+        Dial(SIP/${nst});
+    }
+    Hangup();
+}</programlisting></para>
+
+  <important>
+    <para>Bitte beachten Sie dass &#8211; wie im Beispiel oben gezeigt &#8211;
+    beim Schreiben von mehreren Werten diese durch
+    <quote><literal>\,</literal></quote> getrennt werden müssen.</para>
+  </important>
 
   <important>
     <para>Die u.a. Asterisk-Versionen und der interne Hilfetext sind nur ein
