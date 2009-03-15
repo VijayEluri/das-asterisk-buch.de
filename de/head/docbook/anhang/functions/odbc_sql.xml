@@ -27,15 +27,27 @@
     <para>Diese Funktion wird vom Anwender in der Datei
     <filename>func_odbc.conf</filename> definiert. Sie ist hier angeführt da
     sie in der Beispiel-Konfiguration von Asterisk enthalten ist. Für weitere
-    Informationen siehe <xref linkend="functions-odbc_function" />.</para>
+    Informationen siehe <xref linkend="functions-odbc_function" />, speziell
+    <xref linkend="func_odbc-sql" />.</para>
   </important>
 
   <para>Führt den angegebenen SQL-Query aus und gibt ggf. das Ergebnis
   zurück.<programlisting>; abfragen:
-exten =&gt; 123,1,Set(Name=${ODBC_SQL(SELECT name FROM liste WHERE nummer='123')})
+exten =&gt; 123,1,Set(ARRAY(vn,nn)=${ODBC_SQL(SELECT `vorname`\, `nachname` FROM `liste` WHERE `nummer`='${SQL_ESC(123)}')})
 
 ; setzen:
-exten =&gt; 123,1,Set(ODBC_SQL(UPDATE liste SET name='Peter' WHERE nummer='123'))</programlisting></para>
+exten =&gt; 123,1,Set(ODBC_SQL(UPDATE `liste` SET `name`='${SQL_ESC(Peter)}' WHERE `nummer`='${SQL_ESC(123)}'))</programlisting></para>
+
+  <important>
+    <para>Bitte beachten Sie dass alle Kommas
+    (<quote><literal>,</literal></quote>) im SQL-Befehl maskiert werden
+    müssen, also als <quote><literal>\,</literal></quote> geschrieben
+    werden.</para>
+  </important>
+
+  <important>
+    <para>Bitte</para>
+  </important>
 
   <xi:include href="odbc_sql-help.xml" xpointer="xpointer(/note/*)"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
@@ -45,7 +57,6 @@ exten =&gt; 123,1,Set(ODBC_SQL(UPDATE liste SET name='Peter' WHERE nummer='123')
 
     <para><xref linkend="functions-sql_esc" />, <xref
     linkend="functions-odbc_function" />, <xref
-    linkend="functions-odbc_user_database" />, <xref
     linkend="functions-odbc_fetch" />, <xref
     linkend="functions-hash" /></para>
   </formalpara>

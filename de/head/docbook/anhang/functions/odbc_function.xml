@@ -244,16 +244,14 @@ read = SELECT COUNT(*) FROM `exfreundinnen` WHERE `callerid`='${SQL_ESC(${ARG1})
 dsn = meine_db_verbindung
 read = SELECT `vorname`, `nachname` FROM `kontakte` WHERE `telnr`='${SQL_ESC(${ARG1})}'</programlisting></para>
 
-  <para>Dialplan:</para>
-
-  <programlisting>_X. =&gt; {
+  <para>Dialplan:<programlisting>_X. =&gt; {
     // Lesen:
     <emphasis role="bold">Set(ARRAY(vn,nn)=${ODBC_RUECKWAERTSSUCHE(${CALLERID(num)})})</emphasis>;
     Verbose(1,### ODBC-Ergebnis: ${vn}\,${nn});
     Set(CALLERID(name)=${vn} ${nn});
     Dial(SIP/${EXTEN});
     Hangup();
-}</programlisting>
+}</programlisting></para>
 
   <tip>
     <para>Ab Asterisk 1.6 bietet es sich bei den
@@ -310,6 +308,37 @@ _X. =&gt; {
     <para>Bitte beachten Sie dass &#8211; wie im Beispiel oben gezeigt &#8211;
     beim Schreiben von mehreren Werten diese durch
     <quote><literal>\,</literal></quote> getrennt werden müssen.</para>
+  </important>
+
+  <bridgehead id="func_odbc-sql">Beispiel für beliebige
+  SQL-Befehle:</bridgehead>
+
+  <para>Ein Spezialfall der sich in der <filename>func_odbc.conf</filename>
+  definieren lässt ist folgendes Konstrukt:<programlisting>[SQL]
+dsn = meine_db_verbindung
+read = ${ARG1}
+write = ${ARG1}</programlisting></para>
+
+  <para>Damit können vom Dialplan aus beliebige SQL-Befehle ausgeführt werden
+  ohne dass sie vorher in der <filename>func_odbc.conf</filename> festgelegt
+  wurden. Dabei ist natürlich zu beachten dass das Maskieren von Sonderzeichen
+  mit <literal>SQL_ESC()</literal> dann im Dialplan erfolgen muss. Das obige
+  Beispiel zur Rückwärtssuche ließe sich also auch so realisieren:</para>
+
+  <para>Dialplan:<programlisting>_X. =&gt; {
+    // Lesen:
+    <emphasis role="bold">Set(ARRAY(vn,nn)=${ODBC_SQL(SELECT `vorname`\, `nachname` FROM `kontakte` WHERE `telnr`='${SQL_ESC(${CALLERID(num)})}')});</emphasis>;
+    Verbose(1,### ODBC-Ergebnis: ${vn} ${nn});
+    Set(CALLERID(name)=${vn} ${nn});
+    Dial(SIP/${EXTEN});
+    Hangup();
+}</programlisting></para>
+
+  <important>
+    <para>Bitte beachten Sie dass alle Kommas
+    (<quote><literal>,</literal></quote>) im SQL-Befehl maskiert werden
+    müssen, also als <quote><literal>\,</literal></quote> geschrieben
+    werden.</para>
   </important>
 
   <important>
