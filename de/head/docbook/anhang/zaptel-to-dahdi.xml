@@ -99,9 +99,226 @@
   <section id="zaptel-to-dahdi-aenderungen">
     <title>DAHDI</title>
 
+    <bridgehead id="zaptel-to-dahdi-dial">Dial()</bridgehead>
+
     <para>Wer in Asterisk 1.6 oder ab Asterisk 1.4.22 DAHDI einsetzen will
-    (bzw. muss) sei darauf hingewiesen daß sich im Dialplan
+    (bzw. muss) sei darauf hingewiesen dass sich im Dialplan
     <code>Dial(Zap/<replaceable>...</replaceable>)</code> in
     <code>Dial(DAHDI/<replaceable>...</replaceable>)</code> ändert.</para>
+
+    <para>Allerdings kann man aus Gründen der Rückwärtskompatibilität falls
+    gewünscht in der <filename>/etc/asterisk/asterisk.conf</filename>
+    mit<programlisting>dahdichanname = no</programlisting>im Abschnitt
+    <code>[options]</code> einstellen dass die Kanäle wie vorher mit Zaptel
+    <code>Zap</code> statt <code>DAHDI</code> heißen.</para>
+
+    <bridgehead id="zaptel-to-dahdi-kernel-modules">Kernel-Module
+    (.ko)</bridgehead>
+
+    <informaltable colsep="0" frame="void" pgwide="1" rowsep="0">
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*" />
+
+        <colspec align="left" colwidth="1*" />
+
+        <thead>
+          <row>
+            <entry>Zaptel</entry>
+
+            <entry>Dahdi</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><filename>zaptel</filename></entry>
+
+            <entry><filename>dahdi</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztd-eth</filename></entry>
+
+            <entry><filename>dahdi_dynamic_eth</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztd-loc</filename></entry>
+
+            <entry><filename>dahdi_dynamic_loc</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztdummy</filename></entry>
+
+            <entry><filename>dahdi_dummy</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztdynamic</filename></entry>
+
+            <entry><filename>dahdi_dynamic</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>zttranscode</filename></entry>
+
+            <entry><filename>dahdi_transcode</filename></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>Die Kernel-Module der einzelnen Kartentreiber heißen wie
+    bisher.</para>
+
+    <bridgehead id="zaptel-to-dahdi-config-files">Dateien</bridgehead>
+
+    <informaltable colsep="0" frame="void" pgwide="1" rowsep="0">
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*" />
+
+        <colspec align="left" colwidth="1*" />
+
+        <thead>
+          <row>
+            <entry>Zaptel</entry>
+
+            <entry>Dahdi</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><filename>/etc/zaptel.conf</filename></entry>
+
+            <entry><filename>/etc/dahdi/system.conf</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>/etc/asterisk/zapata.conf</filename></entry>
+
+            <entry><filename>/etc/asterisk/chan_dahdi.conf</filename></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>Mit <code>dahdichanname = no</code> (s.o.) liest Asterisk die
+    Konfiguration aus der <filename>zapata.conf</filename> statt aus der
+    <filename>chan_dahdi.conf</filename>.</para>
+
+    <bridgehead id="zaptel-to-dahdi-shell-tools">Shell-Programme</bridgehead>
+
+    <informaltable colsep="0" frame="void" pgwide="1" rowsep="0">
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*" />
+
+        <colspec align="left" colwidth="1*" />
+
+        <thead>
+          <row>
+            <entry>Zaptel</entry>
+
+            <entry>Dahdi</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><filename>ztcfg</filename></entry>
+
+            <entry><filename>dahdi_cfg</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztmonitor</filename></entry>
+
+            <entry><filename>dahdi_monitor</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztscan</filename></entry>
+
+            <entry><filename>dahdi_scan</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztspeed</filename></entry>
+
+            <entry><filename>dahdi_speed</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>zttest</filename></entry>
+
+            <entry><filename>dahdi_test</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>zttool</filename></entry>
+
+            <entry><filename>dahdi_tool</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>zapconf</filename></entry>
+
+            <entry><filename>dahdi_genconf</filename></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <bridgehead
+    id="zaptel-to-dahdi-asterisk-modules">Asterisk-Module</bridgehead>
+
+    <informaltable colsep="0" frame="void" pgwide="1" rowsep="0">
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*" />
+
+        <colspec align="left" colwidth="1*" />
+
+        <thead>
+          <row>
+            <entry>Zaptel</entry>
+
+            <entry>Dahdi</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><filename>chan_zap.so</filename></entry>
+
+            <entry><filename>chan_dahdi.so</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>app_zapbarge.so</filename></entry>
+
+            <entry><filename>app_dahdibarge.so</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>app_zapras.so</filename></entry>
+
+            <entry><filename>app_dahdiras.so</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>app_zapscan.so</filename></entry>
+
+            <entry><filename>app_dahdiscan.so</filename></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>Aus Gründen der Rückwärtskompatibilität können die Applikationen
+    auch weiterhin als <code>Zap<replaceable>...</replaceable>()</code> statt
+    (neu:) <code>DAHDI<replaceable>...</replaceable>()</code> aufgerufen
+    werden. Für mehr Informationen zu den Applikationen siehe <xref
+    linkend="applications" />.</para>
   </section>
 </appendix>
