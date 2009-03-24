@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<section id="applications-pausequeuemember" lang="de" revision="$Revision$">
+<section id="applications-pausequeuemember" lang="de"
+         revision="$Revision$">
   <!--
 % Copyright (c) 2006 - 2008 by 
 % Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
@@ -15,48 +16,49 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>PauseQueueMember()</literal></title>
+  <title><literal>PauseQueueMember()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>PauseQueueMember()</code></secondary>
-    </indexterm>
+    <secondary><code>PauseQueueMember()</code></secondary>
+  </indexterm>
 
-    <simpara>Pausiert ein Warteschlangenmitglied, so dass es keine Anrufe
-    empfangen kann.</simpara>
+  <simpara>Lässt ein Warteschlangenmitglied pausieren, sodass es keine Anrufe
+  empfangen kann.</simpara>
 
-    <synopsis>PauseQueueMember([<replaceable>Schlange</replaceable>],<replaceable>Interface</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
+  <synopsis>PauseQueueMember([<replaceable>Schlange</replaceable>],<replaceable>Interface</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
 
-    <simpara>Pausiert die Durchstellung von Anrufen zu einem
-    Warteschlangenmitglied. Das spezifizierte Interface wird in der gegebenen
-    Warteschlange zeitweilig angehalten. Dadurch wird verhindert, dass Anrufe
-    aus der Warteschlange zu diesem Interface durchgestellt werden, bis es
-    nicht wieder freigegeben wurde durch <code>UnpauseQueueMember()</code>
-    oder das Manager-Interface. Wenn kein Warteschlangenname angegeben ist,
-    wird das Interface in jeder Warteschlange, in der es ein Mitglied ist,
-    angehalten. Befindet sich das Interface nicht in der benannten
-    Warteschlange, oder wenn keine Warteschlange angegeben und das Interface
-    nicht Mitglied irgendeiner Warteschlange ist, wird - bei Angabe der Option
-    <code>j</code> - die Ausführung bei Priorität n+101 fortgesetzt, falls
-    diese existiert.</simpara>
+  <simpara>Setzt die Durchstellung von Anrufen zu einem Warteschlangenmitglied
+  vorübergehend aus. Das spezifizierte Interface wird in der gegebenen
+  Warteschlange zeitweilig angehalten. Dadurch wird verhindert, dass Anrufe
+  aus der Warteschlange zu diesem Interface durchgestellt werden, solange es
+  nicht wieder durch <code>UnpauseQueueMember()</code> oder das
+  Manager-Interface freigegeben wurde. Wenn kein Warteschlangenname angegeben
+  ist, wird das Interface in jeder Warteschlange angehalten, in der es ein
+  Mitglied ist. Befindet sich das Interface nicht in der benannten
+  Warteschlange oder wenn keine Warteschlange angegeben ist und das Interface
+  nicht Mitglied irgendeiner Warteschlange ist, wird -- bei Angabe der Option
+  <code>j</code> -- die Ausführung bei der Priorität n+101 fortgesetzt, falls
+  diese existiert.</simpara>
 
-    <simpara>Gibt -1 zurück, falls das Interface nicht gefunden wurde oder
-    keine Extension existiert, zu der gesprungen werden kann, sonst 0. Setzt
-    die Channel-Variable <code>PQMSTATUS</code> auf <code>PAUSED</code>
-    (pausiert) oder <code>NOTFOUND</code> (nicht gefunden).</simpara>
+  <simpara>Gibt -1 zurück, falls das Interface nicht gefunden wurde oder keine
+  Extension existiert, zu der gesprungen werden kann, sonst 0. Setzt die
+  Channel-Variable <code>PQMSTATUS</code> auf <code>PAUSED</code> (pausiert)
+  oder <code>NOTFOUND</code> (nicht gefunden).</simpara>
 
-    <programlisting>; wenn *111002 gewählt wird, wird Agent/1002 auf allen Schlangen pausiert:
+  <programlisting>; wenn *111002 gewählt wird, wird Agent/1002 auf allen Warteschlangen zum Pausieren gezwungen:
 exten =&gt; *11ZXXX,1,PauseQueueMember(,Agent/${EXTEN:3})
 
 ; mit *121002 wird Agent/1002 wieder aktiviert:
 exten =&gt; *12ZXXX,1,UnpauseQueueMember(,Agent/${EXTEN:3})</programlisting>
 
-    <xi:include href="pausequeuemember-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="pausequeuemember-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <formalpara>
+    <title>Siehe auch</title>
 
-      <para><xref linkend="applications-unpausequeuemember" /></para>
-    </formalpara>
+    <para><xref linkend="applications-unpausequeuemember" /></para>
+  </formalpara>
 </section>

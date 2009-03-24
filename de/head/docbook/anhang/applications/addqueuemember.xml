@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<section id="applications-addqueuemember" lang="de" revision="$Revision$">
+<section id="applications-addqueuemember" lang="de"
+         revision="$Revision$">
   <!--
 % Copyright (c) 2006 - 2008 by 
 % Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
@@ -15,58 +16,58 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>AddQueueMember()</literal></title>
+  <title><literal>AddQueueMember()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>AddQueueMember()</code></secondary>
-    </indexterm>
+    <secondary><code>AddQueueMember()</code></secondary>
+  </indexterm>
 
-    <simpara>Reiht Interfaces dynamisch in eine Anruf-Warteschleife
-    ein.</simpara>
+  <simpara>Reiht Interfaces dynamisch in eine Anruf-Warteschleife
+  ein.</simpara>
 
-    <synopsis>AddQueueMember(<replaceable>Warteschleife</replaceable>[,<replaceable>Interface</replaceable>[,<replaceable>Malus</replaceable>[|,<replaceable>Optionen</replaceable>]]])</synopsis>
+  <synopsis>AddQueueMember(<replaceable>Warteschleife</replaceable>[,<replaceable>Interface</replaceable>[,<replaceable>Malus</replaceable>[|,<replaceable>Optionen</replaceable>]]])</synopsis>
 
-    <simpara>Reiht das angegebene Interface dynamisch als Agent in eine
-    vorhandene Warteschleife (Queue) ein, die in
-    <filename>queues.conf</filename> definiert wurde. Die Malus-Punkte
-    beeinflussen ggf. die Position bei der Abarbeitung. Agenten mit
-    niedrigerem Malus werden vor Einträgen mit höherem Malus
-    aufgerufen.</simpara>
+  <simpara>Reiht das angegebene Interface dynamisch als Agent in eine
+  vorhandene Warteschleife (Queue) ein, die in
+  <filename>queues.conf</filename> definiert wurde. Die Malus-Punkte
+  beeinflussen ggf. die Position bei der Abarbeitung. Agenten mit niedrigerem
+  Malus werden vor Einträgen mit höherem Malus aufgerufen.</simpara>
 
-    <simpara>Falls das angegebene Interface bereits in die Warteschlange
-    eingereiht ist und eine n+101 Priorität existiert (n ist die aktuelle
-    Priorität), wird die Abarbeitung bei dieser Priorität fortgesetzt,
-    andernfalls wird ein Fehler (d.h. -1) zurückgeliefert. (Je nach
-    Asterisk-Version muss für das Springen zu n+101 die Option <code>j</code>
-    (jump) angegeben werden.)</simpara>
+  <simpara>Falls das angegebene Interface bereits in die Warteschlange
+  eingereiht ist und eine n+101-Priorität existiert (n ist die aktuelle
+  Priorität), wird die Abarbeitung bei dieser Priorität fortgesetzt,
+  andernfalls wird ein Fehler (d. h. -1) zurückgeliefert. (Je nach
+  Asterisk-Version muss für das Springen zu n+101 die Option <code>j</code>
+  (jump) angegeben werden.)</simpara>
 
-    <simpara>Wird <code>AddQueueMember()</code> ohne den Interface-Parameter
-    aufgerufen, findet das vom Teilnehmer zu diesem Zeitpunkt benutzte
-    Interface Verwendung.</simpara>
+  <simpara>Wird <code>AddQueueMember()</code> ohne den Interface-Parameter
+  aufgerufen, findet das vom Teilnehmer zu diesem Zeitpunkt benutzte Interface
+  Verwendung.</simpara>
 
-    <simpara>In manchen Asterisk-Versionen kann man statt der Pipe-Zeichen
-    (<code>|</code>) auch Kommas verwenden.</simpara>
+  <simpara>In manchen Asterisk-Versionen kann man statt der Pipe-Zeichen
+  (<code>|</code>) auch Kommas verwenden.</simpara>
 
-    <simpara>Die Applikation setzt auch die Channelvariable
-    <code>${AQMSTATUS}</code> auf <code>ADDED</code> (hinzugefügt),
-    <code>MEMBERALREADY</code> (ist bereits Mitglied) oder
-    <code>NOSUCHQUEUE</code> (Warteschlange nicht vorhanden).</simpara>
+  <simpara>Die Applikation setzt auch die Channelvariable
+  <code>${AQMSTATUS}</code> auf <code>ADDED</code> (hinzugefügt),
+  <code>MEMBERALREADY</code> (ist bereits Mitglied) oder
+  <code>NOSUCHQUEUE</code> (Warteschlange nicht vorhanden).</simpara>
 
-    <programlisting>; SIP/3000 zur "supportschlange" hinzufügen:
+  <programlisting>; SIP/3000 zur "supportschlange" hinzufügen:
 exten =&gt; 123,1,AddQueueMember(supportschlange,SIP/3000)
 
 ; das aktuelle Interface mit Malus 2 hinzufügen:
 exten =&gt; 123,1,AddQueueMember(supportschlange,,2)</programlisting>
 
-    <xi:include href="addqueuemember-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="addqueuemember-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <formalpara>
+    <title>Siehe auch</title>
 
-      <para><xref linkend="applications-queue" />, <xref
-      linkend="applications-removequeuemember" />,
-      <filename>queues.conf</filename></para>
-    </formalpara>
+    <para><xref linkend="applications-queue" />, <xref
+    linkend="applications-removequeuemember" />,
+    <filename>queues.conf</filename></para>
+  </formalpara>
 </section>

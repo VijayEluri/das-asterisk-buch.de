@@ -15,48 +15,49 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>Festival()</literal></title>
+  <title><literal>Festival()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>Festival()</code></secondary>
-    </indexterm>
+    <secondary><code>Festival()</code></secondary>
+  </indexterm>
 
-    <simpara>Verwendet das Sprachsynthese-System (Text-to-speech) Festival, um
-    dem Anrufer Text vorzulesen.</simpara>
+  <simpara>Verwendet das Sprachsynthese-System (Text-to-speech)
+  <emphasis>Festival</emphasis>, um dem Anrufer Text vorzulesen.</simpara>
 
-    <synopsis>Festival(<replaceable>Text</replaceable>[,<replaceable>Tasten</replaceable>])</synopsis>
+  <synopsis>Festival(<replaceable>Text</replaceable>[,<replaceable>Tasten</replaceable>])</synopsis>
 
-    <simpara>Verbindet sich zum lokal laufenden Festival-Server (muss
-    installiert sein), sendet ihm den angegebenen <code>Text</code> und spielt
-    dem Teilnehmer die resultierende Audiodatei vor. Wenn <code>Tasten</code>
-    angegeben wurden und der Anrufer während des Abspielens eine davon drückt,
-    wird der Abspielvorgang beendet und die entsprechende Taste zurückgegeben.
-    Falls als <code>Tasten</code> der Wert <code>any</code> angegeben ist,
-    wird jede Taste erkannt (und an die entsprechende Extension
-    weitergeleitet).</simpara>
+  <simpara>Verbindet sich zum lokal laufenden Festival-Server (muss
+  installiert sein), sendet ihm den angegebenen <code>Text</code> und spielt
+  dem Teilnehmer die resultierende Audiodatei vor. Wenn <code>Tasten</code>
+  angegeben wurden und der Anrufer während des Abspielens eine davon drückt,
+  wird der Abspielvorgang beendet und die entsprechende Taste zurückgegeben.
+  Falls als <code>Tasten</code> der Wert <code>any</code> angegeben ist, wird
+  jede Taste erkannt (und an die entsprechende Extension
+  weitergeleitet).</simpara>
 
-    <simpara>Sie müssen den Festival-Server <emphasis>vor</emphasis> Asterisk
-    starten und die <code>Answer()</code>-Anwendung zum Beantworten des
-    Channels verwenden, bevor Sie <code>Festival()</code> aufrufen.</simpara>
+  <simpara>Sie müssen den Festival-Server <emphasis>vor</emphasis> Asterisk
+  starten und die <code>Answer()</code>-Anwendung zum Beantworten des Channels
+  verwenden, bevor Sie <code>Festival()</code> aufrufen.</simpara>
 
-    <programlisting>exten =&gt; 123,1,Answer()
+  <programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Festival('Hallo Welt',#)</programlisting>
 
-    <para>Alternativ zu der Applikation <code>Festival()</code> kann man auch
-    mit dem <code>System()</code>-Befehl Festivals Programm
-    <command>text2wave</command> aufrufen und die resultierende Audiodatei mit
-    <code>Background()</code> oder <code>Playback()</code> abspielen, etwa so
-    (nur als Beispiel, Verzeichnisse beachten!):<programlisting>exten =&gt; 123,1,Answer()
+  <para>Alternativ zu der Applikation <code>Festival()</code> kann man auch
+  mit dem <code>System()</code>-Befehl Festivals Programm
+  <command>text2wave</command> aufrufen und die resultierende Audiodatei mit
+  <code>Background()</code> oder <code>Playback()</code> abspielen, etwa so
+  (nur als Beispiel, achten Sie auf die Verzeichnisse!):<programlisting>exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,System(echo 'Hallo Welt' | text2wave -o sound.wav -otype wav -)
 exten =&gt; 123,n,Background(sound)</programlisting></para>
 
-    <xi:include href="festival-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="festival-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <formalpara>
+    <title>Siehe auch</title>
 
-      <para><filename>contrib/README.festival</filename></para>
-    </formalpara>
+    <para><filename>contrib/README.festival</filename></para>
+  </formalpara>
 </section>

@@ -11,7 +11,7 @@
   </indexterm>
 
   <!--
-% Copyright (c) 2006 - 2008 by 
+% Copyright (c) 2006 - 2009 by 
 % Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
 % Philipp Kempgen <philipp.kempgen@amooma.de>
 % Permission is granted to copy, distribute and/or modify this document
@@ -31,7 +31,7 @@
   <code>[modules]</code> durch <code>autoload=yes</code> oder explizites
   <code>load =&gt; app_<replaceable>applikationsname</replaceable>.so</code>
   geladen wurden. Eine Liste aller in Ihrem Asterisk verfügbaren Applikationen
-  können Sie mit dem CLI Befehl <command>core show applications</command>
+  können Sie mit dem CLI-Befehl <command>core show applications</command>
   abrufen. Genaue Informationen zu einer bestimmten Applikation können Sie im
   CLI mit dem Befehl <command>core application
   <replaceable>Applikationsname</replaceable></command> anzeigen.</simpara>
@@ -39,16 +39,16 @@
   <tip>
     <para>Die Befehle <command>core application
     <replaceable>xyz</replaceable></command> und <command>core
-    applications</command> existieren erst in der Asterisk Version 1.4.
+    applications</command> existieren erst in der Asterisk-Version 1.4.
     Sollten Sie ein Asterisk 1.2 betreuen, können Sie die gleichen Funktionen
     mit den Befehlen <command>show application xyz</command> und <command>show
     applications</command> abrufen. Die alten Befehle funktionen auch noch in
-    der Version 1.4, sind aber deprecated.</para>
+    der Version 1.4, sind aber als deprecated eingestuft.</para>
   </tip>
 
-  <simpara>Der Begriff <quote>Applikationen</quote> (oder
-  <quote>Befehle</quote>) darf nicht mit <quote>Funktionen</quote> verwechselt
-  werden, die ggf. innerhalb eines Befehlsaufrufs stehen.
+  <simpara>Der Begriff <quote>Applikationen</quote><!--Was bedeuten diese grauen Anführungszeichen? Da sie offenbar als Hervorhebung für Begriffe dienen, würde ich Sie bitten, diese Begriffe ohen Anführungszeichen, aber kursiv zu setzen. Oder sind das extra Markierungen für ein Glossar o, Ä.?))-->
+  (oder <quote>Befehle</quote>) darf nicht mit <quote>Funktionen</quote>
+  verwechselt werden, die ggf. innerhalb eines Befehlsaufrufs stehen.
   <quote>Applikationen</quote> (applications) ist vielleicht irreführend, aber
   der gängige Ausdruck.</simpara>
 
@@ -65,16 +65,16 @@
     Konfigurationsdateien um.</simpara>
 
     <simpara>Hier sei nur gesagt, dass es aufgrund mangelnder Spezifikation
-    nicht immer klar ist, an welcher Stelle z.B. Leerzeichen erlaubt sind oder
-    wo Anführungszeichen erwartet werden. Meist werden mehrere Schreibweisen
-    erkannt. Im Zweifelsfall hilft nur Ausprobieren, wenn eine Schreibweise in
-    Ihrer Asterisk-Version nicht funktioniert. Sollten Sie Fehler entdecken,
-    wird um Rückmeldung gebeten.</simpara>
+    nicht immer klar ist, an welcher Stelle z. B. Leerzeichen erlaubt sind
+    oder wo Anführungszeichen erwartet werden. Meist werden mehrere
+    Schreibweisen erkannt. Im Zweifelsfall hilft nur Ausprobieren, wenn eine
+    Schreibweise in Ihrer Asterisk-Version nicht funktioniert. Sollten Sie
+    Fehler entdecken, geben Sie uns bitte eine Rückmeldung.</simpara>
   </note>
 
   <para>Es ist oft möglich, Parameter auszulassen. Wenn ausgelassene Parameter
   nicht am Ende stehen, müssen Sie trotzdem ein Komma angeben, um anzuzeigen,
-  dass der Parameter leer ist (also der Default-Wert verwendet wird), z.B.
+  dass der Parameter leer ist (also der Default-Wert verwendet wird), z. B.
   so:<programlisting>exten =&gt; s,1,Dial(IAX2/User:Passwort@beispiel.de/123,,tT)</programlisting></para>
 
   <para>Im Allgemeinen kann gesagt werden, dass Fehler beim Ausführen einer
@@ -83,8 +83,8 @@
   weiter den Dialplan abarbeitet.</para>
 
   <important>
-    <para>Bitte beachten Sie, dass, abhängig von der eingesetzten
-    Asterisk-Version die Parameter durch <code>,</code> (Komma) oder
+    <para>Bitte beachten Sie, dass -- abhängig von der eingesetzten
+    Asterisk-Version -- die Parameter durch <code>,</code> (Komma) oder
     <code>|</code> (Pipe) getrennt werden. In diesem Buch wird hauptsächlich
     das <code>,</code> (Komma) benutzt.</para>
   </important>
@@ -94,24 +94,25 @@
   den einfachen Grund, dass bereits in Asterisk 1.2 etliche Applikationen als
   <quote>deprecated</quote> (= veraltet, soll nicht mehr verwendet werden)
   gekennzeichnet sind und in 1.4 nicht mehr existieren. Solche Befehle werden
-  hier nicht mehr beschrieben, Sie finden die entsprechenden Funktionen in
+  hier nicht mehr beschrieben. Sie finden die entsprechenden Funktionen in
   <xref linkend="functions" />. Die beigefügten Diffs der internen Hilfetexte
   sind immer vom neueren 1.4 zum älteren 1.2.</simpara>
 
-  <simpara>In den Beispielen wird oft die willkürlich gewählte Extension
+  <simpara>In den Beispielen werden oft die willkürlich gewählte Extension
   <code>123</code> und die Priorität <code>1</code> verwendet, was in der
   Praxis natürlich nicht immer sinnvoll ist.</simpara>
 
   <simpara><indexterm>
       <primary>priority jumping</primary>
     </indexterm>Viele Applikationen vor Asterisk 1.2 sprangen bei einem Fehler
-  zur Priorität n+101, wenn vorhanden (wobei n die aktuelle Priorität
-  bezeichnet). Dieses alte Verhalten (<quote>priority jumping</quote>) lässt
-  sich bei einigen Befehlen durch die Option <code>j</code> (jump) erreichen
-  oder indem man in der <filename>extensions.conf</filename> im Abschnitt
-  <code>[general]</code> den Parameter <code>priorityjumping=yes</code> setzt.
-  Dieses Verhalten ist aber <quote>deprecated</quote>. Die neuere Methode ist
-  das Abfragen der gesetzten Channelvariablen.</simpara>
+  zur Priorität n+101, wenn eine solche vorhanden war (wobei n die aktuelle
+  Priorität bezeichnet). Dieses alte Verhalten (<quote>priority
+  jumping</quote>) lässt sich bei einigen Befehlen durch die Option
+  <code>j</code> (jump) erreichen oder indem man in der
+  <filename>extensions.conf</filename> im Abschnitt <code>[general]</code> den
+  Parameter <code>priorityjumping=yes</code> setzt. Dieses Verhalten ist aber
+  <quote>deprecated</quote>. Die neuere Methode ist das Abfragen der gesetzten
+  Channelvariablen.</simpara>
 
   <simpara>Um eine leichtere Verwendung als Nachschlagewerk zu ermöglichen,
   sind die Applikationen in alphabetischer Reihenfolge aufgeführt. Da sie sich
@@ -120,806 +121,806 @@
 
   <para><emphasis role="bold">Anruf-Verwaltung</emphasis> (abheben,
   durchstellen, auflegen, ...)<simplelist type="vert">
-      <member><xref linkend="applications-answer" /> - Abheben</member>
+      <member><xref linkend="applications-answer" /> -- Abheben</member>
 
-      <member><xref linkend="applications-busy" /> - Besetztzeichen
+      <member><xref linkend="applications-busy" /> -- Besetztzeichen
       signalisieren</member>
 
-      <member><xref linkend="applications-chanisavail" /> - Prüfen, ob ein
+      <member><xref linkend="applications-chanisavail" /> -- Prüfen, ob ein
       Channel verfügbar ist</member>
 
-      <member><xref linkend="applications-channelredirect" /> - Kanal auf eine
-      andere Extension umleiten</member>
+      <member><xref linkend="applications-channelredirect" /> -- Kanal auf
+      eine andere Extension umleiten</member>
 
-      <member><xref linkend="applications-congestion" /> - Stau
+      <member><xref linkend="applications-congestion" /> -- Stau
       signalisieren</member>
 
-      <member><xref linkend="applications-dial" /> - Einen Anruf durchstellen
-      / mit einem Channel verbinden</member>
+      <member><xref linkend="applications-dial" /> -- Einen Anruf durchstellen
+      bzw. mit einem Channel verbinden</member>
 
-      <member><xref linkend="applications-disa" /> - DISA (Direct Inward
+      <member><xref linkend="applications-disa" /> -- DISA (Direct Inward
       System Access)</member>
 
-      <member><xref linkend="applications-followme" /> -
+      <member><xref linkend="applications-followme" /> --
       <quote>Folge-Mir</quote>-Funktionalität</member>
 
-      <member><xref linkend="applications-hangup" /> - Auflegen</member>
+      <member><xref linkend="applications-hangup" /> -- Auflegen</member>
 
-      <member><xref linkend="applications-page" /> - Rundruf</member>
+      <member><xref linkend="applications-page" /> -- Rundruf</member>
 
-      <member><xref linkend="applications-park" /> - Gespräch parken</member>
+      <member><xref linkend="applications-park" /> -- Gespräch parken</member>
 
-      <member><xref linkend="applications-pickup" /> - Heranholen eines
+      <member><xref linkend="applications-pickup" /> -- Heranholen eines
       Anrufs</member>
 
-      <member><xref linkend="applications-retrydial" /> - <code>Dial()</code>
+      <member><xref linkend="applications-retrydial" /> -- <code>Dial()</code>
       mit <quote>Wahlwiederholung</quote></member>
 
-      <member><xref linkend="applications-ringing" /> - Klingeln
+      <member><xref linkend="applications-ringing" /> -- Klingeln
       signalisieren</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Flusskontrolle und
   Timeouts</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-continuewhile" /> - Zum Anfang einer
-      While-Schleife springen</member>
+      <member><xref linkend="applications-continuewhile" /> -- Zum Anfang
+      einer While-Schleife springen</member>
 
-      <member><xref linkend="applications-endwhile" /> - Ende einer
+      <member><xref linkend="applications-endwhile" /> -- Ende einer
       While-Schleife</member>
 
-      <member><xref linkend="applications-exec" /> - Ausführen einer
+      <member><xref linkend="applications-exec" /> -- Ausführen einer
       Applikation</member>
 
-      <member><xref linkend="applications-execif" /> - Bedingtes Ausführen
+      <member><xref linkend="applications-execif" /> -- Bedingtes Ausführen
       einer Applikation</member>
 
-      <member><xref linkend="applications-execiftime" /> - Zeitabhängiges
+      <member><xref linkend="applications-execiftime" /> -- Zeitabhängiges
       Ausführen einer Applikation</member>
 
-      <member><xref linkend="applications-exitwhile" /> - Eine While-Schleife
+      <member><xref linkend="applications-exitwhile" /> -- Eine While-Schleife
       abbrechen</member>
 
-      <member><xref linkend="applications-gosub" /> - Zu einer Unterroutine
+      <member><xref linkend="applications-gosub" /> -- Zu einer Unterroutine
       springen</member>
 
-      <member><xref linkend="applications-gosubif" /> - Bedingtes
+      <member><xref linkend="applications-gosubif" /> -- Bedingtes
       <code>Gosub()</code></member>
 
-      <member><xref linkend="applications-goto" /> - Zu einer Priorität,
+      <member><xref linkend="applications-goto" /> -- Zu einer Priorität,
       Extension oder anderem Context springen</member>
 
-      <member><xref linkend="applications-gotoif" /> - Bedingtes
+      <member><xref linkend="applications-gotoif" /> -- Bedingtes
       <code>Goto()</code></member>
 
-      <member><xref linkend="applications-gotoiftime" /> - Bedingtes
+      <member><xref linkend="applications-gotoiftime" /> -- Bedingtes
       <code>Gosub()</code> je nach Datum/Uhrzeit</member>
 
-      <member><xref linkend="applications-random" /> - Zufällig im Dial-Plan
+      <member><xref linkend="applications-random" /> -- Zufällig im Dial-Plan
       springen</member>
 
-      <member><xref linkend="applications-return" /> - Aus einem
+      <member><xref linkend="applications-return" /> -- Aus einem
       <code>Gosub()</code> oder <code>GosubIf()</code> zurückkehren</member>
 
-      <member><xref linkend="applications-tryexec" /> - Versuch der Ausführung
-      einer Applikation</member>
+      <member><xref linkend="applications-tryexec" /> -- Versuch der
+      Ausführung einer Applikation</member>
 
-      <member><xref linkend="applications-while" /> - Anfang einer
+      <member><xref linkend="applications-while" /> -- Anfang einer
       While-Schleife</member>
     </simplelist></para>
 
-  <para><emphasis role="bold">Macros</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-macro" /> - Macro aufrufen</member>
+  <para><emphasis role="bold">Makros</emphasis><simplelist type="vert">
+      <member><xref linkend="applications-macro" /> -- Makro aufrufen</member>
 
-      <member><xref linkend="applications-macroexclusive" /> - Macro zu einem
+      <member><xref linkend="applications-macroexclusive" /> -- Makro zu einem
       Zeitpunkt nur einmal aufrufen</member>
 
-      <member><xref linkend="applications-macroexit" /> - Macro
+      <member><xref linkend="applications-macroexit" /> -- Makro
       abbrechen</member>
 
-      <member><xref linkend="applications-macroif" /> - Ein Macro bedingt
+      <member><xref linkend="applications-macroif" /> -- Ein Makro bedingt
       ausführen</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Anrufer-Kennung (Caller-ID, Name,
   ...)</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-lookupblacklist" /> - Caller-ID in
+      <member><xref linkend="applications-lookupblacklist" /> -- Caller-ID in
       Blacklist nachschlagen</member>
 
-      <member><xref linkend="applications-lookupcidname" /> - Caller-ID-Name
+      <member><xref linkend="applications-lookupcidname" /> -- Caller-ID-Name
       in Datenbank nachschlagen</member>
 
-      <member><xref linkend="applications-privacymanager" /> - Eingabe einer
-      Telefonnummer verlangen falls ohne Caller-ID</member>
+      <member><xref linkend="applications-privacymanager" /> -- Eingabe einer
+      Telefonnummer verlangen, falls ohne Caller-ID</member>
 
-      <member><xref linkend="applications-setcallerpres" /> - Caller-ID
+      <member><xref linkend="applications-setcallerpres" /> -- Caller-ID
       setzen, unanhängig vom Channel</member>
 
-      <member><xref linkend="applications-softhangup" /> - Auflegen
+      <member><xref linkend="applications-softhangup" /> -- Auflegen
       verlangen</member>
 
-      <member><xref linkend="applications-zapateller" /> - Werbeanrufe
+      <member><xref linkend="applications-zapateller" /> -- Werbeanrufe
       blockieren</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Gesprächsprotokolle (CDRs)</emphasis><simplelist
       type="vert">
-      <member><xref linkend="applications-appendcdruserfield" /> - Einen Wert
+      <member><xref linkend="applications-appendcdruserfield" /> -- Einen Wert
       an das CDR-User-Feld anhängen</member>
 
-      <member><xref linkend="applications-forkcdr" /> - Den CDR in zwei
+      <member><xref linkend="applications-forkcdr" /> -- Den CDR in zwei
       getrennte Einträge aufspalten</member>
 
-      <member><xref linkend="applications-nocdr" /> - CDR für diesen Anruf
+      <member><xref linkend="applications-nocdr" /> -- CDR für diesen Anruf
       deaktivieren</member>
 
-      <member><xref linkend="applications-resetcdr" /> - CDR-Eintrag
+      <member><xref linkend="applications-resetcdr" /> -- CDR-Eintrag
       zurücksetzen</member>
 
-      <member><xref linkend="applications-setamaflags" /> - AMA-Flags
+      <member><xref linkend="applications-setamaflags" /> -- AMA-Flags
       setzen</member>
 
-      <member><xref linkend="applications-setcdruserfield" /> - CDR-User-Feld
+      <member><xref linkend="applications-setcdruserfield" /> -- CDR-User-Feld
       setzen</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Voicemail</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-directory" /> -
+      <member><xref linkend="applications-directory" /> --
       Dial-by-Name-Telefonbuch anbieten</member>
 
-      <member><xref linkend="applications-mailboxexists" /> - Prüft, ob
+      <member><xref linkend="applications-mailboxexists" /> -- Prüft, ob
       Mailbox existiert</member>
 
-      <member><xref linkend="applications-voicemail" /> -
+      <member><xref linkend="applications-voicemail" /> --
       Anrufbeantworter</member>
 
-      <member><xref linkend="applications-voicemailmain" /> - Anrufbeantworter
-      abhören</member>
+      <member><xref linkend="applications-voicemailmain" /> --
+      Anrufbeantworter abhören</member>
 
-      <member><xref linkend="applications-vmauthenticate" /> - User anhand der
-      <filename>voicemail.conf</filename> authentifizieren</member>
+      <member><xref linkend="applications-vmauthenticate" /> -- User anhand
+      der <filename>voicemail.conf</filename> authentifizieren</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Konferenzen</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-meetme" /> -
+      <member><xref linkend="applications-meetme" /> --
       MeetMe-Konferenz</member>
 
-      <member><xref linkend="applications-meetmeadmin" /> - MeetMe-Konferenz
+      <member><xref linkend="applications-meetmeadmin" /> -- MeetMe-Konferenz
       verwalten</member>
 
-      <member><xref linkend="applications-meetmecount" /> - Anzahl der
-      Teilnehmer einer MeetMe-Konferenz</member>
+      <member><xref linkend="applications-meetmecount" /> -- Anzahl der
+      Teilnehmer einer MeetMe-Konferenz ermitteln</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Variablen verändern</emphasis><simplelist
       type="vert">
-      <member><xref linkend="applications-importvar" /> - Variable von einem
+      <member><xref linkend="applications-importvar" /> -- Variable von einem
       Channel importieren</member>
 
-      <member><xref linkend="applications-read" /> - Eine Variable (Ziffern)
+      <member><xref linkend="applications-read" /> -- Eine Variable (Ziffern)
       vom User einlesen</member>
 
-      <member><xref linkend="applications-readfile" /> - Eine Datei in eine
+      <member><xref linkend="applications-readfile" /> -- Eine Datei in eine
       Variable einlesen</member>
 
-      <member><xref linkend="applications-realtime" /> - Variablen aus dem
+      <member><xref linkend="applications-realtime" /> -- Variablen aus dem
       Realtime-System einlesen</member>
 
-      <member><xref linkend="applications-realtimeupdate" /> - Variablen im
+      <member><xref linkend="applications-realtimeupdate" /> -- Variablen im
       Realtime-System verändern</member>
 
-      <member><xref linkend="applications-set" /> - Eine Channel-Variable
+      <member><xref linkend="applications-set" /> -- Eine Channel-Variable
       setzen</member>
 
-      <member><xref linkend="applications-setglobalvar" /> - Eine globale
+      <member><xref linkend="applications-setglobalvar" /> -- Eine globale
       Variable setzen</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Musik-/Sprachausgabe</emphasis><simplelist
       type="vert">
-      <member><xref linkend="applications-background" /> - Im Hintergrund eine
-      Sound-Datei spielen</member>
+      <member><xref linkend="applications-background" /> -- Im Hintergrund
+      eine Sound-Datei spielen</member>
 
-      <member><xref linkend="applications-backgrounddetect" /> -
+      <member><xref linkend="applications-backgrounddetect" /> --
       <code>Background()</code> mit Spracherkennung</member>
 
-      <member><xref linkend="applications-controlplayback" /> -
+      <member><xref linkend="applications-controlplayback" /> --
       <code>Playback()</code> mit Vor-/Zurückspulen und Abbrechen</member>
 
-      <member><xref linkend="applications-datetime" /> - Datum/Uhrzeit
+      <member><xref linkend="applications-datetime" /> -- Datum/Uhrzeit
       ansagen</member>
 
-      <member><xref linkend="applications-echo" /> - Audio-Eingabe
+      <member><xref linkend="applications-echo" /> -- Audio-Eingabe
       wiedergeben</member>
 
-      <member><xref linkend="applications-festival" /> - Text mit dem
+      <member><xref linkend="applications-festival" /> -- Text mit dem
       Festival-Synthesizer sprechen</member>
 
-      <member><xref linkend="applications-milliwatt" /> - Einen konstanten
+      <member><xref linkend="applications-milliwatt" /> -- Einen konstanten
       1000-Hz-Ton mit 0 dbm erzeugen</member>
 
-      <member><xref linkend="applications-mp3player" /> - MP3-Datei oder
+      <member><xref linkend="applications-mp3player" /> -- MP3-Datei oder
       -Stream spielen</member>
 
-      <member><xref linkend="applications-musiconhold" /> - Wartemusik
+      <member><xref linkend="applications-musiconhold" /> -- Wartemusik
       spielen</member>
 
-      <member><xref linkend="applications-nbscat" /> - NBS-Stream
+      <member><xref linkend="applications-nbscat" /> -- NBS-Stream
       abspielen</member>
 
-      <member><xref linkend="applications-playback" /> - Eine Sound-Datei
+      <member><xref linkend="applications-playback" /> -- Eine Sound-Datei
       spielen</member>
 
-      <member><xref linkend="applications-playtones" /> - Töne
+      <member><xref linkend="applications-playtones" /> -- Töne
       spielen</member>
 
-      <member><xref linkend="applications-progress" /> - Audio vor dem Abheben
-      spielen</member>
+      <member><xref linkend="applications-progress" /> -- Audio vor dem
+      Abheben spielen</member>
 
-      <member><xref linkend="applications-sayalpha" /> - Buchstabieren
+      <member><xref linkend="applications-sayalpha" /> -- Buchstabieren
       (alphanumerisch)</member>
 
-      <member><xref linkend="applications-saydigits" /> - Ziffern
+      <member><xref linkend="applications-saydigits" /> -- Ziffern
       ansagen</member>
 
-      <member><xref linkend="applications-saynumber" /> - Nummer
+      <member><xref linkend="applications-saynumber" /> -- Nummer
       ansagen</member>
 
-      <member><xref linkend="applications-sayphonetic" /> -
+      <member><xref linkend="applications-sayphonetic" /> --
       Buchstabieren</member>
 
-      <member><xref linkend="applications-sayunixtime" /> - Datum/Uhrzeit
+      <member><xref linkend="applications-sayunixtime" /> -- Datum/Uhrzeit
       ansagen</member>
 
-      <member><xref linkend="applications-setmusiconhold" /> - Wartemusik
+      <member><xref linkend="applications-setmusiconhold" /> -- Wartemusik
       festlegen</member>
 
-      <member><xref linkend="applications-stopplaytones" /> -
+      <member><xref linkend="applications-stopplaytones" /> --
       <code>Playtones()</code> beenden</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Aufzeichnen</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-agentmonitoroutgoing" /> -
+      <member><xref linkend="applications-agentmonitoroutgoing" /> --
       Ausgehende Anrufe eines Agenten aufzeichnen</member>
 
-      <member><xref linkend="applications-changemonitor" /> - Die Datei für
+      <member><xref linkend="applications-changemonitor" /> -- Die Datei für
       <code>Monitor()</code> verändern</member>
 
-      <member><xref linkend="applications-chanspy" /> - Ein Gespräch
+      <member><xref linkend="applications-chanspy" /> -- Ein Gespräch
       mithören</member>
 
-      <member><xref linkend="applications-dial" /> - Mit der Option
+      <member><xref linkend="applications-dial" /> -- Mit der Option
       <code>w</code> oder <code>W</code> im Gespräch aufzeichnen</member>
 
-      <member><xref linkend="applications-dictate" /> - Diktat aufnehmen und
+      <member><xref linkend="applications-dictate" /> -- Diktat aufnehmen und
       wiedergeben</member>
 
-      <member><xref linkend="applications-extenspy" /> - Ein Gespräch
+      <member><xref linkend="applications-extenspy" /> -- Ein Gespräch
       mithören</member>
 
-      <member><xref linkend="applications-mixmonitor" /> - Ähnlich
+      <member><xref linkend="applications-mixmonitor" /> -- Ähnlich
       <code>Monitor()</code>, aber nur eine Datei</member>
 
-      <member><xref linkend="applications-monitor" /> - Ein Gespräch
+      <member><xref linkend="applications-monitor" /> -- Ein Gespräch
       mitschneiden</member>
 
-      <member><xref linkend="applications-pausemonitor" /> - Mitschneiden
+      <member><xref linkend="applications-pausemonitor" /> -- Mitschneiden
       pausieren</member>
 
-      <member><xref linkend="applications-record" /> - Eingehendes Audio
+      <member><xref linkend="applications-record" /> -- Eingehendes Audio
       mitschneiden</member>
 
-      <member><xref linkend="applications-stopmonitor" /> -
+      <member><xref linkend="applications-stopmonitor" /> --
       <code>Monitor()</code> beenden</member>
 
-      <member><xref linkend="applications-unpausemonitor" /> - Pausierung des
+      <member><xref linkend="applications-unpausemonitor" /> -- Pausierung des
       Mitschnitts aufheben</member>
 
-      <member><xref linkend="applications-zapbarge" /> - Einen ZAP-Channel
+      <member><xref linkend="applications-zapbarge" /> -- Einen ZAP-Channel
       belauschen</member>
 
-      <member><xref linkend="applications-zapscan" /> - Zwecks Mithören durch
+      <member><xref linkend="applications-zapscan" /> -- Zwecks Mithören durch
       ZAP-Kanäle schalten</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Datenbank-Zugriffe</emphasis><simplelist
       type="vert">
-      <member><xref linkend="applications-dbdel" /> - Einen Datenbankeintrag
+      <member><xref linkend="applications-dbdel" /> -- Einen Datenbank-Eintrag
       löschen</member>
 
-      <member><xref linkend="applications-dbdeltree" /> - Einen
+      <member><xref linkend="applications-dbdeltree" /> -- Einen
       Datenbank-Zweig löschen</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Allgemeines</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-authenticate" /> - Einen User
+      <member><xref linkend="applications-authenticate" /> -- Einen User
       authentifizieren</member>
 
-      <member><xref linkend="applications-senddtmf" /> - DTMF-Töne
+      <member><xref linkend="applications-senddtmf" /> -- DTMF-Töne
       senden</member>
 
-      <member><xref linkend="applications-sendimage" /> - Ein Bild
+      <member><xref linkend="applications-sendimage" /> -- Ein Bild
       senden</member>
 
-      <member><xref linkend="applications-sendtext" /> - Einen Text
+      <member><xref linkend="applications-sendtext" /> -- Einen Text
       senden</member>
 
-      <member><xref linkend="applications-sendurl" /> - Eine URL
+      <member><xref linkend="applications-sendurl" /> -- Eine URL
       senden</member>
 
-      <member><xref linkend="applications-transfer" /> - Anruf
+      <member><xref linkend="applications-transfer" /> -- Anruf
       weiterleiten</member>
 
-      <member><xref linkend="applications-vmauthenticate" /> - User anhand der
-      <filename>voicemail.conf</filename> authentifizieren</member>
+      <member><xref linkend="applications-vmauthenticate" /> -- User anhand
+      der <filename>voicemail.conf</filename> authentifizieren</member>
 
-      <member><xref linkend="applications-wait" /> - Eine bestimmte Zeit
+      <member><xref linkend="applications-wait" /> -- Eine bestimmte Zeit
       warten</member>
 
-      <member><xref linkend="applications-waitexten" /> - Auf Eingabe einer
+      <member><xref linkend="applications-waitexten" /> -- Auf Eingabe einer
       Extension warten</member>
 
-      <member><xref linkend="applications-waitforring" /> - Auf Klingeln
+      <member><xref linkend="applications-waitforring" /> -- Auf Klingeln
       warten</member>
 
-      <member><xref linkend="applications-waitforsilence" /> - Auf Stille
+      <member><xref linkend="applications-waitforsilence" /> -- Auf Stille
       warten</member>
 
-      <member><xref linkend="applications-waitmusiconhold" /> - Warten mit
+      <member><xref linkend="applications-waitmusiconhold" /> -- Warten mit
       Musik</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Externe Skripte</emphasis><simplelist
       type="vert">
-      <member><xref linkend="applications-agi" /> - Eine AGI-Anwendung
+      <member><xref linkend="applications-agi" /> -- Eine AGI-Anwendung
       ausführen</member>
 
-      <member><xref linkend="applications-deadagi" /> - <code>AGI()</code> auf
-      einem aufgelegten Channel</member>
+      <member><xref linkend="applications-deadagi" /> -- <code>AGI()</code>
+      auf einem aufgelegten Channel</member>
 
-      <member><xref linkend="applications-dumpchan" /> - Informationen über
+      <member><xref linkend="applications-dumpchan" /> -- Informationen über
       einen Kanal auf dem CLI ausgeben</member>
 
-      <member><xref linkend="applications-eagi" /> - Siehe
+      <member><xref linkend="applications-eagi" /> -- Siehe
       <code>AGI()</code></member>
 
-      <member><xref linkend="applications-externalivr" /> - Einen externen
+      <member><xref linkend="applications-externalivr" /> -- Einen externen
       IVR-Generator ausführen</member>
 
-      <member><xref linkend="applications-log" /> - Eine Nachricht in einem
+      <member><xref linkend="applications-log" /> -- Eine Nachricht in einem
       bestimmten Verbosity-Level loggen</member>
 
-      <member><xref linkend="applications-macro" /> - Ein Makro
+      <member><xref linkend="applications-macro" /> -- Ein Makro
       ausführen</member>
 
-      <member><xref linkend="applications-noop" /> - Nichts tun. Schreibt
+      <member><xref linkend="applications-noop" /> -- Nichts tun. Schreibt
       Debugging-Informationen</member>
 
-      <member><xref linkend="applications-read" /> - Eine Variable (Ziffern)
+      <member><xref linkend="applications-read" /> -- Eine Variable (Ziffern)
       vom User einlesen</member>
 
-      <member><xref linkend="applications-system" /> - Einen Shell-Befehl
+      <member><xref linkend="applications-system" /> -- Einen Shell-Befehl
       ausführen</member>
 
-      <member><xref linkend="applications-trysystem" /> - Wie
+      <member><xref linkend="applications-trysystem" /> -- Wie
       <code>System()</code>, gibt aber immer 0 zurück</member>
 
-      <member><xref linkend="applications-userevent" /> - Dem
+      <member><xref linkend="applications-userevent" /> -- Dem
       Manager-Interface ein Event schicken</member>
 
-      <member><xref linkend="applications-verbose" /> - Eine Nachricht in
+      <member><xref linkend="applications-verbose" /> -- Eine Nachricht in
       einem bestimmten Verbosity-Level loggen</member>
     </simplelist></para>
 
   <para><emphasis role="bold">SIP</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-sipdtmfmode" /> - DTMF-Modus während
-      SIP-Verbindung ändern</member>
+      <member><xref linkend="applications-sipdtmfmode" /> -- DTMF-Modus
+      während SIP-Verbindung ändern</member>
 
-      <member><xref linkend="applications-sipaddheader" /> - Einem ausgehenden
-      Anruf einen SIP-Header hinzufügen</member>
+      <member><xref linkend="applications-sipaddheader" /> -- Einem
+      ausgehenden Anruf einen SIP-Header hinzufügen</member>
     </simplelist></para>
 
   <para><emphasis role="bold">ZAP</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-flash" /> - Einen Switchhook-Flash
+      <member><xref linkend="applications-flash" /> -- Einen Switchhook-Flash
       auf einem ZAP-Trunk senden</member>
 
-      <member><xref linkend="applications-zapbarge" /> - Einen ZAP-Channel
+      <member><xref linkend="applications-zapbarge" /> -- Einen ZAP-Channel
       belauschen</member>
 
-      <member><xref linkend="applications-zapras" /> - RAS (Remote Access
+      <member><xref linkend="applications-zapras" /> -- RAS (Remote Access
       Server) auf einem ZAP-ISDN-Channel bereitstellen</member>
 
-      <member><xref linkend="applications-zapscan" /> - Zwecks Mithören durch
+      <member><xref linkend="applications-zapscan" /> -- Zwecks Mithören durch
       ZAP-Kanäle schalten</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Warteschlangen,
   Call-Center</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-addqueuemember" /> - Interface
+      <member><xref linkend="applications-addqueuemember" /> -- Interface
       dynamisch in Warteschleife einreihen</member>
 
-      <member><xref linkend="applications-agentcallbacklogin" /> -
+      <member><xref linkend="applications-agentcallbacklogin" /> --
       Call-Center-Agenten einloggen (mit Rückruf)</member>
 
-      <member><xref linkend="applications-agentlogin" /> - Call-Center-Agenten
-      einloggen</member>
+      <member><xref linkend="applications-agentlogin" /> --
+      Call-Center-Agenten einloggen</member>
 
-      <member><xref linkend="applications-agentmonitoroutgoing" /> -
-      Ausgehende Anrufe eines Agenten aufzeichen</member>
+      <member><xref linkend="applications-agentmonitoroutgoing" /> --
+      Ausgehende Anrufe eines Agenten aufzeichnen</member>
 
-      <member><xref linkend="applications-parkandannounce" /> - Anruf parken
+      <member><xref linkend="applications-parkandannounce" /> -- Anruf parken
       und ankündigen</member>
 
-      <member><xref linkend="applications-parkedcall" /> - Einen geparkten
+      <member><xref linkend="applications-parkedcall" /> -- Einen geparkten
       Anruf annehmen</member>
 
-      <member><xref linkend="applications-pausequeuemember" /> - Einen Agenten
-      pausieren</member>
+      <member><xref linkend="applications-pausequeuemember" /> -- Einen
+      Agenten pausieren</member>
 
-      <member><xref linkend="applications-queue" /> - Eingehenden Anruf in
+      <member><xref linkend="applications-queue" /> -- Eingehenden Anruf in
       Warteschleife einreihen</member>
 
-      <member><xref linkend="applications-queuelog" /> - Beliebigen Eintrag im
-      Queue-Log schreiben</member>
+      <member><xref linkend="applications-queuelog" /> -- Beliebigen Eintrag
+      im Queue-Log schreiben</member>
 
-      <member><xref linkend="applications-removequeuemember" /> - Interface
+      <member><xref linkend="applications-removequeuemember" /> -- Interface
       aus Warteschleife entfernen</member>
 
-      <member><xref linkend="applications-unpausequeuemember" /> - Einen
+      <member><xref linkend="applications-unpausequeuemember" /> -- Einen
       pausierenden Agenten wieder aktivieren</member>
     </simplelist></para>
 
   <para><emphasis role="bold">ADSI</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-adsiprog" /> - Ein ADSI-Skript in
+      <member><xref linkend="applications-adsiprog" /> -- Ein ADSI-Skript in
       ein Telefon laden</member>
 
-      <member><xref linkend="applications-getcpeid" /> - ADSI-CPE-ID
+      <member><xref linkend="applications-getcpeid" /> -- ADSI-CPE-ID
       abfragen</member>
     </simplelist></para>
 
   <para><emphasis role="bold">Verschiedenes</emphasis><simplelist type="vert">
-      <member><xref linkend="applications-amd" /> - Einen Anrufbeantworter
+      <member><xref linkend="applications-amd" /> -- Einen Anrufbeantworter
       erkennen</member>
 
-      <member><xref linkend="applications-alarmreceiver" /> - Einen
+      <member><xref linkend="applications-alarmreceiver" /> -- Einen
       Contact-ID-Alarm-Empfänger von Ademco emulieren</member>
 
-      <member><xref linkend="applications-iax2provision" /> - Versorgt ein
+      <member><xref linkend="applications-iax2provision" /> -- Versorgt ein
       IAXy</member>
 
-      <member><xref linkend="applications-morsecode" /> - Sendet einen Text
+      <member><xref linkend="applications-morsecode" /> -- Sendet einen Text
       als Morsezeichen</member>
 
-      <member><xref linkend="applications-settransfercapability" /> -
+      <member><xref linkend="applications-settransfercapability" /> --
       ISDN-Transfer-Capability setzen</member>
 
-      <member><xref linkend="applications-sms" /> - Sendet oder empfängt
+      <member><xref linkend="applications-sms" /> -- Sendet oder empfängt
       SMS-Nachrichten</member>
     </simplelist></para>
 
   <beginpage />
 
-  <xi:include href="applications/absolutetimeout.xml" parse="xml"
+  <xi:include href="applications/absolutetimeout.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/addqueuemember.xml" parse="xml"
+  <xi:include href="applications/addqueuemember.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/adsiprog.xml" parse="xml"
+  <xi:include href="applications/adsiprog.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/agentcallbacklogin.xml" parse="xml"
+  <xi:include href="applications/agentcallbacklogin.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/agentlogin.xml" parse="xml"
+  <xi:include href="applications/agentlogin.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/agentmonitoroutgoing.xml" parse="xml"
+  <xi:include href="applications/agentmonitoroutgoing.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/agi.xml" parse="xml"
+  <xi:include href="applications/agi.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/alarmreceiver.xml" parse="xml"
+  <xi:include href="applications/alarmreceiver.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/amd.xml" parse="xml"
+  <xi:include href="applications/amd.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/answer.xml" parse="xml"
+  <xi:include href="applications/answer.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/appendcdruserfield.xml" parse="xml"
+  <xi:include href="applications/appendcdruserfield.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/authenticate.xml" parse="xml"
+  <xi:include href="applications/authenticate.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/background.xml" parse="xml"
+  <xi:include href="applications/background.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/backgrounddetect.xml" parse="xml"
+  <xi:include href="applications/backgrounddetect.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/bridge.xml" parse="xml"
+  <xi:include href="applications/bridge.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/busy.xml" parse="xml"
+  <xi:include href="applications/busy.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/changemonitor.xml" parse="xml"
+  <xi:include href="applications/changemonitor.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/chanisavail.xml" parse="xml"
+  <xi:include href="applications/chanisavail.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/channelredirect.xml" parse="xml"
+  <xi:include href="applications/channelredirect.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/chanspy.xml" parse="xml"
+  <xi:include href="applications/chanspy.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/checkgroup.xml" parse="xml"
+  <xi:include href="applications/checkgroup.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/clearhash.xml" parse="xml"
+  <xi:include href="applications/clearhash.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/congestion.xml" parse="xml"
+  <xi:include href="applications/congestion.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/continuewhile.xml" parse="xml"
+  <xi:include href="applications/continuewhile.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/controlplayback.xml" parse="xml"
+  <xi:include href="applications/controlplayback.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/curl.xml" parse="xml"
+  <xi:include href="applications/curl.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/cut.xml" parse="xml"
+  <xi:include href="applications/cut.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dahdibarge.xml" parse="xml"
+  <xi:include href="applications/dahdibarge.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dahdiras.xml" parse="xml"
+  <xi:include href="applications/dahdiras.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dahdiscan.xml" parse="xml"
+  <xi:include href="applications/dahdiscan.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dahdisendkeypadfacility.xml" parse="xml"
+  <xi:include href="applications/dahdisendkeypadfacility.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/datetime.xml" parse="xml"
+  <xi:include href="applications/datetime.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dbdel.xml" parse="xml"
+  <xi:include href="applications/dbdel.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dbdeltree.xml" parse="xml"
+  <xi:include href="applications/dbdeltree.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dbget.xml" parse="xml"
+  <xi:include href="applications/dbget.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dbput.xml" parse="xml"
+  <xi:include href="applications/dbput.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/deadagi.xml" parse="xml"
+  <xi:include href="applications/deadagi.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dial.xml" parse="xml"
+  <xi:include href="applications/dial.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dictate.xml" parse="xml"
+  <xi:include href="applications/dictate.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/digittimeout.xml" parse="xml"
+  <xi:include href="applications/digittimeout.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/directory.xml" parse="xml"
+  <xi:include href="applications/directory.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/disa.xml" parse="xml"
+  <xi:include href="applications/disa.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dumpchan.xml" parse="xml"
+  <xi:include href="applications/dumpchan.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/dundilookup.xml" parse="xml"
+  <xi:include href="applications/dundilookup.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/eagi.xml" parse="xml"
+  <xi:include href="applications/eagi.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/echo.xml" parse="xml"
+  <xi:include href="applications/echo.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/endwhile.xml" parse="xml"
+  <xi:include href="applications/endwhile.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/enumlookup.xml" parse="xml"
+  <xi:include href="applications/enumlookup.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/eval.xml" parse="xml"
+  <xi:include href="applications/eval.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/exec.xml" parse="xml"
+  <xi:include href="applications/exec.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/execif.xml" parse="xml"
+  <xi:include href="applications/execif.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/execiftime.xml" parse="xml"
+  <xi:include href="applications/execiftime.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/exitwhile.xml" parse="xml"
+  <xi:include href="applications/exitwhile.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/extenspy.xml" parse="xml"
+  <xi:include href="applications/extenspy.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/externalivr.xml" parse="xml"
+  <xi:include href="applications/externalivr.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/festival.xml" parse="xml"
+  <xi:include href="applications/festival.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/flash.xml" parse="xml"
+  <xi:include href="applications/flash.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/followme.xml" parse="xml"
+  <xi:include href="applications/followme.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/forkcdr.xml" parse="xml"
+  <xi:include href="applications/forkcdr.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/getcpeid.xml" parse="xml"
+  <xi:include href="applications/getcpeid.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/getgroupcount.xml" parse="xml"
+  <xi:include href="applications/getgroupcount.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/getgroupmatchcount.xml" parse="xml"
+  <xi:include href="applications/getgroupmatchcount.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/gosub.xml" parse="xml"
+  <xi:include href="applications/gosub.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/gosubif.xml" parse="xml"
+  <xi:include href="applications/gosubif.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/goto.xml" parse="xml"
+  <xi:include href="applications/goto.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/gotoif.xml" parse="xml"
+  <xi:include href="applications/gotoif.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/gotoiftime.xml" parse="xml"
+  <xi:include href="applications/gotoiftime.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/hangup.xml" parse="xml"
+  <xi:include href="applications/hangup.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/hasnewvoicemail.xml" parse="xml"
+  <xi:include href="applications/hasnewvoicemail.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/hasvoicemail.xml" parse="xml"
+  <xi:include href="applications/hasvoicemail.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/iax2provision.xml" parse="xml"
+  <xi:include href="applications/iax2provision.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/ices.xml" parse="xml"
+  <xi:include href="applications/ices.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/importvar.xml" parse="xml"
+  <xi:include href="applications/importvar.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/incomplete.xml" parse="xml"
+  <xi:include href="applications/incomplete.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/jabbersend.xml" parse="xml"
+  <xi:include href="applications/jabbersend.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/jabberstatus.xml" parse="xml"
+  <xi:include href="applications/jabberstatus.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/keepalive.xml" parse="xml"
+  <xi:include href="applications/keepalive.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/log.xml" parse="xml"
+  <xi:include href="applications/log.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/lookupblacklist.xml" parse="xml"
+  <xi:include href="applications/lookupblacklist.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/lookupcidname.xml" parse="xml"
+  <xi:include href="applications/lookupcidname.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/macro.xml" parse="xml"
+  <xi:include href="applications/macro.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/macroexclusive.xml" parse="xml"
+  <xi:include href="applications/macroexclusive.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/macroexit.xml" parse="xml"
+  <xi:include href="applications/macroexit.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/macroif.xml" parse="xml"
+  <xi:include href="applications/macroif.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/mailboxexists.xml" parse="xml"
+  <xi:include href="applications/mailboxexists.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/math.xml" parse="xml"
+  <xi:include href="applications/math.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/md5.xml" parse="xml"
+  <xi:include href="applications/md5.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/md5check.xml" parse="xml"
+  <xi:include href="applications/md5check.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/meetme.xml" parse="xml"
+  <xi:include href="applications/meetme.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/meetmeadmin.xml" parse="xml"
+  <xi:include href="applications/meetmeadmin.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/meetmechanneladmin.xml" parse="xml"
+  <xi:include href="applications/meetmechanneladmin.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/meetmecount.xml" parse="xml"
+  <xi:include href="applications/meetmecount.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/milliwatt.xml" parse="xml"
+  <xi:include href="applications/milliwatt.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/minivmaccmess.xml" parse="xml"
+  <xi:include href="applications/minivmaccmess.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/minivmdelete.xml" parse="xml"
+  <xi:include href="applications/minivmdelete.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/minivmgreet.xml" parse="xml"
+  <xi:include href="applications/minivmgreet.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/minivmnotify.xml" parse="xml"
+  <xi:include href="applications/minivmnotify.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/minivmrecord.xml" parse="xml"
+  <xi:include href="applications/minivmrecord.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/mixmonitor.xml" parse="xml"
+  <xi:include href="applications/mixmonitor.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/monitor.xml" parse="xml"
+  <xi:include href="applications/monitor.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/morsecode.xml" parse="xml"
+  <xi:include href="applications/morsecode.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/mp3player.xml" parse="xml"
+  <xi:include href="applications/mp3player.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/mset.xml" parse="xml"
+  <xi:include href="applications/mset.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/musiconhold.xml" parse="xml"
+  <xi:include href="applications/musiconhold.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/nbscat.xml" parse="xml"
+  <xi:include href="applications/nbscat.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/nocdr.xml" parse="xml"
+  <xi:include href="applications/nocdr.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/noop.xml" parse="xml"
+  <xi:include href="applications/noop.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/odbcfinish.xml" parse="xml"
+  <xi:include href="applications/odbcfinish.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
   <!--
@@ -936,178 +937,178 @@
               xmlns:xi="http://www.w3.org/2001/XInclude" />
   -->
 
-  <xi:include href="applications/page.xml" parse="xml"
+  <xi:include href="applications/page.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/park.xml" parse="xml"
+  <xi:include href="applications/park.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/parkandannounce.xml" parse="xml"
+  <xi:include href="applications/parkandannounce.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/parkedcall.xml" parse="xml"
+  <xi:include href="applications/parkedcall.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/pausemonitor.xml" parse="xml"
+  <xi:include href="applications/pausemonitor.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/pausequeuemember.xml" parse="xml"
+  <xi:include href="applications/pausequeuemember.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/pickup.xml" parse="xml"
+  <xi:include href="applications/pickup.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/pickupchan.xml" parse="xml"
+  <xi:include href="applications/pickupchan.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/playback.xml" parse="xml"
+  <xi:include href="applications/playback.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/playtones.xml" parse="xml"
+  <xi:include href="applications/playtones.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/privacymanager.xml" parse="xml"
+  <xi:include href="applications/privacymanager.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/proceeding.xml" parse="xml"
+  <xi:include href="applications/proceeding.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/progress.xml" parse="xml"
+  <xi:include href="applications/progress.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/queue.xml" parse="xml"
+  <xi:include href="applications/queue.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/queuelog.xml" parse="xml"
+  <xi:include href="applications/queuelog.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/raiseexception.xml" parse="xml"
+  <xi:include href="applications/raiseexception.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/random.xml" parse="xml"
+  <xi:include href="applications/random.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/read.xml" parse="xml"
+  <xi:include href="applications/read.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/readexten.xml" parse="xml"
+  <xi:include href="applications/readexten.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/readfile.xml" parse="xml"
+  <xi:include href="applications/readfile.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/realtime.xml" parse="xml"
+  <xi:include href="applications/realtime.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/realtimeupdate.xml" parse="xml"
+  <xi:include href="applications/realtimeupdate.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/receivefax.xml" parse="xml"
+  <xi:include href="applications/receivefax.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/record.xml" parse="xml"
+  <xi:include href="applications/record.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/removequeuemember.xml" parse="xml"
+  <xi:include href="applications/removequeuemember.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/resetcdr.xml" parse="xml"
+  <xi:include href="applications/resetcdr.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/responsetimeout.xml" parse="xml"
+  <xi:include href="applications/responsetimeout.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/retrydial.xml" parse="xml"
+  <xi:include href="applications/retrydial.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/return.xml" parse="xml"
+  <xi:include href="applications/return.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/ringing.xml" parse="xml"
+  <xi:include href="applications/ringing.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/sayalpha.xml" parse="xml"
+  <xi:include href="applications/sayalpha.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/saydigits.xml" parse="xml"
+  <xi:include href="applications/saydigits.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/saynumber.xml" parse="xml"
+  <xi:include href="applications/saynumber.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/sayphonetic.xml" parse="xml"
+  <xi:include href="applications/sayphonetic.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/sayunixtime.xml" parse="xml"
+  <xi:include href="applications/sayunixtime.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/senddtmf.xml" parse="xml"
+  <xi:include href="applications/senddtmf.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/sendfax.xml" parse="xml"
+  <xi:include href="applications/sendfax.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/sendimage.xml" parse="xml"
+  <xi:include href="applications/sendimage.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/sendtext.xml" parse="xml"
+  <xi:include href="applications/sendtext.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/sendurl.xml" parse="xml"
+  <xi:include href="applications/sendurl.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/set.xml" parse="xml"
+  <xi:include href="applications/set.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setaccount.xml" parse="xml"
+  <xi:include href="applications/setaccount.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setamaflags.xml" parse="xml"
+  <xi:include href="applications/setamaflags.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setcallerid.xml" parse="xml"
+  <xi:include href="applications/setcallerid.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setcallerpres.xml" parse="xml"
+  <xi:include href="applications/setcallerpres.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setcdruserfield.xml" parse="xml"
+  <xi:include href="applications/setcdruserfield.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setcidname.xml" parse="xml"
+  <xi:include href="applications/setcidname.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setcidnum.xml" parse="xml"
+  <xi:include href="applications/setcidnum.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setglobalvar.xml" parse="xml"
+  <xi:include href="applications/setglobalvar.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setgroup.xml" parse="xml"
+  <xi:include href="applications/setgroup.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setlanguage.xml" parse="xml"
+  <xi:include href="applications/setlanguage.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setmusiconhold.xml" parse="xml"
+  <xi:include href="applications/setmusiconhold.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setrdnis.xml" parse="xml"
+  <xi:include href="applications/setrdnis.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/settransfercapability.xml" parse="xml"
+  <xi:include href="applications/settransfercapability.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/setvar.xml" parse="xml"
+  <xi:include href="applications/setvar.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/sipaddheader.xml" parse="xml"
+  <xi:include href="applications/sipaddheader.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/sipdtmfmode.xml" parse="xml"
+  <xi:include href="applications/sipdtmfmode.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/sipgetheader.xml" parse="xml"
+  <xi:include href="applications/sipgetheader.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
   <!--
@@ -1118,13 +1119,13 @@
               xmlns:xi="http://www.w3.org/2001/XInclude" />
   -->
 
-  <xi:include href="applications/sms.xml" parse="xml"
+  <xi:include href="applications/sms.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/softhangup.xml" parse="xml"
+  <xi:include href="applications/softhangup.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/sort.xml" parse="xml"
+  <xi:include href="applications/sort.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
   <!--
@@ -1156,25 +1157,25 @@
               xmlns:xi="http://www.w3.org/2001/XInclude" />
   -->
 
-  <xi:include href="applications/stackpop.xml" parse="xml"
+  <xi:include href="applications/stackpop.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/startmusiconhold.xml" parse="xml"
+  <xi:include href="applications/startmusiconhold.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/stopmixmonitor.xml" parse="xml"
+  <xi:include href="applications/stopmixmonitor.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/stopmonitor.xml" parse="xml"
+  <xi:include href="applications/stopmonitor.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/stopmusiconhold.xml" parse="xml"
+  <xi:include href="applications/stopmusiconhold.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/stopplaytones.xml" parse="xml"
+  <xi:include href="applications/stopplaytones.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/system.xml" parse="xml"
+  <xi:include href="applications/system.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
   <!--
@@ -1185,75 +1186,75 @@
               xmlns:xi="http://www.w3.org/2001/XInclude" />
   -->
 
-  <xi:include href="applications/transfer.xml" parse="xml"
+  <xi:include href="applications/transfer.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/tryexec.xml" parse="xml"
+  <xi:include href="applications/tryexec.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/trysystem.xml" parse="xml"
+  <xi:include href="applications/trysystem.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/txtcidname.xml" parse="xml"
+  <xi:include href="applications/txtcidname.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/unpausemonitor.xml" parse="xml"
+  <xi:include href="applications/unpausemonitor.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/unpausequeuemember.xml" parse="xml"
+  <xi:include href="applications/unpausequeuemember.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/userevent.xml" parse="xml"
+  <xi:include href="applications/userevent.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/verbose.xml" parse="xml"
+  <xi:include href="applications/verbose.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/vmauthenticate.xml" parse="xml"
+  <xi:include href="applications/vmauthenticate.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/voicemail.xml" parse="xml"
+  <xi:include href="applications/voicemail.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/voicemailmain.xml" parse="xml"
+  <xi:include href="applications/voicemailmain.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/wait.xml" parse="xml"
+  <xi:include href="applications/wait.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/waitexten.xml" parse="xml"
+  <xi:include href="applications/waitexten.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/waitfornoise.xml" parse="xml"
+  <xi:include href="applications/waitfornoise.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/waitforring.xml" parse="xml"
+  <xi:include href="applications/waitforring.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/waitforsilence.xml" parse="xml"
+  <xi:include href="applications/waitforsilence.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/waitmusiconhold.xml" parse="xml"
+  <xi:include href="applications/waitmusiconhold.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/waituntil.xml" parse="xml"
+  <xi:include href="applications/waituntil.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/while.xml" parse="xml"
+  <xi:include href="applications/while.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/zapateller.xml" parse="xml"
+  <xi:include href="applications/zapateller.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/zapbarge.xml" parse="xml"
+  <xi:include href="applications/zapbarge.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/zapras.xml" parse="xml"
+  <xi:include href="applications/zapras.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/zapscan.xml" parse="xml"
+  <xi:include href="applications/zapscan.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-  <xi:include href="applications/zapsendkeypadfacility.xml" parse="xml"
+  <xi:include href="applications/zapsendkeypadfacility.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude" />
 </appendix>

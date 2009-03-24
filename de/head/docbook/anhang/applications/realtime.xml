@@ -29,23 +29,23 @@
   <synopsis>RealTime(<replaceable>Familie</replaceable>,<replaceable>Spalte</replaceable>,<replaceable>Wert</replaceable>[,<replaceable>Präfix</replaceable>])</synopsis>
 
   <simpara>Benutzt das RealTime-Konfigurationssteuerprogramm, um Daten in
-  Channelvariablen einzulesen. Alle eindeutigen Spaltennamen aus der
-  angegebenen Familie werden als Channelvariablen gesetzt. Dabei kann ihr Name
-  ein optionales Namenspräfix <code>Präfix</code> erhalten (zum Beispiel würde
-  ein Präfix <code>var_</code> den Spaltennamen <code>test</code> in die
+  Channel-Variablen einzulesen. Alle eindeutigen Spaltennamen aus der
+  angegebenen Familie werden als Channel-Variablen gesetzt. Dabei kann ihr
+  Name ein optionales Namenspräfix <code>Präfix</code> erhalten (zum Beispiel
+  würde ein Präfix <code>var_</code> den Spaltennamen <code>test</code> in die
   Variable <code>${var_test}</code> überführen).</simpara>
 
-  <simpara>Die Channelvariable <code>REALTIMECOUNT</code> wird auf die Anzahl
+  <simpara>Die Channel-Variable <code>REALTIMECOUNT</code> wird auf die Anzahl
   der gelesenen Werte gesetzt.</simpara>
 
   <para>In der <filename>extconfig.conf</filename>:<programlisting>; Familie =&gt; DBMS,DB-Name,Tabelle
 sipusers =&gt; mysql,asterisk,sip_users</programlisting>In der
-  <filename>extensions.conf</filename>:<programlisting>exten =&gt; 123,1,RealTime(sipusers,ext,5678,var_)</programlisting>Führt
-  das folgende SQL-Query in der Datenbank <code>asterisk</code> aus:</para>
+  <filename>extensions.conf</filename>:<programlisting>exten =&gt; 123,1,RealTime(sipusers,ext,5678,var_)</programlisting><!--Was führt hier die SQL-Abfrage aus?-->führt
+  die folgende SQL-Query in der Datenbank <code>asterisk</code> aus:</para>
 
   <simpara><code>SELECT * FROM sip_users WHERE ext = 5678</code></simpara>
 
-  <para>Angenommen die Tabelle hat eine Spalte <code>vorname</code> und eine
+  <para>Angenommen, die Tabelle hat eine Spalte <code>vorname</code> und eine
   Spalte <code>nachname</code>, dann können wir die Werte so im CLI
   ausgeben:<programlisting>exten =&gt; 123,n,NoOp(Der Vorname von Ext. 5678: ${var_vorname})
 exten =&gt; 123,n,NoOp(Der Nachname von Ext. 5678: ${var_nachname})</programlisting></para>

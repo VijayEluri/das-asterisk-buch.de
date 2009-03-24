@@ -15,146 +15,148 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>Monitor()</literal></title>
+  <title><literal>Monitor()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>Monitor()</code></secondary>
-    </indexterm>
+    <secondary><code>Monitor()</code></secondary>
+  </indexterm>
 
-    <simpara>Schneidet das Gespräch auf dem aktuellen Channel mit (zwei
-    Dateien)</simpara>
+  <simpara>Schneidet das Gespräch auf dem aktuellen Channel mit (zwei
+  Dateien).</simpara>
 
-    <synopsis>Monitor([<replaceable>Format</replaceable>[,<replaceable>Basisname</replaceable>[,<replaceable>Optionen</replaceable>]]])</synopsis>
+  <synopsis>Monitor([<replaceable>Format</replaceable>[,<replaceable>Basisname</replaceable>[,<replaceable>Optionen</replaceable>]]])</synopsis>
 
-    <simpara>Startet die Audio-Aufzeichnung des aktuellen Channels. Die auf
-    dem Channel eingehenden und ausgehenden Sprachpakete werden in seperaten
-    Dateien aufgezeichnet, bis der Channel aufgelegt oder die Überwachung
-    durch die <code>StopMonitor()</code>-Anwendung beendet wird.</simpara>
+  <simpara>Startet die Audio-Aufzeichnung des aktuellen Channels. Die auf dem
+  Channel eingehenden und ausgehenden Sprachpakete werden in separaten Dateien
+  aufgezeichnet, bis der Channel aufgelegt oder die Überwachung durch die
+  <code>StopMonitor()</code>-Anwendung beendet wird.</simpara>
 
-    <simpara><code>Format</code> gibt das Dateiformat (= Dateiendung) an. Ohne
-    Angabe wird <code>wav</code> verwendet.</simpara>
+  <simpara><code>Format</code> gibt das Dateiformat (d. h. die Dateiendung)
+  an. Ohne Angabe wird <code>wav</code> verwendet.</simpara>
 
-    <simpara><code>Basisname</code> gibt den Basis-Dateinamen an (also ohne
-    Dateiendung). Ohne Angabe wird der Name aus dem Channelnamen und einer
-    Nummer zusammengesetzt, z.B. <code>IAX2[foo@bar]-3</code>. Das eingehende
-    Audio wird in
-    <filename><replaceable>Basisname</replaceable>-in.<replaceable>Format</replaceable></filename>,
-    das ausgehende in
-    <filename><replaceable>Basisname</replaceable>-out.<replaceable>Format</replaceable></filename>
-    im Verzeichnis <filename>/var/spool/asterisk/monitor/</filename>
-    gespeichert.</simpara>
+  <simpara><code>Basisname</code> gibt den Basis-Dateinamen an (also ohne
+  Dateiendung). Ohne Angabe wird der Name aus dem Channel-Namen und einer
+  Nummer zusammengesetzt, z. B. <code>IAX2[foo@bar]-3</code>. Das eingehende
+  Audio wird in
+  <filename><replaceable>Basisname</replaceable>-in.<replaceable>Format</replaceable></filename>,
+  das ausgehende in
+  <filename><replaceable>Basisname</replaceable>-out.<replaceable>Format</replaceable></filename>
+  im Verzeichnis <filename>/var/spool/asterisk/monitor/</filename>
+  gespeichert.</simpara>
 
-    <para>Eine der beiden Optionen kann angegeben werden: <variablelist
-        termlength="3">
-        <varlistentry>
-          <term><code>m</code></term>
+  <para>Eine der beiden Optionen kann angegeben werden: <variablelist
+      termlength="3">
+      <varlistentry>
+        <term><code>m</code></term>
 
-          <listitem>
-            <simpara>Nach dem Beenden der Aufnahme werden die Dateien für In
-            und Out in eine gemischt und die ursprünglichen Dateien gelöscht.
-            Dazu muss das Programm <command>soxmix</command> aus dem Paket
-            <command>sox</command> installiert sein<footnote>
-                <simpara><ulink
-                url="http://sox.sourceforge.net/">http://sox.sourceforge.net/</ulink>,
-                siehe Beschreibung in <xref linkend="musiconhold.conf" />,
-                mindestens Version 12.17.7, Ihre installierte Version erfahren
-                Sie mit <command>soxmix -help</command></simpara>
-              </footnote>. Falls die Variable <code>${MONITOR_EXEC}</code>
-            definiert ist, wird statt <command>soxmix</command> die angegebene
-            Anwendung ausgeführt, und die ursprünglichen Dateien für beide
-            Richtungen nicht automatisch gelöscht<footnote>
-                <para>abhängig von der Asterisk-Version; ältere Versionen
-                löschen nicht automatisch</para>
-              </footnote>. <command>soxmix</command> (bzw.
-            <command>${MONITOR_EXEC}</command>) werden drei Parameter
-            übergeben, die beiden Aufzeichnungsdateien und der Dateiname für
-            die zu erstellende gemischte Datei, welcher dem Basisnamen ohne
-            <code>-in</code>/<code>-out</code> entspricht. Ist
-            <code>${MONITOR_EXEC_ARGS}</code> gesetzt, werd der Inhalt als
-            zusätzliche Argumente an <code>${MONITOR_EXEC}</code>
-            übergeben.</simpara>
+        <listitem>
+          <simpara>Nach dem Beenden der Aufnahme werden die Dateien für In und
+          Out zu einer Datei zusammengefasst und die ursprünglichen Dateien
+          gelöscht. Dazu muss das Programm <command>soxmix</command> aus dem
+          Paket <command>sox</command> installiert sein.<footnote>
+              <simpara><ulink
+              url="http://sox.sourceforge.net/">http://sox.sourceforge.net/</ulink>,
+              siehe Beschreibung in <xref linkend="musiconhold.conf" />,
+              mindestens Version 12.17.7, Ihre installierte Version erfahren
+              Sie mit <command>soxmix -help.</command></simpara>
+            </footnote>Falls die Variable <code>${MONITOR_EXEC}</code>
+          definiert ist, wird statt <command>soxmix</command> die angegebene
+          Anwendung ausgeführt, und die ursprünglichen Dateien für beide
+          Richtungen werden nicht automatisch gelöscht.<footnote>
+              <para>Das hängt von der Asterisk-Version ab; ältere Versionen
+              löschen nicht automatisch.</para>
+            </footnote> <command>soxmix</command> (bzw.
+          <command>${MONITOR_EXEC}</command>) werden drei Parameter übergeben:
+          die beiden Aufzeichnungsdateien und der Dateiname für die zu
+          erstellende gemischte Datei, der dem Basisnamen ohne
+          <code>-in</code>/<code>-out</code> entspricht. Ist
+          <code>${MONITOR_EXEC_ARGS}</code> gesetzt, wird der Inhalt als
+          zusätzliche Argumente an <code>${MONITOR_EXEC}</code>
+          übergeben.</simpara>
 
-            <important>
-              <para>Bei der Verwendung von <command>soxmix</command> ist zu
-              beachten, dass <command>soxmix</command> ohne explizite Angabe
-              der Dateitypen diese aus den Endungen erkennt. <code>gsm</code>
-              und <code>wav</code> bereiten z.B. keine Probleme, aber für die
-              Formate <code>alaw</code> und <code>ulaw</code> werden als
-              Endungen <code>al</code> bzw. <code>ul</code> erwartet. Lesen
-              Sie also ggf. die Anleitung von sox (/soxmix) und verwenden Sie
-              <code>${MONITOR_EXEC_ARGS}</code> oder benutzen Sie ein kleines
-              Wrapper-Skript als <code>${MONITOR_EXEC}</code>, das die
-              Datei-Parameter liest und soxmix mit Angabe der Typen
-              aufruft.</para>
-            </important>
+          <important>
+            <para>Bei der Verwendung von <command>soxmix</command> ist zu
+            beachten, dass <command>soxmix</command> ohne explizite Angabe der
+            Dateitypen diese aus den Endungen erkennt. <code>gsm</code> und
+            <code>wav</code> bereiten z. B. keine Probleme, aber für die
+            Formate <code>alaw</code> und <code>ulaw</code> werden als
+            Endungen <code>al</code> bzw. <code>ul</code> erwartet. Lesen Sie
+            also ggf. die Anleitung von <filename>sox</filename>
+            (<filename>/soxmix</filename>), und verwenden Sie
+            <code>${MONITOR_EXEC_ARGS},</code> oder benutzen Sie ein kleines
+            Wrapper-Skript als <code>${MONITOR_EXEC}</code>, das die
+            Datei-Parameter liest und <filename>soxmix</filename> mit Angabe
+            der Typen aufruft.</para>
+          </important>
 
-            <note>
-              <simpara>Wenn Sie eine kombinierte Aufzeichnung wollen, ist
-              meist <code>MixMonitor()</code> die bessere Alternative, da es
-              die Kanäle direkt während der Aufnahme mischt und dadurch
-              Lastspitzen am Ende der Aufzeichnung vermeidet.</simpara>
-            </note>
-          </listitem>
-        </varlistentry>
+          <note>
+            <simpara>Wenn Sie eine kombinierte Aufzeichnung wollen, ist meist
+            <code>MixMonitor()</code> die bessere Alternative, da es die
+            Kanäle direkt während der Aufnahme mischt und dadurch Lastspitzen
+            am Ende der Aufzeichnung vermeidet.</simpara>
+          </note>
+        </listitem>
+      </varlistentry>
 
-        <varlistentry>
-          <term><code>b</code></term>
+      <varlistentry>
+        <term><code>b</code></term>
 
-          <listitem>
-            <simpara>Startet die Aufnahme erst, nachdem ein Anruf zu einem
-            anderen Channel verbunden wurde, also nachdem z.B. durch
-            <code>Dial()</code> tatsächlich ein Gespräch zustande
-            kommt.</simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist></para>
+        <listitem>
+          <simpara>Startet die Aufnahme erst, nachdem ein Anruf zu einem
+          anderen Channel verbunden wurde, also nachdem z. B. durch
+          <code>Dial()</code> tatsächlich ein Gespräch zustande
+          kommt.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
 
-    <simpara>Gibt 0 bei Erfolg zurück oder -1 bei einem Fehler
-    (Überwachungsdateien konnten nicht geöffnet werden, Channel wird bereits
-    aufgezeichnet, ...)</simpara>
+  <simpara>Gibt 0 bei Erfolg zurück oder -1 bei einem Fehler
+  (Überwachungsdateien konnten nicht geöffnet werden, Channel wird bereits
+  aufgezeichnet, ...).</simpara>
 
-    <programlisting>; das Gespräch aufzeichnen und hinterher die Audio-Kanäle mixen:
+  <programlisting>; das Gespräch aufzeichnen und hinterher die Audio-Kanäle mixen:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Monitor(gsm,,mb)
 exten =&gt; 123,n,SayDigits(123456789)
 exten =&gt; 123,n,Hangup()
 
-; wie oben aber mit einem eigenen Wrapper, der soxmix aufruft:
+; wie oben, aber mit einem eigenen Wrapper, der soxmix aufruft:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Set(MONITOR_EXEC=/pfad/zu/mein-soxmix-wrapper.sh)
 exten =&gt; 123,n,Monitor(gsm,,mb)
 exten =&gt; 123,n,SayDigits(123456789)
 exten =&gt; 123,n,Hangup()</programlisting>
 
-    <important>
-      <para>Stellen Sie vor dem Mitschneiden von Gesprächen sicher, dass die
-      rechtlichen Voraussetzungen erfüllt sind. Meist müssen beide Teilnehmer
-      von der Aufzeichnung informiert sein.<footnote>
-          <simpara>siehe auch <ulink
-          url="http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues">http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues</ulink></simpara>
-        </footnote></para>
-    </important>
+  <important>
+    <para>Stellen Sie vor dem Mitschneiden von Gesprächen sicher, dass die
+    rechtlichen Voraussetzungen erfüllt sind. Meist müssen beide Teilnehmer
+    über die Aufzeichnung informiert sein.<footnote>
+        <simpara>siehe auch <ulink
+        url="http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues">http://www.voip-info.org/wiki/view/Monitor+Recording+Legal+Issues</ulink></simpara>
+      </footnote></para>
+  </important>
 
-    <note>
-      <simpara>Einige Anwender, die viele (50-500) Gespräche gleichzeitig
-      aufnehmen, berichten von <emphasis>stark</emphasis> verbesserter
-      Performance, wenn man auf eine RAM-Disk aufzeichnet (weniger
-      Such-Operationen) und die Dateien erst nach Gesprächsende auf die
-      Festplatte (lokal oder gemountet) kopiert.</simpara>
-    </note>
+  <note>
+    <simpara>Einige Anwender, die viele (50 bis 500) Gespräche gleichzeitig
+    aufnehmen, berichten von <emphasis>stark</emphasis> verbesserter
+    Performance, wenn man auf eine RAM-Disk aufzeichnet (weniger
+    Suchoperationen) und die Dateien erst nach dem Gesprächsende auf die
+    Festplatte (lokal oder gemountet) kopiert.</simpara>
+  </note>
 
-    <xi:include href="monitor-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="monitor-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <formalpara>
+    <title>Siehe auch</title>
 
-      <para><xref linkend="applications-changemonitor" />, <xref
-      linkend="applications-stopmonitor" />, <xref
-      linkend="applications-pausemonitor" />, <xref
-      linkend="applications-unpausemonitor" />, <xref
-      linkend="applications-mixmonitor" />, <xref
-      linkend="applications-record" /></para>
-    </formalpara>
+    <para><xref linkend="applications-changemonitor" />, <xref
+    linkend="applications-stopmonitor" />, <xref
+    linkend="applications-pausemonitor" />, <xref
+    linkend="applications-unpausemonitor" />, <xref
+    linkend="applications-mixmonitor" />, <xref
+    linkend="applications-record" /></para>
+  </formalpara>
 </section>

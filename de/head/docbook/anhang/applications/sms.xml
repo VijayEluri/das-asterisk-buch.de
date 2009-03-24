@@ -15,85 +15,84 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>SMS()</literal></title>
+  <title><literal>SMS()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>SMS()</code></secondary>
-    </indexterm>
+    <secondary><code>SMS()</code></secondary>
+  </indexterm>
 
-    <indexterm>
-      <primary>SMS</primary>
-    </indexterm>
+  <indexterm>
+    <primary>SMS</primary>
+  </indexterm>
 
-    <simpara>Sendet oder empfängt SMS-Nachrichten.</simpara>
+  <simpara>Sendet oder empfängt SMS-Nachrichten.</simpara>
 
-    <synopsis>SMS(<replaceable>Schlange</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
+  <synopsis>SMS(<replaceable>Warteschlange</replaceable>[,<replaceable>Optionen</replaceable>])</synopsis>
 
-    <simpara>Regelt den Austausch von SMS-Nachrichten mit einem SMS-fähigen
-    Telefon oder über ein SMS-Service-Center nach dem Protokoll ETSI ES 201
-    912 auf analogen oder ISDN-Leitungen. Das Shell-Programm
-    <command>smsq</command> verwendet dazu FSK<footnote>
-        <simpara>Frequency Shift Keying, <xref
-        linkend="glossar-fsk" /></simpara>
-      </footnote> - die Funktion über komprimierte Codecs wie GSM ist daher
-    unwahrscheinlich.</simpara>
+  <simpara>Regelt den Austausch von SMS-Nachrichten mit einem SMS-fähigen
+  Telefon oder über ein SMS-Service-Center nach dem Protokoll ETSI ES 201 912
+  auf analogen oder ISDN-Leitungen. Das Shell-Programm <command>smsq</command>
+  verwendet dazu FSK<footnote>
+      <simpara>Frequency Shift Keying, <xref
+      linkend="glossar-fsk" /></simpara>
+    </footnote> -- dass ein Austausch über komprimierte Codecs wie GSM
+  funktioniert, ist daher unwahrscheinlich.</simpara>
 
-    <para>Optionen:<variablelist termlength="3">
-        <varlistentry>
-          <term>a</term>
+  <para>Optionen:<variablelist termlength="3">
+      <varlistentry>
+        <term>a</term>
 
-          <listitem>
-            <simpara>Als antwortende Seite agieren.</simpara>
-          </listitem>
-        </varlistentry>
+        <listitem>
+          <simpara>Als antwortende Seite agieren.</simpara>
+        </listitem>
+      </varlistentry>
 
-        <varlistentry>
-          <term>s</term>
+      <varlistentry>
+        <term>s</term>
 
-          <listitem>
-            <simpara>Als Service-Center agieren, das mit einem Telefon
-            kommuniziert.</simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist></para>
+        <listitem>
+          <simpara>Als Service-Center agieren, das mit einem Telefon
+          kommuniziert.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
 
-    <simpara>Alle Sende-/Empfangsschlangen werden in
-    <filename>/var/spool/asterisk/sms/</filename> gespeichert: die Nachrichten
-    vom Service-Center zum Telefon in
-    <filename>sc-me.<replaceable>Schlange</replaceable>/</filename>, die
-    Nachrichten vom Telefon zum SMSC in
-    <filename>me-sc.<replaceable>Schlange</replaceable>/</filename>. In
-    <filename>/var/log/asterisk/sms</filename> wird ein Log
-    geschrieben.</simpara>
+  <simpara>Alle Sende-/Empfangswarteschlangen werden in
+  <filename>/var/spool/asterisk/sms/</filename> gespeichert: die Nachrichten
+  vom Service-Center zum Telefon in
+  <filename>sc-me.<replaceable>Schlange</replaceable>/</filename>, die
+  Nachrichten vom Telefon zum SMSC in
+  <filename>me-sc.<replaceable>Schlange</replaceable>/</filename>. In
+  <filename>/var/log/asterisk/sms</filename> wird ein Log
+  geschrieben.</simpara>
 
-    <simpara>Beim Verbinden als Client (<code>a</code>) werden alle im
-    Verzeichnis
-    <filename>me-sc.<replaceable>Schlange</replaceable>/</filename> wartenden
-    Nachrichten gesendet und dann gelöscht; die empfangenen werden in
-    <filename>sc-me.<replaceable>Schlange</replaceable>/</filename> mit einem
-    Timestamp im Dateinamen gespeichert. Wenn wir uns als Service-Center
-    verbinden (<code>s</code>) ist das genau umgekehrt.</simpara>
+  <simpara>Beim Verbinden als Client (<code>a</code>) werden alle im
+  Verzeichnis <filename>me-sc.<replaceable>Schlange</replaceable>/</filename>
+  wartenden Nachrichten gesendet und dann gelöscht; die empfangenen werden in
+  <filename>sc-me.<replaceable>Schlange</replaceable>/</filename> mit einem
+  Timestamp im Dateinamen gespeichert. Wenn wir uns als Service-Center
+  verbinden (<code>s</code>), ist das genau umgekehrt.</simpara>
 
-    <para>Die Nachrichten-Dateien haben folgendes Format, wobei ausgelassene
-    Parameter Default-Werte haben:<programlisting>oa=<replaceable>Originating Address (Absendernummer)</replaceable></programlisting>Nationale
-    Telefonnummer oder internationale mit vorangehendem <code>+</code> (z.B.
-    <code>+49</code>).<programlisting>da=<replaceable>Destination Address (Empfängernummer)</replaceable></programlisting>Nationale
-    Telefonnummer oder internationale mit vorangehendem
-    <code>+</code>.<programlisting>scts=<replaceable>Service Centre Time Stamp (Zeitstempel vom SC)</replaceable></programlisting>Im
-    Format <code>YYYY-MM-DD HH:MM:SS</code> <programlisting>pid=<replaceable>Protocol Identifier (decimal octet value)</replaceable></programlisting><programlisting>dcs=<replaceable>Data coding scheme (decimal octet value)</replaceable></programlisting><programlisting>mr=<replaceable>Message reference (decimal octet value)</replaceable></programlisting><programlisting>ud=<replaceable>Der Nachrichtentext</replaceable></programlisting>Wenn
-    andere Zeichen als 10, 13, 32-126, 128-255 (dezimal) in der Nachricht
-    vorkommen, wird <code>ud=</code> durch <code>ud#</code> ersetzt und die
-    Zeichen folgen hexadezimal kodiert.<programlisting>srr=<replaceable>Status Report Request (0|1)</replaceable></programlisting><programlisting>rp=<replaceable>Return Path (0|1)</replaceable></programlisting><programlisting>vp=<replaceable>Validity Period (Gültigkeitsdauer in Minuten)</replaceable></programlisting>Beim
-    Senden an ein SMSC müssen nur <code>da</code> und <code>ud</code>
-    verwendet werden, <code>oa</code> wird ignoriert; beim Senden an ein
-    Telefon sind nur <code>oa</code> und <code>ud</code> nötig,
-    <code>da</code> wird ignoriert.</para>
+  <para>Die Nachrichten-Dateien haben folgendes Format, wobei ausgelassene
+  Parameter Default-Werte haben:<programlisting>oa=<replaceable>Originating Address (Absendernummer)</replaceable></programlisting>Nationale
+  Telefonnummer oder internationale mit vorangehendem <code>+</code> (z. B.
+  <code>+49</code>).<programlisting>da=<replaceable>Destination Address (Empfängernummer)</replaceable></programlisting>Nationale
+  Telefonnummer oder internationale mit vorangehendem
+  <code>+</code>.<programlisting>scts=<replaceable>Service Centre Time Stamp (Zeitstempel vom SC)</replaceable></programlisting>Im
+  Format <code>YYYY-MM-DD HH:MM:SS</code> <programlisting>pid=<replaceable>Protocol Identifier (decimal octet value)</replaceable></programlisting><programlisting>dcs=<replaceable>Data coding scheme (decimal octet value)</replaceable></programlisting><programlisting>mr=<replaceable>Message reference (decimal octet value)</replaceable></programlisting><programlisting>ud=<replaceable>Der Nachrichtentext</replaceable></programlisting>Wenn
+  andere Zeichen als 10, 13, 32--126, 128--255 (dezimal) in der Nachricht
+  vorkommen, wird <code>ud=</code> durch <code>ud#</code> ersetzt, und die
+  Zeichen folgen hexadezimal kodiert.<programlisting>srr=<replaceable>Status Report Request (0|1)</replaceable></programlisting><programlisting>rp=<replaceable>Return Path (0|1)</replaceable></programlisting><programlisting>vp=<replaceable>Validity Period (Gültigkeitsdauer in Minuten)</replaceable></programlisting>Beim
+  Senden an ein SMSC müssen nur <code>da</code> und <code>ud</code> verwendet
+  werden, <code>oa</code> wird ignoriert; beim Senden an ein Telefon sind nur
+  <code>oa</code> und <code>ud</code> nötig, <code>da</code> wird
+  ignoriert.</para>
 
-    <para>Eine Extension zum Empfangen von Nachrichten könnte so aussehen
-    (wenn 01930100 die Nummer des für uns zuständigen SMSC - hier T-Com -
-    ist):<programlisting>[incoming]
+  <para>Eine Extension zum Empfangen von Nachrichten könnte so aussehen (wenn
+  01930100 die Nummer des für uns zuständigen SMSC -- hier T-Com --
+  ist):<programlisting>[incoming]
 exten =&gt; _X.,1,GotoIf($["${CALLERIDNUM}" = "01930100"]?sms-me-in,${EXTEN},1) 
 ; oder so:
 ;exten =&gt; _X./_0193010.,1,Goto(sms-me-in,${EXTEN},1)
@@ -102,14 +101,14 @@ exten =&gt; _X.,1,GotoIf($["${CALLERIDNUM}" = "01930100"]?sms-me-in,${EXTEN},1)
 exten =&gt; _X.,1,Wait(1)
 exten =&gt; _X.,n,SMS(me-eingang,a)
 exten =&gt; _X.,n,System(handleincomingsms)
-exten =&gt; _X.,n,Hangup()</programlisting>wobei
-    <code>handleincomingsms</code> z.B. <code>smsq
-    --process=<replaceable>befehl</replaceable> --queue=me-eingang</code> sein
-    könnte, was für jede eingegangene Nachricht einen Befehl ausführt.</para>
+exten =&gt; _X.,n,Hangup()</programlisting>Dabei könnte
+  <code>handleincomingsms</code> z. B. <code>smsq
+  --process=<replaceable>befehl</replaceable> --queue=me-eingang</code> sein,
+  was für jede eingegangene Nachricht einen Befehl ausführt.</para>
 
-    <para>Ausgehende Nachrichten sollten als Dateien geschrieben werden, könne
-    aber auch mit folgendem (veralteten) Aufruf erzeugt werden (0193010 ist
-    die Nummer des SMSC - hier T-Com):<programlisting>[outgoing]
+  <para>Ausgehende Nachrichten sollten als Dateien geschrieben werden, können
+  aber auch mit folgendem (veralteten) Aufruf erzeugt werden (0193010 ist die
+  Nummer des SMSC -- hier T-Com):<programlisting>[outgoing]
 exten = 0193010,1,Goto(sms-me-out,${CALLERIDNUM},1)
 
 [sms-me-out]
@@ -119,12 +118,13 @@ exten =&gt; _X.,n,SMS(${smsFrom},s,${EXTEN},${smsText})  ; SMS erzeugen
 exten =&gt; _X.,n,SMS(${smsFrom},s)                       ; senden
 exten =&gt; _X.,n,Hangup()</programlisting></para>
 
-    <simpara>Weitere Informationen und viele Beispiele auf <ulink
-    url="http://www.voip-info.org/wiki/view/Asterisk+cmd+Sms">http://www.voip-info.org/wiki/view/Asterisk+cmd+Sms</ulink>
-    und <ulink
-    url="http://www.pi4tel.de/asterisk/sms.shtml">http://www.pi4tel.de/asterisk/sms.shtml</ulink>.
-    Man kann jedoch nicht erwarten, dass <code>SMS()</code> <quote>out of the
-    box</quote> sofort funktioniert.</simpara>
+  <simpara>Weitere Informationen und viele Beispiele auf <ulink
+  url="http://www.voip-info.org/wiki/view/Asterisk+cmd+Sms">http://www.voip-info.org/wiki/view/Asterisk+cmd+Sms</ulink>
+  und <ulink
+  url="http://www.pi4tel.de/asterisk/sms.shtml">http://www.pi4tel.de/asterisk/sms.shtml</ulink>.
+  Man kann jedoch nicht erwarten, dass <code>SMS()</code> <quote>out of the
+  box</quote> sofort funktioniert.</simpara>
 
-    <xi:include href="sms-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="sms-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 </section>

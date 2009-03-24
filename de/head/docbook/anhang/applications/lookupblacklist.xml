@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
-<section id="applications-lookupblacklist" lang="de" revision="$Revision$">
+<section id="applications-lookupblacklist" lang="de"
+         revision="$Revision$">
   <!--
 % Copyright (c) 2006 - 2008 by 
 % Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
@@ -15,36 +16,36 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>LookupBlacklist()</literal></title>
+  <title><literal>LookupBlacklist()</literal></title>
 
-    <indexterm significance="preferred">
-      <primary>Dialplan-Applikationen</primary>
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
 
-      <secondary><code>LookupBlacklist()</code></secondary>
-    </indexterm>
+    <secondary><code>LookupBlacklist()</code></secondary>
+  </indexterm>
 
-    <simpara>Schlägt die Caller-ID-Nummer in der lokalen Blacklist-Datenbank
-    in der AstDB nach.</simpara>
+  <simpara>Schlägt die Caller-ID-Nummer in der lokalen Blacklist-Datenbank in
+  der AstDB nach.</simpara>
 
-    <synopsis>LookupBlacklist([<replaceable>Optionen</replaceable>])</synopsis>
+  <synopsis>LookupBlacklist([<replaceable>Optionen</replaceable>])</synopsis>
 
-    <simpara>Sucht die Caller-ID-Nummer (/-Name) des aktiven Channels in der
-    AstDB in der Familie <code>blacklist</code>. Wenn die Option j (jump)
-    angegeben ist, die Nummer gefunden wird und eine Priorität n+101
-    existiert, geht die Ausführung bei dieser Priorität weiter. Wird auf dem
-    Channel keine Caller-ID empfangen, tut die Anwendung nichts.</simpara>
+  <simpara>Sucht die Caller-ID-Nummer (/-Name) des aktiven Channels in der
+  AstDB in der Familie <code>blacklist</code>. Wenn die Option j (jump)
+  angegeben ist, die Nummer gefunden wird und eine Priorität n+101 existiert,
+  geht die Ausführung bei dieser Priorität weiter. Wird auf dem Channel keine
+  Caller-ID empfangen, tut die Anwendung nichts.</simpara>
 
-    <simpara>Die Applikation setzt auch die Channelvariable
-    <code>LOOKUPBLSTATUS</code> auf <code>FOUND</code> (gefunden) oder
-    <code>NOTFOUND</code> (nicht gefunden).</simpara>
+  <simpara>Die Applikation setzt auch die Channel-Variable
+  <code>LOOKUPBLSTATUS</code> auf <code>FOUND</code> (gefunden) oder
+  <code>NOTFOUND</code> (nicht gefunden).</simpara>
 
-    <simpara>Um der Blacklist Einträge hinzuzufügen, geben Sie im CLI
-    <code>database put blacklist "<replaceable>Nummer</replaceable>"
-    "1"</code>, bzw. <code>database del blacklist
-    "<replaceable>Nummer</replaceable>"</code> zum Löschen oder <code>database
-    show blacklist</code> für eine Auflistung ein.</simpara>
+  <simpara>Um der Blacklist Einträge hinzuzufügen, geben Sie im CLI
+  <code>database put blacklist "<replaceable>Nummer</replaceable>" "1"</code>
+  ein bzw. <code>database del blacklist
+  "<replaceable>Nummer</replaceable>"</code> zum Löschen oder <code>database
+  show blacklist</code> für eine Auflistung.</simpara>
 
-    <programlisting>; Nummern aus der Schwarzen Liste nicht zulassen,
+  <programlisting>; Nummern aus der schwarzen Liste nicht zulassen,
 ; andernfalls die Nummer in der Variablen ${PETER} wählen:
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,LookupBlacklist()
@@ -54,8 +55,8 @@ exten =&gt; 123,n,Dial(${PETER},30)
 exten =&gt; black,1,Playback(tt-allbusy)
 exten =&gt; black,n,Hangup()</programlisting>
 
-    <para>Die Applikation <code>LookupBlacklist()</code> könnte folgendermaßen
-    ersetzt werden:<programlisting>exten =&gt; 123,1,Macro(blacklist,${CALLERID(num)})
+  <para>Die Applikation <code>LookupBlacklist()</code> könnte folgendermaßen
+  ersetzt werden:<programlisting>exten =&gt; 123,1,Macro(blacklist,${CALLERID(num)})
 exten =&gt; 123,n,Dial(IAX2/benutzer:passwort@beispiel.de/500)
 
 [macro-blacklist]
@@ -65,5 +66,6 @@ exten =&gt; s,10(black),NoOp(Nummer ${ARG1} ist auf der Blacklist)
 exten =&gt; s,n,Busy(5)
 exten =&gt; s,n,Hangup()</programlisting></para>
 
-    <xi:include href="lookupblacklist-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="lookupblacklist-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 </section>
