@@ -134,10 +134,10 @@ switch ($lang) {
 
 switch ($lang) {
 	case 'de':
-		$not_avail_text = '- in Asterisk %s nicht vorhanden -';
+		$not_avail_text = '-- in Asterisk %s nicht vorhanden --';
 		break;
 	case 'en':
-		$not_avail_text = '- not available in Asterisk %s -';
+		$not_avail_text = '-- not available in Asterisk %s --';
 		break;
 }
 
@@ -152,10 +152,10 @@ switch ($lang) {
 
 switch ($lang) {
 	case 'de':
-		$no_difference_text = '- keine -';
+		$no_difference_text = '-- keine --';
 		break;
 	case 'en':
-		$no_difference_text = '- none -';
+		$no_difference_text = '-- none --';
 		break;
 }
 
