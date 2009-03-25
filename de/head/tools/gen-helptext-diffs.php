@@ -134,10 +134,10 @@ switch ($lang) {
 
 switch ($lang) {
 	case 'de':
-		$not_avail_text = '-- in Asterisk %s nicht vorhanden --';
+		$not_avail_text = '&#8211; in Asterisk %s nicht vorhanden &#8211;';
 		break;
 	case 'en':
-		$not_avail_text = '-- not available in Asterisk %s --';
+		$not_avail_text = '&#8211; not available in Asterisk %s &#8211;';
 		break;
 }
 
@@ -152,10 +152,10 @@ switch ($lang) {
 
 switch ($lang) {
 	case 'de':
-		$no_difference_text = '-- keine --';
+		$no_difference_text = '&#8211; keine &#8211;';
 		break;
 	case 'en':
-		$no_difference_text = '-- none --';
+		$no_difference_text = '&#8211; none &#8211;';
 		break;
 }
 
@@ -499,7 +499,7 @@ foreach ($items as $itemname => $item) {
 			if ($diff != '') {
 				$content = sPrintF($diff_avail_xml, str_replace('%','%%', _xmlent($diff)));
 			} else {
-				$content = sPrintF($help_or_diff_not_avail_xml, str_replace('%','%%', _xmlent($no_difference_text)));
+				$content = sPrintF($help_or_diff_not_avail_xml, str_replace('%','%%', ($no_difference_text)));
 			}
 		}
 		$out.= sPrintF($help_or_diff_container_xml, $title, $content);
@@ -534,7 +534,7 @@ foreach ($items as $itemname => $item) {
 			if ($diff != '') {
 				$content = sPrintF($diff_avail_xml, str_replace('%','%%', _xmlent($diff)));
 			} else {
-				$content = sPrintF($help_or_diff_not_avail_xml, str_replace('%','%%', _xmlent($no_difference_text)));
+				$content = sPrintF($help_or_diff_not_avail_xml, str_replace('%','%%', ($no_difference_text)));
 			}
 		}
 		$out.= sPrintF($help_or_diff_container_xml, $title, $content);
