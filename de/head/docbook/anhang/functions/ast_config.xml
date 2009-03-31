@@ -15,31 +15,35 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>AST_CONFIG()</literal><indexterm significance="preferred">
+  <title><literal>AST_CONFIG()</literal><indexterm significance="preferred">
       <primary>Dialplan-Funktionen</primary>
 
       <secondary><code>AST_CONFIG()</code></secondary>
     </indexterm></title>
-    <synopsis>AST_CONFIG(<replaceable>Datei</replaceable>,<replaceable>Kategorie</replaceable>,<replaceable>Variablenname</replaceable>,[<replaceable>index</replaceable>])</synopsis>
 
-    <simpara>Diese Funktion liest einen bestimmten Wert aus einer Konfigurationsdatei und gibt diesen zurück.
-	     Der Wert ist der tatsächliche Wert der zum Zeitpunkt des Funktionsaufrufes in der Datei steht, 
-	     egal ob, z.B. nach einer Konfigurationsänderung, ein Reload von Asterisk durchgeführt wurde oder nicht.
-	     Was bedeutet, das die Werte die von dieser Funktion zurückgegeben werden, nicht unbedingt mit den 
-	     Konfigurationseinstellungen die Asterisk im Moment verwendet übereinstimmen müssen.
-	     Der optionale <code>index</code>-Parameter wird benutzt, wenn mehr als ein Vorkommen dieser Variable 
-	     in der Kategorie existiert. Der Indexzähler fängt mit 0 an, das heist das die erste gefundene Variable 
-	     mit 0 ausgelesen werden muss. Desweiteren kann mit <code>index</code> die Anzahl der vorhanden Variablen 
-	     mit herausgefunden werden, dazu muss nur als <code>index</code> der Wert <code>count</code> übergeben werden.
-    </simpara>
+  <synopsis>AST_CONFIG(<replaceable>Datei</replaceable>,<replaceable>Kategorie</replaceable>,<replaceable>Variablenname</replaceable>,[<replaceable>index</replaceable>])</synopsis>
 
-    <programlisting>; Gibt den <code>type</code> des Sip-Accounts anhand der Callerid auf der CLI aus
+  <simpara>Diese Funktion liest einen bestimmten Wert aus einer
+  Konfigurationsdatei und gibt diesen zurück. Der Wert ist der tatsächliche
+  Wert, der zum Zeitpunkt des Funktionsaufrufs in der Datei steht, egal, ob,
+  z. B. nach einer Konfigurationsänderung, ein Reload von Asterisk
+  durchgeführt wurde oder nicht. Das bedeutet, dass die Werte, die von dieser
+  Funktion zurückgegeben werden, nicht unbedingt mit den
+  Konfigurationseinstellungen übereinstimmen müssen, die Asterisk im Moment
+  verwendet. Der optionale <code>index</code>-Parameter wird benutzt, wenn
+  mehr als ein Vorkommen dieser Variable in der Kategorie existiert. Der
+  Indexzähler fängt mit 0 an. Das heißt, dass die erste gefundene Variable mit
+  0 ausgelesen werden muss. Des Weiteren kann mit <code>index</code> die
+  Anzahl der vorhandenen Variablen mit herausgefunden werden. Dazu muss nur
+  als <code>index</code> der Wert <code>count</code> übergeben
+  werden.</simpara>
+
+  <programlisting>; Gibt den <code>type</code> des Sip-Accounts anhand der Callerid auf der CLI aus
 exten =&gt; 123,1,Answer()
 exten =&gt; 123,n,Verbose(1,${AST_CONFIG(sip.conf,${CALLERID(num)},type)})
 exten =&gt; 123,n,Hangup()
 </programlisting>
 
-    <xi:include href="ast_config-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
-
-
+  <xi:include href="ast_config-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 </section>
