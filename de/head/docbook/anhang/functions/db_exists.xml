@@ -15,36 +15,37 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>DB_EXISTS()</literal><indexterm significance="preferred">
-        <primary>Dialplan-Funktionen</primary>
+  <title><literal>DB_EXISTS()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
 
-        <secondary><code>DB_EXISTS()</code></secondary>
-      </indexterm></title>
+      <secondary><code>DB_EXISTS()</code></secondary>
+    </indexterm></title>
 
-    <synopsis>DB_EXISTS(<replaceable>Familie</replaceable>/<replaceable>Schlüssel</replaceable>)</synopsis>
+  <synopsis>DB_EXISTS(<replaceable>Familie</replaceable>/<replaceable>Schlüssel</replaceable>)</synopsis>
 
-    <para>Prüft, ob ein Schlüssel in der AstDB vorhanden ist. Gibt 1 oder 0
-    zurück. Setzt auch die Variable <code>DB_RESULT</code> auf den unter dem
-    Schlüssel gespeicherten Wert.<programlisting>; abfragen, ob der Eintrag cidnums/0123456789 existiert:
+  <para>Prüft, ob ein Schlüssel in der AstDB vorhanden ist. Gibt 1 oder 0
+  zurück. Setzt auch die Variable <code>DB_RESULT</code> auf den Wert, der
+  unter dem Schlüssel gespeichert ist.<programlisting>; abfragen, ob der Eintrag cidnums/0123456789 existiert:
 exten =&gt; 123,1,Set(foo=${DB_EXISTS(cidnums/0123456789)})</programlisting></para>
 
-    <para>So kann z.B. die Applikation <code>LookupBlacklist()</code> ersetzt
-    werden. Springt, falls die Anrufernummer in der Blacklist ist, zum Context
-    <code>blacklisted</code>, Extension <code>s</code>, Priorität
-    <code>1</code>:<programlisting>exten =&gt; 123,1,GotoIf(${DB_EXISTS(blacklist/${CALLERID(num)})}?blacklisted,s,1)
+  <para>So kann z. B. die Applikation <code>LookupBlacklist()</code> ersetzt
+  werden. Springt, falls die Anrufernummer in der Blacklist ist, zum Context
+  <code>blacklisted</code>, Extension <code>s</code>, Priorität
+  <code>1</code>:<programlisting>exten =&gt; 123,1,GotoIf(${DB_EXISTS(blacklist/${CALLERID(num)})}?blacklisted,s,1)
 exten =&gt; 123,n,Dial(IAX2/benutzer:passwort@beispiel.de/500)
 
 [blacklisted]
 exten =&gt; s,1,NoOp(${CALLERID(num)} ist auf der Blacklist)
 exten =&gt; s,n,Hangup()</programlisting></para>
 
-    <xi:include href="db_exists-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="db_exists-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <formalpara>
+    <title>Siehe auch</title>
 
-      <para><xref linkend="functions-db" />, <xref
-      linkend="functions-db_delete" />, <xref
-      linkend="applications-dbdeltree" /></para>
-    </formalpara>
+    <para><xref linkend="functions-db" />, <xref
+    linkend="functions-db_delete" />, <xref
+    linkend="applications-dbdeltree" /></para>
+  </formalpara>
 </section>
