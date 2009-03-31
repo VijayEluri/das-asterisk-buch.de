@@ -134,10 +134,10 @@ switch ($lang) {
 
 switch ($lang) {
 	case 'de':
-		$not_avail_text = '&#8211; in Asterisk %s nicht vorhanden &#8211;';
+		$not_avail_text = '<emphasis role="italic">&#8212; in Asterisk %s nicht vorhanden &#8212;</emphasis>';
 		break;
 	case 'en':
-		$not_avail_text = '&#8211; not available in Asterisk %s &#8211;';
+		$not_avail_text = '<emphasis role="italic">&#8212; not available in Asterisk %s &#8212;</emphasis>';
 		break;
 }
 
@@ -152,10 +152,10 @@ switch ($lang) {
 
 switch ($lang) {
 	case 'de':
-		$no_difference_text = '&#8211; keine &#8211;';
+		$no_difference_text = '<emphasis role="italic">&#8212; keine &#8212;</emphasis>';
 		break;
 	case 'en':
-		$no_difference_text = '&#8211; none &#8211;';
+		$no_difference_text = '<emphasis role="italic">&#8212; none &#8212;</emphasis>';
 		break;
 }
 
