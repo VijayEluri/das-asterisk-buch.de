@@ -15,37 +15,41 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-    <title><literal>TRYLOCK()</literal><indexterm significance="preferred">
+  <title><literal>TRYLOCK()</literal><indexterm significance="preferred">
       <primary>Dialplan-Funktionen</primary>
 
       <secondary><code>TRYLOCK()</code></secondary>
     </indexterm></title>
 
-    <synopsis>TRYLOCK(<replaceable>param</replaceable>)</synopsis>
+  <synopsis>TRYLOCK(<replaceable>param</replaceable>)</synopsis>
 
-    <simpara> Mit dieser Funktion ist es möglich einige Passagen des Rufnummernplanes zu serialisieren.
-    Die Funktion ist LOCK() sehr ähnlich, der einzige Unterschied besteht darin, das nicht 3 Sekunden
-    gewartet wird, wenn der Mutex schon gesperrt ist. Das heist das immer nur ein Anrufer nach dem 
-    anderen das mit dem LOCK-Mechnismus "gesicherte" Stück Rufnummernplan durchlaufen kann.
-    Diese Technologie ist aus der Threadprogrammierung auch in Form eines <code>Mutex</code> bekannt. 
-    Als Paramter muss der frei wählbare Name des Mutexes übergeben werden.
-    Wenn der Mutex normal gelockt werden konnte liefert die Funktion <code>1</code> zurück.
-    Der Mutex ist wieder frei, wenn der Channel aufgelegt wurde oder UNLOCK() aufgerufen wurde.
-    </simpara>
+  <simpara>Mit dieser Funktion ist es möglich, einige Passagen des
+  Rufnummernplans zu serialisieren. Die Funktion ist
+  <code>LOCK()</code> sehr ähnlich. Der einzige Unterschied besteht
+  darin, das nicht 3 Sekunden gewartet wird, wenn der Mutex schon gesperrt
+  ist. Das heißt, dass immer nur ein Anrufer nach dem anderen das mit dem
+  LOCK-Mechanismus "gesicherte" Stück Rufnummernplan durchlaufen kann. Diese
+  Technologie ist aus der Threadprogrammierung auch in Form eines
+  Mutex bekannt. Als Parameter muss der frei wählbare Name des
+  Mutexes übergeben werden. Wenn der Mutex normal gelockt werden konnte,
+  liefert die Funktion <code>1</code> zurück. Der Mutex ist wieder frei, wenn
+  der Channel aufgelegt wurde oder <code>UNLOCK()</code> aufgerufen
+  wurde.</simpara>
 
-    <programlisting>; Sperre das Ausführen eines Systembefehles durch einen mutex
+  <programlisting>; Sperre das Ausführen eines Systembefehls durch einen Mutex
 exten =&gt; 123,1,GotoIf(${TRYLOCK(lock1)}?locked,1)
 exten =&gt; 123,n,System(kritisches-skript.sh)
 exten =&gt; 123,n,Hangup()
-exten =&gt; locked,1,Verbose(1, Der Mutex ist schon Gelockt)
+exten =&gt; locked,1,Verbose(1, Der Mutex ist schon gelockt)
     </programlisting>
 
-    <xi:include href="trylock-help.xml" parse="xml" xmlns:xi="http://www.w3.org/2001/XInclude" xpointer="xpointer(/note/*)" />
+  <xi:include href="trylock-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-    <formalpara>
-      <title>Siehe auch</title>
+  <formalpara>
+    <title>Siehe auch</title>
 
-      <para><xref linkend="functions-lock" />, <xref
-      linkend="functions-unlock" /></para>
-    </formalpara>
+    <para><xref linkend="functions-lock" />, <xref
+    linkend="functions-unlock" /></para>
+  </formalpara>
 </section>
