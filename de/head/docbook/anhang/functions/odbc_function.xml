@@ -41,33 +41,33 @@
   <sidebar>
     <para>Dies ist keine allgemeine ODBC<indexterm>
         <primary>ODBC</primary>
-      </indexterm>-Anleitung. Trotzdem sei kurz gesagt wie man es auf Debian
-    installieren würde. Um Asterisk mit ODBC-Unterstützung zu kompilieren
-    braucht man selbverständlich die Header-Dateien
-    (<literal>unixodbc-dev</literal>). Wir gehen davon aus dass Sie Asterisk
+      </indexterm>-Anleitung. Trotzdem sei kurz gesagt, wie man es auf Debian
+    installieren würde. Um Asterisk mit ODBC-Unterstützung zu kompilieren,
+    braucht man selbstverständlich die Header-Dateien
+    (<literal>unixodbc-dev</literal>). Wir gehen davon aus, dass Sie Asterisk
     bereits kompiliert haben und jetzt noch ODBC<footnote>
-        <para>genauer: unixODBC, <ulink
+        <para>Genauer gesagt: unixODBC, <ulink
         url="http://www.unixodbc.org/">http://www.unixodbc.org/</ulink>,
         <ulink
         url="http://packages.debian.org/stable/unixodbc">http://packages.debian.org/stable/unixodbc</ulink></para>
       </footnote> nachinstallieren:<screen>debian:~# <command>aptitude install unixodbc</command></screen></para>
 
-    <para>Danach noch den Treiber für die zu verwendende Datenbank-Software:
-    <literal>libmyodbc</literal> für MySQL, <literal>odbc-postgresql</literal>
-    für PostgreSQL, <literal>libsqliteodbc</literal> für SQLite,
-    <literal>libmdbodbc</literal> für MS Access (MDB),
-    <literal>tdsodbc</literal> für FreeTDS usw.:<screen>debian:~# <command>aptitude install libmyodbc</command></screen></para>
+    <para>Danach installieren Sie noch den Treiber für die zu verwendende
+    Datenbank-Software: <literal>libmyodbc</literal> für MySQL,
+    <literal>odbc-postgresql</literal> für PostgreSQL,
+    <literal>libsqliteodbc</literal> für SQLite, <literal>libmdbodbc</literal>
+    für MS Access (MDB), <literal>tdsodbc</literal> für FreeTDS usw.:<screen>debian:~# <command>aptitude install libmyodbc</command></screen></para>
 
     <bridgehead id="func_odbc-odbcinst.ini">/etc/odbcinst.ini</bridgehead>
 
-    <para>Erster Schritt: Den MySQL-ODBC-Treiber in der Datei <emphasis
-    role="bold"><filename>/etc/odbcinst.ini</filename></emphasis>
-    registrieren. Auf Debian-Systemen geschieht dies u.U. automatisch bei der
+    <para>Erster Schritt: Registrieren Sie den MySQL-ODBC-Treiber in der Datei
+    <emphasis role="bold"><filename>/etc/odbcinst.ini</filename></emphasis>.
+    Auf Debian-Systemen geschieht dies unter Umständen automatisch bei der
     Installation von <literal>libmyodbc</literal>. Bitte sehen Sie in der
-    Datei nach ob der Eintrag bereits vorhanden ist.<footnote>
-        <para>Alternatives Methode zum Abfragen der registrierten Treiber:
+    Datei nach, ob der Eintrag bereits vorhanden ist.<footnote>
+        <para>Alternative Methode zum Abfragen der registrierten Treiber:
         <literal><command>odbcinst -q -d</command></literal></para>
-      </footnote> Ansonsten läßt es sich folgendermaßen nachholen:</para>
+      </footnote> Ansonsten lässt es sich folgendermaßen nachholen:</para>
 
     <screen>debian:~# <command>odbcinst -i -d -f /usr/share/libmyodbc/odbcinst.ini</command></screen>
 
@@ -84,14 +84,14 @@ UsageCount    = 1</programlisting></para>
 
     <para>In der Datei <emphasis
     role="bold"><filename>/etc/odbc.ini</filename></emphasis> werden die
-    einzelnen Datenquellen / Datenbank-Verbindungen eingetragen. Dabei erhält
-    jede Datenquelle einen <quote>DSN</quote> (Data Source Name) Hier ein
-    Beispiel<footnote>
+    einzelnen Datenquellen bzw. Datenbank-Verbindungen eingetragen. Dabei
+    erhält jede Datenquelle einen <quote>DSN</quote> (Data Source Name). Hier
+    ein Beispiel<footnote>
         <para>Für weitere Beispiele siehe
         <filename>/usr/share/doc/libmyodbc/examples/odbc.ini</filename></para>
       </footnote><footnote>
-        <para>Spezifische Optionen für den MySQL-ODBC-Treiber MyODBC kann man
-        unter <ulink
+        <para>Spezifische Optionen für den MySQL-ODBC-Treiber MyODBC können
+        Sie unter <ulink
         url="http://dev.mysql.com/doc/refman/5.1/de/myodbc-configuration-connection-parameters.html">http://dev.mysql.com/doc/refman/5.1/de/myodbc-configuration-connection-parameters.html</ulink>
         nachlesen.</para>
       </footnote>:<programlisting>[ODBC Data Sources]
@@ -110,8 +110,8 @@ Option       = 3
 Socket       = 
 ReadOnly     = No</programlisting></para>
 
-    <para>Wir gehen hier davon aus dass Sie selbständig in der Lage sind die
-    Datenbank <literal>meine_asterisk_db</literal> auf dem MySQL-Server
+    <para>Wir gehen hier davon aus, dass Sie selbstständig in der Lage sind,
+    die Datenbank <literal>meine_asterisk_db</literal> auf dem MySQL-Server
     anzulegen, entsprechende Benutzerrechte zu definieren und Tabellen
     anzulegen.<footnote>
         <para>Weitere Informationen zu MyODBC-Datentypen: <ulink
@@ -123,7 +123,7 @@ ReadOnly     = No</programlisting></para>
     <bridgehead id="func_odbc-isql">isql</bridgehead>
 
     <para>Bitte prüfen Sie auf der Shell mit dem Tool <emphasis
-    role="bold"><command>isql</command></emphasis> dass die Verbindung
+    role="bold"><command>isql</command></emphasis>, dass die Verbindung
     funktioniert:<screen>gemeinschaft:~# <command>isql meine_db_verbindung -v</command>
 +---------------------------------------+
 | Connected!                            |
@@ -139,7 +139,7 @@ SQL&gt; </screen></para>
   <bridgehead
   id="func_odbc-res_odbc.conf">/etc/asterisk/res_odbc.conf</bridgehead>
 
-  <para>Für Asterisk muß diese Datenquelle in der <emphasis
+  <para>Für Asterisk muss diese Datenquelle in der <emphasis
   role="bold"><filename>/etc/asterisk/res_odbc.conf</filename></emphasis><indexterm>
       <primary>res_odbc.conf</primary>
     </indexterm> eingetragen werden:<programlisting>[meine_db_verbindung]
@@ -149,8 +149,8 @@ dsn =&gt; meine_db_verbindung
 pre-connect =&gt; yes
 enabled =&gt; yes</programlisting></para>
 
-  <para><parameter>pre-connect</parameter> besagt dass die Verbindung zu
-  dieser Datenbank schon aufgebaut wird bevor sie von einer Funktion benötigt
+  <para><parameter>pre-connect</parameter> besagt, dass die Verbindung zu
+  dieser Datenbank schon aufgebaut wird, bevor sie von einer Funktion benötigt
   wird.</para>
 
   <para>Nach einem Neustart von Asterisk wird diese Datenquelle auf dem
@@ -168,14 +168,14 @@ Connected: yes</screen></para>
       <primary>func_odbc.conf</primary>
     </indexterm> definiert. Jeder Abschnitt definiert eine eigene Funktion.
   Funktionsnamen bestehen in Asterisk normalerweise immer aus Großbuchstaben.
-  Hier hat man die Wahl das entweder so zu übernehmen oder Kleinbuchstaben zu
-  verwenden. Dabei ist zu beachten dass im Dialplan bei den Funktionsnamen
+  Hier hat man die Wahl, das entweder so zu übernehmen oder Kleinbuchstaben zu
+  verwenden. Beachten Sie dabei, dass im Dialplan bei den Funktionsnamen
   zwischen Groß- und Kleinschreibung unterschieden wird.</para>
 
   <para>Eine mit <literal>[BEISPIEL]</literal> definierte Funktion würde im
-  Dialplan als <literal>ODBC_BEISPIEL()</literal> aufgerufen. Wer will kann
+  Dialplan als <literal>ODBC_BEISPIEL()</literal> aufgerufen. Wer will, kann
   durch Angabe von <literal>prefix=<replaceable>XYZ</replaceable></literal>
-  auch ein anderes Präfix verwenden, im Dialplan hieße die Funktion dann
+  auch ein anderes Präfix verwenden. Im Dialplan hieße die Funktion dann
   <literal>XYZ_BEISPIEL()</literal>.</para>
 
   <para>Für jede Funktion zwingend notwendig ist die Angabe des ODBC-DSN mit
@@ -189,14 +189,14 @@ Connected: yes</screen></para>
 
   <note>
     <para>In Asterisk 1.4 sollte man für <literal>read</literal> nur solche
-    Abfragen verwenden die nicht mehr als eine Ergebniszeile zurückliefern,
+    Abfragen verwenden, die nicht mehr als eine Ergebniszeile zurückliefern,
     denn auf die weiteren kann im Dialplan nicht zugegriffen werden. Ab
     Asterisk 1.6 gibt es den optionalen Parameter
     <literal>mode=multirow</literal>, siehe <xref
     linkend="functions-odbc_fetch" />.</para>
   </note>
 
-  <bridgehead id="func_odbc-anti-exfreundin">Beispiel um Anrufe von
+  <bridgehead id="func_odbc-anti-exfreundin">Beispiel, um Anrufe von
   Exfreundinnen nicht durchzustellen:</bridgehead>
 
   <para>MySQL-Tabelle:<programlisting>CREATE TABLE `exfreundinnen` (
@@ -211,9 +211,9 @@ dsn = meine_db_verbindung
 read = SELECT COUNT(*) FROM `exfreundinnen` WHERE `callerid`='${SQL_ESC(${ARG1})}'</programlisting></para>
 
   <para>Die Argumente des Aufrufs im Dialplan werden hier als
-  <code>${ARG1}</code>, <code>${ARG2}</code> usw. übergeben. Dabei ist wichtig
-  Argumente (v.a. Strings) immer in einfachen Anführungszeichen zu schreiben
-  und wie im Beispiel mit <code>SQL_ESC()</code> (<xref
+  <code>${ARG1}</code>, <code>${ARG2}</code> usw. übergeben. Dabei ist es
+  wichtig, Argumente (vor allem Strings) immer in einfachen Anführungszeichen
+  zu schreiben und wie im Beispiel mit <code>SQL_ESC()</code> (<xref
   linkend="functions-sql_esc" />) zu maskieren.</para>
 
   <para>Die obige Funktion zum Lesen (<literal>read</literal>) würde im
@@ -230,8 +230,8 @@ read = SELECT COUNT(*) FROM `exfreundinnen` WHERE `callerid`='${SQL_ESC(${ARG1})
     Hangup();
 }</programlisting></para>
 
-  <bridgehead id="func_odbc-inverssuche">Beispiel für Rückwärtssuche aus einer
-  Kontaktliste:</bridgehead>
+  <bridgehead id="func_odbc-inverssuche">Beispiel für eine Rückwärtssuche aus
+  einer Kontaktliste:</bridgehead>
 
   <para>MySQL-Tabelle:<programlisting>CREATE TABLE `kontakte` (
  `telnr`    varchar(20) character set ascii NOT NULL,
@@ -255,14 +255,14 @@ read = SELECT `vorname`, `nachname` FROM `kontakte` WHERE `telnr`='${SQL_ESC(${A
 
   <tip>
     <para>Ab Asterisk 1.6 bietet es sich bei den
-    <literal>ODBC_<replaceable>*</replaceable></literal>-Funktionen an statt
+    <literal>ODBC_<replaceable>*</replaceable></literal>-Funktionen an, statt
     mit <literal>ARRAY()</literal> mit <literal>HASH()</literal> (<xref
     linkend="functions-hash" />) zu arbeiten. Beispiel:<programlisting>Set(HASH(kontakt)=${ODBC_RUECKWAERTSSUCHE(${CALLERID(num)})});
 Verbose(1,### Vorname  : ${HASH(kontakt,vorname)});
 Verbose(1,### Nachname : ${HASH(kontakt,nachname)});</programlisting></para>
   </tip>
 
-  <bridgehead id="func_odbc-dnd">Beispiel für Nicht-Stören-Funktion
+  <bridgehead id="func_odbc-dnd">Beispiel für eine Nicht-Stören-Funktion
   (DND):</bridgehead>
 
   <para>MySQL-Tabelle:<programlisting>CREATE TABLE `dndstates` (
@@ -305,7 +305,7 @@ _X. =&gt; {
 }</programlisting></para>
 
   <important>
-    <para>Bitte beachten Sie dass &#8211; wie im Beispiel oben gezeigt &#8211;
+    <para>Bitte beachten Sie, dass &#8211; wie im Beispiel oben gezeigt &#8211;
     beim Schreiben von mehreren Werten diese durch
     <quote><literal>\,</literal></quote> getrennt werden müssen.</para>
   </important>
@@ -313,17 +313,18 @@ _X. =&gt; {
   <bridgehead id="func_odbc-sql">Beispiel für beliebige
   SQL-Befehle:</bridgehead>
 
-  <para>Ein Spezialfall der sich in der <filename>func_odbc.conf</filename>
-  definieren lässt ist folgendes Konstrukt:<programlisting>[SQL]
+  <para>Ein Spezialfall, der sich in der <filename>func_odbc.conf</filename>
+  definieren lässt, ist folgendes Konstrukt:<programlisting>[SQL]
 dsn = meine_db_verbindung
 read = ${ARG1}
 write = ${ARG1}</programlisting></para>
 
-  <para>Damit können vom Dialplan aus beliebige SQL-Befehle ausgeführt werden
+  <para>Damit können vom Dialplan aus beliebige SQL-Befehle ausgeführt werden,
   ohne dass sie vorher in der <filename>func_odbc.conf</filename> festgelegt
-  wurden. Dabei ist natürlich zu beachten dass das Maskieren von Sonderzeichen
-  mit <literal>SQL_ESC()</literal> dann im Dialplan erfolgen muss. Das obige
-  Beispiel zur Rückwärtssuche ließe sich also auch so realisieren:</para>
+  wurden. Dabei ist natürlich zu beachten, dass das Maskieren von
+  Sonderzeichen mit <literal>SQL_ESC()</literal> dann im Dialplan erfolgen
+  muss. Das obige Beispiel zur Rückwärtssuche ließe sich also auch so
+  realisieren:</para>
 
   <para>Dialplan:<programlisting>_X. =&gt; {
     // Lesen:
@@ -335,16 +336,16 @@ write = ${ARG1}</programlisting></para>
 }</programlisting></para>
 
   <important>
-    <para>Bitte beachten Sie dass alle Kommas
+    <para>Bitte beachten Sie, dass alle Kommas
     (<quote><literal>,</literal></quote>) im SQL-Befehl maskiert werden
     müssen, also als <quote><literal>\,</literal></quote> geschrieben
     werden.</para>
   </important>
 
   <important>
-    <para>Die u.a. Asterisk-Versionen und der interne Hilfetext sind nur ein
-    Beispiel. Dieser Hilfetext würde von Asterisk für jede selbst-definierte
-    ODBC-Funktion ausgegeben.</para>
+    <para>Die unten angegebenen Asterisk-Versionen und der interne Hilfetext
+    sind nur ein Beispiel. Dieser Hilfetext würde von Asterisk für jede selbst
+    definierte ODBC-Funktion ausgegeben.</para>
   </important>
 
   <xi:include href="odbc_function-help.xml" xpointer="xpointer(/note/*)"
