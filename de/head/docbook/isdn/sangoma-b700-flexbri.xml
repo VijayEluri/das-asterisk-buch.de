@@ -480,12 +480,11 @@ debian:/usr/src# <command>cd wanpipe-3.5.0.10/</command> </screen>
 ]]> -->
 
     <screen>debian:~# <command>cd /usr/src/</command>
-debian:/usr/src# <command>wget ftp://ftp.sangoma.com/linux/custom/konrad/wanpipe-b700.3.5.0.11.tgz</command></screen>
+debian:/usr/src# <command>wget ftp://ftp.sangoma.com/linux/current_wanpipe/current-stable.tgz</command></screen>
 
-    <screen>debian:/usr/src# <command>tar xzf wanpipe-b700.3.5.0.11.tgz</command> 
-debian:/usr/src# <command>rm wanpipe-b700.3.5.0.11.tgz</command> 
-debian:/usr/src# <command>mv wanpipe-b700.3.5.0.11 wanpipe-3.5.0.11</command>
-debian:/usr/src# <command>cd wanpipe-3.5.0.11/</command> </screen>
+    <screen>debian:/usr/src# <command>tar xzf wanpipe-*.tgz</command> 
+debian:/usr/src# <command>rm wanpipe-*.tgz</command> 
+debian:/usr/src# <command>cd wanpipe-*/</command> </screen>
 
     <para>Das Skript <filename>Setup</filename> kümmert sich um die
     Kompilierung und würde melden falls man notwendige Software nicht
@@ -493,11 +492,9 @@ debian:/usr/src# <command>cd wanpipe-3.5.0.11/</command> </screen>
     <quote>Compilation Mode</quote> verwenden wir Nr. 7 (<quote>SMG (BRI) +
     TDM Voice</quote>).</para>
 
-    <screen>debian:/usr/src/wanpipe-3.5.0.11# <command>./Setup install</command>
+    <screen>debian:/usr/src/wanpipe-3.6.0# <command>./Setup install</command>
         ----------------------------------------------------------
-                  WANPIPE v3.5.0.13<footnote>
-        <para>Bitte nicht wundern wenn hier evtl. eine minimal falsche Versionsnummer steht.</para>
-      </footnote> Installation Script
+                  WANPIPE v3.6.0 Installation Script
             Copyright (c) 1995-2008, Sangoma Technologies Inc.
         ----------------------------------------------------------
 <replaceable>[...]</replaceable>
@@ -617,11 +614,11 @@ WANPIPE META CONFIGURATION
 
 There are two configuration files associated with WANPIPE.  
 
-1) /usr/src/wanpipe-3.5.0.11/wanrouter.rc: 
+1) /usr/src/wanpipe-3.6.0/wanrouter.rc: 
         - defines locations of important files such as lock
           and configuration files as well as start/stop 
           order of multiple WANPIPE devices.
-2) /usr/src/wanpipe-3.5.0.11/wanpipe1.conf:
+2) /usr/src/wanpipe-3.6.0/wanpipe1.conf:
         - main configuration file for each WANPIPE device.
         - defines interfaces, hardware and protocol information.
         - this file can be created using the 'wancfg' GUI
@@ -1088,11 +1085,11 @@ Sangoma cards configuration complete, exiting...</screen>
 
     <para>Durch einen kleinen Fehler im <filename>Setup</filename>-Skript
     wurde das Start-Skript <filename>/etc/init.d/smg_ctrl</filename> noch
-    nicht im Runlevel 2 verlinkt, das holen wir jetzt noch nach:<screen>debian:/usr/src/wanpipe-3.5.0.11# <command>update-rc.d -f smg_ctrl remove</command>
-debian:/usr/src/wanpipe-3.5.0.11# <command>update-rc.d smg_ctrl defaults 16 20</command></screen></para>
+    nicht im Runlevel 2 verlinkt, das holen wir jetzt noch nach:<screen>debian:/usr/src/wanpipe-3.6.0# <command>update-rc.d -f smg_ctrl remove</command>
+debian:/usr/src/wanpipe-3.6.0# <command>update-rc.d smg_ctrl defaults 16 20</command></screen></para>
 
     <para>Im Default-Runlevel 2 sollten jetzt folgende Einträge
-    stehen:<screen>debian:/usr/src/wanpipe-3.5.0.11# <command>ls -l /etc/rc2.d/</command>
+    stehen:<screen>debian:/usr/src/wanpipe-3.6.0# <command>ls -l /etc/rc2.d/</command>
 <replaceable>[...]</replaceable>
 lrwxrwxrwx 1 root root  19 10. Jan 12:00 S14wanrouter -&gt; ../init.d/wanrouter
 lrwxrwxrwx 1 root root  16 10. Jan 12:00 S15zaptel -&gt; ../init.d/zaptel
@@ -1281,7 +1278,7 @@ exten =&gt; _X.,n,Hangup()</programlisting></para>
     <literal> <command>/etc/init.d/wanrouter version</command> </literal>
     zeigt die installierte Version von Wanpipe:<screen>debian:~# <command>wanrouter version</command>
 
-WANPIPE Release: 3.5.0.11</screen></para>
+WANPIPE Release: 3.6.0</screen></para>
 
     <para><literal> <command>wanrouter summary</command> </literal> oder
     <literal> <command>/etc/init.d/wanrouter summary</command> </literal>
