@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="installation-1.4-mit-b410p-auf-debian-4.0" lang="de"
+         revision="$Revision:473 $">
+  <!--% Copyright (c) 2006 - 2007 by 
+% Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <title>Installation Asterisk 1.4 mit ISDN-Treiber für Digium B410p auf
+  Debian</title>
+
+  <indexterm>
+    <primary>Installation</primary>
+
+    <secondary>Digium B410p</secondary>
+  </indexterm>
+
+  <indexterm>
+    <primary>Digium B410p</primary>
+  </indexterm>
+
+  <para>Diese Installationsanleitung dient zur Installation eines Asterisk
+  Systems mit Treibern für eine Digium B410p ISDN-Karte. Die Karte muss dafür
+  bereits in dem System eingebaut sein.</para>
+
+  <important>
+    <para>Asterisk verwendet ab Version 1.4.22 bzw. 1.6 Dahdi statt Zaptel
+    (für mehr Informationen dazu siehe <xref linkend="zaptel-to-dahdi" />).
+    Dahdi unterstützt von Haus aus Basis-ISDN (BRI) &#8211; jedenfalls soweit
+    es die Digium B410p betrifft (siehe <xref
+    linkend="zaptel-dahdi-b410p-misdn" />). Für eine aktuelle
+    Versionsanleitung mit Dahdi siehe <xref
+    linkend="installation-1.4-debian" /> bzw. <xref
+    linkend="installation-1.6-debian" />.</para>
+
+    <para>Diese Anleitung bleibt aber hier stehen für den Fall dass Sie eine
+    Asterisk-Version vor 1.4.22 mit Zaptel installieren wollen. Zaptel läd
+    &#8211; wie unten genau beschrieben &#8211; durch den Befehl
+    <literal><command>make b410p</command></literal> mISDN herunter und
+    kompiliert dieses.</para>
+
+    <para>Bezüglich dieses Kapitels überprüfen Sie bitte auch die
+    Online-Version des Buchs (<ulink
+    url="http://www.das-asterisk-buch.de/">http://www.das-asterisk-buch.de</ulink>)
+    auf entsprechende Aktualisierungen.</para>
+  </important>
+
+  <note>
+    <para>Die hier aufgeführte Installationsanleitung gilt für ein
+    Asterisk-System mit allen in diesem Buch beschriebenen Features (bei
+    Ausnahmen wird dies gesondert besprochen). Deshalb ist die Installation
+    etwas umfangreicher. Das hat aber auch den Vorteil, dass man in der
+    Zukunft nicht noch einmal etwas nachinstallieren muss.</para>
+  </note>
+
+  <para>Es wird ein frisch installiertes Debian GNU/Linux 4
+  (<quote>Etch</quote>) vorausgesetzt. Ein ISO-Image für die Installation
+  finden Sie auf <ulink
+  url="http://www.debian.org/releases/etch/debian-installer/">http://www.debian.org/releases/etch/debian-installer/</ulink>.
+  Ich empfehle das etwa 140 MB große Netzinstallations-CD-Image. Eine Debian
+  GNU/Linux-Installationsanleitung befindet sich unter <ulink
+  url="http://www.debian.org/releases/etch/i386/">http://www.debian.org/releases/etch/i386/</ulink>.
+  Ein allgemeines Anwenderhandbuch steht unter <ulink
+  url="http://debiananwenderhandbuch.de/">http://debiananwenderhandbuch.de</ulink>.</para>
+
+  <note>
+    <para>Bitte loggen Sie sich nach der Installation als Benutzer
+    <literal>root</literal> am System ein und führen Sie alle hier angegebenen
+    Befehle mit diesem Benutzer aus.</para>
+  </note>
+
+  <para>Als Erstes stellen Sie mit einem <command>apt-get update</command>
+  sicher, dass <code>apt-get</code> alle aktuellen Paketlisten zur Verfügung
+  hat:<screen>debian:~# <command>apt-get update</command>
+Hole:1 http://ftp.de.debian.org etch Release.gpg [378B]
+Hole:2 http://security.debian.org etch/updates Release.gpg [189B]
+OK   http://ftp.de.debian.org etch Release                      
+OK   http://security.debian.org etch/updates Release
+Ign http://ftp.de.debian.org etch/main Packages/DiffIndex
+Ign http://security.debian.org etch/updates/main Packages/DiffIndex
+Ign http://ftp.de.debian.org etch/main Sources/DiffIndex
+Ign http://security.debian.org etch/updates/main Sources/DiffIndex
+OK   http://ftp.de.debian.org etch/main Packages
+OK   http://security.debian.org etch/updates/main Packages
+OK   http://ftp.de.debian.org etch/main Sources
+OK   http://security.debian.org etch/updates/main Sources
+Es wurden 2B in 0s geholt (3B/s)   
+Paketlisten werden gelesen... Fertig
+debian:~# </screen></para>
+
+  <para>Um sicherzugehen, dass alle Pakete auf dem neuesten Stand sind, führen
+  Sie noch ein <command>apt-get -y upgrade</command> aus:<screen>debian:~# <command>apt-get -y upgrade</command>
+Paketlisten werden gelesen... Fertig
+Abhängigkeitsbaum wird aufgebaut... Fertig
+0 aktualisiert, 0 neu installiert, 0 zu entfernen und 0 nicht aktualisiert.
+debian:~# </screen></para>
+
+  <para>Für den Fall das beim Upgrade der Pakete auch ein neuer Kernel
+  installiert wurde, müssen wir jetzt das System mit <command>shutdown -r
+  now</command> rebooten:<screen>debian:~# <command>shutdown -r now</command>
+
+Broadcast message from root@debian (pts/0) (Fri May  4 19:43:09 2007):
+
+The system is going down for reboot NOW!</screen></para>
+
+  <para>Nach dem Booten bitte wieder als root einloggen.</para>
+
+  <para>Jetzt müssen Sie mit <command>apt-get -y install build-essential
+  libncurses5-dev libcurl3-dev libvorbis-dev libspeex-dev unixodbc
+  unixodbc-dev libiksemel-dev linux-headers-`uname -r` flex bc pciutils
+  libnewt-dev libusb-dev</command> noch ein paar Pakete nachinstallieren,
+  damit das Kompilieren von Asterisk erfolgreich durchgeführt werden
+  kann:</para>
+
+  <screen>debian:~# <command>apt-get -y install build-essential \
+    libncurses5-dev libcurl3-dev libnewt-dev libusb-dev \
+    libvorbis-dev libspeex-dev unixodbc unixodbc-dev \
+    libiksemel-dev linux-headers-`uname -r` flex bc pciutils</command>
+Paketlisten werden gelesen... Fertig
+AbhÃ¤ngigkeitsbaum wird aufgebaut... Fertig
+Die folgenden zusätzlichen Pakete werden installiert:
+  binutils ca-certificates comerr-dev cpp cpp-4.1 defoma dpkg-dev file
+  fontconfig fontconfig-config g++ g++-4.1 gcc gcc-4.1 libaudio2 libc6-dev
+  libcurl3 libcurl3-openssl-dev libexpat1 libfontconfig1 libfreetype6 libice6
+  libidn11 libidn11-dev libiksemel3 libjpeg62 libkadm55 libkrb5-dev liblcms1
+  libltdl3 libltdl3-dev libmagic1 libmng1 libodbcinstq1c2 libogg-dev libogg0
+  libpci2 libpng12-0 libqt3-mt libsm6 libspeex1 libssl-dev libssp0
+  libstdc++6-4.1-dev libvorbis0a libvorbisenc2 libvorbisfile3 libxcursor1
+  libxext6 libxfixes3 libxft2 libxi6 libxinerama1 libxrandr2 libxrender1
+  libxt6 linux-headers-2.6.18-5 linux-kbuild-2.6.18 linux-kernel-headers m4
+  make odbcinst1debian1 openssl patch pkg-config ttf-dejavu ucf zlib1g-dev
+Vorgeschlagene Pakete:
+  binutils-doc doc-base cpp-doc gcc-4.1-locales defoma-doc psfontmgr
+  x-ttcidfont-conf dfontmgr debian-keyring bison gcc-4.1-doc lib64stdc++6
+  manpages-dev autoconf automake1.9 libtool gdb gcc-doc libc6-dev-amd64
+  lib64gcc1 lib64ssp0 nas glibc-doc libcurl3-dbg libfreetype6-dev krb5-doc
+  liblcms-utils libtool-doc libqt3-mt-psql libqt3-mt-mysql libqt3-mt-odbc
+  speex libstdc++6-4.1-doc make-doc-non-dfsg diff-doc libgnome-dev libmyodbc
+  odbc-postgresql libct1 libqt3-mt-dev
+Empfohlene Pakete:
+  libft-perl bzip2 libmudflap0-dev libgl1-mesa-glx libgl1 libglu1-mesa libglu1
+  libxmu6 debconf-utils
+Die folgenden NEUEN Pakete werden installiert:
+  bc binutils build-essential ca-certificates comerr-dev cpp cpp-4.1 defoma
+  dpkg-dev file flex fontconfig fontconfig-config g++ g++-4.1 gcc gcc-4.1
+<replaceable>[...]</replaceable>
+Richte libvorbis-dev ein (1.1.2.dfsg-1.2) ...
+Richte linux-headers-2.6.18-4 ein (2.6.18.dfsg.1-12) ...
+Richte linux-kbuild-2.6.18 ein (2.6.18-1) ...
+Richte linux-headers-2.6.18-4-686 ein (2.6.18.dfsg.1-12) ...
+Richte unixodbc-dev ein (2.2.11-13) ...
+Richte libstdc++6-4.1-dev ein (4.1.1-21) ...
+Richte g++-4.1 ein (4.1.1-21) ...
+Richte g++ ein (4.1.1-15) ...
+
+Richte build-essential ein (11.3) ...
+debian:~# </screen>
+
+  <para>Als nächstes wechseln wir mit <command>cd /usr/src</command> in das
+  Verzeichnis <filename>/usr/src</filename><screen>debian:~# <command>cd /usr/src</command>
+debian:/usr/src# </screen></para>
+
+  <para>Auf der Asterisk-Homepage <ulink
+  url="http://www.asterisk.org/">http://www.asterisk.org/</ulink> finden Sie
+  die notwendigen Quellen, um Asterisk zu mit allen sinnvollen Extras zu
+  installieren. Nehmen Sie bitte eine <emphasis role="bold">stabile</emphasis>
+  und keine Entwickler-Version und laden Sie diese mit <command>wget
+  http://downloads.digium.com/pub/asterisk/releases/asterisk-1.4.19.2.tar.gz</command>
+  in das Verzeichnis <filename>/usr/src/</filename> herunter:</para>
+
+  <screen>debian:/usr/src# <command>wget http://downloads.digium.com/pub/asterisk/releases/asterisk-1.4.19.2.tar.gz</command>
+<replaceable>[...]</replaceable>
+18:53:47 (227.00 KB/s) - »asterisk-1.4.19.2.tar.gz« gespeichert
+
+debian:/usr/src# </screen>
+
+  <para>Weiterhin benötigen wir noch die aktuelle Zaptel-Version, die wir mit
+  <command>wget
+  http://downloads.digium.com/pub/zaptel/zaptel-1.4-current.tar.gz</command>
+  downloaden:<screen>debian:/usr/src# <command>wget http://downloads.digium.com/pub/zaptel/releases/zaptel-1.4.12.tar.gz</command>
+<replaceable>[...]</replaceable>
+19:14:12 (115.45 KB/s) - »zaptel-1.4.12.tar.gz« gespeichert
+
+debian:/usr/src# </screen></para>
+
+  <para>Die komprimierten Dateien werden jetzt mit <command>tar xvzf
+  asterisk-1.4.19.2.tar.gz &amp;&amp; tar xvzf zaptel-1.4.12.tar.gz</command>
+  entpackt:<screen>debian:/usr/src# <command>tar xvzf asterisk-1.4.19.2.tar.gz</command>
+asterisk-1.4.19.2/
+asterisk-1.4.19.2/build_tools/
+asterisk-1.4.19.2/build_tools/menuselect-deps.in
+asterisk-1.4.19.2/build_tools/get_moduleinfo
+asterisk-1.4.19.2/build_tools/mkpkgconfig
+asterisk-1.4.19.2/build_tools/embed_modules.xml
+asterisk-1.4.19.2/build_tools/get_makeopts
+asterisk-1.4.19.2/build_tools/make_version
+<replaceable>[...]</replaceable>
+debian:/usr/src# <command>tar xvzf zaptel-1.4.12.tar.gz</command>
+<replaceable>[...]</replaceable>
+zaptel-1.4.12/timertest.c
+zaptel-1.4.12/mec3-float.h
+zaptel-1.4.12/zaptel.init
+zaptel-1.4.12/hdlcverify.c
+zaptel-1.4.12/fxstest.c
+zaptel-1.4.12/zaptel-base.c
+debian:/usr/src# </screen></para>
+
+  <para></para>
+
+  <para>Als erstes wechseln wir mit <command>cd zaptel-1.4.12</command> in das
+  Zaptel Verzeichnis und rufen ein <command>./configure &amp;&amp; make
+  &amp;&amp; make install &amp;&amp; make b410p</command> auf. Die Abarbeitung
+  der einzelnen Skripte wird eine Weile dauern. Zeit für einen Tee.<screen>debian:/usr/src# <command>cd zaptel-1.4.12</command>
+debian:/usr/src/zaptel-1.4.12# <command>./configure &amp;&amp; make &amp;&amp; make install &amp;&amp; make b410p</command>
+checking for gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
+<replaceable>[...]</replaceable>
+make[1]: Leaving directory `/usr/src/zaptel-1.4.7.1/mISDNuser-1_1_3'
+debian:/usr/src/zaptel-1.4.12# </screen></para>
+
+  <para>Danach gehen wir mit <command>cd /usr/src/asterisk-1.4.19.2</command>
+  in das Asterisk Verzeichnis und führen auch dort ein <command>./configure
+  &amp;&amp; make &amp;&amp; make install</command> aus:<screen>debian:/usr/src/zaptel-1.4.12# <command>cd /usr/src/asterisk-1.4.19.2</command>
+debian:/usr/src/asterisk-1.4.19.2# <command>./configure &amp;&amp; make &amp;&amp; make install</command>
+checking build system type... i686-pc-linux-gnu
+checking host system type... i686-pc-linux-gnu
+checking for gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
+<replaceable>[...]</replaceable>
+make[1]: Leaving directory `/usr/src/asterisk-1.4.19.2/main'
+ +---- Asterisk Installation Complete -------+
+ +                                           +
+ +    YOU MUST READ THE SECURITY DOCUMENT    +
+ +                                           +
+ + Asterisk has successfully been installed. +
+ + If you would like to install the sample   +
+ + configuration files (overwriting any      +
+ + existing config files), run:              +
+ +                                           +
+ +               make samples                +
+ +                                           +
+ +-----------------  or ---------------------+
+ +                                           +
+ + You can go ahead and install the asterisk +
+ + program documentation now or later run:   +
+ +                                           +
+ +              make progdocs                +
+ +                                           +
+ + **Note** This requires that you have      +
+ + doxygen installed on your local system    +
+ +-------------------------------------------+
+debian:/usr/src/asterisk-1.4.19.2# </screen></para>
+
+  <para>Die eben kompilierten Programmdateien sind jetzt auf dem System
+  installiert. Allerdings finden wir im Asterisk-Konfigurationsverzeichnis
+  <filename>/etc/asterisk/</filename> noch gähnende Leere vor. In diesem
+  Verzeichnis liegen die Konfigurationsdateien von Asterisk und da wir nicht
+  von Null beginnen möchten, lassen wir uns die Standarddateien erstellen.
+  Dies erreichen wir mit einem <command>make samples</command></para>
+
+  <screen>debian:/usr/src/asterisk-1.4.19.2# <command>make samples</command>
+mkdir -p /etc/asterisk
+for x in configs/*.adsi; do \
+  if [ ! -f /etc/asterisk/$x ]; then \
+   /usr/bin/install -c -m 644 $x /etc/asterisk/`/usr/bin/basename $x` ; \
+  fi ; \
+ done
+mkdir -p /etc/asterisk
+<replaceable>[...]</replaceable>
+  echo "Skipping asterisk.conf creation"; \
+ fi
+mkdir -p /var/spool/asterisk/voicemail/default/1234/INBOX
+build_tools/make_sample_voicemail //var/lib/asterisk //var/spool/asterisk
+debian:/usr/src/asterisk-1.4.19.2# </screen>
+
+  <para>Damit Asterisk beim Booten des Rechners auch automatisch gestartet und
+  bei einem Shutdown auch ordentlich runtergefahren wird, benötigen wir noch
+  entsprechende Init-Skripte. Diese können mit dem von den Entwicklern etwas
+  unglücklich gewählten Befehl <command>make config</command> erstellt
+  werden:<screen>debian:/usr/src/asterisk-1.4.19.2# <command>make config</command>
+ Adding system startup for /etc/init.d/asterisk ...
+   /etc/rc2.d/K91asterisk -&gt; ../init.d/asterisk
+   /etc/rc3.d/K91asterisk -&gt; ../init.d/asterisk
+   /etc/rc4.d/K91asterisk -&gt; ../init.d/asterisk
+   /etc/rc5.d/K91asterisk -&gt; ../init.d/asterisk
+   /etc/rc2.d/S50asterisk -&gt; ../init.d/asterisk
+   /etc/rc3.d/S50asterisk -&gt; ../init.d/asterisk
+   /etc/rc4.d/S50asterisk -&gt; ../init.d/asterisk
+   /etc/rc5.d/S50asterisk -&gt; ../init.d/asterisk
+debian:/usr/src/asterisk-1.4.19.2# </screen></para>
+
+  <para>Fertig! Asterisk ist auf Ihrem System installiert. Mit dem Befehl
+  <command>asterisk -V</command> können Sie die installierte Version
+  rausfinden (bitte achten Sie auf das großgeschriebene V):<screen>debian:/usr/src/asterisk-1.4.19.2# <command>asterisk -V</command>
+Asterisk 1.4.19.2
+debian:/usr/src/asterisk-1.4.19.2# cd
+debian:~# </screen></para>
+
+  <section id="digium-b410p-konfiguration">
+    <title>Konfiguration der ISDN-Karte</title>
+
+    <para>Ob die von Ihnen eingebaute B410P ISDN-Karte auch richtig erkannt
+    wird, können Sie mit dem Kommando <command>/usr/sbin/misdn-init
+    scan</command> überprüfen:</para>
+
+    <para><screen>debian:~# <command>/usr/sbin/misdn-init scan</command>
+[OK] found the following devices:
+card=1,0x4
+[ii] run "/usr/sbin/misdn-init config" to store this information to /etc/misdn-init.conf
+debian:~# </screen>Die für den Betrieb der Karte notwendige
+    Konfigurationsdatei kann mit dem Kommando <command>/usr/sbin/misdn-init
+    config</command> erstellt werden:<screen>debian:~# <command>/usr/sbin/misdn-init config</command>
+[OK] /etc/misdn-init.conf created. It's now safe to run "/usr/sbin/misdn-init start"
+[ii] make your ports (1-4) available in asterisk by editing "/etc/asterisk/misdn.conf"
+debian:~# </screen></para>
+
+    <para>Die erstellte Standardkonfiguration können Sie mit
+    <command>/etc/init.d/misdn-init start</command> in Betrieb nehmen:<screen>debian:~# <command>/etc/init.d/misdn-init start</command>
+-----------------------------------------
+ Loading module(s) for your misdn-cards:
+-----------------------------------------
+/sbin/modprobe --ignore-install hfcmulti type=0x4 protocol=0x2,0x2,0x2,0x2 layermask=0xf,0xf,0xf,0xf poll=128 debug=0
+/sbin/modprobe mISDN_dsp debug=0x0 options=0 poll=128 dtmfthreshold=100
+[i] creating device node: /dev/mISDN
+debian:~# </screen></para>
+
+    <para>Die Konfigurationsdateien <filename>/etc/misdn-init.conf</filename>
+    und <filename>/etc/asterisk/misdn.conf</filename> sind sehr gut
+    dokumentiert. Für den ersten Test sollten Sie nur sicherstellen, dass in
+    der <filename>/etc/misdn-init.conf</filename> der Eintrag Port settings
+    für Ihre Bedürfnisse passend ist. <tip>
+        <para>Die Portnummern stehen auf der Karte klein neben den
+        entsprechenden Ports.</para>
+      </tip></para>
+  </section>
+
+  <section id="digium-b410p-isdn-te-ptp-ptmp">
+    <title>Konfiguration der ISDN-Anschlussart</title>
+
+    <para>Bitte erkundigen Sie sich vor dem nächsten Schritt über die Art
+    Ihres ISDN-Anschlusses. Mit der hier besprochenen B410P ISDN-Karte können
+    Sie Anlagen- und Mehrgeräteanschlüsse betreiben. Um alle 4 Ports im Modus
+    <foreignphrase lang="en">Point-to-Multi-Point</foreignphrase>
+    (Mehrgeräteanschluss) zu betreiben konfiguriert man in der
+    <filename>/etc/misdn-init.conf</filename>:<programlisting>te_ptmp=1,2,3,4</programlisting>Für
+    den Modus <foreignphrase lang="en">Point-to-Point</foreignphrase>
+    (Anlagenanschluss):<programlisting>te_ptp=1,2,3,4</programlisting></para>
+
+    <para>Bitte nach einer Anpassung dieser Datei das
+    <literal><command>/etc/init.d/misdn-init restart</command></literal> nicht
+    vergessen.</para>
+  </section>
+</section>

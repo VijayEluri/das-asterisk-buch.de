@@ -1,0 +1,1126 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="sangoma-a500-interactive" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2008 - 2009
+% - Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% - Philipp Kempgen <philipp.kempgen@amooma.de>
+% - Sören Sprenger <soeren.sprenger@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <?dbhtml stop-chunking?>
+
+  <sectioninfo>
+    <indexterm>
+      <primary>A500</primary>
+
+      <secondary>Sangoma</secondary>
+    </indexterm>
+
+    <indexterm>
+      <primary>Sangoma</primary>
+
+      <secondary>A500</secondary>
+    </indexterm>
+
+    <date>$Revision$</date>
+
+    <author>
+      <firstname>Sören</firstname>
+
+      <surname>Sprenger</surname>
+    </author>
+
+    <keywordset>
+      <keyword>Sangoma</keyword>
+
+      <keyword>A500</keyword>
+
+      <keyword>Installation</keyword>
+    </keywordset>
+  </sectioninfo>
+
+  <title>Installation der Sangoma A500 ISDN-Karte</title>
+
+  <subtitle>mit interaktivem Setup-Skript</subtitle>
+
+  <indexterm>
+    <primary>Installation</primary>
+
+    <secondary>Sangoma A500</secondary>
+  </indexterm>
+
+  <indexterm>
+    <primary>Sangoma</primary>
+
+    <secondary>A500</secondary>
+  </indexterm>
+
+  <abstract>
+    <para>Installationsbeschreibung Sangoma ISDN-Karte (A500) auf einem
+    Asterisk-System. Mit Beispiel für den Anschluss an das öffentliche
+    ISDN-Netz.</para>
+  </abstract>
+
+  <para><!--<inlinemediaobject id="sangoma-a500-image-2">
+      <imageobject role="fo">
+        <imagedata align="right" fileref="../bilder/sangoma-a500-FIXME.jpg"
+                   scalefit="1" srccredit="(c) 2008, ..." valign="top"
+                   width="50%" />
+      </imageobject>
+
+      <imageobject role="html">
+        <imagedata align="right"
+                   fileref="../bilder/sangoma-a500-FIXME.html.jpg"
+                   scalefit="0" srccredit="(c) 2008, ..." valign="top" />
+      </imageobject>
+
+      <textobject>
+        <simpara>Sangoma A500 ISDN-Karte</simpara>
+      </textobject>
+    </inlinemediaobject>-->Die von <ulink
+  url="http://www.sangoma.com">Sangoma</ulink> für den europäischen Markt
+  entwickelte A500-ISDN-Karte<footnote>
+      <para>Produktseite: <ulink
+      url="http://sangoma.com/products_and_solutions/hardware/digital_voice_and_data_networking/a500.html">http://sangoma.com/products_and_solutions/hardware/digital_voice_and_data_networking/a500.html</ulink>,</para>
+
+      <para>Datenblatt (deutsch): <ulink
+      url="http://sangoma.com/data/datasheets/ge/a500.pdf">http://sangoma.com/data/datasheets/ge/a500.pdf</ulink></para>
+    </footnote>Ist eine Erweiterbare ISDN-Karte mit 2 bis 24 Port. Dabei
+  können 6 Ports (12 B-Kanäle) auf einer einzelnen Karte Verwendet werden.
+  Wenn mehr als 6 Ports benötigt werden so kann man eine zweite Karte einbauen
+  und über ein Steckverbindung mit der ersten Karte verbinden. Somit haben die
+  Karten den gleichen Takt. Die Karte ist verfügbar für PCI<footnote>
+      <para><ulink
+      url="http://de.wikipedia.org/wiki/Peripheral_Component_Interconnect">http://de.wikipedia.org/wiki/Peripheral_Component_Interconnect</ulink></para>
+    </footnote>- und PCI-Express<footnote>
+      <para>abgekürzt: PCIe oder PCI-E (nicht PCI-X), <ulink
+      url="http://de.wikipedia.org/wiki/PCI-Express">http://de.wikipedia.org/wiki/PCI-Express</ulink></para>
+    </footnote>-Steckplätze (<quote>Slots</quote>) mit 5 V oder 3,3 V. Sie
+  verwendet die hervorragende Hardware-Echounterdrückung (Echo Cancellation)
+  von <ulink url="http://www.octasic.com/">Octasic</ulink>.</para>
+
+  <para>Die Karte ist sehr gut für kleine bis mittelgroße Installationen
+  geeignet wo z.B. zusätzlich zur VoIP-Anbindung &#8211; oder auch
+  ausschließlich &#8211; bis zu 48 B-Kanäle ins öffentliche ISDN-Netz
+  betrieben werden sollen. Es sind aber auch andere Szenarien denkbar &#8211;
+  die 6 ISDN-Ports lassen sich paarweise auf TE<footnote>
+      <para>Terminal Equipment, Endeinrichtung, d.h. unsere Seite agiert als
+      Endgerät, also <emphasis>extern</emphasis></para>
+    </footnote> oder NT<footnote>
+      <para>Network Termination, Netzabschluß, die Seite die einem Endgerät
+      eine Teilnehmeranschlußleitung (TAL, engl.: local loop) bereitstellt,
+      also <emphasis>intern</emphasis></para>
+    </footnote> einstellen.</para>
+
+  <section id="sangoma-a500-interactive-installation-hardware">
+    <title>Einbauen der A500-Karte</title>
+
+    <para>Geliefert wird die A500 in einer kleinen blauen Box, komplett mit
+    Port-Splitter-Kabeln. Die Y-Kabel werden benötigt um aus den ISDN-Buchsen
+    jeweils 2 Leitungen mit <quote>RJ-45</quote><footnote>
+        <para>8P8C</para>
+      </footnote>-Steckern herauszuführen. Außerdem liegt eine CD bei mit
+    Handbüchern, Treibern, Firmware etc. und auch dem Hinweis zur
+    Registrierung bei Sangoma wodurch man dann Gewährleistung erhält. Daß man
+    beim Auspacken der Karte darauf achtet geerdet zu sein versteht sich von
+    selbst.</para>
+
+    <para>Ob die ISDN-Ports auf TE- oder NT-Modus eingestellt sind wird
+    dadurch bestimmt wie die 3 BRI-Module in die Karte eingesteckt sind. Das
+    linke Modul ist zuständig für Port 1 und 2, das mittlere für 3 und 4. und
+    Das Rechte für 5 und 6. Ggf. steckt man die Module andersrum rein. In
+    dieser Anleitung stellen wir beide Module auf TE, da wir die Karte ans
+    öffentliche ISDN-Netz anschließen wollen. Wenn eines der Module im
+    NT-Modus betrieben werden soll, muss die Karte über den Anschluss eines
+    <ulink url="http://de.wikipedia.org/wiki/Molex">Molex-Stecker</ulink> am
+    hinteren Ende zusätzlich mit Strom versorgt werden. Für den TE-Modus
+    müssen alle Leitungswiderstände (termination resistors) ausgeschaltet sein
+    (für NT an), siehe <ulink
+    url="http://wiki.sangoma.com/sangoma-wanpipe-smg-asterisk-bri-installation#HardwareInstallation">http://wiki.sangoma.com/sangoma-wanpipe-smg-asterisk-bri-installation#HardwareInstallation</ulink>.</para>
+
+    <para>Auf der Karte gibt es 12 kleine Schalter für die Wiederstände,
+    jeweils einer für ein Adernpaar, also 2 für einen ISDN-Port bzw. 4 für
+    eine Buchse an der Karte, da die Karte ja in einer Buchse 2 Ports
+    herausführt. Es müssen pro BRI-Modul also die jeweiligen
+    DIP-Doppel-Schalter Sw1 und Sw2 (bzw. Sw3 und Sw4, Sw5 und Sw6) alle
+    gleich eingestellt sein.</para>
+
+    <para>Gute Schema-Zeichnungen zum Einbau der A500 findet man in <ulink
+    url="http://sangoma.com/data/docs/A500_InstallationManual.pdf">http://sangoma.com/data/docs/A500_InstallationManual.pdf</ulink>.</para>
+
+    <para>Bei den BRI-Ports ist wichtig daß der Port 1 ans öffentliche
+    ISDN-Netz angeschlossen wird, da dieser den Zeittakt übernimmt. Port 1
+    wird aus Buchse 1 herausgeführt; das ist die am weitesten von der
+    Schraublasche der PCI-Blende entfernte oder anders gesagt die Buchse mit
+    dem geringsten Abstand vom PCI-Sockel auf dem Mainboard.</para>
+
+    <para>Für diese Anleitung wird ein frisch installiertes Debian GNU/Linux 5
+    (<quote>Lenny</quote>) vorausgesetzt<footnote>
+        <para>Die Vorgängerversion 4 (<quote>Etch</quote>) funktioniert
+        ebenfalls.</para>
+      </footnote>.</para>
+
+    <sidebar>
+      <para>Ein ISO-Image für die Installation finden Sie auf <ulink
+      url="http://www.debian.org/releases/etch/debian-installer/">http://www.debian.org/releases/lenny/debian-installer/</ulink>.
+      Ich empfehle das etwa 150 MB große Netzinstallations-CD-Image. Eine
+      Debian-GNU/Linux-Installationsanleitung befindet sich unter <ulink
+      url="http://www.debian.org/releases/etch/i386/">http://www.debian.org/releases/lenny/i386/</ulink>.
+      Ein allgemeines Anwenderhandbuch steht unter <ulink
+      url="http://debiananwenderhandbuch.de/">http://debiananwenderhandbuch.de</ulink>.</para>
+    </sidebar>
+
+    <para><emphasis>Bitte loggen Sie sich nach der Installation als Benutzer
+    <literal>root</literal> am System ein und führen Sie alle hier angegebenen
+    Befehle mit diesem Benutzer aus.</emphasis></para>
+
+    <para>Es versteht sich eigentlich von selbst daß man auf einem frisch
+    installierten System die Paketlisten für <literal>aptitude</literal>
+    aktualisiert und wichtige Updates einspielt:<screen>debian:~# <command>aptitude update</command>
+<replaceable>[...]</replaceable>
+Paketlisten werden gelesen... Fertig
+debian:~# <command>aptitude upgrade</command>
+0 aktualisiert, 0 neu installiert, 0 zu entfernen und 0 nicht aktualisiert.
+debian:~# </screen></para>
+
+    <para>Für den Fall daß beim Upgrade der Pakete auch ein neuer Kernel
+    installiert wurde, müssen wir jetzt das System rebooten:<screen>debian:~# <command>shutdown -r now</command></screen></para>
+
+    <para>Nach dem Hochfahren des Rechners bitte wieder als
+    <literal>root</literal> einloggen und dann kontrollieren daß die Karte
+    richtig erkannt wird:<screen>debian:~# <command>lspci -nn -v -d 1923:</command>
+00:08.0 Network controller [0280]: Sangoma Technologies Corp. A200/Remora FXO/FXS Analog AFT card [1923:0040]
+        Subsystem: Device [a500:3200]
+        Flags: bus master, medium devsel, latency 255, IRQ 17
+        Memory at fdfe0000 (32-bit, non-prefetchable) [size=64K]</screen>Da
+    ist sie. Nicht wundern: die Karte kann als A200 angezeigt werden, je
+    nachdem was in <filename>/usr/share/misc/pci.ids</filename> eingetragen
+    ist. Wichtig ist was bei <code>Subsystem: Device [a500:3200]</code> steht
+    "a500" sagt uns das es die richtige Karte ist. (<literal>1923</literal>
+    ist der PCI-Hersteller-Code von Sangoma).</para>
+
+    <para>Man darf sich übrigens nicht von den Farben der LEDs in den Buchsen
+    verwirren lassen. Die Buchsen leuchten rot für TE (grün für NT)</para>
+  </section>
+
+  <section id="sangoma-a500-interactive-build-environment">
+    <title>Build-Umgebung</title>
+
+    <para>In den weiteren Abschnitten benötigen wir eine Build-Umgebung, also
+    Compiler usw.:<screen>debian:~# <command>aptitude install build-essential</command>
+debian:~# <command>aptitude install libncurses5-dev flex bison</command>
+debian:~# <command>aptitude install bzip2</command></screen></para>
+
+    <para>Und auch die Linux-Kernel-Header:<screen>debian:~# <command>aptitude install linux-headers-`uname -r`</command></screen></para>
+  </section>
+
+  <!-- <![CDATA[
+  <section id="wanpipe-kernel">
+    <title>Kernel für Wanpipe vorbereiten</title>
+
+    <para>In dem von Debian mitgelieferten Linux-Kernel ist eine Funktion
+    namens <quote>Module versioning support</quote><footnote>
+        <para>Für Erfahrene: <literal>CONFIG_MODVERSIONS</literal> im
+        Abschnitt <quote>Loadable module support</quote></para>
+      </footnote> aktiviert. Prinzipiell eine gute Sache, aber leider ist
+    Wanpipe - also die Sangoma-Treiber - damit noch nicht kompatibel. Bis auf
+    weiteres muß man also den Kernel entsprechend umkonfigurieren. Klingt
+    kompliziert, ist es aber nicht.</para>
+
+    <para>Kernel-Quellen installieren und entpacken:<screen>debian:~# <command>aptitude search linux-source</command>
+v   linux-source        <replaceable>[...]</replaceable> -                                                           
+v   linux-source-2.6    <replaceable>[...]</replaceable> -                                                           
+i   linux-source-2.6.26 <replaceable>[...]</replaceable> - Linux kernel source for version 2.6.26 with Debian patches</screen><screen>debian:~# <command>aptitude install linux-source</command>
+<replaceable>[...]</replaceable>
+Hinweis: Wähle »linux-source-2.6.26« anstelle des
+         virtuellen Pakets »linux-source«.
+Die folgenden NEUEN Pakete werden zusätzlich installiert:
+  linux-source-2.6.26 
+<replaceable>[...]</replaceable>
+debian:~# <command>cd /usr/src/</command>
+debian:/usr/src# <command>tar xjf linux-source-2.6.26.tar.bz2</command> 
+debian:/usr/src# <command>cd linux-source-2.6.26</command></screen></para>
+
+    <para>Die Konfiguration des Kernels ändern:<screen>debian:/usr/src/linux-source-2.6.26# <command>make menuconfig</command></screen>Im
+    interaktiven Dialog den Menüpunkt <quote>
+        <literal>Enable loadable module support</literal>
+      </quote> mittels der Pfeiltasten auswählen, mit Enter aufrufen und darin
+    den Punkt <quote>
+        <literal>Module versioning support</literal>
+      </quote> mit der Leertaste deaktivieren. Dann mit dem Rechtspfeil auf
+    <quote>
+        <literal>Exit</literal>
+      </quote>, Enter, nochmal auf <quote>
+        <literal>Exit</literal>
+      </quote>, Enter, <quote>
+        <literal>Yes</literal>
+      </quote>, Enter.</para>
+
+    <para>Pakete installieren die vom Kernel<footnote>
+        <para>genauer: <literal>lguest</literal></para>
+      </footnote> zum Bauen benötigt werden<footnote>
+        <para>
+          <quote>build dependencies</quote>
+        </para>
+      </footnote>:<screen>debian:/usr/src/linux-source-2.6.26# <command>aptitude install zlib1g-dev</command></screen></para>
+
+    <para>Zum Kompilieren eines Kernels nach Debian-Art<footnote>
+        <para>für Interessierte: <ulink
+        url="http://kernel-handbook.alioth.debian.org/ch-common-tasks.html#s-common-building">http://kernel-handbook.alioth.debian.org/ch-common-tasks.html#s-common-building</ulink>,
+        allerdings benutzen wir <literal>&#x2D;&#x2D;append-to-version</literal> statt
+        <literal>&#x2D;&#x2D;revision</literal> damit unser neuer Kernel direkt dem
+        Namen nach erkennbar ist</para>
+      </footnote> benutzt man <literal>make-kpkg</literal> aus dem Paket
+    <literal>kernel-package</literal> und <literal>fakeroot</literal>:<screen>debian:/usr/src/linux-source-2.6.26# <command>aptitude install kernel-package fakeroot</command>
+debian:/usr/src/linux-source-2.6.26# <command>make-kpkg clean</command>
+debian:/usr/src/linux-source-2.6.26# <command>fakeroot make-kpkg &#x2D;&#x2D;initrd &#x2D;&#x2D;append-to-version=.custom.1 kernel_image kernel_headers</command></screen>Jetzt
+    heißt es warten. Je nach CPU-Power auch mal etwas länger als 10 Minuten.
+    :-)</para>
+
+    <para>Danach den neuen Kernel und die zugehörigen Kernel-Header
+    installieren:<screen>debian:/usr/src/linux-source-2.6.26# <command>cd ..</command>
+debian:/usr/src# <command>dpkg -i linux-image-2.6.26.custom.1_2.6.26.custom.1-10.00.Custom_i386.deb</command> 
+Wähle vormals abgewähltes Paket linux-image-2.6.26.custom.1.
+(Lese Datenbank ... 36469 Dateien und Verzeichnisse sind derzeit installiert.)
+Entpacke linux-image-2.6.26.custom.1 (aus linux-image-2.6.26.custom.1_2.6.26.custom.1-10.00.Custom_i386.deb) ...
+Done.
+Richte linux-image-2.6.26.custom.1 ein (2.6.26.custom.1-10.00.Custom) ...
+Running depmod.
+Finding valid ramdisk creators.
+Using mkinitramfs-kpkg to build the ramdisk.
+Running postinst hook script update-grub.
+Searching for GRUB installation directory ... found: /boot/grub
+Searching for default file ... found: /boot/grub/default
+Testing for an existing GRUB menu.lst file ... found: /boot/grub/menu.lst
+Searching for splash image ... none found, skipping ...
+Found kernel: /boot/vmlinuz-2.6.26.custom.1
+Found kernel: /boot/vmlinuz-2.6.26-1-686
+Updating /boot/grub/menu.lst ... done
+
+debian:/usr/src# <command>dpkg -i linux-headers-2.6.26.custom.1_2.6.26.custom.1-10.00.Custom_i386.deb</command> 
+Wähle vormals abgewähltes Paket linux-headers-2.6.26.custom.1.
+(Lese Datenbank ... 39017 Dateien und Verzeichnisse sind derzeit installiert.)
+Entpacke linux-headers-2.6.26.custom.1 (aus linux-headers-2.6.26.custom.1_2.6.26.custom.1-10.00.Custom_i386.deb) ...
+Richte linux-headers-2.6.26.custom.1 ein (2.6.26.custom.1-10.00.Custom) ...
+debian:/usr/src# <command>shutdown -r now</command></screen></para>
+
+    <para>Nach dem Neustart wieder als <literal>root</literal> einloggen und
+    überprüfen ob der richtige Kernel läuft<footnote>
+        <para><filename>/lib/modules/`uname -r`/build</filename> ist jetzt
+        übrigens ein symbolischer Link der auf
+        <filename>/usr/src/linux-source-2.6.26</filename> zeigt.</para>
+      </footnote>:<screen>debian:~# <command>uname -r</command>
+2.6.26.custom.1</screen></para>
+  </section>
+]]> -->
+
+  <section id="sangoma-a500-interactive-asterisk">
+    <title>Quellen von Asterisk</title>
+
+    <para>Asterisk<footnote>
+        <para>Falls vorher bereits eine ältere Version von Asterisk
+        installiert war muß man zuerst die alten Module entfernen:<screen>debian:~# <command>rm -rf /usr/lib/asterisk/modules</command></screen></para>
+      </footnote>:<screen>debian:~# <command>aptitude install libssl-dev libncurses5-dev libcurl3-dev</command>
+debian:~# <command>cd /usr/src/</command>
+debian:/usr/src# <command>wget http://downloads.digium.com/pub/asterisk/releases/asterisk-1.4.21.tar.gz</command>
+debian:/usr/src# <command>tar xzf asterisk-1.4.21.tar.gz</command> 
+debian:/usr/src# <command>rm asterisk-1.4.21.tar.gz</command> 
+debian:/usr/src# <command>cd asterisk-1.4.21/</command>
+debian:/usr/src/asterisk-1.4.21# <command>./configure</command> 
+debian:/usr/src/asterisk-1.4.21# <command>make</command>
+debian:/usr/src/asterisk-1.4.21# <command>make install</command>
+debian:/usr/src/asterisk-1.4.21# <command>make samples</command>
+debian:/usr/src/asterisk-1.4.21# <command>make config</command>
+debian:/usr/src/asterisk-1.4.21# <command>update-rc.d -f asterisk remove</command>
+debian:/usr/src/asterisk-1.4.21# <command>update-rc.d asterisk defaults 50 15</command></screen></para>
+  </section>
+
+  <section id="sangoma-a500-interactive-wanpipe-installation">
+    <sectioninfo>
+      <indexterm>
+        <primary>Wanpipe</primary>
+      </indexterm>
+    </sectioninfo>
+
+    <title>Experten-Installation von Wanpipe</title>
+
+    <para>Eine Build-Umgebung haben wir bereits<footnote>
+        <para>Hätten wir sie noch nicht müßten wir sie so
+        installieren:<screen>debian:~# <command>aptitude install build-essential flex bison libncurses5-dev</command>
+debian:~# <command>aptitude install linux-headers-`uname -r`</command></screen></para>
+      </footnote>. Außerdem brauchen wir noch udev und lksctp:<screen>debian:~# <command>aptitude install udev lksctp-tools libsctp-dev</command></screen></para>
+
+    <para>Auch logrotate sollte vorher vorhanden sein damit das Skript
+    automatisch eine entsprechende logrotate-Definition erstellen
+    kann:<screen>debian:~# <command>aptitude install logrotate</command></screen></para>
+
+    <para>Als nächstes installieren wir die aktuelle Version von
+    Wanpipe.</para>
+
+    <!-- <![CDATA[
+    <important>
+      <para>Die A500 wird ab Wanpipe 3.3.15 unterstützt. Dieser Treiber war
+      zum Zeitpunkt der Enstehung dieses Buches noch BETA. Die empfohlene
+      Version von Wanpipe ist normalerweise auf den Seiten <ulink
+      url="http://wiki.sangoma.com/wanpipe-linux-drivers">http://wiki.sangoma.com/wanpipe-linux-drivers</ulink>
+      bzw. insbesondere <ulink
+      url="http://wiki.sangoma.com/sangoma-wanpipe-b700">http://wiki.sangoma.com/sangoma-wanpipe-b700</ulink>
+      angegeben. Die Tarballs der Releases befinden sich im FTP-Verzeichnis
+      <ulink
+      url="ftp://ftp.sangoma.com/linux/current_wanpipe/">ftp://ftp.sangoma.com/linux/current_wanpipe/</ulink></para>
+    </important>
+]]> -->
+
+    <!-- <![CDATA[
+    <screen>debian:~# <command>cd /usr/src/</command>
+debian:/usr/src# <command>wget ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-3.3.15.tgz</command></screen>
+
+    <screen>debian:/usr/src# <command>tar xzf wanpipe-3.3.15.tgz</command> 
+debian:/usr/src# <command>rm wanpipe-3.3.15.tgz</command> 
+debian:/usr/src# <command>cd wanpipe-3.3.15/</command> </screen>
+]]> -->
+
+    <screen>debian:~# <command>cd /usr/src/</command>
+debian:/usr/src# <command>wget ftp://ftp.sangoma.com/linux/current_wanpipe/wanpipe-3.3.15.tgz</command></screen>
+
+    <screen>debian:/usr/src# <command>tar xzf wanpipe-3.3.15.tgz</command> 
+debian:/usr/src# <command>rm wanpipe-3.3.15.tgz</command> 
+debian:/usr/src# <command>cd wanpipe-3.3.15/</command> </screen>
+
+    <para>Das Skript <filename>Setup</filename> kümmert sich um die
+    Kompilierung und würde melden falls man notwendige Software nicht
+    installiert hat. Dabei benutzen wir überall die Default-Werte. Als
+    <quote>Compilation Mode</quote> verwenden wir Nr. 6 (<quote> SMG (BRI)
+    (Default for Asterisk SMG/BRI install)</quote>).</para>
+
+    <screen>debian:/usr/src/wanpipe-3.3.15# <command>./Setup install</command>
+        ----------------------------------------------------------
+                  WANPIPE v3.3.15<footnote>
+        <para>Bitte nicht wundern wenn hier evtl. eine minimal falsche Versionsnummer steht.</para>
+      </footnote> Installation Script
+            Copyright (c) 1995-2008, Sangoma Technologies Inc.
+        ----------------------------------------------------------
+<replaceable>[...]</replaceable>
+Would you like to install WANPIPE now? [y] (y/n) <emphasis role="bold"><userinput>y</userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+Verifying files and fixing permissions ...Done
+Checking for C developement tools ...(gcc) OK
+Checking for C++ developement tools ...OK
+Checking for Make utility ...OK
+Checking for ncurses library ... OK
+Checking for Perl developement tools ...OK
+Checking for AWK ...OK
+Checking for FLEX ...OK
+Checking for Patch ...OK
+Checking for libtermcap-devel...OK
+Checking for bison...OK
+
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+Please specify absolute path name of your linux directory
+
+Press Enter for Default: /lib/modules/2.6.26-1-686/build
+
+#&gt;<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen>
+Setting linux directory to /lib/modules/2.6.26-1-686/build
+
+Upgrading WANPIPE kernel documentation ...Done.
+
+
+Upgrading WANPIPE kernel headers ...Done.
+
+Upgrading WANPIPE kernel drivers ...Done.
+
+WANPIPE device drivers upgraded successfully!
+
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+        Please Select Compilation Mode
+<replaceable>[...]</replaceable>
+
+6. SMG (BRI) (Default for Asterisk SMG/BRI install)
+
+<replaceable>[...]</replaceable>
+
+Please select (1,2,3,4,5,6,7,8 or 9) [Default: 1]: <emphasis role="bold"><userinput>6</userinput></emphasis></screen>
+
+    <screen>Enabling the AFT TE1 Support</screen>
+
+    <screen>Checking for SCTP Utilities....OK.</screen>
+
+    <screen>
+Looking for Asteris/CallWeaver directory in /usr/src ...
+-------------------------------------------
+1 : /usr/src/asterisk-1.4.21 
+------------------------------------------ 
+------------------------------------------ 
+m : Enter Asterisk/CallWeaver path manually
+
+(ctrl-c to Exit)
+Please select working Asterisk/CallWeaver directory [1-1][m]: <emphasis
+        role="bold"><userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Source kernel name:2.6.26-1-686
+
+Checking for SMP support ...Enabled.
+
+Checking current processor type ...i686
+
+<replaceable>[...]</replaceable>
+
+Checking for REGPARM kernel option ...Enabled.
+
+Compiling General WANPIPE Driver for 2.6.X Kernel .....Done.
+
+
+WAN HWEC module enabled and compiled!
+
+Linking Wanpipe Driver and protocols ...Done.
+
+Updating Kernel Modules ...Done.
+
+Visually Confirm that driver compilation was successful! (y/n) <emphasis
+        role="bold"><userinput>y</userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+
+WANPIPE META CONFIGURATION
+
+There are two configuration files associated with WANPIPE.  
+
+1) /usr/src/wanpipe-3.3.15/wanrouter.rc: 
+        - defines locations of important files such as lock
+          and configuration files as well as start/stop 
+          order of multiple WANPIPE devices.
+2) /usr/src/wanpipe-3.3.15/wanpipe1.conf:
+        - main configuration file for each WANPIPE device.
+        - defines interfaces, hardware and protocol information.
+        - this file can be created using the 'wancfg' GUI
+          utility or manually based on sample files located
+          in /etc/wanpipe/samples.
+          
+Please read the WanpipeInstallation.(pdf/txt) manual for further
+information.
+
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen>
+Please specify a desired location for WANPIPE configuration files.
+
+        (Press Enter for Default: /etc/wanpipe)
+
+&lt;specify path:&gt;<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen>
+Please specify a desired location for WANPIPE interface files.
+
+        (Press Enter for Default: /etc/wanpipe/interfaces)
+
+&lt;specify path:&gt;<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen>
+Please specify a location for WANPIPE binary, firmware files.
+
+        (Press Enter for Default: /etc/wanpipe/firmware)
+
+&lt;specify path:&gt;<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+
+WANPIPE UTILITIES SETUP
+
+WANPIPE utilities are used to:
+        1) create configuration files: for Zaptel and Asterisk
+                /usr/sbin/wancfg_zaptel #Zaptel and Asterisk
+                /usr/sbin/wancfg_smg    #BRI/SS7, Zaptel and Asterisk
+                /usr/sbin/wancfg_tdmapi #TDM API
+        2) create WANPIPE WAN/IP configuration files.
+                (/usr/sbin/wancfg)
+        3) start,stop,restart individual/all devices and interfaces.
+                (/usr/sbin/wanrouter)
+        4) debug line, protocol and driver problems.
+                (/usr/sbin/wanpipemon)
+        5) aid in WANPIPE API development
+                (/etc/wanpipe/api)
+
+Refer to the WanpipeInstallation.(pdf/txt) for more information.
+
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen>
+Compiling WANPIPE Utilities ...Done.
+
+
+Compiling WANPIPE WanCfg Utility ...
+Done.
+
+
+Compiling WANPIPE Misc Utilities ...Done.
+
+
+Compiling WANPIPE LibSangoma TDM API library ...Done.
+
+
+Compiling WANPIPE API Development Utilities ...Done.
+
+Compiling WANPIPE HWEC Utilities ...Done.
+
+        WANPIPE Environment Setup Complete !!!
+
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen>Installing WANPIPE Files ... !
+Installing  WANPIPE Utilities in /usr/sbin
+Installing wanrouter.rc in /etc/wanpipe
+Installing wanpipe libraries in /etc/wanpipe
+Installing firmware in /etc/wanpipe/firmware
+Installing documentation in /usr/share/doc/wanpipe
+Installing sample api code in /etc/wanpipe/api
+Installing AFT Firmware update utility in /etc/wanpipe/util
+Installing driver headers in /etc/wanpipe/api/include/linux
+Installing Hardware Echo Cancel Utilites
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+
+WANPIPE BOOTSTRAP CONFIGURATION
+
+Your system uses System V -style initialization scripts.  You have an option
+to add router start-up script to those scripts so that the router will start
+automatically when system enters multi-user mode and shut down when it enters
+single-user mode or when it is halted.
+
+i.e. By selecting this option WANPIPE will startup on system bootup and 
+     stop on system shutdown.
+
+Would you like to install WANPIPE start-up scripts? (y/n) <emphasis
+        role="bold"><userinput>y</userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+Current boot level is 2
+
+Wanrouter boot scripts configuration...
+
+Removing existing wanrouter boot scripts...OK
+Enabling wanrouter boot scripts ...(level:8)
+Enabling wanrouter shutdown scripts ...(level:91)
+</screen>
+
+    <screen><replaceable>[...]</replaceable>
+Installing Sangoma Media Gateway Daemon...
+
+Installing SMG Daemon...
+
+Warning: asterisk is running
+Would you like to stop asterisk? (y/n) <emphasis role="bold"><userinput>y</userinput></emphasis></screen>
+
+    <screen>
+Checking Syslog ....
+ found /etc/rsyslog.conf 
+Stopping enhanced syslogd: rsyslogd.
+Starting enhanced syslogd: rsyslogd.
+Stopping enhanced syslogd: rsyslogd.
+Starting enhanced syslogd: rsyslogd.
+Ok
+
+Checking logrotate ...
+Error: Logrotate dir: /etc/logrotate.d not found !
+OK.
+
+Checking for SCTP Utilities....
+OK.
+
+Checking for SCTP modules...
+OK.
+
+Compiling Sangoma MGD ...
+<replaceable>[...]</replaceable>
+install -D -m 755 sangoma_mgd /usr/sbin/sangoma_mgd
+BRI control scripts installed
+install -D -m 755 ../sangoma_bri/smg_ctrl /usr/sbin/smg_ctrl
+sangoma_mgd Installed
+Ok.
+Compiling Woomera Channel ...
+<replaceable>[...]</replaceable>
+install -D -m 755 chan_woomera.so /usr/lib/asterisk/modules/chan_woomera.so
+chan_woomera Installed
+Ok.
+---------------------------------
+
+ SMG Install Done
+
+--&gt; Config: /etc/sangoma_mgd.conf
+--&gt; Start:  sangoma_mgd -bg
+
+ Chan Woomera Install Done
+
+--&gt; Config: /etc/asterisk/woomera.conf
+--&gt; Start: start asterisk (part of asterisk)
+
+---------------------------------
+
+
+Installing SMG BRI Daemon...
+
+----------------------------------------
+Sangoma BRI Installation Complete
+
+ -&gt; To configure for BRI run:
+ -&gt; /usr/bin/wancfg_smg
+
+----------------------------------------</screen>
+
+    <screen>
+Append sample config in Asterisk Extensions and Iax Conf (y/n) <emphasis
+        role="bold"><userinput>y</userinput></emphasis></screen>
+
+    <screen>cat: ./conf_bri/woomera_ext.conf: Datei oder Verzeichnis nicht gefunden
+Asterisk extensions.conf file updated with woomera config
+cat: ./conf_bri/woomera_iax.conf: Datei oder Verzeichnis nicht gefunden
+Asterisk iax.conf file updated with bri guest config
+Press [Enter] to continue...<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+
+WANPIPE INSTALLATON: COMPLETE
+        
+WANPIPE installation is now complete. WANPIPE kernel drivers 
+and configuration/debug utilities have been compiled and installed.
+
+        1) Proceed to configure the WANPIPE drivers:
+                Asterisk/Zaptel: /usr/sbin/wancfg_zaptel
+                TDM API        : /usr/sbin/wancfg_tdmapi
+                SMG SS7/BRI    : /usr/sbin/wancfg_smg
+                WAN Routing/API: /usr/sbin/wancfg
+        2) Use the /usr/sbin/wanrouter startup scrip to start and stop
+           the router. (eg: wanrouter start)
+        3) To uninstall WANPIPE package run ./Setup remove
+                
+Please read http://wiki.sangoma.com for further instructions.</screen>
+
+    <screen>
+Wanpipe / SMG BRI Configuration
+===============================
+
+wancfg_smg configurator can create all wanpipe devices
+for BRI as well as BRI config file and Asterisk config files.
+-----------------------------------------------------
+Would you like to configure wanpipe devices for SMG BRI/Asterisk/CallWeaver? (y/n) <emphasis
+        role="bold"><userinput>y</userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+
+Generating configuration files for Sangoma Media Gateway
+<replaceable>[...]</replaceable>
+------------------------------------
+Configuring ISDN BRI cards [A500]
+------------------------------------
+</screen>
+
+    <para>Jetzt geht es um die Konfiguration der BRI-Ports. Zur Erinnerung:
+    <quote>Point to multipoint</quote> = Mehrgeräteanschluß, also
+    <quote>normales</quote> ISDN, <quote>Point to point</quote> =
+    Anlagenanschluß:</para>
+
+    <screen>-----------------------------------------------------------
+A500 detected on slot:8 bus:0
+-----------------------------------------------------------
+
+
+Would you like to configure AFT-A500 port 1 on slot:8 bus:0
+ 1. YES
+ 2. NO
+ 3. Exit
+[1-3]:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Configuring port 1 on AFT-A500 [slot:8 bus:0 span:1]
+
+Select connection type for port 1
+ 1. Point to multipoint
+ 2. Point to point
+[1-2, ENTER='Point to multipoint']:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Input the group for this port
+: <emphasis role="bold"><userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Select dialplan context for group:1
+ 1. from-pstn
+ 2. Custom
+[1-2]:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Configuring span:1 as TEI:127
+ 1. YES - Keep this setting
+ 2. NO  - Specify a different TEI
+[1-2, ENTER='YES']:<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <para>Das gleiche nochmal für Port 2, 3, 4, 5 und 6 (je nach dem wie viele
+    Module man eingesteckt hat):</para>
+
+    <screen><replaceable>[...]</replaceable>
+
+Would you like to configure AFT-A500 port 2 on slot:8 bus:0
+ 1. YES
+ 2. NO
+ 3. Exit
+[1-3, ENTER='YES']:<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen>
+Configuring port 2 on AFT-A500 [slot:8 bus:0 span:2]
+
+Select connection type for port 2
+ 1. Point to multipoint
+ 2. Point to point
+[1-2, ENTER='Point to multipoint']:<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen>
+Input the group for this port
+def="1": <emphasis role="bold"><userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Configuring span:2 as TEI:127
+ 1. YES - Keep this setting
+ 2. NO  - Specify a different TEI
+[1-2, ENTER='YES']:<emphasis role="bold"> <userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+
+ISBN BRI card configuration complete
+</screen>
+
+    <screen>
+Press any key to continue: <emphasis role="bold"><userinput><replaceable>enter</replaceable></userinput></emphasis></screen>
+
+    <screen>
+Would you like to configure A500 BRI card as timing source for Zaptel?
+(Visit http://wiki.sangoma.com/wanpipe-linux-asterisk-appendix#bri-tdmv for more information)
+ 1. YES
+ 2. NO
+[1-2]:
+<emphasis role="bold"><userinput><replaceable>2</replaceable></userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+
+###################################################################
+#                             SUMMARY                             #
+###################################################################
+
+  0 T1/E1 port(s) detected, 0 configured
+  2 ISDN BRI port(s) detected, 2 configured
+  0 analog card(s) detected, 0 configured
+
+Configurator will create the following files:
+        1. Wanpipe config files in /etc/wanpipe
+        2. sangoma_brid config file /etc/wanpipe/smg_bri
+        3. Zapata config file /etc/asterisk/zapata.conf
+
+
+Your original configuration files will be saved to:
+
+Your configuration has been saved in /etc/wanpipe/debug-2009-02-23.tgz.
+When requesting support, email this file to techdesk@sangoma.com
+
+
+###################################################################
+
+Configuration Complete! Please select following:
+ 1. YES - Continue
+ 2. NO - Exit
+[1-2]:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Zaptel and Wanpipe configuration complete: choose action
+ 1. Save cfg: Restart Asterisk &amp; Wanpipe now
+ 2. Save cfg: Restart Asterisk &amp; Wanpipe when convenient
+ 3. Save cfg: Stop Asterisk &amp; Wanpipe now
+ 4. Save cfg: Stop Asterisk &amp; Wanpipe when convenient
+ 5. Do not save cfg: Exit
+[1-5]:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <para>Es kann jetzt ein- oder zweimal vorkommen daß sich das Skript
+    irreführend über angebliche Probleme beschwert und fragt ob man
+    weitermachen will. Ja!!!</para>
+
+    <screen><replaceable>[...]</replaceable>
+
+Would you like to continue?
+ 1. No - exit
+ 2. YES
+[1-2, ENTER='No']:<emphasis role="bold"> <userinput>2</userinput></emphasis></screen>
+
+    <screen><replaceable>[...]</replaceable>
+
+Wanrouter start complete...
+Current boot level is 2
+
+Wanrouter boot scripts configuration...
+
+Removing existing wanrouter boot scripts...OK
+Would you like wanrouter to start on system boot?
+ 1. YES
+ 2. NO
+[1-2]:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+Verifying Zaptel boot scripts...Enabled (level:15)
+Verifying Zaptel shutdown scripts...Enabled (level:30)
+Enabling wanrouter boot scripts ...(level:14)
+Enabling wanrouter shutdown scripts ...(level:29)
+Verifying Network boot scripts...Not installed
+Would you like smg_ctrl to start/stop on wanrouter start?
+ 1. YES
+ 2. NO
+[1-2]:<emphasis role="bold"> <userinput>1</userinput></emphasis></screen>
+
+    <screen>
+smgbri start scrtip installed scuessfully
+smgbri stop script installed successfully
+Sangoma cards configuration complete, exiting...</screen>
+
+    <para>Gut.</para>
+
+    <para>Durch einen kleinen Fehler im <filename>Setup</filename>-Skript
+    wurde das Start-Skript <filename>/etc/init.d/smg_ctrl</filename> noch
+    nicht im Runlevel 2 verlinkt, das holen wir jetzt noch nach:<screen>debian:/usr/src/wanpipe-3.5.0.11# <command>update-rc.d -f smg_ctrl remove</command>
+debian:/usr/src/wanpipe-3.5.0.11# <command>update-rc.d smg_ctrl defaults 16 20</command></screen></para>
+
+    <para>Im Default-Runlevel 2 sollten jetzt folgende Einträge
+    stehen:<screen>debian:/usr/src/wanpipe-3.5.0.11# <command>ls -l /etc/rc2.d/</command>
+<replaceable>[...]</replaceable>
+lrwxrwxrwx 1 root root  19 10. Jan 12:00 S14wanrouter -&gt; ../init.d/wanrouter
+lrwxrwxrwx 1 root root  16 10. Jan 12:00 S15zaptel -&gt; ../init.d/zaptel
+lrwxrwxrwx 1 root root  18 10. Jan 12:00 S16smg_ctrl -&gt; ../init.d/smg_ctrl
+<replaceable>[...]</replaceable>
+lrwxrwxrwx 1 root root  18 10. Jan 12:00 S50asterisk -&gt; ../init.d/asterisk</screen>Wichtig
+    sind dabei nicht die genauen Nummern sondern die
+    <emphasis>Reihenfolge</emphasis> beim Hochfahren:
+    <literal>wanrouter</literal>, <literal>zaptel</literal>,
+    <literal>smg_ctrl</literal>, <literal>asterisk</literal>.</para>
+  </section>
+
+  <section id="sangoma-a500-interactive-konfiguration">
+    <title>Konfiguration für die A500</title>
+
+    <para>Das <filename>Setup</filename>-Skript hat die Konfiguration für die
+    Sangoma A500 bereits für uns angelegt. Daher soll sie hier nur der
+    Vollständigkeit halber erwähnt werden. Wenn man im Setup alles richtig
+    eingegeben hat muß man nichts verändern. Sollte man die Konfiguration der
+    Ports erneut vornehmen wollen kann man später
+    <literal><command>setup-sangoma</command></literal> aufrufen.</para>
+
+    <section id="sangoma-a500-interactive-konfiguration-wanpipe">
+      <title>Wanpipe</title>
+
+      <para>Die Wanpipe-Konfiguration befindet sich im Verzeichnis
+      <filename>/etc/wanpipe/</filename>. Darin gibt es mehrere Dateien
+      <filename>wanpipe<replaceable>X</replaceable>.conf</filename>, wobei
+      <literal><replaceable>X</replaceable></literal> für die Nummer des Ports
+      steht. 1 - 6 sind die BRI-Ports.</para>
+    </section>
+
+    <section id="sangoma-a500-interactive-konfiguration-smg">
+      <title>Sangoma Media Gateway (SMG) / Woomera</title>
+
+      <para>An der Datei <filename>/etc/sangoma_mgd.conf</filename> müssen wir
+      nichts ändern. Auch die <filename>/etc/wanpipe/smg_bri.conf</filename>
+      kann fast so bleiben wie sie ist. Für eine detaillierte Beschreibung der
+      Parameter siehe <ulink
+      url="http://wiki.sangoma.com/BriAdvancedOptions">http://wiki.sangoma.com/BriAdvancedOptions</ulink>.
+      Das einige was wir hier ändern ist:<programlisting>national_prefix=0
+international_prefix=00</programlisting></para>
+    </section>
+
+    <section id="sangoma-a500-interactive-konfiguration-asterisk">
+      <title>Asterisk</title>
+
+      <?dbhtml stop-chunking?>
+
+      <para>Im folgenden die Einstellungen in der Asterisk-Konfiguration für
+      die Sangoma A500.</para>
+
+      <section id="sangoma-a500-interactive-asterisk-woomera">
+        <title>woomera.conf für die A500</title>
+
+        <para>Auch die Konfiguration der BRI-Kanäle in der
+        <filename>/etc/asterisk/woomera.conf</filename> für
+        <filename>chan_woomera</filename> ist fertig:<programlisting>[settings]
+debug=2
+
+[default]
+host=localhost
+port=42420
+audio_ip=127.0.0.1
+default_context=sangoma
+debug=2
+dtmf_enable=1
+jb_enable=0
+progress_enable=0
+
+context=from-pstn
+group=1
+</programlisting></para>
+      </section>
+
+      <section id="sangoma-a500-interactive-asterisk-extensions">
+        <title>extensions.conf für die A500</title>
+
+        <para>Die <filename>/etc/asterisk/extensions.conf</filename> sollte
+        wohl auch automatisch erzeugt werden, dies passiert jedoch momentan
+        noch nicht, daher müssen wir das noch selber
+        erledigen.<programlisting>; Kontext(e) fuer Anrufe die von den BRI-Ports der A500
+; eingehen. Der Name entspricht dem/den in der
+; /etc/asterisk/woomera.conf eingestellten context.
+
+[from-pstn]
+
+exten =&gt; _X.,1,Verbose(1,### Eingehender Anruf von ${CALLERID(num)} an ${EXTEN})
+exten =&gt; _X.,n,Ringing()
+exten =&gt; _X.,n,Wait(8)
+exten =&gt; _X.,n,Answer()
+exten =&gt; _X.,n,Playback(demo-congrats)
+exten =&gt; _X.,n,Hangup()
+
+exten =&gt; 123456,1,Verbose(1,### Eingehender Anruf von ${CALLERID(num)} an ${EXTEN})
+exten =&gt; 123456,n,Dial(SIP/10)
+exten =&gt; 123456,n,Hangup()
+
+; Kontext(e) fuer Anrufe von intern, also z.B von einem SIP-Endgerät in Richtung Festnetz über die Sangoma-Karte
+[from-internal]
+
+exten =&gt; _X.,1,Verbose(1,### Anruf von intern an ${EXTEN})
+exten =&gt; _X.,n,Dial(WOOMERA/g1/${EXTEN})  ; Gruppe 1
+exten =&gt; _X.,n,Hangup()</programlisting></para>
+      </section>
+    </section>
+  </section>
+
+  <section id="wanpipe-wanrouter-befehle-sangoma-a500-interactive">
+    <sectioninfo>
+      <indexterm>
+        <primary>Wanpipe</primary>
+
+        <secondary>Befehle</secondary>
+      </indexterm>
+
+      <indexterm>
+        <primary>Wanrouter</primary>
+
+        <secondary>Befehle</secondary>
+      </indexterm>
+    </sectioninfo>
+
+    <title>Wichtige Befehle für Wanpipe</title>
+
+    <para>Folgende Befehle sind beim Arbeiten mit Wanpipe/wanrouter nützlich
+    und zeigen uns z.B. Informationen über unsere A500-Karte.</para>
+
+    <para><literal><command>wanrouter version</command></literal> oder
+    <literal><command>/etc/init.d/wanrouter version</command></literal> zeigt
+    die installierte Version von Wanpipe:<screen>debian:~# <command>wanrouter version</command>
+
+WANPIPE Release: 3.3.15</screen></para>
+
+    <para><literal><command>wanrouter summary</command></literal> oder
+    <literal><command>/etc/init.d/wanrouter summary</command></literal> zeigt
+    eine Übersicht über die Konfigurationsdateien
+    <filename>/etc/wanpipe/wanpipe<replaceable>*</replaceable>.conf</filename><footnote>
+        <para>Ausgabe hier etwas in der Breite gekürzt.</para>
+      </footnote>:<screen>debian:~# <command>wanrouter summary</command>
+
+Configuration File Summary in : /etc/wanpipe/
+
+Device          Protocol        Type   Cpu/Io Slot/Irq  Bus     State
+------------------------------------------------------------------------
+wanpipe1        WAN_AFT_ISDN_BRI        PCI     A       8       0       Connected
+wanpipe2        WAN_AFT_ISDN_BRI        PCI     A       8       0       Connected</screen></para>
+
+    <para><literal><command>wanrouter status</command></literal> oder
+    <literal><command>/etc/init.d/wanrouter status</command></literal> zeigt
+    den Status aller <emphasis>aktiven</emphasis> Ports<footnote>
+        <para>Ausgabe hier etwas in der Breite gekürzt.</para>
+      </footnote>:<screen>debian:~# <command>wanrouter status</command>
+
+Devices currently active:
+        wanpipe1 wanpipe2
+
+
+Wanpipe Config:
+
+Device name | Protocol Map | Adapter  | IRQ | Slot/IO | If's | CLK | Baud rate |
+wanpipe1    | N/A          | A500     | 17  | 8       | 1    | N/A | 0         |
+wanpipe2    | N/A          | A500     | 17  | 8       | 1    | N/A | 0         |
+
+Wanrouter Status:
+
+Device name | Protocol | Station | Status        |
+wanpipe1    | AFT ISDN | N/A     | Connected     |
+wanpipe2    | AFT ISDN | N/A     | Connected     |</screen></para>
+
+    <para><literal><command>wanrouter hwprobe</command></literal> oder
+    <literal><command>/etc/init.d/wanrouter hwprobe</command></literal> zeigt
+    Informationen über die installierte Wanpipe-Hardware:<screen>debian:~# <command>wanrouter hwprobe</command>
+
+-------------------------------
+| Wanpipe Hardware Probe Info |
+-------------------------------
+1 . AFT-A500-SH : SLOT=8 : BUS=0 : IRQ=17 : PORT=1 : HWEC=64 : V=32
+2 . AFT-A500-SH : SLOT=8 : BUS=0 : IRQ=17 : PORT=2 : HWEC=64 : V=32
+
+Card Cnt: A500=1 </screen></para>
+
+    <para><literal><command>wanrouter hwprobe verbose</command></literal>
+    funktioniert wie <literal><command>wanrouter hwprobe</command></literal>,
+    zeigt aber noch zusätzliche Informationen wie den TE/NT-Modus:<screen>debian:~# <command>wanrouter hwprobe verbose</command>
+
+-----------------------------------------
+| Wanpipe Hardware Probe Info (verbose) |
+-----------------------------------------
+1 . AFT-A500-SH : SLOT=8 : BUS=0 : IRQ=17 : PORT=1 : HWEC=64 : V=32
++01:TE: PCI:C01
+2 . AFT-A500-SH : SLOT=8 : BUS=0 : IRQ=17 : PORT=2 : HWEC=64 : V=32
++02:TE: PCI:C01
+
+Card Cnt: A500=1
+ </screen></para>
+
+    <para>Und dann gibt es natürlich die ganz normalen Befehle
+    <command><literal>/etc/init.d/wanrouter
+    </literal>{<literal>start</literal>|<literal>stop</literal>|<literal>restart</literal>}</command>
+    wie bei jedem Skript in <filename>/etc/init.d/</filename> zum
+    Starten/Stoppen des Dienstes.</para>
+
+    <para>Durch Aufruf von <literal><command>wanrouter</command></literal>
+    ohne weitere Optionen erhält man eine Liste aller möglichen
+    Befehle.</para>
+
+    <para>Mit <literal><command>wanpipemon -g</command></literal> bekommt man
+    ein grafisches Menü zur Analyse der Wanpipe-Ports.</para>
+
+    <para>Mittels <literal><command>cat /proc/interrupts</command></literal>
+    kann man prüfen ob sich die Karte PCI-Interrupts mit anderen Geräten
+    (Festplatte, Netzwerkkarte, ...) teilen muß.<screen>debian:~# <command>cat /proc/interrupts</command> 
+<replaceable>[...]</replaceable>
+  17:     123533   IO-APIC-fasteoi   wanpipe1, wanpipe2</screen></para>
+
+    <para>Experten finden weitere Status-Informationen in speziellen Dateien
+    im Verzeichnis <filename>/proc/net/wanrouter/</filename>.</para>
+  </section>
+</section>
