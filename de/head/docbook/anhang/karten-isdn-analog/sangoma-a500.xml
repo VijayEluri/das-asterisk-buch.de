@@ -92,7 +92,7 @@
 
       <para>Datenblatt (deutsch): <ulink
       url="http://sangoma.com/data/datasheets/ge/a500.pdf">http://sangoma.com/data/datasheets/ge/a500.pdf</ulink></para>
-    </footnote>ist eine Erweiterbare ISDN-Karte mit 2 bis 24 Port. Dabei
+    </footnote>ist eine erweiterbare ISDN-Karte mit 2 bis 24 Port. Dabei
   können 6 Ports (12 B-Kanäle) auf einer einzelnen Karte Verwendet werden.
   Wenn mehr als 6 Ports benötigt werden so kann man eine zweite Karte einbauen
   und über ein Steckverbindung mit der ersten Karte verbinden. Somit haben die
@@ -111,7 +111,7 @@
   ausschließlich &#8211; bis zu 48 B-Kanäle ins öffentliche ISDN-Netz
   betrieben werden sollen.<footnote>
       <para>Falls Sie wirklich 48 B-Kanäle betreiben wollen, sollten Sie
-      allerdings über einen PRI (auch S2M oder Multiplex) Anschluss
+      allerdings über einen PRI (auch S2M oder Multiplex-) Anschluss
       nachdenken. Das ist meistens günstiger und einfacher.</para>
     </footnote> Es sind aber auch andere Szenarien denkbar &#8211; die 6
   ISDN-Ports lassen sich paarweise auf TE<footnote>
@@ -304,17 +304,17 @@ debian:/usr/src# <emphasis role="bold"><command>cd wanpipe-*/</command></emphasi
     <para>Das Skript <filename>Setup</filename> kümmert sich um die
     Kompilierung und würde melden falls man notwendige Software nicht
     installiert hat. Es gibt zwei verschiedene Modi, die wir beide verstellen.
-    Wir empfehlen für normale Installationen den einfachereren Silent Modus
+    Wir empfehlen für normale Installationen den einfachereren <emphasis>Silent</emphasis>-Modus
     (<xref linkend="installation-a500-silent-modus" />).</para>
   </section>
 
   <section id="installation-a500-silent-modus">
     <title>Silent Modus Installation</title>
 
-    <para>Im Silent Modus wird vom Skript so wenig wie möglich gefragt. Wenn
-    Sie mehr Kontrolle über den Installationsvorgang wünschen dann finden Sie
+    <para>Im Silent-Modus wird vom Skript so wenig wie möglich gefragt. Wenn
+    Sie mehr Kontrolle über den Installationsvorgang wünschen, dann finden Sie
     in <xref linkend="installation-a500-interaktiver-modus" /> eine
-    detailierte Anleitung zum Interaktiven Modus Installationsmethode.</para>
+    detaillierte Anleitung zum interaktiven Modus.</para>
 
     <screen>debian:/usr/src/wanpipe-3.6.0# <emphasis role="bold"><command>./Setup install --silent --protocol=SSMG-BRI-TDM</command></emphasis>
         ----------------------------------------------------------
@@ -353,7 +353,27 @@ Please read http://wiki.sangoma.com for further instructions.
 </screen>
 
     <para>Die Treiber, das Sangoma-Media-Gateway und Konfigurationsprogramme
-    sind nun Installiert.</para>
+    sind nun installiert.</para>
+    <!-- <![CDATA[
+      Allerdings wurde durch einen kleinen Fehler im
+    <filename>Setup</filename>-Skript das Start-Skript
+    <filename>/etc/init.d/smg_ctrl</filename> noch nicht im Runlevel 2
+    verlinkt, das holen wir jetzt noch nach:<screen>debian:/usr/src/wanpipe-3.6.0# <emphasis role="bold"><command>update-rc.d -f smg_ctrl remove</command></emphasis>
+debian:/usr/src/wanpipe-3.6.0# <emphasis role="bold"><command>update-rc.d smg_ctrl defaults 16 20</command></emphasis></screen></para>
+
+    <para>Im Default-Runlevel 2 sollten jetzt folgende Einträge
+    stehen:<screen>debian:/usr/src/wanpipe-3.6.0# <emphasis role="bold"><command>ls -l /etc/rc2.d/</command></emphasis>
+<replaceable>[...]</replaceable>
+lrwxrwxrwx 1 root root  19 10. Jan 12:00 S14wanrouter -&gt; ../init.d/wanrouter
+lrwxrwxrwx 1 root root  16 10. Jan 12:00 S15zaptel -&gt; ../init.d/zaptel
+lrwxrwxrwx 1 root root  18 10. Jan 12:00 S16smg_ctrl -&gt; ../init.d/smg_ctrl
+<replaceable>[...]</replaceable>
+lrwxrwxrwx 1 root root  18 10. Jan 12:00 S50asterisk -&gt; ../init.d/asterisk</screen>Wichtig
+    sind dabei nicht die genauen Nummern sondern die
+    <emphasis>Reihenfolge</emphasis> beim Hochfahren:
+    <literal>wanrouter</literal>, <literal>zaptel</literal>,
+    <literal>smg_ctrl</literal>, <literal>asterisk</literal>.</para>
+    ]]> -->
 
     <para>Jetzt muss man noch die Karte mithilfe der
     Sangoma-Konfigurationstools konfigurieren:</para>
