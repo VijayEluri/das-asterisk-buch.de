@@ -11,7 +11,7 @@
 % Free Documentation License".
 % Asterisk training and consulting is offered at http://www.amooma.de-->
 
-  <title>Asterisk-Datenbank (AstDB)</title>
+  <title>Die Asterisk-Datenbank (AstDB)</title>
 
   <indexterm>
     <primary>Datenbank</primary>
@@ -24,16 +24,16 @@
 
     <para>Das Problem bei der Benutzung von Variablen im Dialplan ist, dass
     der Wert dieser und überhaupt aller zur Laufzeit definierten Variablen bei
-    einem Systemabsturz oder einem Neustart von Asterisk gelöscht bzw. auf
-    ihre Anfangswerte zurückgesetzt werden. Dadurch sind bestimmte
-    Einsatzszenarien gar nicht denkbar. Wenn man beispielweise eine
-    Call-Forwarding-Funktion<footnote>
-        <para>CallForwarding-Funktionalität: Jeder Teilnehmer kann durch Wahl
+    einem Systemabsturz oder einem Neustart von Asterisk gelöscht wird bzw.
+    dass die Variablen auf ihre Anfangswerte zurückgesetzt werden. Dadurch
+    sind bestimmte Einsatzszenarien gar nicht denkbar. Wenn man beispielweise
+    eine Call-Forwarding-Funktion<footnote>
+        <para>Call-Forwarding-Funktionalität: Jeder Teilnehmer kann durch Wahl
         einer bestimmten Nummer alle Gespräche an einen anderen Apparat
         weiterleiten lassen. Durch Wahl einer anderen Nummer wird diese
         Funktion wieder deaktiviert.</para>
       </footnote> oder ein Calling-Card-System implementieren möchte, dann
-    sollten diese natürlich z.B. das Restguthaben in einer Datenbank
+    sollten diese natürlich z. B. das Restguthaben in einer Datenbank
     speichern, damit diese Daten bei einem Neustart des Systems wieder korrekt
     zur Verfügung stehen.</para>
 
@@ -48,7 +48,7 @@
 
       <para>Bezüglich der Asterisk-Datenbank wird immer wieder die Frage nach
       der Performance derselben gestellt. Das lässt sich nicht so pauschal
-      beantworten. Falls Sie nur kleine Datenbestände (wie unser
+      beantworten. Falls Sie nur kleine Datenbestände (wie in unserem
       Wahlwiederholungsbeispiel) benötigen, so ist die Asterisk-Datenbank
       sicherlich eine sinnvolle Wahl. Bei größeren und komplexen
       Datenbeständen sollten Sie aber überlegen, ob das Verwenden einer
@@ -56,33 +56,34 @@
       bei dem überwiegenden Teil aller Anwendungen rein theoretischer Natur,
       da es sich bei der Asterisk-Datenbank um eine Berkley DB handelt und
       diese ausreichend performant ist. Tatsächlich ist die Berkley DB, wenn
-      es sich um reine "Key =&gt; Value"-Datenpaare handelt, mit die
-      schnellste ihrer Zunft. Sie sollten sich daher diese Frage erst stellen,
-      wenn die Geschwindigkeit der Datenbank nachweislich zu Problemen führt
-      oder Sie eine größere Installation mit umfangreicher Funktionalität
-      aufsetzen wollen.</para>
+      es sich um reine "Key =&gt; Value"-Datenpaare<!--Schlüssel/Wert-Datenpaare-->
+      handelt, mit die schnellste ihrer Zunft. Sie sollten sich daher diese
+      Frage erst stellen, wenn die Geschwindigkeit der Datenbank nachweislich
+      zu Problemen führt oder Sie eine größere Installation mit umfangreicher
+      Funktionalität aufsetzen wollen.</para>
     </section>
   </section>
 
   <section id="asterisk-datenbank">
-    <title>Asterisk-Datenbank</title>
+    <title>Die Asterisk-Datenbank</title>
 
     <para>Asterisk bringt standardmäßig eine Datenbank mit, die die Berkeley
     DB (BDB)<footnote>
         <para>Die Berkeley-Datenbank (Berkeley DB) ist eine hochperformante,
         eingebettete Datenbank-Bibliothek mit Programmierschnittstellen zu C,
         C++, Java, Perl, Python, Tcl und vielen weiteren Programmiersprachen.
-        Die DB speichert beliebige Schlüssel- oder Datenpaare und unterstützt
-        mehrere Datenelemente für einen einzelnen Schlüssel. Die DB ermöglicht
-        tausende von simultanen Threads zum Manipulieren der Datenbanken, die
-        bis zu 256 Terabyte groß sein können, und läuft auf einer großen
-        Anzahl von Systemen, unter anderem auf den meisten UNIX-artigen und
-        Windows-Systemen und auch auf Echtzeitbetriebssystemen. [Zitiert aus
-        <ulink
+        Die Berkeley DB speichert beliebige Schlüssel- oder Datenpaare und
+        unterstützt mehrere Datenelemente für einen einzelnen Schlüssel. Die
+        Berkeley DB ermöglicht Tausende von simultanen Threads zum
+        Manipulieren der Datenbanken, die bis zu 256 Terabyte groß sein
+        können, und läuft auf einer großen Anzahl von Systemen, unter anderem
+        auf den meisten UNIX-artigen und Windows-Systemen und auch auf
+        Echtzeitbetriebssystemen. [Zitiert aus <ulink
         url="http://de.wikipedia.org/wiki/Berkeley_DB"><citetitle>http://de.wikipedia.org/wiki/Berkeley_DB</citetitle></ulink>]</para>
       </footnote> als Datenbank-Engine einsetzt. In dieser Datenbank-Engine
-    wird immer einem Schlüssel (key) ein Wert (value) zugeordnet, wobei
-    Schlüssel in Familien (family) zusammengefasst werden. <warning>
+    wird immer einem Schlüssel (<emphasis>key</emphasis>) ein Wert
+    (<emphasis>value</emphasis>) zugeordnet, wobei Schlüssel in Familien
+    (<emphasis>family</emphasis>) zusammengefasst werden. <warning>
         <para>Bis einschließlich Asterisk Version 1.2 wurden die folgenden
         Befehle eingesetzt:</para>
 
@@ -90,13 +91,13 @@
           <listitem>
             <para><code>DBput(family/key=value)</code></para>
 
-            <para>zum Speichern eines Werts in der Datenbank.</para>
+            <para>Zum Speichern eines Werts in der Datenbank</para>
           </listitem>
 
           <listitem>
             <para><code>DBget(var=family/key)</code></para>
 
-            <para>um einen Wert aus der Datenbank auszulesen. Wird der
+            <para>Um einen Wert aus der Datenbank auszulesen. Wird der
             aufgerufene Key in der Datenbank nicht gefunden, erhöht sich die
             Priorität um 101.</para>
           </listitem>
@@ -143,14 +144,14 @@
       <section id="datenbank-dbdel">
         <title>DBdel() und ${DB_DELETE()}</title>
 
-        <para>In der Asterisk Version 1.2 löscht <code>DBdel()</code> einen
+        <para>In der Asterisk-Version 1.2 löscht <code>DBdel()</code> einen
         einzelnen Eintrag in der Datenbank. Soll der Key <code>apfel</code> in
         der Family <code>obst</code> gelöscht werden, so geschieht das wie
         folgt:<programlisting>exten =&gt; 1234,1,DBdel(obst/apfel)</programlisting></para>
 
-        <para>In der Asterisk Version 1.4 ist DBdel() deprecated und man soll
-        die Funktion ${DB_DELETE()} benutzen. Der Aufruf kann wie folgt
-        erfolgen:<programlisting>exten =&gt; 1234,1,NoOp(${DB_DELETE(obst/apfel)})</programlisting>Siehe
+        <para>In der Asterisk-Version 1.4 ist DBdel() deprecated, und man soll
+        die Funktion <filename>${DB_DELETE()}</filename> benutzen. Der Aufruf
+        kann wie folgt erfolgen:<programlisting>exten =&gt; 1234,1,NoOp(${DB_DELETE(obst/apfel)})</programlisting>Siehe
         auch <xref linkend="applications-dbdel" /> und <xref
         linkend="functions-db_delete" />.</para>
       </section>
@@ -178,11 +179,11 @@
       <secondary>Zugriff vom CLI</secondary>
     </indexterm>
 
-    <para>Vom Command Line Interface (CLI) kann der Administrator ebenfalls
-    auf die Datenbank zugreifen.<tip>
-        <para>Sollte man den entsprechenden Befehl oder die genaue Syntax
-        vergessen haben, so kann man jederzeit <code>help database</code> im
-        CLI eingeben:<screen>big-island*CLI&gt; <emphasis role="bold"><command>help database</command></emphasis>
+    <para>Vom Command Line Interface (CLI) aus kann der Administrator
+    ebenfalls auf die Datenbank zugreifen.<tip>
+        <para>Sollten Sie den entsprechenden Befehl oder die genaue Syntax
+        vergessen haben, so können Sie jederzeit <code>help database</code> im
+        CLI eingeben:<screen>big-island*CLI&gt; help database
              database del  Removes database key/value
          database deltree  Removes database keytree/values
              database get  Gets database value
@@ -195,7 +196,7 @@
       <para>Denken Sie bei den folgenden Beschreibungen daran, dass Sie, wenn
       die Family, der Schlüssel oder der Wert Leerzeichen enthält,
       Anführungszeichen (<code>"</code>) um den String schreiben müssen! Also
-      z.B. <code>database put test eintrag "Hallo Welt"</code>.</para>
+      z. B. <code>database put test eintrag "Hallo Welt"</code>.</para>
     </important>
 
     <section id="datenbank-cli-schreiben">
@@ -203,7 +204,7 @@
 
       <para>Mit <code>database put <replaceable>family</replaceable>
       <replaceable>key</replaceable> <replaceable>value</replaceable></code>
-      können Werte in die Datenbank geschrieben werden:<screen>big-island*CLI&gt; <emphasis role="bold"><command>database put obst apfel 20</command></emphasis>
+      können Werte in die Datenbank geschrieben werden:<screen>big-island*CLI&gt; database put obst apfel 20
 Updated database successfully</screen></para>
     </section>
 
@@ -212,7 +213,7 @@ Updated database successfully</screen></para>
 
       <para>Mit <code>database get <replaceable>family</replaceable>
       <replaceable>key</replaceable></code> lesen Sie Werte aus der Datenbank
-      aus:<screen>big-island*CLI&gt; <emphasis role="bold"><command>database get obst apfel</command></emphasis>
+      aus:<screen>big-island*CLI&gt; database get obst apfel
 Value: 20d*CLI&gt;</screen></para>
     </section>
 
@@ -228,7 +229,7 @@ Value: 20d*CLI&gt;</screen></para>
         <title>database del</title>
 
         <para>Um den Key <code>apfel</code> aus der Family <code>obst</code>
-        zu löschen, kann man <code>database del</code> aufrufen:<screen>big-island*CLI&gt; <emphasis role="bold"><command>database del obst apfel</command></emphasis>
+        zu löschen, rufen Sie <code>database del</code> auf:<screen>big-island*CLI&gt; database del obst apfel
 Database entry removed.</screen></para>
       </section>
 
@@ -236,7 +237,7 @@ Database entry removed.</screen></para>
         <title>database deltree</title>
 
         <para>Mit <code>database deltree</code> kann eine ganze Family aus der
-        Datenbank gelöscht werden:<screen>big-island*CLI&gt; <emphasis role="bold"><command>database deltree obst</command></emphasis>
+        Datenbank gelöscht werden:<screen>big-island*CLI&gt; database deltree obst
 Database entries removed.</screen></para>
       </section>
     </section>
@@ -246,7 +247,7 @@ Database entries removed.</screen></para>
 
       <para>Mit den Befehlen <code>database show</code> und <code>database
       showkey</code> kann der Administrator den Inhalt der Datenbank auf dem
-      CLI ausgeben lassen. Ein Beispiel:<screen>big-island*CLI&gt; <emphasis role="bold"><command>database put einkaufsliste eier 2</command></emphasis>
+      CLI ausgeben lassen. Ein Beispiel:<screen>big-island*CLI&gt; database put einkaufsliste eier 2
 Updated database successfully
 big-island*CLI&gt; database put einkaufsliste butter 250
 Updated database successfully
@@ -276,7 +277,7 @@ Database entries removed.</screen></para>
     '<replaceable>command</replaceable>'</command> können natürlich alle
     CLI-Kommandos auch von einem Shell-Skript ausgeführt werden. Das folgende
     Beispiel zeigt, wie man von der Shell aus die Datenbank erst mit Werten
-    füllt, diese dann ausliest und zum Schluss wieder löscht:<screen>big-island:~# <emphasis role="bold"><command>asterisk -rx 'database put test var1 23'</command></emphasis>
+    füllt, diese dann ausliest und zum Schluss wieder löscht:<screen>big-island:~# asterisk -rx 'database put test var1 23'
 Updated database successfully
 big-island:~# asterisk -rx 'database put test var2 42'
 Updated database successfully
@@ -289,7 +290,7 @@ big-island:~# asterisk -rx 'database deltree test'
 Database entries removed.</screen><important>
         <para>Denken Sie wieder daran, dass Sie, wenn die Family, der
         Schlüssel oder der Wert Leerzeichen enthält, Anführungszeichen
-        (<code>"</code>) um den String schreiben müssen! Also z.B.<screen>big-island:~# <emphasis role="bold"><command>asterisk -rx 'database put test eintrag "Hallo Welt"'</command></emphasis></screen></para>
+        (<code>"</code>) um den String schreiben müssen! Also z. B.:<screen>big-island:~# asterisk -rx 'database put test eintrag "Hallo Welt"'</screen></para>
       </important></para>
   </section>
 
@@ -304,7 +305,7 @@ Database entries removed.</screen><important>
 
     <para>Die Asterisk-Datenbank wird standardmäßig im Verzeichnis
     <filename>/var/lib/asterisk/astdb/</filename> gespeichert. Sobald Asterisk
-    gestoppt ist ist, kann man das Verzeichnis sichern.</para>
+    gestoppt ist, kann man das Verzeichnis sichern.</para>
 
     <para>Ein Backup im laufenden Betrieb kann auch von der Shell durch
     folgenden Befehl<programlisting>asterisk -rx "database show" &gt; /tmp/backup-asterisk-database.txt</programlisting>
@@ -313,37 +314,38 @@ Database entries removed.</screen><important>
   </section>
 
   <section id="section-callforwarding">
-    <title>Anwendungsbeispiel CallForwarding</title>
+    <title>Anwendungsbeispiel Call-Forwarding</title>
 
     <indexterm>
       <primary>Beispiel</primary>
 
-      <secondary>CallForwarding</secondary>
+      <secondary>Call-Forwarding</secondary>
     </indexterm>
 
-    <para>Wer bei Abwesenheit alle Gespräche an seine Durchwahl z.B. an sein
-    Handy weiterleiten will, benötigt eine CallForwarding-Funktionalität.
-    Diese kann entweder vom Endgerät (also dem SIP-Telefon) oder zentral von
-    der Telefonanlage realisiert werden. Letztere Variante ist in der Praxis
-    vorzuziehen, da man dadurch unabhängig von den Endgeräten ist (diese also
-    im Zweifelsfall auch austauschen kann) und zusätzlich die gesamte
-    Kontrolle auf dem Server behält. Außerdem ist im Falle eines Stromausfalls
-    die Konfiguration nicht verloren und wird beim nächsten Start der
-    Telefonanlage automatisch wiederhergestellt.</para>
+    <para>Wer bei Abwesenheit alle Anrufe, die an seine Durchwahl gerichtet
+    sind, z. B. an sein Handy weiterleiten will, benötigt eine
+    Call-Forwarding-Funktionalität. Diese kann entweder vom Endgerät (also dem
+    SIP-Telefon) oder zentral von der Telefonanlage realisiert werden.
+    Letztere Variante ist in der Praxis vorzuziehen, da man dadurch unabhängig
+    von den Endgeräten ist (diese also im Zweifelsfall auch austauschen kann)
+    und zusätzlich die gesamte Kontrolle auf dem Server behält. Außerdem ist
+    im Falle eines Stromausfalls die Konfiguration nicht verloren und wird
+    beim nächsten Start der Telefonanlage automatisch
+    wiederhergestellt.</para>
 
     <section id="einfaches-callforwarding">
-      <title>Einfaches CallForwarding</title>
+      <title>Einfaches Call-Forwarding</title>
 
       <para>Bei der Apfelmus GmbH soll jeder Mitarbeiter die Möglichkeit
       bekommen, Gespräche zu seinem Telefon an eine beliebige andere Nummer
       weiterzuleiten. Um diese Weiterleitung zu aktivieren, muss die interne
-      Rufnummer 44 gefolgt von der Zielrufnummer angerufen werden. Zum
+      Rufnummer 44, gefolgt von der Zielrufnummer, angerufen werden. Zum
       Deaktivieren der Weiterleitung muss wieder die 44 (aber diesmal ohne
       eine weitere Nummer) angerufen werden. Dies wird mit folgendem Wählplan
       realisiert:</para>
 
       <programlisting>[from-intern]
-; Call Forwarding für einen einzelnen Anschluss
+; Call-Forwarding für einen einzelnen Anschluss
 ;
 ; aktivieren
 exten =&gt; _44X.,1,Answer()
@@ -368,17 +370,17 @@ exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})</programlisting>
     </section>
 
     <section id="komplexes-callforwarding">
-      <title>Komplexes CallForwarding</title>
+      <title>Komplexes Call-Forwarding</title>
 
       <para>Diesmal soll in der Apfelmus GmbH jeder Mitarbeiter ein
-      CallForwarding aktivieren können, allerdings soll es ein weiteres
-      CallForwarding für die gesamte Firma geben, damit bei einem
+      Call-Forwarding aktivieren können, allerdings soll es ein weiteres
+      Call-Forwarding für die gesamte Firma geben, damit bei einem
       Betriebsausflug alle Gespräche an eine andere Niederlassung geleitet
       werden können. Diese Weiterleitung wird über die Funktionsnummer 55
       aktiviert (gefolgt von der Zielrufnummer). Die große Weiterleitung für
       die gesamte Anlage hat dabei eine höhere Priorität als die einzelnen
       Regeln. Eine Realisierung kann wie folgt aussehen:<programlisting>[from-intern]
-; CallForwarding für einen einzelnen Anschluss
+; Call-Forwarding für einen einzelnen Anschluss
 ;
 ; aktivieren
 exten =&gt; _44X.,1,Answer()
@@ -394,7 +396,7 @@ exten =&gt; 44,n,Playback(auth-thankyou)
 exten =&gt; 44,n,NoOp(Weiterleitung fuer ${CALLERID(num)} deaktiviert.) 
 exten =&gt; 44,n,Hangup()
 
-; CallForwarding für die gesamte Telefonanlage
+; Call-Forwarding für die gesamte Telefonanlage
 ;
 ; aktivieren
 exten =&gt; _55X.,1,Answer()
@@ -424,31 +426,32 @@ exten =&gt; _X.,n,Dial(local/${DB(CF/anlage)})
   </section>
 
   <section id="beispiel-callingcard">
-    <title>Anwendungsbeispiel CallingCard</title>
+    <title>Anwendungsbeispiel Calling-Card</title>
 
     <indexterm>
       <primary>Beispiel</primary>
 
-      <secondary>CallingCard</secondary>
+      <secondary>Calling-Card</secondary>
     </indexterm>
 
-    <para>In der Apfelmus GmbH sollen private Gespräche über eine CallingCard
+    <para>In der Apfelmus GmbH sollen private Gespräche über eine Calling-Card
     abgerechnet werden. Diese wird vom Hausmeister über sein Telefon virtuell
-    aufgeladen (durch Anwahl der internen Servicenummer 88 gefolgt von der
+    aufgeladen (durch Anwahl der internen Servicenummer 88, gefolgt von der
     3-stelligen Durchwahl und vom gewünschten Geldbetrag in Euro).<footnote>
-        <para>Um das Beispiel möglichst einfach zu halten, wird der Fall, dass
-        auf ein bereits bestehendes CallingCard-Konto ein weiterer Betrag
-        eingezahlt wird (also eine Addition vollzogen werden muss) nicht
-        besprochen. Ebenfalls nicht behandelt wird die Möglichkeit, dass ein
+        <para>Um das Beispiel möglichst einfach zu halten, wird nicht der Fall
+        besprochen, dass auf ein bereits bestehendes Calling-Card-Konto ein
+        weiterer Betrag eingezahlt wird (also eine Addition vollzogen werden
+        muss). Ebenfalls nicht behandelt wird die Möglichkeit, dass ein
         Mitarbeiter von einem anderen Telefon ein privates Gespräch führen
         könnte.</para>
       </footnote> Die Gespräche werden zu einem Pauschalpreis von 1 Euro pro
     Gespräch abgerechnet. Diese privaten Gespräche werden über die interne
-    Servicenummer 99 gefolgt von der Zielrufnummer geführt. Dabei ist zu
-    beachten, dass bei einem Besetzt (busy) kein Geldbetrag vom Konto
-    abgebucht wird. Die interne Rufnummer 98 kann dazu benutzt werden, den
-    aktuellen Betrag auf dem CallingCard-Konto abzurufen.<programlisting>[from-hausmeister]
-; Aufladen der virtuellen CallingCard
+    Servicenummer 99, gefolgt von der Zielrufnummer, geführt. Dabei ist zu
+    beachten, dass bei einem Besetzt (<emphasis>busy</emphasis>) kein
+    Geldbetrag vom Konto abgebucht wird. Die interne Rufnummer 98 kann dazu
+    benutzt werden, den aktuellen Betrag auf dem Calling-Card-Konto
+    abzurufen.<programlisting>[from-hausmeister]
+; Aufladen der virtuellen Calling-Card
 ;
 exten =&gt; _88XXX.,1,Answer()
 exten =&gt; _88XXX.,2,Set(DB(CallingCard/${EXTEN:2:3})=${EXTEN:5})
@@ -457,7 +460,7 @@ exten =&gt; _88XXX.,4,NoOp(CallingCard fuer ${EXTEN:2:3} mit ${EXTEN:5} aufgelad
 exten =&gt; _88XXX.,5,Hangup()
 
 [from-intern]
-; private Gespraeche
+; private Gespräche
 ;
 exten =&gt; _99.,1,GotoIf($[${DB(CallingCard/${CALLERID(num)} &gt; 0]?2:200)
 exten =&gt; _99.,2,Set(DB(CallingCard/${CALLERID(num)})=$[DB(CallingCard/${CALLERID(num)}) - 1])
