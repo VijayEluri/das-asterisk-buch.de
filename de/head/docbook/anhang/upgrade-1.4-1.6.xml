@@ -16,12 +16,11 @@
 
     <itemizedlist>
       <listitem>
-        <para>AEL-Dialplan-Macros werden jetzt "unter der Haube" mit der
-        <literal>Gosub()</literal>-Applikation implementiert. Vor 1.6 wurde
-        das mit der <literal>Macro()</literal>-Applikation gemacht. Sie können
-        weiterhin Macros ganz normal verwenden, sollten aber darauf achten daß
-        das Makro mit "<literal>return;</literal>"
-        zurückkehrt.<programlisting>macro mein-makro() {
+        <para>AEL-Dialplan-Macros werden jetzt <quote>unter der Haube</quote>
+        mit der <code>Gosub()</code>-Applikation implementiert. Vor 1.6 wurde
+        das mit der <code>Macro()</code>-Applikation gemacht. Sie können
+        weiterhin Macros ganz normal verwenden, sollten aber darauf achten
+        dass das Makro mit <code>return</code> zurückkehrt.<programlisting>macro mein-makro() {
     // tu was
     return;
 }</programlisting></para>
@@ -41,10 +40,10 @@
 
     <itemizedlist>
       <listitem>
-        <para>Die "<literal>languageprefix</literal>"-Option in asterisk.ael
-        ist veraltet. Die Verzeichnisstruktur für nicht-englische
-        Sound-Prompts ist jetzt per Default das in 1.4 eingeführte neue
-        Format.</para>
+        <para>Die Option <code>languageprefix</code> in der
+        <filename>asterisk.ael</filename> ist veraltet. Die
+        Verzeichnisstruktur für nicht-englische Sound-Prompts ist jetzt per
+        Default das in 1.4 eingeführte neue Format.</para>
       </listitem>
 
       <listitem>
@@ -54,29 +53,32 @@
 
       <listitem>
         <para>Als Trennzeichen für Parameter die an Dialplan-Applikationen
-        übergeben werden ist jetzt nur noch "<literal>,</literal>" (Komma)
-        erlaubt, nicht mehr "<literal>|</literal>" (Pipe). Wenn innerhalb
-        eines Parameters ein "<literal>,</literal>" übergeben werden soll, so
-        ist dies mit "<literal>\</literal>" (Backslash) zu escapen, also
-        "<literal>\,</literal>".</para>
+        übergeben werden ist jetzt nur noch <quote><code>,</code></quote>
+        (Komma) erlaubt, nicht mehr <quote><code>|</code></quote>
+        (<emphasis>Pipe</emphasis>). Wenn innerhalb eines Parameters ein
+        <quote><code>,</code></quote> übergeben werden soll, so ist dies mit
+        <quote><code>\</code></quote> (<emphasis>Backslash</emphasis>) zu
+        escapen, also als <quote><code>\,</code></quote> zu schreiben.</para>
       </listitem>
 
       <listitem>
-        <para>Die Option "<literal>rotatetimestamp</literal>" in der
+        <para>Die Option <quote><code>rotatetimestamp</code></quote> in der
         <filename>logger.conf</filename> wurde in
-        "<literal>rotatestrategy</literal>" geändert. Die neue Option
-        unterstützt eine "<literal>rotate</literal>"-Strategie, die die
+        <quote><code>rotatestrategy</code></quote> geändert. Die neue Option
+        unterstützt eine <quote><code>rotate</code></quote>-Strategie, die die
         Log-Dateien etwa so rotiert wie der System-Logger.</para>
       </listitem>
 
       <listitem>
-        <para>Die "<literal>concise</literal>"-Versionen verschiedener
+        <para>Die <quote><code>concise</code></quote>-Versionen verschiedener
         CLI-Befehle sind veraltet. Früher konnten externe Programme (wie etwa
-        Web-GUIs) z. B. "<literal>core show channels concise</literal>" statt
-        "<literal>core show channels</literal>" verwenden um eine besser
-        parsbare Ausgabe zu erhalten. Externe Programme sollen jetzt über das
-        AMI mit Asterisk kommunizieren statt direkt <literal>asterisk -rx
-        "Befehl"</literal> auszuführen.</para>
+        Web-GUIs) z. B. <quote><code>core show channels concise</code></quote>
+        statt <quote><code>core show channels</code></quote> verwenden um eine
+        besser parsbare Ausgabe zu erhalten. Externe Programme sollen jetzt
+        über das AMI<footnote>
+            <para>siehe <xref linkend="asterisk-manager-api" /></para>
+          </footnote> mit Asterisk kommunizieren statt direkt <code>asterisk
+        -rx "Befehl"</code> auszuführen.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -86,28 +88,31 @@
 
     <itemizedlist>
       <listitem>
-        <para>Die Mailbox-Parameter "<literal>maxmessage</literal>" und
-        "<literal>minmessage</literal>" wurden in "<literal>maxsecs</literal>"
-        und "<literal>minsecs</literal>" umbenannt um ihren Zweck (die Länge
-        einer Nachricht zu begrenzen) deutlicher zu machen und damit sie nicht
-        mit "<literal>maxmsgs</literal>" (das die Anzahl der Nachrichten
-        beschränkt) verwechselt werden. Die alten Parameter funktionieren
-        noch, aber eine Warnung wird ausgegeben.</para>
+        <para>Die Mailbox-Parameter <quote><code>maxmessage</code></quote> und
+        <quote><code>minmessage</code></quote> wurden in
+        <quote><code>maxsecs</code></quote> und
+        <quote><literal>minsecs</literal></quote> umbenannt um ihren Zweck
+        (die Länge einer Nachricht zu begrenzen) deutlicher zu machen und
+        damit sie nicht mit <quote><code>maxmsgs</code></quote> (das die
+        Anzahl der Nachrichten beschränkt) verwechselt werden. Die alten
+        Parameter funktionieren noch, aber eine Warnung wird
+        ausgegeben.</para>
       </listitem>
 
       <listitem>
         <para>MWI-Benachrichtigungen and die Telefone sind jetzt
         event-basiert. Für das alte Verhalten, nämlich alle x Sekunden in
         allen Mailboxen die Nachrichten zu zählen, kann im
-        "<literal>general</literal>"-Abschnitt der
-        <literal>voicemail.conf</literal> die Option
-        "<literal>pollmailboxes</literal>" aktiviert werden; in welchem
-        Abstand gesucht wird legt man dann durch "<literal>pollfreq</literal>"
-        fest. Das event-basierte Model ist grundsätzlich schöner da es besser
-        skaliert. Es gibt allerdings Fälle in denen man das alte Verhalten
-        braucht, nämlich wenn die Mailboxen von externen Programmen verändert
-        werden, also über ein Web-Interface oder wenn die Voicemails auf einem
-        IMAP-Server gespeichert werden.</para>
+        <quote><code>general</code></quote>-Abschnitt der
+        <filename>voicemail.conf</filename> die Option
+        <quote><code>pollmailboxes</code></quote> aktiviert werden; in welchem
+        Abstand gesucht wird legt man dann durch
+        <quote><code>pollfreq</code></quote> fest. Das
+        <emphasis>Event</emphasis>-basierte Model ist grundsätzlich schöner da
+        es besser skaliert. Es gibt allerdings Fälle in denen man das alte
+        Verhalten braucht, nämlich wenn die Mailboxen von externen Programmen
+        verändert werden, also über ein Web-Interface oder wenn die Voicemails
+        auf einem IMAP-Server gespeichert werden.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -117,79 +122,75 @@
 
     <itemizedlist>
       <listitem>
-        <para><literal>ChanIsAvail()</literal> hat jetzt eine Option
-        "<literal>t</literal>". Damit wird einfach nur zurückgegeben ob das
-        Device existiert.</para>
+        <para><code>ChanIsAvail()</code> hat jetzt eine Option
+        <quote><code>t</code></quote>. Damit wird einfach nur zurückgegeben ob
+        das <emphasis>Device</emphasis> existiert.</para>
       </listitem>
 
       <listitem>
-        <para><literal>ChannelRedirect()</literal> bricht jetzt den Channel
-        nicht mehr ab wenn die Umleitung fehlschlägt wie das vorher der Fall
-        war. Stattdessen ist der Erfolgsstatus der Umleitung in der
-        Channel-Variable <literal>CHANNELREDIRECT_STATUS</literal> verfügbar
-        (<literal>SUCCESS</literal> oder <literal>NOCHANNEL</literal>).</para>
+        <para><code>ChannelRedirect()</code> bricht jetzt den Channel nicht
+        mehr ab wenn die Umleitung fehlschlägt wie das vorher der Fall war.
+        Stattdessen ist der Erfolgsstatus der Umleitung in der
+        Channel-Variable <code>CHANNELREDIRECT_STATUS</code> verfügbar
+        (<code>SUCCESS</code> oder <code>NOCHANNEL</code>).</para>
       </listitem>
 
       <listitem>
-        <para><literal>SetCallerPres()</literal> ist veraltet und wurde durch
-        die Funktion <literal>CALLERPRES()</literal> ersetzt.</para>
+        <para><code>SetCallerPres()</code> ist veraltet und wurde durch die
+        Funktion <code>CALLERPRES()</code> ersetzt.</para>
       </listitem>
 
       <listitem>
-        <para>Das 5. Argument von DISA() wurde geändert. Wenn Sie vorher
-        "<literal>NOANSWER</literal>" verwendet haben muß die Option jetzt
-        "<literal>n</literal>" lauten.</para>
+        <para>Das 5. Argument von <code>DISA()</code> wurde geändert. Wenn Sie
+        vorher <quote><code>noanswer</code></quote> verwendet haben muss die
+        Option jetzt <quote><code>n</code></quote> lauten.</para>
       </listitem>
 
       <listitem>
-        <para><literal>Macro()</literal> ist veraltet (aber noch möglich). Für
-        Unterroutinen sollten Sie jetzt <literal>Gosub()</literal> und
-        Return() verwenden oder direkt die native
-        "<literal>macro</literal>"-Syntax von AEL verwenden.<programlisting>macro mein-makro() {
+        <para><code>Macro()</code> ist veraltet (aber noch möglich). Für
+        Unterroutinen sollten Sie jetzt <code>Gosub()</code> und
+        <code>Return()</code> verwenden oder direkt die native
+        <quote><code>macro</code></quote>-Syntax von AEL
+        verwenden.<programlisting>macro mein-makro() {
     // tu was
     return;
 }</programlisting></para>
 
-        <para>Statt <literal>MacroExclusive()</literal> gibt es jetzt die
-        Funktionen <literal>LOCK()</literal>, <literal>TRYLOCK()</literal> und
-        <literal>UNLOCK()</literal> um sicherzustellen daß ein Abschnitt im
-        Dialplan nicht von mehreren Kanälen gleichzeitig ausgeführt
-        wird.</para>
+        <para>Statt <code>MacroExclusive()</code> gibt es jetzt die Funktionen
+        <code>LOCK()</code>, <code>TRYLOCK()</code> und <code>UNLOCK()</code>
+        um sicherzustellen dass ein Abschnitt im Dialplan nicht von mehreren
+        Kanälen gleichzeitig ausgeführt wird.</para>
       </listitem>
 
       <listitem>
-        <para><literal>Read()</literal> setzt jetzt eine Variable
-        <literal>READSTATUS</literal> (auf <literal>OK</literal> |
-        <literal>ERROR</literal> | <literal>HANGUP</literal> |
-        <literal>INTERRUPTED</literal> | <literal>SKIPPED</literal> |
-        <literal>TIMEOUT</literal>) statt bei einem Fehler automatisch
-        aufzulegen. Wenn Sie bei <literal>${READSTATUS} != "OK"</literal>"
-        auflegen wollen müssen Sie das hinterher explizit im Dialplan
-        tun.</para>
+        <para><code>Read()</code> setzt jetzt eine Variable
+        <code>READSTATUS</code> (auf <code>OK</code> | <code>ERROR</code> |
+        <code>HANGUP</code> | <code>INTERRUPTED</code> | <code>SKIPPED</code>
+        | <code>TIMEOUT</code>) statt bei einem Fehler automatisch aufzulegen.
+        Wenn Sie bei <code>${READSTATUS} != "OK"</code>" auflegen wollen
+        müssen Sie das hinterher explizit im Dialplan tun.</para>
       </listitem>
 
       <listitem>
-        <para><literal>Privacy()</literal> greift nicht mehr auf
+        <para><code>Privacy()</code> greift nicht mehr auf
         <filename>privacy.conf</filename> zu, also müssen alle Optionen der
         Applikation direkt im Dialplan als Argumente übergeben werden.</para>
       </listitem>
 
       <listitem>
-        <para><literal>MusicOnHold()</literal> hat einen neuen optionalen
-        Timeout-Parameter, der einen Abbruch nach einer bestimmten Dauer
-        ermöglicht. Dadurch wird <literal>WaitMusicOnHold()</literal>
-        überflüssig.</para>
+        <para><code>MusicOnHold()</code> hat einen neuen optionalen
+        <emphasis>Timeout</emphasis>-Parameter, der einen Abbruch nach einer
+        bestimmten Dauer ermöglicht. Dadurch wird
+        <code>WaitMusicOnHold()</code> überflüssig.</para>
       </listitem>
 
       <listitem>
-        <para><literal>SetMusicOnHold()</literal> ist veraltet. Stattdessen
-        soll <literal>Set(CHANNEL(musicclass)=...)</literal> verwendet
-        werden.</para>
+        <para><code>SetMusicOnHold()</code> ist veraltet. Stattdessen soll
+        <code>Set(CHANNEL(musicclass)=...)</code> verwendet werden.</para>
       </listitem>
 
       <listitem>
-        <para>Die Argumente von <literal>ExecIf()</literal> wurden
-        verändert.</para>
+        <para>Die Argumente von <code>ExecIf()</code> wurden verändert.</para>
 
         <para>Alt:<programlisting>ExecIf(<replaceable>Ausdruck</replaceable>,<replaceable>Applikation</replaceable>,<replaceable>Argumente</replaceable>)</programlisting></para>
 
@@ -197,10 +198,10 @@
       </listitem>
 
       <listitem>
-        <para><literal>QUEUE_MEMBER_COUNT()</literal> ist veraltet.
-        <literal>QUEUE_MEMBER()</literal> akzeptiert jetzt als 2. Parameter
-        "<literal>logged</literal>", "<literal>free</literal>" oder
-        "<literal>count</literal>".</para>
+        <para><code>QUEUE_MEMBER_COUNT()</code> ist veraltet.
+        <code>QUEUE_MEMBER()</code> akzeptiert jetzt als 2. Parameter
+        <quote><code>logged</code></quote>, <quote><code>free</code></quote>
+        oder <quote><code>count</code></quote>.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -210,14 +211,14 @@
 
     <itemizedlist>
       <listitem>
-        <para>Das Modul <literal>cdr_sqlite</literal> ist veraltet und wird
-        nach 1.6 durch <literal>cdr_sqlite3_custom</literal> abgelöst.</para>
+        <para>Das Modul <code>cdr_sqlite</code> ist veraltet und wird nach 1.6
+        durch <code>cdr_sqlite3_custom</code> abgelöst.</para>
       </listitem>
 
       <listitem>
-        <para>Das Modul <literal>cdr_odbc</literal> basiert jetzt auf
-        <literal>res_odbc</literal>. Benutzername und Paßwort werden daher
-        nicht mehr aus <filename>cdr_odbc.conf</filename> sondern aus
+        <para>Das Modul <code>cdr_odbc</code> basiert jetzt auf
+        <code>res_odbc</code>. Benutzername und Passwort werden daher nicht
+        mehr aus <filename>cdr_odbc.conf</filename> sondern aus
         <filename>res_odbc.conf</filename> gelesen.</para>
       </listitem>
     </itemizedlist>
@@ -228,21 +229,22 @@
 
     <itemizedlist>
       <listitem>
-        <para><literal>format_wav</literal>: Der problematische Gain-Filter
-        wurde entfernt. Wenn Sie die Lautstärke anpassen wollen, dann geht das
-        mit der Option "<literal>volgain</literal>" in der
+        <para><code>format_wav</code>: Der problematische
+        <emphasis>Gain</emphasis>-Filter wurde entfernt. Wenn Sie die
+        Lautstärke anpassen wollen, dann geht das mit der Option
+        <quote><code>volgain</code></quote> in der
         <filename>voicemail.conf</filename>.</para>
       </listitem>
 
       <listitem>
         <para>Der iLBC-Codec wurde entfernt, da der Source-Code aus
         lizenzrechtlichen Gründen nicht direkt mit Asterisk verbreitet werden
-        darf. Wenn man den Codec benutzen will muß man das Skript
+        darf. Wenn man den Codec benutzen will muss man das Skript
         <filename>contrib/scripts/get_ilbc_source.sh</filename> ausführen und
-        Asterisk neu kompilieren: <literal>./configure</literal>, dann
-        <literal>make menuselect</literal> und unter "Codec Translators" den
-        iLBC-Codec aktivieren, dann <literal>make</literal> und <literal>make
-        install</literal>.</para>
+        Asterisk neu kompilieren: <code>./configure</code>, dann <code>make
+        menuselect</code> und unter <quote><literal>Codec
+        Translators</literal></quote> den iLBC-Codec aktivieren, dann
+        <code>make</code> und <code>make install</code>.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -252,52 +254,55 @@
 
     <itemizedlist>
       <listitem>
-        <para>SIP: Der Aufnahme-Knopf ("Record") des Snom 360 (der in einer
-        SIP-INFO-Nachricht einen Header "<literal>Record: on</literal>" bzw.
-        "<literal>Record: off</literal>" sendet) wird jetzt unterstützt,
-        sofern in der <filename>features.conf</filename>
-        aktiviert.<programlisting>automon =&gt; *1     ; One Touch Record a.k.a. Touch Monitor</programlisting></para>
+        <para>SIP: Der Aufnahme-Knopf
+        (<quote><literal>Record</literal></quote>) des Snom 360 (der in einer
+        SIP-INFO-Nachricht einen Header <quote><literal>Record:
+        on</literal></quote> bzw. <quote><literal>Record:
+        off</literal></quote> sendet) wird jetzt unterstützt, sofern in der
+        <filename>features.conf</filename> aktiviert.<programlisting>automon =&gt; *1     ; One Touch Record a.k.a. Touch Monitor</programlisting></para>
       </listitem>
 
       <listitem>
-        <para>SIP: Der Parameter "<literal>call-limit</literal>" ist veraltet
-        (funktioniert aber noch). Um die Anzahl gleichzeitiger Gespräche für
-        einen Benutzer (/ein Device/...) zu begrenzen benutzen Sie bitte die
-        Dialplan-Funktionen <literal>GROUP()</literal> und
-        <literal>GROUP_COUNT()</literal> bzw.
-        <literal>GROUP_MATCH_COUNT()</literal>.</para>
+        <para>SIP: Der Parameter <quote><code>call-limit</code></quote> ist
+        veraltet (funktioniert aber noch). Um die Anzahl gleichzeitiger
+        Gespräche für einen Benutzer (/ein <emphasis>Device</emphasis>/...) zu
+        begrenzen benutzen Sie bitte die Dialplan-Funktionen
+        <code>GROUP()</code> und <code>GROUP_COUNT()</code> bzw.
+        <code>GROUP_MATCH_COUNT()</code>.</para>
 
         <para>Der <filename>sip.conf</filename>-Parameter
-        "<literal>limitonpeer</literal>" wurde in
-        "<literal>counteronpeer</literal>" umbenannt.</para>
+        <quote><code>limitonpeer</code></quote> wurde in
+        <quote><code>counteronpeer</code></quote> umbenannt.</para>
       </listitem>
 
       <listitem>
-        <para>SIP: Der Parameter "<literal>username</literal>" wurde (analog
-        zu "<literal>defaultip</literal>") in "<literal>defaultuser</literal>"
-        umbenannt um zu verdeutlichen, daß diese Angaben nur benutzt werden
-        solange der Peer noch nicht registriert ist. (Die alte Bezeichnung
-        funktioniert aber noch.)</para>
+        <para>SIP: Der Parameter <quote><code>username</code></quote> wurde
+        (analog zu <quote><code>defaultip</code></quote>) in
+        <quote><code>defaultuser</code></quote> umbenannt um zu verdeutlichen,
+        dass diese Angaben nur benutzt werden solange der Peer noch nicht
+        registriert ist. (Die alte Bezeichnung funktioniert aber noch.)</para>
       </listitem>
 
       <listitem>
-        <para>Local: Das "<literal>,</literal>"-(Komma)-Trennzeichen in den
-        Channel-Namen wurde in ein "<literal>;</literal>" (Semikolon)
-        geändert, da "<literal>,</literal>" das Trennzeichen für
-        Applikations-Argumente ist. (Für die meisten User dürfte diese
-        Änderung vollkommen egal sein.)</para>
+        <para>Local: Das <quote><code>,</code></quote>-(Komma)-Trennzeichen in
+        den Channel-Namen wurde in ein <quote><code>;</code></quote>
+        (Semikolon) geändert, da <quote><code>,</code></quote> das
+        Trennzeichen für Applikations-Argumente ist. (Für die meisten User
+        dürfte diese Änderung vollkommen egal sein.)</para>
       </listitem>
 
       <listitem>
-        <para>H323: Die Einstellungen "<literal>tos</literal>" und
-        "<literal>cos</literal>" wurden in "<literal>tos_audio</literal>" und
-        "<literal>cos_audio</literal>" umbenannt (analog zur
+        <para>H323: Die Einstellungen <quote><code>tos</code></quote> und
+        <quote><code>cos</code></quote> wurden in
+        <quote><code>tos_audio</code></quote> und
+        <quote><code>cos_audio</code></quote> umbenannt (analog zur
         <filename>sip.conf</filename>).</para>
       </listitem>
 
       <listitem>
-        <para>Zap: Der Parameter "<literal>msdstrip</literal>" ist veraltet,
-        denn Ziffern lassen sich auch im Dialplan abschneiden.</para>
+        <para>Zap: Der Parameter <quote><code>msdstrip</code></quote> ist
+        veraltet, denn Ziffern lassen sich auch im Dialplan
+        abschneiden.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -308,17 +313,17 @@
     <itemizedlist>
       <listitem>
         <para><filename>dundi.conf</filename>: Der Parameter
-        "<literal>tos</literal>" akzeptiert jetzt nicht mehr die alten Werte
-        wie "<literal>lowdelay</literal>" oder "<literal>lowcost</literal>".
-        Eine Beschreibung der möglichen neuen Werte findet man in
-        <filename>doc/tex/qos.tex</filename>.</para>
+        <quote><code>tos</code></quote> akzeptiert jetzt nicht mehr die alten
+        Werte wie <quote><code>lowdelay</code></quote> oder
+        <quote><code>lowcost</code></quote>. Eine Beschreibung der möglichen
+        neuen Werte findet man in <filename>doc/tex/qos.tex</filename>.</para>
       </listitem>
 
       <listitem>
         <para><filename>queues.conf</filename>: Der Parameter
-        "<literal>queue-lessthan</literal>" ist nicht mehr verfügbar. Für den
-        Parameter "<literal>queue-round-seconds</literal>" ist
-        "<literal>1</literal>" kein gültiger Wert mehr.</para>
+        <quote><code>queue-lessthan</code></quote> ist nicht mehr verfügbar.
+        Für den Parameter <quote><code>queue-round-seconds</code></quote> ist
+        <quote><code>1</code></quote> kein gültiger Wert mehr.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -328,31 +333,32 @@
 
     <itemizedlist>
       <listitem>
-        <para>Die Version des Manager-Interfaces ist jetzt
-        <literal>1.1</literal>. Genaue Details zu den Änderungen findet man in
+        <para>Die Version des Manager-Interfaces ist jetzt <code>1.1</code>.
+        Genaue Details zu den Änderungen findet man in
         <filename>doc/manager_1_1.txt</filename>.</para>
       </listitem>
 
       <listitem>
-        <para>Die Ausgabe des Befehls <literal>IAXpeers</literal> wurde an die
-        Ausgabe von <literal>SIPpeers</literal> angeglichen.</para>
+        <para>Die Ausgabe des Befehls <code>IAXpeers</code> wurde an die
+        Ausgabe von <code>SIPpeers</code> angeglichen.</para>
       </listitem>
 
       <listitem>
-        <para>Das Modul <literal>cdr_manager</literal> macht jetzt Ausgaben in
-        der Klasse "<literal>cdr</literal>", nicht mehr
-        "<literal>call</literal>". Wenn AMI-Benutzer die CDR-Ereignisse sehen
-        können sollen, dann muß für sie in der
+        <para>Das Modul <code>cdr_manager</code> macht jetzt Ausgaben in der
+        Klasse <quote><code>cdr</code></quote> (vorher:
+        <quote><code>call</code></quote>). Wenn AMI-Benutzer die
+        CDR-Ereignisse sehen können sollen, dann muss für sie in der
         <filename>manager.conf</filename> beim Parameter
-        "<literal>read</literal>" auch "<literal>cdr</literal>" hinzugefügt
-        werden.</para>
+        <quote><code>read</code></quote> auch <quote><code>cdr</code></quote>
+        hinzugefügt werden.</para>
       </listitem>
 
       <listitem>
-        <para>Für den Befehl <literal>Originate</literal> sind jetzt
-        Schreibrechte (Parameter "<literal>write</literal>") in der Klasse
-        "originate" nötig; mit dem Argument "<literal>Application</literal>"
-        auch "<literal>system</literal>".</para>
+        <para>Für den Befehl <code>Originate</code> sind jetzt Schreibrechte
+        (Parameter <quote><code>write</code></quote>) in der Klasse
+        <quote><code>originate</code></quote> nötig; mit dem Argument
+        <quote><code>Application</code></quote> auch in der Klasse
+        <quote><code>system</code></quote>.</para>
       </listitem>
     </itemizedlist>
   </section>
