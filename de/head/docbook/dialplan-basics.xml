@@ -18,10 +18,10 @@
   Dialplanes. Wir benutzen das englische Wort <emphasis>Dialplan</emphasis>
   und nicht das deutsche Wort <emphasis>Wählplan</emphasis>, weil es auch
   Asterisk-intern immer wieder benutzt wird.<footnote>
-      <para>Zur Definition des Begriffes "Dialplan" gibt es in der
-      Telefoniewelt immer wieder beinahe religiös anmutende Diskussionen. In
-      diesem Buch wird das Wort <emphasis>Dialplan</emphasis> im
-      Asterisk-Sinne verwendet.</para>
+      <para>Zur Definition des Begriffes <quote>Dialplan</quote> gibt es in
+      der Telefoniewelt immer wieder beinahe religiös anmutende Diskussionen.
+      In diesem Buch wird der Begriff <emphasis>Dialplan</emphasis> im
+      Asterisk-Sinn verwendet.</para>
     </footnote></para>
 
   <para>Im Verzeichnis <filename>/etc/asterisk</filename> gibt es dafür zwei
@@ -29,15 +29,17 @@
   Dialplan noch in dem für die Asterisk-Versionen 1.2, 1.4 und 1.6 von <link
   linkend="glossar-digium">Digium</link> empfohlenen Prioritäten-Modell
   abbildet, und die <filename>extesions.ael</filename>, die einen neuen Weg
-  zur Beschreibung des Dialplanes geht. Das AEL-Modell wird in einem extra
-  Kapitel in diesem Buch besprochen. Wir beschäftigen uns hier mit dem
-  traditionellen Prioritäten-Modell, weil auch in der Version 1.4 und 1.6 bei
-  jedem Starten von Asterisk die <filename>extensions.ael</filename>
-  automatisch in die alte Schreibweise konvertiert und dann der
-  <filename>extensions.conf</filename> angefügt wird.<note>
-      <para>Auf die Frage "Soll ich lieber die <filename>.conf</filename> oder
-      die <filename>.ael</filename> benutzen?" gibt es aktuell von Digium die
-      Antwort ".conf ist der Default-Weg."</para>
+  zur Beschreibung des Dialplanes geht. AEL wird in einem Extra-Kapitel in
+  diesem Buch besprochen (siehe <xref linkend="ael" />). Wir beschäftigen uns
+  hier mit dem traditionellen Prioritäten-Modell, weil auch in der Version 1.4
+  und 1.6 bei jedem Starten von Asterisk die
+  <filename>extensions.ael</filename> automatisch in die alte Schreibweise
+  konvertiert und dann der <filename>extensions.conf</filename> angefügt
+  wird.<note>
+      <para>Auf die Frage <quote>Soll ich lieber die
+      <filename>.conf</filename> oder die <filename>.ael</filename>
+      benutzen?</quote> gibt es aktuell von Digium die Antwort <quote>.conf
+      ist der Default-Weg.</quote></para>
     </note></para>
 
   <section id="der-context">
@@ -48,12 +50,12 @@
     </indexterm>
 
     <para>Der Dialplan wird in verschiedene Abschnitte unterteilt. Diese
-    Abschnitte heißen im Asterisk-Jargon Contexte. Am Anfang eines Dialplanes
-    muss es immer einen <code>[general]</code>-Context für allgemeine
-    Konfigurationen geben, die danach folgenden Contexte können beliebig
-    benannt werden. Die Contexte bilden das Verbindungsstück zwischen der
-    Definition eines Telefons (z. B. SIP oder ISDN) und dem Dialplan. Für ein
-    Telefon wird immer ein Context definiert. Ein Beispiel aus einer
+    Abschnitte heißen im Asterisk-Jargon <quote>Contexte</quote>. Am Anfang
+    eines Dialplanes muss es immer einen <code>[general]</code>-Context für
+    allgemeine Konfigurationen geben, die danach folgenden Contexte können
+    beliebig benannt werden. Die Contexte bilden das Verbindungsstück zwischen
+    der Definition eines Telefons (z. B. SIP oder ISDN) und dem Dialplan. Für
+    ein Telefon wird immer ein Context definiert. Ein Beispiel aus einer
     <filename>sip.conf</filename>: <programlisting>[2000]
 type=friend
 context=interne-telefone
@@ -115,9 +117,7 @@ Regeln, Anweisungen, ...</programlisting></para>
         können Dialpläne auch im laufenden Betrieb ständig geändert werden.
         Allerdings hat diese Variante viele Nachteile. Nährere Informationen
         zu ARA finden Sie unter <ulink
-        url="http://www.voip-info.org/wiki/view/Asterisk+RealTime">
-        <citetitle>http://www.voip-info.org/wiki/view/Asterisk+RealTime</citetitle>
-        </ulink>.</para>
+        url="http://www.voip-info.org/wiki/view/Asterisk+RealTime">http://www.voip-info.org/wiki/view/Asterisk+RealTime</ulink>.</para>
       </footnote> Das erneute Einlesen des Dialplanes kann aber auch im
     laufenden Betrieb im CLI (Command Line Interface) durch den Befehl
     <command>reload now</command> bzw. <command>dialplan reload</command>
@@ -138,14 +138,13 @@ Regeln, Anweisungen, ...</programlisting></para>
         </listitem>
 
         <listitem>
-          <para>Applikation &#8211; das ist die Anweisung, die Asterisk ausführen
-          soll.</para>
+          <para>Applikation &#8211; das ist die Anweisung, die Asterisk
+          ausführen soll.</para>
         </listitem>
       </itemizedlist>
 
-      <para><programlisting>exten =&gt; <replaceable>Extension</replaceable>,<replaceable>Priorität</replaceable>,<replaceable>Applikation</replaceable>()
-</programlisting> z. B.<programlisting>exten =&gt; 123,1,Answer()
-</programlisting></para>
+      <para><programlisting>exten =&gt; <replaceable>Extension</replaceable>,<replaceable>Priorität</replaceable>,<replaceable>Applikation</replaceable>()</programlisting>
+      z. B.<programlisting>exten =&gt; 123,1,Answer()</programlisting></para>
 
       <para><important>
           <para>Die erste Priorität in einer Extension muss immer eine 1
@@ -209,12 +208,13 @@ Regeln, Anweisungen, ...</programlisting></para>
           <para><code>NoOp(String)</code></para>
 
           <para>Die Applikation <code>NoOp()</code> macht nichts.
-          <application>NoOp</application> steht für <emphasis>No Operation</emphasis>. Sie ist aber
-          ein praktisches Tool, um Dialpläne zu debuggen. Der Inhalt des
-          übergebenen Strings wird auf dem CLI ausgegeben. Im CLI muss dafür
-          aber der Verbose-Level auf mindestens 3 eingestellt sein. (Geben
-          einfach im CLI <command>set verbose 3</command> ein; siehe auch
-          <xref linkend="applications-noop" />).</para>
+          <application>NoOp</application> steht für <emphasis>No
+          Operation</emphasis>. Sie ist aber ein praktisches Tool, um
+          Dialpläne zu debuggen. Der Inhalt des übergebenen Strings wird auf
+          dem CLI ausgegeben. Im CLI muss dafür aber der Verbose-Level auf
+          mindestens 3 eingestellt sein. (Geben einfach im CLI <command>set
+          verbose 3</command> ein; siehe auch <xref
+          linkend="applications-noop" />).</para>
         </listitem>
 
         <listitem>
@@ -321,8 +321,8 @@ exten =&gt; 1234,n,Hangup()</programlisting></para>
 
     <para>Mit unserem bisherigen Wissen müssen wir pro möglicher Rufnummer
     immer eine eigene Extension schreiben. Dies würde schon nach kurzer Zeit
-    sehr lange und fehleranfällige Dialpläne nach sich ziehen. Sollen z. B. die
-    Rufnummern 100 bis 109 jeweils immer den Sprachbaustein hello-world
+    sehr lange und fehleranfällige Dialpläne nach sich ziehen. Sollen z. B.
+    die Rufnummern 100 bis 109 jeweils immer den Sprachbaustein hello-world
     abspielen, so würde die <filename>extensions.conf</filename> wie folgt
     aussehen:<programlisting>[general]
 
@@ -439,8 +439,8 @@ exten =&gt; _10X,3,Hangup()
 
             <listitem>
               <para>Beliebige Ziffer von A bis B. Beispiel für alle Zahlen von
-              31 bis 35:<programlisting>exten =&gt; _3[1-5],1,NoOp(Test)</programlisting>(z. B.
-              wäre auch <code>[25-8]</code> für die Ziffern möglich
+              31 bis 35:<programlisting>exten =&gt; _3[1-5],1,NoOp(Test)</programlisting>(z.
+              B. wäre auch <code>[25-8]</code> für die Ziffern möglich
               2,5,6,7,8)</para>
             </listitem>
           </varlistentry>
@@ -551,7 +551,8 @@ exten =&gt; 23,3,Hangup()</programlisting></para>
       <filename>features.conf</filename> aktiviert und stört uns jetzt nicht
       weiter). Wenn wir uns nur für den Dialplan für den Context
       <code>meine-telefone</code> interessieren, so können wir diesen mit
-      <command>dialplan show meine-telefone</command> abrufen:<screen>*CLI&gt; <emphasis role="bold"><command>dialplan show meine-telefone</command></emphasis>
+      <command>dialplan show meine-telefone</command> abrufen:<screen>*CLI&gt; <emphasis
+            role="bold"><command>dialplan show meine-telefone</command></emphasis>
 [ Context 'meine-telefone' created by 'pbx_config' ]
   '23' =&gt;           1. Answer()                                   [pbx_config]
                     2. Playback(hello-world)                      [pbx_config]
@@ -565,7 +566,8 @@ exten =&gt; 23,3,Hangup()</programlisting></para>
       passiert, wenn ich eine bestimmte Nummer wähle. Wenn ich mit einem
       Telefon, das im Context <code>meine-telefone</code> ist, die Nummer 25
       anrufe, dann kann ich mit <command>dialplan show
-      25@meine-telefone</command> anzeigen, was passiert:<screen>*CLI&gt; <emphasis role="bold"><command>dialplan show 25@meine-telefone</command></emphasis>
+      25@meine-telefone</command> anzeigen, was passiert:<screen>*CLI&gt; <emphasis
+            role="bold"><command>dialplan show 25@meine-telefone</command></emphasis>
 There is no existence of 25@meine-telefone extension
 *CLI&gt;</screen></para>
 
@@ -623,7 +625,8 @@ exten =&gt; _2X,3,Hangup()</programlisting></para>
 
       <para>Es werden also alle matchenden Extensions anzeigt. Um im obigen
       Beispiel zu bleiben, probieren wir das jetzt auch noch mal mit
-      <command>dialplan show 25@</command> aus:<screen>*CLI&gt; <emphasis role="bold"><command>dialplan show 25@</command></emphasis>
+      <command>dialplan show 25@</command> aus:<screen>*CLI&gt; <emphasis
+            role="bold"><command>dialplan show 25@</command></emphasis>
 [ Context 'abteilung-z' created by 'pbx_config' ]
   '_2X' =&gt;          1. Answer()                                   [pbx_config]
                     2. Playback(hello-world)                      [pbx_config]
@@ -666,7 +669,8 @@ exten =&gt; _1234.,1,NoOp{1234.}</programlisting></para>
 
       <para>Um herauszufinden, welches welches Pattern matcht, wenn die 12345
       gewählt wird, können wir dies mit <command>dialplan show
-      12345@verkauf</command> überprüfen:<screen>*CLI&gt; <emphasis role="bold"><command>dialplan show 12345@verkauf</command></emphasis>
+      12345@verkauf</command> überprüfen:<screen>*CLI&gt; <emphasis
+            role="bold"><command>dialplan show 12345@verkauf</command></emphasis>
 [ Context 'verkauf' created by 'pbx_config' ]
   '12345' =&gt;        1. NoOp(12345})                               [pbx_config]
   '_1234.' =&gt;       1. NoOp{1234.}()                              [pbx_config]
@@ -678,7 +682,8 @@ exten =&gt; _1234.,1,NoOp{1234.}</programlisting></para>
       immer ganz oben angezeigt.</para>
 
       <para>Jetzt kontrollieren wir das noch für die Nummer 12346 mit dem
-      Befehl <command>dialplan show 12346@verkauf</command>:<screen>*CLI&gt; <emphasis role="bold"><command>dialplan show 12346@verkauf</command></emphasis>
+      Befehl <command>dialplan show 12346@verkauf</command>:<screen>*CLI&gt; <emphasis
+            role="bold"><command>dialplan show 12346@verkauf</command></emphasis>
 [ Context 'verkauf' created by 'pbx_config' ]
   '_1234.' =&gt;       1. NoOp{1234.}()                              [pbx_config]
   '_12X.' =&gt;        1. NoOp{12X}()                                [pbx_config]
@@ -740,7 +745,8 @@ exten =&gt; _.,1,NoOp{Bingo}</programlisting></para>
 
         <para>Wenn wir jetzt die Rufnummer 12346 ausprobieren wollen, bekommen
         wir mit dem Befehl <command>dialplan show 12346@verkauf</command> in
-        der Version 1.4 folgende Ausgabe:<screen>*CLI&gt; <emphasis role="bold"><command>dialplan show 12346@verkauf</command></emphasis>
+        der Version 1.4 folgende Ausgabe:<screen>*CLI&gt; <emphasis
+              role="bold"><command>dialplan show 12346@verkauf</command></emphasis>
 [ Context 'verkauf' created by 'pbx_config' ]
   '_1234.' =&gt;       1. NoOp{1234.}()                              [pbx_config]
   '_12X.' =&gt;        1. NoOp{12X}()                                [pbx_config]
@@ -750,7 +756,8 @@ exten =&gt; _.,1,NoOp{Bingo}</programlisting></para>
 *CLI&gt;</screen></para>
 
         <para>In Asterisk 1.2 bekommt der Befehl <command>show dialplan
-        12346@verkauf</command> aber folgende Ausgabe:<screen>*CLI&gt; <emphasis role="bold"><command>dialplan show 12346@verkauf</command></emphasis>
+        12346@verkauf</command> aber folgende Ausgabe:<screen>*CLI&gt; <emphasis
+              role="bold"><command>dialplan show 12346@verkauf</command></emphasis>
 [ Context 'verkauf' created by 'pbx_config' ]
   '_.' =&gt;           1. NoOp{Bingo}()                              [pbx_config]
   '_1234.' =&gt;       1. NoOp{1234.}()                              [pbx_config]
@@ -821,9 +828,9 @@ exten =&gt; 03012345678,1,Dial(SIP/03012345678)</programlisting></para>
       (include), immer erst im aktuellen Context nach einem Treffer (einem
       Match). Gibt es einen Treffer, wird dieser benutzt. Gibt es keinen
       Treffer, wird das erste Include aufgerufen und dort nach einem Treffer
-      gesucht. Dies funktioniert rekursiv nach unten &#8211; auch verschachtelt &#8211;
-      es können also auch Includes innerhalb von Includes abgearbeitet
-      werden.</para>
+      gesucht. Dies funktioniert rekursiv nach unten &#8211; auch
+      verschachtelt &#8211; es können also auch Includes innerhalb von
+      Includes abgearbeitet werden.</para>
 
       <para>Im Zweifelsfall können Sie zum Debuggen auch hier die Applikation
       <command>dialplan show nummer@name-des-contextes</command> benutzen, um
