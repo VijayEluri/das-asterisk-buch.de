@@ -65,7 +65,7 @@
     man durch Drücken der Taste<footnote>
         <para>Je nach Telefonanlage geht das nicht durch Tastendruck, sondern
         durch die (umständliche) Eingabe eines Feature-Codes
-        (<literal>*</literal><replaceable>sonstwas</replaceable>).</para>
+        (<code>*</code><replaceable>sonstwas</replaceable>).</para>
       </footnote> das eingehende Gespräch zum eigenen Apparat
     heranholen.</para>
   </formalpara>
@@ -80,7 +80,7 @@
       <title>sip.conf</title>
 
       <para>Zuerst sind bestimmte Einstellungen im Abschnitt
-      <literal>[general]</literal> der <filename>sip.conf</filename>
+      <code>[general]</code> der <filename>sip.conf</filename>
       erforderlich:</para>
 
       <programlisting>[general]
@@ -90,12 +90,12 @@ notifyhold = yes
 limitonpeers = yes</programlisting>
 
       <para>Auch in den Abschnitten der einzelnen SIP-Benutzer sind
-      Einstellungen hinzuzufügen, nämlich <literal>subscribecontext</literal>
-      und <literal>call-limit</literal>. <literal>subscribecontext</literal>
+      Einstellungen hinzuzufügen, nämlich <code>subscribecontext</code>
+      und <code>call-limit</code>. <code>subscribecontext</code>
       besagt, in welchem Context Asterisk suchen soll, wenn dieser Benutzer
       den Status anderer Benutzer "abonnieren" will. In der Regel ist das der
       Context, in dem sich auch die internen Benutzer befinden.
-      <literal>call-limit</literal> hat eigentlich eine andere Aufgabe,
+      <code>call-limit</code> hat eigentlich eine andere Aufgabe,
       nämlich die Anzahl der gleichzeitigen Gespräche dieses Benutzers zu
       beschränken (wenn es auf einen Wert &gt; 0 gesetzt wird). Es dient hier
       aber auch dazu, dass Asterisk überhaupt die Anzahl der gleichzeitigen
@@ -105,13 +105,13 @@ limitonpeers = yes</programlisting>
       Transfers.</para>
 
       <para>Zudem sind (für das spätere Heranholen von Gesprächen) noch die
-      zwei Parameter <literal>callgroup</literal><footnote>
+      zwei Parameter <code>callgroup</code><footnote>
           <para>siehe <xref linkend="sip-channel-callgroup" /></para>
-        </footnote> und <literal>pickupgroup</literal><footnote>
+        </footnote> und <code>pickupgroup</code><footnote>
           <para>siehe <xref linkend="sip-channel-pickupgroup" /></para>
         </footnote> von Bedeutung. Zum Beispiel darf ein Benutzer mit
-      <literal>pickupgroup=2</literal> Gespräche von anderen Benutzern mit
-      <literal>callgroup=2</literal> heranholen. Dies dient also der
+      <code>pickupgroup=2</code> Gespräche von anderen Benutzern mit
+      <code>callgroup=2</code> heranholen. Dies dient also der
       Rechteverwaltung. Da es allerdings nur 64 mögliche Gruppen gibt (0 bis
       63), ist diese Methode nur für kleine bis mittelgroße Installationen
       brauchbar. Bei großen Installationen setzt man für alle User die gleiche
@@ -139,8 +139,8 @@ mailbox = 2000
       und Benutzern (oder Geräten) mitteilen. Dies macht man im Dialplan mit
       sogenannten <quote><foreignphrase
       lang="en">Hints</foreignphrase></quote>. Wenn man in
-      Dialplan-Prioritäten denkt, dann ist ein <literal>hint</literal> eine
-      spezielle Priorität, die noch vor der Priorität <literal>1</literal>
+      Dialplan-Prioritäten denkt, dann ist ein <code>hint</code> eine
+      spezielle Priorität, die noch vor der Priorität <code>1</code>
       steht. Wichtig ist, dass sich die Hints in dem Context befinden, den man
       in der <filename>sip.conf</filename> (s. o.) mit
       <code>subscribecontext</code> angegeben hat, ansonsten werden die
@@ -245,7 +245,7 @@ exten =&gt; _2X,n,VoiceMail(${EXTEN},u)</programlisting></entry>
       </table>
 
       <important>
-        <para>Beachten Sie hierbei, dass ein <literal>hint</literal> in
+        <para>Beachten Sie hierbei, dass ein <code>hint</code> in
         Asterisk 1.4 nicht mit Pattern<footnote>
             <para><xref linkend="einleitung-regex" /></para>
           </footnote> geschrieben werden kann.<programlisting>exten =&gt; _2X,hint,SIP/${EXTEN}</programlisting>bzw.<programlisting>hint(SIP/${EXTEN}) _2X =&gt; {<replaceable>...</replaceable>}</programlisting>wäre
@@ -256,7 +256,7 @@ exten =&gt; _2X,n,VoiceMail(${EXTEN},u)</programlisting></entry>
         während der Interpretation eines Hints noch kein Channel besteht, was
         bedeutet, dass auch keine Channel-Variablen in der Hint-Definition zur
         Verfügung stehen &#8211; mit Ausnahme von
-        <literal>${EXTEN}</literal>.</para>
+        <code>${EXTEN}</code>.</para>
       </important>
 
       <table colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
@@ -299,7 +299,7 @@ exten =&gt; _2X,n,VoiceMail(${EXTEN},u)</programlisting></entry>
 
       <table colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
         <title>Hints &#8211; Beispiel mit mehreren Benutzern in einem
-        <literal>hint</literal></title>
+        <code>hint</code></title>
 
         <tgroup cols="2">
           <colspec align="left" colnum="1" colwidth="5*" />
@@ -375,7 +375,7 @@ exten =&gt; 20,1,Dial(SIP/21&amp;SIP/22,40)</programlisting></entry>
     3265)</ulink>. Dabei schickt das Telefon für jede zu überwachende
     Nebenstelle ein <literal>SUBSCRIBE</literal> an die Telefonanlage und
     erhält bei jeder Status-Änderung ein <literal>NOTIFY</literal>
-    (<methodname>PUBLISH</methodname> wird von Asterisk noch nicht
+    (<literal>PUBLISH</literal> wird von Asterisk noch nicht
     unterstützt). Der Hauptunterschied sind die unterschiedlichen
     (XML-)Formate im <quote><foreignphrase
     lang="en">Body</foreignphrase></quote> der <quote><foreignphrase
@@ -486,8 +486,8 @@ exten =&gt; 20,1,Dial(SIP/21&amp;SIP/22,40)</programlisting></entry>
         Firmware-Versionen in <quote>Nebenstelle</quote> geändert. Ansonsten
         ist die weitere hier beschriebene Funktionalität gleich.</para>
       </footnote> und tragen die zu überwachende Extension ein, also z. B. am
-    Telefon des Benutzers <literal>21</literal> die <literal>22</literal> und
-    <literal>23</literal> und umgekehrt.</para>
+    Telefon des Benutzers <code>21</code> die <code>22</code> und
+    <code>23</code> und umgekehrt.</para>
 
     <para>Die Bezeichnung <quote>Kontext</quote> werden Sie vom Snom schon
     kennen. Damit ist einer der 12 möglichen SIP-Accounts gemeint. Im
@@ -510,9 +510,9 @@ exten =&gt; 20,1,Dial(SIP/21&amp;SIP/22,40)</programlisting></entry>
 
     <para>Nachdem die Einstellungen gespeichert wurden, ändert das Telefon den
     Eintrag automatisch in eine passende SIP-URI der Form
-    <literal>&lt;sip:21@<replaceable>x.x.x.x</replaceable>;user=phone&gt;</literal>
+    <code>&lt;sip:21@<replaceable>x.x.x.x</replaceable>;user=phone&gt;</code>
     ab. <replaceable>x.x.x.x</replaceable> ist die IP-Adresse der
-    Telefonanlage. (Der Zusatz <literal>;user=phone</literal> ist nicht von
+    Telefonanlage. (Der Zusatz <code>;user=phone</code> ist nicht von
     Bedeutung.)</para>
 
     <screenshot>
@@ -579,8 +579,8 @@ Peer          User   Call ID      Extension   Last state    Type
 192.168.0.2   21     815d944554e  22          Unavailable   dialog-info+xml
 1 active SIP subscription</screen>
 
-    <para>Hier wird deutlich, dass der User <literal>21</literal> die
-    Extension <literal>22</literal> überwacht. Wenn sich das überwachte
+    <para>Hier wird deutlich, dass der User <code>21</code> die
+    Extension <code>22</code> überwacht. Wenn sich das überwachte
     Telefon bei Asterisk anmeldet, dann erscheint im CLI folgende
     Zeile:<screen>Extension Changed 22 new state Idle for Notify User 21</screen></para>
 
@@ -661,18 +661,18 @@ exten =&gt; _*8X.,n,Pickup(${nst}@interne-benutzer)</emphasis></programlisting>
 
       <para>Damit haben wir in Asterisk eine Extension definiert, die besagt,
       dass beim Wählen von
-      <literal>*8</literal><replaceable>&lt;Nebenstelle&gt;</replaceable>
-      (also z. B. <literal>*821</literal>) der Anruf herangeholt wird, der
+      <code>*8</code><replaceable>&lt;Nebenstelle&gt;</replaceable>
+      (also z. B. <code>*821</code>) der Anruf herangeholt wird, der
       gerade auf dieser <replaceable>&lt;Nebenstelle&gt;</replaceable> (z. B.
-      <literal>21</literal>) im Context <literal>interne-benutzer</literal>
+      <code>21</code>) im Context <code>interne-benutzer</code>
       klingelt.<footnote>
-          <para>Zur Beschreibung der Applikation <literal>Pickup()</literal>
+          <para>Zur Beschreibung der Applikation <code>Pickup()</code>
           siehe auch: <xref linkend="applications-pickup" /></para>
         </footnote><footnote>
-          <para>Die Applikation <literal>Pickup()</literal> darf nicht
+          <para>Die Applikation <code>Pickup()</code> darf nicht
           verwechselt werden mit der Bristuff-Applikation
-          <literal>PickUp()</literal> bzw. <literal>DPickup()</literal>,
-          <literal>PickUp2()</literal> oder anderen Applikationen ähnlichen
+          <code>PickUp()</code> bzw. <code>DPickup()</code>,
+          <code>PickUp2()</code> oder anderen Applikationen ähnlichen
           Namens, die in den diversen Internet-Foren usw. als Patches
           herumgeistern, auch wenn sie ungefähr das Gleiche bewirken.</para>
         </footnote></para>
@@ -690,13 +690,13 @@ exten =&gt; _*8X.,n,Pickup(${nst}@interne-benutzer)</emphasis></programlisting>
       (<xref linkend="blf-telefon-konfiguration-snom" />) bei
       <quote>Ziel</quote>/<quote>Nebenstelle</quote> nur die zu überwachende
       Nummer einzutragen, tragen Sie nun die Nummer gefolgt von einem
-      <quote><literal>|</literal></quote> (Pipe-Symbol) und der oben
-      definierten Zeichekette <quote><literal>*8</literal></quote> für das
+      <quote><code>|</code></quote> (Pipe-Symbol) und der oben
+      definierten Zeichekette <quote><code>*8</code></quote> für das
       Pickup ein &#8211; also für obiges Beispiel
-      <quote><literal>21|*8</literal></quote>. Das Telefon wandelt dies wieder
+      <quote><code>21|*8</code></quote>. Das Telefon wandelt dies wieder
       in die passende SIP-URI um. Das Snom wird durch diesen Zusatz, der
       streng genommen nicht zur SIP-URI gehört, angewiesen, zum Heranholen
-      <literal>*8</literal> vor der Nebenstellennummer zu wählen, obwohl es
+      <code>*8</code> vor der Nebenstellennummer zu wählen, obwohl es
       ihm von Asterisk in der Status-Benachrichtigung nicht so mitgeteilt
       wird.<footnote>
           <para>Das wird vermutlich in neueren Versionen von Asterisk behoben,
@@ -708,7 +708,7 @@ exten =&gt; _*8X.,n,Pickup(${nst}@interne-benutzer)</emphasis></programlisting>
       reagiert, finden Sie unter <ulink
       url="http://wiki.snom.com/Features/Call_Pick-Up">http://wiki.snom.com/Features/Call_Pick-Up</ulink>.)
       Andere Telefone haben ähnliche Mechanismen (Grandstream z. B.
-      <literal>**</literal> statt <literal>*8</literal>, dafür muss man
+      <code>**</code> statt <code>*8</code>, dafür muss man
       gegebenenfalls die in diesem Kapitel beschriebenen Extensions
       anpassen).</para>
 
@@ -741,8 +741,8 @@ fkey5: dest 22|*8
 fkey6: dest 23|*8</programlisting><note>
           <para>Die Funktionstasten sind 0-indiziert. Um wie im Beispiel die
           Funktionstaste 6 zu belegen, muss der Parameter
-          <literal>fkey5</literal> gesetzt werden usw. Die Funktionstaste 1
-          wird mit <literal>fkey0</literal> angesprochen.</para>
+          <code>fkey5</code> gesetzt werden usw. Die Funktionstaste 1
+          wird mit <code>fkey0</code> angesprochen.</para>
         </note></para>
     </section>
 
@@ -769,11 +769,11 @@ fkey6: dest 23|*8</programlisting><note>
 }</programlisting>
 
       <para>Als zu überwachende Nebenstelle würde man dann am Telefon die
-      <literal>20</literal> eintragen (Snom: <literal>20|*8</literal>).</para>
+      <code>20</code> eintragen (Snom: <code>20|*8</code>).</para>
 
       <para>Als gute Alternative bietet sich die
-      <literal>PICKUPMARK</literal>-Funktionalität der
-      <literal>Pickup()</literal>-Applikation (<xref
+      <code>PICKUPMARK</code>-Funktionalität der
+      <code>Pickup()</code>-Applikation (<xref
       linkend="applications-pickup" />) an, mit der man flexibler ist.
       Beispiel:</para>
 
@@ -802,7 +802,7 @@ fkey6: dest 23|*8</programlisting><note>
 }</programlisting>
 
       <para>Will man keine Extra-Nebenstelle (im obigen Beispiel die
-      <literal>20</literal>) für die Pickup-Gruppe verbrauchen, so bietet sich
+      <code>20</code>) für die Pickup-Gruppe verbrauchen, so bietet sich
       für fortgeschrittene Anwender z. B. folgende Konfiguration an:</para>
 
       <programlisting>context interne-benutzer {
@@ -842,8 +842,8 @@ fkey6: dest 23|*8</programlisting><note>
 }</programlisting>
 
       <para>Als zu überwachende Nebenstelle würde man dann am Telefon die
-      <literal>**200</literal> eintragen (Snom:
-      <literal>**200|*8</literal>).</para>
+      <code>**200</code> eintragen (Snom:
+      <code>**200|*8</code>).</para>
     </section>
   </section>
 
@@ -932,11 +932,11 @@ exten =&gt; 881,1,MeetMe(885)</programlisting></entry>
     </table>
 
     <para>Der Hint im Beispiel oben schafft die Verknüpfung zwischen der
-    Extension <literal>881</literal> mit dem Status des
-    <literal>MeetMe</literal>-Konferenzraums <literal>885</literal>. Die
+    Extension <code>881</code> mit dem Status des
+    <literal>MeetMe</literal>-Konferenzraums <code>885</code>. Die
     Nummern sind hier mit Absicht unterschiedlich gewählt; in Wirklichkeit
     werden sie häufig gleich sein. Man könnte jetzt am Telefon eine Taste mit
-    der Nebenstelle <literal>881</literal> belegen. Dann würde die LED den
+    der Nebenstelle <code>881</code> belegen. Dann würde die LED den
     Status des Konferenzraums anzeigen.</para>
 
     <para>Das aber nur als kleiner Exkurs, da es gerade thematisch passt. Noch
@@ -976,11 +976,11 @@ exten =&gt; 881,1,MeetMe(885)</programlisting></entry>
 
     <para>Den Status dieser <quote><foreignphrase lang="en">Custom
     Devices</foreignphrase></quote> kann man ganz frei mit der Funktion
-    <literal>DEVICE_STATE()</literal><footnote>
-        <para>Die Funktion hieß zeitweilig <literal>DEVSTATE()</literal>.
-        Damit ist ebenfalls <literal>DEVICE_STATE()</literal> gemeint. Sie
+    <code>DEVICE_STATE()</code><footnote>
+        <para>Die Funktion hieß zeitweilig <code>DEVSTATE()</code>.
+        Damit ist ebenfalls <code>DEVICE_STATE()</code> gemeint. Sie
         darf allerdings nicht verwechselt werden mit der Applikation
-        <literal>DevState()</literal> oder anderen Funktionen oder
+        <code>DevState()</code> oder anderen Funktionen oder
         Applikationen ähnlichen Namens, die in den diversen Internet-Foren
         usw. herumgeistern, auch wenn sie ungefähr das Gleiche
         bewirken.</para>
@@ -1092,12 +1092,12 @@ exten =&gt; 881,1,MeetMe(885)</programlisting></entry>
     </table>
 
     <para>Nach einem Restart von Asterisk, wenn der Status eines
-    <literal>Custom</literal>-<foreignphrase lang="en">Devices</foreignphrase>
+    <code>Custom</code>-<foreignphrase lang="en">Devices</foreignphrase>
     noch nicht gesetzt wurde, hat das <emphasis>Device</emphasis> initial den
     Status <literal>UNKNOWN</literal>.</para>
 
     <para>Nachdem ein Telefon über die obige beispielhafte Extension
-    <literal>99</literal> den Status von <literal>Custom:mein-status</literal>
+    <code>99</code> den Status von <code>Custom:mein-status</code>
     abonniert hat, kann man, um die Funktionsweise zu testen, den Wählplan z.
     B. um folgenden Code erweitern:</para>
 
@@ -1122,9 +1122,9 @@ exten =&gt; 881,1,MeetMe(885)</programlisting></entry>
 }</programlisting>
 
     <para>Nun können die verschiedenen Device-States getestet werden, z. B.
-    kann man die LED mit <literal>*91</literal> blinken oder mit
-    <literal>*92</literal> dauerhaft leuchten lassen sowie mit
-    <literal>*93</literal> wieder deaktivieren oder mit <literal>*94</literal>
+    kann man die LED mit <code>*91</code> blinken oder mit
+    <code>*92</code> dauerhaft leuchten lassen sowie mit
+    <code>*93</code> wieder deaktivieren oder mit <code>*94</code>
     abwechselnd an- und ausschalten. Ist die Funktionsweise einmal
     sichergestellt, sind der sinnvollen (oder unsinnigen) Anwendung dieses
     Features keine Grenzen mehr gesetzt; man könnte damit z. B. anzeigen, ob
