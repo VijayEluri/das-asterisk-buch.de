@@ -122,6 +122,11 @@ debian:/usr/src# <emphasis role="bold"><command>wget http://downloads.digium.com
 <replaceable>[...]</replaceable>
 11:10:50 (10.51 MB/s) - »dahdi-linux-current.tar.gz« gespeichert [1251822/1251822]</screen></para>
 
+<para>Zu dem DAHDI-Treiber gehören noch die passenden DAHDI-Tools, diese bitte also auch noch herunterladen: <screen>debian:/usr/src# <emphasis
+          role="bold"><command>wget http://downloads.digium.com/pub/telephony/dahdi-tools/dahdi-tools-current.tar.gz</command></emphasis>
+<replaceable>[...]</replaceable>
+15:43:09 (9.87 MB/s) - »dahdi-tools-current.tar.gz« gespeichert [413598/413598]</screen></para>
+
     <para>Da der DAHDI-Treiber immer vor dem Asterisk kompiliert werden muss,
     entpacken wir diesen, wechseln dann in das Verzeichnis, kompilieren und
     installieren ihn:<screen>debian:/usr/src# <emphasis role="bold"><command>tar xvzf dahdi-linux-current.tar.gz</command></emphasis> 
@@ -133,7 +138,36 @@ debian:/usr/src/dahdi-linux-2.1.0.4# <emphasis role="bold"><command>make &amp;&a
 <replaceable>[...]</replaceable>
 debian:/usr/src/dahdi-linux-2.1.0.4# </screen></para>
 
-    <para>Jetzt wiederum ins Verzeichnis <filename>/usr/src</filename>
+
+<para>Jetzt wiede ins Verzeichnis <filename>/usr/src</filename>
+    wechseln und die DAHDI-Tools zu entpacken:</para>
+
+<para><screen>debian:~# <emphasis role="bold"><command>cd /usr/src</command></emphasis>
+debian:/usr/src# <emphasis role="bold"><command>tar xvzf dahdi-tools-current.tar.gz</command></emphasis> 
+dahdi-tools-2.1.0.2/
+dahdi-tools-2.1.0.2/hdlctest.c
+dahdi-tools-2.1.0.2/bootstrap.sh
+<replaceable>[...]</replaceable>
+debian:/usr/src# </screen></para>
+
+<para>Das Makefile der DAHDI-Tools werden mit GNU-Automake erstellt. Deswegen muss man vor dem Kompilieren noch <command>./configure</command> aufrufen. 
+<screen>
+debian:/usr/src# <emphasis role="bold"><command>cd dahdi-tools-2.1.0.2</command></emphasis>
+debian:/usr/src/dahdi-linux-2.1.0.4# <emphasis role="bold"><command>./configure</command></emphasis>
+debian:/usr/src/dahdi-linux-2.1.0.4# <emphasis role="bold"><command>make &amp;&amp; make install</command></emphasis>
+<replaceable>[...]</replaceable>
+debian:/usr/src/dahdi-linux-2.1.0.4# </screen>
+
+Dannach muss man noch die Start-Skripte für DAHDI installieren, dies erledigt auch das Makefile:
+<screen>
+debian:/usr/src/dahdi-linux-2.1.0.4## <emphasis role="bold"><command>make config</command></emphasis> -->
+I think that the DAHDI hardware you have on your system is:
+pci:0000:04:00.0     wctdm24xxp+  d161:8005 Wildcard TDM410
+debian:/usr/src/dahdi-linux-2.1.0.4#
+</screen>
+</para>
+    
+<para>Jetzt wiederum ins Verzeichnis <filename>/usr/src</filename>
     wechseln und den Asterisk-Tarball entpacken:</para>
 
     <para><screen>debian:~# <emphasis role="bold"><command>cd /usr/src</command></emphasis>
@@ -144,7 +178,7 @@ asterisk-1.4.24.1/build_tools/
 debian:/usr/src# </screen></para>
 
     <para>Die entpackten Dateien müssen jetzt kompiliert werden. Dies
-    geschieht mit dem Befehl <command>make</command> im gerade entpackten
+    geschieht mit dem Befehlen <command>./configure</command> und <command>make</command> im gerade entpackten
     Verzeichnis.<warning>
         <para>Bitte achten Sie darauf, dass die hier in der Dokumentation
         benutzte Version 1.4.24.1 vielleicht zum Zeitpunkt Ihrer Installation
@@ -211,78 +245,6 @@ debian:/usr/src/asterisk-1.4.24.1# </screen>
 done
 debian:/usr/src/asterisk-1.4.24.1# </screen>
 
-    <para>Zum Schluss müssen Sie noch den für Ihre analoge Karte richtigen
-    Treiber laden.<note>
-        <para>Welcher Treiber für Ihre Karte zuständig ist, können Sie in der
-        Dokumentation zu Ihrer Karte nachschlagen. Hier eine Liste der aktuell
-        verbreitesten Karten:</para>
-
-        <table>
-          <title>Auflistung der Kernel-Module zu Digium-Karten</title>
-
-          <tgroup cols="2">
-            <tbody>
-              <row>
-                <entry>TE110P</entry>
-
-                <entry>wcte11xp</entry>
-              </row>
-
-              <row>
-                <entry>TE205P/TE207P/TE210P/TE212P</entry>
-
-                <entry>wct2xxp</entry>
-              </row>
-
-              <row>
-                <entry>TE405P/TE407P/TE410P/TE412P</entry>
-
-                <entry>wct4xxp</entry>
-              </row>
-
-              <row>
-                <entry>TDM400P</entry>
-
-                <entry>wctdm</entry>
-              </row>
-
-              <row>
-                <entry>TDM2400P</entry>
-
-                <entry>wctdm24xxp</entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </table>
-      </note>In unserem Beispiel laden wir den Treiber für die TDM400P Karte
-    mit <command>modprobe wctdm.</command><screen>debian:/usr/src/asterisk-1.4.24.1# <emphasis
-          role="bold"><command>modprobe wctdm</command></emphasis>
-debian:/usr/src/asterisk-1.4.24.1# </screen></para>
-
-    <para>In der Logdatei <filename>/var/log/messages</filename> können wir
-    dann die Ausgabe des Moduls sehen:<screen>Jan 21 18:06:23 localhost kernel: Zapata Telephony Interface Registered on major
- 196
-Jan 21 18:06:23 localhost kernel: Zaptel Version: 1.2.12 Echo Canceller: KB1
-Jan 21 18:06:23 localhost kernel: ACPI: PCI interrupt 0000:02:00.0[A] -&gt; GSI 18 
-(level, low) -&gt; IRQ 185
-Jan 21 18:06:23 localhost kernel: Freshmaker version: 73
-Jan 21 18:06:23 localhost kernel: Freshmaker passed register test
-Jan 21 18:06:24 localhost kernel: Module 0: Installed -- AUTO FXS/DPO
-Jan 21 18:06:24 localhost kernel: Module 1: Not installed
-Jan 21 18:06:24 localhost kernel: Module 2: Not installed
-Jan 21 18:06:24 localhost kernel: Module 3: Installed -- AUTO FXO (FCC mode)
-Jan 21 18:06:24 localhost kernel: Found a Wildcard TDM: Wildcard TDM400P REV I (
-2 modules)
-Jan 21 18:06:24 localhost kernel: Registered tone zone 0 (United States / North 
-America)</screen><tip>
-        <para>An den Zeilen <programlisting>Jan 21 18:06:24 localhost kernel: Module 0: Installed -- AUTO FXS/DPO
-Jan 21 18:06:24 localhost kernel: Module 1: Not installed
-Jan 21 18:06:24 localhost kernel: Module 2: Not installed
-Jan 21 18:06:24 localhost kernel: Module 3: Installed -- AUTO FXO (FCC mode)</programlisting>
-        können Sie erkennen, welcher Port Ihrer Karte ein FXS und welcher Port
-        ein FXO ist.</para>
-      </tip></para>
-
     <para>Fertig! Asterisk ist auf Ihrem System inklusive aller benötigten
     Treiber installiert. Mit dem Befehl <command>asterisk -V</command> können
     Sie die installierte Version herausfinden (bitte achten Sie auf das
@@ -293,9 +255,15 @@ debian:/usr/src/asterisk-1.4.24.1# </screen></para>
   </section>
 
   <section id="digium-tdm400p-analog-fxo">
-    <title>s-Extension</title>
-
-    <para>Vergessen Sie bei eingehenden Gesprächen bitte nicht die Benutzung
-    der s-Extension.</para>
+    <title>Beispiel Dialplan</title>
+    <para>Nun noch ein Beispiel Dialplan für ein eingehendes Gespräch
+<programlisting>
+[default]
+exten =&gt; s,1,Wait(1)
+exten =&gt; s,n,Answer
+exten =&gt; s,n,Dial(dahdi/12)
+exten =&gt; s,n,Hangup
+</programlisting>
+    </para>
   </section>
 </section>
