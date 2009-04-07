@@ -127,7 +127,8 @@ agi_priority: 2
           <listitem>
             <para><code>agi_calleridname</code></para>
 
-            <para>Name aus der Caller-ID (z. B. <code>Hans Meier</code>)</para>
+            <para>Name aus der Caller-ID (z. B. <code>Hans
+            Meier</code>)</para>
           </listitem>
 
           <listitem>
@@ -179,55 +180,62 @@ exten =&gt; 1234,2,AGI(mein-agi-programm.php)
 exten =&gt; 1234,3,Hangup()</programlisting></para>
   </section>
 
-  <section id="agi-perl">
-    <title>Perl</title>
+  <section>
+    <title>Beispiele in verschiedenen Programmiersprachen</title>
 
-    <para>In der Standard-Asterisk-Installation ist ein Test-AGI-Skript mit
-    dem Namen <filename>agi-test.agi</filename> <footnote>
-        <para>Die Dateiendung <filename>agi</filename> ist dabei nicht
-        zwingend notwendig. Man könnte die Datei auch
-        <filename>agi-test.pl</filename> nennen.</para>
-      </footnote>im Verzeichnis
-    <filename>/var/lib/asterisk/agi-bin/</filename> abgespeichert. Anhand
-    dieses Perl-Programms werden wir die grundsätzliche Arbeit mit
-    AGI-Skripten beschreiben.</para>
+    <para>Im folgenden werden AGI Programme in einigen exemplarischen
+    Programmiersprachen erklärt.</para>
 
-    <para>Das Skript wird dabei in der <filename>extensions.conf</filename>
-    wie folgt aufgerufen:<programlisting>exten =&gt; 1234,1,Answer()
+    <section id="agi-perl">
+      <title>Perl</title>
+
+      <para>In der Standard-Asterisk-Installation ist ein Test-AGI-Skript mit
+      dem Namen <filename>agi-test.agi</filename> <footnote>
+          <para>Die Dateiendung <filename>agi</filename> ist dabei nicht
+          zwingend notwendig. Man könnte die Datei auch
+          <filename>agi-test.pl</filename> nennen.</para>
+        </footnote>im Verzeichnis
+      <filename>/var/lib/asterisk/agi-bin/</filename> abgespeichert. Anhand
+      dieses Perl-Programms werden wir die grundsätzliche Arbeit mit
+      AGI-Skripten beschreiben.</para>
+
+      <para>Das Skript wird dabei in der <filename>extensions.conf</filename>
+      wie folgt aufgerufen:<programlisting>exten =&gt; 1234,1,Answer()
 exten =&gt; 1234,2,AGI(agi-test.agi)
 exten =&gt; 1234,3,Hangup()</programlisting></para>
 
-    <section id="agi-perl-agi-test.agi">
-      <title>Schritt-für-Schritt-Analyse des agi-test.agi-Skripts</title>
+      <section id="agi-perl-agi-test.agi">
+        <title>Schritt-für-Schritt-Analyse des agi-test.agi-Skripts</title>
 
-      <para>Wir besprechen das Beispiel-Skript zeilen- oder
-      abschnittsweise.<programlisting>#!/usr/bin/perl
+        <para>Wir besprechen das Beispiel-Skript zeilen- oder
+        abschnittsweise.<programlisting>#!/usr/bin/perl
 use strict;</programlisting>Die ersten zwei Zeilen sagen dem ausführenden
-      Betriebssystem, dass es sich um ein Perl-Programm handelt, das mit dem
-      Interpreter <filename>/usr/bin/perl</filename> ausgeführt werden soll.
-      <code>use strict</code> bewirkt eine konsequentere Behandlung von
-      Fehlern innerhalb des Perl-Programms.<programlisting>$|=1;</programlisting>Diese
-      kleine Zeile bringt Perl dazu, die Ausgabe von Text nicht zu puffern. So
-      können wir sicher sein, dass alle Ausgaben auch unmittelbar an Asterisk
-      übergeben und nicht erst in einem Buffer zwischengespeichert
-      werden.<programlisting># Setup some variables
+        Betriebssystem, dass es sich um ein Perl-Programm handelt, das mit dem
+        Interpreter <filename>/usr/bin/perl</filename> ausgeführt werden soll.
+        <code>use strict</code> bewirkt eine konsequentere Behandlung von
+        Fehlern innerhalb des Perl-Programms.<programlisting>$|=1;</programlisting>Diese
+        kleine Zeile bringt Perl dazu, die Ausgabe von Text nicht zu puffern.
+        So können wir sicher sein, dass alle Ausgaben auch unmittelbar an
+        Asterisk übergeben und nicht erst in einem Buffer zwischengespeichert
+        werden.<programlisting># Setup some variables
 my %AGI; my $tests = 0; my $fail = 0; my $pass = 0;</programlisting>Hier
-      werden verschiedene Variablen definiert. Das Hash <code>%AGI</code>
-      nimmt die initialen Eingaben von Asterisk auf. Die restlichen Variablen
-      zählen die Gesamtanzahl der Tests, die Anzahl der fehlgeschlagenen Tests
-      und die Anzahl der funktionierenden Tests.<programlisting>while(&lt;STDIN&gt;) {
+        werden verschiedene Variablen definiert. Das Hash <code>%AGI</code>
+        nimmt die initialen Eingaben von Asterisk auf. Die restlichen
+        Variablen zählen die Gesamtanzahl der Tests, die Anzahl der
+        fehlgeschlagenen Tests und die Anzahl der funktionierenden
+        Tests.<programlisting>while(&lt;STDIN&gt;) {
   chomp;
   last unless length($_);
   if (/^agi_(\w+)\:\s+(.*)$/) {
     $AGI{$1} = $2;
   }
 }</programlisting>Die eben eingelesenen Werte werden zum Debuggen auf STDERR,
-      also im Endeffekt auf dem CLI ausgegeben:<programlisting>print STDERR "AGI Environment Dump:\n";
+        also im Endeffekt auf dem CLI ausgegeben:<programlisting>print STDERR "AGI Environment Dump:\n";
 foreach my $i (sort keys %AGI) {
         print STDERR " -- $i = $AGI{$i}\n";
 }
 </programlisting>Danach geht es mit <code>checkresult</code>
-      weiter:<programlisting>sub checkresult {
+        weiter:<programlisting>sub checkresult {
   my ($res) = @_;
   my $retval;
   $tests++;
@@ -246,73 +254,74 @@ foreach my $i (sort keys %AGI) {
     $fail++;
   }
 }</programlisting>Die Subroutine <code>checkresult</code> liest das Ergebnis
-      eines Befehls an Asterisk aus und bestimmt, ob der Test erfolgreich war
-      oder nicht. Entsprechend werden die Variablen <code>$fail</code> und
-      <code>$pass</code> hochgezählt. Nachdem die Grundlagen gelegt sind,
-      können die einzelnen Tests beginnen: Die Datei
-      <filename>beep.gsm</filename> wird abgespielt.<programlisting>print STDERR "1.  Testing 'sendfile'...";
+        eines Befehls an Asterisk aus und bestimmt, ob der Test erfolgreich
+        war oder nicht. Entsprechend werden die Variablen <code>$fail</code>
+        und <code>$pass</code> hochgezählt. Nachdem die Grundlagen gelegt
+        sind, können die einzelnen Tests beginnen: Die Datei
+        <filename>beep.gsm</filename> wird abgespielt.<programlisting>print STDERR "1.  Testing 'sendfile'...";
 print "STREAM FILE beep \"\"\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Der Text "hello world" wird an den
-      Anrufer geschickt. Das funktioniert natürlich nur, wenn das Protokoll
-      und das Endgerät diese Funktion unterstützen.<programlisting>print STDERR "2.  Testing 'sendtext'...";
+        Anrufer geschickt. Das funktioniert natürlich nur, wenn das Protokoll
+        und das Endgerät diese Funktion unterstützen.<programlisting>print STDERR "2.  Testing 'sendtext'...";
 print "SEND TEXT \"hello world\"\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Das Bild "asterisk-image" wird an
-      den Anrufer geschickt. Auch diese Funktion ist vom Protokoll und dem
-      Endgerät abhängig.<programlisting>print STDERR "3.  Testing 'sendimage'...";
+        den Anrufer geschickt. Auch diese Funktion ist vom Protokoll und dem
+        Endgerät abhängig.<programlisting>print STDERR "3.  Testing 'sendimage'...";
 print "SEND IMAGE asterisk-image\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Die Zahl 192837465 wird dem Anrufer
-      vorgelesen.<programlisting>print STDERR "4.  Testing 'saynumber'...";
+        vorgelesen.<programlisting>print STDERR "4.  Testing 'saynumber'...";
 print "SAY NUMBER 192837465 \"\"\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Dieser Befehl wartet 1000
-      Millisekunden auf die Eingabe von DTMF-Tönen durch den
-      Anrufer.<programlisting>print STDERR "5.  Testing 'waitdtmf'...";
+        Millisekunden auf die Eingabe von DTMF-Tönen durch den
+        Anrufer.<programlisting>print STDERR "5.  Testing 'waitdtmf'...";
 print "WAIT FOR DIGIT 1000\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Ein 3000-Millisekunden-langes
-      GSM-Soundfile mit dem Namen <filename>testagi.gsm</filename> wird
-      aufgenommen. Die Aufnahme kann durch die Eingabe der Zahlen 1, 2, 3 oder
-      4 unterbrochen werden.<programlisting>print STDERR "6.  Testing 'record'...";
+        GSM-Soundfile mit dem Namen <filename>testagi.gsm</filename> wird
+        aufgenommen. Die Aufnahme kann durch die Eingabe der Zahlen 1, 2, 3
+        oder 4 unterbrochen werden.<programlisting>print STDERR "6.  Testing 'record'...";
 print "RECORD FILE testagi gsm 1234 3000\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Das soeben aufgenommene Soundfile
-      wird abgespielt.<programlisting>print STDERR "6a.  Testing 'record' playback...";
+        wird abgespielt.<programlisting>print STDERR "6a.  Testing 'record' playback...";
 print "STREAM FILE testagi \"\"\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Nun erfolgt die Ausgabe auf dem
-      CLI, wie viele Tests funktioniert oder nicht funktioniert
-      haben.<programlisting>print STDERR "================== Complete ======================\n";
+        CLI, wie viele Tests funktioniert oder nicht funktioniert
+        haben.<programlisting>print STDERR "================== Complete ======================\n";
 print STDERR "$tests tests completed, $pass passed, $fail failed\n";
 print STDERR "==================================================\n";</programlisting><warning>
-          <para>Bei vielen AGI-Befehlen sehen Sie den folgenden
-          Aufbau:<programlisting>fwrite(STDOUT,"BEFEHL $value \"\"\n");
+            <para>Bei vielen AGI-Befehlen sehen Sie den folgenden
+            Aufbau:<programlisting>fwrite(STDOUT,"BEFEHL $value \"\"\n");
 #                            ^^^^^^^</programlisting>Der in dieser Zeile
-          unterschlängelte Teil (zwischen <code>$value</code> und
-          <code>);</code>) ist zwingend erforderlich, damit der Befehl korrekt
-          ausgeführt wird. Es handelt sich hierbei um ein Argument ohne
-          Inhalt, das durch zwei gequotete Anführungszeichen dargestellt wird.
-          Abgeschlossen wird der gesamte Befehl durch ein ''line feed'' (ein
-          Zeilenendzeichen), in diesem Fall ein <code>\n</code>.</para>
-        </warning></para>
+            unterschlängelte Teil (zwischen <code>$value</code> und
+            <code>);</code>) ist zwingend erforderlich, damit der Befehl
+            korrekt ausgeführt wird. Es handelt sich hierbei um ein Argument
+            ohne Inhalt, das durch zwei gequotete Anführungszeichen
+            dargestellt wird. Abgeschlossen wird der gesamte Befehl durch ein
+            ''line feed'' (ein Zeilenendzeichen), in diesem Fall ein
+            <code>\n</code>.</para>
+          </warning></para>
+      </section>
     </section>
-  </section>
 
-  <section id="agi-php">
-    <title>PHP</title>
+    <section id="agi-php">
+      <title>PHP</title>
 
-    <para>PHP ist zu einer der populärsten Programmiersprachen für
-    Webapplikationen geworden.<footnote>
-        <para>Böse Zungen sprechen auch vom BASIC des 21. Jahrhunderts.
-        ;-)</para>
-      </footnote> Da man aber aktuelle PHP-Versionen auch für den Aufruf von
-    Programmen auf der Kommandozeile benutzen kann, ist PHP eine für
-    AGI-Skripte gut geeignete Sprache. Als Beispiel benutzen wir ein kleines
-    PHP-Programm (<filename>lotto.php</filename>), das 6 zufällige Zahlen von
-    1 bis 49 auswählt und dem Anrufer vorspricht. Die Beschreibung der
-    einzelnen Schritte erfolgt im Quellcode.<programlisting>#!/usr/bin/php -q
+      <para>PHP ist zu einer der populärsten Programmiersprachen für
+      Webapplikationen geworden.<footnote>
+          <para>Böse Zungen sprechen auch vom BASIC des 21. Jahrhunderts.
+          ;-)</para>
+        </footnote> Da man aber aktuelle PHP-Versionen auch für den Aufruf von
+      Programmen auf der Kommandozeile benutzen kann, ist PHP eine für
+      AGI-Skripte gut geeignete Sprache. Als Beispiel benutzen wir ein kleines
+      PHP-Programm (<filename>lotto.php</filename>), das 6 zufällige Zahlen
+      von 1 bis 49 auswählt und dem Anrufer vorspricht. Die Beschreibung der
+      einzelnen Schritte erfolgt im Quellcode.<programlisting>#!/usr/bin/php -q
 &lt;?php
 
 # Sicherheitseinstellung. Das Skript laeuft nicht 
@@ -394,28 +403,28 @@ foreach ($Lottozahlen as $value) {
 }
 
 ?&gt;</programlisting>Das Programm <filename>lotto.php</filename> muss im
-    Verzeichnis <filename>/var/lib/asterisk/agi-bin/</filename> abgespeichert
-    werden und wird in der <filename>extensions.conf</filename> wie folgt
-    aufgerufen:</para>
+      Verzeichnis <filename>/var/lib/asterisk/agi-bin/</filename>
+      abgespeichert werden und wird in der
+      <filename>extensions.conf</filename> wie folgt aufgerufen:</para>
 
-    <programlisting>exten =&gt; 1234,1,Answer()
+      <programlisting>exten =&gt; 1234,1,Answer()
 exten =&gt; 1234,2,AGI(lotto.php)
 exten =&gt; 1234,3,Hangup()</programlisting>
 
-    <section id="agi-phpagi">
-      <title>phpAGI</title>
+      <section id="agi-phpagi">
+        <title>phpAGI</title>
 
-      <para>Wer PHP und AGI einsetzen, aber nicht das Rad neu erfinden will,
-      kann die fertige PHP-Klasse phpAGI benutzen. Informationen und die
-      dazugehörigen Dateien finden Sie auf der Homepage des Projekts <ulink
-      url="http://phpagi.sourceforge.net/"><citetitle>http://phpagi.sourceforge.net/</citetitle></ulink>.</para>
+        <para>Wer PHP und AGI einsetzen, aber nicht das Rad neu erfinden will,
+        kann die fertige PHP-Klasse phpAGI benutzen. Informationen und die
+        dazugehörigen Dateien finden Sie auf der Homepage des Projekts <ulink
+        url="http://phpagi.sourceforge.net/"><citetitle>http://phpagi.sourceforge.net/</citetitle></ulink>.</para>
 
-      <para>Das folgende bei phpAGI mitgelieferte Programm gibt schnell einen
-      Überblick über die Funktionsaufrufe<footnote>
-          <para>Für die Benutzung von <code>text2wav</code> muss ein
-          Text-to-Speech-System (z. B. Festival) installiert und konfiguriert
-          sein.</para>
-        </footnote><programlisting>&lt;?php
+        <para>Das folgende bei phpAGI mitgelieferte Programm gibt schnell
+        einen Überblick über die Funktionsaufrufe<footnote>
+            <para>Für die Benutzung von <code>text2wav</code> muss ein
+            Text-to-Speech-System (z. B. Festival) installiert und
+            konfiguriert sein.</para>
+          </footnote><programlisting>&lt;?php
 /**
 * @package phpAGI_examples
 * @version 2.0
@@ -451,48 +460,141 @@ function my_ip(&amp;$agi, $peer)
     $agi-&gt;text2wav("Your IP address is $ip");
   }
 ?&gt;</programlisting></para>
+      </section>
     </section>
-  </section>
 
-  <section id="agi-andere-programmiersprachen">
-    <title>Andere Programmiersprachen</title>
+    <section id="adhearsion">
+      <title>Ruby und Adhearsion</title>
 
-    <para>Wie am Anfang dieses Kapitels schon erwähnt, kann man AGI-Programme
-    in jeder beliebigen Programmiersprache schreiben. Fertige Bibliotheken
-    finden sich z. B. für</para>
+      <para>Obwohl <ulink url="http://www.ruby-lang.org">Ruby</ulink> eine für
+      EDV Verhältnisse alte Programmiersprache ist, hat sie erst in den
+      letzten Jahren (hauptsächlich durch <ulink
+      url="http://rubyonrails.org/">Ruby on Rails</ulink>) eine großen Push
+      bekommen. <ulink url="http://adhearsion.com/">Adhearsion</ulink> ist für
+      Ruby und Asterisk dabei das gleiche was Ruby on Rails für Ruby und
+      Webapplikationen ist. Das Thema ist dabei so spannend, das man darüber
+      ein eigenes Buch schreiben könnte. Auch hier werden wir im Laufe der
+      Zeit auf der <ulink url="http://www.das-asterisk-buch.de">Webseite zum
+      Buch</ulink> Updates nachreichen.</para>
 
-    <itemizedlist>
-      <listitem>
-        <para>Java</para>
-      </listitem>
+      <section id="adhearsion-installation">
+        <title>Installation</title>
 
-      <listitem>
-        <para>Perl</para>
-      </listitem>
+        <para>Wie es sich für ein gutes Open-Source Projekt gehört ist auch
+        die Dokumentation von Adhearsion reichlich verzweigt und oft
+        unvollständig. Glücklicherweise ist wenigstens die Installation
+        denkbar einfach, weil es zu Adhearsion ein fertiges gem gibt (für
+        Ruby-Neulinge: gem ist ein Paketmanagementmechanismus für Ruby).
+        Entsprechend kann die Installation mit <command>gem install
+        adhearsion</command> vollzogen werden.</para>
+      </section>
 
-      <listitem>
-        <para>PHP</para>
-      </listitem>
+      <section id="adhearsion-setup">
+        <title>Einfaches Setup</title>
 
-      <listitem>
-        <para>Python</para>
-      </listitem>
+        <para>Mit der Benutzung von Adhearsion wird der Dialplan von Asterisk
+        recht übersichtlich und kurz. Man muss nur bei jedem eingehenden
+        Context die folgende Zeile einfügen:<programlisting>exten =&gt; _.,1,AGI(agi://127.0.0.1)
+</programlisting></para>
 
-      <listitem>
-        <para>Ruby</para>
-      </listitem>
+        <para>Damit übernimmt Adhearsion die Kontrolle über alle Gespräche,
+        die in diesem Context geführt werden. Natürlich kann man aber auch
+        einen traditionellen Dialplan mit Adhearsion mischen.</para>
 
-      <listitem>
-        <para>C</para>
-      </listitem>
+        <para>Eine Adhearsion Applikation muss ähnlich wie bei Ruby on Rails
+        erst generiert werden. Dies erfolgt mit dem Programm
+        <application>ahn</application>, das mit <command>ahn create
+        applikationsname</command> aufgerufen wird. Beispiel:<screen>stefan@pbx:~$ ahn create apfelmus_app
+      create  
+      create  components/simon_game
+      create  components/disabled/stomp_gateway
+      create  components/ami_remote
+      create  components/restful_rpc/spec
+      create  config
+      create  .ahnrc
+      create  components/simon_game/simon_game.rb
+      create  components/ami_remote/ami_remote.rb
+      create  components/disabled/stomp_gateway/stomp_gateway.rb
+      create  components/disabled/stomp_gateway/config.yml
+      create  components/disabled/stomp_gateway/README.markdown
+      create  components/restful_rpc/restful_rpc.rb
+      create  components/restful_rpc/config.yml
+      create  components/restful_rpc/README.markdown
+      create  components/restful_rpc/example-client.rb
+      create  components/restful_rpc/spec/restful_rpc_spec.rb
+      create  config/startup.rb
+      create  dialplan.rb
+      create  events.rb
+      create  README
+      create  Rakefile
+stefan@pbx:~$ </screen></para>
 
-      <listitem>
-        <para>C#</para>
-      </listitem>
-    </itemizedlist>
+        <para>Gestartet wird die Applikation dann mit <command>ahn start
+        .</command><screen>stefan@pbx:~/apfelmus_app$ ahn start .
+ INFO ahn: Adhearsion initialized!
+</screen></para>
 
-    <para>Am einfachsten ist eine Suche in der Suchmaschine der Wahl nach den
-    Schlüsselwörtern <quote>AGI</quote> und dem Namen der
-    Programmiersprache.</para>
+        <para>Ab diesem Zeitpunkt übernimmt Adhearsion die Kontrolle über
+        Anrufe. Sie können dabei auf dem Bildschirm mitverfolgen was
+        passiert.</para>
+      </section>
+
+      <section id="adhearsion-beispiel">
+        <title>Beispielprogramm</title>
+
+        <para>Der Adhearsion Dialplan oder besser gesagt das Ruby Programm
+        wird in der Datei <filename>dialplan.rb</filename> definiert. Hier ein
+        einfaches Beispiel:<programlisting>intern {
+  case extension
+  when 22
+    play "hello-world"
+    hangup
+  else
+    dial "SIP/#{extension}"
+  end
+}</programlisting></para>
+
+        <para><code>intern</code> ist in diesem Beispiel der benutzte Context
+        aus dem Adhearsion aufgerufen wurde.</para>
+      </section>
+    </section>
+
+    <section id="agi-andere-programmiersprachen">
+      <title>Andere Programmiersprachen</title>
+
+      <para>Wie am Anfang dieses Kapitels schon erwähnt, kann man
+      AGI-Programme in jeder beliebigen Programmiersprache schreiben. Fertige
+      Bibliotheken finden sich z. B. für</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Java</para>
+        </listitem>
+
+        <listitem>
+          <para>Perl</para>
+        </listitem>
+
+        <listitem>
+          <para>PHP</para>
+        </listitem>
+
+        <listitem>
+          <para>Python</para>
+        </listitem>
+
+        <listitem>
+          <para>C</para>
+        </listitem>
+
+        <listitem>
+          <para>C#</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Am einfachsten ist eine Suche in der Suchmaschine der Wahl nach
+      den Schlüsselwörtern <quote>AGI</quote> und dem Namen der
+      Programmiersprache.</para>
+    </section>
   </section>
 </chapter>
