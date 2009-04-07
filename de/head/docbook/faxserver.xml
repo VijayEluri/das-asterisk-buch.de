@@ -20,9 +20,9 @@
   <title>Fax-Server</title>
 
   <para>Es gibt eine Reihe von Ansätzen und Projekten, mit Asterisk einen
-  Faxserver zu implementieren. Lange Zeit war app_rxfax von <ulink
-  url="http://www.soft-switch.org/">http://www.soft-switch.org/</ulink> die
-  von vielen angepriesene Lösung. Allerdings gilt diese Variante als
+  Faxserver zu implementieren. Lange Zeit war <literal>app_rxfax</literal> von
+  <ulink url="http://www.soft-switch.org/">http://www.soft-switch.org/</ulink>
+  die von vielen angepriesene Lösung. Allerdings gilt diese Variante als
   fehleranfällig. Faxe werden regelmäßig unvollständig übertragen.</para>
 
   <para>Deshalb beschreiben wir hier das Projekt IAXmodem (siehe <ulink
@@ -51,7 +51,7 @@
       <para>Um IAXmodem installieren zu können, benötigen wir noch einige
       Debian-Pakete:</para>
 
-      <screen>debian:~# <emphasis role="bold"><command>apt-get -y install g++ libtiff-tools libtiff4 libtiff4-dev</command></emphasis>
+      <screen>debian:~# <emphasis role="bold"><command>aptitude -y install g++ libtiff-tools libtiff4 libtiff4-dev</command></emphasis>
 <replaceable>[...]</replaceable>
 Richte zlib1g-dev ein (1.2.2-4.sarge.2) ...
 Richte libtiff4-dev ein (3.7.2-7) ...
@@ -64,22 +64,23 @@ debian:/usr/src# </screen></para>
       <para>Die Sourcen zu IAXmodem können mit einem normalen Browser auf der
       Webseite <ulink
       url="http://iaxmodem.sourceforge.net">http://iaxmodem.sourceforge.net</ulink>
-      heruntergeladen werden (in diesem Beispiel ist es die Version 0.3.0, Sie
-      können aber auch eine neuere Version nehmen). Nach dem Download muss der
-      Tarball in das Verzeichnis <filename>/usr/src/</filename> gelegt und
-      enpackt werden:<screen>debian:/usr/src# <emphasis role="bold"><command>wget http://downloads.sourceforge.net/iaxmodem/iaxmodem-0.3.0.tar.gz</command></emphasis>
+      heruntergeladen werden (in diesem Beispiel ist es die Version 1.2.0, Sie
+      können aber auch eine andere Version nehmen). Nach dem Download muss der
+      Tarball entpackt werden:<screen>debian:/usr/src# <emphasis role="bold"><command>wget http://downloads.sourceforge.net/iaxmodem/iaxmodem-1.2.0.tar.gz</command></emphasis>
 <replaceable>[...]</replaceable>
-debian:/usr/src# <emphasis role="bold"><command>tar -xvzf iaxmodem-0.3.0.tar.gz</command></emphasis> 
-iaxmodem-0.3.0/
-iaxmodem-0.3.0/iaxmodem.c
-iaxmodem-0.3.0/iaxmodem.init.debian
+debian:/usr/src# <emphasis role="bold"><command>tar -xvzf iaxmodem-1.2.0.tar.gz</command></emphasis> 
+iaxmodem-1.2.0/
+iaxmodem-1.2.0/iaxmodem.c
+iaxmodem-1.2.0/iaxmodem.init.debian
 <replaceable>[...]</replaceable>
 debian:/usr/src# </screen></para>
 
-      <para>In das neue Verzeichnis wechseln.<screen>debian:/usr/src# <emphasis role="bold"><command>cd iaxmodem-0.3.0</command></emphasis>
-debian:/usr/src/iaxmodem-0.3.0# </screen></para>
+      <para>In das neue Verzeichnis wechseln:<screen>debian:/usr/src# <emphasis
+            role="bold"><command>cd iaxmodem-1.2.0</command></emphasis>
+debian:/usr/src/iaxmodem-1.2.0# </screen></para>
 
-      <para>Un danach kompilieren.<screen>debian:/usr/src/iaxmodem-0.3.0# <emphasis role="bold"><command>./configure &amp;&amp; make</command></emphasis>
+      <para>Un danach kompilieren:<screen>debian:/usr/src/iaxmodem-1.2.0# <emphasis
+            role="bold"><command>./configure &amp;&amp; make</command></emphasis>
 checking for a BSD-compatible install... /usr/bin/install -c
 checking whether build environment is sane... yes
 checking for gawk... no
@@ -87,21 +88,22 @@ checking for mawk... mawk
 checking whether make sets $(MAKE)... yes
 checking for gcc... gcc
 <replaceable>[...]</replaceable>
-debian:/usr/src/iaxmodem-0.3.0# </screen></para>
+debian:/usr/src/iaxmodem-1.2.0# </screen></para>
 
-      <para>Das dabei entstehende Binary iaxmodem kopieren wir zum Schluss ins
-      Verzeichnis <filename><filename>/usr/bin/.</filename></filename></para>
-
-      <para><screen>debian:/usr/src/iaxmodem-0.3.0# <emphasis role="bold"><command>cp iaxmodem /usr/bin/</command></emphasis>
-debian:/usr/src/iaxmodem-0.3.0# </screen></para>
+      <para>Das dabei entstehende Binary <literal>iaxmodem</literal> kopieren
+      wir zum Schluss ins Verzeichnis <filename>/usr/bin/:</filename><screen>debian:/usr/src/iaxmodem-1.2.0# <emphasis
+            role="bold"><command>cp iaxmodem /usr/bin/</command></emphasis>
+debian:/usr/src/iaxmodem-1.2.0# </screen></para>
 
       <para>Jetzt kommen wir zur Konfiguration des Modems. IAXmodem sucht
       seine Konfiguration im Verzeichnis <filename>/etc/iaxmodem/</filename>.
-      Dieses müssen wir jetzt anlegen<screen>debian:/usr/src/iaxmodem-0.3.0# <emphasis role="bold"><command>mkdir /etc/iaxmodem</command></emphasis>
-debian:/usr/src/iaxmodem-0.3.0# </screen></para>
+      Dieses müssen wir jetzt anlegen:<screen>debian:/usr/src/iaxmodem-1.2.0# <emphasis
+            role="bold"><command>cd</command></emphasis>
+debian:~# <emphasis role="bold"><command>mkdir /etc/iaxmodem</command></emphasis>
+debian:~# </screen></para>
 
       <para>Und eine Datei erzeugen, in der die Konfiguration stehen
-      soll.<screen>debian:/usr/src/iaxmodem-0.3.0# <emphasis role="bold"><command>cd /etc/iaxmodem/</command></emphasis>
+      soll:<screen>debian:~# <emphasis role="bold"><command>cd /etc/iaxmodem/</command></emphasis>
 debian:/etc/iaxmodem# <emphasis role="bold"><command>touch ttyIAX0</command></emphasis>
 debian:/etc/iaxmodem# </screen></para>
 
@@ -245,7 +247,7 @@ debian:~# </screen></para>
 
       <para>Um die Installation zu vereinfachen installieren wir den Faxserver
       aus dem Debian-Repository. Abhängigkeiten werden automatisch
-      aufgelöst:<screen>debian:~# <emphasis role="bold"><command>apt-get install -y hylafax-server</command></emphasis>
+      aufgelöst:<screen>debian:~# <emphasis role="bold"><command>aptitude -y install hylafax-server</command></emphasis>
 <replaceable>[...]</replaceable>
 Die folgenden NEUEN Pakete werden installiert:
   enscript gs-common gs-esp hylafax-client 
@@ -274,14 +276,15 @@ Do you want to run faxaddmodem to configure a modem [yes]? <emphasis
             role="bold"><userinput><keysym>Enter</keysym></userinput></emphasis>
 Done verifying system setup.
 Updating /etc/hylafax/setup.cache from /var/spool/hylafax/etc/setup.cache.
-Updating /etc/hylafax/setup.modem from /var/spool/hylafax/etc/setup.modem.apt-get -y install hylafax-server
+Updating /etc/hylafax/setup.modem from /var/spool/hylafax/etc/setup.modem.
 /var/spool/hylafax
 Starting HylaFAX: faxq hfaxd faxgetty.
 
 debian:~# </screen></para>
 
       <para>Der nächste Schritt ist das Setup des Faxservers. Hierzu rufen wir
-      das Programm <command>faxsetup</command> auf:<screen>debian:~# <emphasis role="bold"><command>faxsetup</command></emphasis>
+      das Programm <command>faxsetup</command> auf:<screen>debian:~# <emphasis
+            role="bold"><command>faxsetup</command></emphasis>
 <replaceable>[...]</replaceable>
 
 Update /var/spool/hylafax/status/any.info.
@@ -662,8 +665,8 @@ FILETYPE=pdf</programlisting></para>
 
       <para><screen>debian:~# <emphasis role="bold"><command>/etc/ini.d/hylafax restart</command></emphasis>
 Starting HylaFAX: faxq hfaxd.
-debian:~# </screen>Testen können wir es, in wir uns z. B. selbst ein Fax senden
-      mit <command>sendfax -n -d &lt;Faxnummer&gt;
+debian:~# </screen>Testen können wir es, in wir uns z. B. selbst ein Fax
+      senden mit <command>sendfax -n -d &lt;Faxnummer&gt;
       &lt;datei.txt&gt;</command></para>
 
       <screen>debian:~# <emphasis role="bold"><command>sendfax -n -d 06912345678 /etc/issue.net</command></emphasis></screen>
