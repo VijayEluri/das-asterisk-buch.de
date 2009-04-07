@@ -25,7 +25,7 @@
   <filename>extensions.conf</filename>) aufgerufen werden. AGI-Skripte können
   mit Asterisk interagieren und Befehle ausführen. AGI-Skripte können
   prinzipiell in allen Programmier- und Skriptsprachen (z. B. Shell-Skript)
-  geschrieben werden, die mit den Standardsockets unter Unix umgehen können.
+  geschrieben werden, die mit den Standard-Sockets unter Unix umgehen können.
   Die folgenden Beschreibungen gelten also nur als Beispiele für eine
   Implementierung. Für die Befehlsreferenz siehe <xref
   linkend="agi-commands" />.</para>
@@ -54,7 +54,7 @@ agi_priority: 2
       beendet ist.</para>
 
       <section id="agi-headers">
-        <title>AGI Headers</title>
+        <title>AGI-Header</title>
 
         <para>Die folgende Aufstellung listet alle von Asterisk
         weitergegebenen Header auf:</para>
@@ -75,8 +75,8 @@ agi_priority: 2
           <listitem>
             <para><code>agi_language</code></para>
 
-            <para>Die eingestellte Sprache (z. B. en für Englisch oder de für
-            Deutsch)</para>
+            <para>Die eingestellte Sprache (z. B. <filename>en</filename> für
+            Englisch oder <filename>de</filename> für Deutsch)</para>
           </listitem>
 
           <listitem>
@@ -154,8 +154,8 @@ agi_priority: 2
       <title>STDERR</title>
 
       <para><quote>Standard error</quote> (STDERR) ist der formale Weg, um
-      Fehler- oder Debugmeldungen vom AGI-Skript auf die Console (das CLI) von
-      Asterisk zu bringen.</para>
+      Fehler- oder Debug-Meldungen vom AGI-Skript auf die Console (das CLI)
+      von Asterisk zu bringen.</para>
     </section>
   </section>
 
@@ -172,7 +172,7 @@ agi_priority: 2
   </section>
 
   <section id="agi-aufruf-im-dialplan">
-    <title>Aufruf eines AGI im Dialplan</title>
+    <title>Aufruf eines AGI-Skripts im Dialplan</title>
 
     <para>Ein AGI-Skript wird im Dialplan über die Applikation
     <code>agi</code> aufgerufen. Die kann wie folgt aussehen:<programlisting>exten =&gt; 1234,1,Answer()
@@ -180,10 +180,10 @@ exten =&gt; 1234,2,AGI(mein-agi-programm.php)
 exten =&gt; 1234,3,Hangup()</programlisting></para>
   </section>
 
-  <section id="agi-beispiele-programmiersprachen">
+  <section>
     <title>Beispiele in verschiedenen Programmiersprachen</title>
 
-    <para>Im folgenden werden AGI Programme in einigen exemplarischen
+    <para>Im Folgenden werden AGI-Programme in einigen exemplarischen
     Programmiersprachen erklärt.</para>
 
     <section id="agi-perl">
@@ -272,27 +272,27 @@ my $result = &lt;STDIN&gt;;
 print "SEND IMAGE asterisk-image\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Die Zahl 192837465 wird dem Anrufer
-        vorgelesen.<programlisting>print STDERR "4.  Testing 'saynumber'...";
+        vorgelesen:<programlisting>print STDERR "4.  Testing 'saynumber'...";
 print "SAY NUMBER 192837465 \"\"\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Dieser Befehl wartet 1000
         Millisekunden auf die Eingabe von DTMF-Tönen durch den
-        Anrufer.<programlisting>print STDERR "5.  Testing 'waitdtmf'...";
+        Anrufer:<programlisting>print STDERR "5.  Testing 'waitdtmf'...";
 print "WAIT FOR DIGIT 1000\n";
 my $result = &lt;STDIN&gt;;
-&amp;checkresult($result);</programlisting>Ein 3000-Millisekunden-langes
+&amp;checkresult($result);</programlisting>Ein 3000 Millisekunden langes
         GSM-Soundfile mit dem Namen <filename>testagi.gsm</filename> wird
         aufgenommen. Die Aufnahme kann durch die Eingabe der Zahlen 1, 2, 3
         oder 4 unterbrochen werden.<programlisting>print STDERR "6.  Testing 'record'...";
 print "RECORD FILE testagi gsm 1234 3000\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Das soeben aufgenommene Soundfile
-        wird abgespielt.<programlisting>print STDERR "6a.  Testing 'record' playback...";
+        wird abgespielt:<programlisting>print STDERR "6a.  Testing 'record' playback...";
 print "STREAM FILE testagi \"\"\n";
 my $result = &lt;STDIN&gt;;
 &amp;checkresult($result);</programlisting>Nun erfolgt die Ausgabe auf dem
         CLI, wie viele Tests funktioniert oder nicht funktioniert
-        haben.<programlisting>print STDERR "================== Complete ======================\n";
+        haben:<programlisting>print STDERR "================== Complete ======================\n";
 print STDERR "$tests tests completed, $pass passed, $fail failed\n";
 print STDERR "==================================================\n";</programlisting><warning>
             <para>Bei vielen AGI-Befehlen sehen Sie den folgenden
@@ -303,7 +303,7 @@ print STDERR "==================================================\n";</programlis
             korrekt ausgeführt wird. Es handelt sich hierbei um ein Argument
             ohne Inhalt, das durch zwei gequotete Anführungszeichen
             dargestellt wird. Abgeschlossen wird der gesamte Befehl durch ein
-            <quote>line feed</quote> (ein Zeilenendzeichen), in diesem Fall ein
+            ''line feed'' (ein Zeilenende-Zeichen), in diesem Fall ein
             <code>\n</code>.</para>
           </warning></para>
       </section>
@@ -324,7 +324,7 @@ print STDERR "==================================================\n";</programlis
       einzelnen Schritte erfolgt im Quellcode.<programlisting>#!/usr/bin/php -q
 &lt;?php
 
-# Sicherheitseinstellung. Das Skript laeuft nicht 
+# Sicherheitseinstellung. Das Skript läuft nicht 
 # laenger als 8 Sekunden.
 #################################################
 set_time_limit(8);
@@ -342,7 +342,7 @@ ob_implicit_flush();
 error_reporting(0);
 
 
-# Fuer die Komunikation mit Asterisk benoetigen 
+# Für die Kommunikation mit Asterisk benötigen 
 # wir STDIN und STDOUT Filehandles
 #################################################
 if (!defined('STDIN'))
@@ -353,7 +353,7 @@ if (!defined('STDERR'))
   define('STDERR', fopen('php://stderr', 'w'));
 
 
-# Die von Asterisk uebergebenen Variablen und 
+# Die von Asterisk übergebenen Variablen und 
 # Werte werden ausgelesen und im Array $agi 
 # gespeichert.
 #################################################
@@ -371,7 +371,7 @@ while (!feof(STDIN))
 }
 
 
-# Ein Array mit 6 zufaelligen und nicht 
+# Ein Array mit 6 zufälligen und nicht 
 # doppelten Zahlen von 1 bis 49 wird generiert.
 #################################################
 
@@ -414,16 +414,17 @@ exten =&gt; 1234,3,Hangup()</programlisting>
       <section id="agi-phpagi">
         <title>phpAGI</title>
 
-        <para>Wer PHP und AGI einsetzen, aber nicht das Rad neu erfinden will,
-        kann die fertige PHP-Klasse phpAGI benutzen. Informationen und die
-        dazugehörigen Dateien finden Sie auf der Homepage des Projekts <ulink
+        <para>Wenn Sie PHP und AGI einsetzen, aber nicht das Rad neu erfinden
+        wollen, können Sie die fertige PHP-Klasse phpAGI benutzen.
+        Informationen und die dazugehörigen Dateien finden Sie auf der
+        Homepage des Projekts <ulink
         url="http://phpagi.sourceforge.net/"><citetitle>http://phpagi.sourceforge.net/</citetitle></ulink>.</para>
 
-        <para>Das folgende bei phpAGI mitgelieferte Programm gibt schnell
+        <para>Das folgende mit phpAGI mitgelieferte Programm gibt schnell
         einen Überblick über die Funktionsaufrufe<footnote>
             <para>Für die Benutzung von <code>text2wav</code> muss ein
-            Text-to-Speech-System (z. B. Festival) installiert und
-            konfiguriert sein.</para>
+            Text-to-Speech-System (z. B. <emphasis>Festival</emphasis>)
+            installiert und konfiguriert sein.</para>
           </footnote><programlisting>&lt;?php
 /**
 * @package phpAGI_examples
@@ -469,9 +470,10 @@ function my_ip(&amp;$agi, $peer)
       <para>Obwohl <ulink url="http://www.ruby-lang.org">Ruby</ulink> eine für
       EDV-Verhältnisse alte Programmiersprache ist, hat sie erst in den
       letzten Jahren (hauptsächlich durch <ulink
-      url="http://rubyonrails.org/">Ruby on Rails</ulink>) eine großen Push
-      bekommen. <ulink url="http://adhearsion.com/">Adhearsion</ulink> ist für
-      Ruby und Asterisk dabei das gleiche was Ruby on Rails für Ruby und
+      url="http://rubyonrails.org/">Ruby on Rails</ulink>) eine große
+      Popularität erlangt. <ulink
+      url="http://adhearsion.com/">Adhearsion</ulink> ist für Ruby und
+      Asterisk dabei das Gleiche, was Ruby on Rails für Ruby und
       Webapplikationen ist. Das Thema ist dabei so spannend, dass man darüber
       ein eigenes Buch schreiben könnte. Auch hier werden wir im Laufe der
       Zeit auf der <ulink url="http://www.das-asterisk-buch.de">Webseite zum
@@ -480,13 +482,14 @@ function my_ip(&amp;$agi, $peer)
       <section id="adhearsion-installation">
         <title>Installation</title>
 
-        <para>Wie es sich für ein gutes Open-Source Projekt gehört ist auch
+        <para>Wie es sich für ein gutes Open-Source-Projekt gehört, ist auch
         die Dokumentation von Adhearsion reichlich verzweigt und oft
         unvollständig. Glücklicherweise ist wenigstens die Installation
-        denkbar einfach, weil es zu Adhearsion ein fertiges gem gibt (für
-        Ruby-Neulinge: gem ist ein Paketmanagementmechanismus für Ruby).
-        Entsprechend kann die Installation mit <command>gem install
-        adhearsion</command> vollzogen werden.</para>
+        denkbar einfach, weil es zu Adhearsion ein fertiges
+        <emphasis>gem</emphasis> gibt (für Ruby-Neulinge: gem ist ein
+        Paketmanagementmechanismus für Ruby). Entsprechend kann die
+        Installation mit <command>gem install adhearsion</command> vollzogen
+        werden.</para>
       </section>
 
       <section id="adhearsion-setup">
@@ -503,8 +506,9 @@ function my_ip(&amp;$agi, $peer)
 
         <para>Eine Adhearsion-Applikation muss ähnlich wie bei Ruby on Rails
         erst generiert werden. Dies erfolgt mit dem Programm
-        <application>ahn</application>, das mit <command>ahn create
-        applikationsname</command> aufgerufen wird. Beispiel:<screen>stefan@pbx:~$ <emphasis role="bold"><command>ahn create apfelmus_app</command></emphasis>
+        <filename><application>ahn</application></filename>, das mit
+        <command>ahn create applikationsname</command> aufgerufen wird.
+        Beispiel:<screen>stefan@pbx:~$ ahn create apfelmus_app
       create  
       create  components/simon_game
       create  components/disabled/stomp_gateway
@@ -530,19 +534,19 @@ function my_ip(&amp;$agi, $peer)
 stefan@pbx:~$ </screen></para>
 
         <para>Gestartet wird die Applikation dann mit <command>ahn start
-        .</command><screen>stefan@pbx:~/apfelmus_app$ <emphasis role="bold"><command>ahn start .</command></emphasis>
+        .</command><screen>stefan@pbx:~/apfelmus_app$ ahn start .
  INFO ahn: Adhearsion initialized!
 </screen></para>
 
         <para>Ab diesem Zeitpunkt übernimmt Adhearsion die Kontrolle über
-        Anrufe. Sie können dabei auf dem Bildschirm mitverfolgen was
+        Anrufe. Sie können dabei auf dem Bildschirm mitverfolgen, was
         passiert.</para>
       </section>
 
       <section id="adhearsion-beispiel">
         <title>Beispielprogramm</title>
 
-        <para>Der Adhearsion Dialplan oder besser gesagt das Ruby-Programm
+        <para>Der Adhearsion-Dialplan oder besser gesagt das Ruby-Programm
         wird in der Datei <filename>dialplan.rb</filename> definiert. Hier ein
         einfaches Beispiel:<programlisting>intern {
   case extension
@@ -554,7 +558,7 @@ stefan@pbx:~$ </screen></para>
   end
 }</programlisting></para>
 
-        <para><code>intern</code> ist in diesem Beispiel der benutzte Context
+        <para><code>intern</code> ist in diesem Beispiel der benutzte Context,
         aus dem Adhearsion aufgerufen wurde.</para>
       </section>
     </section>
@@ -562,9 +566,9 @@ stefan@pbx:~$ </screen></para>
     <section id="agi-andere-programmiersprachen">
       <title>Andere Programmiersprachen</title>
 
-      <para>Wie am Anfang dieses Kapitels schon erwähnt, kann man
+      <para>Wie am Anfang dieses Kapitels schon erwähnt wurde, kann man
       AGI-Programme in jeder beliebigen Programmiersprache schreiben. Fertige
-      Bibliotheken finden sich z. B. für</para>
+      Bibliotheken finden sich z. B. für:</para>
 
       <itemizedlist>
         <listitem>
@@ -592,7 +596,7 @@ stefan@pbx:~$ </screen></para>
         </listitem>
       </itemizedlist>
 
-      <para>Am einfachsten ist eine Suche in der Suchmaschine der Wahl nach
+      <para>Am einfachsten ist eine Suche in der Suchmaschine Ihrer Wahl nach
       den Schlüsselwörtern <quote>AGI</quote> und dem Namen der
       Programmiersprache.</para>
     </section>

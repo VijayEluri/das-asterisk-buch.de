@@ -12,8 +12,8 @@
 % Free Documentation License".
 % Asterisk training and consulting is offered at http://www.amooma.de-->
 
-  <title>Installation Asterisk 1.4 mit ISDN-Treiber für Digium B410p auf
-  Debian</title>
+  <title>Die Installation von Asterisk 1.4 mit ISDN-Treiber für Digium B410p
+  auf Debian</title>
 
   <indexterm>
     <primary>Installation</primary>
@@ -27,38 +27,36 @@
     <secondary>B410p</secondary>
   </indexterm>
 
-  <para>Diese Installationsanleitung dient zur Installation eines Asterisk
-  Systems mit Treibern für eine Digium B410p ISDN-Karte. Die Karte muss dafür
-  bereits in dem System eingebaut sein.</para>
+  <para>Diese Installationsanleitung dient zur Installation eines
+  Asterisk-Systems mit Treibern für eine Digium B410p-ISDN-Karte. Die Karte
+  muss dafür bereits in dem System eingebaut sein.</para>
 
   <important>
     <para>Asterisk verwendet ab Version 1.4.22 bzw. 1.6 Dahdi statt Zaptel
     (für mehr Informationen dazu siehe <xref linkend="zaptel-to-dahdi" />).
-    Dahdi unterstützt von Haus aus Basis-ISDN (BRI) &#8211; jedenfalls soweit
-    es die Digium B410p betrifft (siehe <xref
+    Dahdi unterstützt von Haus aus Basis-ISDN (BRI) – jedenfalls, soweit es
+    die Digium B410p betrifft (siehe <xref
     linkend="zaptel-dahdi-b410p-misdn" />). Für eine aktuelle
     Versionsanleitung mit Dahdi siehe <xref
     linkend="installation-1.4-debian" /> bzw. <xref
     linkend="installation-1.6-debian" />.</para>
 
-    <para>Diese Anleitung bleibt aber hier stehen für den Fall dass Sie eine
-    Asterisk-Version vor 1.4.22 mit Zaptel installieren wollen. Zaptel läd
-    &#8211; wie unten genau beschrieben &#8211; durch den Befehl
-    <literal><command>make b410p</command></literal> mISDN herunter und
-    kompiliert dieses.</para>
+    <para>Diese Anleitung bleibt aber hier stehen für den Fall, dass Sie eine
+    Asterisk-Version vor 1.4.22 mit Zaptel installieren wollen. Zaptel lädt –
+    wie unten genau beschrieben – durch den Befehl <literal><command>make
+    b410p</command></literal> mISDN herunter und kompiliert es.</para>
 
-    <para>Bezüglich dieses Kapitels überprüfen Sie bitte auch die
-    Online-Version des Buchs (<ulink
+    <para>Überprüfen Sie bitte auch die Online-Version des Buchs (<ulink
     url="http://www.das-asterisk-buch.de/">http://www.das-asterisk-buch.de</ulink>)
-    auf entsprechende Aktualisierungen.</para>
+    auf entsprechende Aktualisierungen zu diesem Kapitel.</para>
   </important>
 
   <note>
     <para>Die hier aufgeführte Installationsanleitung gilt für ein
     Asterisk-System mit allen in diesem Buch beschriebenen Features (bei
     Ausnahmen wird dies gesondert besprochen). Deshalb ist die Installation
-    etwas umfangreicher. Das hat aber auch den Vorteil, dass man in der
-    Zukunft nicht noch einmal etwas nachinstallieren muss.</para>
+    etwas umfangreicher. Das hat aber auch den Vorteil, dass Sie in der
+    Zukunft nicht noch einmal etwas nachinstallieren müssen.</para>
   </note>
 
   <para>Es wird ein frisch installiertes Debian GNU/Linux 4
@@ -73,8 +71,8 @@
 
   <note>
     <para>Bitte loggen Sie sich nach der Installation als Benutzer
-    <literal>root</literal> am System ein und führen Sie alle hier angegebenen
-    Befehle mit diesem Benutzer aus.</para>
+    <literal>root</literal> am System ein, und führen Sie alle hier
+    angegebenen Befehle mit diesem Benutzer aus.</para>
   </note>
 
   <para>Als Erstes stellen Sie sicher, dass <code>apt</code> alle aktuellen
@@ -94,13 +92,14 @@ Abhängigkeitsbaum wird aufgebaut... Fertig
 0 aktualisiert, 0 neu installiert, 0 zu entfernen und 0 nicht aktualisiert.
 debian:~# </screen></para>
 
-  <para>Für den Fall das beim Upgrade der Pakete auch ein neuer Kernel
-  installiert wurde, müssen wir jetzt das System rebooten:<screen>debian:~# <emphasis
+  <para>Für den Fall, dass beim Upgrade der Pakete auch ein neuer Kernel
+  installiert wurde, müssen Sie jetzt das System rebooten:<screen>debian:~# <emphasis
         role="bold"><command>shutdown -r now</command></emphasis>
 <replaceable>[...]</replaceable>
 The system is going down for reboot NOW!</screen></para>
 
-  <para>Nach dem Booten bitte wieder als root einloggen.</para>
+  <para>Loggen Sie sich nach dem Booten bitte wieder als
+  <filename>root</filename> ein.</para>
 
   <para>Jetzt müssen Sie noch ein paar Pakete nachinstallieren, damit das
   Kompilieren von Asterisk erfolgreich durchgeführt werden kann:</para>
@@ -117,15 +116,15 @@ Die folgenden NEUEN Pakete werden installiert:
 <replaceable>[...]</replaceable>
 debian:~# </screen>
 
-  <para>Als nächstes wechseln wir in das Verzeichnis
-  <filename>/usr/src</filename><screen>debian:~# <emphasis role="bold"><command>cd /usr/src</command></emphasis>
+  <para>Als Nächstes wechseln Sie in das Verzeichnis
+  <filename>/usr/src:</filename><screen>debian:~# <emphasis role="bold"><command>cd /usr/src</command></emphasis>
 debian:/usr/src# </screen></para>
 
   <para>Auf der Asterisk-Homepage <ulink
   url="http://www.asterisk.org/">http://www.asterisk.org/</ulink> finden Sie
-  die notwendigen Quellen, um Asterisk zu mit allen sinnvollen Extras zu
+  die notwendigen Quellen, um Asterisk mit allen sinnvollen Extras zu
   installieren. Nehmen Sie bitte eine <emphasis role="bold">stabile</emphasis>
-  und keine Entwickler-Version und laden Sie diese in das Verzeichnis
+  und keine Entwickler-Version, und laden Sie diese in das Verzeichnis
   <filename>/usr/src/</filename> herunter:</para>
 
   <screen>debian:/usr/src# <emphasis role="bold"><command>wget http://downloads.digium.com/pub/asterisk/releases/asterisk-1.4.19.2.tar.gz</command></emphasis>
@@ -133,7 +132,7 @@ debian:/usr/src# </screen></para>
 18:53:47 (227.00 KB/s) - »asterisk-1.4.19.2.tar.gz« gespeichert
 debian:/usr/src# </screen>
 
-  <para>Weiterhin benötigen wir noch die aktuelle Zaptel-Version:<screen>debian:/usr/src# <emphasis
+  <para>Weiterhin benötigen Sie noch die aktuelle Zaptel-Version:<screen>debian:/usr/src# <emphasis
         role="bold"><command>wget http://downloads.digium.com/pub/zaptel/releases/zaptel-1.4.12.tar.gz</command></emphasis>
 <replaceable>[...]</replaceable>
 19:14:12 (115.45 KB/s) - »zaptel-1.4.12.tar.gz« gespeichert
@@ -151,7 +150,7 @@ zaptel-1.4.12/fxstest.c
 zaptel-1.4.12/zaptel-base.c
 debian:/usr/src# </screen></para>
 
-  <para>Als erstes wechseln wir in das Zaptel-Verzeichnis und kompilieren und
+  <para>Als Erstes wechseln Sie in das Zaptel-Verzeichnis und kompilieren und
   installieren Zaptel und mISDN. Die Abarbeitung der einzelnen Skripte wird
   eine Weile dauern. Zeit für einen Tee.<screen>debian:/usr/src# <emphasis
         role="bold"><command>cd zaptel-1.4.12</command></emphasis>
@@ -163,7 +162,7 @@ checking whether the C compiler works... yes
 make[1]: Leaving directory `/usr/src/zaptel-1.4.7.1/mISDNuser-1_1_3'
 debian:/usr/src/zaptel-1.4.12# </screen></para>
 
-  <para>Danach gehen wir in das Asterisk-Verzeichnis und kompilieren und
+  <para>Danach gehen Sie in das Asterisk-Verzeichnis und kompilieren und
   installieren Asterisk:<screen>debian:/usr/src/zaptel-1.4.12# <emphasis
         role="bold"><command>cd /usr/src/asterisk-1.4.19.2</command></emphasis>
 debian:/usr/src/asterisk-1.4.19.2# <emphasis role="bold"><command>./configure &amp;&amp; make &amp;&amp; make install</command></emphasis>
@@ -198,10 +197,10 @@ make[1]: Leaving directory `/usr/src/asterisk-1.4.19.2/main'
 debian:/usr/src/asterisk-1.4.19.2# </screen></para>
 
   <para>Die eben kompilierten Programmdateien sind jetzt auf dem System
-  installiert. Allerdings finden wir im Asterisk-Konfigurationsverzeichnis
+  installiert. Allerdings finden Sie im Asterisk-Konfigurationsverzeichnis
   <filename>/etc/asterisk/</filename> noch gähnende Leere vor. In diesem
-  Verzeichnis liegen die Konfigurationsdateien von Asterisk und da wir nicht
-  von Null beginnen möchten, lassen wir uns die Standarddateien
+  Verzeichnis liegen die Konfigurationsdateien von Asterisk. Da Sie sicher
+  nicht bei null beginnen möchten, lassen Sie sich die Standarddateien
   erstellen:</para>
 
   <screen>debian:/usr/src/asterisk-1.4.19.2# <emphasis role="bold"><command>make samples</command></emphasis>
@@ -209,9 +208,9 @@ debian:/usr/src/asterisk-1.4.19.2# </screen></para>
 debian:/usr/src/asterisk-1.4.19.2# </screen>
 
   <para>Damit Asterisk beim Booten des Rechners auch automatisch gestartet und
-  bei einem Shutdown auch ordentlich runtergefahren wird, benötigen wir noch
+  bei einem Shutdown auch ordentlich heruntergefahren wird, benötigen wir noch
   entsprechende Init-Skripte. Diese können mit dem von den Entwicklern etwas
-  unglücklich gewählten Befehl <command>make config</command> erstellt
+  unglücklich benannten Befehl <command>make config</command> erstellt
   werden:<screen>debian:/usr/src/asterisk-1.4.19.2# <emphasis role="bold"><command>make config</command></emphasis>
  Adding system startup for /etc/init.d/asterisk ...
    /etc/rc2.d/K91asterisk -&gt; ../init.d/asterisk
@@ -226,7 +225,7 @@ debian:/usr/src/asterisk-1.4.19.2# </screen></para>
 
   <para>Fertig! Asterisk ist auf Ihrem System installiert. Mit dem Befehl
   <command>asterisk -V</command> können Sie die installierte Version
-  rausfinden (bitte achten Sie auf das großgeschriebene V):<screen>debian:/usr/src/asterisk-1.4.19.2# <emphasis
+  herausfinden (bitte achten Sie auf das großgeschriebene V):<screen>debian:/usr/src/asterisk-1.4.19.2# <emphasis
         role="bold"><command>asterisk -V</command></emphasis>
 Asterisk 1.4.19.2
 debian:/usr/src/asterisk-1.4.19.2# cd
@@ -235,7 +234,7 @@ debian:~# </screen></para>
   <section id="digium-b410p-konfiguration">
     <title>Konfiguration der ISDN-Karte</title>
 
-    <para>Ob die von Ihnen eingebaute B410P ISDN-Karte auch richtig erkannt
+    <para>Ob die von Ihnen eingebaute B410P-ISDN-Karte auch richtig erkannt
     wird, können Sie mit dem Kommando <command>/usr/sbin/misdn-init
     scan</command> überprüfen:</para>
 
@@ -264,8 +263,8 @@ debian:~# </screen></para>
     <para>Die Konfigurationsdateien <filename>/etc/misdn-init.conf</filename>
     und <filename>/etc/asterisk/misdn.conf</filename> sind sehr gut
     dokumentiert. Für den ersten Test sollten Sie nur sicherstellen, dass in
-    der <filename>/etc/misdn-init.conf</filename> der Eintrag Port settings
-    für Ihre Bedürfnisse passend ist. <tip>
+    der <filename>/etc/misdn-init.conf</filename> der Eintrag <filename>Port
+    settings</filename> für Ihre Bedürfnisse passend ist. <tip>
         <para>Die Portnummern stehen auf der Karte klein neben den
         entsprechenden Ports.</para>
       </tip></para>
@@ -275,16 +274,16 @@ debian:~# </screen></para>
     <title>Konfiguration der ISDN-Anschlussart</title>
 
     <para>Bitte erkundigen Sie sich vor dem nächsten Schritt über die Art
-    Ihres ISDN-Anschlusses. Mit der hier besprochenen B410P ISDN-Karte können
+    Ihres ISDN-Anschlusses. Mit der hier besprochenen B410P-ISDN-Karte können
     Sie Anlagen- und Mehrgeräteanschlüsse betreiben. Um alle 4 Ports im Modus
     <foreignphrase lang="en">Point-to-Multi-Point</foreignphrase>
-    (Mehrgeräteanschluss) zu betreiben konfiguriert man in der
-    <filename>/etc/misdn-init.conf</filename>:<programlisting>te_ptmp=1,2,3,4</programlisting>Für
+    (Mehrgeräteanschluss) zu betreiben, konfiguriert man sie in der
+    <filename>/etc/misdn-init.conf</filename> wie folgt:<programlisting>te_ptmp=1,2,3,4</programlisting>Für
     den Modus <foreignphrase lang="en">Point-to-Point</foreignphrase>
-    (Anlagenanschluss):<programlisting>te_ptp=1,2,3,4</programlisting></para>
+    (Anlagenanschluss) sieht das so aus:<programlisting>te_ptp=1,2,3,4</programlisting></para>
 
-    <para>Bitte nach einer Anpassung dieser Datei das
-    <literal><command>/etc/init.d/misdn-init restart</command></literal> nicht
-    vergessen.</para>
+    <para>Bitte vergessen Sie nach einer Anpassung dieser Datei nicht das
+    <literal><command>/etc/init.d/misdn-init
+    restart</command></literal>.</para>
   </section>
 </section>
