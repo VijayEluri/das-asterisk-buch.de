@@ -36,14 +36,14 @@
     <title>Installation</title>
 
     <para>Diese Installationsanleitung setzt ein frisch installiertes Debian
-    GNU/Linux 3.1 (a.k.a. <quote>Sarge</quote>) voraus.</para>
+    GNU/Linux 5.0 (a.k.a. <quote>Lenny</quote>) voraus.</para>
 
     <para>Wir empfehlen zur Installation das Netzwerkinstallations-CD-Image,
-    welches ungefähr 100 MB groß ist und unter <ulink
-    url="http://www.debian.org/releases/sarge/debian-installer/">http://www.debian.org/releases/sarge/debian-installer/</ulink>
+    welches ungefähr 150 MB groß ist und unter <ulink
+    url="http://www.debian.org/releases/lenny/debian-installer/">http://www.debian.org/releases/lenny/debian-installer/</ulink>
     heruntergeladen werden kann. Eine Debian GNU/Linux-Installationsanleitung
     steht unter <ulink
-    url="http://www.debian.org/releases/sarge/i386/">http://www.debian.org/releases/sarge/i386/</ulink>
+    url="http://www.debian.org/releases/lenny/i386/">http://www.debian.org/releases/lenny/i386/</ulink>
     und ein allgemeines Anwenderhandbuch unter <ulink
     url="http://debiananwenderhandbuch.de/">http://debiananwenderhandbuch.de/</ulink>.</para>
 
@@ -72,7 +72,7 @@ Abhängigkeitsbaum wird aufgebaut... Fertig
     spätere Kompilieren von Asterisk erfolgreich durchgeführt werden
     kann:</para>
 
-    <screen>debian:~# <emphasis role="bold"><command>apt-get -y install openssl zlibc libkrb5-dev \
+    <screen>debian:~# <emphasis role="bold"><command>apt-get -y install build-essential make openssl zlibc libkrb5-dev \
     libncurses5-dev libssl-dev zlib1g-dev</command></emphasis>
 <replaceable>[...]</replaceable>
 Die folgenden NEUEN Pakete werden installiert:
@@ -81,64 +81,15 @@ Die folgenden NEUEN Pakete werden installiert:
 <replaceable>[...]</replaceable>
 debian:~# </screen>
 
-    <para>Asterisk wird aber erst nach mISDN installiert werden. mISDN lässt
-    sich momentan ausschließlich mit einen 2.6.x-Kernel kompilieren. Um diesen
-    zu installieren, suchen Sie folgendermaßen den zu Ihrer Architektur
-    passenden Kernel:<screen>debian:~# <emphasis role="bold"><command>apt-cache search kernel-image-2.6.8 | grep kernel-image</command></emphasis>
-kernel-image-2.6.8-3-386 - Linux kernel image for version 2.6.8 on 386.
-kernel-image-2.6.8-11-amd64-generic - Linux kernel image for version 2.6.8 on generic x86_64 systems
-kernel-image-2.6.8-11-amd64-k8 - Linux kernel image for version 2.6.8 on AMD64 systems
-kernel-image-2.6.8-11-amd64-k8-smp - Linux kernel image for version 2.6.8 on AMD64 SMP systems
-kernel-image-2.6.8-11-em64t-p4 - Linux kernel image for version 2.6.8 on Intel EM64T systems
-kernel-image-2.6.8-11-em64t-p4-smp - Linux kernel image for version 2.6.8 on Intel EM64T SMP systems
-kernel-image-2.6.8-12-amd64-generic - Linux kernel image for version 2.6.8 on generic x86_64 systems
-kernel-image-2.6.8-12-amd64-k8 - Linux kernel image for version 2.6.8 on AMD64 systems
-kernel-image-2.6.8-12-amd64-k8-smp - Linux kernel image for version 2.6.8 on AMD64 SMP systems
-kernel-image-2.6.8-12-em64t-p4 - Linux kernel image for version 2.6.8 on Intel EM64T systems
-kernel-image-2.6.8-12-em64t-p4-smp - Linux kernel image for version 2.6.8 on Intel EM64T SMP systems
-kernel-image-2.6.8-2-386 - Linux kernel image for version 2.6.8 on 386.
-kernel-image-2.6.8-2-686 - Linux kernel image for version 2.6.8 on PPro/Celeron/PII/PIII/P4.
-kernel-image-2.6.8-2-686-smp - Linux kernel image for version 2.6.8 on PPro/Celeron/PII/PIII/P4 SMP.
-kernel-image-2.6.8-2-k7 - Linux kernel image for version 2.6.8 on AMD K7.
-kernel-image-2.6.8-2-k7-smp - Linux kernel image for version 2.6.8 on AMD K7 SMP.
-kernel-image-2.6.8-3-686 - Linux kernel image for version 2.6.8 on PPro/Celeron/PII/PIII/P4.
-kernel-image-2.6.8-3-686-smp - Linux kernel image for version 2.6.8 on PPro/Celeron/PII/PIII/P4 SMP.
-kernel-image-2.6.8-3-k7 - Linux kernel image for version 2.6.8 on AMD K7.
-kernel-image-2.6.8-3-k7-smp - Linux kernel image for version 2.6.8 on AMD K7 SMP.
-debian:~# </screen>In diesem Beispiel entscheiden wir uns für den Kernel
-    <parameter>kernel-image-2.6.8-3-686</parameter> und installieren
-    diesen:<screen>debian:~# <emphasis role="bold"><command>apt-get -y install kernel-image-2.6.8-3-686</command></emphasis>
-<replaceable>[...]</replaceable>
-Die folgenden NEUEN Pakete werden installiert:
-  kernel-image-2.6.8-3-686
-0 aktualisiert, 1 neu installiert, 0 zu entfernen und 1 nicht aktualisiert.
-Es müssen 15,6MB Archive geholt werden.
-Nach dem Auspacken werden 45,2MB Plattenplatz zusätzlich benutzt.
-Hole:1 http://security.debian.org stable/updates/main kernel-image-2.6.8-3-686 2.6.8-16sarge6 [15,6MB]
-Es wurden 15,6MB in 1m7s geholt (232kB/s)                                      
-Wähle vormals abgewähltes Paket kernel-image-2.6.8-3-686.
-(Lese Datenbank ... 25562 Dateien und Verzeichnisse sind derzeit installiert.)
-Entpacke kernel-image-2.6.8-3-686 (aus .../kernel-image-2.6.8-3-686_2.6.8-16sarge6_i386.deb) ...
-Richte kernel-image-2.6.8-3-686 ein (2.6.8-16sarge6) ...
-Searching for GRUB installation directory ... found: /boot/grub .
-Testing for an existing GRUB menu.list file... found: /boot/grub/menu.lst .
-Searching for splash image... none found, skipping...
-Found kernel: /boot/vmlinuz-2.6.8-3-686
-Found kernel: /boot/vmlinuz-2.4.27-3-386
-Updating /boot/grub/menu.lst ... done
-
-debian:~# </screen>Danach booten wir den Rechner mit <command>shutdown -r
-    now</command> und können nach dem Booten mit <command>uname -a</command>
-    kontrollieren, ob mit dem richtigen Kernel gebootet wurde:<screen>debian:~# <emphasis
-          role="bold"><command>uname -a</command></emphasis>
-Linux debian 2.6.8-3-686 #1 Tue Dec 5 21:26:38 UTC 2006 i686 GNU/Linux
-debian:~# </screen>Zum Kompilieren benötigen wir jetzt noch die zum Kernel
+    <para>Danach booten wir den Rechner mit <command>shutdown -r
+    now</command> neu (dieser Schritt ist nur notwendig, wenn der Kernel apt-get -y upgrade mit geupdatet wurde).
+    Zum Kompilieren benötigen wir jetzt noch die zum Kernel
     passenden Header-Dateien. Diese können wie folgt nachinstalliert
-    werden:<screen>debian:~# <emphasis role="bold"><command>apt-get -y install kernel-headers-`uname -r`</command></emphasis>
+    werden:<screen>debian:~# <emphasis role="bold"><command>apt-get -y install linux-headers-`uname -r`</command></emphasis>
 <replaceable>[...]</replaceable>
 Die folgenden NEUEN Pakete werden installiert:
-  kernel-headers-2.6.8-3 kernel-headers-2.6.8-3-686 
-  kernel-kbuild-2.6-3
+  linux-headers-2.6.26-1-common linux-headers-2.6.26-1-686 
+  kernel-kbuild-2.6-26 linux-libc-dev
 <replaceable>[...]</replaceable>
 debian:~# </screen></para>
 
@@ -150,65 +101,33 @@ debian:~# </screen></para>
     herunter:</para>
 
     <screen>debian:~# <emphasis role="bold"><command>cd /usr/src/</command></emphasis>
-debian:/usr/src# <emphasis role="bold"><command>wget http://ftp.digium.com/pub/asterisk/asterisk-1.2-current.tar.gz</command></emphasis>
+debian:/usr/src# <emphasis role="bold"><command>wget http://downloads.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz</command></emphasis>
 <replaceable>[...]</replaceable>
-18:31:36 (207.67 KB/s) - »asterisk-1.2-current.tar.gz« gespeichert [10584113/10584113]</screen>
+11:09:07 (9.02 MB/s) - »asterisk-1.4-current.tar.gz« gespeichert [11613305/11613305]</screen>
 
-    <para>Als Nächstes laden Sie den dazugehörigen Zaptel-Treiber:<screen>debian:/usr/src# <emphasis
-          role="bold"><command>wget http://ftp.digium.com/pub/zaptel/zaptel-1.2-current.tar.gz</command></emphasis>
+    <para>Als Nächstes laden Sie den dazugehörigen DAHDI-Treiber:<screen>debian:/usr/src# <emphasis
+          role="bold"><command>wget http://downloads.digium.com/pub/telephony/dahdi-linux/dahdi-linux-current.tar.gz</command></emphasis>
 <replaceable>[...]</replaceable>
-20:49:12 (12.25 KB/s) - »zaptel-1.2-current.tar.gz« gespeichert [1487021/1487021]</screen></para>
+11:10:50 (10.51 MB/s) - »dahdi-linux-current.tar.gz« gespeichert [1251822/1251822]</screen></para>
 
-    <para>Als Letztes müssen wir jetzt noch das aktuelle
-    <code>libpri</code>-Paket downloaden:<screen>debian:/usr/src# <emphasis
-          role="bold"><command>wget http://ftp.digium.com/pub/libpri/libpri-1.2-current.tar.gz</command></emphasis>
-<replaceable>[...]</replaceable>
-17:47:13 (113.97 KB/s) - »libpri-1.2-current.tar.gz« gespeichert [76663/76663]</screen></para>
-
-    <para>Da der Zaptel-Treiber immer vor dem Asterisk kompiliert werden muss,
+    <para>Da der DAHDI-Treiber immer vor dem Asterisk kompiliert werden muss,
     entpacken wir diesen, wechseln dann in das Verzeichnis, kompilieren und
-    installieren ihn:<screen>debian:/usr/src# <emphasis role="bold"><command>tar xvzf zaptel-1.2-current.tar.gz</command></emphasis> 
-zaptel-1.2.12/
-zaptel-1.2.12/build_tools/
+    installieren ihn:<screen>debian:/usr/src# <emphasis role="bold"><command>tar xvzf dahdi-linux-current.tar.gz</command></emphasis> 
+dahdi-linux-2.1.0.4/
+dahdi-linux-2.1.0.4/include/
 <replaceable>[...]</replaceable>
-debian:/usr/src# <emphasis role="bold"><command>cd zaptel-1.2.12</command></emphasis> 
-debian:/usr/src/zaptel-1.2.12# <emphasis role="bold"><command>make &amp;&amp; make install</command></emphasis>
+debian:/usr/src# <emphasis role="bold"><command>cd dahdi-linux-2.1.0.4</command></emphasis> 
+debian:/usr/src/dahdi-linux-2.1.0.4# <emphasis role="bold"><command>make &amp;&amp; make install</command></emphasis>
 <replaceable>[...]</replaceable>
-debian:/usr/src/zaptel-1.2.12# </screen></para>
-
-    <para>Jetzt wieder ein Verzeichnis rauf und das libpri-Paket
-    entpacken:<screen>debian:/usr/src# <emphasis role="bold"><command>tar xvzf libpri-1.2-current.tar.gz</command></emphasis> 
-libpri-1.2.4/
-libpri-1.2.4/copy_string.c
-libpri-1.2.4/LICENSE
-libpri-1.2.4/prisched.c
-<replaceable>[...]</replaceable>
-libpri-1.2.4/pri_internal.h
-libpri-1.2.4/Makefile
-libpri-1.2.4/q921.c
-libpri-1.2.4/q931.c
-debian:/usr/src# </screen></para>
-
-    <para>Dann ins libpri-Verzeichnis wechseln, kompilieren und
-    installieren:<screen>debian:/usr/src# <emphasis role="bold"><command>cd libpri-1.2.4</command></emphasis> 
-debian:/usr/src/libpri-1.2.4# <emphasis role="bold"><command>make &amp;&amp; make install</command></emphasis>
-<replaceable>[...]</replaceable>
-ln -sf libpri.so.1.0 libpri.so
-ln -sf libpri.so.1.0 libpri.so.1
-mkdir -p /usr/lib
-mkdir -p /usr/include
-install -m 644 libpri.h /usr/include
-install -m 755 libpri.so.1.0 /usr/lib
-<replaceable>[...]</replaceable>
-debian:/usr/src/libpri-1.2.4# </screen></para>
+debian:/usr/src/dahdi-linux-2.1.0.4# </screen></para>
 
     <para>Jetzt wiederum ins Verzeichnis <filename>/usr/src</filename>
     wechseln und den Asterisk-Tarball entpacken:</para>
 
     <para><screen>debian:~# <emphasis role="bold"><command>cd /usr/src</command></emphasis>
-debian:/usr/src# <emphasis role="bold"><command>tar xvzf asterisk-1.2-current.tar.gz</command></emphasis> 
-asterisk-1.2.14/
-asterisk-1.2.14/build_tools/
+debian:/usr/src# <emphasis role="bold"><command>tar xvzf asterisk-1.4-current.tar.gz</command></emphasis> 
+asterisk-1.4.24.1/
+asterisk-1.4.24.1/build_tools/
 <replaceable>[...]</replaceable>
 debian:/usr/src# </screen></para>
 
@@ -216,21 +135,25 @@ debian:/usr/src# </screen></para>
     geschieht mit dem Befehl <command>make</command> im gerade entpackten
     Verzeichnis.<warning>
         <para>Bitte achten Sie darauf, dass die hier in der Dokumentation
-        benutzte Version 1.2.14 vielleicht zum Zeitpunkt Ihrer Installation
+        benutzte Version 1.4.24.1 vielleicht zum Zeitpunkt Ihrer Installation
         nicht mehr aktuell ist. Entsprechend werden sich die Verzeichnisnamen
         ändern.</para>
       </warning>Übrigens ist dies jetzt ein guter Moment, sich einen Kaffee
     oder Tee zu kochen. Der Kompiliervorgang kann je nach Rechenleistung des
     PCs wenige Minuten oder bis zu einer Stunde dauern.</para>
 
-    <screen>debian:/usr/src# <emphasis role="bold"><command>cd asterisk-1.2.14</command></emphasis> 
-debian:/usr/src/asterisk-1.2.14# <emphasis role="bold"><command>make</command></emphasis>
+    <screen>debian:/usr/src# <emphasis role="bold"><command>cd asterisk-1.4.24.1</command></emphasis> 
+debian:/usr/src/asterisk-1.4.24.1# <emphasis role="bold"><command>./configure</command></emphasis>
 <replaceable>[...]</replaceable>
-make[1]: Leaving directory `/usr/src/asterisk-1.2.14/stdtime'
+configure: Package configured for:
+configure: OS type  : linux-gnu
+configure: Host CPU : i686
+debian:/usr/src/asterisk-1.4.24.1# <emphasis role="bold"><command>make</command></emphasis>
+<replaceable>[...]</replaceable>
+make[1]: Leaving directory `/usr/src/asterisk-1.4.24.1/main'
  +--------- Asterisk Build Complete ---------+
- + Asterisk has successfully been built, but +
- + cannot be run before being installed by   +
- + running:                                  +
+ + Asterisk has successfully been built, and +
+ + can be installed by running:              +
  +                                           +
  +               make install                +
  +-------------------------------------------+</screen>
@@ -239,7 +162,7 @@ make[1]: Leaving directory `/usr/src/asterisk-1.2.14/stdtime'
     <command>make install</command> installiert (sprich an die vorgesehenen
     Stellen im Dateisystem kopiert) werden:</para>
 
-    <screen>debian:/usr/src/asterisk-1.2.14# <emphasis role="bold"><command>make install</command></emphasis>
+    <screen>debian:/usr/src/asterisk-1.4.24.1# <emphasis role="bold"><command>make install</command></emphasis>
 <replaceable>[...]</replaceable>
  +---- Asterisk Installation Complete -------+
  +                                           +
@@ -262,7 +185,7 @@ make[1]: Leaving directory `/usr/src/asterisk-1.2.14/stdtime'
  + **Note** This requires that you have      +
  + doxygen installed on your local system    +
  +-------------------------------------------+
-debian:/usr/src/asterisk-1.2.14# </screen>
+debian:/usr/src/asterisk-1.4.24.1# </screen>
 
     <para>Geschafft! Die soeben kompilierten Programmdateien sind jetzt auf
     dem System installiert. Allerdings finden wir im
@@ -271,10 +194,10 @@ debian:/usr/src/asterisk-1.2.14# </screen>
     Konfigurationsdateien von Asterisk und da wir nicht von Null beginnen
     möchten, lassen wir uns die Standarddateien erstellen:</para>
 
-    <screen>debian:/usr/src/asterisk-1.2.14# <emphasis role="bold"><command>make samples</command></emphasis>
+    <screen>debian:/usr/src/asterisk-1.4.24.1# <emphasis role="bold"><command>make samples</command></emphasis>
 <replaceable>[...]</replaceable>
 done
-debian:/usr/src/asterisk-1.2.14# </screen>
+debian:/usr/src/asterisk-1.4.24.1# </screen>
 
     <para>Zum Schluss müssen Sie noch den für Ihre analoge Karte richtigen
     Treiber laden.<note>
@@ -320,9 +243,9 @@ debian:/usr/src/asterisk-1.2.14# </screen>
           </tgroup>
         </table>
       </note>In unserem Beispiel laden wir den Treiber für die TDM400P Karte
-    mit <command>modprobe wctdm.</command><screen>debian:/usr/src/asterisk-1.2.14# <emphasis
+    mit <command>modprobe wctdm.</command><screen>debian:/usr/src/asterisk-1.4.24.1# <emphasis
           role="bold"><command>modprobe wctdm</command></emphasis>
-debian:/usr/src/asterisk-1.2.14# </screen></para>
+debian:/usr/src/asterisk-1.4.24.1# </screen></para>
 
     <para>In der Logdatei <filename>/var/log/messages</filename> können wir
     dann die Ausgabe des Moduls sehen:<screen>Jan 21 18:06:23 localhost kernel: Zapata Telephony Interface Registered on major
@@ -351,10 +274,10 @@ Jan 21 18:06:24 localhost kernel: Module 3: Installed -- AUTO FXO (FCC mode)</pr
     <para>Fertig! Asterisk ist auf Ihrem System inklusive aller benötigten
     Treiber installiert. Mit dem Befehl <command>asterisk -V</command> können
     Sie die installierte Version herausfinden (bitte achten Sie auf das
-    großgeschriebene V):<screen>debian:/usr/src/asterisk-1.2.14# <emphasis
+    großgeschriebene V):<screen>debian:/usr/src/asterisk-1.4.24.1# <emphasis
           role="bold"><command>asterisk -V</command></emphasis>
-Asterisk 1.2.14
-debian:/usr/src/asterisk-1.2.14# </screen></para>
+Asterisk 1.4.24.1
+debian:/usr/src/asterisk-1.4.24.1# </screen></para>
   </section>
 
   <section id="digium-tdm400p-analog-fxo">
