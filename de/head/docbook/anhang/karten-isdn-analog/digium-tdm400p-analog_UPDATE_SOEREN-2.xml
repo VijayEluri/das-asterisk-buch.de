@@ -53,8 +53,9 @@
     Schritt auszulassen und die Schritte als Benutzer root
     durchzuführen.</emphasis></para>
 
-    <para>Als Erstes stellen Sie sicher, dass <code>apt</code> alle aktuellen
-    Paketlisten zur Verfügung hat:<screen>debian:~# <emphasis role="bold"><command>apt-get update</command></emphasis>
+    <para>Als Erstes stellen Sie sicher, dass <code>aptitude</code> alle
+    aktuellen Paketlisten zur Verfügung hat:<screen>debian:~# <emphasis
+          role="bold"><command>aptitude update</command></emphasis>
 OK   http://ftp.de.debian.org stable/main Packages
 OK   http://ftp.de.debian.org stable/main Release
 OK   http://security.debian.org stable/updates/main Packages
@@ -63,16 +64,29 @@ Paketlisten werden gelesen... Fertig
 debian:~# </screen></para>
 
     <para>Um sicherzugehen, dass alle Pakete auf dem neuesten Stand sind,
-    führen Sie noch ein Upgrade aus:<screen>debian:~# <emphasis role="bold"><command>apt-get -y upgrade</command></emphasis>
+    führen Sie noch ein Upgrade aus:<screen>debian:~# <emphasis role="bold"><command>aptitude -y upgrade</command></emphasis>
 Paketlisten werden gelesen... Fertig
 Abhängigkeitsbaum wird aufgebaut... Fertig
 0 aktualisiert, 0 neu installiert, 0 zu entfernen und 0 nicht aktualisiert.</screen></para>
+
+    <para>Für den Fall, dass beim Upgrade der Pakete auch ein neuer Kernel
+    installiert wurde, müssen wir jetzt das System mit
+    <literal><command>shutdown -r now</command></literal> (oder mit
+    <literal><command>reboot</command></literal>) neu starten:<screen>debian:~# <emphasis
+          role="bold"><command>shutdown -r now</command></emphasis>
+
+Broadcast message from root@debian (pts/0) (Mon Mar 23 17:42:04 2009):
+
+The system is going down for reboot NOW!</screen></para>
+
+    <para>Nach dem Booten loggen Sie sich bitte wieder als
+    <literal>root</literal> ein.</para>
 
     <para>Jetzt müssen Sie noch ein paar Pakete nachinstallieren, damit das
     spätere Kompilieren von Asterisk erfolgreich durchgeführt werden
     kann:</para>
 
-    <screen>debian:~# <emphasis role="bold"><command>apt-get -y install build-essential make openssl zlibc libkrb5-dev \
+    <screen>debian:~# <emphasis role="bold"><command>aptitude -y install build-essential make openssl zlibc libkrb5-dev \
     libncurses5-dev libssl-dev zlib1g-dev</command></emphasis>
 <replaceable>[...]</replaceable>
 Die folgenden NEUEN Pakete werden installiert:
@@ -81,11 +95,9 @@ Die folgenden NEUEN Pakete werden installiert:
 <replaceable>[...]</replaceable>
 debian:~# </screen>
 
-    <para>Danach booten wir den Rechner mit <command>shutdown -r
-    now</command> neu (dieser Schritt ist nur notwendig, wenn der Kernel apt-get -y upgrade mit geupdatet wurde).
-    Zum Kompilieren benötigen wir jetzt noch die zum Kernel
-    passenden Header-Dateien. Diese können wie folgt nachinstalliert
-    werden:<screen>debian:~# <emphasis role="bold"><command>apt-get -y install linux-headers-`uname -r`</command></emphasis>
+    <para>Zum Kompilieren benötigen wir jetzt noch die zum Kernel passenden
+    Header-Dateien. Diese können wie folgt nachinstalliert werden:<screen>debian:~# <emphasis
+          role="bold"><command>aptitude -y install linux-headers-`uname -r`</command></emphasis>
 <replaceable>[...]</replaceable>
 Die folgenden NEUEN Pakete werden installiert:
   linux-headers-2.6.26-1-common linux-headers-2.6.26-1-686 
