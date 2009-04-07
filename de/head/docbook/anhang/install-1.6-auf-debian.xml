@@ -15,7 +15,7 @@
 % Asterisk training and consulting is offered at http://www.amooma.de
 -->
 
-  <title>Installation Asterisk 1.6.x auf Debian Linux</title>
+  <title>Die Installation von Asterisk 1.6.x auf Debian Linux</title>
 
   <indexterm>
     <primary>Installation</primary>
@@ -28,22 +28,22 @@
   <para>Die hier aufgeführte Installationsanleitung gilt für ein
   Asterisk-System mit allen in diesem Buch beschriebenen Features (bei
   Ausnahmen wird dies gesondert besprochen). Deshalb ist die Installation
-  etwas umfangreicher. Das hat aber auch den Vorteil, dass man in der Zukunft
-  nicht noch einmal etwas nachinstallieren muss.<tip>
+  etwas umfangreicher. Das hat aber auch den Vorteil, dass Sie in Zukunft
+  nicht noch einmal etwas nachinstallieren müssen.<tip>
       <para>Falls Sie zum ersten Experimentieren mit Asterisk nicht direkt
-      einen Rechner neu installieren wollen, so empfehlen wir Ihnen eine <link
-      linkend="installation-1.4-knoppix-5.1">Installation in einem Knoppix
-      Live-System</link>.</para>
+      einen Rechner neu installieren wollen, empfehlen wir Ihnen eine <link
+      linkend="installation-1.4-knoppix-5.1">Installation in einem
+      Knoppix-Live-System</link>.</para>
     </tip></para>
 
   <para>Es wird ein frisch installiertes Debian GNU/Linux 5.0
   (<quote>Lenny</quote>) vorausgesetzt. Ein ISO-Image für die Installation
   finden Sie auf <ulink
   url="http://www.debian.org/releases/lenny/debian-installer/">http://www.debian.org/releases/lenny/debian-installer/</ulink>.
-  Wir empfehlen das etwa 150 MB große Netzinstallations-CD-Image<footnote>
-      <para>I.d.R. werden Sie das für die Architektur <literal>i386</literal>
-      benötigen.</para>
-    </footnote>. Eine Debian GNU/Linux-Installationsanleitung befindet sich
+  Wir empfehlen das etwa 150 MByte große Netzinstallations-CD-Image<footnote>
+      <para>In der Regel werden Sie das für die Architektur
+      <literal>i386</literal> benötigen.</para>
+    </footnote>. Eine Debian GNU/Linux-Installationsanleitung findet sich
   unter <ulink
   url="http://www.debian.org/releases/lenny/i386/">http://www.debian.org/releases/lenny/i386/</ulink>.
   Ein allgemeines Anwenderhandbuch steht unter <ulink
@@ -51,25 +51,25 @@
 
   <note>
     <para>Bitte loggen Sie sich nach der Installation als Benutzer
-    <literal>root</literal> am System ein und führen Sie alle hier angegebenen
-    Befehle mit diesem Benutzer aus.</para>
+    <literal>root</literal> am System ein, und führen Sie alle hier
+    angegebenen Befehle mit diesem Benutzer aus.</para>
   </note>
 
   <note>
-    <para>Was einige Anwender wohl direkt tun werden ist einen SSH-Server zu
-    installieren um von ihrem normalen Arbeitsplatz aus im Terminal auf dem
-    Server arbeiten zu können. Der Befehl dazu lautet:
-    <literal><command>aptitude install ssh</command></literal> . Dann kann man
-    hier im folgenden auch wunderbar mit Kopieren und Einsetzen der meisten
-    Befehle arbeiten. Wir setzen voraus dass Sie entweder mit der
-    grundsätzlichen Verwendung von <command>ssh</command> vertraut sind oder
-    direkt am System selber arbeiten.</para>
+    <para>Einige Anwender werden wohl direkt einen SSH-Server installieren
+    wollen, um von ihrem normalen Arbeitsplatz aus im Terminal auf dem Server
+    arbeiten zu können. Der Befehl dazu lautet: <literal><command>aptitude
+    install ssh</command></literal>. Dann kann man hier im Folgenden auch
+    wunderbar mit Kopieren und Einsetzen der meisten Befehle arbeiten. Wir
+    setzen voraus, dass Sie entweder mit der grundsätzlichen Verwendung von
+    <command>ssh</command> vertraut sind oder direkt am System selbst
+    arbeiten.</para>
   </note>
 
-  <para>Es versteht sich eigentlich von selbst dass man auf einem frisch
-  installierten System erstmal sicherstellt dass die Paketverwaltung
-  (<literal>apt</literal>) die aktuellen Paketlisten zur Verfügung
-  hat:<screen>debian:~# <emphasis role="bold"><command>aptitude update</command></emphasis>
+  <para>Es versteht sich eigentlich von selbst, dass man auf einem frisch
+  installierten System erst einmal sicherstellt, dass die Paketverwaltung
+  (<literal>apt</literal>) die aktuellen Paketlisten zur Verfügung hat
+  ...<screen>debian:~# <emphasis role="bold"><command>aptitude update</command></emphasis>
 Treffer http://ftp.de.debian.org lenny Release.gpg
 <replaceable>[...]</replaceable>
 1820kB wurden in 13s heruntergeladen (138kB/s)
@@ -87,7 +87,7 @@ Es werden keine Pakete installiert, aktualisiert oder entfernt.
 Muss 0B an Archiven herunterladen. Nach dem Entpacken werden 0B zusätzlich belegt sein.
 debian:~# </screen></para>
 
-  <para>Für den Fall dass beim Upgrade der Pakete auch ein neuer Kernel
+  <para>Für den Fall, dass beim Upgrade der Pakete auch ein neuer Kernel
   installiert wurde, müssen wir jetzt das System mit
   <literal><command>shutdown -r now</command></literal> (oder mit
   <literal><command>reboot</command></literal>) neu starten:<screen>debian:~# <emphasis
@@ -97,19 +97,19 @@ Broadcast message from root@debian (pts/0) (Mon Mar 23 17:42:04 2009):
 
 The system is going down for reboot NOW!</screen></para>
 
-  <para>Nach dem Booten bitte wieder als <literal>root</literal>
-  einloggen.</para>
+  <para>Nach dem Booten loggen Sie sich bitte wieder als
+  <literal>root</literal> ein.</para>
 
   <note>
     <para>Das hat zwar nichts mit Asterisk zu tun, aber typischerweise
-    installiert man auch NTP um immer die aktuelle Zeit zu haben:<screen>debian:~# <emphasis
+    installiert man auch NTP, um immer die aktuelle Zeit zu haben:<screen>debian:~# <emphasis
           role="bold"><command>aptitude -y install ntp ntpdate</command></emphasis></screen>Ein
     Muss ist das natürlich nicht.</para>
   </note>
 
-  <para>Zuerst installieren wir eine Build-Umgebung &#8211; d.h. Compiler usw.
-  &#8211; und diverse Abhängigkeiten damit das Kompilieren von Asterisk
-  erfolgreich durchgeführt werden kann.<screen>debian:~# <emphasis role="bold"><command>aptitude -y install build-essential</command></emphasis>
+  <para>Zuerst installieren wir eine Build-Umgebung – d.h. Compiler usw. – und
+  diverse Abhängigkeiten, damit das Kompilieren von Asterisk erfolgreich
+  durchgeführt werden kann.<screen>debian:~# <emphasis role="bold"><command>aptitude -y install build-essential</command></emphasis>
 <replaceable>[...]</replaceable>
 Die folgenden NEUEN Pakete werden zusätzlich installiert:
   binutils{a} build-essential bzip2{a} cpp{a} cpp-4.3{a} 
@@ -151,7 +151,8 @@ debian:/usr/src# <emphasis role="bold"><command>wget http://downloads.digium.com
       <para>Ja, libpri 1.4.x ist die richtige Version für Asterisk 1.6.</para>
     </note></para>
 
-  <para>Entpacken:<screen>debian:/usr/src# <emphasis role="bold"><command>tar xvzf libpri-1.4-current.tar.gz</command></emphasis>
+  <para>Entpacken Sie sie wie folgt:<screen>debian:/usr/src# <emphasis
+        role="bold"><command>tar xvzf libpri-1.4-current.tar.gz</command></emphasis>
 libpri-1.4.9/
 libpri-1.4.9/build_tools/
 <replaceable>[...]</replaceable>
@@ -170,11 +171,12 @@ debian:/usr/src/libpri-1.4.9# <emphasis role="bold"><command>make install</comma
       <para>Bis Asterisk 1.4.21 hieß Dahdi noch Zaptel. Für weitere
       Informationen siehe <xref linkend="zaptel-to-dahdi" />.</para>
     </footnote> ist für die Kommunikation zwischen Asterisk und
-  ISDN-/Analog-Karten zuständig. Aber auch ohne solche Karten lohnt sich die
-  Installation, denn Dahdi erfüllt z. B. auch die Aufgabe einen Zeittakt für
+  ISDN/Analog-Karten zuständig. Aber auch ohne solche Karten lohnt sich die
+  Installation, denn Dahdi erfüllt z. B. auch die Aufgabe, einen Zeittakt für
   Konferenzräume bereitzustellen.</para>
 
-  <para>Runterladen:<screen>debian:~# <emphasis role="bold"><command>cd /usr/src/</command></emphasis>
+  <para>Laden Sie Dahdi wie folgt herunter:<screen>debian:~# <emphasis
+        role="bold"><command>cd /usr/src/</command></emphasis>
 debian:/usr/src# <emphasis role="bold"><command>wget http://downloads.digium.com/pub/telephony/dahdi-linux/dahdi-linux-current.tar.gz</command></emphasis>
 <replaceable>[...]</replaceable>
 2009-03-23 10:33:37 (165 KB/s) - »dahdi-linux-current.tar.gz« gespeichert [1251822/1251822]
@@ -281,14 +283,16 @@ support for all DAHDI hardware is loaded at DAHDI start.
 I think that the DAHDI hardware you have on your system is:
 debian:/usr/src/dahdi-tools-2.1.0.2# </screen></para>
 
-  <para>Der Hinweis sagt uns dass wir für einen schnelleren Systemstart und
+  <para>Der Hinweis sagt uns, dass wir für einen schnelleren Systemstart und
   für ein schlankeres System in der Datei
-  <filename>/etc/dahdi/modules</filename> alle Module auskommentieren sollten
-  die wir nicht für ggf. eingebaute Karten benötigen. Das ist aber kein Muss.
-  Wer keine Karten installiert hat kann alle Module auskommentieren.</para>
+  <filename>/etc/dahdi/modules</filename> alle Module auskommentieren sollten,
+  die wir nicht für gegebenenfalls eingebaute Karten benötigen. Das ist aber
+  kein Muss. Wer keine Karten installiert hat, kann alle Module
+  auskommentieren.</para>
 
-  <para>Um jetzt nicht das System rebooten zu müssen starten wir einfach Dahdi
-  neu damit die Module geladen werden:<screen>debian:~# <emphasis role="bold"><command>/etc/init.d/dahdi restart</command></emphasis>
+  <para>Um jetzt nicht das System rebooten zu müssen, starten wir einfach
+  Dahdi neu, damit die Module geladen werden:<screen>debian:~# <emphasis
+        role="bold"><command>/etc/init.d/dahdi restart</command></emphasis>
 Unloading DAHDI hardware modules: done
 Loading DAHDI hardware modules:
 
@@ -308,9 +312,9 @@ debian:~# </screen>Hier im Beispiel wurde ohne eingebaute Karten automatisch
 
   <note>
     <para>Bei Asterisk 1.6 ist die Nummerierung der Versionen etwas anders als
-    bei 1.4. 1.6.0.x, 1.6.1.x, 1.6.2.x usw. sind unterschiedliche Zweige
-    (<quote>Branches</quote>), d.h. es gibt eine URL
-    <filename>1.6.0-current</filename> und wird auch demnächst eine URL
+    bei 1.4. Die Versionen 1.6.0.x, 1.6.1.x, 1.6.2.x usw. sind
+    unterschiedliche Zweige (<quote>Branches</quote>), d.h., es gibt eine URL
+    <filename>1.6.0-current</filename>, und es wird auch demnächst eine URL
     <filename>1.6.1-current</filename> geben.</para>
   </note>
 
@@ -467,14 +471,15 @@ debian:/usr/src/asterisk-1.6.0.6# </screen></para>
   <para>Die eben kompilierten Programmdateien sind jetzt auf dem System
   installiert. Allerdings finden wir im Asterisk-Konfigurationsverzeichnis
   <filename>/etc/asterisk/</filename> noch gähnende Leere vor. Da wir nicht
-  von Null beginnen möchten, lassen wir uns die Standard-Beispieldateien
+  von Grund auf beginnen möchten, lassen wir uns die Standard-Beispieldateien
   erstellen:<screen>debian:/usr/src/asterisk-1.6.0.6# <emphasis role="bold"><command>make samples</command></emphasis>
 <replaceable>[...]</replaceable>
 debian:/usr/src/asterisk-1.6.0.6# </screen></para>
 
   <para>Damit Asterisk beim Booten des Rechners auch automatisch gestartet und
-  bei einem Shutdown ordentlich gestoppt wird benötigen wir noch entsprechende
-  Init-Skripte:<screen>debian:/usr/src/asterisk-1.6.0.6# <emphasis role="bold"><command>make config</command></emphasis>
+  bei einem Shutdown ordentlich gestoppt wird, benötigen wir noch
+  entsprechende Init-Skripte:<screen>debian:/usr/src/asterisk-1.6.0.6# <emphasis
+        role="bold"><command>make config</command></emphasis>
 update-rc.d: warning: /etc/init.d/asterisk missing LSB information
 update-rc.d: see &lt;http://wiki.debian.org/LSBInitScripts&gt;
  Adding system startup for /etc/init.d/asterisk ...
@@ -488,8 +493,8 @@ update-rc.d: see &lt;http://wiki.debian.org/LSBInitScripts&gt;
    /etc/rc5.d/S50asterisk -&gt; ../init.d/asterisk
 debian:/usr/src/asterisk-1.6.0.6# </screen></para>
 
-  <para>Fast fertig. Leider setzt die Asterisk-Installation diese Runlevels
-  auf Debian bisher noch nicht ganz korrekt, was wir folgendermaßen
+  <para>Wir sind jetzt fast fertig. Leider setzt die Asterisk-Installation die
+  Runlevels auf Debian bisher noch nicht ganz korrekt, was wir folgendermaßen
   beheben:<screen>debian:/usr/src/asterisk-1.6.0.6# <emphasis role="bold"><command>cd</command></emphasis>
 debian:~# <emphasis role="bold"><command>update-rc.d -f asterisk remove</command></emphasis>
  Removing any system startup links for /etc/init.d/asterisk ...
