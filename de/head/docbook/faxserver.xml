@@ -17,7 +17,7 @@
 % Free Documentation License".
 % Asterisk training and consulting is offered at http://www.amooma.de -->
 
-  <title>Fax-Server</title>
+  <title>Faxserver</title>
 
   <para>Es gibt eine Reihe von Ansätzen und Projekten, mit Asterisk einen
   Faxserver zu implementieren. Lange Zeit war <literal>app_rxfax</literal> von
@@ -32,8 +32,8 @@
     <title>Faxserver mit IAXmodem und HylaFax</title>
 
     <para>Die Software IAXmodem emuliert ein Modem, das von einer beliebigen
-    Faxsoftware angesteuert werden kann. Für die Faxserversoftware nehmen wir
-    das populäre HylaFax (<ulink
+    Faxsoftware angesteuert werden kann. Als Faxserversoftware nehmen wir das
+    populäre HylaFax (<ulink
     url="http://www.hylafax.org/">http://www.hylafax.org/</ulink>) oder
     HylaFax+ (<ulink
     url="http://hylafax.sourceforge.net/">http://hylafax.sourceforge.net/</ulink>).
@@ -44,9 +44,10 @@
     <section id="installation-iaxmodem">
       <title>Installation von IAXmodem</title>
 
-      <para>IAXmodem ist eine Software, die ein Modem simuliert, und dieses
+      <para>IAXmodem ist eine Software, die ein Modem simuliert und dieses
       Asterisk mit dem IAX2-Protokoll zur Verfügung stellt. Alle Schritte in
-      diesem Kapitel werden als User root ausgeführt.</para>
+      diesem Kapitel werden als User <filename>root</filename>
+      ausgeführt.</para>
 
       <para>Um IAXmodem installieren zu können, benötigen wir noch einige
       Debian-Pakete:</para>
@@ -75,11 +76,11 @@ iaxmodem-1.2.0/iaxmodem.init.debian
 <replaceable>[...]</replaceable>
 debian:/usr/src# </screen></para>
 
-      <para>In das neue Verzeichnis wechseln:<screen>debian:/usr/src# <emphasis
+      <para>Nun wechseln wir in das neue Verzeichnis:<screen>debian:/usr/src# <emphasis
             role="bold"><command>cd iaxmodem-1.2.0</command></emphasis>
 debian:/usr/src/iaxmodem-1.2.0# </screen></para>
 
-      <para>Un danach kompilieren:<screen>debian:/usr/src/iaxmodem-1.2.0# <emphasis
+      <para>Und kompilieren es danach:<screen>debian:/usr/src/iaxmodem-1.2.0# <emphasis
             role="bold"><command>./configure &amp;&amp; make</command></emphasis>
 checking for a BSD-compatible install... /usr/bin/install -c
 checking whether build environment is sane... yes
@@ -91,7 +92,8 @@ checking for gcc... gcc
 debian:/usr/src/iaxmodem-1.2.0# </screen></para>
 
       <para>Das dabei entstehende Binary <literal>iaxmodem</literal> kopieren
-      wir zum Schluss ins Verzeichnis <filename>/usr/bin/:</filename><screen>debian:/usr/src/iaxmodem-1.2.0# <emphasis
+      wir zum Schluss in das Verzeichnis
+      <filename>/usr/bin/:</filename><screen>debian:/usr/src/iaxmodem-1.2.0# <emphasis
             role="bold"><command>cp iaxmodem /usr/bin/</command></emphasis>
 debian:/usr/src/iaxmodem-1.2.0# </screen></para>
 
@@ -102,8 +104,8 @@ debian:/usr/src/iaxmodem-1.2.0# </screen></para>
 debian:~# <emphasis role="bold"><command>mkdir /etc/iaxmodem</command></emphasis>
 debian:~# </screen></para>
 
-      <para>Und eine Datei erzeugen, in der die Konfiguration stehen
-      soll:<screen>debian:~# <emphasis role="bold"><command>cd /etc/iaxmodem/</command></emphasis>
+      <para>Und eine Datei erzeugen, in der die Konfiguration stehen soll,
+      schreiben wir:<screen>debian:~# <emphasis role="bold"><command>cd /etc/iaxmodem/</command></emphasis>
 debian:/etc/iaxmodem# <emphasis role="bold"><command>touch ttyIAX0</command></emphasis>
 debian:/etc/iaxmodem# </screen></para>
 
@@ -118,7 +120,7 @@ debian:/etc/iaxmodem# </screen></para>
               Verzeichnis <filename>/dev</filename> angelegt wird. Über dieses
               Device kann Hylafax später auf das Modem zugreifen. Der Name des
               Devices ist frei wählbar, wir halten uns aber an die allgemeinen
-              Konventionen und nennen es <code>ttyIAX0</code> &#8211;
+              Konventionen und nennen es <code>ttyIAX0</code> &ndash;
               äquivalent zum Device für die serielle Schnittstelle.</simpara>
             </listitem>
           </varlistentry>
@@ -160,7 +162,7 @@ debian:/etc/iaxmodem# </screen></para>
             <term><code>server</code></term>
 
             <listitem>
-              <simpara>Der Server, auf dem der Asterisk läuft. Wenn der Server
+              <simpara>Der Server, auf dem Asterisk läuft. Wenn der Server
               derselbe ist, auf dem auch das IAXmodem läuft, steht hier die
               lokale Adresse <code>127.0.0.1</code>.</simpara>
             </listitem>
@@ -179,7 +181,7 @@ debian:/etc/iaxmodem# </screen></para>
             <term><code>secret</code></term>
 
             <listitem>
-              <simpara>Das Passwort zur Registrierung am Asterisk</simpara>
+              <simpara>Das Passwort zur Registrierung an Asterisk</simpara>
             </listitem>
           </varlistentry>
 
@@ -215,18 +217,19 @@ codec           alaw
       werden. Dies geschieht am besten über den <code>init</code>-Prozess.
       Also fügen wir den folgenden Eintrag am Ende der Datei
       <filename>/etc/inittab</filename> hinzu (in <code>vi</code> oder
-      <code>vim</code>):<programlisting>IA00:23:respawn:/usr/bin/iaxmodem ttyIAX0</programlisting>Wobei
-      <code>ttyIAX0</code> der Name der Konfigurationsdatei unter
-      <filename>/etc/iaxmodem/</filename> ist.</para>
+      <code>vim</code>):<programlisting>IA00:23:respawn:/usr/bin/iaxmodem ttyIAX0</programlisting>Dabei
+      ist <code>ttyIAX0</code> der Name der Konfigurationsdatei unter
+      <filename>/etc/iaxmodem/</filename>.</para>
 
-      <para>Zum Faxempfang benötigen man einen getty, der am IAXmodem auf
-      Verbindungen lauscht. Das erreicht man ganz einfach durch einen weiteren
-      Eintrag in der Datei <filename>/etc/inittab</filename>.<programlisting>mo00:23:respawn:/usr/local/sbin/faxgetty ttyIAX0</programlisting></para>
+      <para>Zum Faxempfang benötigt man einen <filename>getty</filename>, der
+      am IAXmodem auf Verbindungen lauscht. Das erreicht man ganz einfach
+      durch einen weiteren Eintrag in der Datei
+      <filename>/etc/inittab</filename>:<programlisting>mo00:23:respawn:/usr/local/sbin/faxgetty ttyIAX0</programlisting></para>
 
-      <para>Damit iaxmodem in die Logdateien schreiben kann, legen wir den
+      <para>Damit IAXmodem in die Logdateien schreiben kann, legen wir den
       Ordner <filename>/var/log/iaxmodem</filename> an und erstellen die
       Logdateien <filename>ttyIAX0</filename> und
-      <filename>iaxmodem</filename>.</para>
+      <filename>iaxmodem</filename>:</para>
 
       <para><screen>debian:~# <emphasis role="bold"><command>mkdir /var/log/iaxmodem</command></emphasis>
 debian:~# <emphasis role="bold"><command>cd /var/log/iaxmodem/</command></emphasis>
@@ -234,9 +237,9 @@ debian:/var/log/iaxmodem# <emphasis role="bold"><command>touch ttyIAX0</command>
 debian:/var/log/iaxmodem# <emphasis role="bold"><command>touch iaxmodem</command></emphasis>
 debian:/var/log/iaxmodem# </screen></para>
 
-      <para>Um ganz sicher zu gehen rebooten wir jetzt noch einmal den
-      Rechner, damit <code>init</code> auch das IAXmodem richtig
-      startet.<screen>debian:~# <emphasis role="bold"><command>shutdown -r now</command></emphasis>
+      <para>Um ganz sicherzugehen, rebooten wir jetzt noch einmal den Rechner,
+      damit <code>init</code> auch das IAXmodem richtig startet.<screen>debian:~# <emphasis
+            role="bold"><command>shutdown -r now</command></emphasis>
 <replaceable>[...]</replaceable>
 The system is going down for reboot NOW!
 debian:~# </screen></para>
@@ -245,8 +248,8 @@ debian:~# </screen></para>
     <section id="installation-hylafax">
       <title>Installation von HylaFax</title>
 
-      <para>Um die Installation zu vereinfachen installieren wir den Faxserver
-      aus dem Debian-Repository. Abhängigkeiten werden automatisch
+      <para>Um die Installation zu vereinfachen, installieren wir den
+      Faxserver aus dem Debian-Repository. Abhängigkeiten werden automatisch
       aufgelöst:<screen>debian:~# <emphasis role="bold"><command>aptitude -y install hylafax-server</command></emphasis>
 <replaceable>[...]</replaceable>
 Die folgenden NEUEN Pakete werden installiert:
@@ -300,15 +303,15 @@ Are these ok [yes]? <emphasis role="bold"><userinput><keysym>Enter</keysym></use
 
       <para>Fragen über Fragen, aber nur die wenigsten sind wirklich
       wichtig.<footnote>
-          <para>Mögen die Leute verzeihen, die schon einmal ein Hylafax
-          <quote>getunt</quote> haben, aber für den Anfang reichen die
+          <para>Diejenigen, die schon einmal ein Hylafax <quote>getunt</quote>
+          haben, mögen uns verzeihen, aber für den Anfang reichen die
           Defaults.</para>
         </footnote> Wichtig sind natürlich die Faxnummer und der sogenannte
       <code>LocalIdentifier</code>. Das ist der Text, der auf jedem gesendeten
       Fax in der obersten Zeile steht.</para>
 
-      <para>Bei den folgenden 2-3 Fragen einfach immer
-      <userinput>Enter</userinput> drücken.<screen>You have a HylaFAX scheduler process running.  faxq will be
+      <para>Bei den folgenden 2 bis 3 Fragen drücken wir einfach immer
+      <userinput>Enter</userinput>.<screen>You have a HylaFAX scheduler process running.  faxq will be
 restarted shortly, as soon as some other work has been completed.
 Can I terminate this faxq process (4048) [yes]?
 Should I restart the HylaFAX server processes [yes]?
@@ -342,10 +345,10 @@ Reading scheduler config file /var/spool/hylafax/etc/config.</screen></para>
       Installationen nur die ersten sechs Fragen wichtig. Die erste betrifft
       die Landesvorwahl als zweistellige Zahl, für Deutschland also die
       <code>49</code>. Dann folgt die Ortsnetznummer ohne führende Null, in
-      diesem Beispiel die <code>69</code> für Frankfurt am Main. Daraufhin die
-      Faxnummer, mit Vorwahl. Dann eine Null für Ferngespräche und zwei Nullen
-      für internationale Gespräche. Am Schluss mit <userinput>yes</userinput>
-      bestätigen.</para>
+      diesem Beispiel die <code>69</code> für Frankfurt am Main. Daraufhin
+      folgt die Faxnummer mit Vorwahl. Dann kommt eine Null für Ferngespräche
+      und zwei Nullen für internationale Gespräche. Am Schluss bestätigen Sie
+      mit <userinput>yes</userinput>.</para>
 
       <screen>No existing configuration, let's do this from scratch.
 
@@ -378,7 +381,7 @@ Syslog facility name for ServerTracing messages [daemon]?
 Set UID to 0 to manipulate CLOCAL [""]? 
 Use available priority job scheduling mechanism [""]?</screen>
 
-      <para>Es folgt eine Übersicht-Seite, wo Sie nochmals die Daten
+      <para>Es folgt eine Übersichtsseite, auf der Sie nochmals die Daten
       bestätigen können:</para>
 
       <screen>The non-default server configuration parameters are:
@@ -401,7 +404,7 @@ MaxRecvPages:           25
 Are these ok [yes]?</screen>
 
       <para><userinput>Yes</userinput> bringt uns weiter zur
-      Modem-Erkennung.</para>
+      Modem-Erkennung:</para>
 
       <screen>Now we are going to probe the tty port to figure out the type
 of modem that is attached.  This takes a few seconds, so be patient.
@@ -450,15 +453,15 @@ ModemResetCmds:         "ATH1\nAT+VCID=1"
 
 Are these ok [yes]?</screen>
 
-      <para>Das Modem wurde erkannt und wir werden gefragt, ob es ein
-      Class-1-Modem ist. Da das genau das ist, was wir wollen, bestätigen wir.
-      Auch das Reset-Kommando für das Modem können wir so übernehmen. Wenn
-      alles in Ordnung ist, bestätigen wir mit
+      <para>Das Modem wurde erkannt, und wir werden gefragt, ob es ein
+      Class-1-Modem ist. Da dies genau das ist, was wir wollen, bestätigen
+      wir. Auch das Reset-Kommando für das Modem können wir so übernehmen.
+      Wenn alles in Ordnung ist, bestätigen wir mit
       <userinput>yes</userinput>.</para>
 
-      <para>Im folgendem Dialog wird die erste Frage mit
+      <para>Im folgenden Dialog wird die erste Frage mit
       <userinput>no</userinput> beantwortet, da es kein weiteres Modem zu
-      Konfigurieren gibt. Die zweite Frage wird mit
+      konfigurieren gibt. Die zweite Frage wird mit
       <userinput><keysym>enter</keysym></userinput> bestätigt, was das
       Neustarten des Fax-Servers bewirkt.</para>
 
@@ -505,9 +508,9 @@ disallow = all
 allow = alaw</programlisting>
 
       <para>Im Abschnitt <code>general</code> sind die globalen IAX2-Daten
-      abgelegt. In diesem Beispiel wird der Bindport auf den Standard für IAX
-      4569 gesetzt. Die Bindadresse gibt das Interface an, auf dem IAX
-      lauscht, in diesem Falle auf allen Interfaces.</para>
+      abgelegt. In diesem Beispiel wird der Bind-Port auf den Standard für IAX
+      4569 gesetzt. Die Bind-Adresse gibt das Interface an, auf dem IAX
+      lauscht; in diesem Falle lauscht es auf allen Interfaces.</para>
 
       <para>In der Konfiguration für das IAXmodem wird der
       <parameter>type</parameter> auf <code>friend</code> gesetzt, d.h. es
@@ -532,7 +535,7 @@ iaxmodem        127.0.0.1   (D)  255.255.255.255  4570   Unmonitored
       soll, müssen wir eine entsprechende Extension schreiben. Das Ziel soll
       sein, dass ein ankommendes Fax direkt an das Hylafax weitergeleitet
       wird. In diesem Beispiel gehen wir davon aus, dass alle Faxe über einen
-      SIP-Provider-Anschluss reinkommen. Eine entsprechende Konfiguration in
+      SIP-Provider-Anschluss hereinkommen. Eine entsprechende Konfiguration in
       der <filename>sip.conf</filename> kann wie folgt aussehen (die
       entsprechenden Einstellungen müssen natürlich an die jeweilige
       Installation und den SIP-Provider angepasst werden):</para>
@@ -579,7 +582,7 @@ exten =&gt; _X.,1,Dial(IAX2/iaxmodem)</programlisting>
 exten =&gt; _X.,1,Dial(SIP/123456/${EXTEN})</programlisting>
 
       <para>Testen können wir das Senden mit <command>sendfax -n -d
-      &lt;Faxnummer&gt; &lt;datei.txt&gt;</command></para>
+      &lt;Faxnummer&gt; &lt;datei.txt&gt;:</command></para>
 
       <screen>debian:~# <emphasis role="bold"><command>sendfax -n -d 06912345678 /etc/issue.net</command></emphasis></screen>
 
@@ -618,15 +621,15 @@ debian:~# </screen>
 
       <para>Auf der Hylafax-Webseite <ulink
       url="http://www.hylafax.org">http://www.hylafax.org</ulink> finden Sie
-      viele Hinweise und How-Tos, wie Sie Ihren neuen Faxserver möglichst
-      einfach in Ihre bestehende Büroinfrastruktur einbinden.</para>
+      viele Hinweise und Howtos, wie Sie Ihren neuen Faxserver möglichst
+      einfach in Ihre bestehende Büro-Infrastruktur einbinden.</para>
     </section>
 
     <section id="fax-email-versand">
       <title>Empfangene Faxe als E-Mail versenden</title>
 
-      <para>Im folgenden wird die die Hylafax Konfiguration so angepast, das
-      der Faxserver eingehende Faxe an eine vorgegebene E-Mail Adresse
+      <para>Im Folgenden wird die Hylafax-Konfiguration so angepasst, dass der
+      Faxserver eingehende Faxe an eine vorgegebene E-Mail-Adresse
       versendet.<footnote>
           <para>Wir setzen einen richtig konfigurierten MTA (z. B. Sendmail
           oder Postfix) voraus.</para>
@@ -642,7 +645,7 @@ debian:~# </screen>
             <term><code>SENDTO</code></term>
 
             <listitem>
-              <simpara>Empfänger der Eingehende Faxe.</simpara>
+              <simpara>Empfänger der eingehenden Faxe</simpara>
             </listitem>
           </varlistentry>
 
@@ -650,8 +653,9 @@ debian:~# </screen>
             <term><code>FILETYPE</code></term>
 
             <listitem>
-              <simpara>Format der Anhänge. Neben dem Format pdf, kann auch
-              tiff oder ps gewählt werden.</simpara>
+              <simpara>Format der Anhänge. Neben dem Format
+              <filename>pdf</filename> kann auch <filename>tiff</filename>
+              oder <filename>ps</filename> gewählt werden.</simpara>
             </listitem>
           </varlistentry>
         </variablelist></para>
@@ -661,17 +665,17 @@ FILETYPE=pdf</programlisting></para>
 
       <para>Nachdem die Datei abgespeichert ist, muss der Faxserver mit
       <command>/etc/init.d/hylafax restart</command> neu gestartet
-      werden.</para>
+      werden:</para>
 
       <para><screen>debian:~# <emphasis role="bold"><command>/etc/ini.d/hylafax restart</command></emphasis>
 Starting HylaFAX: faxq hfaxd.
-debian:~# </screen>Testen können wir es, in wir uns z. B. selbst ein Fax
-      senden mit <command>sendfax -n -d &lt;Faxnummer&gt;
-      &lt;datei.txt&gt;</command></para>
+debian:~# </screen>Testen können wir es, in wir uns z. B. selbst mit
+      <command>sendfax -n -d &lt;Faxnummer&gt; &lt;datei.txt&gt;</command> ein
+      Fax senden: </para>
 
       <screen>debian:~# <emphasis role="bold"><command>sendfax -n -d 06912345678 /etc/issue.net</command></emphasis></screen>
 
-      <para>Nach kurze Zeit sollten Sie eine E-Mail in der folgende Form
+      <para>Nach kurzer Zeit sollten Sie eine E-Mail in der folgenden Form
       empfangen:</para>
 
       <programlisting> recvq/fax000000016.tif (ftp://debian:4559/recvq/fax000000016.tif):                                  
@@ -696,8 +700,8 @@ Jun 02 02:51:47.00: [ 3320]: RECV FAX: end
 Jun 02 02:51:47.00: [ 3320]: SESSION END
 Jun 02 02:51:47.01: [ 3320]: RECV FAX (000000033): recvq/fax000000016.tif from IAXmodem, route to &lt;unspecified&gt;, 4 pages in 2:08</programlisting>
 
-      <para>Im Anhang finden Sie dann eine PDF-Datei vor die in diesem
-      Beispiel <filename>fax000000016.pdf</filename> heißen würde.</para>
+      <para>Im Anhang finden Sie dann eine PDF-Datei, die in diesem Beispiel
+      <filename>fax000000016.pdf</filename> heißen würde.</para>
 
       <para>Fertig! Jetzt können Sie über Asterisk mit Hylafax Faxe versenden
       und empfangene Faxe nun auch als E-Mail Anhang erhalten.</para>
@@ -710,7 +714,7 @@ Jun 02 02:51:47.01: [ 3320]: RECV FAX (000000033): recvq/fax000000016.tif from I
         <qandadiv>
           <qandaentry>
             <question>
-              <para><emphasis>Wo legt Hylafax die empfangene Faxe
+              <para><emphasis>Wo legt Hylafax die empfangenen Faxe
               ab?</emphasis></para>
             </question>
 
@@ -739,8 +743,9 @@ Jun 02 02:51:47.01: [ 3320]: RECV FAX (000000033): recvq/fax000000016.tif from I
 
             <answer>
               <para>Ja, bitte schauen Sie für eine Liste aller Clients (auch
-              für andere Betriebssysteme) auf <ulink
-              url="http://www.hylafax.org/content/Client_Software">http://www.hylafax.org/content/Client_Software</ulink>.</para>
+              für andere Betriebssysteme) unter <ulink
+              url="http://www.hylafax.org/content/Client_Software">http://www.hylafax.org/content/Client_Software</ulink>
+              nach.</para>
             </answer>
           </qandaentry>
 
