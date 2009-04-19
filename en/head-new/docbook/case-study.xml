@@ -474,14 +474,14 @@
   </section>
 
   <section id="apfelmus-grundkonfiguration">
-    <title>Base configuration</title>
+    <title>Base Configuration</title>
 
     <para>We'll configure Asterisk so that all the employees can call each
     other and have their own mailbox. Once that's done, the system can be
     extended with additional functions and modules.</para>
 
     <section id="apfelmus-sip.conf">
-      <title>sip.conf for up to 100 users</title>
+      <title>A sip.conf for 100 users</title>
 
       <para>Configuring <filename>/etc/asterisk/sip.conf</filename> for 100
       users is no different than configuring for 2 users; there are no
@@ -489,18 +489,18 @@
       follows is an abridged version of the <filename>sip.conf</filename> for
       Widgets, Inc. Lines beginning with the <code>;</code> are treated as
       comments and ignored by Asterisk. The file is composed in the same way
-      as in our simple example in chapter 1. In general we've avoided
-      assigning numbers to individual users that end in 0, because we want to
-      reserve those numbers for group phone numbers. The building manager is
-      an exception, since we don't anticipate any need for a group phone
-      number there.</para>
+      as in our simple example in <xref linkend="chapter-installation" />. In
+      general we've avoided assigning numbers to individual users that end in
+      0, because we want to reserve those numbers for group phone numbers. The
+      building manager is an exception, since we don't anticipate any need for
+      a group phone number there.</para>
 
       <programlisting>[general]
 port = 5060
 bindaddr = 0.0.0.0
-context = sonstige
+context = other
 
-; Hausmeister
+; Building Manager
 ;
 [150]  ; normal office phone
 context=building-mgr
@@ -553,7 +553,7 @@ host=dynamic
 ; Reception
 ;
 [231]  ; Assistant 1
-context=sekretariat
+context=reception
 secret=1234
 type=friend
 host=dynamic
@@ -642,7 +642,8 @@ secret=1234
 type=friend
 host=dynamic
 
-; The remaining 9 entries for Shipping are omitted here for the sake of brevity.
+; The remaining 9 entries for Shipping 
+; are omitted here for the sake of brevity.
 
 ; Production
 ;
@@ -652,348 +653,125 @@ secret=1234
 type=friend
 host=dynamic
 
-; die weiteren 49 Eintraege fuer die 
-; Produktion sind hier ausgelassen.</programlisting>
+; The remaining 49 entries for Production
+; are omitted here for the sake of brevity.
+</programlisting>
 
-      <para>Wer die sip.conf komfortabler mit Templates gestalten will, findet
-      im <xref linkend="anhang-conf-templates" /> weitere Informationen
-      dazu.</para>
+      <para>You can make <filename>sip.conf</filename> more concise with
+      templates. Have a look at <xref linkend="appendix-conf-templates" /> for
+      more information.</para>
 
       <section id="apfelmus-callerid">
         <title>CallerID</title>
 
-        <para>In der <filename>sip.conf</filename> kommt zweimal die Variable
-        <code>callerid</code> vor. Mit dieser Variable wird festgelegt, was
-        beim Angerufenen auf dem Display angezeigt wird. Im konkreten
-        Beispiel:<programlisting>callerid = "Hausmeister" &lt;150&gt;</programlisting>Dies
-        sagt aus, dass sich beide Telefone (150 und 151) mit der Caller-ID 150
-        und dem Text ''Hausmeister'' zu erkennen geben. Dadurch ist
-        sichergestellt, dass Rückrufe immer nur auf die 150 gehen.</para>
+        <para>Our example <filename>sip.conf</filename> has two instances of
+        the <code>callerid</code> variable. This variable sets what is
+        displayed on the called party's telephone:<programlisting>callerid = "Building Manager" &lt;150&gt;</programlisting>In
+        our example, both the building manager's phones (150 and 151) use the
+        caller ID 150 and the caller ID name <quote>Building Manager</quote>.
+        This ensures that returned calls always go to extension 150.</para>
       </section>
     </section>
 
     <section id="apfelmus-dialplan">
-      <title>Der Wählplan (Dialplan)</title>
+      <title>The dialplan</title>
 
-      <para>Im ersten Kapitel haben wir schon einen einfachen Dialplan für
-      zwei Telefone erstellt. Diesmal haben wir jedoch deutlich mehr
-      Teilnehmer und obwohl es im Grunde lediglich Fleißarbeit bedeutet, ist
-      die Pflege einer Konfiguration mit einigen Hundert Teilnehmern
-      zeitaufwändig. Weiterhin fördert eine schlechte Übersichtlichkeit das
-      Einschleichen von Fehlern. Aus diesen Gründen beschäftigen wir uns am
-      Anfang dieses Abschnitts mit ein paar Asterisk-Funktionen, die uns das
-      Leben einfacher und die <filename>extensions.conf</filename>
-      übersichtlicher machen.</para>
-
-      <section id="apfelmus-pattern-matching">
-        <title>Platzhalter - Pattern Matching</title>
-
-        <para>Asterisk bietet die Möglichkeit mit Platzhaltern<footnote>
-            <para>Unix- und Linux-Fans werden das Konzept des ''Pattern
-            Matching'' von den ''regulären Ausdrücken'' in Programmen wie
-            <command>grep</command> und <command>sed</command> kennen.</para>
-          </footnote> zu arbeiten. Durch sinnvolles Gruppieren von
-        Nummernblöcken und Zuordnungen können mit Platzhaltern ganze
-        Nummernbereiche mit einzelnen Konfigurationszeilen verwaltet werden.
-        Im Prinzip enthält eine Konfigurationszeile einen variablen
-        Nummernbereich, der mit Hilfe von ''Pattern Matching'' die definierte
-        Regel auf eine Vielzahl von Nummern anwendet. So kann man anstatt der
-        folgenden 10 Zeilen: <programlisting>exten =&gt; 2000,1,Dial(SIP/2000,20)
-exten =&gt; 2001,1,Dial(SIP/2000,20)
-exten =&gt; 2002,1,Dial(SIP/2000,20) 
-exten =&gt; 2003,1,Dial(SIP/2000,20)
-exten =&gt; 2004,1,Dial(SIP/2000,20)
-exten =&gt; 2005,1,Dial(SIP/2000,20)
-exten =&gt; 2006,1,Dial(SIP/2000,20)
-exten =&gt; 2007,1,Dial(SIP/2000,20)
-exten =&gt; 2008,1,Dial(SIP/2000,20)
-exten =&gt; 2009,1,Dial(SIP/2000,20)</programlisting>auch nur eine Zeile
-        schreiben:</para>
-
-        <programlisting>exten =&gt; _200X,1,Dial(SIP/2000,20)</programlisting>
-
-        <para>Das <code>X</code> steht dann für alle Zahlen von 0 bis
-        9.<footnote>
-            <para>Das Beispiel macht natürlich wenig Sinn. Warum sollte der
-            Anrufer die 2009 wählen, um zur 2000 verbunden zu werden? Zur
-            Lösung dieses Problems kommen wir gleich.</para>
-          </footnote> Wichtig dabei ist, dass der Suchbegriff (das Pattern)
-        mit einem <code>_</code> (Underscore) anfängt, sonst würde Asterisk
-        nur auf <code>200X</code> (also eine 200 und den Buchstaben X)
-        reagieren, da ja Nebenstellen nicht nur aus Ziffern bestehen
-        können/müssen. Das Definieren von Platzhaltern mit Pattern
-        Matching<footnote>
-            <para>Es gibt keinen wirklich passenden deutschen Begriff zum
-            Fachbegriff ''Pattern Matching''. Eine mögliche Übersetzung könnte
-            ''Musterabgleich'' oder ''Mustervergleich'' lauten.</para>
-          </footnote> beinhaltet, dass man bestimmte Zeichenketten oder
-        Zahlenfolgen durch entsprechend vordefinierte Platzhalter
-        ersetzt.</para>
-
-        <para>In Asterisk kann man folgende Patterns benutzen:</para>
-
-        <informaltable>
-          <tgroup cols="2">
-            <tbody>
-              <row>
-                <entry><emphasis role="bold">Pattern</emphasis></entry>
-
-                <entry><emphasis role="bold">Beschreibung</emphasis></entry>
-              </row>
-
-              <row>
-                <entry><code>X</code></entry>
-
-                <entry>Alle Zahlen von 0 bis 9</entry>
-              </row>
-
-              <row>
-                <entry><code>Z</code></entry>
-
-                <entry>Alle Zahlen von 1 bis 9</entry>
-              </row>
-
-              <row>
-                <entry><code>N</code></entry>
-
-                <entry>Alle Zahlen von 2 bis 9<footnote>
-                    <para>Der Grund für das Pattern <code>N</code> liegt in
-                    der Rufnummernplanung von Amerika. Dort beginnt die
-                    Vorwahl nicht wie in Deutschland mit einer 0, sondern mit
-                    einer 1. Beispiel: 1-555-12345678</para>
-                  </footnote></entry>
-              </row>
-
-              <row>
-                <entry><code>[nm]</code></entry>
-
-                <entry>Die Zahlen n und m</entry>
-              </row>
-
-              <row>
-                <entry><code>[n-m]</code></entry>
-
-                <entry>Alle Zahlen von n bis m</entry>
-              </row>
-
-              <row>
-                <entry><code>.</code></entry>
-
-                <entry>Eine oder mehrere beliebige Zahlen und
-                Buchstaben</entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable>
-
-        <warning>
-          <para>Ein Pattern muss immer mit einem <code>_</code> (Underscore)
-          anfangen!</para>
-
-          <para>Für Asterisk ist sowohl ein <code>2XXX</code> als auch ein
-          <code>_2XXX</code> als Wert sinnvoll, wird jedoch vollkommen
-          unterschiedlich ausgewertet.</para>
-        </warning>
-
-        <section id="apfelmus-patternbeispiele">
-          <title>Beispiele für Patterns</title>
-
-          <para>Die folgenden Varianten dienen als Beispiele für die
-          Möglichkeiten:</para>
-
-          <informaltable>
-            <tgroup cols="2">
-              <tbody>
-                <row>
-                  <entry><emphasis role="bold">Pattern</emphasis></entry>
-
-                  <entry><emphasis role="bold">Beschreibung</emphasis></entry>
-                </row>
-
-                <row>
-                  <entry>_XXX</entry>
-
-                  <entry>Alle 3-stelligen Zahlen. Wobei auch <code>007</code>
-                  eine 3-stellige Zahl ist.</entry>
-                </row>
-
-                <row>
-                  <entry>_XXX[13579]</entry>
-
-                  <entry>Alle 4-stelligen Zahlen, die ungerade sind.</entry>
-                </row>
-
-                <row>
-                  <entry>_[1-5]X</entry>
-
-                  <entry>Alle 2-stelligen Zahlen von 10 bis 59.</entry>
-                </row>
-
-                <row>
-                  <entry>_0.</entry>
-
-                  <entry>Eine beliebige Zeichenkette, die mit einer 0
-                  anfängt.</entry>
-                </row>
-
-                <row>
-                  <entry>_.</entry>
-
-                  <entry>Alles! Sollte mit entsprechender Vorsicht benutzt
-                  werden, da es immer mit der höchsten Priorität gematcht
-                  wird.</entry>
-                </row>
-              </tbody>
-            </tgroup>
-          </informaltable>
-
-          <para>Detailierte Informationen zum Thema Pattern Matching finden
-          Sie in <xref linkend="regular-expression" />.</para>
-        </section>
-      </section>
-
-      <section id="apfelmus-exten-var">
-        <title>Die Variable ${EXTEN}</title>
-
-        <para>Obwohl wir eigentlich erst später über Variablen sprechen,
-        möchte ich eine sehr einfache und intuitiv zu benutzende Variable
-        schon hier vorstellen. Es handelt sich um <code>${EXTEN}</code>. In
-        dieser Variable ist die gewählte Nummer gespeichert. Ich kann also in
-        der <filename>extensions.conf</filename> anstatt:<programlisting>exten =&gt; 2000,1,Dial(SIP/2000)</programlisting>auch
-        einfach<programlisting>exten =&gt; 2000,1,Dial(SIP/${EXTEN})</programlisting>schreiben.
-        Bei einer Zeile ist das natürlich noch wenig sinnvoll, aber wenn man
-        diese Funktionalität mit Pattern Matching kombiniert, dann kann man
-        sehr viel Zeit und Aufwand sparen und bekommt zusätzlich auch noch
-        eine viel übersichtlichere Konfiguration.</para>
-
-        <para>Um somit alle SIP-Telefone mit den Durchwahlen 2000 bis 2999 in
-        der <filename>extensions.conf</filename> anwählbar zu machen, reicht
-        folgende Zeile:<programlisting>exten =&gt; _2XXX,1,Dial(SIP/${EXTEN})</programlisting></para>
-      </section>
-
-      <section id="apfelmus-include">
-        <title>Include</title>
-
-        <para>Innerhalb der <filename>extensions.conf</filename> können
-        Bereiche mit einem <code>include =&gt; Contextname</code> eingefügt
-        werden. So kann man eine einmal erstellte Definition in mehreren
-        Contexten wiederverwenden. Beispiel:<programlisting>[telefone-im-ersten-stock]
-include =&gt; 2000er
-include =&gt; anrufbeantworter
-
-[telefone-im-zweiten-stock]
-include =&gt; 2000er
-include =&gt; anrufbeantworter
-
-[telefone-im-dritten-stock]
-include =&gt; 2000er
-
-[2000er]
-exten =&gt; _2XXX,1,Dial(SIP/${EXTEN})
-
-[anrufbeantworter]
-exten =&gt; 3000,1,VoicemailMain(${CALLERID(num)})</programlisting>Der Vorteil
-        dieses Weges ist, dass wenn man z.B. die Rufnummer des
-        Anrufbeantworters ändern will, es reicht, dieses genau in einem
-        Bereich zu machen.</para>
-
-        <tip>
-          <para>Die Funktion <code>${CALLERID(num)}</code> übergibt die Nummer
-          des Anrufenden. So kann die Applikation <code>VoiceMailMain()</code>
-          mit dieser Variable aufgerufen werden und fragt dann nicht mehr nach
-          der Mailbox, sondern nur noch nach dem Passwort der entsprechenden
-          Mailbox.</para>
-        </tip>
-
-        <warning>
-          <para>Wer intensiv mit Includes arbeitet, sollte <xref
-          linkend="includes-im-dialplan" /> lesen.</para>
-        </warning>
-      </section>
+      <para>In <xref linkend="chapter-installation" />, we wrote a simple
+      dialplan for two phones. In this case example, we have more users.
+      Writing a dialplan with 100 entries is not exactly difficult, but it is
+      tedious, and maintenance could become a problem. It's much better to use
+      pattern matching in <filename>extensions.conf</filename> using the
+      patterns described in <xref linkend="introduction-regex" /> and the
+      includes described in <xref linkend="dialplan-includes" />.</para>
 
       <section id="apfelmus-extensions.conf">
-        <title>Die extensions.conf für die Apfelmus GmbH</title>
+        <title>The extensions.conf for Widgets, Inc.</title>
 
-        <para>Der von uns entwickelte Rufnummernplan<footnote>
-            <para>Mit Ausnahme der Notrufnummern, die wir später behandeln, da
-            wir jetzt noch keine Verbindung zur Außenwelt eingerichtet
-            haben.</para>
-          </footnote> lässt sich nun wie folgt in eine übersichtliche
-        <filename>extensions.conf</filename> übertragen:<programlisting>[others]
+        <para>The numbering plan<footnote>
+            <para>with the exception of the emergency numbers; we'll deal with
+            those as soon as we've established a connection to the outside
+            world.</para>
+          </footnote>for Widgets, Inc. translates into a readable, and
+        maintainable <filename>extensions.conf</filename>, which looks like
+        this:<programlisting>[other]
 
-[hausmeister]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
+[building-mgr]
+include =&gt; internal-calls
+include =&gt; voicemail-easy
 
 [it]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
+include =&gt; internal-calls
+include =&gt; voicemail-easy
 ;
-; Aus Debugging Gruenden ist es fuer
-; die IT Abteilung teilweise nuetzlich
-; auf alle Voicemailboxen zugreifen 
-; zu koennen.
+; The IT department should be able to
+; access all voicemail boxes for
+; debugging purposes
 ;
-include =&gt; voicemailsystem-normal
+include =&gt; voicemail-normal
 
-[geschaeftsfuehrer]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
+[management]
+include =&gt; internal-calls
+include =&gt; voicemail-easy
 
 [reception]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
+include =&gt; internal-calls
+include =&gt; voicemail-easy
 
 [domestic-sales]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
+include =&gt; internal-calls
+include =&gt; voicemail-easy
 
 [international-sales]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
+include =&gt; internal-calls
+include =&gt; voicemail-easy
 
 [versand]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
+include =&gt; internal-calls
+include =&gt; voicemail-easy
 
-[production]
-include =&gt; interne-gespraeche
-include =&gt; voicemailsystem-komfort
+[produktion]
+include =&gt; internal-calls
+include =&gt; voicemail-easy
 
-[interne-gespraeche]
+[internal-calls]
 exten =&gt; _[1-5]XX,1,Dial(SIP/${EXTEN},60)
 exten =&gt; _[1-5]XX,2,VoiceMail(${EXTEN},u)
 
-[voicemailsystem-komfort]
+[voicemail-easy]
 ;
-; Der User muss nicht die Nummer der 
-; Voicemailbox eingeben.
+; Users don't have to enter their extension number
+; when retrieving voice mail.
 ;
 exten =&gt; 800,1,VoicemailMain(${CALLERID(num)})
 
-[voicemailsystem-normal]
-exten =&gt; 801,1,VoicemailMain()</programlisting>Der Context
-        <code>[interne-gespraeche]</code> definiert, dass alle Anrufe an die
-        Nummern 100 bis 599 mit dem Programm <application>Dial()</application>
-        auch mit dieser Nebenstelle verbunden werden. Wer die 800 anruft,
-        bekommt die Voicemailbox für sein eigenes Telefon. Nur die
-        IT-Abteilung kann die 801 anrufen und wird dann vom System erst nach
-        der gewünschten Nebenstelle (Extension) gefragt. Da die IT-Abteilung
-        auch den internen Support der Telefonanlage zur Verfügung stellt,
-        benötigt sie diese Funktion zur Störungsermittlung (Debugging).</para>
+[voicemail-normal]
+; Prompts for a mailbox number.
+exten =&gt; 801,1,VoicemailMain()</programlisting>The extensions in the
+        <code>[internal-calls]</code> context mean all calls to numbers 100 to
+        599 are passed to the <application><code>Dial()</code></application>
+        application exactly as dialed, connecting the calling party to the
+        corresponding SIP phone. If the user dials 800, she is connected to
+        the mailbox for that phone. Only the IT department can call 801, at
+        which point the system prompts for a mailbox number. This is done so
+        that the IT department, which is now responsible for supporting the
+        telephone system, can access all the mailboxes for debugging
+        purposes.</para>
 
         <section id="schwarze-loecher-im-dialplan">
-          <title>Schwarze Löcher im Rufnummernplan</title>
+          <title>Black holes in the numbering plan</title>
 
-          <para>Genau genommen müsste dieser Dialplan noch etwas komplexer
-          sein, da es ja laut Rufnummernplan Bereiche gibt (z.B. 270 bis 299),
-          die gar nicht mit Telefonen belegt sind. Da wir dies nicht beachten,
-          kann es zu Missverständnissen kommen. Ein Anrufer kann eine nicht
-          vergebene Rufnummer anrufen und dort auf dem Anrufbeantworter eine
-          Nachricht hinterlassen. Diese Nachricht würde aber nie abgehört
-          werden. Um dies zu vermeiden, müsste man korrekterweise den Context
-          <code>[interne-gespraeche]</code> wie folgt
-          gestalten:<programlisting>[interne-gespraeche]
+          <para>In actual practice, our dialplan would have to be somewhat
+          more complex. The numbering plan has number ranges
+          (<emphasis>e.g.</emphasis> 270 to 299) that don't contain any
+          telephones. Our example ignores this, but this could lead to
+          confusion in an actual deployment. If a user dials an unassigned
+          number, the call goes straight to a voice mailbox that may or may
+          not exist; even if it does, the user could leave messages that are
+          never retrieved.</para>
+
+          <para>To prevent this from happening, the
+          <code>[internal-calls]</code> context would look like
+          this:<programlisting>[internal-calls]
 exten =&gt; _1[5-6]X,1,Dial(SIP/${EXTEN},60)
 exten =&gt; _1[5-6]X,2,VoiceMail(${EXTEN},u)
 
@@ -1003,11 +781,10 @@ exten =&gt; _2[0-6]X,2,VoiceMail(${EXTEN},u)
 exten =&gt; _[358]XX,1,Dial(SIP/${EXTEN},60)
 exten =&gt; _[358]XX,2,VoiceMail(${EXTEN},u)
 
-exten =&gt; _4[0-4]XX,1,Dial(SIP/${EXTEN},60)
-exten =&gt; _4[0-4]XX,2,VoiceMail(${EXTEN},u)
-</programlisting>Wir verzichten bei der Apfelmus GmbH der Einfachheit halber
-          auf diese ausführlichere Variante und benutzen nur den folgenden
-          Context:<programlisting>[interne-gespraeche]
+exten =&gt; _4[0-4]X,1,Dial(SIP/${EXTEN},60)
+exten =&gt; _4[0-4]X,2,VoiceMail(${EXTEN},u)
+</programlisting>For Widgets, Inc, we accept this risk for the sake of
+          simplicity and use the following configuration:<programlisting>[internal-calls]
 exten =&gt; _[1-5]XX,1,Dial(SIP/${EXTEN},60)
 exten =&gt; _[1-5]XX,2,VoiceMail(${EXTEN},u)
 </programlisting></para>
@@ -1017,65 +794,79 @@ exten =&gt; _[1-5]XX,2,VoiceMail(${EXTEN},u)
       <section id="apfelmus-voicemail.conf">
         <title>voicemail.conf</title>
 
-        <para>Die <filename>voicemail.conf</filename> bleibt wie im ersten
-        Kapitel beschrieben. Es werden einfach nur ein paar mehr Einträge
-        eingefügt:</para>
+        <para>The <filename>voicemail.conf</filename> remains as described in
+        <xref linkend="minimal-system-vm" />, except with a few additional
+        entries:</para>
 
         <programlisting>[general]
 format = gsm
-serveremail = voicemail@apfelmus-gmbh.de
+serveremail = voicemail@widgets.com
 maxmessage = 600
 
 [local]
-150 =&gt; 999999,Hans Hausmeister,hausmeister@apfelmus-gmbh.de
-200 =&gt; 999999,Ernst Wichtig,ernst.wichtig@apfelmus-gmbh.de
-201 =&gt; 999999,Hans Toll,hans.toll@apfelmus-gmbh.de
+150 =&gt; 999999,Bob Boilerman,building@widgets.com
+200 =&gt; 999999,Charles Crucial,charles.crucial@widgets.com
+201 =&gt; 999999,John Smart,john.smart@widgets.com
 
-; Ich verzichte hier darauf, die restlichen Eintraege aufzulisten, sie sind analog zu den aufgefuehrten Zeilen</programlisting>
+; We omit the remaining entries for brevity</programlisting>
       </section>
     </section>
   </section>
 
   <section id="apfelmus-weiter">
-    <title>Wie geht es weiter?</title>
+    <title>What next?</title>
 
-    <para>Die hier besprochene Konfiguration der Apfelmus GmbH dient als
-    Planungsbeispiel für alle Anlagen dieser Größenordnung. Einige Beispiele
-    in diesem Buch können Sie mit dieser Konfiguration durchspielen.</para>
+    <para>The above configuration for Widgets, Inc. serves as a planning
+    example for all systems of similar size. You can use this configuration to
+    experiment with many of the configuration examples in this book.</para>
+
+    <para>This system only allows telephone calls and includes a simple
+    voicemail system. A professional installation usually demands features
+    such as teleconferencing and queues. If this is what you need, you have
+    two basic options: you can reinvent the wheel and build a dialplan which
+    includes those features from scratch, or you can use a standard framework
+    such as <emphasis>FreePBX</emphasis><footnote>
+        <para><ulink
+        url="http://www.freepbx.com">http://www.freepbx.com</ulink></para>
+      </footnote> or <emphasis>Gemeinschaft</emphasis><footnote>
+        <para><ulink
+        url="http://www.freepbx.com">http://www.amooma.de/gemeinschaft</ulink>;
+        at the moment, this project is available only in German. Volunteers
+        willing to help internationalize it are welcome! Contact Stefan at
+        <email>stefan.wintermeyer@amooma.de</email>.</para>
+      </footnote>and configure it according to your requirements.</para>
   </section>
 
   <section id="apfelmus-faq">
     <title>FAQ</title>
 
-    <para></para>
-
     <qandaset>
       <qandadiv>
         <qandaentry>
           <question>
-            <para>Welche Kosten kommen auf die Apfelmus GmbH zu?</para>
+            <para>What costs should Widgets, Inc. anticipate?</para>
           </question>
 
           <answer>
-            <para>Das hängt ganz von den Entscheidern in dieser Firma ab.
-            Folgende Faktoren spielen dabei eine Rolle:</para>
+            <para>The depends very much on management's objectives. The
+            following should be considered:</para>
 
             <itemizedlist>
               <listitem>
-                <para>Soll der Asterisk-Server ausfallsicher sein? Reicht ein
-                Cold-Standby oder soll es ein Hot-Standby sein?</para>
+                <para>Should the Asterisk server be fault-tolerant? Will a
+                cold-standby server be sufficient, or do we need hot
+                standby?</para>
               </listitem>
 
               <listitem>
-                <para>Welche Server-Hardware wird gekauft? Für eine solche
-                Telefonanlage reicht ein relativ normaler Rechner. Es muss
-                also nicht das allerneueste und damit oft auch teuerste System
-                gekauft werden.</para>
+                <para>What server hardware are we buying? For most systems, a
+                generic computer will suffice. It doesn't have to be the
+                newest and most expensive.</para>
               </listitem>
 
               <listitem>
-                <para>Welche Telefone werden eingesetzt? Hierbei kann man von
-                30 bis weit über 300 Euro pro Telefon ausgeben.</para>
+                <para>Which phones are we buying? Phones can range in price
+                from 30 to 300 dollars and up.</para>
               </listitem>
             </itemizedlist>
           </answer>
@@ -1083,34 +874,57 @@ maxmessage = 600
 
         <qandaentry>
           <question>
-            <para>Lohnt sich Asterisk für die Apfelmus GmbH oder handelt es
-            sich vielmehr um eine Arbeitsbeschaffungsmaßnahme für die
-            IT-Abteilung?</para>
+            <para>Does Asterisk actually make sense for Widgets, Inc., or is
+            this just a make-work project for the IT department?</para>
           </question>
 
           <answer>
-            <para>Das hängt stark von den Angeboten der klassischen
-            Telefonanlagenherstellern und von den Bedürfnissen der Apfelmus
-            GmbH ab. Oft bieten klassische Telefonanlagenhersteller extreme
-            Sonderrabatte, wenn sie erfahren, dass als Alternative das
-            kostenlose Asterisk in Erwägung gezogen wird. Allerdings ist man
-            dann meistens in einem starren Vertrag und kann die nächsten 5
-            Jahre nur bei diesem Hersteller einkaufen.</para>
+            <para>This depends on what the traditional PBX vendors are
+            offering and Widgets, Inc. needs. Though it's not unusual for
+            traditional vendors to produce surprise discounts when they
+            discover an Asterisk system is being considered, there can be
+            hidden costs, sometimes in the form of fixed long-term contracts
+            that force the client to buy from that vendor for several
+            years.</para>
 
-            <para>Einer der großen Vorteile von Asterisk ist die Wahl des
-            Supports und des Consultings. Man kann entweder alles selber
-            machen oder einen externen Consultant einkaufen. Sollte dieser
-            nicht den Ansprüchen genügen, kann man ihn gegen einen anderen
-            austauschen (das ist so mit einer klassischen Telefonanlage wegen
-            der Vertragsbindung nicht möglich).</para>
+            <para>One of the advantages of Asterisk (and open source software
+            generally) is the wide choice and availability of support and
+            consulting services. You can do it all yourself, or you can hire a
+            consultant to do it all for you. If you find the services of your
+            existing consultant unsatisfactory, you can switch to another.
+            This is usually difficult with traditional vendors because they
+            lock you in with a contract and because the proprietary nature of
+            the product also means there is some degree of sales territory
+            exclusivity.</para>
 
-            <para>Ob sich Asterisk betriebswirtschaftlich lohnt, muss jeder
-            für seinen individuellen Fall ausrechnen. Die Erfahrung zeigt,
-            dass dies in den meisten Fällen der Fall ist. Berücksichtigt man
-            noch die Möglichkeiten einer Erweiterung mit neuen Funktionen
-            durch ein einfaches Softwareupdate, dann entwickeln sich die
-            mittel- bis langfristigen Unterhalts- und Investitionskosten
-            äußerst günstig.</para>
+            <para>Whether Asterisk makes economic sense has to be calculated
+            on by-case basis. Experience shows that it usually does. If you
+            consider the extensibility, freedom to upgrade (or not), and
+            scalability of Asterisk in your calculations, the mid- and
+            long-term capital and operating costs of an Asterisk system
+            usually prove highly affordable.</para>
+          </answer>
+        </qandaentry>
+
+        <qandaentry>
+          <question>
+            <para>What about a packaged Asterisk system, such as FreePBX,
+            Trixbox, PBX-in-Flash, Elastix or Gemeinschaft? Wouldn't that make
+            more sense for Widgets, Inc.?</para>
+          </question>
+
+          <answer>
+            <para>It might. "Pre-rolled" Asterisk systems have their
+            advantages (rapid installation and configuration, simple
+            interfaces for commonly used features, a GUI) and their
+            disadvantages (lack of transparency, configuration restrictions,
+            smaller installed base). A well-written dialplan for a generic
+            Asterisk installation can serve as a template for new
+            installations and an experienced Asterisk specialist can have new,
+            complex systems up and running in the same time or less than it
+            takes to set up a pre-rolled Asterisk. Whatever you choose, you're
+            better off knowing how Asterisk works under the hood before you
+            take the pre-rolled route. That's the purpose of this book!</para>
           </answer>
         </qandaentry>
       </qandadiv>
