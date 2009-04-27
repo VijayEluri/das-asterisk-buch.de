@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-blacklist" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>BLACKLIST()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>BLACKLIST()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>BLACKLIST()</synopsis>
+
+  <simpara>Mit dieser Funktion kann geprüft werden, ob die Caller-ID auf der
+  Blacklist ist. Dabei wird die Asterisk-interne Datenbank AstDB genutzt. Die
+  <code>Callerid(name)</code> oder <code>Callerid(num)</code>
+  müssen dabei als Eintrag in der Databank unter der Family
+  <code>blacklist</code> stehen, der Wert ist dabei egal. Der Wert wird von
+  <filename>BLACKLIST()</filename> nicht ausgewertet, es zählt nur die
+  Existenz des Eintrags. Wird ein Eintrag gefunden, gibt die Applikation 1
+  zurück, andernfalls 0.</simpara>
+
+  <programlisting>; Nachsehen, ob der Anrufer in der Blacklist steht, wenn ja: Affen abspielen
+exten =&gt; 123,1,GotoIf(${BLACKLIST()}?black,1)
+exten =&gt; 123,n,Dial(SIP/200)
+exten =&gt; 123,n,Hangup()
+exten =&gt; black,1,Playback(tt-monkeys)
+exten =&gt; black,n,Hangup()
+</programlisting>
+
+  <xi:include href="blacklist-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-lookupblacklist" />,<xref
+    linkend="functions-db" /></para>
+  </formalpara>
+</section>

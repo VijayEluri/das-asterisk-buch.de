@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-realtime" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>REALTIME()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>REALTIME()</code></secondary>
+    </indexterm></title>
+
+  <para>Zum Lesen:<synopsis>REALTIME(<replaceable>family</replaceable>|<replaceable>fieldmatch</replaceable>[|<replaceable>value</replaceable>[|<replaceable>delim1</replaceable>[|<replaceable>delim2</replaceable>]]])</synopsis></para>
+
+  <para>Zum Schreiben:<synopsis>REALTIME(<replaceable>family</replaceable>|<replaceable>fieldmatch</replaceable>|<replaceable>value</replaceable>|<replaceable>field</replaceable>)</synopsis></para>
+
+  <simpara>Mit dieser Funktion kann man Werte mithilfe des
+  RealTime-Konfigurationssteuerprogramms auslesen und auch schreiben. Wenn mit
+  der Funktion ein Wert ausgelesen wird, dann wird eine separierte
+  Zeichenkette zurückgegeben. Der Separator zwischen dem Namen und dem Wert
+  kann mit <replaceable>delim2</replaceable> angegeben werden. Die einzelnen
+  Ergebnisse werden mit <replaceable>delim1</replaceable> separiert. Der
+  Standard für <replaceable>delim2</replaceable> ist
+  <quote><literal>=</literal></quote> und für
+  <replaceable>delim1</replaceable> <quote><literal>|</literal></quote> in
+  Asterisk 1.4 bzw. <quote><literal>,</literal></quote> in Asterisk 1.6. Wenn
+  nichts gefunden wird, liefert die Funktion NULL zurück. Wenn mit der
+  Funktion geschrieben wird, wird immer NULL zurückgegeben.</simpara>
+
+  <programlisting>; Lesen und Schreiben mit REALTIME()
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Set(data=${REALTIME(sipusers,ext,5678)})
+exten =&gt; 123,n,Set(${REALTIME(sipusers,ext,5678)}=1234)
+exten =&gt; 123,n,Hangup()</programlisting>
+
+  <xi:include href="realtime-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="functions-realtime" />, <xref
+    linkend="functions-realtime_store" />, <xref
+    linkend="functions-realtime_destroy" />, <xref
+    linkend="functions-odbc_function" />, <xref
+    linkend="applications-realtime" /></para>
+  </formalpara>
+</section>

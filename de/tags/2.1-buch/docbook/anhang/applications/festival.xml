@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-festival" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>Festival()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>Festival()</code></secondary>
+  </indexterm>
+
+  <simpara>Verwendet das Sprachsynthese-System (Text-to-speech)
+  <emphasis>Festival</emphasis>, um dem Anrufer Text vorzulesen.</simpara>
+
+  <synopsis>Festival(<replaceable>Text</replaceable>[,<replaceable>Tasten</replaceable>])</synopsis>
+
+  <simpara>Verbindet sich zum lokal laufenden Festival-Server (muss
+  installiert sein), sendet ihm den angegebenen <code>Text</code> und spielt
+  dem Teilnehmer die resultierende Audiodatei vor. Wenn <code>Tasten</code>
+  angegeben wurden und der Anrufer während des Abspielens eine davon drückt,
+  wird der Abspielvorgang beendet und die entsprechende Taste zurückgegeben.
+  Falls als <code>Tasten</code> der Wert <code>any</code> angegeben ist, wird
+  jede Taste erkannt (und an die entsprechende Extension
+  weitergeleitet).</simpara>
+
+  <simpara>Sie müssen den Festival-Server <emphasis>vor</emphasis> Asterisk
+  starten und die <code>Answer()</code>-Anwendung zum Beantworten des Channels
+  verwenden, bevor Sie <code>Festival()</code> aufrufen.</simpara>
+
+  <programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Festival('Hallo Welt',#)</programlisting>
+
+  <para>Alternativ zu der Applikation <code>Festival()</code> kann man auch
+  mit dem <code>System()</code>-Befehl Festivals Programm
+  <command>text2wave</command> aufrufen und die resultierende Audiodatei mit
+  <code>Background()</code> oder <code>Playback()</code> abspielen, etwa so
+  (nur als Beispiel, achten Sie auf die Verzeichnisse!):<programlisting>exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,System(echo 'Hallo Welt' | text2wave -o sound.wav -otype wav -)
+exten =&gt; 123,n,Background(sound)</programlisting></para>
+
+  <xi:include href="festival-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><filename>contrib/README.festival</filename></para>
+  </formalpara>
+</section>

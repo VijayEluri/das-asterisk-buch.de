@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-queue_member_penalty" lang="de"
+         revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>QUEUE_MEMBER_PENALTY()</literal><indexterm
+      significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>QUEUE_MEMBER_PENALTY()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>QUEUE_MEMBER_PENALTY(<replaceable>warteschlange</replaceable>,<replaceable>interface</replaceable>)</synopsis>
+
+  <simpara>Liest/setzt Malus-Punkte eines Mitglieds einer Warteschlange.
+  <replaceable>interface</replaceable> ist z. B. <literal>SIP/456</literal>,
+  <literal>Agent/456</literal> oder <literal>Local/456</literal>. An ein
+  Mitglied mit <quote>penalty</quote> werden nur nachrangig Anrufe
+  durchgestellt.</simpara>
+
+  <programlisting>; penalty von SIP/456 in der "support"-Queue abfragen:
+exten =&gt; 123,1,Verbose(1,penalty: ${QUEUE_MEMBER_PENALTY(support,SIP/456)})
+; penalty von SIP/456 in der "support"-Queue setzen:
+exten =&gt; 123,n,Set(QUEUE_MEMBER_PENALTY(support,SIP/456)=3)
+; penalty von SIP/456 in der "support"-Queue abfragen:
+exten =&gt; 123,n,Verbose(1,penalty: ${QUEUE_MEMBER_PENALTY(support,SIP/456)})</programlisting>
+
+  <xi:include href="queue_member_penalty-help.xml"
+              xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-queue" />, <xref
+    linkend="functions-queue_member_count" />, <xref
+    linkend="functions-queue_waiting_count" />, <xref
+    linkend="functions-queue_member" />, <xref
+    linkend="functions-queue_member_list" />, <xref
+    linkend="functions-queue_variables" /></para>
+  </formalpara>
+</section>

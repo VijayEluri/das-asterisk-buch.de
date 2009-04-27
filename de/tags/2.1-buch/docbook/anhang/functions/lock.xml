@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-lock" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>LOCK()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>LOCK()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>LOCK(<replaceable>String</replaceable>)</synopsis>
+
+  <simpara>Mit dieser Funktion können Sie einige Passagen des Rufnummernplans
+  serialisieren. Das heißt, dass immer nur ein Anrufer nach dem anderen das
+  mit dem LOCK-Mechanismus "gesicherte" Stück Rufnummernplan durchlaufen kann.
+  Diese Technologie ist aus der Threadprogrammierung auch in Form eines
+  Mutex bekannt. Als Parameter muss der frei wählbare Name des
+  Mutexes übergeben werden. Wenn der Mutex schon blockiert ist, dann wartet
+  die Funktion max. 3 Sekunden und liefert danach <code>0</code> zurück. Wenn
+  der Mutex normal gelockt werden konnte, liefert die Funktion <code>1</code>
+  zurück. Der Mutex ist wieder frei, wenn der Channel aufgelegt wurde oder
+  <code>UNLOCK()</code> aufgerufen wurde.</simpara>
+
+  <programlisting>; Sperre das Ausführen eines Systembefehls durch einen Mutex
+exten =&gt; 123,1,GotoIf(${LOCK(lock1)}?locked,1)
+exten =&gt; 123,n,System(kritisches-skript.sh)
+exten =&gt; 123,n,Hangup()
+exten =&gt; locked,1,Playback(mutex-ist-gelockt-bitte-warten)
+exten =&gt; locked,n,Goto(,123,1)
+
+    </programlisting>
+
+  <xi:include href="lock-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="functions-unlock" />, <xref
+    linkend="functions-trylock" /></para>
+  </formalpara>
+</section>

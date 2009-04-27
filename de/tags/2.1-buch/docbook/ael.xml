@@ -1,0 +1,1741 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<chapter id="ael" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2009 
+% - Philipp Kempgen <philipp.kempgen@amooma.de>
+% - Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <chapterinfo>
+    <date>$Revision$</date>
+
+    <authorgroup>
+      <author>
+        <firstname>Philipp</firstname>
+
+        <surname>Kempgen</surname>
+      </author>
+
+      <author>
+        <firstname>Stefan</firstname>
+
+        <surname>Wintermeyer</surname>
+      </author>
+    </authorgroup>
+
+    <keywordset>
+      <keyword>AEL</keyword>
+
+      <keyword>Asterisk Extension Language</keyword>
+    </keywordset>
+  </chapterinfo>
+
+  <title>AEL</title>
+
+  <subtitle>Asterisk Extension Language</subtitle>
+
+  <indexterm significance="preferred">
+    <primary>AEL</primary>
+  </indexterm>
+
+  <indexterm significance="preferred">
+    <primary>Asterisk Extension Language</primary>
+  </indexterm>
+
+  <indexterm>
+    <primary>Dialplan</primary>
+
+    <secondary>AEL</secondary>
+  </indexterm>
+
+  <indexterm>
+    <primary>extensions.ael</primary>
+  </indexterm>
+
+  <para>Seit Asterisk 1.4 haben Sie die Möglichkeit, den aus <xref
+  linkend="dialplan-grundlagen" /> und <xref
+  linkend="kapitel-programmieren" /> bekannten <quote>Dialplan</quote> nicht
+  nur im Format <filename>extensions.conf</filename> zu schreiben, sondern Sie
+  können sich alternativ auch für AEL, die <quote>Asterisk Extension
+  Language</quote>, entscheiden. Die Datei dafür heißt
+  <filename>extensions.ael</filename>.</para>
+
+  <para>AEL ist vor allem für diejenigen interessant, die sich immer schon
+  geärgert haben, dass eine größere <filename>extensions.conf</filename>
+  schwer zu lesen ist. AEL ähnelt mehr einer <quote>richtigen</quote>
+  Skript-Programmiersprache. Übrigens schließen sich
+  <filename>extensions.conf</filename> und <filename>extensions.ael</filename>
+  nicht gegenseitig aus, man kann auch beide benutzen, also Kontexte in der
+  einen oder in der anderen Datei definieren. Wenn beide Dateien vorhanden
+  sind, überschreibt die <filename>extensions.conf</filename> Teile, die in
+  der <filename>extensions.ael</filename> parallel vorhanden sind.</para>
+
+  <para>Hier ein kleiner Vorgeschmack:<informaltable colsep="0" frame="none"
+      pgwide="1" rowsep="0" tocentry="0">
+      <tgroup cols="2">
+        <colspec align="left" colnum="1" colwidth="5*" />
+
+        <colspec align="left" colnum="2" colwidth="4*" />
+
+        <thead valign="middle">
+          <row>
+            <entry align="center"><filename>extensions.conf</filename></entry>
+
+            <entry align="center"><filename>extensions.ael</filename></entry>
+          </row>
+        </thead>
+
+        <tbody valign="top">
+          <row>
+            <entry><programlisting><emphasis role="bold">[meine-telefone]</emphasis>
+<emphasis role="bold">exten =&gt; 20,1,</emphasis>Answer()
+<emphasis role="bold">exten =&gt; 20,n,</emphasis>Playback(beep)
+<emphasis role="bold">exten =&gt; 20,n,</emphasis>Hangup()
+</programlisting></entry>
+
+            <entry><programlisting><emphasis role="bold">context meine-telefone {</emphasis>
+  <emphasis role="bold">20 =&gt; {</emphasis>
+    Answer();
+    Playback(beep);
+    Hangup();
+  <emphasis role="bold">}</emphasis>
+<emphasis role="bold">}</emphasis></programlisting></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable></para>
+
+  <para>Es sei auch auf das bei Asterisk mitgelieferte Kommandozeilen-Werkzeug
+  <command><filename>aelparse</filename></command><indexterm
+      significance="preferred">
+      <primary>aelparse</primary>
+    </indexterm> hingewiesen, mit dem Sie jederzeit seine
+  <filename>extensions.ael</filename> wieder in das
+  <filename>extensions.conf</filename>-Format konvertieren können. Wir werden
+  später noch darauf eingehen (siehe <xref linkend="aelparse" />).</para>
+
+  <note>
+    <para>Am Rande sei noch gesagt, dass hier, wie bei Asterisk üblich, mit
+    AEL immer AEL2 gemeint ist, denn die erste Version war nur ein
+    experimenteller Versuch.</para>
+  </note>
+
+  <section id="ael-cli">
+    <sectioninfo>
+      <keywordset>
+        <keyword>ael</keyword>
+
+        <keyword>cli</keyword>
+      </keywordset>
+    </sectioninfo>
+
+    <title>CLI-Befehle für AEL</title>
+
+    <indexterm>
+      <primary>AEL</primary>
+
+      <secondary>CLI</secondary>
+    </indexterm>
+
+    <para>Der wichtigste Befehl auf dem Asterisk-CLI für AEL ist
+    <command><literal>ael reload</literal></command><indexterm>
+        <primary>AEL</primary>
+
+        <secondary>reload</secondary>
+      </indexterm>. Er liest die <filename>extensions.ael</filename> neu ein.
+    Er ist wichtig, wenn man etwas verändert hat und nur den Dialplan
+    reloaden, aber nicht Asterisk neu starten will.</para>
+
+    <screen>*CLI&gt; <command>ael reload</command> </screen>
+
+    <para>Der aus <xref linkend="dialplan-show" /> bekannte Befehl
+    <command><literal>dialplan show</literal></command> zeigt den Dialplan so
+    an, wie Asterisk ihn aus <filename>extensions.conf</filename> und
+    <filename>extensions.ael</filename> eingelesen und gegebenenfalls
+    kombiniert hat. In Klammern wird für jede Zeile auch immer
+    <literal>pbx_config</literal> bzw. <literal>pbx_ael</literal> angezeigt,
+    je nachdem, woher die Zeile stammt.</para>
+  </section>
+
+  <section id="aelparse">
+    <sectioninfo>
+      <keywordset>
+        <keyword>aelparse</keyword>
+
+        <keyword>AEL</keyword>
+      </keywordset>
+    </sectioninfo>
+
+    <title>aelparse</title>
+
+    <indexterm significance="preferred">
+      <primary>aelparse</primary>
+    </indexterm>
+
+    <para>Bei Asterisk wird das Kommandozeilen-Werkzeug
+    <command><filename>aelparse</filename></command> mitgeliefert, mit dem Sie
+    jederzeit Ihre <filename>extensions.ael</filename> wieder in das
+    <filename>extensions.conf</filename>-Format konvertieren können, falls Sie
+    das jemals tun wollen. <command><filename>aelparse</filename></command>
+    ist also so eine Art Test-Compiler für die im Vergleich zu
+    <filename>extensions.conf</filename> etwas höhere Programmiersprache
+    AEL.</para>
+
+    <para><literal>aelparse</literal> liest immer automatisch die Datei
+    <filename>/etc/asterisk/extensions.ael</filename>, außer man ruft es mit
+    der Option <literal>-d</literal> auf. Dann wird in dem Verzeichnis, in dem
+    man sich gerade befindet, nach der <filename>extensions.ael</filename>
+    gesucht.</para>
+
+    <para>Ohne die Option <literal>-n</literal> werden viele Informationen
+    ausgegeben, die hauptsächlich für die Entwickler von Asterisk interessant
+    sind. Für eine übersichtliche Ausgabe ruften Sie
+    <literal>aelparse</literal> immer mit <literal>-n</literal> auf -- oder
+    mit <literal>-q</literal> für noch weniger Zeilen.</para>
+
+    <tip>
+      <para><command><filename>aelparse</filename></command> ist gut geeignet,
+      um Syntaxfehler in der <filename>extensions.ael</filename> zu
+      finden.</para>
+    </tip>
+
+    <para>Mit der Option <literal>-w</literal> wird der eingelesene Dialplan
+    in die Datei <filename>extensions.conf.aeldump</filename> im aktuellen
+    Verzeichnis ausgegeben.<screen>asterisk:/etc/asterisk# <emphasis
+          role="bold"><command>aelparse -q -w</command></emphasis>
+LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 priorities</screen></para>
+  </section>
+
+  <section id="extensions.ael">
+    <sectioninfo>
+      <keywordset>
+        <keyword>extensions.ael</keyword>
+      </keywordset>
+    </sectioninfo>
+
+    <title>extensions.conf &lt;-&gt; extensions.ael</title>
+
+    <indexterm>
+      <primary>extensions.ael</primary>
+    </indexterm>
+
+    <para>Wir wollen hier übersichtlich darstellen, wie AEL im Vergleich zur
+    herkömmlichen <filename>extensions.conf</filename> aussieht. Das kann man
+    am besten an Beispielen veranschaulichen. Es wird vorausgesetzt, dass Sie
+    bereits mit der Dialplan-Programmierung vertraut sind.</para>
+
+    <section id="ael-command-termination">
+      <title>Zeilenende/Befehlsende</title>
+
+      <para>Befehle müssen in AEL immer mit <quote><code>;</code></quote>
+      (Semikolon) abgeschlossen werden, da theoretisch auch mehrere Befehle in
+      einer Zeile stehen könnten (was jedoch unüblich ist).</para>
+    </section>
+
+    <section id="ael-contexts-extensions-priorities">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>contexts</keyword>
+
+          <keyword>extensions</keyword>
+
+          <keyword>priorities</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Kontexte, Extensions, Prioritäten</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Contexte, Extensions, Prioritäten</secondary>
+      </indexterm>
+
+      <para>Der Unterschied in der Schreibweise von Contexten, Extensions und
+      Prioritäten bestimmt das ganze Erscheinungsbild. In AEL werden
+      geschweifte Klammern (<quote><code>{<replaceable> ...
+      </replaceable>}</code></quote>) verwendet. Die Angabe von Prioritäten
+      (<literal>1</literal>, <literal>n</literal>) ist nicht mehr
+      erforderlich. In der <filename>extensions.ael</filename> hat man also
+      endlich nicht mehr den zweifelhaften Charme früher BASIC-Programme, in
+      denen man noch die Zeilennummern angeben musste, und man erspart sich
+      auch das überflüssige mehrfache Tippen der gleichen Extension für
+      mehrere Zeilen bzw. Befehle. Diese Stärke kommt vor allem bei längeren
+      Dialplänen zum Tragen, weshalb die kurzen Beispiele hier manchmal etwas
+      unfair gegen AEL sind.</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting><emphasis role="bold">[interne-benutzer]</emphasis>
+
+<emphasis role="bold">exten =&gt; 21,1,</emphasis>Dial(SIP/anna)
+<emphasis role="bold">exten =&gt; 21,n,</emphasis>VoiceMail(anna)
+
+<emphasis role="bold">exten =&gt; 22,1,</emphasis>Dial(SIP/lisa)
+<emphasis role="bold">exten =&gt; 22,n,</emphasis>VoiceMail(lisa)
+
+<emphasis role="bold">exten =&gt; _3X,1,</emphasis>Dial(SIP/${EXTEN})
+</programlisting></entry>
+
+              <entry><programlisting><emphasis role="bold">context interne-benutzer {</emphasis>
+  <emphasis role="bold">21 =&gt; {</emphasis>
+    Dial(SIP/anna);
+    VoiceMail(anna);
+  <emphasis role="bold">}</emphasis>
+  <emphasis role="bold">22 =&gt; {</emphasis>
+    Dial(SIP/lisa);
+    VoiceMail(lisa);
+  <emphasis role="bold">}</emphasis>
+  <emphasis role="bold">_3X =&gt; {</emphasis>
+    Dial(SIP/${EXTEN});
+  <emphasis role="bold">}</emphasis>
+<emphasis role="bold">}</emphasis></programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>Bei einer Extension, in der nur ein Befehl ausgeführt wird, könnte
+      man in AEL die geschweiften Klammern übrigens auch weglassen und
+      nur<informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+          tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="5*" />
+
+            <colspec align="left" colnum="2" colwidth="4*" />
+
+            <tbody valign="top">
+              <row>
+                <entry> </entry>
+
+                <entry><programlisting>context default {
+  23 =&gt; Playback(hello-world);
+}</programlisting></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>schreiben. Gewöhnen Sie sich das bitte aber erst gar
+      nicht an, und verwenden Sie immer die volle Schreibweise<informaltable
+          colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="5*" />
+
+            <colspec align="left" colnum="2" colwidth="4*" />
+
+            <tbody valign="top">
+              <row>
+                <entry> </entry>
+
+                <entry><programlisting>context default {
+  23 =&gt; <emphasis role="bold">{</emphasis>
+    Playback(hello-world);
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>denn man hat ja sowieso bei den meisten Extensions
+      mehrere Befehle und erreicht so ein einheitliches Format. Nur in wenigen
+      Fällen (<code>jump</code>, siehe <xref
+      linkend="ael-labels-goto-jump" />) kann die kurze Schreibweise sinnvoll
+      sein.</para>
+
+      <important>
+        <para>Die öffnende geschweifte Klammer <quote><code>{</code></quote>
+        eines Blocks muss immer auf der gleichen Zeile stehen, nicht auf einer
+        eigenen!</para>
+      </important>
+    </section>
+
+    <section id="ael-comments">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>kommentare</keyword>
+
+          <keyword>comments</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Kommentare</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Kommentare</secondary>
+      </indexterm>
+
+      <para>Kommentare werden in AEL durch <quote><code>//</code></quote>
+      (zwei Schrägstriche) eingeleitet.</para>
+
+      <important>
+        <para>Bitte verwenden Sie für Kommentare <emphasis
+        role="bold">nicht</emphasis> den C-Stil (<code>/*<replaceable> ...
+        </replaceable>*/</code>). Für mehrzeilige Kommentare leiten Sie bitte
+        jede Zeile separat mit <quote><code>//</code></quote> ein.</para>
+      </important>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting><emphasis role="bold">;</emphasis> ein Kommentar
+exten =&gt; 10,1,Dial(SIP/anna) <emphasis role="bold">;</emphasis> Dial
+</programlisting></entry>
+
+              <entry><programlisting><emphasis role="bold">//</emphasis> ein Kommentar
+10 =&gt; {
+  Dial(SIP/anna);  <emphasis role="bold">//</emphasis> Dial
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+
+    <section id="ael-include-contexts">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>includes</keyword>
+
+          <keyword>include</keyword>
+
+          <keyword>context</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Includes &#8211; Andere Contexte einbinden</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Includes</secondary>
+      </indexterm>
+
+      <para>Wie aus <xref linkend="includes-im-dialplan" /> und <xref
+      linkend="include-zeitgesteuert" /> bekannt ist, können Sie in Contexte
+      andere Contexte einbinden.</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[verkauf]
+exten =&gt; 2001,1,Dial(SIP/anna)
+exten =&gt; 2002,1,Dial(SIP/hans)
+
+[lager]
+exten =&gt; 3001,1,Dial(SIP/lisa)
+
+[tag]
+<emphasis role="bold">include =&gt;</emphasis> verkauf
+<emphasis role="bold">include =&gt;</emphasis> lager
+
+[nacht]
+exten =&gt; _.,1,VoiceMail(${EXTEN},u)
+
+[von-extern]
+<emphasis role="bold">include =&gt;</emphasis> tag|09:00-17:00|mon-fri|*|*
+ <emphasis role="bold">include =&gt;</emphasis> tag|09:00-14:00|sat|*|*
+<emphasis role="bold">include =&gt;</emphasis> nacht
+</programlisting></entry>
+
+              <entry><programlisting>context verkauf {
+  2001 =&gt; {
+    Dial(SIP/anna);
+  }
+  2002 =&gt; {
+    Dial(SIP/hans);
+  }
+}
+
+context lager {
+  3001 =&gt; {
+    Dial(SIP/lisa);
+  }
+}
+
+context tag {
+  <emphasis role="bold">includes {</emphasis>
+    verkauf;
+    lager;
+  <emphasis role="bold">}</emphasis>
+}
+
+context nacht {
+  _. =&gt; {
+    VoiceMail(${EXTEN},u);
+  }
+}
+
+context von-extern {
+  <emphasis role="bold">includes {</emphasis>
+    tag|09:00-17:00|mon-fri|*|*;
+    tag|09:00-14:00|sat|*|*;
+    nacht;
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <important>
+        <para>Bitte beachten Sie in AEL das <quote><code>s</code></quote> am
+        Ende von <quote><code>includes</code></quote>.</para>
+      </important>
+    </section>
+
+    <section id="ael-global-variables">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>global</keyword>
+
+          <keyword>variables</keyword>
+
+          <keyword>globals</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Globale Variablen</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Globale Variablen</secondary>
+      </indexterm>
+
+      <para>Globale Variablen (siehe <xref
+      linkend="programmierer-howto-variablen" />) können in AEL im speziellen
+      Block <code>globals</code> gesetzt werden.</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting><emphasis role="bold">[globals]</emphasis>
+KUCHEN=Marmorkuchen
+KLINGELZEIT=60
+</programlisting></entry>
+
+              <entry><programlisting><emphasis role="bold">globals {</emphasis>
+  KUCHEN=Marmorkuchen;
+  KLINGELZEIT=60;
+<emphasis role="bold">}</emphasis></programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+
+    <section id="ael-expressions-assignments">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>expressions</keyword>
+
+          <keyword>assignments</keyword>
+
+          <keyword>ausdrücke</keyword>
+
+          <keyword>zuweisungen</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Ausdrücke und Zuweisungen</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Ausdrücke und Zuweisungen</secondary>
+      </indexterm>
+
+      <para>In AEL werden intern automatisch die Ausdrücke
+      (<emphasis>expressions</emphasis>) in Kontrollstrukturen wie
+      <code>if()</code>, <code>while()</code>, der (mittleren)
+      Abbruchbedingung in <code>for()</code> sowie der rechten Seite von
+      Zuweisungen (<emphasis>assignments</emphasis>) so behandelt, als stünden
+      sie in einem <code>$[<replaceable>...</replaceable>]</code>-Ausdruck
+      (siehe <xref linkend="glossar-expressions" />).</para>
+
+      <para>Das klingt zuerst kompliziert, entspicht aber dem ganz normalen
+      Verhalten, wie man es von anderen Programmiersprachen kennt. Bei
+      Zuweisungen ist dieses Verhalten allerdings untypisch für Asterisk und
+      kann leicht zu merkwürdigen Fehlern führen. Denken Sie daran, dass auch
+      AEL eben keine <quote>richtige</quote> Programmiersprache ist und z. B.
+      Strings nie als solche mit Anführungszeichen gekennzeichnet werden. Wir
+      empfehlen daher, Zuweisungen nicht so zu schreiben:<informaltable
+          colsep="0" frame="none" pgwide="1" rowsep="0" tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="5*" />
+
+            <colspec align="left" colnum="2" colwidth="4*" />
+
+            <tbody valign="top">
+              <row>
+                <entry> </entry>
+
+                <entry><programlisting>context test {
+  123 =&gt; {
+    <emphasis role="bold">ergebnis=10/2</emphasis>;
+    NoOp(ergebnis ist ${ergebnis});
+  }
+}</programlisting></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>sondern nach wie vor die Applikation
+      <code>Set()</code> (siehe <xref linkend="applications-set" />) zu
+      verwenden:<informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+          tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="5*" />
+
+            <colspec align="left" colnum="2" colwidth="4*" />
+
+            <tbody valign="top">
+              <row>
+                <entry> </entry>
+
+                <entry><programlisting>context test {
+  123 =&gt; {
+    <emphasis role="bold">Set(ergebnis=$[ 10 / 2 ])</emphasis>;
+    NoOp(ergebnis ist ${ergebnis});
+  }
+}</programlisting></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable></para>
+
+      <para>Für Sprachkonstrukte wie <code>if()</code>, <code>while()</code>
+      usw. ist dieses Verhalten allerdings gut, da es die unübersichtlichen
+      Klammern <code>$[<replaceable> ... </replaceable>]</code>
+      einspart:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>exten =&gt; 50,1,Set(a=test)
+exten =&gt; 50,n,<emphasis role="bold">ExecIf($["${a}" = "101"]</emphasis>,SayDigits,123)
+</programlisting></entry>
+
+              <entry><programlisting>50 =&gt; {
+  Set(a=test);
+  <emphasis role="bold">if ("${a}" = "test")</emphasis> {
+    SayDigits(123);
+  }
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+
+    <section id="ael-labels-goto-jump">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>label</keyword>
+
+          <keyword>labels</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Labels, goto und jump</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Labels, goto, jump</secondary>
+      </indexterm>
+
+      <para>Als hartgesottener
+      <filename>extensions.conf</filename>-Programmierer ist man (zwangsweise)
+      daran gewöhnt, mit <code>Goto()</code>, <code>GotoIf()</code>,
+      <code>Gosub()</code> und <code>GosubIf()</code> zu
+      <quote>Prioritäten</quote> oder Labels (Markern) zu springen.
+      (Eigentlich ist das aber nur eine Behelfslösung, weil es in der
+      <filename>extensions.conf</filename> keine sauberen Kontrollstrukturen
+      für den Programmablauf gibt.)</para>
+
+      <para>Labels befinden sich immer innerhalb einer Extension und werden in
+      AEL auf einer eigenen Zeile geschrieben. Bitte beachten Sie den
+      Doppelpunkt (<quote><code>:</code></quote>) am Zeilenende:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[beispiel]
+
+; zu einem Label in der
+; gleichen Extension gehen:
+;
+exten =&gt; 10,1<emphasis role="bold">(anfang)</emphasis>,NoOp()
+exten =&gt; 10,n,Wait(1)
+exten =&gt; 10,n,SayNumber(1)
+exten =&gt; 10,n,NoOp(Endlosschleife)
+exten =&gt; 10,n,<emphasis role="bold">Goto(anfang)</emphasis>
+
+; zu einem Label in einer
+; anderen Extension im
+; gleichen Kontext gehen:
+;
+exten =&gt; 20,1,SayNumber(20)
+exten =&gt; 20,n,<emphasis role="bold">Goto(10,anfang)</emphasis>
+
+; zu einem Label in einem
+; anderen Kontext gehen:
+;
+exten =&gt; 30,1,SayNumber(30)
+exten =&gt; 30,n,<emphasis role="bold">Goto(cntxt2,40,vierzig)</emphasis>
+
+[cntxt2]
+
+exten =&gt; 40,1<emphasis role="bold">(vierzig)</emphasis>,NoOp()
+exten =&gt; 40,n,SayNumber(40)
+
+exten =&gt; 50,1,<emphasis role="bold">Goto(40,1)</emphasis>
+exten =&gt; 60,1,<emphasis role="bold">Goto(beispiel,10,1)</emphasis>
+</programlisting></entry>
+
+              <entry><programlisting>context beispiel {
+  
+  // zu einem Label in der
+  // gleichen Extension gehen:
+  //
+  10 =&gt; {
+   <emphasis role="bold">anfang:</emphasis>
+    Wait(1);
+    SayNumber(10);
+    NoOp(Endlosschleife);
+    <emphasis role="bold">goto anfang</emphasis>;
+  }
+  
+  // zu einem Label in einer
+  // anderen Extension im
+  // gleichen Kontext gehen:
+  //
+  20 =&gt; {
+    SayNumber(20);
+    <emphasis role="bold">goto 10|anfang</emphasis>;
+  }
+  
+  // zu einem Label in einem
+  // anderen Kontext gehen:
+  //
+  30 =&gt; {
+    SayNumber(30);
+    <emphasis role="bold">goto cntxt2|40|vierzig</emphasis>;
+  }
+}
+
+context cntxt2 {
+  
+  40 =&gt; {
+   <emphasis role="bold">vierzig:</emphasis>
+    SayNumber(40);
+  }
+  50 =&gt; <emphasis role="bold">jump 40</emphasis>;
+  60 =&gt; <emphasis role="bold">jump 10@beispiel</emphasis>;
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>In dem obigen Beispiel sehen wir auch eine andere Syntax für die
+      Sprünge. Während man in der <filename>extensions.conf</filename> auf die
+      Applikation <code>Goto()</code> (siehe <xref
+      linkend="applications-goto" />) angewiesen ist, sollte man diese in AEL
+      nicht mehr verwenden (man kann es aber problemlos tun). Dafür gibt es
+      jetzt das neue Sprachkonstrukt <code>goto</code>.</para>
+
+      <para>Ein Vergleich der Syntax von <code>Goto()</code> und
+      <code>goto</code> zeigt, dass es hier keinen großen Erklärungsbedarf
+      gibt:<informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+          tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="1*" />
+
+            <colspec align="left" colnum="2" colwidth="2*" />
+
+            <tbody valign="top">
+              <row>
+                <entry><filename>.conf</filename></entry>
+
+                <entry><synopsis><emphasis role="bold"><code>Goto(</code></emphasis>[[<replaceable>context</replaceable><emphasis
+                      role="bold"><code>,</code></emphasis>]<replaceable>extension</replaceable><emphasis
+                      role="bold"><code>,</code></emphasis>]<replaceable>label</replaceable><emphasis
+                      role="bold"><code>)</code></emphasis></synopsis></entry>
+              </row>
+
+              <row>
+                <entry><filename>.ael</filename></entry>
+
+                <entry><synopsis><emphasis role="bold"><code>goto </code></emphasis>[[<replaceable>context</replaceable><emphasis
+                      role="bold"><code>|</code></emphasis>]<replaceable>extension</replaceable><emphasis
+                      role="bold"><code>|</code></emphasis>]<replaceable>label</replaceable></synopsis></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable></para>
+
+      <para>Dass man in AEL natürlich nicht auf Idee kommen sollte, zu einer
+      Priorität anhand ihrer Nummer zu springen, versteht sich auch von
+      selbst, denn wie der AEL-Compiler die Befehlszeilen in Prioritäten
+      umsetzt, sollte beim Schreiben von AEL nicht interessieren. Weil es aber
+      vorkommt, dass man zu einer anderen Extension (im gleichen oder in einem
+      anderen Context) springen will, gibt es in AEL zusätzlich zu
+      <code>goto</code> auch noch die Anweisung
+      <code>jump</code>.<informaltable colsep="0" frame="none" pgwide="1"
+          rowsep="0" tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="1*" />
+
+            <colspec align="left" colnum="2" colwidth="2*" />
+
+            <tbody valign="top">
+              <row>
+                <entry><filename>.conf</filename></entry>
+
+                <entry><synopsis><emphasis role="bold"><code>Goto(</code></emphasis>[<replaceable>context</replaceable><emphasis
+                      role="bold"><code>,</code></emphasis>]<replaceable>extension</replaceable><emphasis
+                      role="bold"><code>,</code></emphasis><emphasis
+                      role="bold"><code>1</code></emphasis><emphasis
+                      role="bold"><code>)</code></emphasis></synopsis></entry>
+              </row>
+
+              <row>
+                <entry><filename>.ael</filename> (schlecht!)</entry>
+
+                <entry><synopsis><emphasis role="bold"><code>goto </code></emphasis>[<replaceable>context</replaceable><emphasis
+                      role="bold"><code>|</code></emphasis>]<replaceable>extension</replaceable><emphasis
+                      role="bold"><code>|</code></emphasis><emphasis
+                      role="bold"><code>1</code></emphasis></synopsis></entry>
+              </row>
+
+              <row>
+                <entry><filename>.ael</filename> (gut)</entry>
+
+                <entry><synopsis><emphasis role="bold"><code>jump </code></emphasis><replaceable>extension</replaceable>[<emphasis
+                      role="bold"><code>@</code></emphasis><replaceable>context</replaceable>]</synopsis></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable></para>
+
+      <para>Im Folgenden (<xref linkend="ael-conditionals" /> und <xref
+      linkend="ael-loops" />) werden wir aber lernen, dass man in AEL nicht
+      mehr darauf angewiesen ist, den Kontrollfluss (<emphasis>control
+      flow</emphasis>) des Programms durch <code>goto</code>-Sprünge zu
+      definieren, da es echte Kontrollstrukturen gibt.</para>
+    </section>
+
+    <section id="ael-conditionals">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>bedingungen</keyword>
+
+          <keyword>conditionals</keyword>
+
+          <keyword>if</keyword>
+
+          <keyword>switch</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Bedingte Anweisungen (<emphasis>conditionals</emphasis>)</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>if, switch</secondary>
+      </indexterm>
+
+      <para>Bedingte Anweisungen<footnote>
+          <para><ulink
+          url="http://de.wikipedia.org/wiki/Bedingte_Anweisung">http://de.wikipedia.org/wiki/Bedingte_Anweisung</ulink></para>
+        </footnote> (<emphasis>conditionals</emphasis><footnote>
+          <para><ulink
+          url="http://en.wikipedia.org/wiki/Conditional_(programming)">http://en.wikipedia.org/wiki/Conditional_(programming)</ulink></para>
+        </footnote>) gehören zu den Kontrollstrukturen (<emphasis>control
+      structures</emphasis>) eines Programmablaufs.</para>
+
+      <note>
+        <para>Für Informationen über Ausdrücke
+        (<emphasis>expressions</emphasis>) siehe auch <xref
+        linkend="glossar-expressions" />.</para>
+      </note>
+
+      <para>In AEL gibt es sowohl <emphasis
+      role="bold"><code>if</code></emphasis>- als auch <emphasis
+      role="bold"><code>switch</code></emphasis>-Blöcke. Das ist ein riesiger
+      Vorteil, denn es erleichtert die Lesbarkeit ganz entscheidend, und je
+      umfangreicher die Programmlogik wird, desto mehr kommt dieser Vorteil
+      zum Tragen. Vergleichen Sie selbst:</para>
+
+      <bridgehead id="ael-if"><code>if</code></bridgehead>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>exten =&gt; 90,1,Dial(SIP/anna)
+exten =&gt; 90,n,<emphasis role="bold">GotoIf($["${DIALSTATUS}" = "BUSY"]?b:n)</emphasis>
+
+exten =&gt; 90,10(b),Answer()
+exten =&gt; 90,11,Playback(hello-world)
+exten =&gt; 90,12,Voicemail(anna,b)
+exten =&gt; 90,13,<emphasis role="bold">Goto</emphasis>(ende)
+
+exten =&gt; 90,20(n),Dial(SIP/lisa)
+exten =&gt; 90,21,Playback(beeperr)
+exten =&gt; 90,22,<emphasis role="bold">Goto</emphasis>(ende)
+exten =&gt; 90,30(ende),NoOp(Fertig)
+</programlisting></entry>
+
+              <entry><programlisting>90 =&gt; {
+  Dial(SIP/anna);
+  <emphasis role="bold">if ("${DIALSTATUS}" = "BUSY") {</emphasis>
+    Answer();
+    Playback(hello-world)
+    Voicemail(anna,b);
+  <emphasis role="bold">}</emphasis>
+  <emphasis role="bold">else {</emphasis>
+    Dial(SIP/lisa);
+    Playback(beeperr);
+  <emphasis role="bold">}</emphasis>
+  NoOp(Fertig);
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>Wer an AEL gewöhnt ist, empfindet das unübersichtliche
+      Herumspringen mit <code>GotoIf()</code> zu Recht als umständlich, mal
+      ganz zu schweigen davon, dass man bei einem Befehl wie
+      <code>GotoIf($["${DIALSTATUS}" = "BUSY"]?b:n)</code> nicht auf den
+      ersten Blick sieht, ob all die Klammern richtig sind.</para>
+
+      <important>
+        <para>Auch hier gilt, dass die öffnende geschweifte Klammer
+        <quote><code>{</code></quote> eines Blocks auf der gleichen Zeile
+        stehen muss, nicht auf einer eigenen!</para>
+      </important>
+
+      <bridgehead id="ael-switch"><code>switch</code></bridgehead>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>exten =&gt; 70,1,Dial(SIP/anna)
+exten =&gt; 70,n,<emphasis role="bold">Goto(70-${DIALSTATUS},10)</emphasis>
+exten =&gt; 70,n(ende),NoOp(Fertig)
+
+exten =&gt; 70-<emphasis role="bold">BUSY</emphasis>,10,NoOp(besetzt)
+exten =&gt; 70-<emphasis role="bold">BUSY</emphasis>,11,<emphasis role="bold">Goto</emphasis>(ende)
+
+exten =&gt; 70-<emphasis role="bold">NOANSWER</emphasis>,10,NoOp(hebt nicht ab)
+exten =&gt; 70-<emphasis role="bold">NOANSWER</emphasis>,11,<emphasis
+                    role="bold">Goto</emphasis>(ende)
+
+exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,10,NoOp(was anderes)
+exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,11,<emphasis
+                    role="bold">Goto</emphasis>(ende)
+</programlisting></entry>
+
+              <entry><programlisting>70 =&gt; {
+  Dial(SIP/anna);
+  <emphasis role="bold">switch ("${DIALSTATUS}") {</emphasis>
+    <emphasis role="bold">case "BUSY":</emphasis>
+      NoOp(besetzt);
+      <emphasis role="bold">break</emphasis>;
+    <emphasis role="bold">case "NOANSWER":</emphasis>
+      NoOp(hebt nicht ab);
+      <emphasis role="bold">break</emphasis>;
+    <emphasis role="bold">default:</emphasis>
+      NoOp(was anderes);
+  <emphasis role="bold">}</emphasis>
+  
+  NoOp(Fertig);
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <important>
+        <para>Bitte denken Sie bei den <code>case</code>-Sprungpunkten im
+        <code>switch</code>-Block in AEL immer an die
+        <code>break</code>-Anweisungen! Ohne diese Begrenzung läuft die
+        Programmausführung einfach nach unten weiter, also zum nächsten
+        <code>case</code> oder <code>default</code> &#8211; eben zur nächsten
+        Zeile.</para>
+      </important>
+
+      <para>Dass das Äquivalent einer einfachen <code>switch</code>-Anweisung
+      in der traditionellen <filename>extensions.conf</filename> eine mittlere
+      Katastrophe ist, braucht wohl nicht groß erwähnt zu werden.
+      Verschachtelte <code>if</code>- oder <code>switch</code>-Blöcke wären
+      vollkommen unübersichtlich und unwartbar.</para>
+
+      <para>Übrigens gibt es &#8211; falls man das wirklich mal brauchen
+      sollte &#8211; in <code>switch</code>-Blöcken nicht nur
+      <code>case</code>-Vergleiche, sondern auch <code>pattern</code>:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>exten =&gt; _70,1,NoOp(Gewaehlt: ${EXTEN})
+exten =&gt; _70,n,<emphasis role="bold">Goto(70-${EXTEN},10)</emphasis>
+
+exten =&gt; 70-<emphasis role="bold">703</emphasis>,10,NoOp(703)
+exten =&gt; 70-<emphasis role="bold">703</emphasis>,11,<emphasis role="bold">Goto</emphasis>(ende)
+
+exten =&gt; 70-<emphasis role="bold">704</emphasis>,10,NoOp(704)
+exten =&gt; 70-<emphasis role="bold">704</emphasis>,11,<emphasis role="bold">Goto</emphasis>(ende)
+
+exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">70[5-8]</emphasis>,10,NoOp(70[5-8]);
+exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">70[5-8]</emphasis>,11,<emphasis
+                    role="bold">Goto</emphasis>(ende)
+
+exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,10,NoOp(was anderes)
+exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,11,<emphasis
+                    role="bold">Goto</emphasis>(ende)
+
+exten =&gt; 70,n(ende),NoOp(Fertig) </programlisting></entry>
+
+              <entry><programlisting>_70. =&gt; {
+  NoOp(Gewaehlt: ${EXTEN});
+  <emphasis role="bold">switch (${EXTEN}) {</emphasis>
+    <emphasis role="bold">case 703:</emphasis>
+      NoOp(703);
+      <emphasis role="bold">break</emphasis>;
+    <emphasis role="bold">case 704:</emphasis>
+      NoOp(704);
+      <emphasis role="bold">break</emphasis>;
+    <emphasis role="bold">pattern 70[5-8]:</emphasis>
+      NoOp(70[5-8]);
+      <emphasis role="bold">break</emphasis>;
+    <emphasis role="bold">default:</emphasis>
+      NoOp(was anderes);
+  <emphasis role="bold">}</emphasis>
+  
+  NoOp(Fertig);
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <bridgehead id="ael-iftime"><code>ifTime</code></bridgehead>
+
+      <para>Es sei noch erwähnt, dass es in AEL auch eine Entsprechung für
+      <code>GotoIfTime()</code> (siehe <xref
+      linkend="applications-gotoiftime" />) gibt, nämlich das Sprachkonstrukt
+      <code>ifTime</code>.</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <tbody valign="top">
+            <row>
+              <entry> </entry>
+
+              <entry><programlisting>20 =&gt; {
+  <emphasis role="bold">ifTime (</emphasis>08:00-18:00|mon-fri|*|*<emphasis
+                    role="bold">) {</emphasis>
+    Dial(SIP/20);
+  <emphasis role="bold">} else {</emphasis>
+    Playback(ansage-geschlossen);
+    Voicemail(20,s);
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>Die Syntax der Zeitangabe entspricht der von
+      <code>GotoIfTime()</code>. <code>ifTime</code> ist eigentlich
+      überflüssig, denn mit einem normalen <code>if</code> und der Funktion
+      <code>IFTIME()</code> (<xref linkend="functions-iftime" />) kann man das
+      Gleiche erreichen. Der Programmcode ist nur etwas länger:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <tbody valign="top">
+            <row>
+              <entry> </entry>
+
+              <entry><programlisting>20 =&gt; {
+  <emphasis role="bold">if (</emphasis>${IFTIME(08:00-18:00|mon-fri|*|*?1:0)}<emphasis
+                    role="bold">) {</emphasis>
+    Dial(SIP/20);
+  <emphasis role="bold">} else {</emphasis>
+    Playback(ansage-geschlossen);
+    Voicemail(20,s);
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <bridgehead id="ael-random"><code>random</code></bridgehead>
+
+      <para><code>random(){...}</code> ist ein Sprachkonstrukt, bei dem man in
+      Klammern einen ganzzahligen Prozentwert von 1 bis 99 angibt, der
+      bestimmt, mit welcher Wahrscheinlichkeit der Code-Block ausgeführt
+      wird.</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <tbody valign="top">
+            <row>
+              <entry> </entry>
+
+              <entry><programlisting>20 =&gt; {
+  <emphasis role="bold">random (</emphasis>42<emphasis role="bold">) {</emphasis>
+    NoOp(42 % Chance);
+  <emphasis role="bold">} else {</emphasis>
+    NoOp(58 % Chance);
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>Das Sprachkonstrukt <code>random</code> ist eigentlich
+      überflüssig, denn mit einem normalen <code>if</code> und der Funktion
+      <code>RAND()</code> (<xref linkend="functions-rand" />) kann man das
+      Gleiche erreichen. Der Code ist nur etwas länger:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <tbody valign="top">
+            <row>
+              <entry> </entry>
+
+              <entry><programlisting>20 =&gt; {
+  <emphasis role="bold">if (</emphasis>${RAND(0,100)} &lt; 42<emphasis
+                    role="bold">) {</emphasis>
+    NoOp(42 % Chance);
+  <emphasis role="bold">} else {</emphasis>
+    NoOp(58 % Chance);
+  <emphasis role="bold">}</emphasis>
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+
+    <section id="ael-loops">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>schleifen</keyword>
+
+          <keyword>loops</keyword>
+
+          <keyword>for</keyword>
+
+          <keyword>while</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Schleifen (<emphasis>loops</emphasis>)</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>for, while</secondary>
+      </indexterm>
+
+      <para>Schleifen (<emphasis>loops</emphasis>) gehören &#8211; wie
+      bedingte Anweisungen &#8211; zu den Kontrollstrukturen
+      (<emphasis>control structures</emphasis>) eines Programmablaufs.</para>
+
+      <para>In AEL gibt es <emphasis role="bold"><code>for</code></emphasis>-
+      und <emphasis role="bold"><code>while</code></emphasis>-Schleifen, wie
+      sie aus anderen Programmiersprachen bekannt sind.</para>
+
+      <bridgehead id="ael-while"><code>while</code></bridgehead>
+
+      <para>Ein <code>while</code>-Block in AEL entspricht in etwa der
+      Verwendung von <code>While()</code> (<xref
+      linkend="applications-while" />) und <code>EndWhile()</code> (<xref
+      linkend="applications-endwhile" />).</para>
+
+      <para>Auch die aus anderen Sprachen bekannten Befehle <code>break</code>
+      und <code>continue</code> lassen sich in Schleifen nutzen.
+      <code>break</code> springt zum Ende des Schleifenblocks,
+      <code>continue</code> zum Anfang. Das ist also die Entsprechung zu
+      <code>ExitWhile()</code> (<xref linkend="applications-exitwhile" />)
+      bzw. <code>ContinueWhile()</code> (<xref
+      linkend="applications-continuewhile" />).</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>exten =&gt; 40,1,Set(x=5)
+exten =&gt; 40,n,<emphasis role="bold">While($[${x} &lt;= 9])</emphasis>
+exten =&gt; 40,n,NoOp(x ist ${x})
+exten =&gt; 40,n,ExecIf($[${x} &gt; 5],<emphasis role="bold">ExitWhile</emphasis>)
+exten =&gt; 40,n,Playback(beep)
+exten =&gt; 40,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
+exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
+exten =&gt; 40,n,NoOp(Fertig)
+</programlisting></entry>
+
+              <entry><programlisting>30 =&gt; {
+  x=0;
+  <emphasis role="bold">while (${x} &lt;= 9) {</emphasis>
+    NoOp(x ist ${x});
+    if (${x} &gt; 5) {
+      <emphasis role="bold">break</emphasis>;
+    }
+    Playback(beep);
+    <emphasis role="bold">y=${x} + 1</emphasis>;
+  <emphasis role="bold">}</emphasis>
+  NoOp(Fertig);
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <note>
+        <para>In AEL brauchen wir hier nur deshalb mehr Zeilen, weil wir
+        darauf verzichten, in dem <code>if</code>-Block vor dem
+        <code>break</code> noch einen zweiten Befehl wie <code>NoOp()</code>
+        auszuführen. Dann nämlich reicht im <filename>.conf</filename>-Format
+        nicht mehr ein <code>ExecIf()</code>, sondern man braucht ein
+        kompliziertes mehrzeiliges Konstrukt mit <code>GotoIf()</code>.</para>
+      </note>
+
+      <bridgehead id="ael-for"><code>for</code></bridgehead>
+
+      <para>Zusätzlich zu <code>while</code> gibt es in AEL auch
+      <code>for</code>-Schleifen. Diese habe keine Entsprechung im
+      <filename>.conf</filename>-Format. (Allerdings lässt sich jede
+      <code>for</code>-Schleife als <code>while</code>-Schleife
+      schreiben.)</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>exten =&gt; 40,1,<emphasis role="bold">Set(x=5)</emphasis>
+exten =&gt; 40,n,<emphasis role="bold">While($[${x} &lt;= 5])</emphasis>
+exten =&gt; 40,n,NoOp(x ist ${x})
+exten =&gt; 40,n,Playback(beep)
+exten =&gt; 40,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
+exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
+exten =&gt; 40,n,NoOp(Fertig)
+</programlisting></entry>
+
+              <entry><programlisting>40 =&gt; {
+  <emphasis role="bold">for (x=0; ${x}&lt;=5; x=${x}+1) {</emphasis>
+    NoOp(x ist ${x});
+    Playback(beep);
+  <emphasis role="bold">}</emphasis>
+  NoOp(Fertig);
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+
+    <section id="ael-macros">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>macro</keyword>
+
+          <keyword>makro</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Makros (<emphasis>macros</emphasis>)</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Makros</secondary>
+      </indexterm>
+
+      <indexterm>
+        <primary>Makros</primary>
+
+        <secondary>AEL</secondary>
+      </indexterm>
+
+      <para>In AEL muss man sich keine Gedanken darüber machen, ob man die
+      nicht mehr empfohlene Applikation <code>Macro()</code> (<xref
+      linkend="applications-macro" />) oder <code>Gosub()</code> (<xref
+      linkend="applications-gosub" />) verwenden soll, denn Makros gibt es in
+      AEL als Sprachkonstrukt <code>macro</code>.</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting><emphasis role="bold">[macro-countdown]</emphasis>
+exten =&gt; s,1,Set(c=${ARG1})
+exten =&gt; s,n,While($[ ${c} &gt; 0])
+exten =&gt; s,n,SayNumber(${c})
+exten =&gt; s,n,Set(c=$[ ${c} - 1 ])
+exten =&gt; s,n,EndWhile()
+
+[default]
+exten =&gt; 123,1,<emphasis role="bold">Macro(countdown,3)</emphasis>
+exten =&gt; 124,1,<emphasis role="bold">Macro(countdown,5)</emphasis>
+</programlisting></entry>
+
+              <entry><programlisting><emphasis role="bold">macro countdown( count ) {</emphasis>
+  for (c=${count}; ${c}&gt;0; c=${c}-1) {
+    SayNumber(${c});
+  }
+<emphasis role="bold">}</emphasis>
+
+context default {
+  123 =&gt; {
+    <emphasis role="bold">&amp;countdown(3)</emphasis>;
+  }
+  124 =&gt; <emphasis role="bold">&amp;countdown(5)</emphasis>;
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>Intern macht der AEL-Compiler aus <code>macro</code> automatisch
+      eine <code>Gosub()</code>-Subroutine, was uns aber glücklicherweise
+      nicht interessieren muss.</para>
+    </section>
+
+    <section id="ael-hints">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>hints</keyword>
+
+          <keyword>hint</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Hints</title>
+
+      <indexterm>
+        <primary>AEL</primary>
+
+        <secondary>Hints</secondary>
+      </indexterm>
+
+      <para>Wie sogenannte <quote>Hints</quote> in AEL geschrieben werden,
+      erklären wir ausführlich in <xref linkend="blf-hints-pickup" />. Hier
+      nur ein einfaches Beispiel:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[interne-benutzer]
+exten =&gt; 21,<emphasis role="bold">hint,SIP/anna</emphasis>
+exten =&gt; 21,1,Dial(SIP/anna)
+
+exten =&gt; 22,<emphasis role="bold">hint,SIP/lisa</emphasis>
+exten =&gt; 22,1,Dial(SIP/lisa)
+</programlisting></entry>
+
+              <entry><programlisting>context interne-benutzer {
+  <emphasis role="bold">hint(SIP/anna)</emphasis> 21 =&gt; {
+    Dial(SIP/anna);
+  }
+  <emphasis role="bold">hint(SIP/lisa)</emphasis> 22 =&gt; {
+    Dial(SIP/lisa);
+  }
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>... und eines mit Pattern:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>[interne-benutzer]
+exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
+exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
+
+exten =&gt; _2X,1,Dial(SIP/${EXTEN})
+</programlisting></entry>
+
+              <entry><programlisting>context interne-benutzer {
+  <emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {}
+  <emphasis role="bold">hint(SIP/22)</emphasis> 22 =&gt; {}
+  
+  _2X =&gt; {
+    Dial(SIP/${EXTEN});
+  }
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+
+    <section id="ael-match-caller-id">
+      <sectioninfo>
+        <keywordset>
+          <keyword>ael</keyword>
+
+          <keyword>caller-id</keyword>
+        </keywordset>
+      </sectioninfo>
+
+      <title>Filtern nach Anrufernummer</title>
+
+      <para>Man braucht es zwar in der Praxis eher selten, aber die Syntax für
+      eine (in der Asterisk-Community viel zitierte) <quote>Ex-Girlfriend
+      Extension</quote> sähe so aus:</para>
+
+      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                     tocentry="0">
+        <tgroup cols="2">
+          <colspec align="left" colnum="1" colwidth="5*" />
+
+          <colspec align="left" colnum="2" colwidth="4*" />
+
+          <thead valign="middle">
+            <row>
+              <entry
+              align="center"><filename>extensions.conf</filename></entry>
+
+              <entry
+              align="center"><filename>extensions.ael</filename></entry>
+            </row>
+          </thead>
+
+          <tbody valign="top">
+            <row>
+              <entry><programlisting>exten =&gt; 10<emphasis role="bold">/55555</emphasis>,1,NoOp(Ex-Freundin)
+exten =&gt; 10<emphasis role="bold">/55555</emphasis>,n,Busy()
+
+exten =&gt; 10,1,Dial(SIP/karl)
+exten =&gt; 10,n,Voicemail(karl)
+</programlisting></entry>
+
+              <entry><programlisting>10<emphasis role="bold">/55555</emphasis> =&gt; {
+  NoOp(Ex-Freundin);
+  Busy();
+}
+10 =&gt; {
+  Dial(SIP/karl);
+  Voicemail(karl);
+}</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+
+      <para>Wenn also die Ex-Freundin von der Nummer (Caller-ID)
+      <literal>55555</literal> anruft, würde sie auf <literal>Busy()</literal>
+      geleitet, alle anderen Anrufer jedoch nicht.</para>
+
+      <para>Übrigens sind hier auch Pattern erlaubt. Mit <code>/_0123.</code>
+      könnte man also direkt einen ganzen Vorwahl-Bereich matchen.</para>
+    </section>
+  </section>
+
+  <section id="extensions.ael-oder-conf">
+    <title>extensions.ael oder extensions.conf?</title>
+
+    <para>Zwangsläufig stellt sich jeder Entwickler von Asterisk-Dialplänen
+    die Frage, ob es besser ist, in AEL oder im traditionellen Stil zu
+    schreiben. Leider bleibt an dieser Stelle Digium eine klare Antwort
+    schuldig. Es ist also nicht klar, ob es eine strategische Ausrichtung
+    gibt. Für ein gutes Verständnis von Asterisk ist die Einführung in die
+    <filename>extensions.conf</filename> unverzichtbar &#8211; schon allein
+    deshalb, weil noch ein Großteil der Dokumentation, die man im Web findet,
+    für die <filename>extensions.conf</filename> geschrieben ist.</para>
+
+    <para>Wer nur hin und wieder mal in den Dialplan schaut und ansonsten mit
+    Asterisk nichts zu tun hat, fährt sicherlich die nächste Zeit mit der
+    konventionellen <filename>extensions.conf</filename> besser. Für
+    Entwickler, die aber sehr viel mit Asterisk arbeiten, ist die neue
+    AEL-Variante viel zu verführerisch, als dass man den Sprung nicht wagt.
+    Selbst auf die Gefahr hin, dass Digium AEL irgendwann nicht mehr
+    unterstützen sollte (was sehr unwahrscheinlich ist), hat man mit
+    <command>aelparse</command> ein Tool an der Hand, mit dem man wieder in
+    die alte Welt zurückkehren kann.</para>
+  </section>
+</chapter>

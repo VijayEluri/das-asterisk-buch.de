@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-ast_config" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>AST_CONFIG()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>AST_CONFIG()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>AST_CONFIG(<replaceable>Datei</replaceable>,<replaceable>Kategorie</replaceable>,<replaceable>Variablenname</replaceable>,[<replaceable>index</replaceable>])</synopsis>
+
+  <simpara>Diese Funktion liest einen bestimmten Wert aus einer
+  Konfigurationsdatei und gibt diesen zurück. Der Wert ist der tatsächliche
+  Wert, der zum Zeitpunkt des Funktionsaufrufs in der Datei steht, egal, ob,
+  z. B. nach einer Konfigurationsänderung, ein Reload von Asterisk
+  durchgeführt wurde oder nicht. Das bedeutet, dass die Werte, die von dieser
+  Funktion zurückgegeben werden, nicht unbedingt mit den
+  Konfigurationseinstellungen übereinstimmen müssen, die Asterisk im Moment
+  verwendet. Der optionale <code>index</code>-Parameter wird benutzt, wenn
+  mehr als ein Vorkommen dieser Variable in der Kategorie existiert. Der
+  Indexzähler fängt mit 0 an. Das heißt, dass die erste gefundene Variable mit
+  0 ausgelesen werden muss. Des Weiteren kann mit <code>index</code> die
+  Anzahl der vorhandenen Variablen mit herausgefunden werden. Dazu muss nur
+  als <code>index</code> der Wert <code>count</code> übergeben
+  werden.</simpara>
+
+  <programlisting>; Gibt den <code>type</code> des Sip-Accounts anhand der Callerid auf der CLI aus
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Verbose(1,${AST_CONFIG(sip.conf,${CALLERID(num)},type)})
+exten =&gt; 123,n,Hangup()
+</programlisting>
+
+  <xi:include href="ast_config-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+</section>

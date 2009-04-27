@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-set" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>Set()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>Set()</code></secondary>
+  </indexterm>
+
+  <simpara>Setzt eine Variable auf den angegebenen Wert.</simpara>
+
+  <synopsis>Set(<replaceable>Variable</replaceable>=<replaceable>Wert</replaceable>)</synopsis>
+
+  <simpara>Setzt die Variable auf den angegebenen Wert. Beginnt der Name der
+  Variablen mit dem Zeichen <literal>_</literal>, wird eine einfache Vererbung
+  angenommen (d. h., es wird auf Kanäle vererbt, die von diesem Channel
+  erzeugt werden). Beginnt der Name mit <literal>__</literal>, wird eine
+  Endlosvererbung angenommen (d. h., es wird auf alle Kind-Kanäle vererbt),
+  siehe <xref linkend="var-vererbung" />. Variablen sind normalerweise nur
+  innerhalb eines Channels gültig und werden beim Auflegen gelöscht. Mit der
+  Option <code>g</code> setzt man in Asterisk 1.2 eine Variable (nicht eine
+  Funktion!) global; in 1.4 macht man das mithilfe der Funktion
+  <code>GLOBAL()</code>.</simpara>
+
+  <programlisting>; die Variable TEST auf "123" setzen:
+exten =&gt; 123,1,Set(TEST=123)
+exten =&gt; 123,n,SayDigits(${TEST})
+
+; die globale Variable TEST2 auf "456" setzen:
+exten =&gt; 123,n,Set(TEST2=456,g)         ; Asterisk 1.2
+exten =&gt; 123,n,Set(GLOBAL(TEST2)=456)   ; Asterisk 1.4</programlisting>
+
+  <xi:include href="set-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-importvar" />,
+    <filename>doc/README.variables</filename> (1.2) /
+    <filename>doc/channelvariables.txt</filename> (1.4), <xref
+    linkend="functions-global" /></para>
+  </formalpara>
+</section>

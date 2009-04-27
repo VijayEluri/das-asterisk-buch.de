@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-stat" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>STAT()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>STAT()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>STAT(<replaceable>Flag</replaceable>,<replaceable>Dateiname</replaceable>)</synopsis>
+
+  <para>Gibt Status-Informationen über eine Datei zurück (vgl. die
+  Shell-Befehle <command>test</command> und <command>stat</command>). Mit
+  <code>Dateiname</code> ist ein Datei-Knoten (<quote>inode</quote>) gemeint.
+  <code>Dateiname</code> kann also auch ein Verzeichnis oder eine
+  besondere Datei sein. <code>Flag</code> ist eines der
+  folgenden:<variablelist>
+      <varlistentry>
+        <term><code>d</code></term>
+
+        <listitem>
+          <simpara>Prüft, ob die Datei ein Verzeichnis ist.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>e</code></term>
+
+        <listitem>
+          <simpara>Prüft, ob die Datei existiert.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>f</code></term>
+
+        <listitem>
+          <simpara>Prüft, ob die Datei eine reguläre Datei ist (im Gegensatz
+          zu besonderen Dateien: <emphasis>block special file, character
+          special file, symbolic link, named pipe,
+          socket</emphasis>).</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>m</code></term>
+
+        <listitem>
+          <simpara>Gibt den Datei-Modus zurück (oktal), also die Rechte, z. B.
+          0754.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>s</code></term>
+
+        <listitem>
+          <simpara>Gibt die Datei-Größe in Bytes zurück.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>A</code></term>
+
+        <listitem>
+          <simpara>Gibt die Unix-Zeit des letzten Zugriffs zurück
+          (<emphasis>access</emphasis>).</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>C</code></term>
+
+        <listitem>
+          <simpara>Gibt die Unix-Zeit zurück, wann sich der Knoten
+          (<emphasis>inode</emphasis>) zuletzt geändert hat
+          (<emphasis>change</emphasis>).</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>M</code></term>
+
+        <listitem>
+          <simpara>Gibt die Unix-Zeit der letzten Veränderung zurück
+          (<emphasis>modification</emphasis>).</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist><programlisting>; letzte Veränderung der Datei /etc/crontab abfragen:
+exten =&gt; 123,1,Set(foo=${STAT(M,/etc/crontab)})</programlisting></para>
+
+  <xi:include href="stat-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+</section>

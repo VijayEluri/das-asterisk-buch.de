@@ -1,0 +1,34 @@
+  -= Info about application 'Queue' =-
+
+[Synopsis]
+Queue a call for a call queue
+
+[Description]
+  Queue(queuename[|options[|URL][|announceoverride][|timeout][|AGI]):
+Queues an incoming call in a particular call queue as defined in queues.conf.
+This application will return to the dialplan if the queue does not exist, or
+any of the join options cause the caller to not enter the queue.
+The option string may contain zero or more of the following characters:
+      'd' -- data-quality (modem) call (minimum delay).
+      'h' -- allow callee to hang up by hitting *.
+      'H' -- allow caller to hang up by hitting *.
+      'n' -- no retries on the timeout; will exit this application and
+             go to the next step.
+      'i' -- ignore call forward requests from queue members and do nothing
+             when they are requested.
+      'r' -- ring instead of playing MOH
+      't' -- allow the called user transfer the calling user
+      'T' -- to allow the calling user to transfer the call.
+      'w' -- allow the called user to write the conversation to disk via Monitor
+      'W' -- allow the calling user to write the conversation to disk via Monitor
+  In addition to transferring the call, a call may be parked and then picked
+up by another user.
+  The optional URL will be sent to the called party if the channel supports
+it.
+  The optional AGI parameter will setup an AGI script to be executed on the
+calling party's channel once they are connected to a queue member.
+  The timeout will cause the queue to fail out after a specified number of
+seconds, checked between each queues.conf 'timeout' and 'retry' cycle.
+  This application sets the following channel variable upon completion:
+      QUEUESTATUS    The status of the call as a text string, one of
+             TIMEOUT | FULL | JOINEMPTY | LEAVEEMPTY | JOINUNAVAIL | LEAVEUNAVAIL

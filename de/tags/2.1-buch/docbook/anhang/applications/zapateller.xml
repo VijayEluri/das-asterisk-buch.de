@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-zapateller" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>Zapateller()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>Zapateller()</code></secondary>
+  </indexterm>
+
+  <simpara>Verwendet einen speziellen Informationston, um automatisierte
+  Werbeanrufe abzublocken.</simpara>
+
+  <synopsis>Zapateller(<replaceable>Optionen</replaceable>)</synopsis>
+
+  <simpara>Generiert einen speziellen Informationston (SIT, Special
+  Information Tone, "Kein Anschluss unter dieser Nummer"), um Telefonverkäufer
+  und andere maschinengewählte Anrufe davon abzuhalten, Sie zu
+  belästigen.</simpara>
+
+  <para>Die folgenden Optionen sind verfügbar (ggf. durch <code>|</code>
+  getrennt):<variablelist termlength="12">
+      <varlistentry>
+        <term><code>answer</code></term>
+
+        <listitem>
+          <simpara>Bewirkt, dass die Leitung beantwortet wird, bevor der Ton
+          abgespielt wird.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>nocallerid</code></term>
+
+        <listitem>
+          <simpara>Bewirkt, dass Zapateller den Ton nur abspielt, wenn keine
+          Caller-ID-Information verfügbar ist.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
+
+  <programlisting>[incoming]
+; im Context incoming die SIT-Töne spielen, wenn keine Caller-ID vorhanden ist:
+exten =&gt; s,1,Zapateller(nocallerid)
+exten =&gt; s,n,Wait(3)
+exten =&gt; s,n,Answer()</programlisting>
+
+  <xi:include href="zapateller-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-privacymanager" /></para>
+  </formalpara>
+</section>

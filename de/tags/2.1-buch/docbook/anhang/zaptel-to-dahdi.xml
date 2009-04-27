@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<appendix id="zaptel-to-dahdi" lang="de" revision="$Revision$">
+  <title>Zaptel zu DAHDI<indexterm>
+      <primary>Zaptel</primary>
+
+      <secondary>DAHDI</secondary>
+    </indexterm><indexterm>
+      <primary>DAHDI</primary>
+
+      <secondary>Zaptel</secondary>
+    </indexterm></title>
+
+  <para>Informationen zur Umbenennung von Zaptel zu DAHDI.</para>
+
+  <section id="zaptel-to-dahdi-geschichte">
+    <title>Geschichte</title>
+
+    <para>Der von Digium benutzte Name <trademark>Zaptel</trademark> ist ein
+    Trademark der Firma <emphasis>Zapata Telephony</emphasis>
+    (<emphasis>ZapTel</emphasis>). Das hat weder bei Digium noch bei Zapata
+    Telephony lange Zeit keinen gestört. Wohl erst, als Asterisk und damit
+    Digium immer populärer wurde, hatte Zapata Telephony Digium darauf
+    aufmerksam gemacht, dass sie ein Trademark (also ein Markenzeichen) auf
+    diesen Begriff eingetragen hatten (das war ca. 2006). Mitte 2008 hat
+    Digium dann offiziell Zaptel in Dahdi umbenannt. Siehe dazu den
+    Blogeintrag von <ulink
+    url="http://blogs.digium.com/2008/05/19/zaptel-project-being-renamed-to-dahdi/">http://blogs.digium.com/2008/05/19/zaptel-project-being-renamed-to-dahdi/</ulink>.</para>
+
+    <blockquote lang="en">
+      <title>Zaptel project being renamed to DAHDI</title>
+
+      <attribution>kpfleming, May 19th, 2008</attribution>
+
+      <para>Approximately two years ago, the owner of the trademark "ZapTel"
+      (for telephony purposes) contacted Digium and notified us that the name
+      was in fact trademarked. His company owns the ZapTel trademark and sells
+      telephone calling cards, and would prefer that Internet searches for
+      "Zaptel cards" not return products unrelated to their trademark.</para>
+
+      <para>In an effort to rectify this situation, since that time we have
+      had many discussions internally at Digium about what we should do,
+      including ensuring that any new name we chose would be something that
+      was available to be trademarked (as Asterisk is), so that we wouldn?t
+      have a recurrence of this situation. The owner of the trademark has been
+      very accommodating as we worked through this process, but it is now time
+      for us to take action.</para>
+
+      <para>Beginning immediately, we are going to work on renaming Zaptel to
+      DAHDI, which stands for Digium Asterisk Hardware Device Interface. When
+      DAHDI 2.0.0 (the first version) is released, it will contain nearly all
+      the functionality of Zaptel 1.4, except for Linux kernel 2.4 support,
+      devfs support, and drivers for some very outdated (and no longer
+      available) Digium hardware (torisa and wcusb). Zaptel 1.2 will continue
+      to be released in new versions as bugs are found and fixed, but when
+      DAHDI 2.0.0 is released there will be no more releases of Zaptel
+      1.4.</para>
+
+      <para>Asterisk 1.6.0 will use DAHDI exclusively (it will not have
+      support for Zaptel), although this will be done in a highly
+      backwards-compatible way so that disruption to existing dialplans and
+      configurations will be minimized.</para>
+
+      <para>Asterisk 1.4 will continue to have support for Zaptel, although it
+      will be enhanced to also transparently support DAHDI instead, and the
+      documentation (and default configuration files) will encourage new users
+      to use DAHDI instead of Zaptel.</para>
+
+      <para>Asterisk 1.2 will be unaffected by these changes.</para>
+
+      <para>It is unfortunate that all of us have to bear the inconvenience of
+      this change, but we will try to ensure that it is as easy for users to
+      switch from Zaptel to DAHDI as we can make it.</para>
+
+      <para>For continuing updates on this process, including additional
+      upgrade notes and other information, please monitor the page at:</para>
+
+      <para><ulink
+      url="http://www.asterisk.org/zaptel-to-dahdi">http://www.asterisk.org/zaptel-to-dahdi</ulink></para>
+    </blockquote>
+  </section>
+
+  <section id="zaptel-to-dahdi-konsequenzen">
+    <title>Konsequenzen</title>
+
+    <para>Es war schon immer schwer, zu Asterisk ein langfristig aktuelles
+    Buch zu schreiben. Mit der Umstellung von Zaptel auf DAHDI ist es noch
+    schwerer geworden. Leider lässt es sich nicht vermeiden, dass wir in
+    diesem Buch manchmal Zaptel und manchmal Dahdi beschreiben. Auf jeden Fall
+    sollten Sie hin und wieder die Online-Ausgabe des Buches unter <ulink
+    url="http://www.das-asterisk-buch.de">http://www.das-asterisk-buch.de</ulink>
+    aufrufen. Dort werden wir aktuelle Änderungen nachtragen.</para>
+
+    <para>Weiterhin gibt es von Digium ebenfalls eine Online-Hilfe. Diese kann
+    unter der URL <ulink
+    url="http://www.asterisk.org/zaptel-to-dahdi">http://www.asterisk.org/zaptel-to-dahdi</ulink>
+    abgerufen werden.</para>
+  </section>
+
+  <section id="zaptel-to-dahdi-aenderungen">
+    <title>DAHDI</title>
+
+    <bridgehead id="zaptel-to-dahdi-dial">Dial()</bridgehead>
+
+    <para>Wer in Asterisk 1.6 oder ab Asterisk 1.4.22 DAHDI einsetzen will
+    (bzw. muss), sei darauf hingewiesen, dass sich im Dialplan
+    <code>Dial(Zap/<replaceable>...</replaceable>)</code> in
+    <code>Dial(DAHDI/<replaceable>...</replaceable>)</code> ändert.</para>
+
+    <para>Allerdings kann man aus Gründen der Rückwärtskompatibilität falls
+    gewünscht in der <filename>/etc/asterisk/asterisk.conf</filename>
+    mit<programlisting>dahdichanname = no</programlisting>im Abschnitt
+    <code>[options]</code> einstellen, dass die Kanäle wie vorher mit Zaptel
+    <code>Zap</code> statt <code>DAHDI</code> heißen.</para>
+
+    <bridgehead id="zaptel-to-dahdi-kernel-modules">Kernel-Module
+    (.ko)</bridgehead>
+
+    <informaltable colsep="0" frame="void" pgwide="1" rowsep="0">
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*" />
+
+        <colspec align="left" colwidth="1*" />
+
+        <thead>
+          <row>
+            <entry>Zaptel</entry>
+
+            <entry>Dahdi</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><filename>zaptel</filename></entry>
+
+            <entry><filename>dahdi</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztd-eth</filename></entry>
+
+            <entry><filename>dahdi_dynamic_eth</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztd-loc</filename></entry>
+
+            <entry><filename>dahdi_dynamic_loc</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztdummy</filename></entry>
+
+            <entry><filename>dahdi_dummy</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztdynamic</filename></entry>
+
+            <entry><filename>dahdi_dynamic</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>zttranscode</filename></entry>
+
+            <entry><filename>dahdi_transcode</filename></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>Die Kernel-Module der einzelnen Kartentreiber heißen wie
+    bisher.</para>
+
+    <bridgehead id="zaptel-to-dahdi-config-files">Dateien</bridgehead>
+
+    <informaltable colsep="0" frame="void" pgwide="1" rowsep="0">
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*" />
+
+        <colspec align="left" colwidth="1*" />
+
+        <thead>
+          <row>
+            <entry>Zaptel</entry>
+
+            <entry>Dahdi</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><filename>/etc/zaptel.conf</filename></entry>
+
+            <entry><filename>/etc/dahdi/system.conf</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>/etc/asterisk/zapata.conf</filename></entry>
+
+            <entry><filename>/etc/asterisk/chan_dahdi.conf</filename></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>Mit <code>dahdichanname = no</code> (s. o.) liest Asterisk die
+    Konfiguration aus der <filename>zapata.conf</filename> statt aus der
+    <filename>chan_dahdi.conf</filename>.</para>
+
+    <bridgehead id="zaptel-to-dahdi-shell-tools">Shell-Programme</bridgehead>
+
+    <informaltable colsep="0" frame="void" pgwide="1" rowsep="0">
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*" />
+
+        <colspec align="left" colwidth="1*" />
+
+        <thead>
+          <row>
+            <entry>Zaptel</entry>
+
+            <entry>Dahdi</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><filename>ztcfg</filename></entry>
+
+            <entry><filename>dahdi_cfg</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztmonitor</filename></entry>
+
+            <entry><filename>dahdi_monitor</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztscan</filename></entry>
+
+            <entry><filename>dahdi_scan</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>ztspeed</filename></entry>
+
+            <entry><filename>dahdi_speed</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>zttest</filename></entry>
+
+            <entry><filename>dahdi_test</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>zttool</filename></entry>
+
+            <entry><filename>dahdi_tool</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>zapconf</filename></entry>
+
+            <entry><filename>dahdi_genconf</filename></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <bridgehead
+    id="zaptel-to-dahdi-asterisk-modules">Asterisk-Module</bridgehead>
+
+    <informaltable colsep="0" frame="void" pgwide="1" rowsep="0">
+      <tgroup cols="2">
+        <colspec align="left" colwidth="1*" />
+
+        <colspec align="left" colwidth="1*" />
+
+        <thead>
+          <row>
+            <entry>Zaptel</entry>
+
+            <entry>Dahdi</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry><filename>chan_zap.so</filename></entry>
+
+            <entry><filename>chan_dahdi.so</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>app_zapbarge.so</filename></entry>
+
+            <entry><filename>app_dahdibarge.so</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>app_zapras.so</filename></entry>
+
+            <entry><filename>app_dahdiras.so</filename></entry>
+          </row>
+
+          <row>
+            <entry><filename>app_zapscan.so</filename></entry>
+
+            <entry><filename>app_dahdiscan.so</filename></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </informaltable>
+
+    <para>Aus Gründen der Rückwärtskompatibilität können die Applikationen
+    auch weiterhin als <code>Zap<replaceable>...</replaceable>()</code> statt
+    (neu:) <code>DAHDI<replaceable>...</replaceable>()</code> aufgerufen
+    werden. Für mehr Informationen zu den Applikationen siehe <xref
+    linkend="applications" />.</para>
+  </section>
+
+  <section id="zaptel-dahdi-b410p-misdn">
+    <sectioninfo>
+      <abstract>
+        <para>Interview with Kevin P. Fleming über die Umstellung von Zaptel
+        auf DAHDI, die Unterstützung der Digium B410p und mISDN.</para>
+      </abstract>
+
+      <keywordset>
+        <keyword>zaptel</keyword>
+
+        <keyword>dahdi</keyword>
+
+        <keyword>b410p</keyword>
+      </keywordset>
+    </sectioninfo>
+
+    <title>Interview mit Kevin P. Fleming</title>
+
+    <subtitle>Über die Umstellung von Zaptel auf DAHDI und die Unterstützung
+    der Digium B410p</subtitle>
+
+    <para>&#8212; geführt von Stefan Wintermeyer, Januar 2009</para>
+
+    <qandaset>
+      <qandadiv>
+        <qandaentry>
+          <question>
+            <para><emphasis>Why did you create DAHDI at all?</emphasis></para>
+          </question>
+
+          <answer>
+            <para>DAHDI was created because the name "Zaptel" in the context
+            of telephony is a registered trademark of another company, and we
+            respected their wishes that we stop infringing on their trademark.
+            There is a lengthy mailing list post (from me) in the
+            asterisk-users archives describing the situation.</para>
+          </answer>
+        </qandaentry>
+
+        <qandaentry>
+          <question>
+            <para><emphasis>Does DAHDI still need mISDN for the B410p card or
+            does it come with support for Euro-ISDN BRI by itself
+            now?</emphasis></para>
+          </question>
+
+          <answer>
+            <para>You are confusing two different things; DAHDI is the same
+            layer as Zaptel was. It provides hardware drivers and a limited
+            amount of signaling abstraction (along with some other features),
+            but is not at all involved in protocol-level work. chan_dahdi is
+            the channel driver (which used to be called chan_zap), which
+            contains protocol level support, including analog signaling, CAS,
+            PRI and SS7 (in Asterisk 1.6).</para>
+
+            <para>Zaptel and mISDN were not at all related, and the same is
+            true of DAHDI and mISDN. The only reference to mISDN in Zaptel was
+            a Makefile target called 'b410p' which allowed people to download,
+            build and install the mISDN and mISDNuser packages in an automated
+            fashion, but this was just a convenience for users, it was not
+            related to Zaptel. In DAHDI, this is no longer present, and mISDN
+            users must follow normal processes to obtain and install
+            mISDN.</para>
+
+            <para>Now, when it gets to the channel driver layer, things get a
+            little more complicated. Asterisk 1.4 had chan_zap, which talks to
+            Zaptel, and chan_misdn, which talks to mISDN. They don't support
+            any hardware in common, so for Asterisk 1.4 users, support of
+            EuroISDN BRI is still handled by chan_misdn. This is still true
+            even in recent Asterisk 1.4 releases where chan_zap has been
+            renamed to chan_dahdi, and now talks to DAHDI instead of Zaptel.
+            Even though DAHDI now contains a driver for Digium's B410P BRI
+            card, the Asterisk 1.4 chan_dahdi channel driver does not support
+            EuroISDN BRI.</para>
+
+            <para>In Asterisk 1.6 the picture is a little different: the
+            chan_misdn channel driver is still present, and users who prefer
+            mISDN or have hardware only supported by mISDN are still welcome
+            to use it. The Asterisk 1.6 chan_dahdi channel driver works only
+            with DAHDI, *and* it contains protocol level support for EuroISDN
+            BRI. This means that Asterisk 1.6 users can use chan_dahdi for
+            their EuroISDN BRI connections, over any BRI card with a DAHDI
+            driver (see below for more details).</para>
+          </answer>
+        </qandaentry>
+
+        <qandaentry>
+          <question>
+            <para><emphasis>Would you call it stable and ready for
+            production?</emphasis></para>
+          </question>
+
+          <answer>
+            <para>There are two answers to that question: the EuroISDN BRI
+            protocol support in chan_dahdi (which actually comes from libpri)
+            is both stable and ready for production. It has been through
+            extensive telecom certification testing and will be supported for
+            BRI interoperability just as it has always been for PRI
+            interoperability.</para>
+
+            <para>The DAHDI driver for the Digium B410P is very new, and is
+            working quite well for a large number of users. However, there are
+            some open issues being worked on (these are visible in our open
+            source issue tracker on bugs.digium.com), primarily related to
+            ISDN L1 layer behavior with various telco operators in Europe. It
+            is certainly stable and fully supported by Digium's development
+            team, but there are probably environments where it is not yet
+            ready for production until these issues are resolved.</para>
+          </answer>
+        </qandaentry>
+
+        <qandaentry>
+          <question>
+            <para><emphasis>Will Euro-ISDN BRI support be available in 1.4 and
+            Zaptel too or only in 1.6 and DAHDI?</emphasis></para>
+          </question>
+
+          <answer>
+            <para>The B410P driver will never be part of Zaptel (as there will
+            be no more Zaptel releases anyway), and the EuroISDN BRI support
+            in chan_dahdi will not be added to Asterisk 1.4, as we don't add
+            new features to that release branch. However, the chan_dahdi
+            changes required to provide EuroISDN BRI support are relatively
+            minor, so I expect that one or more community members will publish
+            'backport' patches so that users can use the DAHDI B410P driver
+            and the libpri EuroISDN BRI support in Asterisk 1.4.</para>
+          </answer>
+        </qandaentry>
+
+        <qandaentry>
+          <question>
+            <para><emphasis>Will DAHDI and Zaptel support generic Cologne
+            HFC-S BRI cards or is it B410p-specific?</emphasis></para>
+          </question>
+
+          <answer>
+            <para>The DAHDI driver for the B410P card was written specifically
+            for that card, but since the card is based on an HFC-4S, of course
+            the driver could be modified to support cards from other
+            manufacturers. We would be happy to accept patches through our
+            normal patch submission process (on bugs.digium.com) that add
+            support for generic or manufacturer-specific versions of the HFC-S
+            cards, if community members wish to provide them.</para>
+          </answer>
+        </qandaentry>
+
+        <qandaentry>
+          <question>
+            <para><emphasis>Why do I need the libpri PRI stack for a BRI card
+            (as it has been announced on asterisk-users)?</emphasis></para>
+          </question>
+
+          <answer>
+            <para>Because ISDN PRI (both ANSI and Euro) and EuroISDN BRI are
+            very nearly the same protocol; in essence, libpri has the wrong
+            name, and it should instead be something like 'libisdn',
+            signifying that it is really an ISDN protocol stack (Q.921 and
+            Q.931, among others), not specific to a particular interface
+            type.</para>
+          </answer>
+        </qandaentry>
+
+        <qandaentry>
+          <question>
+            <para><emphasis>Does the BRI support in DAHDI include both PtP
+            (Point to point<footnote>
+                <para>Anlagenanschluss</para>
+              </footnote>) / PtmP (Point to Multi-Point<footnote>
+                <para>Mehrgeräteanschluss</para>
+              </footnote>) and TE/NT mode? If the limitation is not in DAHDI,
+            does libpri support all of these modes?</emphasis></para>
+          </question>
+
+          <answer>
+            <para>The B410P driver in DAHDI supports TE and NT mode on the
+            HFC4-S chip, but at that level there is no difference (the
+            hardware layer) between PtP and PtMP. libpri currently supports
+            being a TE over either PtP or PtMP links, or being an NT over PtP
+            links. It does not currently support acting as an NT over PtMP
+            links, but of course patches are welcome :-)</para>
+          </answer>
+        </qandaentry>
+
+        <qandaentry>
+          <question>
+            <para><emphasis>Will Asterisk continue to support
+            chan_misdn?</emphasis></para>
+          </question>
+
+          <answer>
+            <para>Yes, we will continue to support it (as will the community
+            members who help support it now), but our primary ISDN-related
+            development efforts will continue to be on
+            libpri/chan_dahdi.</para>
+          </answer>
+        </qandaentry>
+      </qandadiv>
+    </qandaset>
+  </section>
+</appendix>

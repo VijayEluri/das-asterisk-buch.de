@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-strftime" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>STRFTIME()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>STRFTIME()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>STRFTIME([<replaceable>Unixtime</replaceable>][,[<replaceable>Zeitzone</replaceable>][,<replaceable>Format</replaceable>]])</synopsis>
+
+  <para>Formatiert eine Unix-Zeit (Epoch), umgerechnet in die angegebene
+  Zeitzone, in einem bestimmten Format. Wenn <code>Unixtime</code> nicht
+  angegeben wird, gilt die aktuelle Zeit. Der Default der
+  <code>Zeitzone</code> ist die Zeitzone des Rechners. Mögliche Zeitzonen
+  finden Sie in <filename>/usr/share/zoneinfo/</filename>. Die
+  Formatierungsplatzhalter sind dieselben wie in der C-Funktion
+  <code>strftime()</code> (siehe <command>man strftime</command>), der Default
+  ist <code>%c</code>, also die locale-abhängige Darstellung von Datum und
+  Zeit.<programlisting>; Datum/Zeit im Format "JJJJ-MM-TT, HH:MM:SS"
+exten =&gt; 123,1,Set(zeit=${STRFTIME(${EPOCH},Europe/Berlin,%Y-%m-%d\, %H:%M:%S)})</programlisting></para>
+
+  <xi:include href="strftime-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+</section>
