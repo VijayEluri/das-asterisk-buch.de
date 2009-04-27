@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-amd" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>AMD()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>AMD()</code></secondary>
+  </indexterm>
+
+  <simpara>Versucht bei ausgehenden Telefonaten Anrufbeantworter bei der
+  Gegenstelle zu erkennen (AMD steht für Answering Machine
+  Detection).</simpara>
+
+  <synopsis>AMD([<replaceable>initialSilence</replaceable>[,<replaceable>greeting</replaceable>[,<replaceable>afterGreetingSilence</replaceable>[,<replaceable>totalAnalysisTime</replaceable>[,<replaceable>minWordLength</replaceable>[,<replaceable>betweenWordsSilence</replaceable>[,<replaceable>maxNumberOfWords</replaceable>[,<replaceable>silenceThreshold</replaceable>]]]]]]]])</synopsis>
+
+  <simpara>Wird z. B. über ein CallFile ein ausgehender Anruf initiiert, so
+  kann in der aufgerufenen Extension die Applikation <code>AMD()</code>
+  benutzt werden, um bei der Gegenstelle einen Anrufbeantworter zu erkennen.
+  Default-Parameter können in der Datei <filename>amd.conf</filename>
+  eingestellt werden.</simpara>
+
+  <variablelist termlength="22">
+    <varlistentry>
+      <term><code>initialSilence</code></term>
+
+      <listitem>
+        <simpara>Maximale Länge der Stille vor einer Ansage. Wenn länger, dann
+        wird <code>${AMDSTATUS}</code> auf <code>MACHINE</code>
+        gesetzt.</simpara>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>greeting</code></term>
+
+      <listitem>
+        <simpara>Maximale Länge einer Ansage. Wenn länger, dann wird
+        <code>${AMDSTATUS}</code> auf <code>MACHINE</code> gesetzt.</simpara>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>afterGreetingSilence</code></term>
+
+      <listitem>
+        <simpara>Maximale Länge der Stille nach der Ansage. Wenn länger, dann
+        wird <code>${AMDSTATUS}</code> auf <code>HUMAN</code>
+        gesetzt.</simpara>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>totalAnalysisTime</code></term>
+
+      <listitem>
+        <simpara>Maximale Zeit, die der AMD-Algorithmus bekommt, um die
+        Entscheidung <code>HUMAN</code> oder <code>MACHINE</code> zu
+        treffen.</simpara>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>minWordsSilence</code></term>
+
+      <listitem>
+        <simpara>Die minimale Länge eines Geräusches, um es als Wort zu
+        registrieren.</simpara>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>betweenWordsSilence</code></term>
+
+      <listitem>
+        <simpara>Die minimale Länge von Stille nach einem Wort, damit ein
+        neues Wort beginnen kann.</simpara>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>maxNumberOfWords</code></term>
+
+      <listitem>
+        <simpara>Maximale Anzahl von Wörtern in der Ansage. Wenn mehr, dann
+        wird <code>${AMDSTATUS}</code> auf <code>MACHINE</code>
+        gesetzt.</simpara>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term><code>silenceThreshold</code></term>
+
+      <listitem>
+        <simpara>Schwellenwert der Definition von Stille.</simpara>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+
+  <simpara>Diese Applikation setzt als Ergebnis die Channel-Variablen
+  <code>AMDSTATUS</code> und <code>AMDCAUSE</code>.</simpara>
+
+  <simpara><code>AMDSTATUS</code> kann die folgenden Werte bekommen:</simpara>
+
+  <itemizedlist>
+    <listitem>
+      <simpara><code>MACHINE</code></simpara>
+
+      <simpara>Auf der Gegenseite ist ein Anrufbeantworter.</simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>HUMAN</code></simpara>
+
+      <simpara>Auf der Gegenseite ist ein Mensch.</simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>NOTSURE</code></simpara>
+
+      <simpara>Es kann keine genaue Aussage getroffen werden.</simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>HANGUP</code></simpara>
+
+      <simpara>Die Gegenseite hat aufgelegt.</simpara>
+    </listitem>
+  </itemizedlist>
+
+  <simpara><code>AMDCAUSE</code> kann die folgenden Werte bekommen:</simpara>
+
+  <itemizedlist>
+    <listitem>
+      <simpara><code>TOOLONG-</code><replaceable>&lt;%d
+      total_time&gt;</replaceable></simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>INITIALSILENCE-</code><replaceable>&lt;%d
+      silenceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
+      initialSilence&gt;</replaceable></simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>HUMAN-</code><replaceable>&lt;%d
+      silenceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
+      afterGreetingSilence&gt;</replaceable></simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>MAXWORDS-</code><replaceable>&lt;%d
+      wordsCount&gt;</replaceable><code>-</code><replaceable>&lt;%d
+      maximumNumberOfWords&gt;</replaceable></simpara>
+    </listitem>
+
+    <listitem>
+      <simpara><code>LONGGREETING-</code><replaceable>&lt;%d
+      voiceDuration&gt;</replaceable><code>-</code><replaceable>&lt;%d
+      greeting&gt;</replaceable></simpara>
+    </listitem>
+  </itemizedlist>
+
+  <programlisting>; Von einem CallFile wird diese Extension aufgerufen:
+exten =&gt; 10,1,AMD()
+exten =&gt; 10,n,Goto(Status-${AMDSTATUS})
+exten =&gt; 10,n(Status-HUMAN),Playback(spam)
+exten =&gt; 10,n,Hangup()
+exten =&gt; 10,n(Status-MACHINE),Hangup()
+exten =&gt; 10,n(Status-NOTSURE),Hangup()
+exten =&gt; 10,n(Status-HANGUP),Hangup()
+</programlisting>
+
+  <xi:include href="amd-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="call-file" /></para>
+  </formalpara>
+</section>

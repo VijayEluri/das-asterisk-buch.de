@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE note PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<!-- AUTO-GENERATED FILE. DO NOT EDIT. -->
+<note lang="de" revision="$Revision$">
+
+  <formalpara>
+    <title>Asterisk-Versionen:</title>
+
+    <para><literallayout class="monospaced">&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;|&#x00A0;<emphasis role="bold">1.2</emphasis>&#x00A0;|&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;|&#x00A0;<emphasis role="bold">1.4</emphasis>&#x00A0;|&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;|&#x00A0;<emphasis role="bold">1.6</emphasis>&#x00A0;|&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;</literallayout></para>
+  </formalpara>
+
+  <formalpara>
+    <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+    <para><screen lang="en-US">  -= Info about application &apos;AddQueueMember&apos; =-
+
+[Synopsis]
+Dynamically adds queue members
+
+[Description]
+   AddQueueMember(queuename[|interface[|penalty[|options[|membername]]]]):
+Dynamically adds interface to an existing queue.
+If the interface is already in the queue and there exists an n+101 priority
+then it will then jump to this priority.  Otherwise it will return an error
+The option string may contain zero or more of the following characters:
+       &apos;j&apos; -- jump to +101 priority when appropriate.
+  This application sets the following channel variable upon completion:
+     AQMSTATUS    The status of the attempt to add a queue member as a
+                     text string, one of
+           ADDED | MEMBERALREADY | NOSUCHQUEUE
+Example: AddQueueMember(techsupport|SIP/3000)</screen></para>
+  </formalpara>
+
+  <formalpara>
+    <title>Differenz des internen Hilfetexts von Asterisk 1.2 zu 1.4:</title>
+
+    <para><screen lang="en-US" language="diff-u">--- in Asterisk 1.2
++++ in Asterisk 1.4
+@@ -4,7 +4,7 @@
+   Dynamically adds queue members
+
+   [Description]
+-     AddQueueMember(queuename[|interface[|penalty[|options]]]):
++     AddQueueMember(queuename[|interface[|penalty[|options[|membername]]]]):
+   Dynamically adds interface to an existing queue.
+   If the interface is already in the queue and there exists an n+101 priority
+   then it will then jump to this priority.  Otherwise it will return an error</screen></para>
+  </formalpara>
+
+  <formalpara>
+    <title>Differenz des internen Hilfetexts von Asterisk 1.4 zu 1.6:</title>
+
+    <para><screen lang="en-US" language="diff-u">--- in Asterisk 1.4
++++ in Asterisk 1.6
+@@ -4,14 +4,11 @@
+   Dynamically adds queue members
+
+   [Description]
+-     AddQueueMember(queuename[|interface[|penalty[|options[|membername]]]]):
++     AddQueueMember(queuename[,interface[,penalty[,options[,membername[,stateinterface]]]]]):
+   Dynamically adds interface to an existing queue.
+-  If the interface is already in the queue and there exists an n+101 priority
+-  then it will then jump to this priority.  Otherwise it will return an error
+-  The option string may contain zero or more of the following characters:
+-         &apos;j&apos; -- jump to +101 priority when appropriate.
++  If the interface is already in the queue it will return an error.
+     This application sets the following channel variable upon completion:
+        AQMSTATUS    The status of the attempt to add a queue member as a
+                        text string, one of
+              ADDED | MEMBERALREADY | NOSUCHQUEUE
+-  Example: AddQueueMember(techsupport|SIP/3000)
++  Example: AddQueueMember(techsupport,SIP/3000)</screen></para>
+  </formalpara>
+
+</note>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-setcallerpres" lang="de"
+         revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>SetCallerPres()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>SetCallerPres()</code></secondary>
+  </indexterm>
+
+  <simpara>Setzt Caller-ID-Anzeige.</simpara>
+
+  <synopsis>SetCallerPres(<replaceable>Wert</replaceable>)</synopsis>
+
+  <simpara>Setzt die Caller-ID-Darstellungsflags (<quote>presentation
+  indicator</quote> und <quote>screening indicator</quote>) zur
+  Rufnummernanzeige bzw. -unterdrückung<indexterm>
+      <primary>Rufnummernunterdrückung</primary>
+    </indexterm> (CLIR<indexterm>
+      <primary>CLIR</primary>
+    </indexterm>) auf einer ITU-Q.931<footnote>
+      <para><ulink
+      url="http://www.itu.int/rec/T-REC-Q.931/">http://www.itu.int/rec/T-REC-Q.931/</ulink></para>
+    </footnote>-PRI-Verbindung. Darin ist die <quote>presentation</quote>
+  enthalten, also die Information, ob beim angerufenen Teilnehmer die eigene
+  Nummer angezeigt werden soll, und das <quote>screening</quote>, also die
+  Information, ob die gesetzte Rufnummer von verlässlicher Quelle verifiziert
+  wurde.</simpara>
+
+  <para>Gültige Werte sind: <variablelist termlength="23">
+      <varlistentry>
+        <term><code>allowed_not_screened</code></term>
+
+        <listitem>
+          <simpara>Anzeige erlaubt. Die Nummer wurde vom Teilnehmer gesetzt,
+          nicht überprüft.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>allowed_passed_screen</code></term>
+
+        <listitem>
+          <simpara>Anzeige erlaubt. Die Nummer wurde vom Teilnehmer gesetzt,
+          Überprüfung erfolgreich.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>allowed_passed_screen</code></term>
+
+        <listitem>
+          <simpara>Anzeige erlaubt. Die Nummer wurde vom Teilnehmer gesetzt,
+          Überprüfung fehlgeschlagen.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>allowed</code></term>
+
+        <listitem>
+          <simpara>Anzeige erlaubt. Die Nummer wurde vom Netz-Provider
+          gesetzt.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>prohib_not_screened</code></term>
+
+        <listitem>
+          <simpara>Anzeige unterdrückt. Die Nummer wurde vom Teilnehmer
+          gesetzt, nicht überprüft.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>prohib_passed_screen</code></term>
+
+        <listitem>
+          <simpara>Anzeige unterdrückt. Die Nummer wurde vom Teilnehmer
+          gesetzt, Überprüfung erfolgreich.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>prohib_failed_screen</code></term>
+
+        <listitem>
+          <simpara>Anzeige unterdrückt. Die Nummer wurde vom Teilnehmer
+          gesetzt, Überprüfung fehlgeschlagen.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>prohib</code></term>
+
+        <listitem>
+          <simpara>Anzeige unterdrückt. Die Nummer wurde vom Netz-Provider
+          gesetzt.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>unavailable</code></term>
+
+        <listitem>
+          <simpara>Die Nummer ist nicht verfügbar.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
+
+  <simpara>Liefert stets 0 zurück.</simpara>
+
+  <programlisting>exten =&gt; 123,1,SetCallerPres(prohib_not_screened)
+exten =&gt; 123,n,Dial(Zap/4/1234567)</programlisting>
+
+  <note>
+    <para>Damit der eingestellte Wert beim Rauswählen über ISDN beachtet wird,
+    muss <literal>usecallingpres=yes</literal> in der
+    <filename>zapata.conf</filename> gesetzt sein.</para>
+  </note>
+
+  <xi:include href="setcallerpres-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="functions-callerpres" /></para>
+  </formalpara>
+</section>

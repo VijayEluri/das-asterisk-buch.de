@@ -1,0 +1,39 @@
+  -= Info about application 'AMD' =-
+
+[Synopsis]
+Attempts to detect answering machines
+
+[Description]
+  AMD([initialSilence][|greeting][|afterGreetingSilence][|totalAnalysisTime]
+      [|minimumWordLength][|betweenWordsSilence][|maximumNumberOfWords]
+      [|silenceThreshold])
+  This application attempts to detect answering machines at the beginning
+  of outbound calls.  Simply call this application after the call
+  has been answered (outbound only, of course).
+  When loaded, AMD reads amd.conf and uses the parameters specified as
+  default values. Those default values get overwritten when calling AMD
+  with parameters.
+- 'initialSilence' is the maximum silence duration before the greeting. If
+   exceeded then MACHINE.
+- 'greeting' is the maximum length of a greeting. If exceeded then MACHINE.
+- 'afterGreetingSilence' is the silence after detecting a greeting.
+   If exceeded then HUMAN.
+- 'totalAnalysisTime' is the maximum time allowed for the algorithm to decide
+   on a HUMAN or MACHINE.
+- 'minimumWordLength'is the minimum duration of Voice to considered as a word.
+- 'betweenWordsSilence' is the minimum duration of silence after a word to
+   consider the audio that follows as a new word.
+- 'maximumNumberOfWords'is the maximum number of words in the greeting.
+   If exceeded then MACHINE.
+- 'silenceThreshold' is the silence threshold.
+This application sets the following channel variable upon completion:
+    AMDSTATUS - This is the status of the answering machine detection.
+                Possible values are:
+                MACHINE | HUMAN | NOTSURE | HANGUP
+    AMDCAUSE - Indicates the cause that led to the conclusion.
+               Possible values are:
+               TOOLONG-<%d total_time>
+               INITIALSILENCE-<%d silenceDuration>-<%d initialSilence>
+               HUMAN-<%d silenceDuration>-<%d afterGreetingSilence>
+               MAXWORDS-<%d wordsCount>-<%d maximumNumberOfWords>
+               LONGGREETING-<%d voiceDuration>-<%d greeting>

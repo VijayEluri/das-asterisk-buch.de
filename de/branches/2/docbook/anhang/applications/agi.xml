@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-agi" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>AGI()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>AGI()</code></secondary>
+  </indexterm>
+
+  <simpara>Ruft eine AGI-konforme Anwendung auf.</simpara>
+
+  <synopsis>AGI(<replaceable>Skript</replaceable>[,<replaceable>Parameter1</replaceable>[,<replaceable>Parameter2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
+
+  <para>Führt ein Asterisk-Gateway-Interface-kompatibles Programm
+  <code>Programm</code> auf dem aktuellen Channel aus. Solche externen
+  Programme (die in fast jeder beliebigen Sprache vorliegen können &#8211; z.
+  B. Perl, PHP, ...) können den Telefonkanal steuern, Audiodateien abspielen,
+  DTMF-Ziffern auslesen und so weiter (siehe <xref linkend="kapitel-agi" />).
+  Asterisk kommuniziert dabei mit dem AGI-Programm über <code>STDIN</code> und
+  <code>STDOUT</code>. Die spezifizierten <code>Argumente</code> werden an das
+  AGI-Programm durchgereicht.</para>
+
+  <para>Das <literal><replaceable>Skript</replaceable></literal> muss im
+  zugrunde liegenden Dateisystem als executable (ausführbar) gekennzeichnet
+  sein. Der Pfad zum Programm ist relativ zum Asterisk-AGI-Verzeichnis
+  (standardmäßig <filename>/var/lib/asterisk/agi-bin/</filename>) oder
+  absolut.</para>
+
+  <para>Das <literal><replaceable>Skript</replaceable></literal> kann aber
+  auch eine URL-Angabe in der Form
+  <literal>agi://<replaceable>host</replaceable>[:<replaceable>port</replaceable>][/<replaceable>skript</replaceable>]</literal>
+  sein, dann wird das Skript über das Netzwerk als FastAGI-Skript<indexterm>
+      <primary>FastAGI</primary>
+    </indexterm> (FastAGI-Protokoll) aufgerufen. Der wichtigste
+  Verwendungszweck dafür ist, rechenintensive AGI-Skripte von separaten
+  Servern ausführen zu lassen und die Startzeiten von AGI-Skripten zu
+  reduzieren (ein FastAGI-Skript/Programm läuft bereits, bevor Asterisk sich
+  mit ihm verbindet, ähnlich FastCGI bei Webservern). Als Standardport wird
+  4573 benutzt, falls kein anderer angegeben ist. Ist
+  <literal><replaceable>skript</replaceable></literal> angegeben, wird es als
+  Variable <literal>agi_network_script</literal> an das FastAGI-Programm
+  übergeben. Im Verzeichnis <filename>agi</filename> befindet sich ein in Perl
+  geschriebenes Beispiel-FastAGI-Skript (<filename>fastagi-test</filename>).
+  Verwenden Sie es als Ansatzpunkt für Ihre eigenen FastAGI-Programme.</para>
+
+  <para>Für eine Liste der Befehle, die ein AGI-Skript an Asterisk senden
+  kann, siehe <xref linkend="agi-commands" />, oder geben Sie
+  <literal><command>agi show</command></literal> auf dem Asterisk-CLI
+  ein.</para>
+
+  <para>Soll ein AGI-Programm laufen, ohne dass ein Channel offen ist (wie in
+  einer <code>h</code>-Extension, aufgelegt), muss statt <code>AGI()</code>
+  die <code>DeadAGI()</code>-Anwendung verwendet werden. Benötigen Sie aus
+  Ihrem AGI-Programm heraus Zugriff auf den eingehenden Audiostream, benutzen
+  Sie <code>EAGI()</code>.</para>
+
+  <para>Liefert -1 mit dem Auflegen oder falls ein Auflegen durch das Programm
+  verlangt wurde, oder 0, falls nicht aufgelegt werden soll.</para>
+
+  <programlisting>; ein AGI-Skript aufrufen:
+exten =&gt; 123,1,AGI(mein-agi-skript.agi,hallo,welt)
+exten =&gt; 123,n,Verbose(1,AGISTATUS: ${AGISTATUS})
+
+; ein weiteres AGI-Skript aufrufen:
+exten =&gt; 124,1,AGI(mein-agi-skript-2.agi,--x=hallo,--y=welt)
+exten =&gt; 124,n,Verbose(1,AGISTATUS: ${AGISTATUS})
+
+; ein FastAGI-Skript aufrufen:
+exten =&gt; 125,1,AGI(agi://192.168.1.130/test,--x=hallo,--y=welt)
+exten =&gt; 125,n,Verbose(1,AGISTATUS: ${AGISTATUS})</programlisting>
+
+  <xi:include href="agi-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-deadagi" />, <xref
+    linkend="applications-eagi" /></para>
+  </formalpara>
+</section>

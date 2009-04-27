@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-dial" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>Dial()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>Dial()</code></secondary>
+  </indexterm>
+
+  <simpara>Verbindet Kanäle.</simpara>
+
+  <synopsis>Dial(<replaceable>Tech</replaceable>/<replaceable>Resource</replaceable>,<replaceable>Timeout</replaceable>,<replaceable>Optionen</replaceable>,<replaceable>URL</replaceable>)</synopsis>
+
+  <synopsis>Dial(<replaceable>Tech1</replaceable>/<replaceable>Resource1</replaceable>[&amp;<replaceable>Tech2</replaceable>/<replaceable>Resource2</replaceable>[&amp;<replaceable>...</replaceable>]],<replaceable>Timeout</replaceable>,<replaceable>Optionen</replaceable>,<replaceable>URL</replaceable>)</synopsis>
+
+  <synopsis>Dial(<replaceable>Tech</replaceable>/<replaceable>User</replaceable>:<replaceable>Passwort</replaceable>@<replaceable>Host</replaceable>/<replaceable>Extension</replaceable>,<replaceable>Timeout</replaceable>,<replaceable>Optionen</replaceable>)</synopsis>
+
+  <simpara>Ermöglicht es, zwei Kanäle miteinander zu verbinden.<footnote>
+      <simpara>Zum Beispiel IAX, SIP, H.323, Skinny, PRI, FXO, FXS, Local
+      ...</simpara>
+    </footnote> <code>Dial()</code> ist eine der wichtigsten Anwendungen in
+  Asterisk. Lesen Sie diesen Ausschnitt deshalb bitte aufmerksam und eventuell
+  mehrmals durch.</simpara>
+
+  <simpara>Jeder gültige Channel-Typ (wie z. B. SIP, IAX2, H.323, MGCP, Local
+  oder Zap) wird von <code>Dial()</code> akzeptiert, aber die Parameter, die
+  jedem Channel übergeben werden müssen, hängen von denjenigen Informationen
+  ab, die der entsprechende Channel-Typ benötigt, um seine Arbeit zu
+  verrichten. So wird zum Beispiel ein SIP-Channel eine Netzwerkadresse und
+  einen Benutzer benötigen, zu dem die Verbindung hergestellt werden soll,
+  während ein ZAP-Channel irgendeine Art von Telefonnummer verlangt.</simpara>
+
+  <simpara>Wenn ein Netzwerk-basierter Channel-Typ spezifiziert wird, können
+  Zielhost (Name oder IP-Adresse), Benutzername, Passwort und
+  Fernsteuerungs-Extension als Teil der Optionen an <code>Dial()</code>
+  übergeben werden, oder man kann auf den Namen eines Channel-Eintrags in der
+  entsprechenden Konfigurationsdatei (<filename>.conf</filename>-Datei)
+  verweisen &#8211; alle notwendigen Informationen müssen dann in dieser Datei
+  vorhanden sein. Benutzername und Passwort können durch den Namen der
+  Channel-Konfigurationsdatei, umgeben von eckigen Klammern (<code>[]</code>),
+  ersetzt werden. Die Angabe des Hostnamens ist optional.</simpara>
+
+  <para>Ein Beispiel für einen gültigen Aufruf: <programlisting>exten =&gt; s,1,Dial(SIP/peter:geheim@meier.tld)</programlisting>
+  Das Gleiche würde auch der Aufruf <programlisting>exten =&gt; s,1,Dial(SIP/ein_SIP_friend)</programlisting>bewirken,
+  wenn in <filename>sip.conf</filename> ein entsprechender Channel definiert
+  ist: <programlisting>[ein_SIP_friend]
+fromuser=peter
+password=geheim
+host=meier.tld</programlisting></para>
+
+  <para>Oft ist eine Extension wie folgt an die Adressinformation angehängt:
+  <programlisting>exten =&gt; s,1,Dial(IAX2/benutzer:passwort@beispiel.de/500)</programlisting>Dadurch
+  wird das entfernte Ende aufgefordert, den Anruf mit Extension 500 zu
+  verbinden, und zwar in dem Context, in dem der Channel eingegangen ist.
+  Diese Extension wird von <code>Dial()</code> nicht benötigt, weil die Daten
+  verwendet werden, die in der Channel-Konfiguration des entfernten Endes
+  vorliegen, oder der Remoteserver den Anruf zur <code>s</code>-Extension in
+  dem Context weiterleitet, in dem der Anruf eingegangen ist.</para>
+
+  <simpara>Schlussendlich kontrolliert das entfernte Ende, was mit dem Anruf
+  geschehen soll &#8211; Sie können lediglich eine spezielle Behandlung
+  anfragen.</simpara>
+
+  <para>Wenn kein <code>Timeout</code> spezifiziert ist, wird der Channel
+  unendlich klingeln. Dieses Verhalten muss nicht immer schlecht sein. Es
+  besteht keine Veranlassung, ihn immer zu setzen &#8211; man muss sich nur
+  vergegenwärtigen, dass unendlich eventuell eine sehr lange Zeit bedeuten
+  kann.<footnote>
+      <simpara>:-)</simpara>
+    </footnote> Der <code>Timeout</code> wird in Sekunden angegeben. Der
+  Klingel-Timeout folgt immer der Adressinformation, und zwar wie folgt:
+  <programlisting>exten =&gt; s,1,Dial(IAX2/user:pass@beispiel.de/500,20)</programlisting></para>
+
+  <para>Mit <code>Dial()</code> können auch mehrere Channels parallel
+  angerufen werden. Dabei gilt das Prinzip <quote>Wer zuerst kommt, mahlt
+  zuerst</quote>. Der Angerufene, der als Erster abhebt, bekommt das
+  Gespräch:<programlisting>exten =&gt; s,1,Dial(SIP/2000&amp;SIP/2001&amp;SIP/2303)</programlisting></para>
+
+  <para>Ein großer Teil der Mächtigkeit der <code>Dial()</code>-Anwendung
+  liegt in den Optionen oder Flags. Diese werden nach der Adress- und
+  Timeout-Information angegeben, und zwar so: <programlisting>exten =&gt; s,1,Dial(IAX2/user:pass@beispiel.de/500,60,<replaceable>Flags</replaceable>)</programlisting></para>
+
+  <para>Wichtig! Beachten Sie, dass, wenn Sie Flags hinzufügen möchten, aber
+  kein Timeout spezifiziert ist, dennoch der Ort für den Timeout nicht fehlen
+  darf. Das heißt, ein zusätzliches Komma muss an der Stelle eingefügt werden,
+  an der normalerweise der Wert für den Timeout stehen würde, also so:
+  <programlisting>exten =&gt; s,1,Dial(IAX2/user:pass@beispiel.de/500,,<replaceable>Flags</replaceable>)</programlisting></para>
+
+  <para>Die gültigen Flags, die mit der <code>Dial()</code>-Anwendung benutzt
+  werden können, sind: <variablelist>
+      <?dbfo list-presentation="blocks"?>
+
+      <?dbhtml list-presentation="list"?>
+
+      <varlistentry>
+        <term><code>d</code></term>
+
+        <listitem>
+          <simpara>Erlaubt es dem Teilnehmer, eine einziffrige Extension zu
+          wählen, während er darauf wartet, dass sein Anruf beantwortet wird.
+          Der Anruf wird dann zu dieser Extension umgeleitet (d. h., der Anruf
+          wird zugunsten dieser Extension beendet). Dies geschieht entweder im
+          aktuellen Context oder, falls er spezifiziert wurde, im Context
+          <code>${EXITCONTEXT}</code>.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>t</code></term>
+
+        <listitem>
+          <simpara>Erlaubt es dem angerufenen Teilnehmer, einen verbundenen
+          Anruf durch Drücken der <code>#</code>-Taste zu übertragen. Beachten
+          Sie, dass Neueinladungen nicht möglich sind, wenn diese Option
+          benutzt wird, weil Asterisk den Anruf überwachen muss, um zu
+          erkennen, wenn die angerufene Seite die <code>#</code>-Taste
+          drückt.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>T</code></term>
+
+        <listitem>
+          <simpara>Erlaubt es dem Anrufer, einen verbundenen Anruf durch
+          Drücken der <code>#</code>-Taste zu übertragen. Auch hier beachten
+          Sie bitte, dass Neueinladungen bei Benutzung dieser Option nicht
+          möglich sind, weil Asterisk den Anruf überwachen muss, um zu
+          erkennen, wenn die angerufene Seite die <code>#</code>-Taste
+          drückt.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>w</code></term>
+
+        <listitem>
+          <simpara>Ermöglicht es dem angerufenen Teilnehmer, den Anruf durch
+          Eintippen der <code>automon</code>-Sequenz (wie in
+          <filename>features.conf</filename> konfiguriert) aufzunehmen
+          (<emphasis>Audio to disk</emphasis>). Falls die Variable
+          <code>TOUCH_MONITOR</code> gesetzt ist, wird ihr Wert als Parameter
+          der <code>Monitor()</code>-Anwendung weitergeleitet, wenn die
+          Aufnahme startet. Ist sie nicht gesetzt, wird <code>Monitor()</code>
+          die Vorgabe <code>WAV,,m</code> übergeben.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>W</code></term>
+
+        <listitem>
+          <simpara>Ermöglicht es dem Anrufer, den Anruf durch Eintippen der
+          <code>automon</code>-Sequenz (wie in
+          <filename>features.conf</filename> konfiguriert) aufzunehmen (Audio
+          to disk).</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>f</code></term>
+
+        <listitem>
+          <simpara>Durch dieses Flag muss die Caller-ID als die Extension der
+          Leitung gesetzt werden, die den ausgehenden Anruf erstellt oder
+          umleitet. Das wird so gemacht, weil einige PSTN-Diensteanbieter es
+          nicht erlauben, die Caller-ID auf irgendeinen anderen als den Ihnen
+          zugewiesenen Wert zu setzen. Zum Beispiel würden Sie, wenn Sie einen
+          PRI hatten, das Flag <code>f</code> verwenden, um irgendeine lokal
+          im SIP-Telefon gespeicherte Caller-ID zu überscheiben.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>o</code></term>
+
+        <listitem>
+          <simpara>Benutzt die auf der eingehenden Strecke des Anrufs
+          empfangene Caller-ID als die Caller-ID auf der ausgehenden Richtung
+          des Anrufs. Das ist nützlich, falls ein Anruf akzeptiert und dann zu
+          einem anderen Ziel weitergeleitet wird, wobei die Caller-ID der
+          eingehenden Richtung des Anrufs weitergeben wird, anstatt diese
+          zunächst mit den lokalen Caller-ID-Einstellungen zu
+          überschreiben.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>r</code></term>
+
+        <listitem>
+          <simpara>Signalisiert dem Anrufer Klingeln, ohne dass Audio
+          weitergeleitet wird, bevor der Anruf beantwortet wird. Dieses Flag
+          wird für gewöhnlich nicht benötigt, um Klingeln zu signalisieren, da
+          Asterisk Klingeln signalisiert, wenn ein Channel angerufen
+          wird.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>m[<replaceable>Klasse</replaceable>]</code></term>
+
+        <listitem>
+          <simpara>Beliefert den Anruf mit Musik, bis der Anruf beantwortet
+          wird. Optional können Sie auch die Music-on-Hold-Klasse (z. B.
+          Musikrichtung) angeben.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>M(<replaceable>x</replaceable>[^<replaceable>arg</replaceable>])</code></term>
+
+        <listitem>
+          <para>Führt das Makro <code>x</code> aus, wenn der Anruf
+          entgegengenommen wird, und leitet dabei optional Parameter, getrennt
+          durch <code>^</code>, weiter. Das Makro kann auch die
+          <code>MACRO_RESULT</code>-Channel-Variable auf einen der folgenden
+          Werte setzen:<variablelist termlength="12">
+              <varlistentry>
+                <term><code>ABORT</code></term>
+
+                <listitem>
+                  <simpara>Legt bei beiden Enden des Anrufs auf.</simpara>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><code>CONGESTION</code></term>
+
+                <listitem>
+                  <simpara>Wirkt, als wäre ein Stau auf der Leitung.</simpara>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><code>BUSY</code></term>
+
+                <listitem>
+                  <simpara>Wirkt, als wäre die Leitung besetzt (geht zur
+                  Priorität n+101).</simpara>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><code>CONTINUE</code></term>
+
+                <listitem>
+                  <simpara>Legt die Seite des Angerufenen auf und fährt im
+                  Wählplan fort.</simpara>
+                </listitem>
+              </varlistentry>
+            </variablelist></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>GOTO:&lt;<replaceable>Context</replaceable>&gt;^&lt;<replaceable>Extension</replaceable>&gt;^&lt;<replaceable>Priorität</replaceable>&gt;</code></term>
+
+        <listitem>
+          <simpara>Springt zu der angegebenen Position im Wählplan.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>h</code></term>
+
+        <listitem>
+          <simpara>Erlaubt es dem angerufenen Teilnehmer, die Leitung durch
+          Drücken von <code>*</code> aufzulegen.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>H</code></term>
+
+        <listitem>
+          <simpara>Erlaubt es dem anrufenden Teilnehmer, die Leitung durch
+          Drücken von <code>*</code> aufzulegen.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>C</code></term>
+
+        <listitem>
+          <simpara>Setzt den <emphasis>Call Detail Record</emphasis> (CDR, das
+          Anrufprotokoll) zurück. Da die CDR-Zeit zum Zeitpunkt der
+          Beantwortung des Anrufs gesetzt wird, ist es sinnvoll, das CDR
+          ebenfalls zurückzusetzen, damit dem Teilnehmer nicht die Zeit vor
+          dem Aufruf der <code>Dial()</code>-Anwendung in Rechnung
+          gestellt wird.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>P[(<replaceable>x</replaceable>)]</code></term>
+
+        <listitem>
+          <simpara>Aktiviert den Geheimhaltungsmodus, wobei optional
+          <code>x</code> als Familie/Schlüssel-Wert in der AstDB spezifiziert
+          werden kann. Dieser Modus ist beispielsweise dann nützlich, wenn
+          Anrufe aus einer Blacklist (Anrufe von Nummern aus der Blacklist
+          werden explizit abgelehnt) oder einer Whitelist (Anrufe von den
+          gelisteten Nummern werden explizit akzeptiert) angenommen werden.
+          Siehe auch <code>LookupBlacklist()</code>.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>g</code></term>
+
+        <listitem>
+          <simpara>Geht weiter im Context, wenn der Zielkanal aufgelegt
+          wird.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>G(<replaceable>context</replaceable>^<replaceable>extension</replaceable>^<replaceable>priority</replaceable>)</code></term>
+
+        <listitem>
+          <simpara>Übermittelt beide Seiten zum spezifizierten Ziel, wenn der
+          Anruf beantwortet wird.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>A(<replaceable>x</replaceable>)</code></term>
+
+        <listitem>
+          <simpara>Spielt dem angerufenen Teilnehmer eine Ankündigung vor.
+          <code>x</code> ist der Dateiname der Audiodatei, die als Ankündigung
+          abzuspielen ist.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>D([<replaceable>called</replaceable>][:<replaceable>calling</replaceable>])</code></term>
+
+        <listitem>
+          <simpara>Sendet DTMF-Ziffern, nachdem der Anruf beantwortet wurde,
+          aber bevor der Anruf überbrückt wird. Der Parameter
+          <code>called</code> wird an die angerufene Seite weitergegeben, und
+          der Parameter <code>calling</code> an die anrufende Seite. Beide
+          Parameter können individuell eingesetzt werden.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>L(<replaceable>x</replaceable>[:<replaceable>y</replaceable>][:<replaceable>z</replaceable>])</code></term>
+
+        <listitem>
+          <para>Begrenzt die Dauer des Anrufs auf <code>x</code>
+          Millisekunden, wobei <code>y</code> Millisekunden vor Ablauf der
+          festgesetzten Dauer und danach wiederholt alle <code>z</code>
+          Millisekunden bis zum Anlauf der Frist eine Warnung signalisiert
+          wird. Der <code>x</code>-Parameter muss angegeben werden,
+          <code>y</code> und <code>z</code> sind optional. Die folgenden
+          speziellen Variablen können ebenfalls gesetzt werden und stellen
+          zusätzliche Kontrollmöglichkeiten zur Verfügung:<variablelist
+              termlength="31">
+              <?dbfo list-presentation="blocks"?>
+
+              <?dbhtml list-presentation="list"?>
+
+              <varlistentry>
+                <term><code>LIMIT_PLAYAUDIO_CALLER=<replaceable>yes|no</replaceable></code></term>
+
+                <listitem>
+                  <simpara>Gibt an, ob dem Anrufer Audiodateien vorgespielt
+                  werden sollen.</simpara>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><code>LIMIT_PLAYAUDIO_CALLEE=<replaceable>yes|no</replaceable></code></term>
+
+                <listitem>
+                  <simpara>Gibt an, ob dem Angerufenen Audiodateien
+                  vorgespielt werden sollen.</simpara>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><code>LIMIT_TIMEOUT_FILE=<replaceable>filename</replaceable></code></term>
+
+                <listitem>
+                  <simpara>Gibt an, welche Datei abgespielt werden soll,
+                  nachdem die Zeit abgelaufen ist.</simpara>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><code>LIMIT_CONNECT_FILE=<replaceable>filename</replaceable></code></term>
+
+                <listitem>
+                  <simpara>Gibt an, welche Datei zu Beginn des Anrufs
+                  abgespielt werden soll.</simpara>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><code>LIMIT_WARNING_FILE=<replaceable>filename</replaceable></code></term>
+
+                <listitem>
+                  <simpara>Gibt an, welche Datei gespielt werden soll, wenn
+                  der Parameter <code>y</code> angegeben ist.</simpara>
+                </listitem>
+              </varlistentry>
+            </variablelist></para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>j</code></term>
+
+        <listitem>
+          <simpara>Erlaubt, dass zu Priorität n+101 übergegangen wird
+          (<code>n</code>: aktuelle Priorität), falls alle Kanäle als besetzt
+          erachtet werden.</simpara>
+
+          <simpara>Ein Anruf kann auch geparkt werden, statt übermittelt zu
+          werden (was mit dem <code>t</code>- oder <code>T</code>-Flag der
+          Fall ist). Anrufe werden gewöhnlich geparkt, indem man sie der
+          Extension 700 übermittelt, aber dieses Verhalten ist in
+          <filename>features.conf</filename> konfigurierbar.</simpara>
+
+          <para>Mit dem Enden der <code>Dial()</code>-Anwendung werden die
+          folgenden Variablen gesetzt:<variablelist termlength="13">
+              <varlistentry>
+                <term><code>DIALEDTIME</code></term>
+
+                <listitem>
+                  <simpara>Die gesamte Zeit, die von der Ausführung der
+                  <code>Dial()</code>-Anwendung an bis zu ihrer Beendigung
+                  verstrichen ist.</simpara>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><code>ANSWEREDTIME</code></term>
+
+                <listitem>
+                  <simpara>Die gesamte Zeit, die während des Anrufs vergangen
+                  ist.</simpara>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><code>DIALSTATUS</code></term>
+
+                <listitem>
+                  <para>Der Status des Anrufs, ausgedrückt durch einen der
+                  folgenden Werte:<variablelist termlength="13">
+                      <varlistentry>
+                        <term><code>CHANUNAVAIL</code></term>
+
+                        <listitem>
+                          <simpara>Der Channel ist nicht verfügbar.</simpara>
+                        </listitem>
+                      </varlistentry>
+
+                      <varlistentry>
+                        <term><code>CONGESTION</code></term>
+
+                        <listitem>
+                          <simpara>Der Channel hat ein Stau-Signal
+                          zurückgeliefert, was für gewöhnlich besgat, dass die
+                          Verbindung nicht hergestellt werden kann.</simpara>
+                        </listitem>
+                      </varlistentry>
+
+                      <varlistentry>
+                        <term><code>NOANSWER</code></term>
+
+                        <listitem>
+                          <simpara>Der Channel hat in der durch die
+                          Klingel-Timeout-Option gesetzten Frist nicht
+                          geantwortet.</simpara>
+                        </listitem>
+                      </varlistentry>
+
+                      <varlistentry>
+                        <term><code>BUSY</code></term>
+
+                        <listitem>
+                          <simpara>Der angerufene Channel ist momentan
+                          belegt.</simpara>
+                        </listitem>
+                      </varlistentry>
+
+                      <varlistentry>
+                        <term><code>ANSWER</code></term>
+
+                        <listitem>
+                          <simpara>Der Channel hat den Anruf
+                          beantwortet.</simpara>
+                        </listitem>
+                      </varlistentry>
+
+                      <varlistentry>
+                        <term><code>CANCEL</code></term>
+
+                        <listitem>
+                          <simpara>Der Anruf wurde abgebrochen.</simpara>
+                        </listitem>
+                      </varlistentry>
+                    </variablelist></para>
+                </listitem>
+              </varlistentry>
+            </variablelist></para>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
+
+  <programlisting>; eine Nummer auf Zap-Channel 2 wählen, max. 10 Sekunden klingeln:
+exten =&gt; 123,1,Dial(Zap/2/1234567,10,tTm)
+; sonst weiter im Dialplan:
+exten =&gt; 123,n,Playback(tut-uns-leid)
+exten =&gt; 123,n,Hangup()
+
+; über IAX die Extension 500 auf dem Host beispiel.de wählen:
+exten =&gt; 123,1,Dial(IAX/username:password@beispiel.de/500)</programlisting>
+
+  <xi:include href="dial-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-retrydial" /></para>
+  </formalpara>
+</section>

@@ -1,0 +1,25 @@
+  -= Info about function 'DEVICE_STATE' =-
+
+[Syntax]
+DEVICE_STATE(device)
+
+[Synopsis]
+Get or Set a device state
+
+[Description]
+  The DEVICE_STATE function can be used to retrieve the device state from any
+device state provider.  For example:
+   NoOp(SIP/mypeer has state ${DEVICE_STATE(SIP/mypeer)})
+   NoOp(Conference number 1234 has state ${DEVICE_STATE(MeetMe:1234)})
+
+  The DEVICE_STATE function can also be used to set custom device state from
+the dialplan.  The "Custom:" prefix must be used.  For example:
+  Set(DEVICE_STATE(Custom:lamp1)=BUSY)
+  Set(DEVICE_STATE(Custom:lamp2)=NOT_INUSE)
+You can subscribe to the status of a custom device state using a hint in
+the dialplan:
+  exten => 1234,hint,Custom:lamp1
+
+  The possible values for both uses of this function are:
+UNKNOWN | NOT_INUSE | INUSE | BUSY | INVALID | UNAVAILABLE | RINGING
+RINGINUSE | ONHOLD

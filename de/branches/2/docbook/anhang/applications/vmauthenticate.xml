@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-vmauthenticate" lang="de"
+         revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>VMAuthenticate()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>VMAuthenticate()</code></secondary>
+  </indexterm>
+
+  <simpara>Authentifiziert den Anrufer über ein Voicemail-Passwort.</simpara>
+
+  <synopsis>VMAuthenticate([<replaceable>Mailbox</replaceable>][@<replaceable>Context</replaceable>][,<replaceable>Optionen</replaceable>])</synopsis>
+
+  <simpara>Verhält sich wie die <code>Authenticate()</code>-Anwendung, mit dem
+  Unterschied, dass die Passwörter aus <filename>voicemail.conf</filename> (im
+  optionalen VM-Context <code>Context</code>) gelesen werden.</simpara>
+
+  <simpara>Ist eine Mailbox angegeben, wird nur das Passwort dieser Mailbox
+  als gültig betrachtet. Ohne Angabe kann sich der Anrufer mit jedem (!)
+  VM-Passwort authentifizieren; die Channel-Variable
+  <code>${AUTH_MAILBOX}</code> wird dann mit der authentifizierten Mailbox
+  belegt.</simpara>
+
+  <simpara>Mit der Option <code>s</code> wird die Ansage der Aufforderung
+  unterdrückt.</simpara>
+
+  <programlisting>; als Mailbox die Extension annehmen und authentifizieren:
+exten =&gt; 123,1,VMAuthenticate(${EXTEN}@verkauf)
+exten =&gt; 123,n,SayDigits(${AUTH_MAILBOX})</programlisting>
+
+  <xi:include href="vmauthenticate-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-authenticate" />,
+    <filename>voicemail.conf</filename></para>
+  </formalpara>
+</section>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-queue_variables" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>QUEUE_VARIABLES()</literal><indexterm
+      significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>QUEUE_VARIABLES()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>QUEUE_VARIABLES(<replaceable>warteschlange</replaceable>)</synopsis>
+
+  <simpara>Liefert Informationen über eine Warteschlange. Die Werte werden als
+  Channel-Variablen gesetzt. Damit diese Funktion benutzt werden kann, muss in
+  der <filename>queues.conf</filename> für die betreffende Queue die
+  Einstellung <literal>setqueuevar=yes</literal> aktiviert sein. Bei Erfolg
+  wird <literal>0</literal> zurückgegeben bzw. <literal>-1</literal>, wenn die
+  Queue nicht definiert oder <literal>setqueuevar</literal> nicht aktiviert
+  ist.</simpara>
+
+  <programlisting>; Werte fuer die Queue "techsupport" abfragen:
+exten =&gt; 123,1,Set(err=${QUEUE_VARIABLES(techsupport)})
+exten =&gt; 123,n,Verbose(1,Strategie: ${QUEUESTRATEGY})
+exten =&gt; 123,n,Verbose(1,Maximal erlaubte Anrufer: ${QUEUEMAX})
+exten =&gt; 123,n,Verbose(1,Aktuelle Anruferanzahl: ${QUEUECALLS})
+exten =&gt; 123,n,Verbose(1,Erfolgreiche Anrufe: ${QUEUECOMPLETED})
+exten =&gt; 123,n,Verbose(1,Abgebrochene Anrufe: ${QUEUEABANDONED})
+exten =&gt; 123,n,Verbose(1,Durchschnittliche Wartezeit: ${QUEUEHOLDTIME})
+exten =&gt; 123,n,Verbose(1,Gesetztes Service-Level: ${QUEUESRVLEVEL})
+exten =&gt; 123,n,Verbose(1,Service-Level-Einhaltung: ${QUEUESRVLEVELPERF})
+exten =&gt; 123,n,Hangup()</programlisting>
+
+  <xi:include href="queue_variables-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-queue" />, <xref
+    linkend="functions-queue_member_count" />, <xref
+    linkend="functions-queue_waiting_count" />, <xref
+    linkend="functions-queue_member_penalty" />, <xref
+    linkend="functions-queue_member" />, <xref
+    linkend="functions-queue_member_list" /></para>
+  </formalpara>
+</section>

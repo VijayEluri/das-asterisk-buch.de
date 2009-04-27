@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-voicemail" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>VoiceMail()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>VoiceMail()</code></secondary>
+  </indexterm>
+
+  <simpara>Hinterlässt eine Voicemail-Nachricht in der angegebenen
+  Mailbox.</simpara>
+
+  <synopsis>VoiceMail(<replaceable>Mailbox</replaceable>[@<replaceable>Context</replaceable>][&amp;<replaceable>Mailbox</replaceable>[@<replaceable>Context</replaceable>][&amp;<replaceable>...</replaceable>]],<replaceable>Optionen</replaceable>)</synopsis>
+
+  <para>Alte Syntax:<synopsis>VoiceMail([s|u|b]<replaceable>Mailbox</replaceable>[@<replaceable>Context</replaceable>][&amp;<replaceable>Mailbox</replaceable>[@<replaceable>Context</replaceable>][&amp;<replaceable>...</replaceable>]])</synopsis></para>
+
+  <simpara>Erlaubt es dem Anrufer, in der angegebenen Mailbox eine
+  Voicemail-Nachricht zu hinterlassen. Die Mailbox muss in
+  <filename>voicemail.conf</filename> konfiguriert sein. Sind mehrere
+  Mailboxen aufgelistet, wird die Begrüßung der ersten gespielt. Wenn die
+  Mailbox nicht existiert, wird die Ausführung des Dialplans
+  abgebrochen.</simpara>
+
+  <simpara>Mit der Option <code>s</code> (silent) werden die Anweisungen zum
+  Hinterlassen der Nachricht übersprungen. Mit <code>u</code> (unavailable)
+  wird die Nicht-verfügbar-Nachricht abgespielt, falls vorhanden. Bei
+  <code>b</code> (busy) wird die Besetzt-Nachricht gespielt (Datei
+  <filename>busy</filename> statt <filename>unavail</filename>).</simpara>
+
+  <simpara>Mit <code>j</code> wird bei einem Fehler zur Extension n+101
+  gesprungen, wenn sie vorhanden ist.</simpara>
+
+  <simpara>Drückt der Teilnehmer während der Eingabeaufforderung
+  <code>0</code> (Null), geht der Anruf zur Extension <code>o</code> (kleiner
+  Buchstabe o, Operator) im aktuellen Context über.</simpara>
+
+  <simpara>Drückt der Teilnehmer während der Eingabeaufforderung
+  <code>*</code>, geht der Anruf zur Extension <code>a</code> (Assistant) im
+  aktuellen Context über.</simpara>
+
+  <simpara>Gibt im Falle eines Fehlers, falls die Mailbox nicht gefunden wird
+  oder falls der Teilnehmer auflegt, -1 zurück, sonst 0. Setzt die
+  Channel-Variable <code>VMSTATUS</code> auf <code>SUCCESS</code> (Erfolg),
+  <code>USEREXIT</code> (Abbruch durch Anrufer) oder <code>FAILED</code>
+  (Fehler).</simpara>
+
+  <programlisting>; den Anrufer zur Mailbox 123 leiten, mit Nicht-erreichbar-Nachricht:
+exten =&gt; 123,1,VoiceMail(123,u)</programlisting>
+
+  <xi:include href="voicemail-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-voicemailmain" />,
+    <filename>voicemail.conf</filename></para>
+  </formalpara>
+</section>

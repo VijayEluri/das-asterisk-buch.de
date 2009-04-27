@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-iftime" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>IFTIME()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>IFTIME()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>IFTIME(Zeit-<replaceable>Ausdruck</replaceable>?<replaceable>trueVal</replaceable>:<replaceable>falseVal</replaceable>)</synopsis>
+
+  <para>Gibt &#8211; wie <code>IF()</code> &#8211; abhängig von der Bedingung den ersten
+  oder zweiten Wert zurück, nur dass hier ein spezieller Zeit-Ausdruck
+  angegeben wird.</para>
+
+  <para>Der Zeit-Ausdruck ist im Format
+  <code><replaceable>Uhrzeit</replaceable>|<replaceable>Wochentag</replaceable>|<replaceable>Monatstag</replaceable>|<replaceable>Monat</replaceable></code>
+  aufgebaut, wobei jeder Teil auch eine Spanne (mit <code>-</code>) oder das
+  immer passende Wildcard <code>*</code> sein kann. Die Zeit wird im
+  24-Stunden-Format (z. B. <code>08:00-18:00</code>), Wochentage und
+  Monatsnamen werden als 3-buchstabige englische Abkürzung (<code>mon</code>,
+  <code>tue</code>, <code>wed</code>, <code>thu</code>, <code>fri</code>,
+  <code>sat</code>, <code>sun</code> bzw. <code>jan</code>, <code>feb</code>,
+  <code>mar</code>, <code>apr</code>, <code>may</code>, <code>jun</code>,
+  <code>jul</code>, <code>aug</code>, <code>sep</code>, <code>oct</code>,
+  <code>nov</code>, <code>dec</code>) angegeben.<programlisting>; gültig 8-18 Uhr, montags, 1.-15. Dezember:
+exten =&gt; 123,1,Set(foo=${IFTIME(08:00-18:00|mon|1-15|dec?5:0)})
+
+; gültig jeden Samstag und Sonntag:
+exten =&gt; 123,1,Set(foo=${IFTIME(*|sat-sun|*|*?5:0)})</programlisting></para>
+
+  <xi:include href="iftime-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="functions-if" />, <xref
+    linkend="applications-execif" />, <xref linkend="applications-gotoif" />,
+    <xref linkend="applications-gotoiftime" />, <xref
+    linkend="ael-iftime" /></para>
+  </formalpara>
+</section>

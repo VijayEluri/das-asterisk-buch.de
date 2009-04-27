@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-macro" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>Macro()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>Macro()</code></secondary>
+  </indexterm>
+
+  <simpara>Ruft ein zuvor definiertes Makro auf.</simpara>
+
+  <synopsis>Macro(<replaceable>macroname</replaceable>[,<replaceable>Arg1</replaceable>[,<replaceable>Arg2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
+
+  <simpara>Führt ein im Context
+  <code>macro-<replaceable>macroname</replaceable></code> definiertes Makro
+  aus, indem es zur <code>s</code>-Extension dieses Contextes springt und nach
+  der Ausführung des Makros zurückkehrt.</simpara>
+
+  <simpara>Die angerufene Extension, Context und Priorität sind innerhalb des
+  Makros in<code> ${MACRO_EXTEN}</code>, <code>${MACRO_CONTEXT}</code> und
+  <code>${MACRO_PRIORITY}</code> verfügbar. Die Parameter <code>Arg1</code>,
+  <code>Arg2</code> ... werden im Makro-Context zu <code>${ARG1}</code>,
+  <code>${ARG2}</code> usw.</simpara>
+
+  <simpara><code>Macro()</code> liefert -1 zurück, falls irgendein Schritt des
+  Makros -1 zurückliefert, sonst 0. Falls bei Beendigung des Ablaufs
+  <code>${MACRO_OFFSET}</code> gesetzt ist, versucht die Anwendung, bei
+  Priorität n+1+<code>MACRO_OFFSET</code> fortzufahren, falls ein solcher
+  Schritt existiert, sonst bei n+1.</simpara>
+
+  <simpara>Falls die <code>Goto()</code>-Anwendung aus dem Makro heraus
+  aufgerufen wird, wird das Makro enden und die Kontrolle an das Ziel von
+  <code>Goto()</code> gehen.</simpara>
+
+  <programlisting>; ein Makro definieren, das vom übergebenen Wert herunterzählt:
+[macro-countdown]
+exten =&gt; s,1,Set(COUNT=${ARG1})
+exten =&gt; s,n,While($[ ${COUNT} &gt; 0])
+exten =&gt; s,n,SayNumber(${COUNT})
+exten =&gt; s,n,Set(COUNT=$[ ${COUNT} - 1 ])
+exten =&gt; s,n,EndWhile()
+
+[default]
+exten =&gt; 123,1,Macro(countdown,3)   ; das Makro "countdown" mit ARG1=3 aufrufen
+exten =&gt; 124,1,Macro(countdown,5)   ; das Makro "countdown" mit ARG1=5 aufrufen</programlisting>
+
+  <xi:include href="macro-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-goto" />, <xref
+    linkend="applications-gosub" />, <xref linkend="ael-macros" /></para>
+  </formalpara>
+</section>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-deadagi" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>DeadAGI()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>DeadAGI()</code></secondary>
+  </indexterm>
+
+  <simpara>Führt ein AGI-konformes Skript auf einem toten (aufgelegten)
+  Channel aus.</simpara>
+
+  <synopsis>DeadAGI(<replaceable>Skript</replaceable>[,<replaceable>Parameter1</replaceable>[,<replaceable>Parameter2</replaceable>[,<replaceable>...</replaceable>]]])</synopsis>
+
+  <simpara><literal>DeadAGI()</literal> funktioniert wie
+  <literal>AGI()</literal> (<xref linkend="applications-agi" />), wurde aber
+  speziell für tote (d. h. aufgelegte) Kanäle entwickelt, weil das
+  Standard-AGI-Interface nicht funktioniert, nachdem der Channel aufgelegt
+  wurde. Dass der Channel <quote>tot</quote> ist, ist allerdings keine
+  Voraussetzung für den Start eines DeadAGI-Skripts.</simpara>
+
+  <simpara>Liefert -1 zurück, falls die Anwendung ein Auflegen angefordert
+  hat, oder 0 beim Austritt ohne Auflegen.</simpara>
+
+  <programlisting>; mit einem bereits aufgelegten (h) Kanal noch ein AGI-Skript ausführen:
+exten =&gt; h,1,DeadAGI(agi-test)</programlisting>
+
+  <important>
+    <simpara>Der Channel wird so lange als aktiv angesehen, bis das Skript
+    beendet wird, was z. B. für CDRs von Bedeutung sein kann.</simpara>
+
+    <para>Beachten Sie, dass auch DeadAGI-Skripte beim Auflegen des Channels
+    ein <code>SIGHUP</code>-Signal erhalten, was ggf. ignoriert werden
+    muss:<informaltable colsep="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="50pt" />
+
+          <tbody>
+            <row>
+              <entry>Perl</entry>
+
+              <entry><programlisting>$SIG{HUP} = "IGNORE";</programlisting></entry>
+            </row>
+
+            <row>
+              <entry>PHP</entry>
+
+              <entry><programlisting>pcntl_signal(SIGHUP, SIG_IGN);</programlisting>(PHP
+              muss mit <code>--enable-pcntl</code> kompiliert worden sein, was
+              per Default nicht der Fall ist!)</entry>
+            </row>
+
+            <row>
+              <entry>Ruby</entry>
+
+              <entry><programlisting>trap('SIGHUP','IGNORE')</programlisting></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <simpara>Es ist auch wichtig, dass Sie nach dem Auflegen nicht mehr mit
+    Asterisk kommunizieren, sonst erhält das Skript ein <code>SIGPIPE</code>,
+    was das Skript beendet, sofern Sie es nicht ignorieren.</simpara>
+  </important>
+
+  <xi:include href="deadagi-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-agi" />, <xref
+    linkend="applications-eagi" /></para>
+  </formalpara>
+</section>

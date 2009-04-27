@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE note PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<!-- AUTO-GENERATED FILE. DO NOT EDIT. -->
+<note lang="de" revision="$Revision$">
+
+  <formalpara>
+    <title>Asterisk-Versionen:</title>
+
+    <para><literallayout class="monospaced">&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;|&#x00A0;<emphasis role="bold">1.2</emphasis>&#x00A0;|&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;|&#x00A0;<emphasis role="bold">1.4</emphasis>&#x00A0;|&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;|&#x00A0;<emphasis role="bold">1.6</emphasis>&#x00A0;|&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;</literallayout></para>
+  </formalpara>
+
+  <formalpara>
+    <title>Interner Hilfetext zu dieser Applikation in Asterisk 1.4:</title>
+
+    <para><screen lang="en-US">  -= Info about application &apos;EAGI&apos; =-
+
+[Synopsis]
+Executes an EAGI compliant application
+
+[Description]
+  [E|Dead]AGI(command|args): Executes an Asterisk Gateway Interface compliant
+program on a channel. AGI allows Asterisk to launch external programs
+written in any language to control a telephony channel, play audio,
+read DTMF digits, etc. by communicating with the AGI protocol on stdin
+and stdout.
+  This channel will stop dialplan execution on hangup inside of this
+application, except when using DeadAGI.  Otherwise, dialplan execution
+will continue normally.
+  A locally executed AGI script will receive SIGHUP on hangup from the channel
+except when using DeadAGI. This can be disabled by setting the AGISIGHUP channel
+variable to &quot;no&quot; before executing the AGI application.
+  Using &apos;EAGI&apos; provides enhanced AGI, with incoming audio available out of band
+on file descriptor 3
+
+  Use the CLI command &apos;agi show&apos; to list available agi commands
+  This application sets the following channel variable upon completion:
+     AGISTATUS      The status of the attempt to the run the AGI script
+                    text string, one of SUCCESS | FAILURE | HANGUP</screen></para>
+  </formalpara>
+
+  <formalpara>
+    <title>Differenz des internen Hilfetexts von Asterisk 1.2 zu 1.4:</title>
+
+    <para><screen lang="en-US" language="diff-u">--- in Asterisk 1.2
++++ in Asterisk 1.4
+@@ -9,9 +9,16 @@
+   written in any language to control a telephony channel, play audio,
+   read DTMF digits, etc. by communicating with the AGI protocol on stdin
+   and stdout.
+-  Returns -1 on hangup (except for DeadAGI) or if application requested
+-   hangup, or 0 on non-hangup exit.
+-  Using &apos;EAGI&apos; provides enhanced AGI, with incoming audio available out of band
++    This channel will stop dialplan execution on hangup inside of this
++  application, except when using DeadAGI.  Otherwise, dialplan execution
++  will continue normally.
++    A locally executed AGI script will receive SIGHUP on hangup from the channel
++  except when using DeadAGI. This can be disabled by setting the AGISIGHUP channel
++  variable to &quot;no&quot; before executing the AGI application.
++    Using &apos;EAGI&apos; provides enhanced AGI, with incoming audio available out of band
+   on file descriptor 3
+
+-  Use the CLI command &apos;show agi&apos; to list available agi commands
++    Use the CLI command &apos;agi show&apos; to list available agi commands
++    This application sets the following channel variable upon completion:
++       AGISTATUS      The status of the attempt to the run the AGI script
++                      text string, one of SUCCESS | FAILURE | HANGUP</screen></para>
+  </formalpara>
+
+  <formalpara>
+    <title>Differenz des internen Hilfetexts von Asterisk 1.4 zu 1.6:</title>
+
+    <para><screen lang="en-US" language="diff-u">--- in Asterisk 1.4
++++ in Asterisk 1.6
+@@ -4,21 +4,22 @@
+   Executes an EAGI compliant application
+
+   [Description]
+-    [E|Dead]AGI(command|args): Executes an Asterisk Gateway Interface compliant
+-  program on a channel. AGI allows Asterisk to launch external programs
+-  written in any language to control a telephony channel, play audio,
+-  read DTMF digits, etc. by communicating with the AGI protocol on stdin
+-  and stdout.
+-    This channel will stop dialplan execution on hangup inside of this
+-  application, except when using DeadAGI.  Otherwise, dialplan execution
+-  will continue normally.
++    [E|Dead]AGI(command,args): Executes an Asterisk Gateway Interface compliant
++  program on a channel. AGI allows Asterisk to launch external programs written
++  in any language to control a telephony channel, play audio, read DTMF digits,
++  etc. by communicating with the AGI protocol on stdin and stdout.
++    As of 1.6.0, this channel will not stop dialplan execution on hangup inside
++  of this application. Dialplan execution will continue normally, even upon
++  hangup until the AGI application signals a desire to stop (either by exiting
++  or, in the case of a net script, by closing the connection).
+     A locally executed AGI script will receive SIGHUP on hangup from the channel
+-  except when using DeadAGI. This can be disabled by setting the AGISIGHUP channel
+-  variable to &quot;no&quot; before executing the AGI application.
++  except when using DeadAGI. A fast AGI server will correspondingly receive a
++  HANGUP in OOB data. Both of these signals may be disabled by setting the
++  AGISIGHUP channel variable to &quot;no&quot; before executing the AGI application.
+     Using &apos;EAGI&apos; provides enhanced AGI, with incoming audio available out of band
+-  on file descriptor 3
++  on file descriptor 3.
+
+-    Use the CLI command &apos;agi show&apos; to list available agi commands
++    Use the CLI command &apos;agi show&apos; to list available agi commands.
+     This application sets the following channel variable upon completion:
+        AGISTATUS      The status of the attempt to the run the AGI script
+-                      text string, one of SUCCESS | FAILURE | HANGUP
++                      text string, one of SUCCESS | FAILURE | NOTFOUND | HANGUP</screen></para>
+  </formalpara>
+
+</note>

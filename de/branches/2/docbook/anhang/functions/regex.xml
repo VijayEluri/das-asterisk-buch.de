@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-regex" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>REGEX()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>REGEX()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>REGEX("<replaceable>Ausdruck</replaceable>" <replaceable>String</replaceable>)</synopsis>
+
+  <para>Gibt 1 zurück, wenn ein String auf einen regulären Ausdruck passt,
+  sonst 0. Der reguläre Ausdruck kann auch <code>^</code> (passt auf den
+  Anfang) und <code>$</code> (passt auf das Ende) enthalten. Variablen werden
+  vorher ausgewertet.</para>
+
+  <para>Der Parser in Asterisk 1.2 arbeitet nicht sauber und kann durch
+  besondere Zeichen wie <code>$</code> oder geschweifte Klammern, die im
+  Ausdruck vorkommen, verwirrt werden. Als Workaround definiert man sich z. B.
+  eine Variable <code>${dollar}</code> mit dem Inhalt "<code>$</code>" und
+  verwendet diese statt des <code>$</code>-Zeichens.</para>
+
+  <para><programlisting>; prüfen, ob der Ausdruck "[abc][0-9]" auf den String "b3" passt:
+exten =&gt; 123,1,Set(foo=${REGEX("[abc][0-9]" b3)})   ; gibt 1 zurück
+
+; prüfen, ob ${str} mit 0 endet, Asterisk 1.4:
+exten =&gt; 123,1,Set(foo=${REGEX("0$" ${str})})
+
+; in Asterisk 1.2 behilft man sich so:
+exten =&gt; 123,1,Set(foo=${REGEX("0${dollar}" ${str})})</programlisting></para>
+
+  <xi:include href="regex-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+</section>

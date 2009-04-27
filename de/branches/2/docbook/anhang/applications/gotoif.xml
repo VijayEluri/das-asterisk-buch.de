@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-gotoif" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>GotoIf()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>GotoIf()</code></secondary>
+  </indexterm>
+
+  <simpara>Springt bedingt zu der angegebenen Priorität.</simpara>
+
+  <synopsis>GotoIf(<replaceable>Bedingung</replaceable>?<replaceable>PrioWahr</replaceable>:<replaceable>PrioFalsch</replaceable>)</synopsis>
+
+  <simpara>Schickt den Anruf ohne Möglichkeit der Rückkehr an die Priorität
+  <code>PrioWahr</code>, falls die <code>Bedingung</code> (siehe <xref
+  linkend="glossar-expressions" />) wahr ist, oder zu <code>PrioFalsch</code>,
+  falls sie falsch ist. Sie können entweder <code>PrioWahr</code> oder
+  <code>PrioFalsch</code> auslassen (dann wird ggf. mit der nächsten Priorität
+  weitergemacht), aber nicht beide (und nicht den Doppelpunkt!).</simpara>
+
+  <para>Eine Priorität ist hier einer der folgenden Parameter:<itemizedlist>
+      <listitem>
+        <simpara>eine Priorität, z. B. <code>10</code></simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>eine Extension und eine Priorität, z. B.
+        <code>123,10</code></simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>Context, Extension und Priorität, z. B.
+        <code>incoming,123,10</code></simpara>
+      </listitem>
+
+      <listitem>
+        <simpara>eine benannte Priorität innerhalb der gleichen Extension, z.
+        B. <code>ok</code></simpara>
+      </listitem>
+    </itemizedlist></para>
+
+  <programlisting>exten =&gt; 123,1,GotoIf($[ ${test} = 5 ]?ok:nein)
+exten =&gt; 123,10(ok),Playback(tt-monkeys)
+exten =&gt; 123,20(nein),Playback(tt-weasels)</programlisting>
+
+  <xi:include href="gotoif-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-goto" />, <xref
+    linkend="applications-gotoiftime" />, <xref
+    linkend="applications-gosub" />, <xref linkend="applications-gosubif" />,
+    <xref linkend="applications-macro" />, <xref
+    linkend="ael-conditionals" /></para>
+  </formalpara>
+</section>

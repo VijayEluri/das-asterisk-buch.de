@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="digium-tdm400p-analog" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c)
+% 2007, Stefan Wintermeyer <sw@amooma.de>
+% 2009, Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title>Installation der Digium TDM400p Analog-Karte</title>
+
+  <indexterm>
+    <primary>Installation</primary>
+
+    <secondary>Digium TDM400p</secondary>
+  </indexterm>
+
+  <indexterm>
+    <primary>Digium</primary>
+
+    <secondary>TDM400p</secondary>
+  </indexterm>
+
+  <para>Dieses Kapitel beschreibt die Installation und Inbetriebnahme der
+  analogen Karte TDM400p von Digium.</para>
+
+  <section id="digium-tdm400p-analog-installation">
+    <title>Installation</title>
+
+    <para>Diese Installationsanleitung setzt ein frisch installiertes Debian
+    GNU/Linux 5.0 (<quote>Lenny</quote>) voraus.</para>
+
+    <para>Wir empfehlen zur Installation das Netzwerkinstallations-CD-Image,
+    das ungefähr 150 MByte groß ist und unter <ulink
+    url="http://www.debian.org/releases/lenny/debian-installer/">http://www.debian.org/releases/lenny/debian-installer/</ulink>
+    heruntergeladen werden kann. Eine Debian GNU/Linux-Installationsanleitung
+    finden Sie unter <ulink
+    url="http://www.debian.org/releases/lenny/i386/">http://www.debian.org/releases/lenny/i386/</ulink>
+    und ein allgemeines Anwenderhandbuch unter <ulink
+    url="http://debiananwenderhandbuch.de/">http://debiananwenderhandbuch.de/</ulink>.</para>
+
+    <para><emphasis>Nach erfolgreicher Installation des Debian-Linux-Systems
+    melden Sie sich als Benutzer <code>root</code> am System an und führen Sie
+    die hier nachfolgend angegebenen Befehle aus. Bitte achten Sie darauf,
+    keinen Schritt auszulassen und die Schritte als Benutzer <code>root</code>
+    durchzuführen.</emphasis></para>
+
+    <para>Als Erstes stellen Sie sicher, dass <code>aptitude</code> alle
+    aktuellen Paketlisten zur Verfügung hat:<screen>debian:~# <emphasis
+          role="bold"><command>aptitude update</command></emphasis>
+OK   http://ftp.de.debian.org stable/main Packages
+OK   http://ftp.de.debian.org stable/main Release
+OK   http://security.debian.org stable/updates/main Packages
+<replaceable>[...]</replaceable>
+Paketlisten werden gelesen... Fertig
+debian:~# </screen></para>
+
+    <para>Um sicherzugehen, dass alle Pakete auf dem neuesten Stand sind,
+    führen Sie noch ein Upgrade aus:<screen>debian:~# <emphasis role="bold"><command>aptitude -y upgrade</command></emphasis>
+Paketlisten werden gelesen... Fertig
+Abhängigkeitsbaum wird aufgebaut... Fertig
+0 aktualisiert, 0 neu installiert, 0 zu entfernen und 0 nicht aktualisiert.</screen></para>
+
+    <para>Für den Fall, dass beim Upgrade der Pakete auch ein neuer Kernel
+    installiert wurde, müssen Sie jetzt das System mit
+    <literal><command>shutdown -r now</command></literal> (oder mit
+    <literal><command>reboot</command></literal>) neu starten:<screen>debian:~# <emphasis
+          role="bold"><command>shutdown -r now</command></emphasis>
+
+Broadcast message from root@debian (pts/0) (Mon Mar 23 17:42:04 2009):
+
+The system is going down for reboot NOW!</screen></para>
+
+    <para>Nach dem Booten loggen Sie sich bitte wieder als
+    <literal>root</literal> ein.</para>
+
+    <para>Jetzt müssen Sie noch ein paar Pakete nachinstallieren, damit das
+    spätere Kompilieren von Asterisk erfolgreich durchgeführt werden
+    kann:<screen>debian:~# <emphasis role="bold"><command>aptitude -y install build-essential make openssl zlibc libkrb5-dev \
+    libncurses5-dev libssl-dev zlib1g-dev</command></emphasis>
+<replaceable>[...]</replaceable>
+Die folgenden NEUEN Pakete werden installiert:
+  comerr-dev libkadm55 libkrb5-dev libncurses5-dev 
+  libssl-dev openssl zlib1g-dev zlibc
+<replaceable>[...]</replaceable>
+debian:~# </screen></para>
+
+    <para>Zum Kompilieren benötigen Sie jetzt noch die zum Kernel passenden
+    Header-Dateien. Diese können wie folgt nachinstalliert werden:<screen>debian:~# <emphasis
+          role="bold"><command>aptitude -y install linux-headers-`uname -r`</command></emphasis>
+<replaceable>[...]</replaceable>
+Die folgenden NEUEN Pakete werden installiert:
+  linux-headers-2.6.26-1-common linux-headers-2.6.26-1-686 
+  kernel-kbuild-2.6-26 linux-libc-dev
+<replaceable>[...]</replaceable>
+debian:~# </screen></para>
+
+    <para>Auf der Asterisk-Homepage <ulink
+    url="http://www.asterisk.org/">http://www.asterisk.org/</ulink> finden Sie
+    die notwendigen Quellen, um Asterisk zu kompilieren. Nehmen Sie bitte eine
+    <emphasis role="bold">stabile</emphasis> und keine Entwickler-Version, und
+    laden Sie diese in das Verzeichnis <filename>/usr/src/</filename>
+    herunter:</para>
+
+    <screen>debian:~# <emphasis role="bold"><command>cd /usr/src/</command></emphasis>
+debian:/usr/src# <emphasis role="bold"><command>wget http://downloads.digium.com/pub/asterisk/asterisk-1.4-current.tar.gz</command></emphasis>
+<replaceable>[...]</replaceable>
+11:09:07 (9.02 MB/s) - »asterisk-1.4-current.tar.gz« gespeichert [11613305/11613305]</screen>
+
+    <para>Als Nächstes laden Sie den dazugehörigen DAHDI-Treiber:<screen>debian:/usr/src# <emphasis
+          role="bold"><command>wget http://downloads.digium.com/pub/telephony/dahdi-linux/dahdi-linux-current.tar.gz</command></emphasis>
+<replaceable>[...]</replaceable>
+11:10:50 (10.51 MB/s) - »dahdi-linux-current.tar.gz« gespeichert [1251822/1251822]</screen></para>
+
+    <para>Zu dem DAHDI-Treiber gehören noch die passenden DAHDI-Tools. Bitte
+    laden Sie diese also auch noch herunter: <screen>debian:/usr/src# <emphasis
+          role="bold"><command>wget http://downloads.digium.com/pub/telephony/dahdi-tools/dahdi-tools-current.tar.gz</command></emphasis>
+<replaceable>[...]</replaceable>
+15:43:09 (9.87 MB/s) - »dahdi-tools-current.tar.gz« gespeichert [413598/413598]</screen></para>
+
+    <para>Da der DAHDI-Treiber immer vor Asterisk kompiliert werden muss,
+    entpacken Sie diesen, wechseln dann in das Verzeichnis, kompilieren und
+    installieren ihn:<screen>debian:/usr/src# <emphasis role="bold"><command>tar xvzf dahdi-linux-current.tar.gz</command></emphasis> 
+dahdi-linux-2.1.0.4/
+dahdi-linux-2.1.0.4/include/
+<replaceable>[...]</replaceable>
+debian:/usr/src# <emphasis role="bold"><command>cd dahdi-linux-2.1.0.4</command></emphasis> 
+debian:/usr/src/dahdi-linux-2.1.0.4# <emphasis role="bold"><command>make &amp;&amp; make install</command></emphasis>
+<replaceable>[...]</replaceable>
+debian:/usr/src/dahdi-linux-2.1.0.4# </screen></para>
+
+    <para>Wechseln Sie jetzt wieder ins Verzeichnis
+    <filename>/usr/src</filename>, und entpacken Sie die DAHDI-Tools:<screen>debian:~# <emphasis
+          role="bold"><command>cd /usr/src</command></emphasis>
+debian:/usr/src# <emphasis role="bold"><command>tar xvzf dahdi-tools-current.tar.gz</command></emphasis> 
+dahdi-tools-2.1.0.2/
+dahdi-tools-2.1.0.2/hdlctest.c
+dahdi-tools-2.1.0.2/bootstrap.sh
+<replaceable>[...]</replaceable>
+debian:/usr/src# </screen></para>
+
+    <para>Vor dem Kompilieren müssen Sie noch <command>./configure</command>
+    aufrufen:<screen>debian:/usr/src# <emphasis role="bold"><command>cd dahdi-tools-2.1.0.2</command></emphasis>
+debian:/usr/src/dahdi-linux-2.1.0.4# <emphasis role="bold"><command>./configure</command></emphasis>
+debian:/usr/src/dahdi-linux-2.1.0.4# <emphasis role="bold"><command>make &amp;&amp; make install</command></emphasis>
+<replaceable>[...]</replaceable>
+debian:/usr/src/dahdi-linux-2.1.0.4# </screen></para>
+
+    <para>Dannach müssen Sie noch die Start-Skripte für DAHDI installieren.
+    Auch dies erledigt das Makefile:<screen>debian:/usr/src/dahdi-linux-2.1.0.4## <emphasis
+          role="bold"><command>make config</command></emphasis>
+I think that the DAHDI hardware you have on your system is:
+pci:0000:04:00.0     wctdm24xxp+  d161:8005 Wildcard TDM410
+debian:/usr/src/dahdi-linux-2.1.0.4# </screen></para>
+
+    <para>Durch diese Aktion werden auch gleich die Konfigurationsdateien
+    installiert und konfiguriert. Die Treiber können nun durch<screen>debian:/usr/src/dahdi-linux-2.1.0.4## <emphasis
+          role="bold"><command>/etc/init.d/dahdi start</command></emphasis></screen>geladen
+    werden.</para>
+
+    <para>Jetzt wechseln Sie wiederum in das Verzeichnis
+    <filename>/usr/src</filename> und entpacken den Asterisk-Tarball:</para>
+
+    <para><screen>debian:~# <emphasis role="bold"><command>cd /usr/src</command></emphasis>
+debian:/usr/src# <emphasis role="bold"><command>tar xvzf asterisk-1.4-current.tar.gz</command></emphasis> 
+asterisk-1.4.24.1/
+asterisk-1.4.24.1/build_tools/
+<replaceable>[...]</replaceable>
+debian:/usr/src# </screen></para>
+
+    <para>Die entpackten Dateien müssen jetzt kompiliert werden. Dies
+    geschieht mit den Befehlen <command>./configure</command> und
+    <command>make</command> im gerade entpackten Verzeichnis.<warning>
+        <para>Bitte achten Sie darauf, dass die hier in der Dokumentation
+        benutzte Version 1.4.24.1 vielleicht zum Zeitpunkt Ihrer Installation
+        nicht mehr aktuell ist. Entsprechend werden sich die Verzeichnisnamen
+        ändern.</para>
+      </warning>Übrigens ist dies jetzt ein guter Moment, sich einen Kaffee
+    oder Tee zu kochen. Der Kompiliervorgang kann je nach Rechenleistung des
+    PCs wenige Minuten oder bis zu einer Stunde dauern.</para>
+
+    <screen>debian:/usr/src# <emphasis role="bold"><command>cd asterisk-1.4.24.1</command></emphasis> 
+debian:/usr/src/asterisk-1.4.24.1# <emphasis role="bold"><command>./configure</command></emphasis>
+<replaceable>[...]</replaceable>
+configure: Package configured for:
+configure: OS type  : linux-gnu
+configure: Host CPU : i686
+debian:/usr/src/asterisk-1.4.24.1# <emphasis role="bold"><command>make</command></emphasis>
+<replaceable>[...]</replaceable>
+make[1]: Leaving directory `/usr/src/asterisk-1.4.24.1/main'
+ +--------- Asterisk Build Complete ---------+
+ + Asterisk has successfully been built, and +
+ + can be installed by running:              +
+ +                                           +
+ +               make install                +
+ +-------------------------------------------+</screen>
+
+    <para>Die Software ist jetzt kompiliert und muss nur noch mit
+    <command>make install</command> installiert (sprich, an die vorgesehenen
+    Stellen im Dateisystem kopiert) werden:</para>
+
+    <screen>debian:/usr/src/asterisk-1.4.24.1# <emphasis role="bold"><command>make install</command></emphasis>
+<replaceable>[...]</replaceable>
+ +---- Asterisk Installation Complete -------+
+ +                                           +
+ +    YOU MUST READ THE SECURITY DOCUMENT    +
+ +                                           +
+ + Asterisk has successfully been installed. +
+ + If you would like to install the sample   +
+ + configuration files (overwriting any      +
+ + existing config files), run:              +
+ +                                           +
+ +               make samples                +
+ +                                           +
+ +-----------------  or ---------------------+
+ +                                           +
+ + You can go ahead and install the asterisk +
+ + program documentation now or later run:   +
+ +                                           +
+ +              make progdocs                +
+ +                                           +
+ + **Note** This requires that you have      +
+ + doxygen installed on your local system    +
+ +-------------------------------------------+
+debian:/usr/src/asterisk-1.4.24.1# </screen>
+
+    <para>Geschafft! Die soeben kompilierten Programmdateien sind jetzt auf
+    dem System installiert. Allerdings finden Sie im
+    Asterisk-Konfigurationsverzeichnis <filename>/etc/asterisk/</filename>
+    noch gähnende Leere vor. In diesem Verzeichnis liegen die
+    Konfigurationsdateien von Asterisk, und da Sie gewiss nicht bei null
+    beginnen möchten, lassen Sie sich die Standarddateien erstellen:</para>
+
+    <screen>debian:/usr/src/asterisk-1.4.24.1# <emphasis role="bold"><command>make samples</command></emphasis>
+<replaceable>[...]</replaceable>
+done
+debian:/usr/src/asterisk-1.4.24.1# </screen>
+
+    <para>Fertig! Asterisk ist auf Ihrem System inklusive aller benötigten
+    Treiber installiert. Mit dem Befehl <command>asterisk -V</command> können
+    Sie die installierte Version herausfinden (bitte achten Sie auf das
+    großgeschriebene V):<screen>debian:/usr/src/asterisk-1.4.24.1# <emphasis
+          role="bold"><command>asterisk -V</command></emphasis>
+Asterisk 1.4.24.1
+debian:/usr/src/asterisk-1.4.24.1# </screen></para>
+  </section>
+
+  <section id="digium-tdm400p-analog-fxo">
+    <title>Beispiel-Dialplan</title>
+
+    <para>Nun noch ein Beispiel-Dialplan mit einer
+    <code>s</code>-<emphasis>Extension</emphasis> (siehe auch <xref
+    linkend="s-extension" />) für ein eingehendes Gespräch von der
+    Analog-Karte:<programlisting>[default]
+exten =&gt; s,1,Wait(1)
+exten =&gt; s,n,Answer()
+exten =&gt; s,n,Dial(Dahdi/12)
+exten =&gt; s,n,Hangup()
+</programlisting></para>
+  </section>
+</section>

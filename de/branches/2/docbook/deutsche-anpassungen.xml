@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<chapter id="deutsche-anpassungen" lang="de" revision="$Revision$">
+  <!--% Copyright (c) 2007 - 2008
+% - Stefan Wintermeyer <sw@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de -->
+
+  <title>Deutsche Anpassungen</title>
+
+  <indexterm>
+    <primary>Deutsche Anpassungen</primary>
+  </indexterm>
+
+  <para>Asterisk ist ein US-amerikanisches Produkt. Allerdings kann man die
+  für den Endbenutzer relevanten Teile für deutsche User anpassen.</para>
+
+  <section id="toene-und-signale">
+    <title>Töne und Signale<indexterm>
+        <primary>Töne und Signale</primary>
+
+        <secondary>Deutsche Signaltöne (Besetzt- und Freizeichen)</secondary>
+      </indexterm></title>
+
+    <para>In einer Standard-Asterisk-Installation werden Besetzt- und
+    Freizeichen (und noch ein paar andere Signaltöne) nach amerikanischem
+    Muster ausgegeben. Um dies auf deutsche Signale umzustellen, muss man nur
+    in der Konfigurationsdatei
+    <filename>/etc/asterisk/indications.conf</filename> im Abschnitt
+    <code>[general]</code> ein <code>country=de</code>
+    einsetzen:<programlisting>[general]
+country=de</programlisting></para>
+  </section>
+
+  <section id="deutsche-sprachbausteine">
+    <title>Deutsche Sprachbausteine<indexterm>
+        <primary>Sprachbausteine</primary>
+
+        <secondary>Deutsch</secondary>
+      </indexterm></title>
+
+    <para>Bei einer Standardinstallation werden im Verzeichnis
+    <filename>/var/lib/asterisk/sounds/</filename> nur die
+    Original-Sprachbausteine auf Englisch abgelegt. Zum Redaktionsschluss
+    dieses Buches gab es von Digium alternativ noch französische und spanische
+    Prompts (<emphasis>Prompt</emphasis> ist der Asterisk-Begriff für
+    <emphasis>Sprachbaustein</emphasis>). Allerdings werden von Digium keine
+    deutschen Sprachprompts angeboten. Diese müssen Sie von Drittanbietern in
+    Deutschland herunterladen.</para>
+
+    <section id="deutsche-sprachbausteine-download">
+      <?dbhtml stop-chunking?>
+
+      <title>Download und Installation deutscher Sprachprompts</title>
+
+      <para>Verfügbare deutsche Sprachbausteine:</para>
+
+      <section id="sprachprompts-amooma">
+        <title>Sprachbausteine der AMOOMA GmbH<indexterm>
+            <primary>AMOOMA GmbH</primary>
+
+            <secondary>Deutsche Sprachbausteine</secondary>
+          </indexterm></title>
+
+        <para>Die AMOOMA GmbH stellt unter der URL <ulink
+        url="http://www.amooma.de/asterisk/sprachbausteine/">http://www.amooma.de/asterisk/sprachbausteine/</ulink>
+        deutsche Sprachbausteine für die Asterisk-Versionen 1.4 und 1.6 zum
+        Download zur Verfügung. Diese sind in mehreren Formaten abrufbar und
+        stehen unter der GPL. Bitte entpacken Sie die Sprachprompts, und
+        kopieren Sie diese in das Verzeichnis
+        <filename>/var/lib/asterisk/sounds/de</filename>.</para>
+
+        <para>Als Besonderheit kann man sich auch eigene Sprachbausteine
+        online generieren lassen (siehe <ulink
+        url="http://www.amooma.de/tts/">http://www.amooma.de/tts/</ulink>
+        )<indexterm>
+            <primary>AMOOMA GmbH</primary>
+
+            <secondary>Text to Speech (TTS) Engine</secondary>
+          </indexterm>.</para>
+      </section>
+
+      <section id="sprachprompts-pforzheim">
+        <title>Sprachbausteine der Stadt Pforzheim<indexterm>
+            <primary>Stadt Pforzheim</primary>
+
+            <secondary>Deutsche Sprachbausteine</secondary>
+          </indexterm></title>
+
+        <para>Die Stadt Pforzheim hatte unter <ulink
+        url="http://www.pforzheim.de/asterisk/vprompts.html">http://www.pforzheim.de/asterisk/vprompts.html</ulink>
+        deutsche Sprachbausteine für die alte Asterisk-Version 1.2 zum
+        Download zur Verfügung gestellt.</para>
+
+        <important>
+          <para>Diese Sprachbausteine sind nicht mehr verfügbar.</para>
+        </important>
+      </section>
+    </section>
+
+    <section id="deutsche-sprachbausteine-konfiguration">
+      <title>Konfiguration der deutschen Prompts</title>
+
+      <para>Die deutschen Sprachbausteine können in der Konfigurationsdatei
+      der benutzten Technologie (z. B. <filename>sip.conf</filename> für SIP)
+      mit dem Parameter <parameter>language=de</parameter> aktiviert werden.
+      Dies funktioniert entweder global oder nur für einzelne Telefone.</para>
+
+      <para>Beispiel <filename>sip.conf</filename>:<programlisting>[general]
+; fuer alle im System
+language = de
+
+[2000]
+type = friend
+secret = 1234
+host = dynamic
+context = from-sip
+; nur fuer die 2000
+language = de</programlisting></para>
+    </section>
+
+    <section id="verzeichnisstruktur-sprachbausteine">
+      <title>Verzeichnisstruktur der Sprachbausteine<indexterm>
+          <primary>Sprachbausteine</primary>
+
+          <secondary>Verzeichnisstruktur</secondary>
+        </indexterm></title>
+
+      <para>Per Default liegen alle Sprachbausteine im Verzeichnis
+      <filename>/var/lib/asterisk/sounds/</filename>. Darin gibt es
+      Unterverzeichnisse für spezielle Sprachprompts wie
+      <filename>digits/</filename> für Zahlen, Uhrzeiten und Wochentage.
+      Dieses Verzeichnis sieht dann wie folgt aus:<screen>big-island:~# <emphasis
+            role="bold"><command>ls /var/lib/asterisk/sounds/digits/</command></emphasis>
+0.gsm   60.gsm       h-13.gsm     mon-1.gsm
+1.gsm   7.gsm        h-14.gsm     mon-10.gsm
+10.gsm  70.gsm       h-15.gsm     mon-11.gsm
+11.gsm  8.gsm        h-16.gsm     mon-2.gsm
+12.gsm  80.gsm       h-17.gsm     mon-3.gsm
+13.gsm  9.gsm        h-18.gsm     mon-4.gsm
+14.gsm  90.gsm       h-19.gsm     mon-5.gsm
+15.gsm  a-m.gsm      h-2.gsm      mon-6.gsm
+16.gsm  at.gsm       h-20.gsm     mon-7.gsm
+17.gsm  day-0.gsm    h-3.gsm      mon-8.gsm
+18.gsm  day-1.gsm    h-30.gsm     mon-9.gsm
+19.gsm  day-2.gsm    h-4.gsm      oclock.gsm
+2.gsm   day-3.gsm    h-5.gsm      oh.gsm
+20.gsm  day-4.gsm    h-6.gsm      p-m.gsm
+3.gsm   day-5.gsm    h-7.gsm      pound.gsm
+30.gsm  day-6.gsm    h-8.gsm      star.gsm
+4.gsm   dollars.gsm  h-9.gsm      thousand.gsm
+40.gsm  h-1.gsm      hundred.gsm  today.gsm
+5.gsm   h-10.gsm     million.gsm  tomorrow.gsm
+50.gsm  h-11.gsm     minus.gsm    yesterday.gsm
+6.gsm   h-12.gsm     mon-0.gsm</screen></para>
+
+      <para>Sprachprompts anderer Sprachen (also nicht-englische
+      Sprachprompts) werden als Unterverzeichnisse mit den jeweiligen
+      Sprachkürzeln (<code>de</code> für Deutsch) abgespeichert. Deshalb gibt
+      es im Fall von Asterisk 1.2 sowohl ein Verzeichnis
+      <filename>/var/lib/asterisk/sounds/de/</filename> als auch ein
+      Verzeichnis
+      <filename>/var/lib/asterisk/sounds/digits/de/</filename>.</para>
+
+      <section id="verzeichnisstruktur-sprachbausteine-1.4">
+        <title>Asterisk 1.4 und 1.6</title>
+
+        <para>Zum Glück verhalten sich Asterisk 1.4 und 1.6 nicht mehr so wie
+        1.2. Standardmäßig ist nun die Einstellung
+        <code>languageprefix=yes</code> in der Konfigurationsdatei
+        <filename>/etc/asterisk/asterisk.conf</filename> aktiviert. Mit dieser
+        Einstellung folgt die Verzeichnisstruktur der Idee, dass zuerst nach
+        der Sprache gruppiert wird, also alle Bausteine einer Sprache in einem
+        Verzeichnis liegen:<screen>/var/lib/asterisk/sounds/de/ 
+/var/lib/asterisk/sounds/de/digits 
+/var/lib/asterisk/sounds/de/wx</screen>Dadurch lässt sich leicht ein
+        Verzeichnis für eine neue Sprache reinkopieren, während die Bausteine
+        sonst über mehrere Unterverzeichnisse verteilt wären.<note>
+            <para>Wer <literal><command>make menuselect</command></literal>
+            zum Installieren von Sprachbausteinen benutzt, muss die Option
+            <parameter>languageprefix=yes</parameter> in der
+            Konfigurationsdatei
+            <filename>/etc/asterisk/asterisk.conf</filename> setzen.</para>
+          </note></para>
+      </section>
+    </section>
+  </section>
+</chapter>

@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<appendix id="upgrade-1.4-1.6" lang="de" revision="$Revision$">
+  <title>Upgrade von Asterisk 1.4 auf 1.6<indexterm>
+      <primary>Upgrade</primary>
+
+      <secondary>1.4 auf 1.6</secondary>
+    </indexterm></title>
+
+  <para>In diesem Kapitel beschreiben wir anhand der Datei
+  <filename>UPGRADE.txt</filename> die wichtigsten Änderungen, die Sie für ein
+  Upgrade von Asterisk 1.4 auf 1.6 vornehmen müssen.</para>
+
+  <section id="upgrade-1.4-1.6-ael">
+    <title>AEL</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>AEL-Dialplan-Makros werden jetzt <quote>unter der Haube</quote>
+        mit der <code>Gosub()</code>-Applikation implementiert. Vor Version
+        1.6 wurde das mit der <code>Macro()</code>-Applikation gemacht. Sie
+        können weiterhin Makros ganz normal verwenden, sollten aber darauf
+        achten, dass das Makro mit <code>return</code>
+        zurückkehrt.<programlisting>macro mein-makro() {
+    // tu was
+    return;
+}</programlisting></para>
+      </listitem>
+
+      <listitem>
+        <para>Es gibt ein neues Tool, <filename>conf2ael</filename>, das einen
+        herkömmlichen Dialplan (<filename>extensions.conf</filename>) nach AEL
+        konvertiert (<filename>extensions.ael</filename>). Das Tool befindet
+        sich allerdings noch in einem frühen Entwicklungsstadium.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="upgrade-1.4-1.6-core">
+    <title>Kern</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Die Option <code>languageprefix</code> in der
+        <filename>asterisk.ael</filename> ist veraltet. Die
+        Verzeichnisstruktur für nicht-englische Sound-Prompts ist jetzt per
+        Default das in Version 1.4 eingeführte neue Format.</para>
+      </listitem>
+
+      <listitem>
+        <para>Im Dialplan kann jetzt auch mit Fließkommazahlen gearbeitet
+        werden.</para>
+      </listitem>
+
+      <listitem>
+        <para>Als Trennzeichen für Parameter, die an Dialplan-Applikationen
+        übergeben werden, ist jetzt nur noch <quote><code>,</code></quote>
+        (Komma) erlaubt, nicht mehr <quote><code>|</code></quote>
+        (<emphasis>Pipe</emphasis>). Wenn innerhalb eines Parameters ein
+        <quote><code>,</code></quote> übergeben werden soll, so ist dies mit
+        <quote><code>\</code></quote> (<emphasis>Backslash</emphasis>) zu
+        escapen, also als <quote><code>\,</code></quote> zu schreiben.</para>
+      </listitem>
+
+      <listitem>
+        <para>Die Option <quote><code>rotatetimestamp</code></quote> in der
+        <filename>logger.conf</filename> wurde in
+        <quote><code>rotatestrategy</code></quote> geändert. Die neue Option
+        unterstützt eine <quote><code>rotate</code></quote>-Strategie, die die
+        Log-Dateien etwa so rotiert wie der System-Logger.</para>
+      </listitem>
+
+      <listitem>
+        <para>Die <quote><code>concise</code></quote>-Versionen verschiedener
+        CLI-Befehle sind veraltet. Früher konnten externe Programme (wie etwa
+        Web-GUIs) z. B. <quote><code>core show channels concise</code></quote>
+        statt <quote><code>core show channels</code></quote> verwenden um,
+        eine Ausgabe zu erhalten, die sich besser parsen ließ. Externe
+        Programme sollen jetzt über das AMI<footnote>
+            <para>siehe <xref linkend="asterisk-manager-api" /></para>
+          </footnote> mit Asterisk kommunizieren, anstatt direkt
+        <code>asterisk -rx "Befehl"</code> auszuführen.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="upgrade-1.4-1.6-voicemail">
+    <title>Voicemail</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Die Mailbox-Parameter <quote><code>maxmessage</code></quote> und
+        <quote><code>minmessage</code></quote> wurden in
+        <quote><code>maxsecs</code></quote> und
+        <quote><literal>minsecs</literal></quote> umbenannt, um ihren Zweck
+        (die Länge einer Nachricht zu begrenzen) deutlicher zu machen und
+        damit sie nicht mit <quote><code>maxmsgs</code></quote> (das die
+        Anzahl der Nachrichten beschränkt) verwechselt werden. Die alten
+        Parameter funktionieren noch, aber eine Warnung wird
+        ausgegeben.</para>
+      </listitem>
+
+      <listitem>
+        <para>MWI-Benachrichtigungen and die Telefone sind jetzt
+        event-basiert. Für das alte Verhalten, nämlich alle x Sekunden in
+        allen Mailboxen die Nachrichten zu zählen, kann im
+        <quote><code>general</code></quote>-Abschnitt der
+        <filename>voicemail.conf</filename> die Option
+        <quote><code>pollmailboxes</code></quote> aktiviert werden; in welchem
+        Abstand gesucht wird, legt man dann durch
+        <quote><code>pollfreq</code></quote> fest. Das
+        <emphasis>event</emphasis>-basierte Model ist grundsätzlich schöner,
+        da es besser skaliert. Es gibt allerdings Fälle, in denen man das alte
+        Verhalten braucht, nämlich wenn die Mailboxen von externen Programmen
+        verändert werden, also über ein Web-Interface, oder wenn die
+        Voicemails auf einem IMAP-Server gespeichert werden.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="upgrade-1.4-1.6-applications">
+    <title>Dialplan-Applikationen und -Funktionen</title>
+
+    <itemizedlist>
+      <listitem>
+        <para><code>ChanIsAvail()</code> hat jetzt eine Option
+        <quote><code>t</code></quote>. Damit wird einfach nur zurückgegeben,
+        ob das <emphasis>Device</emphasis> existiert.</para>
+      </listitem>
+
+      <listitem>
+        <para><code>ChannelRedirect()</code> bricht jetzt den Channel nicht
+        mehr ab, wenn die Umleitung fehlschlägt, wie das vorher der Fall war.
+        Stattdessen ist der Erfolgsstatus der Umleitung in der
+        Channel-Variable <code>CHANNELREDIRECT_STATUS</code> verfügbar
+        (<code>SUCCESS</code> oder <code>NOCHANNEL</code>).</para>
+      </listitem>
+
+      <listitem>
+        <para><code>SetCallerPres()</code> ist veraltet und wurde durch die
+        Funktion <code>CALLERPRES()</code> ersetzt.</para>
+      </listitem>
+
+      <listitem>
+        <para>Das 5. Argument von <code>DISA()</code> wurde geändert. Wenn Sie
+        vorher <quote><code>noanswer</code></quote> verwendet haben, muss die
+        Option jetzt <quote><code>n</code></quote> lauten.</para>
+      </listitem>
+
+      <listitem>
+        <para><code>Macro()</code> ist veraltet (aber noch möglich). Für
+        Unterroutinen sollten Sie jetzt <code>Gosub()</code> und
+        <code>Return()</code> verwenden oder direkt die native
+        <quote><code>macro</code></quote>-Syntax von AEL
+        verwenden.<programlisting>macro mein-makro() {
+    // tu was
+    return;
+}</programlisting></para>
+
+        <para>Statt <code>MacroExclusive()</code> gibt es jetzt die Funktionen
+        <code>LOCK()</code>, <code>TRYLOCK()</code> und <code>UNLOCK()</code>,
+        um sicherzustellen, dass ein Abschnitt im Dialplan nicht von mehreren
+        Kanälen gleichzeitig ausgeführt wird.</para>
+      </listitem>
+
+      <listitem>
+        <para><code>Read()</code> setzt jetzt eine Variable
+        <code>READSTATUS</code> (auf <code>OK</code> | <code>ERROR</code> |
+        <code>HANGUP</code> | <code>INTERRUPTED</code> | <code>SKIPPED</code>
+        | <code>TIMEOUT</code>), anstatt bei einem Fehler automatisch
+        aufzulegen. Wenn Sie bei <code>${READSTATUS} != "OK"</code>" auflegen
+        wollen, müssen Sie das hinterher explizit im Dialplan tun.</para>
+      </listitem>
+
+      <listitem>
+        <para><code>Privacy()</code> greift nicht mehr auf
+        <filename>privacy.conf</filename> zu, also müssen alle Optionen der
+        Applikation direkt im Dialplan als Argumente übergeben werden.</para>
+      </listitem>
+
+      <listitem>
+        <para><code>MusicOnHold()</code> hat einen neuen optionalen
+        <emphasis>Timeout</emphasis>-Parameter, der einen Abbruch nach einer
+        bestimmten Dauer ermöglicht. Dadurch wird
+        <code>WaitMusicOnHold()</code> überflüssig.</para>
+      </listitem>
+
+      <listitem>
+        <para><code>SetMusicOnHold()</code> ist veraltet. Stattdessen soll
+        <code>Set(CHANNEL(musicclass)=...)</code> verwendet werden.</para>
+      </listitem>
+
+      <listitem>
+        <para>Die Argumente von <code>ExecIf()</code> wurden verändert.</para>
+
+        <para>Alt:<programlisting>ExecIf(<replaceable>Ausdruck</replaceable>,<replaceable>Applikation</replaceable>,<replaceable>Argumente</replaceable>)</programlisting></para>
+
+        <para>Neu:<programlisting>ExecIf(<replaceable>Ausdruck</replaceable>?<replaceable>ApplikationT</replaceable>(<replaceable>ArgumenteT</replaceable>)<optional>:<replaceable>ApplikationF</replaceable>(<replaceable>ArgumenteF</replaceable>)</optional>)</programlisting></para>
+      </listitem>
+
+      <listitem>
+        <para><code>QUEUE_MEMBER_COUNT()</code> ist veraltet.
+        <code>QUEUE_MEMBER()</code> akzeptiert jetzt als 2. Parameter
+        <quote><code>logged</code></quote>, <quote><code>free</code></quote>
+        oder <quote><code>count</code></quote>.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="upgrade-1.4-1.6-cdr">
+    <title>CDR</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Das Modul <code>cdr_sqlite</code> ist veraltet und wird nach
+        Version 1.6 durch <code>cdr_sqlite3_custom</code> abgelöst.</para>
+      </listitem>
+
+      <listitem>
+        <para>Das Modul <code>cdr_odbc</code> basiert jetzt auf
+        <code>res_odbc</code>. Benutzername und Passwort werden daher nicht
+        mehr aus <filename>cdr_odbc.conf</filename>, sondern aus
+        <filename>res_odbc.conf</filename> gelesen.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="upgrade-1.4-1.6-formats">
+    <title>Audio-Formate</title>
+
+    <itemizedlist>
+      <listitem>
+        <para><code>format_wav</code>: Der problematische
+        <emphasis>Gain</emphasis>-Filter wurde entfernt. Wenn Sie die
+        Lautstärke anpassen wollen, dann geht das mit der Option
+        <quote><code>volgain</code></quote> in der
+        <filename>voicemail.conf</filename>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Der iLBC-Codec wurde entfernt, da der Source-Code aus
+        lizenzrechtlichen Gründen nicht direkt mit Asterisk verbreitet werden
+        darf. Wenn man den Codec benutzen will, muss man das Skript
+        <filename>contrib/scripts/get_ilbc_source.sh</filename> ausführen und
+        Asterisk neu kompilieren: <code>./configure</code>, dann <code>make
+        menuselect</code> und unter <quote><literal>Codec
+        Translators</literal></quote> den iLBC-Codec aktivieren, dann
+        <code>make</code> und <code>make install</code>.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="upgrade-1.4-1.6-channels">
+    <title>Channel-Treiber</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>SIP: Der Aufnahme-Knopf
+        (<quote><literal>Record</literal></quote>) des Snom 360 (der in einer
+        SIP-INFO-Nachricht einen Header <quote><literal>Record:
+        on</literal></quote> bzw. <quote><literal>Record:
+        off</literal></quote> sendet) wird jetzt unterstützt, sofern er in der
+        <filename>features.conf</filename> aktiviert ist.<programlisting>automon =&gt; *1     ; One Touch Record a.k.a. Touch Monitor</programlisting></para>
+      </listitem>
+
+      <listitem>
+        <para>SIP: Der Parameter <quote><code>call-limit</code></quote> ist
+        veraltet (funktioniert aber noch). Um die Anzahl gleichzeitiger
+        Gespräche für einen Benutzer (/ein <emphasis>Device</emphasis>/...) zu
+        begrenzen, benutzen Sie bitte die Dialplan-Funktionen
+        <code>GROUP()</code> und <code>GROUP_COUNT()</code> bzw.
+        <code>GROUP_MATCH_COUNT()</code>.</para>
+
+        <para>Der <filename>sip.conf</filename>-Parameter
+        <quote><code>limitonpeer</code></quote> wurde in
+        <quote><code>counteronpeer</code></quote> umbenannt.</para>
+      </listitem>
+
+      <listitem>
+        <para>SIP: Der Parameter <quote><code>username</code></quote> wurde
+        (analog zu <quote><code>defaultip</code></quote>) in
+        <quote><code>defaultuser</code></quote> umbenannt, um zu
+        verdeutlichen, dass diese Angaben nur benutzt werden, solange der Peer
+        noch nicht registriert ist. (Die alte Bezeichnung funktioniert aber
+        noch.)</para>
+      </listitem>
+
+      <listitem>
+        <para>Local: Das <quote><code>,</code></quote>-(Komma)-Trennzeichen in
+        den Channel-Namen wurde in ein <quote><code>;</code></quote>
+        (Semikolon) geändert, da <quote><code>,</code></quote> das
+        Trennzeichen für Applikationsargumente ist. (Für die meisten User
+        dürfte diese Änderung vollkommen egal sein.)</para>
+      </listitem>
+
+      <listitem>
+        <para>H323: Die Einstellungen <quote><code>tos</code></quote> und
+        <quote><code>cos</code></quote> wurden in
+        <quote><code>tos_audio</code></quote> und
+        <quote><code>cos_audio</code></quote> umbenannt (analog zur
+        <filename>sip.conf</filename>).</para>
+      </listitem>
+
+      <listitem>
+        <para>Zap: Der Parameter <quote><code>msdstrip</code></quote> ist
+        veraltet, denn Ziffern lassen sich auch im Dialplan
+        abschneiden.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="upgrade-1.4-1.6-configuration">
+    <title>Konfiguration</title>
+
+    <itemizedlist>
+      <listitem>
+        <para><filename>dundi.conf</filename>: Der Parameter
+        <quote><code>tos</code></quote> akzeptiert jetzt nicht mehr die alten
+        Werte wie <quote><code>lowdelay</code></quote> oder
+        <quote><code>lowcost</code></quote>. Eine Beschreibung der möglichen
+        neuen Werte finden Sie in <filename>doc/tex/qos.tex</filename>.</para>
+      </listitem>
+
+      <listitem>
+        <para><filename>queues.conf</filename>: Der Parameter
+        <quote><code>queue-lessthan</code></quote> ist nicht mehr verfügbar.
+        Für den Parameter <quote><code>queue-round-seconds</code></quote> ist
+        <quote><code>1</code></quote> kein gültiger Wert mehr.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section id="upgrade-1.4-1.6-manager">
+    <title>Manager-Interface (AMI)</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Die Version des Manager-Interfaces ist jetzt <code>1.1</code>.
+        Genaue Details zu den Änderungen finden Sie in
+        <filename>doc/manager_1_1.txt</filename>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Die Ausgabe des Befehls <code>IAXpeers</code> wurde an die
+        Ausgabe von <code>SIPpeers</code> angeglichen.</para>
+      </listitem>
+
+      <listitem>
+        <para>Das Modul <code>cdr_manager</code> macht jetzt Ausgaben in der
+        Klasse <quote><code>cdr</code></quote> (vorher:
+        <quote><code>call</code></quote>). Wenn AMI-Benutzer die
+        CDR-Ereignisse sehen können sollen, dann muss für sie in der
+        <filename>manager.conf</filename> beim Parameter
+        <quote><code>read</code></quote> auch <quote><code>cdr</code></quote>
+        hinzugefügt werden.</para>
+      </listitem>
+
+      <listitem>
+        <para>Für den Befehl <code>Originate</code> sind jetzt Schreibrechte
+        (Parameter <quote><code>write</code></quote>) in der Klasse
+        <quote><code>originate</code></quote> nötig; mit dem Argument
+        <quote><code>Application</code></quote> auch in der Klasse
+        <quote><code>system</code></quote>.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</appendix>

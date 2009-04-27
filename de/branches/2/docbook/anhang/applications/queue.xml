@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-queue" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>Queue()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>Queue()</code></secondary>
+  </indexterm>
+
+  <simpara>Legt den aktuellen Anruf in der spezifizierten Anrufwarteschlange
+  ab.</simpara>
+
+  <synopsis>Queue(<replaceable>Warteschlange</replaceable>[,<replaceable>Optionen</replaceable>[,<replaceable>URL</replaceable>[,<replaceable>Ankündigung</replaceable>[,<replaceable>Timeout</replaceable>]]]])</synopsis>
+
+  <simpara>Fügt der angegebenen Warteschlange so, wie in
+  <filename>queues.conf</filename> definiert, einen eingehenden Anruf
+  hinzu.</simpara>
+
+  <para>Folgende Optionen sind möglich (auch in Kombination): <variablelist
+      termlength="3">
+      <varlistentry>
+        <term><code>t</code></term>
+
+        <listitem>
+          <simpara>Erlaubt es dem angerufenen Teilnehmer, den Anruf
+          weiterzuleiten.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>T</code></term>
+
+        <listitem>
+          <simpara>Erlaubt es dem anrufenden Teilnehmer, den Anruf
+          weiterzuleiten.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>d</code></term>
+
+        <listitem>
+          <simpara>Spezifiziert einen Anruf mit Datenqualität (Modem, minimale
+          Verzögerung).</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>h</code></term>
+
+        <listitem>
+          <simpara>Erlaubt es dem Angerufenen, durch Drücken von
+          <code>*</code> aufzulegen.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>H</code></term>
+
+        <listitem>
+          <simpara>Erlaubt es dem Anrufer, durch Drücken von <code>*</code>
+          aufzulegen.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>n</code></term>
+
+        <listitem>
+          <simpara>Verbietet eine Wiederholung des Timeouts; beendet diese
+          Anwendung und geht weiter zum nächsten Schritt.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>r</code></term>
+
+        <listitem>
+          <simpara>Klingelt, statt Wartemusik zu spielen.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
+
+  <simpara>Außer dass ein Anruf weitergeleitet werden kann, kann er auch
+  geparkt und dann von einem anderen Teilnehmer aufgenommen werden.</simpara>
+
+  <simpara>Der Parameter <code>Ankündigung</code> überschreibt die
+  Standardankündigung, die Warteschlangenagenten vorgespielt wird, bevor sie
+  den angegebenen Anruf beantworten.</simpara>
+
+  <simpara>Die optionale <code>URL</code> wird dem angerufenen Teilnehmer
+  übersendet, falls dies vom Channel unterstützt wird.</simpara>
+
+  <simpara>Nach einer angegebenen Zahl von Sekunden, die zwischen jedem
+  <filename>queues.conf</filename>-Timeout und Retry-Kreislauf überprüft wird,
+  wird <code>Timeout</code> die <code>Queue()</code> zu einem
+  Fehlschlagen zwingen.</simpara>
+
+  <simpara>Liefert -1 zurück, falls der ursprüngliche Channel aufgelegt wird
+  oder falls der Anruf durchgestellt wird und einer der Teilnehmer den Anruf
+  beendet. Ist die Warteschlange voll, existiert sie nicht oder hat sie keine
+  Mitglieder, wird 0 zurückgeliefert.</simpara>
+
+  <programlisting>; den Anrufer zur "supportschlange" hinzufügen:
+exten =&gt; 123,1,Answer()
+exten =&gt; 123,n,Queue(supportschlange,t)</programlisting>
+
+  <xi:include href="queue-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-queuelog" />, <xref
+    linkend="warteschleifen" />, <xref
+    linkend="functions-queue_member_count" />, <xref
+    linkend="functions-queue_waiting_count" />, <xref
+    linkend="functions-queue_member_penalty" />, <xref
+    linkend="functions-queue_member" />, <xref
+    linkend="functions-queue_member_list" />, <xref
+    linkend="functions-queue_variables" /></para>
+  </formalpara>
+</section>

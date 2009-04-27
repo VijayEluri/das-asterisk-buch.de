@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-device_state" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>DEVICE_STATE()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>DEVICE_STATE()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>DEVICE_STATE(<replaceable>geraet</replaceable>)</synopsis>
+
+  <simpara>Gibt den Status eines <quote>Geräts</quote> zurück. Ein Gerät kann
+  z. B. ein SIP-Peer/User
+  (<literal>SIP/<replaceable>peername</replaceable></literal>), eine
+  MeetMe-Konferenz
+  (<literal>MeetMe:<replaceable>konferenzraum</replaceable></literal>) oder
+  ein eigenes Custom-Gerät
+  (<literal>Custom:<replaceable>name</replaceable></literal>) sein. Der Status
+  von <literal>Custom</literal>-Geräten lässt sich mit dieser Funktion auch
+  setzen.</simpara>
+
+  <programlisting>exten =&gt; 123,hint,SIP/lisa
+exten =&gt; 123,1,Dial(SIP/lisa)
+
+exten =&gt; 456,1,Verbose(1,Status von lisa: ${DEVICE_STATE(SIP/lisa)})</programlisting>
+
+  <simpara>Die Funktion gibt einen der folgenden Werte zurück:
+  <literal>UNKNOWN</literal> (unbekannt bzw. nicht angemeldet),
+  <literal>NOT_INUSE</literal> (frei), <literal>INUSE</literal> (im Gespräch),
+  <literal>BUSY</literal> (im Gespräch bzw. besetzt),
+  <literal>INVALID</literal> (ungültig), <literal>UNAVAILABLE</literal> (nicht
+  erreichbar), <literal>RINGING</literal> (klingelt),
+  <literal>RINGINUSE</literal> (im Gespräch und klingelt bzw. Anklopfen),
+  <literal>ONHOLD</literal> (auf Halten).</simpara>
+
+  <simpara>Für eine ausführliche Beschreibung siehe auch <xref
+  linkend="blf-device-state" />.</simpara>
+
+  <xi:include href="device_state-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="functions-hint" />, <xref
+    linkend="functions-extension_state" /></para>
+  </formalpara>
+</section>

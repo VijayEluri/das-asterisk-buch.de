@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-channel" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>CHANNEL()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>CHANNEL()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>CHANNEL(<replaceable>Feld</replaceable>)</synopsis>
+
+  <para>Liest/setzt bestimmte Kanaldaten. <code>Feld</code> ist eines der
+  folgenden (wenn nicht anders angegeben, ist nur Lesen möglich):<variablelist>
+      <varlistentry>
+        <term><code>audioreadformat</code></term>
+
+        <listitem>
+          <simpara>Das Format eingehender Audiodaten auf dem Kanal</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>audionativeformat</code></term>
+
+        <listitem>
+          <simpara>Das native Audioformat des Kanals</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>audiowriteformat</code></term>
+
+        <listitem>
+          <simpara>Das Format ausgehender Audiodaten auf dem Kanal</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>callgroup</code></term>
+
+        <listitem>
+          <simpara>In Asterisk lassen sich Extensions in Call Groups von 0 bis
+          63 einordnen, z. B. als Kundennummer.<footnote>
+              <simpara>Diese Beschränkung auf 64 Gruppen scheint rein
+              willkürlich zu sein und dürfte für den ein oder anderen Anwender
+              nicht ausreichen.</simpara>
+            </footnote></simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>channeltype</code></term>
+
+        <listitem>
+          <simpara>Die <quote>Technologie</quote> dieses Kanals, also z. B.
+          IAX oder SIP</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>language</code></term>
+
+        <listitem>
+          <simpara>Die Sprache für Voice-Prompts. (Sie kann hier auch
+          angegeben werden.)</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>musicclass</code></term>
+
+        <listitem>
+          <simpara>Die Musik-Klasse für Wartemusik, wie in
+          <filename>musiconhold.conf</filename> definiert. (Sie kann hier auch
+          angegeben werden.)</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>state</code></term>
+
+        <listitem>
+          <para>Zustand des Kanals (<code>Down</code>, <code>Rsrvd</code>,
+          <code>OffHook</code>, <code>Dialing</code>, <code>Ring</code>,
+          <code>Ringing</code>, <code>Up</code>, <code>Busy</code>,
+          <code>Dialing Offhook</code>, <code>Pre-ring</code>,
+          <code>Unknown</code>)</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>tonezone</code></term>
+
+        <listitem>
+          <simpara>Die <quote>Tone zone</quote> bestimmt die Ton-Signale
+          (Wählen, Klingeln, Besetzt, ...) für bestimmte Länder. Sie wird in
+          der Konfigurationsdatei des Kanals (z. B.
+          <filename>zaptel.conf</filename>) durch <code>loadzone</code> und
+          <code>defaultzone</code> festgelegt. Die möglichen Werte sind (wie
+          in der <filename>indications.conf</filename> definiert):
+          <code>at</code>, <code>au</code>, <code>be</code>, <code>br</code>,
+          <code>ch</code>, <code>cl</code>, <code>cn</code>, <code>cz</code>,
+          <code>de</code>, <code>dk</code>, <code>ee</code>, <code>es</code>,
+          <code>fi</code>, <code>fr</code>, <code>gr</code>, <code>hu</code>,
+          <code>it</code>, <code>lt</code>, <code>mx</code>, <code>ml</code>,
+          <code>no</code>, <code>nz</code>, <code>pl</code>, <code>pt</code>,
+          <code>ru</code>, <code>se</code>, <code>sg</code>, <code>uk</code>,
+          <code>us</code>, <code>us-old</code>, <code>tw</code>,
+          <code>ve</code>, <code>za</code>.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>videonativeformat</code></term>
+
+        <listitem>
+          <simpara>Das native Videoformat dieses Kanals</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist>Zusätzlich zu diesen Feldern kann der Treiber des Kanals
+  noch weitere bereitstellen, die man in der entsprechenden Dokumentation
+  nachschlagen kann. Felder, die auf dem aktuellen Kanal nicht zur Verfügung
+  stehen, geben einen leeren String zurück.<programlisting>; Typ des Kanals abfragen:
+exten =&gt; 123,1,Set(foo=${CHANNEL(channeltype)})
+
+; Sprache auf Englisch setzen:
+exten =&gt; 123,1,Set(CHANNEL(language)=en)</programlisting></para>
+
+  <xi:include href="channel-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+</section>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="applications-chanspy" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>ChanSpy()</literal></title>
+
+  <indexterm significance="preferred">
+    <primary>Dialplan-Applikationen</primary>
+
+    <secondary><code>ChanSpy()</code></secondary>
+  </indexterm>
+
+  <simpara>Einen Channel belauschen.</simpara>
+
+  <synopsis>ChanSpy([<replaceable>Channelpräfix</replaceable>[,<replaceable>Optionen</replaceable>]])</synopsis>
+
+  <simpara>Erlaubt es, das Gespräch auf beliebigen Kanälen mitzuhören.
+  (<exceptionname>ChanSpy()</exceptionname> ist also nicht wie
+  <code>ZapBarge() </code>bzw. <code>ZapScan()</code> an Zap-Kanäle gebunden.)
+  Für das Verständnis einiger Optionen ist zu beachten, dass diese Applikation
+  einzelne Kanäle abhört, aber nicht Gespräche im eigentlichen Sinne
+  (mindestens 2 Teilnehmer), obwohl Sie natürlich das ein- und ausgehende
+  Audio auf dem abgehörten Channel hören können. Bitte achten Sie jedoch die
+  Persönlichkeitsrechte anderer! Falls Sie Gespräche unaufgefordert und ohne
+  Wissen der Teilnehmer mithören, machen Sie sich strafbar.</simpara>
+
+  <simpara>Wenn <code>Channelpräfix</code> angegeben ist, stehen nur Kanäle,
+  die mit diesem String beginnen, zur Auswahl.</simpara>
+
+  <para><code>Optionen</code> (auch in Kombination):<variablelist
+      termlength="11">
+      <varlistentry>
+        <term><code>b</code></term>
+
+        <listitem>
+          <simpara>(bridged) Auswahl nur auf verbundene Kanäle
+          beschränken.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>g(<replaceable>grp</replaceable>)</code></term>
+
+        <listitem>
+          <simpara>(group) Auswahl auf Kanäle beschränken, auf denen
+          <code>grp</code> in der durch Doppelpunkt (<code>:</code>)
+          getrennten Liste <code>${SPYGROUP}</code> (Channel-Variable)
+          enthalten ist.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>q</term>
+
+        <listitem>
+          <simpara>(quiet) Keine Piep-Töne beim Umschalten von Kanälen spielen
+          und Channel-Name nicht ankündigen.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>r([<replaceable>Name</replaceable>])</code></term>
+
+        <listitem>
+          <para>(record) Die Sitzung in einer Datei im Verzeichnis
+          <filename>/var/spool/asterisk/monitor/</filename> aufzeichnen. Der
+          Default-Basis-Dateiname (also ohne Endung) ist
+          <filename>chanspy</filename>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>v[(<replaceable>Wert</replaceable>)]</code></term>
+
+        <listitem>
+          <para>(volume) Die anfängliche Lautstärkeeinstellung von
+          <code>-4</code> (leise) bis <code>4</code> (laut) verändern.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>w</code></term>
+
+        <listitem>
+          <simpara>(whisper) Flüster-Modus aktivieren. Damit kann der
+          lauschende Channel mit dem belauschten sprechen, wobei dies nur der
+          belauschte Channel hört, nicht dessen Gesprächspartner. (Diese
+          Option ist seit Asterisk 1.4 verfügbar.)</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>W</code></term>
+
+        <listitem>
+          <simpara>(private whisper) Privater Flüster-Modus. Wie
+          <code>w</code>, aber der lauschende Channel kann den belauschten
+          nicht hören. (Ob das sinnvoll ist?)</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
+
+  <para>Während des Abhörens können folgende Tastenbefehle gegeben
+  werden:<variablelist termlength="6">
+      <varlistentry>
+        <term><code>#</code></term>
+
+        <listitem>
+          <simpara>Schaltet durch die Lautstärkeeinstellung (-4 bis
+          4).</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code>*</code></term>
+
+        <listitem>
+          <simpara>Schaltet zu einem anderen Channel.</simpara>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><code><replaceable>...</replaceable>#</code></term>
+
+        <listitem>
+          <simpara>Eine Reihe von Ziffern, abgeschlossen durch <code>#</code>,
+          wird an <code>Channelpräfix</code> angehängt. Wenn Sie z. B.
+          <code>ChanSpy(Agent)</code> ausführen und <code>1234#</code>
+          eingeben, werden Sie auf dem Channel <code>Agent/1234</code>
+          lauschen.</simpara>
+        </listitem>
+      </varlistentry>
+    </variablelist></para>
+
+  <programlisting>; Agenten belauschen:
+exten =&gt; 123,1,ChanSpy(Agent)
+exten =&gt; 123,n,Hangup()
+
+; Beispiel für die Option g:
+; auf Anrufen auf 0... SPYGROUP 10005 setzen:
+exten =&gt; _0.,1,Set(SPYGROUP=10005)
+;...
+; Kanäle der SPYGROUP 10005 belauschen:
+exten =&gt; 123,1,ChanSpy(,g(10005))
+exten =&gt; 123,n,Hangup()</programlisting>
+
+  <xi:include href="chanspy-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="applications-extenspy" />, <xref
+    linkend="applications-zapbarge" />, <xref
+    linkend="applications-zapscan" />, <xref
+    linkend="applications-monitor" /></para>
+  </formalpara>
+</section>

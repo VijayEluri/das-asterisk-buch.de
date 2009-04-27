@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="functions-dundilookup" lang="de" revision="$Revision$">
+  <!--
+% Copyright (c) 2006 - 2008 by 
+% Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title><literal>DUNDILOOKUP()</literal><indexterm significance="preferred">
+      <primary>Dialplan-Funktionen</primary>
+
+      <secondary><code>DUNDILOOKUP()</code></secondary>
+    </indexterm></title>
+
+  <synopsis>DUNDILOOKUP(<replaceable>Nummer</replaceable>[|<replaceable>DUNDi-Context</replaceable>[|<replaceable>Optionen</replaceable>]])</synopsis>
+
+  <para>Schlägt eine Telefonnummer mit DUNDi (<xref
+  linkend="glossar-dundi" />) nach. Wird kein <code>DUNDi-Context</code>
+  angegeben, wird <code>e164</code> angenommen. Mit der Option <code>b</code>
+  (<emphasis>bypass</emphasis>) wird der interne DUNDi-Cache umgangen. Gibt
+  die erste gefundene Verbindung in der Form
+  <code>Technologie/Ressource</code> oder einen leeren String zurück.</para>
+
+  <para><programlisting>; die Nummer 456 nachschlagen:
+123 =&gt; {
+    Set(device=${DUNDILOOKUP(456)});
+    Verbose(1,DUNDi-Ergebnis: ${device});
+    if ("${device}" != "") {
+        Dial(${device});
+    }
+}</programlisting></para>
+
+  <note>
+    <para>Wenn Sie nicht nur das erste Ergebnis, sondern mehrere haben wollen,
+    müssen Sie stattdessen die Funktionen <code>DUNDIQUERY()</code> (<xref
+    linkend="functions-dundiquery" />) und <code>DUNDIRESULT()</code> (<xref
+    linkend="functions-dundiresult" />) verwenden.</para>
+  </note>
+
+  <xi:include href="dundilookup-help.xml" xpointer="xpointer(/note/*)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+  <formalpara>
+    <title>Siehe auch</title>
+
+    <para><xref linkend="functions-dundiquery" />,
+    <filename>dundi.conf</filename>, <xref
+    linkend="functions-enumlookup" /></para>
+  </formalpara>
+</section>
