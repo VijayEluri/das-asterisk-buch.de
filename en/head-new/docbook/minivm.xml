@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<section id="minivm" lang="de" revision="$Revision: 1785 $">
+  <!--
+% Copyright (c) 2006 - 2008
+% - Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% - Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <sectioninfo>
+    <author>
+      <firstname>Philipp</firstname>
+
+      <surname>Kempgen</surname>
+    </author>
+  </sectioninfo>
+
+  <title>Mini-VoiceMail (MiniVM)</title>
+
+  <indexterm>
+    <primary>MiniVM</primary>
+
+    <secondary>Voicemail</secondary>
+  </indexterm>
+
+  <indexterm>
+    <primary>Mini-VoiceMail</primary>
+  </indexterm>
+
+  <indexterm>
+    <primary>Voicemail</primary>
+
+    <secondary>MiniVM</secondary>
+  </indexterm>
+
+  <para>MiniVM (Mini-VoiceMail) is an alternative voicemail system available
+  as of Asterisk 1.6. It is more modular than the monolithic, existing
+  <literal>VoiceMail()</literal> and <literal>VoiceMailMain()</literal>
+  applications. Calling it <quote>Mini</quote> isn't strictly accurate;
+  <quote>Modular</quote> fits better.</para>
+
+  <section id="minivm-directories">
+    <title>Directory structure</title>
+
+    <para>The directory path for saved MiniVM messages is<footnote>
+        <para>assuming <literal>astspooldir = /var/spool/asterisk</literal> in
+        <filename>asterisk.conf</filename></para>
+      </footnote>:</para>
+
+    <simpara><filename>/var/spool/asterisk/voicemail/<replaceable>domain</replaceable>/<replaceable>user</replaceable>/</filename></simpara>
+
+    <simpara>so, for example:</simpara>
+
+    <simpara><filename>/var/spool/asterisk/voicemail/<replaceable>localdomain</replaceable>/<replaceable>philipp</replaceable>/</filename></simpara>
+
+    <simpara>or:</simpara>
+
+    <simpara><filename>/var/spool/asterisk/voicemail/<replaceable>amooma.de</replaceable>/<replaceable>philipp.kempgen</replaceable>/</filename></simpara>
+
+    <para>Each user's VM path has the following subdirectories in which
+    announcements are stored (in various formats):<variablelist
+        termlength="14">
+        <varlistentry>
+          <term><filename>greet/</filename></term>
+
+          <listitem>
+            <para>Announces user's name</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><filename>busy/</filename></term>
+
+          <listitem>
+            <para><quote>User is on the phone</quote> message</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><filename>unavailable/</filename></term>
+
+          <listitem>
+            <para><quote>User is unavailable</quote> message</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><filename>temp/</filename></term>
+
+          <listitem>
+            <para>Temporary message</para>
+          </listitem>
+        </varlistentry>
+      </variablelist></para>
+  </section>
+
+  <section id="minivm.conf">
+    <title>minivm.conf</title>
+
+    <indexterm>
+      <primary>minivm.conf</primary>
+    </indexterm>
+
+    <para>MiniVM is configured through
+    <filename>/etc/asterisk/minivm.conf</filename>, which is very similar to
+    the original <filename>voicemail.conf</filename> (<xref
+    linkend="voicemail-voicemail.conf" />). In MiniVM, however, mailbox
+    definitions always follow the format
+    <literal><replaceable>user</replaceable>@<replaceable>domain</replaceable></literal>.</para>
+
+    <important>
+      <para>Unlike in other Asterisk configuration files, MiniVM does not
+      specify the language using two letter language codes
+      (<literal>de</literal>, <literal>en</literal>, ...). Instead, the format
+      <literal><replaceable>Language</replaceable>_<replaceable>Country</replaceable></literal>
+      <footnote>
+          <para>following RFC 3066, <ulink
+          url="http://tools.ietf.org/html/rfc3066">http://tools.ietf.org/html/rfc3066</ulink>,
+          only with an underscore <literal>_</literal> (underscore) instead of
+          <literal>-</literal> (dash)</para>
+        </footnote> is used, where <replaceable>Language</replaceable> is a
+      two letter code from ISO 639-1<footnote>
+          <para><ulink
+          url="http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes</ulink></para>
+        </footnote> and <replaceable>Country</replaceable> is a two letter
+      code from ISO 3166-1 alpha-2<footnote>
+          <para><ulink
+          url="http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2</ulink></para>
+        </footnote>.</para>
+
+      <para>Examples: <literal>de_DE</literal> (German, Germany),
+      <literal>de_AT</literal> (German, Austria), <literal>de_CH</literal>
+      (German, Switzerland), <literal>fr_CA</literal> (French, Canada),
+      <literal>en_US</literal> (English, United States),
+      <literal>en_CA</literal> (English, Canada), <literal>sv_SE</literal>
+      (Swedish, Sweden), <literal>no_NO</literal> (Nynorsk, Norway),
+      <literal>nb_NO</literal> (Bokmål, Norway).</para>
+    </important>
+
+    <para>An example <filename>minivm.conf</filename>:</para>
+
+    <programlisting>[general]
+format=ulaw     ; Save format ulaw
+minmessage=2    ; minimum length 2 seconds
+maxmessage=300  ; maximum length 300 seconds (5 minutes)
+maxsilence=10   ; hang up after 10 seconds of silence
+maxgreet=120    ; maximum greeting message length 120 seconds (2 minutes)
+
+[template-en_UK_email]
+subject = New Message
+messagebody = Hi. ${MVM_NAME}\n\n${MVM_CALLERID} left a message for you.\n\nMailbox : ${MVM_MAILBOX}\nDate   : ${MVM_DATE}\nDuration   : ${MVM_DUR}\n
+charset = iso-8859-1
+dateformat = %A, %d %B %Y at %H:%M
+locale = en_UK
+attachmedia = yes
+
+[template-en_UK_pager]
+subject = New Message
+messagebody = You have a new message from \n${MVM_CALLERID}.\n
+charset = iso-8859-1
+dateformat = %A, %d %B %Y at %H:%M
+locale = en_UK
+attachmedia = no</programlisting>
+
+    <para>In place of <literal>messagebody</literal>, you can specify
+    <literal>templatefile</literal> with an absolute path or a path relative
+    to <filename>/etc/asterisk/</filename>,
+    <emphasis>e.g.</emphasis>.:<programlisting>templatefile = minivm-templates/en_UK_email.txt</programlisting></para>
+
+    <para>After the <literal>[general]</literal> section and multiple<literal>
+    [template-<replaceable>...</replaceable>]</literal> definitions<footnote>
+        <para>It's not absolutely necessary to use
+        <literal>[template-<replaceable>...</replaceable>]</literal>
+        definitions. You can set the default values in the general section
+        also.</para>
+      </footnote> come the mailbox definitions. For example:</para>
+
+    <programlisting>[defaults@amooma.de](!)
+etemplate = en_UK_email    ; e-mail template [template-en_UK_email]
+;ptemplate = en_UK_pager   ; pager template, if needed [template-en_UK_pager]
+timezone = uk
+setvar = x_company=Amooma GmbH
+
+[philipp@amooma.de](defaults@amooma.de)
+fullname = Philipp Kempgem
+;email = philipp.kempgen@amooma.de  ; alternate e-mail address, if needed
+;pager = philipp.kempgen@amooma.de  ; alternate pager address, if needed
+
+[stefan@amooma.de](defaults@amooma.de)
+fullname = Stefan Wintermeyer</programlisting>
+
+    <para>You can also use <literal>localdomain</literal> in place of the
+    actual domain name.</para>
+
+    <para>Using
+    <literal>setvar=<replaceable>fieldname</replaceable>=<replaceable>value</replaceable></literal>,
+    you can set a field/value pair which can be called with the
+    <literal>MINIVMACCOUNT()</literal> function (<xref
+    linkend="functions-minivmaccount" />) in the dialplan. To avoid conflict
+    with fixed, pre-existing field names, we recommend you use a prefix, such
+    as <quote><literal>x_</literal></quote>.<programlisting>Verbose(1,### Company: ${MINIVMACCOUNT(philipp@amooma.de:x_company)});</programlisting></para>
+
+    <para>Optionally, you may read mailbox definitions out of a database table
+    in real time instead of from <filename>minivm.conf</filename>.</para>
+  </section>
+
+  <section id="minivm-cli">
+    <title>CLI commands for MiniVM</title>
+
+    <para>The following CLI commands for MiniVM are available in the Asterisk
+    CLI:</para>
+
+    <variablelist termlength="25">
+      <varlistentry>
+        <term><literal>minivm list accounts</literal></term>
+
+        <listitem>
+          <para>Lists all defined mailboxes.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>minivm list templates</literal></term>
+
+        <listitem>
+          <para>Lists all defined message templates.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>minivm list zones</literal></term>
+
+        <listitem>
+          <para>Lists all defined time zones.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>minivm show settings</literal></term>
+
+        <listitem>
+          <para>Shows general settings as per
+          <literal>[general]</literal>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><literal>minivm show stats</literal></term>
+
+        <listitem>
+          <para>Shows the number of configured accounts, templates, and time
+          zones.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
+  <section id="minivm-applications-functions">
+    <title>MiniVM applications and functions</title>
+
+    <para>The following dialplan applications are provided by
+    MiniVM:<simplelist type="vert">
+        <member><literal>MinivmAccMess()</literal> - <xref
+        linkend="applications-minivmaccmess" /></member>
+
+        <member><literal>MinivmDelete()</literal> - <xref
+        linkend="applications-minivmdelete" /></member>
+
+        <member><literal>MinivmGreet()</literal> - <xref
+        linkend="applications-minivmgreet" /></member>
+
+        <member><literal>MinivmNotify()</literal> - <xref
+        linkend="applications-minivmnotify" /></member>
+
+        <member><literal>MinivmRecord()</literal> - <xref
+        linkend="applications-minivmrecord" /></member>
+      </simplelist></para>
+
+    <para>The following dialplan functions are provided by MiniVM:<simplelist
+        type="vert">
+        <member><literal>MINIVMACCOUNT()</literal> - <xref
+        linkend="functions-minivmaccount" /></member>
+
+        <member><literal>MINIVMCOUNTER()</literal> - <xref
+        linkend="functions-minivmcounter" /></member>
+      </simplelist></para>
+  </section>
+</section>

@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<chapter id="kapitel-agi" lang="de" revision="$Revision: 1886 $">
+  <!--
+% Copyright (c) 2006 - Stefan Wintermeyer <sw@amooma.de>
+% Copyright (c) 2009 - Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title>Asterisk Gateway Interface (AGI)<indexterm significance="preferred">
+      <primary>AGI</primary>
+    </indexterm><indexterm significance="preferred">
+      <primary>Asterisk Gateway Interface</primary>
+    </indexterm></title>
+
+  <para>The Asterisk Gateway Interface (AGI) may be compared with CGI (Common
+  Gateway Interface) on a web server. These are external programs called from
+  the within the dialplan (<filename>extensions.conf</filename>). AGI scripts
+  can interact with Asterisk and execute commands. In principle, an AGI script
+  may be written in any programming or script language that can use the
+  <trademark>UNIX</trademark> system sockets. The following are simply
+  implementation examples. For a command reference, see <xref
+  linkend="agi-commands" />.</para>
+
+  <section id="agi-datenstroeme">
+    <title>Datastreams</title>
+
+    <para>In order to use AGI scripts, understanding the
+    <trademark>UNIX</trademark> system's data stream model is an absolute
+    requirement. Some explanation of this model may be found in the
+    appendix.</para>
+
+    <section id="agi-stdin">
+      <title>STDIN</title>
+
+      <para>The AGI script receives some information from Asterisk via
+      <quote>standard input</quote> (STDIN). The format looks like
+      this:<programlisting>agi_request: programname.php
+agi_channel: Zap/1-2
+agi_language: en
+agi_callerid: Joe Bloggs
+agi_context: external
+agi_extension: 1234
+agi_priority: 2
+</programlisting>This is followed by an empty line, by which Asterisk
+      indicates to the AGI script that the transmission is complete.</para>
+
+      <section id="agi-headers">
+        <title>AGI header</title>
+
+        <para>Here is a list of all the headers Asterisk can transmit via
+        AGI:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><code>agi_request</code></para>
+
+            <para>The filename of the called AGI program</para>
+          </listitem>
+
+          <listitem>
+            <para><code>agi_channel</code></para>
+
+            <para>The channel</para>
+          </listitem>
+
+          <listitem>
+            <para><code>agi_language</code></para>
+
+            <para>The language (<emphasis>e.g.</emphasis> <code>en</code> for
+            English or <code>de</code> for German)</para>
+          </listitem>
+
+          <listitem>
+            <para><code>agi_type</code></para>
+
+            <para>The channel type (<emphasis>e.g.</emphasis> <code>sip</code>
+            for SIP or <code>zap</code> for ISDN)</para>
+          </listitem>
+
+          <listitem>
+            <para><code>agi_uniqueid</code></para>
+
+            <para>The unique ID for this call</para>
+          </listitem>
+
+          <listitem>
+            <para><code>agi_callerid</code></para>
+
+            <para>The caller ID (<emphasis>e.g.</emphasis><code> Charlie
+            Farquharson &lt;2000&gt;</code>)</para>
+          </listitem>
+
+          <listitem>
+            <para><code>agi_context</code></para>
+
+            <para>The originating context</para>
+          </listitem>
+
+          <listitem>
+            <para><code>agi_extension</code></para>
+
+            <para>The originating extension</para>
+          </listitem>
+
+          <listitem>
+            <para><code>agi_priority</code></para>
+
+            <para>The current priority in the extension</para>
+          </listitem>
+
+          <listitem>
+            <para><code>agi_accountcode</code></para>
+
+            <para>Account code</para>
+          </listitem>
+
+          <listitem>
+            <para><code>agi_calleridname</code></para>
+
+            <para>Name field from the caller ID (<emphasis>e.g.</emphasis>
+            <code>Jerry Lewis</code>)</para>
+          </listitem>
+
+          <listitem>
+            <para><code>agi_callingpres</code></para>
+
+            <para>Caller ID in the ZAP channel</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
+    <section id="agi-stdout">
+      <title>STDOUT</title>
+
+      <para>Once the AGI script has received information from Asterisk, it
+      issues commands via <quote>standard out</quote> (STDOUT) back to
+      Asterisk. To monitor this communication, enter <command>set verbose
+      5</command> in the CLI to increase the verbosity level.</para>
+    </section>
+
+    <section id="agi-stderr">
+      <title>STDERR</title>
+
+      <para><quote>Standard error</quote> (STDERR) is the stream used to bring
+      error or debug messages to the Asterisk console (CLI).</para>
+    </section>
+  </section>
+
+  <section id="agi-verzeichnisse">
+    <title>Paths and permissions</title>
+
+    <para>By default, Asterisk looks for AGI scripts in
+    <filename>/var/lib/asterisk/agi-bin</filename>/.</para>
+
+    <para>Ensure that Asterisk is actually allowed to run the script you want
+    it to run. You can guarantee this with the system shell command
+    <command>chmod 755
+    <replaceable>script_name</replaceable></command>.</para>
+  </section>
+
+  <section id="agi-aufruf-im-dialplan">
+    <title>Calling an AGI script in the dialplan</title>
+
+    <para>AGI scripts are called by the <code>AGI()</code> application, like
+    so:<programlisting>exten =&gt; 1234,1,Answer()
+exten =&gt; 1234,2,AGI(my-agi.php)
+exten =&gt; 1234,3,Hangup()</programlisting></para>
+  </section>
+
+  <section>
+    <title>Examples in various programming languages</title>
+
+    <para>A few AGI programs in various programming languages are described
+    below.</para>
+
+    <section id="agi-perl">
+      <title>Perl</title>
+
+      <para>The standard Asterisk install comes packaged with a test AGI
+      script called <filename>agi-test.agi</filename> <footnote>
+          <para>The <filename>agi</filename>extension is not strictly
+          necessary. You could name the file <filename>agi-test.pl</filename>
+          if so desired.</para>
+        </footnote>located in the
+      <filename>/var/lib/asterisk/agi-bin/</filename> directory. Through this
+      sample, we'll explain how AGI scripts work.</para>
+
+      <para>The script is called in <filename>extensions.conf</filename> as
+      follows:<programlisting>exten =&gt; 1234,1,Answer()
+exten =&gt; 1234,2,AGI(agi-test.agi)
+exten =&gt; 1234,3,Hangup()</programlisting></para>
+
+      <section id="agi-perl-agi-test.agi">
+        <title>Step-by-step analysis of agi-test.agi</title>
+
+        <para>Here we describe the operation by line or
+        section.<programlisting>#!/usr/bin/perl
+use strict;</programlisting>The first line indicates to the shell that this is
+        a Perl script and is to be run by the Perl interpreter located at
+        <filename>/usr/bin/perl</filename>. The directive <code>use
+        strict</code> tells the interpreter to force the declaration of
+        variables before use and to handle subs and strings in a way that
+        prevents confusion.<programlisting>$|=1;</programlisting>This short
+        line tells Perl not to buffer text. This ensures that any output is
+        passed to Asterisk immediately.<programlisting># Setup some variables
+my %AGI; my $tests = 0; my $fail = 0; my $pass = 0;</programlisting>Variables
+        are defined here. The hash <code>%AGI</code> accepts the initial
+        inputs from Asterisk. The remaining variables count the total number
+        of tests, the number of failed tests and the number of passed
+        tests.<programlisting>while(&lt;STDIN&gt;) {
+  chomp;
+  last unless length($_);
+  if (/^agi_(\w+)\:\s+(.*)$/) {
+    $AGI{$1} = $2;
+  }
+}</programlisting>The values which have just been stored are fed to STDERR for
+        debugging purposes, then passed to the CLI:<programlisting>print STDERR "AGI Environment Dump:\n";
+foreach my $i (sort keys %AGI) {
+        print STDERR " -- $i = $AGI{$i}\n";
+}
+</programlisting>Then comes the <code>checkresult</code>
+        subroutine:<programlisting>sub checkresult {
+  my ($res) = @_;
+  my $retval;
+  $tests++;
+  chomp $res;
+  if ($res =~ /^200/) {
+    $res =~ /result=(-?\d+)/;
+    if (!length($1)) {
+      print STDERR "FAIL ($res)\n";
+      $fail++;
+    } else {
+      print STDERR "PASS ($1)\n";
+      $pass++;
+    }
+  } else {
+    print STDERR "FAIL (unexpected result '$res')\n";
+    $fail++;
+  }
+}</programlisting>The <code>checkresult</code> subroutine reads the result of
+        a command to Asterisk and determines whether that test was successful.
+        The variables <code>$fail</code> and <code>$pass</code> are
+        incremented depending on the result. Once this basic function has been
+        established, the individual tests can proceed. The
+        <filename>beep.gsm</filename> sound file is played:<programlisting>print STDERR "1.  Testing 'sendfile'...";
+print "STREAM FILE beep \"\"\n";
+my $result = &lt;STDIN&gt;;
+&amp;checkresult($result);</programlisting>The text <quote>hello world</quote>
+        is transmitted to the caller. This works only if the protocol and the
+        device support text:<programlisting>print STDERR "2.  Testing 'sendtext'...";
+print "SEND TEXT \"hello world\"\n";
+my $result = &lt;STDIN&gt;;
+&amp;checkresult($result);</programlisting>The image
+        <quote>asterisk-image</quote> is transmitted to the caller. This is
+        also protocol- and device-dependent.<programlisting>print STDERR "3.  Testing 'sendimage'...";
+print "SEND IMAGE asterisk-image\n";
+my $result = &lt;STDIN&gt;;
+&amp;checkresult($result);</programlisting>The number 192837465 is played to
+        the caller:<programlisting>print STDERR "4.  Testing 'saynumber'...";
+print "SAY NUMBER 192837465 \"\"\n";
+my $result = &lt;STDIN&gt;;
+&amp;checkresult($result);</programlisting>This command waits for DTMF input
+        from the caller for 1000 ms:<programlisting>print STDERR "5.  Testing 'waitdtmf'...";
+print "WAIT FOR DIGIT 1000\n";
+my $result = &lt;STDIN&gt;;
+&amp;checkresult($result);</programlisting>A 3000 ms GSM file named
+        <filename>testagi.gsm</filename> is recorded. Recording can be
+        interrupted by the caller by pressing 1, 2, 3 or 4:<programlisting>print STDERR "6.  Testing 'record'...";
+print "RECORD FILE testagi gsm 1234 3000\n";
+my $result = &lt;STDIN&gt;;
+&amp;checkresult($result);</programlisting>The resulting sound file is played
+        back:<programlisting>print STDERR "6a.  Testing 'record' playback...";
+print "STREAM FILE testagi \"\"\n";
+my $result = &lt;STDIN&gt;;
+&amp;checkresult($result);</programlisting>Finally, output is sent to the CLI
+        indicating how many tests succeeded and failed:<programlisting>print STDERR "================== Complete ======================\n";
+print STDERR "$tests tests completed, $pass passed, $fail failed\n";
+print STDERR "==================================================\n";</programlisting><warning>
+            <para>In many AGI commands you will see the following
+            construction:<programlisting>fwrite(STDOUT,"BEFEHL $value \"\"\n");
+#                            ^^^^^^^</programlisting>The indicated part of
+            this line (between <code>$value</code> and <code>);</code>) is an
+            absolute requirement, to ensure that the command is executed
+            correctly. This is because we have an empty argument established
+            by two double quotes, which must be escaped. The entire command is
+            closed with a line feed, <code>\n</code>.</para>
+          </warning></para>
+      </section>
+    </section>
+
+    <section id="agi-php">
+      <title>PHP</title>
+
+      <para>PHP has become one of the most popular programming languages for
+      web applications.<footnote>
+          <para>It has also been called 21st century BASIC by some. ;-)</para>
+        </footnote> Because current versions of PHP support calling
+      applications from the command line, it is also well-suited for AGI
+      scripts. To demonstrate this, we'll use a small PHP program
+      (<filename>lotto.php</filename>), which chooses 6 random numbers from 1
+      and 49 and plays them back to the caller. A description of the
+      individual steps follows in the program code below:<programlisting>#!/usr/bin/php -q
+&lt;?php
+
+# Safety setting. The script won't run for
+# longer than 8 seconds.
+#################################################
+set_time_limit(8);
+
+
+# Deactivate the output buffer.
+# Alternatively, we could execute
+# fflush(STDOUT);
+# after every output.
+#################################################
+ob_implicit_flush();
+
+
+# Deactivate PHP error reporting
+#################################################
+error_reporting(0);
+
+
+# We need STDIN and STDOUT file handles
+# to communicate with Asterisk
+#################################################
+if (!defined('STDIN'))
+  define('STDIN' , fopen('php://stdin' , 'r'));
+if (!defined('STDOUT'))
+  define('STDOUT', fopen('php://stdout', 'w'));
+if (!defined('STDERR'))
+  define('STDERR', fopen('php://stderr', 'w'));
+
+
+# The variables from Asterisk are read and saved
+# in the $agi array.
+#################################################
+
+$agi = array();
+
+while (!feof(STDIN))
+{
+  $tmp = trim(fgets(STDIN,4096));
+  if (($tmp == '') || ($tmp == "\n"))
+    break;
+  $var1 = split(':',$tmp);
+  $name = str_replace('agi_','',$var1[0]);
+  $agi[$name] = trim($var1[1]);
+}
+
+
+# An array with 6 random but not repeating
+# numbers from 1 to 49 is generated.
+#################################################
+
+$Lottozahlen = array();
+do {
+  $Zahl = rand(1,49);
+  if (array_search($Number, $Lottonumbers) == FALSE) {
+    $Lottonumbers[] = $Number;
+  }
+} while (count($Lottonumbers) &lt; 6);
+
+
+# Before the number is announced,
+# we wait one second.
+#################################################
+fwrite(STDOUT,"EXEC Wait 1 \"\"\n");
+fflush(STDOUT);
+
+
+# The numbers are read, one after the other.
+# There is a one second pause between numbers.
+#################################################
+foreach ($Lottonumber as $value) {
+  fwrite(STDOUT,"SAY NUMBER $value \"\"\n");
+  fflush(STDOUT);
+  fwrite(STDOUT,"EXEC Wait 1 \"\"\n");
+  fflush(STDOUT);
+}
+
+?&gt;</programlisting>The <filename>lotto.php</filename> program must be saved
+      in <filename>/var/lib/asterisk/agi-bin/</filename> and is called from
+      <filename>extensions.conf</filename> like so:</para>
+
+      <programlisting>exten =&gt; 1234,1,Answer()
+exten =&gt; 1234,2,AGI(lotto.php)
+exten =&gt; 1234,3,Hangup()</programlisting>
+
+      <section id="agi-phpagi">
+        <title>phpAGI</title>
+
+        <para>If you use PHP with AGI but don't want to reinvent the wheel,
+        you can use the ready-made phpAGI PHP class. You can find the required
+        files and more information on the project home page at <ulink
+        url="http://phpagi.sourceforge.net/"><citetitle>http://phpagi.sourceforge.net/</citetitle></ulink>.</para>
+
+        <para>The following program, which is provided with phpAGI, will give
+        you a quick overview of the function calls.<footnote>
+            <para>To use <code>text2wav</code>, you need to have a
+            Text-to-Speech-System (<emphasis>e.g.</emphasis> Festival)
+            installed.</para>
+          </footnote><programlisting>&lt;?php
+/**
+* @package phpAGI_examples
+* @version 2.0
+*/
+
+function my_ip(&amp;$agi, $peer)
+   {
+    $ip = 'unknown';
+    $asm = $agi-&gt;new_AsteriskManager();
+    if($asm-&gt;connect())
+    {
+      $peer = $asm-&gt;command("sip show peer $peer");
+      $asm-&gt;disconnect();
+    
+      if(!strpos($peer['data'], ':'))
+        echo $peer['data'];
+      else
+      {
+        $data = array();
+        foreach(explode("\n", $peer['data']) as $line)
+        {
+          $a = strpos('z'.$line, ':') - 1;
+          if($a &gt;= 0) $data[trim(substr($line, 0, $a))] = trim(substr($line, $a + 1));
+        }
+      }
+    
+      if(isset($data['Addr-&gt;IP']))
+      {
+        $ip = explode(' ', trim($data['Addr-&gt;IP']));
+        $ip = $ip[0];
+      }
+    }
+    $agi-&gt;text2wav("Your IP address is $ip");
+  }
+?&gt;</programlisting></para>
+      </section>
+    </section>
+
+    <section id="adhearsion">
+      <title>Ruby and Adhearsion</title>
+
+      <para>Though <ulink url="http://www.ruby-lang.org">Ruby</ulink> is an
+      older (by IT standards) programming language, it has grown tremendously
+      in popularity in the last few years, mainly as the result of <ulink
+      url="http://rubyonrails.org/">Ruby on Rails</ulink>. <ulink
+      url="http://adhearsion.com/">Adhearsion</ulink> is a kind of <quote>Ruby
+      on Rails</quote> for Asterisk. The subject is exciting and deep enough
+      that one could right a dedicated book on it. In the future, we will try
+      to expand and update the coverage of Adhearsion on the book's
+      website.</para>
+
+      <section id="adhearsion-installation">
+        <title>Installation</title>
+
+        <para>Like any good open source project, Adhearsion has fragmented and
+        occasionally incomplete documentation. Fortunately, the installation
+        is relatively easy because there is a Ruby <emphasis>gem</emphasis>
+        available (for Ruby Newbies: gem is Ruby's package management system).
+        Installing Adhearsion is just a matter of entering <command>gem
+        install adhearsion</command> in the system shell.</para>
+      </section>
+
+      <section id="adhearsion-setup">
+        <title>Easy setup</title>
+
+        <para>Using Adhearsion, the Asterisk dialplan becomes short and easy
+        to read. Each inbound context needs only the following
+        line:<programlisting>exten =&gt; _.,1,AGI(agi://127.0.0.1)
+</programlisting></para>
+
+        <para>With this line, Adhearsion takes over control of all calls
+        happening in this context. You can, of course, mix a traditional
+        dialplan with Adhearsion if you wish.</para>
+
+        <para>An Adhearsion application has to be generated first, just as in
+        Ruby on Rails. This is done with the
+        <filename><application>ahn</application></filename> program, called
+        with <command>ahn create application_name</command>. For
+        example:<screen>stefan@pbx:~$ <emphasis role="bold"><command>ahn create widgets_app</command></emphasis>
+      create  
+      create  components/simon_game
+      create  components/disabled/stomp_gateway
+      create  components/ami_remote
+      create  components/restful_rpc/spec
+      create  config
+      create  .ahnrc
+      create  components/simon_game/simon_game.rb
+      create  components/ami_remote/ami_remote.rb
+      create  components/disabled/stomp_gateway/stomp_gateway.rb
+      create  components/disabled/stomp_gateway/config.yml
+      create  components/disabled/stomp_gateway/README.markdown
+      create  components/restful_rpc/restful_rpc.rb
+      create  components/restful_rpc/config.yml
+      create  components/restful_rpc/README.markdown
+      create  components/restful_rpc/example-client.rb
+      create  components/restful_rpc/spec/restful_rpc_spec.rb
+      create  config/startup.rb
+      create  dialplan.rb
+      create  events.rb
+      create  README
+      create  Rakefile
+stefan@pbx:~$ <emphasis role="bold"><command>cd widgets_app</command></emphasis>
+stefan@pbx:~/widgets_app$ </screen></para>
+
+        <para>The application is then started with <command>ahn start
+        .</command><screen>stefan@pbx:~/widgets_app$ <emphasis role="bold"><command>ahn start .</command></emphasis>
+ INFO ahn: Adhearsion initialized!</screen></para>
+
+        <para>From this point forward, Adhearsion can control calls. You can
+        monitor progress on the screen.</para>
+      </section>
+
+      <section id="adhearsion-beispiel">
+        <title>Example program</title>
+
+        <para>The <quote>Adhearsion dialplan</quote> or rather, the Ruby
+        program, is defined in <filename>dialplan.rb</filename>. Here is a
+        simple example:<programlisting>internal {
+  case extension
+  when 22
+    play "hello-world"
+    hangup
+  else
+    dial "SIP/#{extension}"
+  end
+}</programlisting></para>
+
+        <para><code>internal</code> is, in this example, the context from
+        which Adhearsion was called.</para>
+      </section>
+    </section>
+
+    <section id="agi-andere-programmiersprachen">
+      <title>Other programming languages</title>
+
+      <para>As mentioned at the start of this article, you can write AGI
+      programs in any language. There are already libraries for many of the
+      most popular languages, including:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Java</para>
+        </listitem>
+
+        <listitem>
+          <para>Perl</para>
+        </listitem>
+
+        <listitem>
+          <para>PHP</para>
+        </listitem>
+
+        <listitem>
+          <para>Python</para>
+        </listitem>
+
+        <listitem>
+          <para>Ruby</para>
+        </listitem>
+
+        <listitem>
+          <para>C</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The easiest way to start is with a web search using the keywords
+      <quote>AGI</quote> and the name of the language you want to use.</para>
+    </section>
+  </section>
+</chapter>
