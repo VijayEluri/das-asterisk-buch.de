@@ -69,16 +69,16 @@
     ISDN-Netz und ein internes analoges Fax.</para>
   </abstract>
 
-  <important>
+  <note>
     <para>In dieser Anleitung wird Wanpipe in der Version
-    <quote>current-stable</quote> installiert statt explizit z.B. Wanpipe 3.5.
-    Allerdings bekommt man mit <quote>current-stable</quote> derzeit noch eine
-    ältere Version, mit der die FlexBRI-Karte nicht betrieben werden kann.
-    Damit das Buch nicht in einem Monat veraltet ist haben wir uns für diesen
-    Weg entschieden. Die aktuell funktionierende Anleitung finden Sie auf
-    <ulink
+    <quote>current-beta</quote> (das ist derzeit eine 3.5) installiert statt
+    <quote>current-stable</quote> (derzeit 3.4). Das ist momentan notwendig,
+    da die FlexBRI-Karte erst ab Wanpipe Version 3.5 betrieben werden kann.
+    (Irgendwann wird 3.5 als <quote>stable</quote>, also stabil, deklariert
+    und wird dann zur Version 3.6.) Eine funktionierende Version dieser
+    Anleitung finden Sie vorübergehend auf <ulink
     url="http://www.kempgen.net/asterisk/sangoma-b700-flexbri.html">http://www.kempgen.net/asterisk/sangoma-b700-flexbri.html</ulink>.</para>
-  </important>
+  </note>
 
   <para><inlinemediaobject id="sangoma-b700-flexbri-image">
       <imageobject role="fo">
@@ -493,7 +493,7 @@ debian:/usr/src# <emphasis role="bold"><command>cd wanpipe-3.5.0.10/</command></
 ]]> -->
 
     <screen>debian:~# <emphasis role="bold"><command>cd /usr/src/</command></emphasis>
-debian:/usr/src# <emphasis role="bold"><command>wget ftp://ftp.sangoma.com/linux/current_wanpipe/current-stable.tgz</command></emphasis></screen>
+debian:/usr/src# <emphasis role="bold"><command>wget ftp://ftp.sangoma.com/linux/current_wanpipe/current-beta.tgz</command></emphasis></screen>
 
     <screen>debian:/usr/src# <emphasis role="bold"><command>tar xzf wanpipe-*.tgz</command></emphasis> 
 debian:/usr/src# <emphasis role="bold"><command>rm wanpipe-*.tgz</command></emphasis> 
@@ -505,9 +505,9 @@ debian:/usr/src# <emphasis role="bold"><command>cd wanpipe-*/</command></emphasi
     <quote>Compilation Mode</quote> verwenden wir Nr. 7 (<quote>SMG (BRI) +
     TDM Voice</quote>).</para>
 
-    <screen>debian:/usr/src/wanpipe-3.6.0# <emphasis role="bold"><command>./Setup install</command></emphasis>
+    <screen>debian:/usr/src/wanpipe-3.5.2# <emphasis role="bold"><command>./Setup install</command></emphasis>
         ----------------------------------------------------------
-                  WANPIPE v3.6.0 Installation Script
+                  WANPIPE v3.5.2 Installation Script
             Copyright (c) 1995-2008, Sangoma Technologies Inc.
         ----------------------------------------------------------
 <replaceable>[...]</replaceable>
@@ -627,11 +627,11 @@ WANPIPE META CONFIGURATION
 
 There are two configuration files associated with WANPIPE.  
 
-1) /usr/src/wanpipe-3.6.0/wanrouter.rc: 
+1) /usr/src/wanpipe-3.5.2/wanrouter.rc: 
         - defines locations of important files such as lock
           and configuration files as well as start/stop 
           order of multiple WANPIPE devices.
-2) /usr/src/wanpipe-3.6.0/wanpipe1.conf:
+2) /usr/src/wanpipe-3.5.2/wanpipe1.conf:
         - main configuration file for each WANPIPE device.
         - defines interfaces, hardware and protocol information.
         - this file can be created using the 'wancfg' GUI
@@ -1091,7 +1091,7 @@ smgbri stop script installed successfully
 Sangoma cards configuration complete, exiting...</screen>
 
     <para>Im Default-Runlevel 2 sollten jetzt folgende Einträge
-    stehen:<screen>debian:/usr/src/wanpipe-3.6.0# <emphasis role="bold"><command>ls -l /etc/rc2.d/</command></emphasis>
+    stehen:<screen>debian:/usr/src/wanpipe-3.5.2# <emphasis role="bold"><command>ls -l /etc/rc2.d/</command></emphasis>
 <replaceable>[...]</replaceable>
 lrwxrwxrwx 1 root root  19 10. Jan 12:00 S14wanrouter -&gt; ../init.d/wanrouter
 lrwxrwxrwx 1 root root  16 10. Jan 12:00 S15zaptel -&gt; ../init.d/zaptel
@@ -1105,8 +1105,8 @@ lrwxrwxrwx 1 root root  18 10. Jan 12:00 S50asterisk -&gt; ../init.d/asterisk</s
 
     <para>Falls dies nicht der Fall ist oder Sie andere Runlevel bevorzugen,
     können Sie diese mit <filename>/etc/init.d/smg_ctrl</filename>
-    einrichten:<screen>debian:/usr/src/wanpipe-3.6.0# <emphasis role="bold"><command>update-rc.d -f smg_ctrl remove</command></emphasis>
-debian:/usr/src/wanpipe-3.6.0# <emphasis role="bold"><command>update-rc.d smg_ctrl defaults 16 20</command></emphasis></screen></para>
+    einrichten:<screen>debian:/usr/src/wanpipe-3.5.2# <emphasis role="bold"><command>update-rc.d -f smg_ctrl remove</command></emphasis>
+debian:/usr/src/wanpipe-3.5.2# <emphasis role="bold"><command>update-rc.d smg_ctrl defaults 16 20</command></emphasis></screen></para>
   </section>
 
   <section id="sangoma-flexbri-konfiguration">
@@ -1289,7 +1289,7 @@ exten =&gt; _X.,n,Hangup()</programlisting></para>
     die installierte Version von Wanpipe:<screen>debian:~# <emphasis
           role="bold"><command>wanrouter version</command></emphasis>
 
-WANPIPE Release: 3.6.0</screen></para>
+WANPIPE Release: 3.5.2</screen></para>
 
     <para><literal><command>wanrouter summary</command></literal> oder
     <literal><command>/etc/init.d/wanrouter summary</command></literal> zeigt
