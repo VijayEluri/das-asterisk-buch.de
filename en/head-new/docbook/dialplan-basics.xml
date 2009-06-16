@@ -13,7 +13,7 @@
 % translated from the German by Stephen Bosch <sbosch@vodacomm.ca>
 % Asterisk training and consulting is offered at http://www.amooma.de-->
 
-  <title>Dialplan Basics</title>
+  <title>The Dialplan: The Heart of Asterisk</title>
 
   <para>The dialplan is the heart of Asterisk, and everything it does begins
   here.</para>
@@ -32,15 +32,16 @@
       the telephony world. In this book, we use the word in its
       Asterisk-specific sense.</para>
     </footnote><note>
-      <para>Should you use .conf or .ael? Digium says ".conf is the
-      default."</para>
+      <para>Should you use .conf or .ael? Digium says ".conf is the default."
+      For certain applications, however, AEL can make for a more readable and
+      maintainable dialplan.</para>
     </note></para>
 
   <section id="der-context">
-    <title>Context</title>
+    <title>Contexts</title>
 
     <indexterm>
-      <primary>Context</primary>
+      <primary>Contexts</primary>
     </indexterm>
 
     <para>The Asterisk dialplan is divided into sections, and each section is
@@ -63,38 +64,34 @@ host=dynamic</programlisting>This SIP device called 2000 always initiates
 
     <warning>
       <para>A good understanding of contexts is essential for effective
-      Asterisk programming and administration. If you're not sure, please
-      follow the step-by-step example for a simple PBX system in the chapter
-      <xref linkend="chapter-installation" />.</para>
+      Asterisk programming and administration. If you're not comfortable with
+      contexts, please follow the step-by-step example for a simple PBX system
+      in the chapter <xref linkend="chapter-installation" />.</para>
 
       <para>It pays to take the time necessary to become comfortable with the
       concept.</para>
     </warning>
 
-    <section id="context-syntax">
-      <title>Syntax</title>
-
-      <para>Contexts are defined by a name inside square brackets
-      ("<code>[</code>" and "<code>]</code>"). Ideally, the name should be
-      relevant and help to describe the intended use for the context. This
-      name will also be used to refer to the context elsewhere, be it in other
-      contexts or in other Asterisk configuration files. All lines following a
-      context name are considered part of that context, until the next context
-      name is encountered:<programlisting>[general]
+    <para>Contexts are defined by a name inside square brackets
+    ("<code>[</code>" and "<code>]</code>"). Ideally, the name should be
+    relevant and help to describe the intended use for the context. This name
+    will also be used to refer to the context elsewhere, be it in other
+    contexts or in other Asterisk configuration files. All lines following a
+    context name are considered part of that context, until the next context
+    name is encountered:<programlisting>[general]
 
 [internal-phones]
 Rules, commands, etc.
 
 [widgets]
 Rules, commands, etc.</programlisting></para>
-    </section>
   </section>
 
   <section id="die-extension">
-    <title>Extension</title>
+    <title>Extensions</title>
 
     <indexterm>
-      <primary>Extension</primary>
+      <primary>Extensions</primary>
     </indexterm>
 
     <para>Individual entries in <filename>extensions.conf</filename> are
@@ -102,7 +99,7 @@ Rules, commands, etc.</programlisting></para>
     by Asterisk every time a call is initiated for that extension, but
     extensions.conf is only read into Asterisk once, at start time. This means
     that changes are not applied until the dialplan is reloaded or Asterisk
-    restarted.<footnote>
+    restarted.<note>
         <para>An exception is the Asterisk RealTime Architecture (ARA). In an
         ARA system, the dialplan is stored in a database
         (<emphasis>e.g.</emphasis> MySQL) and read into Asterisk for each
@@ -113,43 +110,42 @@ Rules, commands, etc.</programlisting></para>
         Asterisk at <ulink
         url="http://www.voip-info.org/wiki/view/Asterisk+RealTime"><citetitle>http://www.voip-info.org/wiki/view/Asterisk+RealTime</citetitle>
         </ulink>.</para>
-      </footnote>You can also refresh the dialplan during operation from the
-    CLI (Command Line Interface) by entering the command <command>reload
+      </note>You can also refresh the dialplan during operation from the CLI
+    (Command Line Interface) by entering the command <command>reload
     now</command> (which reloads all the configurations) or
     <command>extensions reload</command> (which reloads only the
     dialplan).</para>
 
-    <section id="extension-syntax">
-      <title>Syntax</title>
+    <para>An extension consists of the following parts:</para>
 
-      <para>An extension consists of the following parts:</para>
+    <itemizedlist>
+      <listitem>
+        <para>Extension - a name or number</para>
+      </listitem>
 
-      <itemizedlist>
-        <listitem>
-          <para>Extension (Name or number)</para>
-        </listitem>
+      <listitem>
+        <para>Priority - a kind of program line number</para>
+      </listitem>
 
-        <listitem>
-          <para>Priority (a kind of program line number)</para>
-        </listitem>
+      <listitem>
+        <para>Application - an instruction which tells Asterisk what it should
+        do with the call.</para>
+      </listitem>
+    </itemizedlist>
 
-        <listitem>
-          <para>Application - an instruction which tells Asterisk what it
-          should do with the call.</para>
-        </listitem>
-      </itemizedlist>
+    <para>Here is a template example of how you specify an extension line in
+    <filename>extensions.conf</filename>:</para>
 
-      <para><programlisting>exten =&gt; <replaceable>Extension</replaceable>,<replaceable>Priority,Application</replaceable>
-</programlisting><emphasis>e.g.</emphasis><programlisting>exten =&gt; 123,1,Answer()
+    <para><programlisting>exten =&gt; <replaceable>Extension</replaceable>,<replaceable>Priority,Application</replaceable>
+</programlisting>A real statement would look like this:<programlisting>exten =&gt; 123,1,Answer()
 </programlisting></para>
 
-      <important>
-        <para>The first priority in an extension must always be 1 (one), or
-        Asterisk will never call the extension. Subsequent priorities must be
-        incremented by 1 and not more; Asterisk does not recognize larger
-        increments.</para>
-      </important>
-    </section>
+    <warning>
+      <para>The first priority in an extension must always be 1 (one), or
+      Asterisk will never call the extension. Subsequent priorities must be
+      incremented by 1 and not more; Asterisk does not recognize larger
+      increments.</para>
+    </warning>
 
     <section id="grundlegende-applikationen">
       <title>Fundamental Applications</title>
@@ -230,10 +226,10 @@ Rules, commands, etc.</programlisting></para>
     </section>
 
     <section id="die-prioritaet">
-      <title>Priority</title>
+      <title>Priorities</title>
 
       <indexterm>
-        <primary>Priority</primary>
+        <primary>Priorities</primary>
       </indexterm>
 
       <para>A typical extension is composed of multiple entries. Each entry
@@ -314,6 +310,9 @@ exten =&gt; 1234,n,Hangup()</programlisting></para>
       <primary>Pattern matching</primary>
     </indexterm>
 
+    <para>In <filename>extensions.conf</filename>, patterns let us specify
+    multiple number combinations in a single line.</para>
+
     <para>Using what we know so far, we need to write a separate extension for
     each telephone number. As the system expands, this leads to unwieldy and
     error-prone dialplans. Say that, for our example, we need numbers 100 to
@@ -383,8 +382,8 @@ exten =&gt; _10X,3,Hangup()
       </note></para>
 
     <section id="regular-expression-syntax">
-      <title>Syntax<indexterm>
-          <primary>Pattern</primary>
+      <title>Pattern elements<indexterm>
+          <primary>Pattern elements</primary>
         </indexterm></title>
 
       <para>Dialplan patterns always begin with the underscore
@@ -469,10 +468,12 @@ exten =&gt; _10X,3,Hangup()
               all numbers that begin with 011:<programlisting>exten =&gt; _011.,1,NoOp(Test)</programlisting></para>
 
               <warning>
-                <para>Don't use <code>the '_.'</code> pattern! This will also
-                include special extensions such as <code>i</code>,
-                <code>t</code> and <code>h</code>. Use <code>_X.</code> or
-                <code>_X</code> if you need broad pattern matching.</para>
+                <para>Don't use <code>the '_.'</code> pattern! If you do, the
+                pattern will include special extensions such as
+                <code>i</code>, <code>t</code> and <code>h</code>, and that
+                will lead to unpredictable and probably undesirable behavior.
+                Use <code>_X.</code> or <code>_X</code> if you need broad
+                pattern matching.</para>
               </warning>
             </listitem>
           </varlistentry>
@@ -491,7 +492,7 @@ exten =&gt; _10X,3,Hangup()
           </varlistentry>
         </variablelist></para>
 
-      <para><important>
+      <para><warning>
           <para>A common error is to forget the underscore ("_") character at
           the beginning of the pattern. This convention is necessary because
           SIP devices, as configured in <filename>sip.conf,</filename> can
@@ -500,7 +501,7 @@ exten =&gt; _10X,3,Hangup()
           It also means that if you forget to use the underscore, your
           extension will never match <emphasis>and</emphasis> you will never
           see an error message informing you of your mistake.</para>
-        </important></para>
+        </warning></para>
     </section>
 
     <section>
@@ -641,7 +642,8 @@ exten =&gt; _2X,3,Hangup()</programlisting></para>
       always choose the better match. Before deciding which extension matches
       best, it processes the entire context.</para>
 
-      <para>An example:<programlisting>[sales]
+      <para>Let's look at an example with some ambiguous
+      extensions:<programlisting>[sales]
 exten =&gt; _12X.,1,NoOp{12X}
 exten =&gt; 12345,1,NoOp(12345}
 exten =&gt; _1234.,1,NoOp{1234.}</programlisting></para>
@@ -675,37 +677,30 @@ exten =&gt; _1234.,1,NoOp{1234.}</programlisting></para>
           strictly in order of match precision.</para>
         </important></para>
 
-      <section>
-        <title>A special case - the pattern "_." in Asterisk 1.2<indexterm>
-            <primary>Pattern _. in Asterisk 1.2</primary>
-          </indexterm></title>
+      <para>Digium changed the expected behavior for the "_." pattern in
+      Asterisk 1.2. Though the pattern is the most general and should be
+      therefore assigned the lowest priority, the behavior is opposite the
+      expected behavior. In Asterisk 1.2, the extension "_." always gets the
+      highest priority!</para>
 
-        <para>Digium changed the expected behavior for the "_." pattern in
-        Asterisk 1.2. Though the pattern is the most general and should be
-        therefore assigned the lowest priority, the behavior is opposite the
-        expected behavior.<warning>
-            <para>In Asterisk 1.2, the extension "<code>_.</code>" always gets
-            the highest priority!</para>
-          </warning></para>
+      <para><note>
+          <para>Note that the <command>show dialplan</command> command will
+          work in Asterisk 1.4 but is deprecated; henceforth, examples for
+          Asterisk 1.2 use <command>show dialplan</command>, while
+          <command>dialplan show</command> is used for examples in Asterisk
+          1.4.</para>
+        </note></para>
 
-        <para><note>
-            <para>Note that the <command>show dialplan</command> command will
-            work in Asterisk 1.4 but is deprecated; henceforth, examples for
-            Asterisk 1.2 use <command>show dialplan</command>, while
-            <command>dialplan show</command> is used for examples in Asterisk
-            1.4.</para>
-          </note></para>
-
-        <para>Let's try adding the extension "_." to our previous dialplan
-        example:<programlisting>[sales]
+      <para>Let's try adding the extension "_." to our previous dialplan
+      example:<programlisting>[sales]
 exten =&gt; _12X.,1,NoOp{12X}
 exten =&gt; 12345,1,NoOp(12345}
 exten =&gt; _1234.,1,NoOp{1234.}
 
 exten =&gt; _.,1,NoOp{Bingo}</programlisting></para>
 
-        <para>When we try testing '12346' with <command>dialplan show
-        12346@sales</command>, we get the following output:<screen>*CLI&gt; dialplan show 12346@sales
+      <para>When we try testing '12346' with <command>dialplan show
+      12346@sales</command>, we get the following output:<screen>*CLI&gt; dialplan show 12346@sales
 [ Context 'sales' created by 'pbx_config' ]
   '_1234.' =&gt;       1. NoOp{1234.}()                              [pbx_config]
   '_12X.' =&gt;        1. NoOp{12X}()                                [pbx_config]
@@ -714,8 +709,8 @@ exten =&gt; _.,1,NoOp{Bingo}</programlisting></para>
 -= 3 extensions (3 priorities) in 1 context. =-
 *CLI&gt;</screen></para>
 
-        <para>In Asterisk 1.2, <command>show dialplan 12346@sales</command>
-        gives a very different result:<screen>*CLI&gt; show dialplan 12346@sales
+      <para>In Asterisk 1.2, <command>show dialplan 12346@sales</command>
+      gives a very different result:<screen>*CLI&gt; show dialplan 12346@sales
 [ Context 'sales' created by 'pbx_config' ]
   '_.' =&gt;           1. NoOp{Bingo}()                              [pbx_config]
   '_1234.' =&gt;       1. NoOp{1234.}()                              [pbx_config]
@@ -724,17 +719,17 @@ exten =&gt; _.,1,NoOp{Bingo}</programlisting></para>
 -= 3 extensions (3 priorities) in 1 context. =-
 *CLI&gt;</screen></para>
 
-        <para>This is why it is preferable to use <code>"_X."</code> as the
-        wildcard pattern (if we use a wildcard pattern at all!). The following
-        dialplan example is processed identically in Asterisk 1.2 and
-        1.4:<programlisting>[sales]
+      <para>This is why it is preferable to use <code>"_X."</code> as the
+      wildcard pattern (if we use a wildcard pattern at all!). The following
+      dialplan example is processed identically in Asterisk 1.2 and
+      1.4:<programlisting>[sales]
 exten =&gt; _12X.,1,NoOp{12X}
 exten =&gt; 12345,1,NoOp(12345}
 exten =&gt; _1234.,1,NoOp{1234.}
 
 exten =&gt; _X.,1,NoOp{Bingo}</programlisting></para>
 
-        <para>The priorities appear as follows in both versions:<screen>*CLI&gt; dialplan show 12346@sales
+      <para>The priorities appear as follows in both versions:<screen>*CLI&gt; dialplan show 12346@sales
 [ Context 'sales' created by 'pbx_config' ]
   '_1234.' =&gt;       1. NoOp{1234.}()                              [pbx_config]
   '_12X.' =&gt;        1. NoOp{12X}()                                [pbx_config]
@@ -742,6 +737,13 @@ exten =&gt; _X.,1,NoOp{Bingo}</programlisting></para>
 
 -= 3 extensions (3 priorities) in 1 context. =-
 *CLI&gt; </screen></para>
+
+      <section>
+        <title>A special case - the pattern "_." in Asterisk 1.2<indexterm>
+            <primary>Pattern _. in Asterisk 1.2</primary>
+          </indexterm></title>
+
+        <para></para>
       </section>
     </section>
   </section>
@@ -755,18 +757,13 @@ exten =&gt; _X.,1,NoOp{Bingo}</programlisting></para>
 
     <para>Includes are a powerful tool for simplifying and organizing larger
     dialplans. Using an include statement, you can include other contexts in
-    the current context.</para>
+    the current context. Here is a more general example:</para>
 
-    <section id="include-syntax">
-      <title>Syntax</title>
+    <para><programlisting>include =&gt; name-of-the-other-context</programlisting>And
+    here is how you might see an include statement used in a larger
+    dialplan:</para>
 
-      <para><programlisting>include =&gt; name-of-the-other-context</programlisting></para>
-    </section>
-
-    <section id="include-beispiel">
-      <title>Example</title>
-
-      <para><programlisting>[general]
+    <para><programlisting>[general]
 
 [sales]
 include =&gt; internal
@@ -777,7 +774,6 @@ exten =&gt; 2000,1,Dial(SIP/2000)
 
 [external]
 exten =&gt; 17005551212,1,Dial(SIP/5551212)</programlisting></para>
-    </section>
 
     <section id="reihenfolge-beim-include">
       <title>Order of execution when using include statements</title>
@@ -789,13 +785,14 @@ exten =&gt; 17005551212,1,Dial(SIP/5551212)</programlisting></para>
       is also possible to have nested includes; that is, includes
       <emphasis>within</emphasis> includes.</para>
 
-      <para>In case of doubt, you can verify what entry Asterisk is using to
-      handle a call by entering <command>dialplan show
+      <para>You can verify what entry Asterisk is using to handle a call by
+      entering <command>dialplan show
       <replaceable>number</replaceable>@<replaceable>name-of-context</replaceable></command>
       in the Asterisk CLI.<note>
           <para>Users of Asterisk 1.2 use <command>show dialplan</command>
           instead of <command>dialplan show</command>.</para>
-        </note>A few examples:<programlisting>[general]
+        </note>Again, here is an example of an include
+      statement:<programlisting>[general]
 
 [sales]
 include =&gt; internal
@@ -859,21 +856,29 @@ exten =&gt; 17005551212,1,Dial(SIP/5551212)</programlisting></para>
         </indexterm></title>
 
       <para>An include statement can be made conditional upon the time of day.
-      This makes it easy to implement different day and night
-      behaviors.</para>
+      This makes it easy to implement different day and night behaviors. The
+      general syntax of a time-based include statement is shown
+      here:<programlisting>include =&gt; context|&lt;time&gt;|&lt;day&gt;|&lt;day-of-month&gt;|&lt;month&gt;</programlisting>The
+      day and month are specified using the first three letters of the full
+      name. For example, weekdays are specified <code>mon,</code>
+      <code>tue</code>, <code>wed</code>, <code>thu</code>, <code>fri</code>,
+      <code>sat</code>, <code>sun</code>, and months are specified
+      <code>jan</code>, <code>feb</code>, <code>mar</code>, <code>apr</code>,
+      <emphasis>etc</emphasis>. The time is specified in 24 hour
+      format.</para>
 
-      <section id="time-includes-syntax">
-        <title>Syntax</title>
+      <para>Say you have a business that is open from 9:00 a.m. until 9:00
+      p.m. Monday to Friday and from 9:00 a.m. to 6:00 p.m. Saturday. The
+      dialplan would look like this:<programlisting>; Day
+&#8232;include =&gt; open|09:00-21:00|mon-fri|*|*
+&#8232;include =&gt; open|09:00-18:00|sat|*|*
+include =&gt; closed
 
-        <para><programlisting>include =&gt; context|&lt;time&gt;|&lt;day&gt;|&lt;day-of-month&gt;|&lt;month&gt;</programlisting>The
-        day and month are specified using the first three letters of the full
-        name. For example, weekdays are specified <code>mon,</code>
-        <code>tue</code>, <code>wed</code>, <code>thu</code>,
-        <code>fri</code>, <code>sat</code>, <code>sun</code>, and months are
-        specified <code>jan</code>, <code>feb</code>, <code>mar</code>,
-        <code>apr</code>, <emphasis>etc</emphasis>. The time is specified in
-        24 hour format.</para>
-      </section>
+[open]
+exten =&gt; 2000,1,Dial(SIP/2000)
+
+[closed]
+exten =&gt; 2000,1,VoiceMail(2000,u)&#8232;</programlisting></para>
 
       <section>
         <title>Example</title>
@@ -917,12 +922,9 @@ exten =&gt; 2000,1,VoiceMail(2000,u)&#8232;</programlisting></para>
 
       <para>To make all the SIP phones with extension numbers 2000 to 2999
       dialable, only one line in <filename>extensions.conf</filename> is
-      required:<programlisting>exten =&gt; _2XXX,1,Dial(SIP/${EXTEN})</programlisting></para>
-
-      <tip>
-        <para>A more complete discussion of variables may be found in <xref
-        linkend="variables" />.</para>
-      </tip>
+      required:<programlisting>exten =&gt; _2XXX,1,Dial(SIP/${EXTEN})</programlisting>A
+      more complete discussion of variables may be found in <xref
+      linkend="variables" />.</para>
     </section>
 
     <section id="funktion-callerid-num">
@@ -932,12 +934,9 @@ exten =&gt; 2000,1,VoiceMail(2000,u)&#8232;</programlisting></para>
       calling party's number. This is especially practical when used with
       <code>VoiceMailMain()</code> since it can accept the mailbox number as a
       parameter. This way, you can make each user's voicemail box accessible
-      with a single line:<programlisting>exten =&gt; 99,1,VoiceMailMain(${CALLERID(num)})</programlisting></para>
-
-      <tip>
-        <para>A more complete discussion of functions ${CALLERID(num)} may be
-        found in <xref linkend="functions-callerid" />.</para>
-      </tip>
+      with a single line:<programlisting>exten =&gt; 99,1,VoiceMailMain(${CALLERID(num)})</programlisting>A
+      more complete discussion of functions ${CALLERID(num)} may be found in
+      <xref linkend="functions-callerid" />.</para>
     </section>
   </section>
 </chapter>

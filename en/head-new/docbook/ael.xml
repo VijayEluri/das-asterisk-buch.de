@@ -39,9 +39,7 @@
     </keywordset>
   </chapterinfo>
 
-  <title>AEL</title>
-
-  <subtitle>Asterisk Extension Language</subtitle>
+  <title>Asterisk Extension Language</title>
 
   <indexterm significance="preferred">
     <primary>AEL</primary>
@@ -76,43 +74,6 @@
   <filename>extensions.conf</filename> will simply overwrite identical
   portions of <filename>extensions.ael</filename> when the dialplan is
   loaded.</para>
-
-  <para>Here is a small foretaste:</para>
-
-  <para><informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-      tocentry="0">
-      <tgroup cols="2">
-        <colspec align="left" colnum="1" colwidth="5*" />
-
-        <colspec align="left" colnum="2" colwidth="4*" />
-
-        <thead valign="middle">
-          <row>
-            <entry align="center"><filename>extensions.conf</filename></entry>
-
-            <entry align="center"><filename>extensions.ael</filename></entry>
-          </row>
-        </thead>
-
-        <tbody valign="top">
-          <row>
-            <entry><programlisting><emphasis role="bold">[my-phones]</emphasis>
-<emphasis role="bold">exten =&gt; 20,1,</emphasis>Answer()
-<emphasis role="bold">exten =&gt; 20,n,</emphasis>Playback(beep)
-<emphasis role="bold">exten =&gt; 20,n,</emphasis>Hangup()
-</programlisting></entry>
-
-            <entry><programlisting><emphasis role="bold">context my-phones {</emphasis>
-  <emphasis role="bold">20 =&gt; {</emphasis>
-    Answer();
-    Playback(beep);
-    Hangup();
-  <emphasis role="bold">}</emphasis>
-<emphasis role="bold">}</emphasis></programlisting></entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </informaltable></para>
 
   <para>Asterisk comes packaged with a command-line utility for converting AEL
   files into the traditional extensions.conf format called
@@ -217,7 +178,7 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
       </keywordset>
     </sectioninfo>
 
-    <title>extensions.conf &lt;-&gt; extensions.ael</title>
+    <title>Comparing extensions.conf with extensions.ael</title>
 
     <indexterm>
       <primary>extensions.ael</primary>
@@ -226,6 +187,32 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
     <para>The following examples will show you how AEL compares with the
     standard <filename>extensions.conf</filename>. In doing so, we're assuming
     that you're already comfortable with dialplan programming.</para>
+
+    <para>First, you'll see right away that the formatting of extensions is
+    different. The structure of extensions.ael is a lot more like a
+    programming language. For example, the following two code blocks are
+    functionally equivalent. We've made the equivalent portions bold to
+    illustrate this.</para>
+
+    <para>Here's a typical context, as it would be written in
+    <filename>extensions.conf</filename>:</para>
+
+    <programlisting><emphasis role="bold">[my-phones]</emphasis>
+<emphasis role="bold">exten =&gt; 20,1,</emphasis>Answer()
+<emphasis role="bold">exten =&gt; 20,n,</emphasis>Playback(beep)
+<emphasis role="bold">exten =&gt; 20,n,</emphasis>Hangup()
+</programlisting>
+
+    <para>The same result can be achieved in
+    <filename>extensions.ael</filename> with this:</para>
+
+    <programlisting><emphasis role="bold">context my-phones {</emphasis>
+  <emphasis role="bold">20 =&gt; {</emphasis>
+    Answer();
+    Playback(beep);
+    Hangup();
+  <emphasis role="bold">}</emphasis>
+<emphasis role="bold">}</emphasis></programlisting>
 
     <section id="ael-command-termination">
       <title>Line termination</title>
@@ -267,26 +254,9 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
       below, the AEL versions often appear longer, but its advantages can
       really make themselves felt with large dialplans.</para>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
+      <para>Here's a simple set of extensions in extensions.conf:</para>
 
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting><emphasis role="bold">[internal-users]</emphasis>
+      <programlisting><emphasis role="bold">[internal-users]</emphasis>
 
 <emphasis role="bold">exten =&gt; 21,1,</emphasis>Dial(SIP/anna)
 <emphasis role="bold">exten =&gt; 21,n,</emphasis>VoiceMail(anna)
@@ -295,9 +265,12 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
 <emphasis role="bold">exten =&gt; 22,n,</emphasis>VoiceMail(lisa)
 
 <emphasis role="bold">exten =&gt; _3X,1,</emphasis>Dial(SIP/${EXTEN})
-</programlisting></entry>
+</programlisting>
 
-              <entry><programlisting><emphasis role="bold">context internal-users {</emphasis>
+      <para>The same extensions would look like this in
+      <filename>extensions.ael</filename>:</para>
+
+      <programlisting><emphasis role="bold">context internal-users {</emphasis>
   <emphasis role="bold">21 =&gt; {</emphasis>
     Dial(SIP/anna);
     VoiceMail(anna);
@@ -309,60 +282,33 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
   <emphasis role="bold">_3X =&gt; {</emphasis>
     Dial(SIP/${EXTEN});
   <emphasis role="bold">}</emphasis>
-<emphasis role="bold">}</emphasis></programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+<emphasis role="bold">}</emphasis></programlisting>
 
-      <para>For extensions which only need a single command, you could skip
-      one level of curly braces:<informaltable colsep="0" frame="none"
-          pgwide="1" rowsep="0" tocentry="0">
-          <tgroup cols="2">
-            <colspec align="left" colnum="1" colwidth="5*" />
+      <para>For extensions which only need a single command, you can skip one
+      level of curly braces and your diaplan would still work:</para>
 
-            <colspec align="left" colnum="2" colwidth="4*" />
-
-            <tbody valign="top">
-              <row>
-                <entry> </entry>
-
-                <entry><programlisting>context default {
+      <programlisting>context default {
   23 =&gt; Playback(hello-world);
-}</programlisting></entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable>and your dialplan would still work. Don't get used to
-      this practice, though. it's best to include them always, even when they
-      might be superfluous:<informaltable colsep="0" frame="none" pgwide="1"
-          rowsep="0" tocentry="0">
-          <tgroup cols="2">
-            <colspec align="left" colnum="1" colwidth="5*" />
+}</programlisting>
 
-            <colspec align="left" colnum="2" colwidth="4*" />
+      <para>Don't get used to this practice, though. It's best to include them
+      always, even when they might be superfluous:</para>
 
-            <tbody valign="top">
-              <row>
-                <entry> </entry>
-
-                <entry><programlisting>context default {
+      <programlisting>context default {
   23 =&gt; <emphasis role="bold">{</emphasis>
     Playback(hello-world);
   <emphasis role="bold">}</emphasis>
-}</programlisting></entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable>Most extensions do require multiple commands and
-      consistency is your friend when writing code. There are only a few cases
-      where the short form is appropriate (<code>jump</code>, see <xref
+}</programlisting>
+
+      <para>Most extensions do require multiple commands and consistency is
+      your friend when writing code. There are only a few cases where the
+      short form is appropriate (<code>jump</code>, see <xref
       linkend="ael-labels-goto-jump" />).</para>
 
-      <important>
+      <warning>
         <para>The opening curly brace <quote><code>{</code></quote> of a code
         block must appear on the same line, not on a line of its own!</para>
-      </important>
+      </warning>
     </section>
 
     <section id="ael-comments">
@@ -379,50 +325,26 @@ LOG: lev:4 file:ael2_parse  line:543 func: main  19 contexts, 25 extensions, 62 
       <indexterm>
         <primary>AEL</primary>
 
-        <secondary>Kommentare</secondary>
+        <secondary>Comments</secondary>
       </indexterm>
 
-      <para>Comments in AEL are denoted with two forward slashes,
-      <quote><code>//</code></quote>.</para>
-
-      <important>
-        <para>Programmers: don't use the C comment style
-        (<quote><code>/*<replaceable> ... </replaceable>*/</code></quote>).
-        Every comment line must begin with its own
-        <quote><code>//</code></quote> comment marker.</para>
-      </important>
-
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting><emphasis role="bold">;</emphasis> a comment
+      <para>In extensions.conf, comments are preceded by a
+      semi-colon:<programlisting><emphasis role="bold">;</emphasis> a comment
 exten =&gt; 10,1,Dial(SIP/anna) <emphasis role="bold">;</emphasis> Dial
-</programlisting></entry>
+</programlisting></para>
 
-              <entry><programlisting><emphasis role="bold">//</emphasis> a comment
+      <para>Comments in AEL are denoted with two forward slashes,
+      <quote><code>//</code></quote>:</para>
+
+      <para><programlisting><emphasis role="bold">//</emphasis> a comment
 10 =&gt; {
   Dial(SIP/anna);  <emphasis role="bold">//</emphasis> Dial
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting><warning>
+          <para>Programmers: don't use the C comment style
+          (<quote><code>/*<replaceable> ... </replaceable>*/</code></quote>).
+          Every comment line must begin with its own
+          <quote><code>//</code></quote> comment marker.</para>
+        </warning></para>
     </section>
 
     <section id="ael-include-contexts">
@@ -447,29 +369,10 @@ exten =&gt; 10,1,Dial(SIP/anna) <emphasis role="bold">;</emphasis> Dial
       </indexterm>
 
       <para>We can include contexts within contexts, just described in <xref
-      linkend="dialplan-includes" /> and <xref
-      linkend="time-includes" />.</para>
+      linkend="dialplan-includes" /> and <xref linkend="time-includes" />. A
+      typical use of includes in extensions.conf would look like this:</para>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>[sales]
+      <programlisting>[sales]
 exten =&gt; 2001,1,Dial(SIP/anna)
 exten =&gt; 2002,1,Dial(SIP/brock)
 
@@ -479,17 +382,11 @@ exten =&gt; 3001,1,Dial(SIP/lisa)
 [day]
 <emphasis role="bold">include =&gt;</emphasis> sales
 <emphasis role="bold">include =&gt;</emphasis> warehouse
+</programlisting>
 
-[night]
-exten =&gt; _.,1,VoiceMail(${EXTEN},u)
+      <para>Doing the same in AEL works this way:</para>
 
-[external]
-<emphasis role="bold">include =&gt;</emphasis> day|09:00-17:00|mon-fri|*|*
- <emphasis role="bold">include =&gt;</emphasis> day|09:00-14:00|sat|*|*
-<emphasis role="bold">include =&gt;</emphasis> night
-</programlisting></entry>
-
-              <entry><programlisting>context sales {
+      <programlisting>context sales {
   2001 =&gt; {
     Dial(SIP/anna);
   }
@@ -510,29 +407,12 @@ context day {
     warehouse;
   <emphasis role="bold">}</emphasis>
 }
+</programlisting>
 
-context night {
-  _. =&gt; {
-    VoiceMail(${EXTEN},u);
-  }
-}
-
-context external {
-  <emphasis role="bold">includes {</emphasis>
-    day|09:00-17:00|mon-fri|*|*;
-    day|09:00-14:00|sat|*|*;
-    night;
-  <emphasis role="bold">}</emphasis>
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
-
-      <important>
-        <para>Bitte beachten Sie in AEL das <quote><code>s</code></quote> am
-        Ende von <quote><code>includes</code></quote>.</para>
-      </important>
+      <warning>
+        <para>Be careful to write <quote><code>includes</code></quote> and not
+        <quote><code>include</code></quote> in AEL!</para>
+      </warning>
     </section>
 
     <section id="ael-global-variables">
@@ -602,8 +482,6 @@ RINGTIME=60
           <keyword>expressions</keyword>
 
           <keyword>assignments</keyword>
-
-          <keyword>zuweisungen</keyword>
         </keywordset>
       </sectioninfo>
 
@@ -614,8 +492,6 @@ RINGTIME=60
 
         <secondary>expressions and assignment</secondary>
       </indexterm>
-
-      <para>AEL processes expressions in control structures such as </para>
 
       <para>AEL handles expressions in control structures (such as
       <code>if()</code>, <code>while()</code>, the break condition in
@@ -628,90 +504,43 @@ RINGTIME=60
       in other languages. For variable assignments in Asterisk it is atypical,
       however, and can easily lead to strange errors (AEL isn't a full
       programming language yet!) For this reason, we recommend against writing
-      variable assignments this way</para>
+      variable assignments this way:</para>
 
-      <para><informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-          tocentry="0">
-          <tgroup cols="2">
-            <colspec align="left" colnum="1" colwidth="5*" />
-
-            <colspec align="left" colnum="2" colwidth="4*" />
-
-            <tbody valign="top">
-              <row>
-                <entry> </entry>
-
-                <entry><programlisting>context test {
+      <programlisting>context test {
   123 =&gt; {
     <emphasis role="bold">result=10/2</emphasis>;
     NoOp(result is ${result});
   }
-}</programlisting></entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable>but rather using <code>Set()</code> (see <xref
-      linkend="applications-set" />) as you might in
-      <filename>extensions.conf</filename>:<informaltable colsep="0"
-          frame="none" pgwide="1" rowsep="0" tocentry="0">
-          <tgroup cols="2">
-            <colspec align="left" colnum="1" colwidth="5*" />
+}</programlisting>
 
-            <colspec align="left" colnum="2" colwidth="4*" />
+      <para>For predictable results, it's better to use <code>Set()</code>
+      (see <xref linkend="applications-set" />) as you might in
+      <filename>extensions.conf</filename>:</para>
 
-            <tbody valign="top">
-              <row>
-                <entry> </entry>
-
-                <entry><programlisting>context test {
+      <programlisting>context test {
   123 =&gt; {
     <emphasis role="bold">Set(result=$[ 10 / 2 ])</emphasis>;
     NoOp(result is ${result});
   }
-}</programlisting></entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable></para>
+}</programlisting>
 
       <para>For constructions which use <code>if()</code>,
-      <code>while()</code> <emphasis>etc</emphasis>, this is nevertheless
-      desirable because it spares having to use the clunky
-      <quote><code>$[<replaceable> ... </replaceable>]</code></quote>:</para>
+      <code>while()</code> <emphasis>etc</emphasis>, however, the new behavior
+      is nevertheless desirable because it spares having to use the clunky
+      <quote><code>$[<replaceable> ... </replaceable>]</code></quote>. In
+      <filename>extensions.conf</filename>, we would use ExecIf():</para>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>exten =&gt; 50,1,Set(a=test)
+      <para><programlisting>exten =&gt; 50,1,Set(a=test)
 exten =&gt; 50,n,<emphasis role="bold">ExecIf($["${a}" = "101"]</emphasis>,SayDigits,123)
-</programlisting></entry>
+</programlisting>In <filename>extensions.ael</filename>, the end result is
+      cleaner:</para>
 
-              <entry><programlisting>50 =&gt; {
+      <para><programlisting>50 =&gt; {
   Set(a=test);
   <emphasis role="bold">if ("${a}" = "test")</emphasis> {
     SayDigits(123);
   }
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting></para>
     </section>
 
     <section id="ael-labels-goto-jump">
@@ -736,31 +565,10 @@ exten =&gt; 50,n,<emphasis role="bold">ExecIf($["${a}" = "101"]</emphasis>,SayDi
       <para>The hardened <filename>extensions.conf</filename> programmer is
       forced to get used to moving around dialplan by jumping to priorities or
       pre-defined labels using applications such as <code>Goto()</code>,
-      <code>GotoIf()</code>, <code>Gosub()</code> and <code>GosubIf()</code>.
-      In AEL, a label always appears inside an extension and on its own line.
-      Don't forget the colon (<quote><code>:</code></quote>) at the end of the
-      line:</para>
+      <code>GotoIf()</code>, <code>Gosub()</code> and
+      <code>GosubIf()</code>:</para>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>[example]
+      <programlisting>[example]
 
 ; go to a label in the same extension
 ;
@@ -787,9 +595,13 @@ exten =&gt; 40,n,SayNumber(40)
 
 exten =&gt; 50,1,<emphasis role="bold">Goto(40,1)</emphasis>
 exten =&gt; 60,1,<emphasis role="bold">Goto(example,10,1)</emphasis>
-</programlisting></entry>
+</programlisting>
 
-              <entry><programlisting>context example {
+      <para>In AEL, a label always appears inside an extension and on its own
+      line. Don't forget the colon (<quote><code>:</code></quote>) at the end
+      of the line:</para>
+
+      <para><programlisting>context example {
   
   // go to a label in the same extension
   //
@@ -825,11 +637,7 @@ context cntxt2 {
   }
   50 =&gt; <emphasis role="bold">jump 40</emphasis>;
   60 =&gt; <emphasis role="bold">jump 10@example</emphasis>;
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting></para>
 
       <para>In the above example we see a different syntax for the "goto"
       construction. In <filename>extensions.conf</filename>, we had to use the
@@ -848,7 +656,7 @@ context cntxt2 {
 
             <tbody valign="top">
               <row>
-                <entry><filename>.conf</filename></entry>
+                <entry><filename>extensions.conf</filename></entry>
 
                 <entry><synopsis><emphasis role="bold"><code>Goto(</code></emphasis>[[<replaceable>context</replaceable><emphasis
                       role="bold"><code>,</code></emphasis>]<replaceable>extension</replaceable><emphasis
@@ -857,7 +665,7 @@ context cntxt2 {
               </row>
 
               <row>
-                <entry><filename>.ael</filename></entry>
+                <entry><filename>extensions.ael</filename></entry>
 
                 <entry><synopsis><emphasis role="bold"><code>goto </code></emphasis>[[<replaceable>context</replaceable><emphasis
                       role="bold"><code>|</code></emphasis>]<replaceable>extension</replaceable><emphasis
@@ -880,7 +688,7 @@ context cntxt2 {
 
             <tbody valign="top">
               <row>
-                <entry><filename>.conf</filename></entry>
+                <entry><filename>extensions.conf</filename></entry>
 
                 <entry><synopsis><emphasis role="bold"><code>Goto(</code></emphasis>[<replaceable>context</replaceable><emphasis
                       role="bold"><code>,</code></emphasis>]<replaceable>extension</replaceable><emphasis
@@ -890,16 +698,8 @@ context cntxt2 {
               </row>
 
               <row>
-                <entry><filename>.ael</filename> (bad!)</entry>
-
-                <entry><synopsis><emphasis role="bold"><code>goto </code></emphasis>[<replaceable>context</replaceable><emphasis
-                      role="bold"><code>|</code></emphasis>]<replaceable>extension</replaceable><emphasis
-                      role="bold"><code>|</code></emphasis><emphasis
-                      role="bold"><code>1</code></emphasis></synopsis></entry>
-              </row>
-
-              <row>
-                <entry><filename>.ael</filename> (good)</entry>
+                <entry><filename>extensions.ael</filename> (replaces priority
+                jumping)</entry>
 
                 <entry><synopsis><emphasis role="bold"><code>jump </code></emphasis><replaceable>extension</replaceable>[<emphasis
                       role="bold"><code>@</code></emphasis><replaceable>context</replaceable>]</synopsis></entry>
@@ -935,45 +735,20 @@ context cntxt2 {
         <secondary>if, switch</secondary>
       </indexterm>
 
-      <para>Conditionals<footnote>
-          <para><ulink
-          url="http://en.wikipedia.org/wiki/Conditional_(programming)">http://en.wikipedia.org/wiki/Conditional_(programming)</ulink></para>
-        </footnote>are structures which let you control program
+      <para>Conditionals are structures which let you control program
       execution.</para>
 
-      <note>
-        <para>For information about expressions, see <xref
-        linkend="glossary-expressions" />.</para>
-      </note>
+      <para>AEL has both <emphasis role="bold"> <code>if</code> </emphasis>
+      and <emphasis role="bold"> <code>switch</code> </emphasis> commands.
+      This is a big advantage because it makes an AEL dialplan much more
+      readable. The more complex your program logic, the more obvious this
+      advantage becomes.</para>
 
-      <para>AEL has both <emphasis role="bold"><code>if</code></emphasis> and
-      <emphasis role="bold"><code>switch</code></emphasis> commands. This is a
-      big advantage because it makes an AEL dialplan much more readable. The
-      more complex your program logic, the more obvious this advantage
-      becomes. Compare yourself:</para>
+      <section>
+        <title><code>if</code></title>
 
-      <bridgehead id="ael-if"><code>if</code></bridgehead>
-
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>exten =&gt; 90,1,Dial(SIP/anna)
+        <para>In <filename>extensions.conf</filename>, we have to label
+        targets explicitly:<programlisting>exten =&gt; 90,1,Dial(SIP/anna)
 exten =&gt; 90,n,<emphasis role="bold">GotoIf($["${DIALSTATUS}" = "BUSY"]?b:n)</emphasis>
 
 exten =&gt; 90,10(b),Answer()
@@ -985,9 +760,10 @@ exten =&gt; 90,20(n),Dial(SIP/lisa)
 exten =&gt; 90,21,Playback(beeperr)
 exten =&gt; 90,22,<emphasis role="bold">Goto</emphasis>(end)
 exten =&gt; 90,30(end),NoOp(done)
-</programlisting></entry>
+</programlisting>In <filename>extensions.ael</filename>, the
+        <command>if</command> statement has fewer parentheses:</para>
 
-              <entry><programlisting>90 =&gt; {
+        <programlisting>90 =&gt; {
   Dial(SIP/anna);
   <emphasis role="bold">if ("${DIALSTATUS}" = "BUSY") {</emphasis>
     Answer();
@@ -999,44 +775,29 @@ exten =&gt; 90,30(end),NoOp(done)
     Playback(beeperr);
   <emphasis role="bold">}</emphasis>
   NoOp(done);
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting>
 
-      <para>Someone used to programming in AEL will find jumping around a
-      diaplan with <code>GotoIf()</code> cumbersome, to say nothing of the
-      confusion caused by a statement like <code>GotoIf($["${DIALSTATUS}" =
-      "BUSY"]?b:n)</code>. Are all the brackets closed?</para>
+        <para>Someone used to programming in AEL will find jumping around a
+        diaplan with <code>GotoIf()</code> cumbersome, to say nothing of the
+        confusion caused by a statement like <code>GotoIf($["${DIALSTATUS}" =
+        "BUSY"]?b:n)</code>. Are all the brackets closed?</para>
 
-      <important>
-        <para>Again, the opening curly brace must stand on the same line as
-        the <code>if</code> statement, not on its own line.</para>
-      </important>
+        <warning>
+          <para>Again, the opening curly brace must stand on the same line as
+          the <code>if</code> statement, not on its own line.</para>
+        </warning>
+      </section>
 
-      <bridgehead id="ael-switch"><code>switch</code></bridgehead>
+      <section>
+        <title><code>switch</code></title>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
+        <para>In AEL, the <command>switch</command> command lets you easily
+        build code that can handle more than one case. In
+        <filename>extensions.conf</filename>, a construction which does the
+        same thing as a <code>switch</code> command is a confusing
+        mess:</para>
 
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>exten =&gt; 70,1,Dial(SIP/anna)
+        <programlisting>exten =&gt; 70,1,Dial(SIP/anna)
 exten =&gt; 70,n,<emphasis role="bold">Goto(70-${DIALSTATUS},10)</emphasis>
 exten =&gt; 70,n(end),NoOp(done)
 
@@ -1045,14 +806,17 @@ exten =&gt; 70-<emphasis role="bold">BUSY</emphasis>,11,<emphasis role="bold">Go
 
 exten =&gt; 70-<emphasis role="bold">NOANSWER</emphasis>,10,NoOp(no answer)
 exten =&gt; 70-<emphasis role="bold">NOANSWER</emphasis>,11,<emphasis
-                    role="bold">Goto</emphasis>(end)
+            role="bold">Goto</emphasis>(end)
 
 exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,10,NoOp(something else)
 exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,11,<emphasis
-                    role="bold">Goto</emphasis>(end)
-</programlisting></entry>
+            role="bold">Goto</emphasis>(end)
+</programlisting>
 
-              <entry><programlisting>70 =&gt; {
+        <para>In extensions.ael, by contrast, the result is clean and
+        elegant:</para>
+
+        <para><programlisting>70 =&gt; {
   Dial(SIP/anna);
   <emphasis role="bold">switch ("${DIALSTATUS}") {</emphasis>
     <emphasis role="bold">case "BUSY":</emphasis>
@@ -1066,48 +830,24 @@ exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphas
   <emphasis role="bold">}</emphasis>
   
   NoOp(done);
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting>Trying to do a <emphasis>nested</emphasis> <code>if</code>
+        or <code>switch</code> in <filename>extensions.conf</filename> would
+        be incomprehensible and impossible to maintain. Now we can really
+        start to see the advantages of AEL!</para>
 
-      <important>
-        <para>Don't forget the <code>break</code> statements in the
-        <code>case</code> branches! If you omit these, Asterisk will just run
-        them sequentially, be it to the next case branch or to
-        <code>default</code>.</para>
-      </important>
+        <warning>
+          <para>Don't forget the <code>break</code> statements in the
+          <code>case</code> branches! If you omit these, Asterisk will just
+          run them sequentially, be it to the next case branch or to
+          <code>default</code>.</para>
+        </warning>
 
-      <para>In <filename>extensions.conf</filename>, a construction which does
-      the same thing as a <code>switch</code> command is a confusing mess.
-      Trying to do a <emphasis>nested</emphasis> <code>if</code> or
-      <code>switch</code> in <filename>extensions.conf</filename> would be
-      incomprehensible and impossible to maintain.</para>
+        <para>In addition to case comparison, <code>switch</code> also lets
+        you use <code>pattern</code> statements to do explicit pattern
+        matching. Here's what pattern matching looks like in our
+        <filename>extensions.conf</filename>:</para>
 
-      <para>In addition to case comparison, <code>switch</code> also lets you
-      use <code>pattern</code>:</para>
-
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>exten =&gt; _70,1,NoOp(dialed: ${EXTEN})
+        <para><programlisting>exten =&gt; _70,1,NoOp(dialed: ${EXTEN})
 exten =&gt; _70,n,<emphasis role="bold">Goto(70-${EXTEN},10)</emphasis>
 
 exten =&gt; 70-<emphasis role="bold">703</emphasis>,10,NoOp(703)
@@ -1118,15 +858,19 @@ exten =&gt; 70-<emphasis role="bold">704</emphasis>,11,<emphasis role="bold">Got
 
 exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">70[5-8]</emphasis>,10,NoOp(70[5-8]);
 exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">70[5-8]</emphasis>,11,<emphasis
-                    role="bold">Goto</emphasis>(end)
+              role="bold">Goto</emphasis>(end)
 
 exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,10,NoOp(something else)
 exten =&gt; <emphasis role="bold">_</emphasis>70-<emphasis role="bold">.</emphasis>,11,<emphasis
-                    role="bold">Goto</emphasis>(end)
+              role="bold">Goto</emphasis>(end)
 
-exten =&gt; 70,n(end),NoOp(done) </programlisting></entry>
+exten =&gt; 70,n(end),NoOp(done) </programlisting></para>
 
-              <entry><programlisting>_70. =&gt; {
+        <para>In extensions.ael, the pattern syntax is the same, but it is
+        preceded by a <code>pattern</code> statement and treated just like a
+        case:</para>
+
+        <para><programlisting>_70. =&gt; {
   NoOp(dialed: ${EXTEN});
   <emphasis role="bold">switch (${EXTEN}) {</emphasis>
     <emphasis role="bold">case 703:</emphasis>
@@ -1143,129 +887,98 @@ exten =&gt; 70,n(end),NoOp(done) </programlisting></entry>
   <emphasis role="bold">}</emphasis>
   
   NoOp(done);
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting></para>
+      </section>
 
-      <bridgehead id="ael-iftime"><code>ifTime</code></bridgehead>
+      <section>
+        <title><code>ifTime</code></title>
 
-      <para>The standard application <code>GotoIfTime()</code> (see <xref
-      linkend="applications-gotoiftime" />) is replaced with the
-      <code>ifTime</code> command.</para>
+        <para>The standard application <code>GotoIfTime()</code> (see <xref
+        linkend="applications-gotoiftime" />) is replaced with the
+        <code>ifTime</code> command.</para>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
+        <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                       tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="5*" />
 
-          <colspec align="left" colnum="2" colwidth="4*" />
+            <colspec align="left" colnum="2" colwidth="4*" />
 
-          <tbody valign="top">
-            <row>
-              <entry> </entry>
+            <tbody valign="top">
+              <row>
+                <entry> </entry>
 
-              <entry><programlisting>20 =&gt; {
+                <entry><programlisting>20 =&gt; {
   <emphasis role="bold">ifTime (</emphasis>08:00-18:00|mon-fri|*|*<emphasis
-                    role="bold">) {</emphasis>
+                      role="bold">) {</emphasis>
     Dial(SIP/20);
   <emphasis role="bold">} else {</emphasis>
     Playback(announcement-closed);
     Voicemail(20,s);
   <emphasis role="bold">}</emphasis>
 }</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
 
-      <para>The time syntax is the same as for <code>GotoIfTime()</code>. You
-      can accomplish the same thing with the <code>IFTIME()</code> function
-      (<xref linkend="functions-iftime" />), though the result is not as
-      readable:</para>
+        <para>The time syntax is the same as for <code>GotoIfTime()</code>.
+        You can accomplish the same thing with the <code>IFTIME()</code>
+        function (<xref linkend="functions-iftime" />), though the result is
+        not as readable:</para>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
+        <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
+                       tocentry="0">
+          <tgroup cols="2">
+            <colspec align="left" colnum="1" colwidth="5*" />
 
-          <colspec align="left" colnum="2" colwidth="4*" />
+            <colspec align="left" colnum="2" colwidth="4*" />
 
-          <tbody valign="top">
-            <row>
-              <entry> </entry>
+            <tbody valign="top">
+              <row>
+                <entry> </entry>
 
-              <entry><programlisting>20 =&gt; {
+                <entry><programlisting>20 =&gt; {
   <emphasis role="bold">if (</emphasis>${IFTIME(08:00-18:00|mon-fri|*|*?1:0)}<emphasis
-                    role="bold">) {</emphasis>
+                      role="bold">) {</emphasis>
     Dial(SIP/20);
   <emphasis role="bold">} else {</emphasis>
     Playback(announcement-closed);
     Voicemail(20,s);
   <emphasis role="bold">}</emphasis>
 }</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+              </row>
+            </tbody>
+          </tgroup>
+        </informaltable>
+      </section>
 
-      <bridgehead id="ael-random"><code>random</code></bridgehead>
+      <section>
+        <title><code>random</code></title>
 
-      <para>The <code>random(){...}</code> command takes a value from 1 to 99.
-      This value is the percentage chance that the subsequent code block will
-      be executed.</para>
-
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <tbody valign="top">
-            <row>
-              <entry> </entry>
-
-              <entry><programlisting>20 =&gt; {
+        <para>The <code>random(){...}</code> command takes a value from 1 to
+        99. This value is the percentage chance that the subsequent code block
+        will be executed. <programlisting>20 =&gt; {
   <emphasis role="bold">random (</emphasis>42<emphasis role="bold">) {</emphasis>
     NoOp(42 % Chance);
   <emphasis role="bold">} else {</emphasis>
     NoOp(58 % Chance);
   <emphasis role="bold">}</emphasis>
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting></para>
 
-      <para>You can accomplish the same objective with an <code>if</code>
-      command and the <code>RAND()</code> function (<xref
-      linkend="functions-rand" />) with slightly more code:</para>
+        <para>You can accomplish the same objective with an <code>if</code>
+        command and the <code>RAND()</code> function (<xref
+        linkend="functions-rand" />) with slightly more code:</para>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <tbody valign="top">
-            <row>
-              <entry> </entry>
-
-              <entry><programlisting>20 =&gt; {
+        <programlisting>20 =&gt; {
   <emphasis role="bold">if (</emphasis>${RAND(0,100)} &lt; 42<emphasis
-                    role="bold">) {</emphasis>
+            role="bold">) {</emphasis>
     NoOp(42 % Chance);
   <emphasis role="bold">} else {</emphasis>
     NoOp(58 % Chance);
   <emphasis role="bold">}</emphasis>
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting>
+      </section>
     </section>
 
     <section id="ael-loops">
@@ -1295,42 +1008,20 @@ exten =&gt; 70,n(end),NoOp(done) </programlisting></entry>
       and <emphasis role="bold"><code>while</code></emphasis> loops, which
       behave just as they do in other programming languages.</para>
 
-      <bridgehead id="ael-while"><code>while</code></bridgehead>
+      <section>
+        <title><code>while</code></title>
 
-      <para>A <code>while</code> command in AEL is used in much the same way
-      as the <code>While()</code> (<xref linkend="applications-while" />) and
-      <code>EndWhile()</code> (<xref linkend="applications-endwhile" />)
-      applications.</para>
+        <para>A <code>while</code> command in AEL is used in much the same way
+        as the <code>While()</code> (<xref linkend="applications-while" />)
+        and <code>EndWhile()</code> (<xref linkend="applications-endwhile" />)
+        applications.</para>
 
-      <para>The <code>break</code> and <code>continue</code> statements found
-      in some other languages can also be used in AEL loops. The
-      <code>break</code> statement jumps to the end of the loop block,
-      <code>continue</code> to the start. This corresponds to the
-      <code>ExitWhile()</code> (<xref linkend="applications-exitwhile" />) and
-      <code>ContinueWhile()</code> (<xref
-      linkend="applications-continuewhile" />) in
-      <filename>extensions.conf</filename>.</para>
-
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>exten =&gt; 40,1,Set(x=5)
+        <para>The <code>break</code> and <code>continue</code> statements
+        found in some other languages can also be used in AEL loops. This
+        corresponds to the <code>ExitWhile()</code> (<xref
+        linkend="applications-exitwhile" />) and <code>ContinueWhile()</code>
+        (<xref linkend="applications-continuewhile" />) in
+        <filename>extensions.conf</filename>:<programlisting>exten =&gt; 40,1,Set(x=5)
 exten =&gt; 40,n,<emphasis role="bold">While($[${x} &lt;= 9])</emphasis>
 exten =&gt; 40,n,NoOp(x ist ${x})
 exten =&gt; 40,n,ExecIf($[${x} &gt; 5],<emphasis role="bold">ExitWhile</emphasis>)
@@ -1338,9 +1029,12 @@ exten =&gt; 40,n,Playback(beep)
 exten =&gt; 40,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
 exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
 exten =&gt; 40,n,NoOp(done)
-</programlisting></entry>
+</programlisting>In <filename>extensions.ael</filename>, the
+        <code>break</code> statement jumps to the end of the loop block,
+        <code>continue</code> to the start. In this example, we use
+        <code>break</code>:</para>
 
-              <entry><programlisting>30 =&gt; {
+        <para><programlisting>30 =&gt; {
   x=0;
   <emphasis role="bold">while (${x} &lt;= 9) {</emphasis>
     NoOp(x ist ${x});
@@ -1351,66 +1045,46 @@ exten =&gt; 40,n,NoOp(done)
     <emphasis role="bold">y=${x} + 1</emphasis>;
   <emphasis role="bold">}</emphasis>
   NoOp(done);
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting></para>
 
-      <note>
-        <para>In this example, we needed more lines in AEL; if we had added
-        another command to the if condition in our while loop,
-        <code>ExecIf()</code> would not be enough anymore and we would be
-        forced to use a more complex construction with <code>GotoIf()</code>.
-        Our <filename>extensions.conf</filename> would be a lot longer.</para>
-      </note>
+        <note>
+          <para>In this example, we needed more lines in AEL; if we had added
+          another command to the if condition in our while loop,
+          <code>ExecIf()</code> would not be enough anymore and we would be
+          forced to use a more complex construction with
+          <code>GotoIf()</code>. Our <filename>extensions.conf</filename>
+          would be a lot longer.</para>
+        </note>
+      </section>
 
-      <bridgehead id="ael-for"><code>for</code></bridgehead>
+      <section>
+        <title><code>for</code></title>
 
-      <para>AEL also gives us <code>for</code> loops. This has no
-      corresponding application in the <filename>.conf</filename> format,
-      though every <code>for</code> loop may be written as a
-      <code>while</code> loop:</para>
+        <para>AEL also gives us <code>for</code> loops. This has no
+        corresponding application in the <filename>extensions.conf</filename>
+        format, though every <code>for</code> loop may be written as a
+        <code>while</code> loop:</para>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>exten =&gt; 40,1,<emphasis role="bold">Set(x=5)</emphasis>
+        <programlisting>exten =&gt; 40,1,<emphasis role="bold">Set(x=5)</emphasis>
 exten =&gt; 40,n,<emphasis role="bold">While($[${x} &lt;= 5])</emphasis>
 exten =&gt; 40,n,NoOp(x ist ${x})
 exten =&gt; 40,n,Playback(beep)
 exten =&gt; 40,n,<emphasis role="bold">Set(x=$[${x} + 1])</emphasis>
 exten =&gt; 40,n,<emphasis role="bold">EndWhile()</emphasis>
 exten =&gt; 40,n,NoOp(done)
-</programlisting></entry>
+</programlisting>
 
-              <entry><programlisting>40 =&gt; {
+        <para>Even here, <filename>extensions.ael</filename> is more
+        compact:</para>
+
+        <para><programlisting>40 =&gt; {
   <emphasis role="bold">for (x=0; ${x}&lt;=5; x=${x}+1) {</emphasis>
     NoOp(x ist ${x});
     Playback(beep);
   <emphasis role="bold">}</emphasis>
   NoOp(done);
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting></para>
+      </section>
     </section>
 
     <section id="ael-macros">
@@ -1430,31 +1104,12 @@ exten =&gt; 40,n,NoOp(done)
         <secondary>macros</secondary>
       </indexterm>
 
-      <para>In AEL there's no need to choose between the <code>Macro()</code>
-      (<xref linkend="applications-macro" />) and <code>Gosub()</code> (<xref
-      linkend="applications-gosub" />), since it has the <code>macro</code>
-      command:</para>
+      <para>In extensions.conf, macros or macro-like functions can be achieved
+      with <code>Macro()</code> (<xref linkend="applications-macro" />) or
+      <code>Gosub()</code> (<xref linkend="applications-gosub" />). Our
+      example uses <code>Macro()</code>:</para>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting><emphasis role="bold">[macro-countdown]</emphasis>
+      <para><programlisting><emphasis role="bold">[macro-countdown]</emphasis>
 exten =&gt; s,1,Set(c=${ARG1})
 exten =&gt; s,n,While($[ ${c} &gt; 0])
 exten =&gt; s,n,SayNumber(${c})
@@ -1464,9 +1119,12 @@ exten =&gt; s,n,EndWhile()
 [default]
 exten =&gt; 123,1,<emphasis role="bold">Macro(countdown,3)</emphasis>
 exten =&gt; 124,1,<emphasis role="bold">Macro(countdown,5)</emphasis>
-</programlisting></entry>
+</programlisting></para>
 
-              <entry><programlisting><emphasis role="bold">macro countdown( count ) {</emphasis>
+      <para>In AEL, we don't have to choose. It has the <code>macro</code>
+      command:</para>
+
+      <para><programlisting><emphasis role="bold">macro countdown( count ) {</emphasis>
   for (c=${count}; ${c}&gt;0; c=${c}-1) {
     SayNumber(${c});
   }
@@ -1477,13 +1135,7 @@ context default {
     <emphasis role="bold">&amp;countdown(3)</emphasis>;
   }
   124 =&gt; <emphasis role="bold">&amp;countdown(5)</emphasis>;
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
-
-      <para>The AEL compiler converts <code>macro</code> into a
+}</programlisting>The AEL compiler converts <code>macro</code> into a
       <code>Gosub()</code> subroutine internally; fortunately, it's not one we
       have to maintain.</para>
     </section>
@@ -1508,88 +1160,44 @@ context default {
       </indexterm>
 
       <para>We cover the implementation of hints in AEL in depth in <xref
-      linkend="blf-hints-pickup" />. Here's a simple example:</para>
+      linkend="blf-hints-pickup" />. Here's a simple example to demonstrate
+      the proper syntax. In extensions.conf, hints look like this:</para>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>[internal-users]
+      <para><programlisting>[internal-users]
 exten =&gt; 21,<emphasis role="bold">hint,SIP/anna</emphasis>
 exten =&gt; 21,1,Dial(SIP/anna)
 
 exten =&gt; 22,<emphasis role="bold">hint,SIP/lisa</emphasis>
 exten =&gt; 22,1,Dial(SIP/lisa)
-</programlisting></entry>
+</programlisting>In AEL, the hint can encapsulate a reference to the
+      device:</para>
 
-              <entry><programlisting>context internal-users {
+      <para><programlisting>context internal-users {
   <emphasis role="bold">hint(SIP/anna)</emphasis> 21 =&gt; {
     Dial(SIP/anna);
   }
   <emphasis role="bold">hint(SIP/lisa)</emphasis> 22 =&gt; {
     Dial(SIP/lisa);
   }
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting>Here is a similar example, this time using a pattern. In
+      extensions.conf, that would look like this:</para>
 
-      <para>... and one with a pattern:</para>
-
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>[internal-users]
+      <para><programlisting>[internal-users]
 exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
 exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
 
 exten =&gt; _2X,1,Dial(SIP/${EXTEN})
-</programlisting></entry>
+</programlisting>In extensions.ael, it would look like this:</para>
 
-              <entry><programlisting>context internal-users {
+      <para><programlisting>context internal-users {
   <emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {}
   <emphasis role="bold">hint(SIP/22)</emphasis> 22 =&gt; {}
   
   _2X =&gt; {
     Dial(SIP/${EXTEN});
   }
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
+}</programlisting>Notice that the pattern is now outside the hint
+      parentheses.</para>
     </section>
 
     <section id="ael-match-caller-id">
@@ -1603,50 +1211,26 @@ exten =&gt; _2X,1,Dial(SIP/${EXTEN})
 
       <title>Filtering by caller ID</title>
 
-      <para>The AEL syntax for the ever-popular <quote>ex-girlfriend
-      extension</quote> looks like this:</para>
+      <para>In <filename>extensions.conf</filename>, the ever-popular
+      <quote>ex-girlfriend extension</quote> looks like this:</para>
 
-      <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                     tocentry="0">
-        <tgroup cols="2">
-          <colspec align="left" colnum="1" colwidth="5*" />
-
-          <colspec align="left" colnum="2" colwidth="4*" />
-
-          <thead valign="middle">
-            <row>
-              <entry
-              align="center"><filename>extensions.conf</filename></entry>
-
-              <entry
-              align="center"><filename>extensions.ael</filename></entry>
-            </row>
-          </thead>
-
-          <tbody valign="top">
-            <row>
-              <entry><programlisting>exten =&gt; 10<emphasis role="bold">/6135303122</emphasis>,1,NoOp(ex-girlfriend)
+      <para><programlisting>exten =&gt; 10<emphasis role="bold">/6135303122</emphasis>,1,NoOp(ex-girlfriend)
 exten =&gt; 10<emphasis role="bold">/6135303122</emphasis>,n,Busy()
 
 exten =&gt; 10,1,Dial(SIP/dave)
 exten =&gt; 10,n,Voicemail(dave)
-</programlisting></entry>
+</programlisting>The AEL syntax that accomplishes the same thing looks like
+      this:</para>
 
-              <entry><programlisting>10<emphasis role="bold">/6135303122</emphasis> =&gt; {
+      <para><programlisting>10<emphasis role="bold">/6135303122</emphasis> =&gt; {
   NoOp(ex-girlfriend);
   Busy();
 }
 10 =&gt; {
   Dial(SIP/dave);
   Voicemail(dave);
-}</programlisting></entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </informaltable>
-
-      <para>If a call comes in from the ex-girlfriend (with the caller ID
-      <literal>6135303122</literal>), it is routed to
+}</programlisting>If a call comes in from the ex-girlfriend (with the caller
+      ID <literal>6135303122</literal>), it is routed to
       <literal>Busy()</literal>. Everybody else gets connected to Dave's
       phone.</para>
 
@@ -1656,7 +1240,7 @@ exten =&gt; 10,n,Voicemail(dave)
   </section>
 
   <section id="extensions.ael-oder-conf">
-    <title>extensions.ael or extensions.conf?</title>
+    <title>Choosing between extensions.ael and extensions.conf</title>
 
     <para>Asterisk application developers are left to decide which format is
     the right one. The development roadmap once hinted that AEL would replace

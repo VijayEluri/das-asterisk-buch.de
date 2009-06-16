@@ -17,33 +17,24 @@
 
   <title>Installation and "Hello World"</title>
 
-  <section id="installation-einleitung">
-    <title id="Einleitung">Introduction</title>
+  <para>Some newcomers to Asterisk say it takes at least two days of studying
+  web pages and documentation before you can get an Asterisk server to do
+  anything at all. If you don't like delving into the theoretical
+  underpinnings of a complicated piece of software like Asterisk and would
+  rather see something practical and working as soon as possible, this chapter
+  is the place to start. In contrast to the rest of the book, this chapter
+  should be read, and the examples followed, in sequence.<important>
+      <para>The subject of this book is Asterisk, and not Linux; we are assume
+      that you have basic Linux administration skills. You should understand
+      how to use a text editor and how to configure a network adapter.
+      Commands are to be executed as the superuser <emphasis>root</emphasis>
+      unless otherwise noted.</para>
+    </important></para>
 
-    <para>Some newcomers to Asterisk say it takes at least two days of
-    studying web pages and documentation before you can get an Asterisk server
-    to do anything at all. If you don't like delving into the theoretical
-    underpinnings of a complicated piece of software like Asterisk and would
-    rather see something practical and working as soon as possible, this
-    chapter is the place to start. In contrast to the rest of the book, this
-    chapter should be read, and the examples followed, in sequence.<important>
-        <para>The subject of this book is Asterisk, and not Linux; we are
-        assume that you have basic Linux administration skills. You should
-        understand how to use a text editor and how to configure a network
-        adapter. Commands are to be executed as the superuser
-        <emphasis>root</emphasis> unless otherwise noted.</para>
-      </important></para>
-
-    <section id="Asterisk-1.4-oder-1.6">
-      <title>Asterisk 1.4 or 1.6?</title>
-
-      <para>For the purposes of this introduction, it doesn't matter. All the
-      basics described here apply to both versions. For production
-      installations, the more stable version is recommended, so these examples
-      feature Asterisk 1.4. If you are reading this in 2010 or even later,
-      feel free to install Asterisk 1.6.</para>
-    </section>
-  </section>
+  <para>For the purposes of this introduction, it doesn't matter whether you
+  install Asterisk 1.4 or 1.6. All the basics described here apply to both
+  versions. For production installations, the more stable version is
+  recommended, so these examples feature Asterisk 1.4.</para>
 
   <section id="Asterisk-auf-dem-Server-installieren">
     <title>Installing Asterisk on the server</title>
@@ -51,14 +42,15 @@
     <para>On choosing a Linux distribution or an Asterisk version, opinions
     (as is so often the case in the open source world) diverge. Some stick
     with distribution-specific packages (e.g. .rpm or .deb) and others compile
-    Asterisk from source. For the examples in this chapter, either approach
-    should be okay, but not so for the rest of the book. If you're not sure,
-    install from sources. The reason is simple: the versions found in
-    distribution packages are almost never current..<footnote>
+    Asterisk from source. For the examples in this book, it is best to install
+    from sources. The reasons are simple: the versions found in distribution
+    packages are almost never current,<footnote>
         <para>You can't really blame the distributors for this. New versions
         of Asterisk come out almost every month. No distributor on Earth could
         match that pace.</para>
-      </footnote>Refer to the Appendix <xref
+      </footnote> and packages often use non-standard configurations.</para>
+
+    <para>Refer to the Appendix <xref
     linkend="installationsanleitungen-asterisk-1.4" />, and install Asterisk
     1.4.x on a fresh install of <link
     linkend="installation-1.4-debian-4.0">Debian Linux</link> or even <link
@@ -67,7 +59,8 @@
     (<emphasis>e.g.</emphasis> <ulink
     url="http://www.vmware.com/">VMware</ulink>). In either case, be it a
     physical server or a virtual machine, the system should have sound card
-    and an output device (<emphasis>e.g.</emphasis> speakers).<warning>
+    and an output device (<emphasis>e.g.</emphasis> speakers), so that you can
+    make test calls to the console to see if your system is working.<warning>
         <para>Should you decide to try the install with a different
         distribution or with a different installation method and run into
         problems, try following the method described here first. It is often
@@ -86,7 +79,7 @@
     Interface).</para>
 
     <section>
-      <title>Configure Asterisk</title>
+      <title>Configuring Asterisk</title>
 
       <para>After a standard install you should find these files in the
       <filename>/etc/asterisk/</filename> directory:</para>
@@ -135,11 +128,12 @@ exten =&gt; 1001,3,Hangup()
     </section>
 
     <section id="asterisk-konfigurieren">
-      <title id="Server-konfigurieren">Start Asterisk and call "Hello
+      <title id="Server-konfigurieren">Starting Asterisk and calling "Hello
       World"</title>
 
-      <para>These four lines are enough? I thought Asterisk was supposed to be
-      complicated. Let's try it! Start Asterisk with the command
+      <para>You might be surprised that just four lines is enough to configure
+      Asterisk. Perhaps you thought Asterisk was more complicated than that.
+      Nevertheless, let's give it a try. Start Asterisk with the command
       <command>asterisk -c</command> (the <command>-c</command> switch gives
       us the console):</para>
 
@@ -246,19 +240,19 @@ Verbosity was 0 and is now 5
             however.</para>
           </warning></para>
       </section>
+    </section>
 
-      <section>
-        <title>Stop Asterisk</title>
+    <section>
+      <title>Stopping Asterisk</title>
 
-        <para>Enter <command>stop now</command>, and Asterisk stops:<screen>*CLI&gt; stop now
+      <para>Enter <command>stop now</command>, and Asterisk stops:<screen>*CLI&gt; stop now
 debian:/etc/asterisk#</screen></para>
-      </section>
     </section>
   </section>
 
   <section id="hello-world-mit-einem-sip-telefon">
-    <title id="sip-telefone-konfigurieren">"Hello World" with a SIP
-    telephone</title>
+    <title id="sip-telefone-konfigurieren">Calling "Hello World" with a SIP
+    phone</title>
 
     <indexterm>
       <primary>Telefon</primary>
@@ -281,7 +275,7 @@ debian:/etc/asterisk#</screen></para>
       </warning></para>
 
     <section>
-      <title>sip.conf and configuration of the SIP phone</title>
+      <title>Configuring the SIP phone and sip.conf</title>
 
       <para>Before you can use a SIP phone with Asterisk, you need to create
       an account for it in your Asterisk configuration. We will move the
@@ -328,7 +322,7 @@ host=dynamic</programlisting></para>
     </section>
 
     <section>
-      <title>Start Asterisk and the phone</title>
+      <title>Starting Asterisk and the phone</title>
 
       <para>Now we start Asterisk in verbose level 5 with <command>asterisk
       -vvvvvc</command>:<screen>debian:/etc/asterisk# <emphasis role="bold"><command>asterisk -vvvvvc</command></emphasis>
@@ -338,67 +332,60 @@ Asterisk 1.4.21, Copyright (C) 1999 - 2008 Digium, Inc. and others.
       <para>Next, we start the SIP phone and wait for the registration message
       in the Asterisk console:<screen>*CLI&gt; -- Registered SIP &rsquo;2000&rsquo; at 47.6.3.4 port 5060 
 expires 120 -- Unregistered SIP &rsquo;2000&rsquo; </screen></para>
-    </section>
-
-    <section>
-      <title>The test</title>
 
       <para>When you call extension 1001 from the SIP phone, you will hear the
       <filename>hello-world.gsm</filename> file played back to you.</para>
     </section>
 
     <section>
-      <title>Calling the phone from the Asterisk console</title>
+      <section>
+        <title>Calling the phone from the Asterisk console</title>
 
-      <para>Since we can call an extension with <command>console
-      dial</command> and we have successfully attached a SIP phone to the
-      system, it should be possible to call that SIP phone from the console.
-      To do this we need to add an extension to
-      <filename>/etc/asterisk/extensions.conf</filename>:<programlisting>[default] 
+        <para>Since we can call an extension with <command>console
+        dial</command> and we have successfully attached a SIP phone to the
+        system, it should be possible to call that SIP phone from the console.
+        To do this we need to add an extension to
+        <filename>/etc/asterisk/extensions.conf</filename>:<programlisting>[default] 
 exten =&gt; 1001,1,Answer()
 exten =&gt; 1001,2,Playback(hello-world)
 exten =&gt; 1001,3,Hangup()
 
 exten =&gt; 2000,1,Dial(SIP/2000)</programlisting></para>
 
-      <para>To apply these changes you must either restart Asterisk or reload
-      the dialplan. To restart Asterisk, enter <command>stop now</command> in
-      the Asterisk console and <command>asterisk -vvvvvc</command> in the
-      Linux shell. To reload the dialplan from within the running Asterisk,
-      enter <command>dialplan reload</command> in the Asterisk console. Now
-      you can dial the SIP phone with <command>console dial
-      2000</command>:<screen>*CLI&gt; console dial 2000</screen></para>
-    </section>
+        <para>To apply these changes you must either restart Asterisk or
+        reload the dialplan. To restart Asterisk, enter <command>stop
+        now</command> in the Asterisk console and <command>asterisk
+        -vvvvvc</command> in the Linux shell. To reload the dialplan from
+        within the running Asterisk, enter <command>dialplan reload</command>
+        in the Asterisk console. Now you can dial the SIP phone with
+        <command>console dial 2000</command>:<screen>*CLI&gt; console dial 2000</screen></para>
 
-    <section>
-      <title>Analysis</title>
+        <para>The dialplan application <command>Dial()</command> sets up a
+        connection to a telephone. It uses a parameter consisting of two
+        parts: the first, "SIP", describes the technology used for
+        establishing the connection, the SIP VoIP protocol in our example. The
+        second part defines the target device using that technology (in this
+        case, 2000). When using <command>Dial()</command>, no
+        <command>Answer()</command> or <command>Hangup()</command> is
+        required. Since we do not know in advance if the called station will
+        even accept the call, <command>Dial()</command> has additional
+        intelligence for opening and closing the channel.</para>
 
-      <para>The dialplan application <command>Dial()</command> sets up a
-      connection to a telephone. It uses a parameter consisting of two parts:
-      the first, "SIP", describes the technology used for establishing the
-      connection, the SIP VoIP protocol in our example. The second part
-      defines the target device using that technology (in this case, 2000).
-      When using <command>Dial()</command>, no <command>Answer()</command> or
-      <command>Hangup()</command> is required. Since we do not know in advance
-      if the called station will even accept the call,
-      <command>Dial()</command> has additional intelligence for opening and
-      closing the channel.</para>
+        <para>In our example, the extension 2000 corresponds with the SIP
+        target 2000, but this is, strictly speaking, coincidental. You could
+        also write the extension like this:<programlisting>exten =&gt; 55,1,Dial(SIP/2000)</programlisting></para>
 
-      <para>In our example, the extension 2000 corresponds with the SIP target
-      2000, but this is, strictly speaking, coincidental. You could also write
-      the extension like this:<programlisting>exten =&gt; 55,1,Dial(SIP/2000)</programlisting></para>
+        <para>Reload the dialplan and now you can call the same SIP telephone
+        with <command>console dial 55</command>.</para>
+      </section>
 
-      <para>Reload the dialplan and now you can call the same SIP telephone
-      with <command>console dial 55</command>.</para>
-    </section>
+      <section>
+        <title>Comments in the configuration</title>
 
-    <section>
-      <title>Comments in the configuration</title>
-
-      <para>Because the number sign "#" corresponds to a <link
-      linkend="glossar-dtmf">DTMF</link> tone, it cannot be used as comment
-      character. Instead, Asterisk configuration files use the semi-colon ";"
-      for indicating comments. For example:<programlisting>[default] 
+        <para>Because the number sign "#" corresponds to a <link
+        linkend="glossar-dtmf">DTMF</link> tone, it cannot be used as comment
+        character. Instead, Asterisk configuration files use the semi-colon
+        ";" for indicating comments. For example:<programlisting>[default] 
 ; Extension 1001 is used for testing
 ; of all phones.
 ;
@@ -410,11 +397,12 @@ exten =&gt; 1001,3,Hangup()  ; hanging up...
 ; 2000.
 ;
 exten =&gt; 2000,1,Dial(SIP/2000)</programlisting></para>
+      </section>
     </section>
   </section>
 
   <section id="minimale-telefonanlage">
-    <title>A minimal phone system with two SIP phones</title>
+    <title>Building a minimal phone system with two SIP phones</title>
 
     <para>What does the simplest possible working Asterisk system look like?
     Two phones and one Asterisk server.</para>
@@ -454,7 +442,7 @@ exten =&gt; 2001,1,Dial(SIP/2001)</programlisting></para>
     phone.</para>
 
     <section id="min-anlage-ab">
-      <title id="anrufbeantworter">Now, an answering machine</title>
+      <title id="anrufbeantworter">Configuring voicemail</title>
 
       <indexterm>
         <primary>Anrufbeantworter</primary>
@@ -499,14 +487,14 @@ exten =&gt; 2001,2,VoiceMail(2001,u)
 
 exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)</programlisting>
 
-      <para>Done! Start Asterisk with <command>asterisk -vvvvvc</command><tip>
-          <para>In a running Asterisk, typing <command>reload</command> in the
-          Asterisk CLI is sufficient.</para>
-        </tip> and call one phone from the other. After 20 seconds of ringing
-      (the reason for the ",20" in <command>Dial()</command> ) you are
-      transferred to the voice mailbox. If the called station is busy, the
-      call goes directly to the voice mailbox. Dial 2999 from any phone and
-      you can access the voicemail menu for that phone.<note>
+      <para>Done! Start Asterisk with <command>asterisk -vvvvvc</command> and
+      call one phone from the other (in a running Asterisk, typing
+      <command>reload</command> in the Asterisk CLI is sufficient to apply any
+      changes to the configuration files). After 20 seconds of ringing (the
+      reason for the ",20" in <command>Dial()</command> ) you are transferred
+      to the voice mailbox. If the called station is busy, the call goes
+      directly to the voice mailbox. Dial 2999 from any phone and you can
+      access the voicemail menu for that phone.<note>
           <para>If your Asterisk server has a working Mail Transfer Agent
           (MTA) (<emphasis>e.g.</emphasis> sendmail or postfix), new
           voicemails are sent as e-mail attachments directly to the e-mail
@@ -525,10 +513,17 @@ exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)</programlisting>
     <para>So far we have been able to call any extension from any telephone.
     For a small, private system, this is sufficient. Large systems and systems
     connecting to other telephone networks need some way to manage calling
-    rights. Asterisk does this via <emphasis>contexts</emphasis>.</para>
+    rights (that is, the rules that determine which phones and users are
+    allowed to make calls to where). Asterisk does this via
+    <emphasis>contexts</emphasis>.</para>
+
+    <para>Think of a context as a kind of category. Each category contains
+    rules about what can be dialed. To access the rules in a context, the
+    phone must be a member of that context, or have been directed to that
+    context by another rule.</para>
 
     <section>
-      <title>Call origination: Every telephone has a context</title>
+      <title>The originating context</title>
 
       <para>We haven't yet specified a context for the SIP phones we
       configured. In this case, Asterisk assumes the <code>[default]</code>
@@ -538,7 +533,7 @@ exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)</programlisting>
 
       <para>We can set a context for all the phones in the
       <code>[general]</code> section, but this context can be overwritten on a
-      per telephone basis.</para>
+      per telephone basis. Let's take a look at a couple of examples.</para>
 
       <section>
         <title>A context example</title>
@@ -608,7 +603,8 @@ host=dynamic
 type=friend 
 secret=1234 
 host=dynamic
-context=visitor  ; &lt;-- this device-specific context overrides the default context in the [general] section.</programlisting></para>
+context=visitor  ; &lt;-- this device-specific context
+; overrides the default context in the [general] section.</programlisting></para>
       </section>
     </section>
 
@@ -644,11 +640,12 @@ exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)</programlisting></para>
   </section>
 
   <section id="sip-ins-oeffentliche-netz">
-    <title>Calls from and to the public switched telephone network
+    <title>Calls To and From the Public Switched Telephone Network
     (PSTN)</title>
 
     <para>In this section we will connect our mini-system to the public
-    telephone network.</para>
+    telephone network. Once we've done that, we'll be able to make and receive
+    calls using our attached SIP phones.</para>
 
     <section id="min-anlage-festnetz">
       <title id="festnetz-outgoing">Calling the PSTN</title>
@@ -701,7 +698,11 @@ nat=yes</programlisting>
       in our example) and password (<parameter>UHDZJD</parameter> in our
       example) from the SIP provider; often you can do this through the
       provider's customer website. Asterisk needs this information to register
-      with the provider and make calls.</para>
+      with the provider and make calls.<warning>
+          <para>Most SIP providers charge a per-minute rate for local calls
+          and many require pre-payment. An advantage is that there is no
+          monthly flat-rate for most SIP accounts.</para>
+        </warning></para>
 
       <para>Next we need an additional dialplan rule to allow outbound
       calls:</para>
@@ -735,12 +736,8 @@ exten =&gt; _X.,1,Dial(SIP/${EXTEN}@ext-sip-account)</programlisting>
           <filename>/etc/asterisk/extensions.conf</filename> so that you don't
           need to dial the full number for local calls in areas where it is
           not normally required.)</para>
-        </tip><warning>
-          <para>Most SIP providers charge a per-minute rate for local calls
-          and many require pre-payment. An advantage is that there is no
-          monthly flat-rate for most SIP accounts.</para>
-        </warning>If everything is working as it should, you will hear the
-      remote line ringing and be able to observe the call progress in the
+        </tip>If everything is working as it should, you will hear the remote
+      line ringing and be able to observe the call progress in the
       console.</para>
 
       <para>It's a bit early to explain exactly how this works; more on that
@@ -774,8 +771,6 @@ exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)
 [from-voip-provider]
 exten =&gt; 17984512232,1,Dial(SIP/2000)
 </programlisting></para>
-
-      <para>Done!</para>
 
       <para>In our example, the number <parameter>17984512232</parameter> is
       the PSTN number (also called a DID or DN; more on that later) given to

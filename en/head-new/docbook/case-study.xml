@@ -17,58 +17,106 @@
 
   <title>Case example: A typical business telephone system</title>
 
-  <section id="grosse-anlage-einleitung">
-    <title id="einleitung">Introduction</title>
+  <para>Building on what we've learned in <xref
+  linkend="kapitel-installation" />, we'll put together a more comprehensive
+  system for a fictional business. This will show you how to handle the
+  requirements you're likely to be faced with in real installations.</para>
 
-    <para>Building on what we've learned in <xref
-    linkend="kapitel-installation" />, we'll put together a more comprehensive
-    system for a fictional business. This will show you how to handle the
-    requirements you're likely to be faced with in real installations.</para>
-  </section>
+  <para>Our fictional company is in the widget manufacturing business. We've
+  been charged with the task of planning a phone system for the new office,
+  which houses the following departments:</para>
 
-  <section id="personen-der-widgets-gmbh">
-    <title id="die-widgets-gmbh">Widgets, Inc.</title>
+  <itemizedlist>
+    <listitem>
+      <para>Management (2 people)</para>
+    </listitem>
 
-    <para>Our fictional company is in the widget manufacturing business. We've
-    been charged with the task of planning a phone system for the new office,
-    which houses the following departments:</para>
+    <listitem>
+      <para>Reception (3 people)</para>
+    </listitem>
 
-    <itemizedlist>
-      <listitem>
-        <para>Management (2 people)</para>
-      </listitem>
+    <listitem>
+      <para>Domestic sales (6 people)</para>
+    </listitem>
 
-      <listitem>
-        <para>Reception (3 people)</para>
-      </listitem>
+    <listitem>
+      <para>International sales (4 people)</para>
+    </listitem>
 
-      <listitem>
-        <para>Domestic sales (6 people)</para>
-      </listitem>
+    <listitem>
+      <para>Production (50 people)</para>
+    </listitem>
 
-      <listitem>
-        <para>International sales (4 people)</para>
-      </listitem>
+    <listitem>
+      <para>Shipping (10 people)</para>
+    </listitem>
 
-      <listitem>
-        <para>Production (50 people)</para>
-      </listitem>
+    <listitem>
+      <para>IT (2 people)</para>
+    </listitem>
 
-      <listitem>
-        <para>Shipping (10 people)</para>
-      </listitem>
+    <listitem>
+      <para>Building manager (1 person)</para>
+    </listitem>
+  </itemizedlist>
 
-      <listitem>
-        <para>IT (2 people)</para>
-      </listitem>
+  <para>Every employee has his or her own phone.</para>
 
-      <listitem>
-        <para>Building manager (1 person)</para>
-      </listitem>
-    </itemizedlist>
+  <para>What costs should Widgets, Inc. anticipate? That depends very much on
+  management's objectives. The following should be considered:</para>
 
-    <para>Every employee has his or her own phone.</para>
-  </section>
+  <itemizedlist>
+    <listitem>
+      <para>Should the Asterisk server be fault-tolerant? Will a cold-standby
+      server be sufficient, or do we need hot standby?</para>
+    </listitem>
+
+    <listitem>
+      <para>What server hardware are we buying? For most systems, a generic
+      computer will suffice. It doesn't have to be the newest and most
+      expensive.</para>
+    </listitem>
+
+    <listitem>
+      <para>Which phones are we buying? Phones can range in price from 30 to
+      300 dollars and up.</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>Does Asterisk actually make sense for Widgets, Inc., or is this just a
+  make-work project for the IT department? This depends on what the
+  traditional PBX vendors are offering and Widgets, Inc. needs. Though it's
+  not unusual for traditional vendors to produce surprise discounts when they
+  discover an Asterisk system is being considered, there can be hidden costs,
+  sometimes in the form of fixed long-term contracts that force the client to
+  buy from that vendor for several years.</para>
+
+  <para>One of the advantages of Asterisk (and open source software generally)
+  is the wide choice and availability of support and consulting services. You
+  can do it all yourself, or you can hire a consultant to do it all for you.
+  If you find the services of your existing consultant unsatisfactory, you can
+  switch to another. This is usually difficult with traditional vendors
+  because they lock you in with a contract and because the proprietary nature
+  of the product also means there is some degree of sales territory
+  exclusivity.</para>
+
+  <para>Whether Asterisk makes economic sense has to be calculated on by-case
+  basis. Experience shows that it usually does. If you consider the
+  extensibility, freedom to upgrade (or not), and scalability of Asterisk in
+  your calculations, the mid- and long-term capital and operating costs of an
+  Asterisk system usually prove highly affordable.</para>
+
+  <para>What about a packaged Asterisk system, such as FreePBX, Trixbox,
+  PBX-in-Flash, Elastix or Gemeinschaft? "Pre-rolled" Asterisk systems have
+  their advantages (rapid installation and configuration, simple interfaces
+  for commonly used features, a GUI) and their disadvantages (lack of
+  transparency, configuration restrictions, smaller installed base). A
+  well-written dialplan for a generic Asterisk installation can serve as a
+  template for new installations and an experienced Asterisk specialist can
+  have new, complex systems up and running in the same time or less than it
+  takes to set up a pre-rolled Asterisk. Whatever you choose, you're better
+  off knowing how Asterisk works under the hood before you take the pre-rolled
+  route. That's the purpose of this book!</para>
 
   <section id="widgets-rufnummernplan">
     <title id="rufnummernplan">The numbering plan</title>
@@ -193,7 +241,7 @@
   </section>
 
   <section id="widgets-infrastruktur">
-    <title>Choice of infrastructure</title>
+    <title>Choosing the infrastructure</title>
 
     <para>The new building is getting a modern structured cabling system, so
     it makes sense to equip each workstation with a SIP phone. This saves us
@@ -247,12 +295,13 @@
       materially unaffected. A voice conversation, by contrast, is highly
       time-dependent. If someone says <quote>Hi</quote> to us, we expect it to
       be followed by something relevant and intelligble immediately (such as
-      <quote>there!</quote> for example), because that is the way people speak
-      to each other in person. That we can even carry voice traffic on an IP
-      connection is owing to the high performance of modern network hardware.
-      The high bandwidth of modern networks coupled with the relatively small
-      bandwidth required by a single telephone-grade voice conversation means
-      that voice traffic can be carried in a pseudo-real-time fashion.</para>
+      <quote>my name is</quote> for example), because that is the way people
+      speak to each other in person. That we can even carry voice traffic on
+      an IP connection is owing to the high performance of modern network
+      hardware. The high bandwidth of modern networks coupled with the
+      relatively small bandwidth required by a single telephone-grade voice
+      conversation means that voice traffic can be carried in a
+      pseudo-real-time fashion.</para>
 
       <para>Nevertheless, network conditions vary, both by site and in time. A
       big network with many endpoints will carry a lot of traffic; networks
@@ -268,21 +317,17 @@
       this can be.</para>
 
       <para>To deal with these eventualities, commercial-grade routers and
-      most managed switches support some kind of traffic
-      classification.</para>
-
-      <para><footnote>
-          <para>TOS - Type Of Service</para>
-        </footnote></para>
+      most managed switches support some kind of traffic classification
+      through setting a TOS (Type of Service) flag in the packet
+      header.</para>
 
       <para>By setting a TOS flag in voice packets, we can prioritize traffic
       passing through the router or switch. This feature is useful for
       managing traffic inside our network and across the network boundary, but
       it has no impact once the packets are on the Internet service provider's
       (ISP) network or on the public Internet. Only once the ISP guarantees
-      low latency and bandwidth for real-time traffic<footnote>
-          <para>QOS - Quality Of Service</para>
-        </footnote>can we have an assurance of call quality. If you will be
+      low latency and bandwidth for real-time traffic can we have an assurance
+      of call quality (called "Quality of Service", or QOS). If you will be
       supporting a multi-branch operation and plan to connect them with VoIP,
       you should consider this requirement carefully and discuss it with your
       ISP.</para>
@@ -290,17 +335,14 @@
       <para>The Asterisk system for Widgets, Inc. has at least 78 physical
       stations. In the worst case, we will have 39 simultaneous conversations
       (this happens if all the employees call each other). Depending on the
-      codec used, we can expect a maximum bandwidth of 6,500 kbps<footnote>
-          <para>kbps = kilobits per second</para>
-        </footnote>, which should be no problem for a typical 100
-      Mbps<footnote>
-          <para>Mbps = Megabits per second, also 1.024 kbps</para>
-        </footnote>LAN on structured, twisted-pair cable. All the same, this
-      network will be carrying other traffic, and a couple of big file
-      transfers can be enough to hit performance limits. How do we get the
-      6,500 kbps value? The standard G.711 compression standard includes two
-      companding algorithms, u-law (used in North America and Japan) and a-law
-      (used in Europe).<footnote>
+      codec used, we can expect a maximum bandwidth of 6,500 kbps (kbps =
+      kilobits per second) which should be no problem for a typical 100 Mbps
+      (Mbps = Megabits per second) LAN on structured, twisted-pair cable. All
+      the same, this network will be carrying other traffic, and a couple of
+      big file transfers can be enough to hit performance limits. How do we
+      get the 6,500 kbps value? The standard G.711 compression standard
+      includes two companding algorithms, u-law (used in North America and
+      Japan) and a-law (used in Europe).<footnote>
           <para>These two algorithms are used for carrying voice traffic in
           ISDN channels (such as those used in T1 and T3 connections; see
           <xref linkend="chapter-ISDN" />)</para>
@@ -427,18 +469,14 @@
       </tip>
 
       <para>Widgets, Inc. has 78 employees and an estimate of 40 simultaneous
-      connections is reasonable, so a computer with a reasonably current
-      CPU<footnote>
-          <para>For example, Pentium 4, AMD Athlon</para>
-        </footnote></para>
-
-      <para>at a clock speed of 1.5 GHz should suffice. In general, the newer
-      the CPU and system, the better the performance; processor clock speed is
-      no longer an accurate measure of CPU performance, particularly as
-      applied to the newer dual-core processors, and your server will likely
-      be able to handle more calls with a newer processor at the same clock
-      speed. Dual processor machines will improve performance
-      correspondingly.</para>
+      connections is reasonable, so a computer with a reasonably current CPU
+      (For example, Pentium 4, AMD Athlon) at a clock speed of 1.5 GHz should
+      suffice. In general, the newer the CPU and system, the better the
+      performance; processor clock speed is no longer an accurate measure of
+      CPU performance, particularly as applied to the newer dual-core
+      processors, and your server will likely be able to handle more calls
+      with a newer processor at the same clock speed. Dual processor machines
+      will improve performance correspondingly.</para>
 
       <para>For the voice mailboxes, we will need about 0.1 MB (megabytes) of
       disk space per minute of message time.<footnote>
@@ -452,11 +490,12 @@
       can expect to use a total of about 2 GB (gigabytes) of disk space.
       Because voice message data is valuable business data and can even be
       critical, the storage should be redundant and backed-up regularly. A
-      RAID 1 array<footnote>
+      RAID 1 array(two disks or disk sets in a mirror configuration) will
+      provide the necessary redundancy.<warning>
           <para>Note that software RAID burdens the CPU significantly. A
-          professional installation should use hardware RAID.</para>
-        </footnote>(two disks or disk sets in a mirror configuration) will
-      provide the necessary redundancy.</para>
+          professional installation should use hardware RAID if at all
+          possible.</para>
+        </warning></para>
 
       <para>Memory requirements for Asterisk are not onerous, and 512 MB RAM
       would be adequate. With 1 GB RAM, Asterisk can handle very large
@@ -661,16 +700,12 @@ host=dynamic
       templates. Have a look at <xref linkend="appendix-conf-templates" /> for
       more information.</para>
 
-      <section id="widgets-callerid">
-        <title>CallerID</title>
-
-        <para>Our example <filename>sip.conf</filename> has two instances of
-        the <code>callerid</code> variable. This variable sets what is
-        displayed on the called party's telephone:<programlisting>callerid = "Building Manager" &lt;150&gt;</programlisting>In
-        our example, both the building manager's phones (150 and 151) use the
-        caller ID 150 and the caller ID name <quote>Building Manager</quote>.
-        This ensures that returned calls always go to extension 150.</para>
-      </section>
+      <para>Our example <filename>sip.conf</filename> has two instances of the
+      <code>callerid</code> variable. This variable sets what is displayed on
+      the called party's telephone:<programlisting>callerid = "Building Manager" &lt;150&gt;</programlisting>In
+      our example, both the building manager's phones (150 and 151) use the
+      caller ID 150 and the caller ID name <quote>Building Manager</quote>.
+      This ensures that returned calls always go to extension 150.</para>
     </section>
 
     <section id="widgets-dialplan">
@@ -685,7 +720,7 @@ host=dynamic
       includes described in <xref linkend="dialplan-includes" />.</para>
 
       <section id="widgets-extensions.conf">
-        <title>The extensions.conf for Widgets, Inc.</title>
+        <title>extensions.conf</title>
 
         <para>The numbering plan<footnote>
             <para>with the exception of the emergency numbers; we'll deal with
@@ -757,21 +792,18 @@ exten =&gt; 801,1,VoicemailMain()</programlisting>The extensions in the
         telephone system, can access all the mailboxes for debugging
         purposes.</para>
 
-        <section id="schwarze-loecher-im-dialplan">
-          <title>Black holes in the numbering plan</title>
+        <para>In actual practice, our dialplan would have to be somewhat more
+        complex. The numbering plan has number ranges
+        (<emphasis>e.g.</emphasis> 270 to 299) that don't contain any
+        telephones. Our example ignores this, but this could lead to confusion
+        in an actual deployment. If a user dials an unassigned number, the
+        call goes straight to a voice mailbox that may or may not exist; even
+        if it does, the user could leave messages that are never
+        retrieved.</para>
 
-          <para>In actual practice, our dialplan would have to be somewhat
-          more complex. The numbering plan has number ranges
-          (<emphasis>e.g.</emphasis> 270 to 299) that don't contain any
-          telephones. Our example ignores this, but this could lead to
-          confusion in an actual deployment. If a user dials an unassigned
-          number, the call goes straight to a voice mailbox that may or may
-          not exist; even if it does, the user could leave messages that are
-          never retrieved.</para>
-
-          <para>To prevent this from happening, the
-          <code>[internal-calls]</code> context would look like
-          this:<programlisting>[internal-calls]
+        <para>To prevent this from happening, the
+        <code>[internal-calls]</code> context would look like
+        this:<programlisting>[internal-calls]
 exten =&gt; _1[5-6]X,1,Dial(SIP/${EXTEN},60)
 exten =&gt; _1[5-6]X,2,VoiceMail(${EXTEN},u)
 
@@ -784,11 +816,9 @@ exten =&gt; _[358]XX,2,VoiceMail(${EXTEN},u)
 exten =&gt; _4[0-4]X,1,Dial(SIP/${EXTEN},60)
 exten =&gt; _4[0-4]X,2,VoiceMail(${EXTEN},u)
 </programlisting>For Widgets, Inc, we accept this risk for the sake of
-          simplicity and use the following configuration:<programlisting>[internal-calls]
+        simplicity and use the following configuration:<programlisting>[internal-calls]
 exten =&gt; _[1-5]XX,1,Dial(SIP/${EXTEN},60)
-exten =&gt; _[1-5]XX,2,VoiceMail(${EXTEN},u)
-</programlisting></para>
-        </section>
+exten =&gt; _[1-5]XX,2,VoiceMail(${EXTEN},u)</programlisting></para>
       </section>
 
       <section id="widgets-voicemail.conf">
@@ -796,7 +826,8 @@ exten =&gt; _[1-5]XX,2,VoiceMail(${EXTEN},u)
 
         <para>The <filename>voicemail.conf</filename> remains as described in
         <xref linkend="minimal-system-vm" />, except with a few additional
-        entries:</para>
+        entries restricting message length and defining the server e-mail
+        address:</para>
 
         <programlisting>[general]
 format = gsm
@@ -825,109 +856,15 @@ maxmessage = 600
     such as teleconferencing and queues. If this is what you need, you have
     two basic options: you can reinvent the wheel and build a dialplan which
     includes those features from scratch, or you can use a standard framework
-    such as <emphasis>FreePBX</emphasis><footnote>
-        <para><ulink
-        url="http://www.freepbx.com">http://www.freepbx.com</ulink></para>
-      </footnote> or <emphasis>Gemeinschaft</emphasis><footnote>
-        <para><ulink
-        url="http://www.freepbx.com">http://www.amooma.de/gemeinschaft</ulink>;
-        at the moment, this project is available only in German. Volunteers
-        willing to help internationalize it are welcome! Contact Stefan at
-        <email>stefan.wintermeyer@amooma.de</email>.</para>
-      </footnote>and configure it according to your requirements.</para>
+    such as <emphasis>FreePBX </emphasis>(<ulink
+    url="???">http://www.freepbx.com</ulink> or
+    <emphasis>Gemeinschaft</emphasis> (<ulink
+    url="???">http://www.amooma.de/gemeinschaft</ulink>; at the moment, this
+    project is available only in German. Volunteers willing to help
+    internationalize it are welcome! Contact Stefan at
+    <email>stefan.wintermeyer@amooma.de</email>) and configure it according to
+    your requirements.</para>
   </section>
 
-  <section id="widgets-faq">
-    <title>FAQ</title>
-
-    <qandaset>
-      <qandadiv>
-        <qandaentry>
-          <question>
-            <para>What costs should Widgets, Inc. anticipate?</para>
-          </question>
-
-          <answer>
-            <para>The depends very much on management's objectives. The
-            following should be considered:</para>
-
-            <itemizedlist>
-              <listitem>
-                <para>Should the Asterisk server be fault-tolerant? Will a
-                cold-standby server be sufficient, or do we need hot
-                standby?</para>
-              </listitem>
-
-              <listitem>
-                <para>What server hardware are we buying? For most systems, a
-                generic computer will suffice. It doesn't have to be the
-                newest and most expensive.</para>
-              </listitem>
-
-              <listitem>
-                <para>Which phones are we buying? Phones can range in price
-                from 30 to 300 dollars and up.</para>
-              </listitem>
-            </itemizedlist>
-          </answer>
-        </qandaentry>
-
-        <qandaentry>
-          <question>
-            <para>Does Asterisk actually make sense for Widgets, Inc., or is
-            this just a make-work project for the IT department?</para>
-          </question>
-
-          <answer>
-            <para>This depends on what the traditional PBX vendors are
-            offering and Widgets, Inc. needs. Though it's not unusual for
-            traditional vendors to produce surprise discounts when they
-            discover an Asterisk system is being considered, there can be
-            hidden costs, sometimes in the form of fixed long-term contracts
-            that force the client to buy from that vendor for several
-            years.</para>
-
-            <para>One of the advantages of Asterisk (and open source software
-            generally) is the wide choice and availability of support and
-            consulting services. You can do it all yourself, or you can hire a
-            consultant to do it all for you. If you find the services of your
-            existing consultant unsatisfactory, you can switch to another.
-            This is usually difficult with traditional vendors because they
-            lock you in with a contract and because the proprietary nature of
-            the product also means there is some degree of sales territory
-            exclusivity.</para>
-
-            <para>Whether Asterisk makes economic sense has to be calculated
-            on by-case basis. Experience shows that it usually does. If you
-            consider the extensibility, freedom to upgrade (or not), and
-            scalability of Asterisk in your calculations, the mid- and
-            long-term capital and operating costs of an Asterisk system
-            usually prove highly affordable.</para>
-          </answer>
-        </qandaentry>
-
-        <qandaentry>
-          <question>
-            <para>What about a packaged Asterisk system, such as FreePBX,
-            Trixbox, PBX-in-Flash, Elastix or Gemeinschaft? Wouldn't that make
-            more sense for Widgets, Inc.?</para>
-          </question>
-
-          <answer>
-            <para>It might. "Pre-rolled" Asterisk systems have their
-            advantages (rapid installation and configuration, simple
-            interfaces for commonly used features, a GUI) and their
-            disadvantages (lack of transparency, configuration restrictions,
-            smaller installed base). A well-written dialplan for a generic
-            Asterisk installation can serve as a template for new
-            installations and an experienced Asterisk specialist can have new,
-            complex systems up and running in the same time or less than it
-            takes to set up a pre-rolled Asterisk. Whatever you choose, you're
-            better off knowing how Asterisk works under the hood before you
-            take the pre-rolled route. That's the purpose of this book!</para>
-          </answer>
-        </qandaentry>
-      </qandadiv>
-    </qandaset>
-  </section>
+  <section id="widgets-faq"></section>
 </chapter>
