@@ -895,62 +895,32 @@ exten =&gt; 70,n(end),NoOp(done) </programlisting></para>
 
         <para>The standard application <code>GotoIfTime()</code> (see <xref
         linkend="applications-gotoiftime" />) is replaced with the
-        <code>ifTime</code> command.</para>
+        <code>ifTime</code> command in AEL:</para>
 
-        <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                       tocentry="0">
-          <tgroup cols="2">
-            <colspec align="left" colnum="1" colwidth="5*" />
-
-            <colspec align="left" colnum="2" colwidth="4*" />
-
-            <tbody valign="top">
-              <row>
-                <entry> </entry>
-
-                <entry><programlisting>20 =&gt; {
+        <programlisting>20 =&gt; {
   <emphasis role="bold">ifTime (</emphasis>08:00-18:00|mon-fri|*|*<emphasis
-                      role="bold">) {</emphasis>
+            role="bold">) {</emphasis>
     Dial(SIP/20);
   <emphasis role="bold">} else {</emphasis>
     Playback(announcement-closed);
     Voicemail(20,s);
   <emphasis role="bold">}</emphasis>
-}</programlisting></entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable>
+}</programlisting>
 
         <para>The time syntax is the same as for <code>GotoIfTime()</code>.
         You can accomplish the same thing with the <code>IFTIME()</code>
         function (<xref linkend="functions-iftime" />), though the result is
         not as readable:</para>
 
-        <informaltable colsep="0" frame="none" pgwide="1" rowsep="0"
-                       tocentry="0">
-          <tgroup cols="2">
-            <colspec align="left" colnum="1" colwidth="5*" />
-
-            <colspec align="left" colnum="2" colwidth="4*" />
-
-            <tbody valign="top">
-              <row>
-                <entry> </entry>
-
-                <entry><programlisting>20 =&gt; {
+        <programlisting>20 =&gt; {
   <emphasis role="bold">if (</emphasis>${IFTIME(08:00-18:00|mon-fri|*|*?1:0)}<emphasis
-                      role="bold">) {</emphasis>
+            role="bold">) {</emphasis>
     Dial(SIP/20);
   <emphasis role="bold">} else {</emphasis>
     Playback(announcement-closed);
     Voicemail(20,s);
   <emphasis role="bold">}</emphasis>
-}</programlisting></entry>
-              </row>
-            </tbody>
-          </tgroup>
-        </informaltable>
+}</programlisting>
       </section>
 
       <section>

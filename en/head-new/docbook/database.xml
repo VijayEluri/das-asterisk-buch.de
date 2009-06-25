@@ -19,60 +19,50 @@
     <secondary>AstDB</secondary>
   </indexterm>
 
-  <section id="datenbank-einleitung">
-    <title>Introduction</title>
-
-    <para>The problem with using variables in the dialplan is that it is
-    vulnerable to a system crash or a restart of Asterisk. If either of these
-    things happen, the variable is either erased or reset to its default
-    value. This limitation precludes certain implementations entirely. In call
-    forwarding or a calling card application, some values (the remaining
-    balance, for example) need to be stored in a persistent manner, so that
-    they can be recalled after a restart. The Asterisk Database (AstDB) serves
-    this purpose.</para>
-
-    <section id="datenbank-performance">
-      <title>Performance</title>
-
-      <indexterm>
-        <primary>database</primary>
-
-        <secondary>performance</secondary>
-      </indexterm>
-
-      <para>Those needing a database for Asterisk applications often ask how
-      well the Asterisk database performs. The answer, to the extent there's a
-      simple one, is that it depends on what you are doing. If you are working
-      with small amounts of data, as you might in a redial or call forwarding
-      scenario, then the AstDB performs admirably and you needn't look
-      further. If you are working with large, complex datasets, you should
-      consider whether an external SQL server would be better.</para>
-
-      <para>In the overwhelming majority of applications, however, this
-      discussion is purely theoretical. The Asterisk database is built on the
-      Berkeley DB (BDB), which is already a very fast database engine. When
-      handling key/value pairs, BDB is among the fastest of databases. The
-      question of database choice should be raised, then, when speed of the
-      database is proven to be the source of problems, or when you want to
-      build a larger system with greater functionality than may be met by a
-      simple key/value database.</para>
-    </section>
-  </section>
+  <para>The problem with using variables in the dialplan is that it is
+  vulnerable to a system crash or a restart of Asterisk. If either of these
+  things happen, the variable is either erased or reset to its default value.
+  This limitation precludes certain implementations entirely. In call
+  forwarding or a calling card application, some values (the remaining
+  balance, for example) need to be stored in a persistent manner, so that they
+  can be recalled after a restart. The Asterisk Database (AstDB) serves this
+  purpose.</para>
 
   <section id="asterisk-datenbank">
     <title>The Asterisk Database</title>
 
+    <indexterm>
+      <primary>database</primary>
+
+      <secondary>performance</secondary>
+    </indexterm>
+
+    <para>Those needing a database for Asterisk applications often ask how
+    well the Asterisk database performs. The answer, to the extent there's a
+    simple one, is that it depends on what you are doing. If you are working
+    with small amounts of data, as you might in a redial or call forwarding
+    scenario, then the AstDB performs admirably and you needn't look further.
+    If you are working with large, complex datasets, you should consider
+    whether an external SQL server would be better.</para>
+
+    <para>In the overwhelming majority of applications, however, this
+    discussion is purely theoretical. The Asterisk database is built on the
+    Berkeley DB (BDB), which is already a very fast database engine. When
+    handling key/value pairs, BDB is among the fastest of databases. The
+    question of database choice should be raised, then, when speed of the
+    database is proven to be the source of problems, or when you want to build
+    a larger system with greater functionality than may be met by a simple
+    key/value database.</para>
+
     <para>In a default installation, Asterisk comes packaged with a database
-    built on the Berkeley DB (BDB).<footnote>
-        <para>The Berkeley DB is a simple, high-performance embedded database
-        library with APIs for C, C++, Java, Perl, Python, Tcl and many other
-        programming languages. It stores key/value pairs and places no
-        constraints on how data is stored in a record. It does not support SQL
-        or any other query language and allows access only through in-process
-        API calls. [with information from <ulink
-        url="http://de.wikipedia.org/wiki/Berkeley_DB"><citetitle>http://en.wikipedia.org/wiki/Berkeley_DB</citetitle></ulink>]</para>
-      </footnote> This database stores information in the form of key/value
-    pairs, and keys are grouped into families. <warning>
+    built on the Berkeley DB (BDB).The Berkeley DB is a simple,
+    high-performance embedded database library with APIs for C, C++, Java,
+    Perl, Python, Tcl and many other programming languages. It stores
+    key/value pairs and places no constraints on how data is stored in a
+    record. It does not support SQL or any other query language and allows
+    access only through in-process API calls. This database stores information
+    in the form of key/value pairs, and keys are grouped into families.
+    <warning>
         <para>Up to and including Asterisk Version 1.2, these applications
         were used for database access:</para>
 
@@ -160,7 +150,7 @@
       <secondary>accessing from the CLI</secondary>
     </indexterm>
 
-    <para>The system administrator can acces the database from the
+    <para>The system administrator can access the database from the
     command-line interface (CLI).<tip>
         <para>If you have trouble remembering a command or the exact syntax,
         you can get help at the CLI with <code>help database</code>:<screen>big-island*CLI&gt; help database
@@ -172,12 +162,10 @@
          database showkey  Shows database contents</screen></para>
       </tip></para>
 
-    <important>
-      <para>For the following examples, remember that if your family, key or
-      value contain any blank spaces, the entire name must be enclosed in
-      double quotes (<code>"</code>)! For example: <code>database put test
-      entry "Hello world"</code>.</para>
-    </important>
+    <para>For the following examples, remember that if your family, key or
+    value contain any blank spaces, the entire name must be enclosed in double
+    quotes (<code>"</code>)! For example: <code>database put test entry "Hello
+    world"</code>.</para>
 
     <section id="datenbank-cli-schreiben">
       <title>Writing values to the database</title>
@@ -226,7 +214,7 @@ Database entries removed.</screen></para>
     </section>
 
     <section id="datenbank-cli-anzeigen">
-      <title>Display database contents</title>
+      <title>Displaying database contents</title>
 
       <para>The commands <code>database show</code> and <code>database
       showkey</code> will display database contents in the CLI. For
@@ -321,31 +309,32 @@ Database entries removed.</screen><important>
       internal extension 44, followed by the target number, is dialed. To
       deactivate this forwarding, 44 is dialed again (this time without a
       target number following it). You can implement this with the following
-      dialplan:</para>
+      dialplan (the text wraps in this code example, but remember that every
+      extension must be entered on a single line!):</para>
 
-      <programlisting>[from-internal]
-; Call forwarding for a single extension
-;
-; activate
-exten =&gt; _44X.,1,Answer()
-exten =&gt; _44X.,n,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
-exten =&gt; _44X.,n,SayDigits(${EXTEN:2})
-exten =&gt; _44X.,n,NoOp(Forwarding for ${CALLERID(num)} to ${EXTEN:2} activated.) 
-exten =&gt; _44X.,n,Hangup()
+      <programlisting>[ccc][from-internal]
+[ccc]; Call forwarding for a single extension
+[ccc];
+[ccc]; activate
+[ccc]exten =&gt; _44X.,1,Answer()
+[ccc]exten =&gt; _44X.,n,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
+[ccc]exten =&gt; _44X.,n,SayDigits(${EXTEN:2})
+[ccc]exten =&gt; _44X.,n,NoOp(Forwarding for ${CALLERID(num)} to ${EXTEN:2} activated.) 
+[ccc]exten =&gt; _44X.,n,Hangup()
 
-; deactivate
-exten =&gt; 44,1,Answer()
-exten =&gt; 44,n,DBdel(CF/${CALLERID(num)})
-exten =&gt; 44,n,Playback(auth-thankyou)
-exten =&gt; 44,n,NoOp(Forwarding for ${CALLERID(num)} deactivated.) 
-exten =&gt; 44,n,Hangup()
+[ccc]; deactivate
+[ccc]exten =&gt; 44,1,Answer()
+[ccc]exten =&gt; 44,n,DBdel(CF/${CALLERID(num)})
+[ccc]exten =&gt; 44,n,Playback(auth-thankyou)
+[ccc]exten =&gt; 44,n,NoOp(Forwarding for ${CALLERID(num)} deactivated.) 
+[ccc]exten =&gt; 44,n,Hangup()
 
-[from-external]
-exten =&gt; _X.,1,NoOp(Call from ${CALLERID(num)} for ${EXTEN})
-exten =&gt; _X.,n,GotoIf($[foo${DB(CF/${EXTEN})} != foo]?normal:forward)
-exten =&gt; _X.,n(normal),Dial(SIP/${EXTEN})
-exten =&gt; _X.,n(forward),NoOp(Call for ${EXTEN} is being connected to ${DB(CF/${EXTEN})})
-exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})</programlisting>
+[ccc][from-external]
+[ccc]exten =&gt; _X.,1,NoOp(Call from ${CALLERID(num)} for ${EXTEN})
+[ccc]exten =&gt; _X.,n,GotoIf($[foo${DB(CF/${EXTEN})} != foo]?normal:forward)
+[ccc]exten =&gt; _X.,n(normal),Dial(SIP/${EXTEN})
+[ccc]exten =&gt; _X.,n(forward),NoOp(Call for ${EXTEN} is being connected to ${DB(CF/${EXTEN})})
+[ccc]exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})</programlisting>
     </section>
 
     <section id="komplexes-callforwarding">
@@ -358,48 +347,48 @@ exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})</programlisting>
       team-building exercise. This global forwarding is activated via
       extension 55 (followed by the destination number). The global forwarding
       must have a higher priority than the individual forwarding. One way to
-      accomplish this is as shown below:<programlisting>[from-internal]
-; Call forwarding for a single user
-;
-; activate
-exten =&gt; _44X.,1,Answer()
-exten =&gt; _44X.,n,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
-exten =&gt; _44X.,n,SayDigits(${EXTEN:2})
-exten =&gt; _44X.,n,NoOp(Forwarding for ${CALLERID(num)} to ${EXTEN:2} activated.) 
-exten =&gt; _44X.,n,Hangup()
+      accomplish this is as shown below:<programlisting>[ccc][from-internal]
+[ccc]; Call forwarding for a single user
+[ccc];
+[ccc]; activate
+[ccc]exten =&gt; _44X.,1,Answer()
+[ccc]exten =&gt; _44X.,n,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
+[ccc]exten =&gt; _44X.,n,SayDigits(${EXTEN:2})
+[ccc]exten =&gt; _44X.,n,NoOp(Forwarding for ${CALLERID(num)} to ${EXTEN:2} activated.) 
+[ccc]exten =&gt; _44X.,n,Hangup()
 
-; deactivate
-exten =&gt; 44,1,Answer()
-exten =&gt; 44,n,DBdel(CF/${CALLERID(num)})
-exten =&gt; 44,n,Playback(auth-thankyou)
-exten =&gt; 44,n,NoOp(Forwarding for ${CALLERID(num)} deactivated.) 
-exten =&gt; 44,n,Hangup()
+[ccc]; deactivate
+[ccc]exten =&gt; 44,1,Answer()
+[ccc]exten =&gt; 44,n,DBdel(CF/${CALLERID(num)})
+[ccc]exten =&gt; 44,n,Playback(auth-thankyou)
+[ccc]exten =&gt; 44,n,NoOp(Forwarding for ${CALLERID(num)} deactivated.) 
+[ccc]exten =&gt; 44,n,Hangup()
 
-; Global forwarding
-;
-; activate
-exten =&gt; _55X.,1,Answer()
-exten =&gt; _55X.,n,Set(DB(CF/system)=${EXTEN:2})
-exten =&gt; _55X.,n,SayDigits(${EXTEN:2})
-exten =&gt; _55X.,n,NoOp(System forwarding to ${EXTEN:2} activated.) 
-exten =&gt; _55X.,n,Hangup()
+[ccc]; Global forwarding
+[ccc];
+[ccc]; activate
+[ccc]exten =&gt; _55X.,1,Answer()
+[ccc]exten =&gt; _55X.,n,Set(DB(CF/system)=${EXTEN:2})
+[ccc]exten =&gt; _55X.,n,SayDigits(${EXTEN:2})
+[ccc]exten =&gt; _55X.,n,NoOp(System forwarding to ${EXTEN:2} activated.) 
+[ccc]exten =&gt; _55X.,n,Hangup()
 
-; deactivate
-exten =&gt; 55,1,Answer()
-exten =&gt; 55,n,DBdel(CF/system)
-exten =&gt; 55,n,Playback(auth-thankyou)
-exten =&gt; 55,n,NoOp(System forwarding deactivated.) 
-exten =&gt; 55,n,Hangup()
+[ccc]; deactivate
+[ccc]exten =&gt; 55,1,Answer()
+[ccc]exten =&gt; 55,n,DBdel(CF/system)
+[ccc]exten =&gt; 55,n,Playback(auth-thankyou)
+[ccc]exten =&gt; 55,n,NoOp(System forwarding deactivated.) 
+[ccc]exten =&gt; 55,n,Hangup()
 
-[from-external]
-exten =&gt; _X.,1,NoOp(Call from ${CALLERID(num)} for ${EXTEN})
-exten =&gt; _X.,n,GotoIf($[foo${DB(CF/system)} != foo]?cfsystem:secondrule)
-exten =&gt; _X.,n(secondrule),GotoIf($[foo${DB(CF/${EXTEN})} != foo]?cfnormal:normal)
-exten =&gt; _X.,n(normal),Dial(SIP/${EXTEN})
-exten =&gt; _X.,n(cfnormal),NoOp(Call for ${EXTEN} is being connected to ${DB(CF/${EXTEN})})
-exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})
-exten =&gt; _X.,n(cfsystem),NoOp(Call for ${EXTEN} is being connected to  ${DB(CF/system)})
-exten =&gt; _X.,n,Dial(local/${DB(CF/system)})
+[ccc][from-external]
+[ccc]exten =&gt; _X.,1,NoOp(Call from ${CALLERID(num)} for ${EXTEN})
+[ccc]exten =&gt; _X.,n,GotoIf($[foo${DB(CF/system)} != foo]?cfsystem:secondrule)
+[ccc]exten =&gt; _X.,n(secondrule),GotoIf($[foo${DB(CF/${EXTEN})} != foo]?cfnormal:normal)
+[ccc]exten =&gt; _X.,n(normal),Dial(SIP/${EXTEN})
+[ccc]exten =&gt; _X.,n(cfnormal),NoOp(Call for ${EXTEN} is being connected to ${DB(CF/${EXTEN})})
+[ccc]exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})
+[ccc]exten =&gt; _X.,n(cfsystem),NoOp(Call for ${EXTEN} is being connected to  ${DB(CF/system)})
+[ccc]exten =&gt; _X.,n,Dial(local/${DB(CF/system)})
 </programlisting></para>
     </section>
   </section>

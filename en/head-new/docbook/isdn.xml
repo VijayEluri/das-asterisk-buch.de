@@ -11,198 +11,181 @@
 % Free Documentation License".
 % Asterisk training and consulting is offered at http://www.amooma.de-->
 
-  <title>ISDN</title>
+  <title>Integrated Services Digital Network</title>
 
-  <section id="isdn-einleitung">
-    <title>Background</title>
+  <para>ISDN is a twisted-pair, digital multiplexing standard for PSTN and
+  data applications. Though used widely around the world, it is not well-known
+  in North America. For most data applications, ISDN has been displaced by
+  ADSL, coaxial cable, and FTTH (fiber-to-the-home) technologies, which offer
+  much larger bandwidth at competitive rates. It remains in use for voice and
+  video applications. We'll look at those here.</para>
 
-    <para>ISDN is a twisted-pair, digital multiplexing standard for PSTN and
-    data applications. Though used widely around the world, it is not
-    well-known in North America. For most data applications, ISDN has been
-    displaced by ADSL, coaxial cable, and FTTH (fiber-to-the-home)
-    technologies, which offer much larger bandwidth at competitive rates. It
-    remains in use for voice and video applications. We'll look at those
-    here.</para>
+  <para>ISDN itself is a giant topic; because it is an older technology, it is
+  well-covered in other texts. Do not expect much depth here. We discuss ISDN
+  only in the context of its relevance to Asterisk.</para>
 
-    <para>ISDN itself is a giant topic; because it is an older technology, it
-    is well-covered in other texts. Do not expect much depth here. We discuss
-    ISDN only in the context of its relevance to Asterisk.</para>
+  <section id="minimalgrundlagen-isdn">
+    <title>ISDN basics</title>
 
-    <section id="minimalgrundlagen-isdn">
-      <title>ISDN basics</title>
+    <para>An ISDN connection provides two basic channel types, named B and D
+    (more specialized channel types exist but are not in wide use, and are not
+    covered here). A single B (<quote>bearer</quote>) channel can be equated,
+    roughly, with a single analog telephone line: you can carry on one
+    conversation on that channel. Where it differs is that a single physical
+    line pair can carry multiple B-channels, making better use of the existing
+    wiring. The data is transported in digital and not analog format, which
+    means you can't connect an analog telephone to the line and expect to hear
+    anything. The digital transport usually delivers better sound quality when
+    everything is properly configured.</para>
 
-      <para>An ISDN connection provides two basic channel types, named B and D
-      (more specialized channel types exist but are not in wide use, and are
-      not covered here). A single B (<quote>bearer</quote>) channel can be
-      equated, roughly, with a single analog telephone line: you can carry on
-      one conversation on that channel. Where it differs is that a single
-      physical line pair can carry multiple B-channels, making better use of
-      the existing wiring. The data is transported in digital and not analog
-      format, which means you can't connect an analog telephone to the line
-      and expect to hear anything. The digital transport usually delivers
-      better sound quality when everything is properly configured.</para>
+    <para>The D (<quote>data</quote>) channel carries signalling information
+    about the B channels on the circuit.</para>
 
-      <para>The D (<quote>data</quote>) channel carries signalling information
-      about the B channels on the circuit.</para>
+    <para>The difference between the B and D channels are as follows:</para>
 
-      <para>The difference between the B and D channels are as follows:</para>
+    <itemizedlist>
+      <listitem>
+        <para>The B channel is, for our purposes, a voice channel (in a
+        non-Asterisk installation, it could carry data). A B channel provides
+        64 kbit/s of bandwidth.</para>
+      </listitem>
 
-      <itemizedlist>
-        <listitem>
-          <para>The B channel is, for our purposes, a voice channel (in a
-          non-Asterisk installation, it could carry data). A B channel
-          provides 64 kbit/s of bandwidth.</para>
-        </listitem>
+      <listitem>
+        <para>The D channel is data only, but is dedicated for signalling
+        purposes. Depending on the interface type, the D channel can be 16
+        kbit/s or 64 kbit/s. The ISDN device -- be it a telephone, PBX or
+        interface card -- uses the D channel for call set-up and
+        teardown.</para>
+      </listitem>
+    </itemizedlist>
 
-        <listitem>
-          <para>The D channel is data only, but is dedicated for signalling
-          purposes. Depending on the interface type, the D channel can be 16
-          kbit/s or 64 kbit/s. The ISDN device -- be it a telephone, PBX or
-          interface card -- uses the D channel for call set-up and
-          teardown.</para>
-        </listitem>
-      </itemizedlist>
+    <para>The following sections cover the two major types of ISDN connection:
+    the basic rate interface and primary rate interface.</para>
 
-      <para>Let's look at the two major types of ISDN connection.</para>
+    <section id="isdn-basis-anschluss">
+      <title>ISDN Basic Rate Interface<indexterm>
+          <primary>ISDN Basic Rate Interface</primary>
+        </indexterm><indexterm>
+          <primary>BRI</primary>
+        </indexterm></title>
 
-      <section id="isdn-basis-anschluss">
-        <title>ISDN Basic Rate Interface<indexterm>
-            <primary>ISDN Basic Rate Interface</primary>
-          </indexterm><indexterm>
-            <primary>BRI</primary>
-          </indexterm></title>
+      <para>The entry-level ISDN service is called "Basic Rate Interface", or
+      BRI, and is used in homes (in the world outside of North America) and
+      small businesses. It provides two 64 kbps B channels and one 16 kbps D
+      channel (which is why some refer to it as <quote>2B+D</quote>) over a
+      single line pair (two wires). You can attach ISDN phones, BRI ports on
+      PBX devices, ISDN-BRI terminal adapters (which provide FXS ports for
+      analog telephones), or ISDN-BRI adapter cards to a BRI.</para>
 
-        <para>The entry-level ISDN service is called "Basic Rate Interface",
-        or BRI, and is used in homes (in the world outside of North America)
-        and small businesses. It provides two 64 kbps B channels and one 16
-        kbps D channel (which is why some refer to it as <quote>2B+D</quote>)
-        over a single line pair (two wires). You can attach ISDN phones, BRI
-        ports on PBX devices, ISDN-BRI terminal adapters (which provide FXS
-        ports for analog telephones), or ISDN-BRI adapter cards to a
-        BRI.</para>
+      <para>To install and use BRI, you need to know what signalling type the
+      carrier expects. There are two types:<itemizedlist>
+          <listitem>
+            <para>2B1Q</para>
 
-        <para>To install and use BRI, you need to know what signalling type
-        the carrier expects. There are two types:<itemizedlist>
-            <listitem>
-              <para>2B1Q</para>
+            <para>This (<quote>2 binary, 1 quaternary</quote>) is the
+            signalling type used in North America. It is a linear coding type
+            which supports a loop length of up to 5500 m (~18000 ft).</para>
+          </listitem>
 
-              <para>This (<quote>2 binary, 1 quaternary</quote>) is the
-              signalling type used in North America. It is a linear coding
-              type which supports a loop length of up to 5500 m (~18000
-              ft).</para>
-            </listitem>
+          <listitem>
+            <para>4B3T</para>
 
-            <listitem>
-              <para>4B3T</para>
+            <para>This (<quote>4 binary, 3 ternary</quote>) is the signalling
+            type used in the rest of the world, including Europe. It is a
+            block coding type which supports a loop length of up to 4200 m
+            (~13700 ft).</para>
+          </listitem>
+        </itemizedlist></para>
+    </section>
 
-              <para>This (<quote>4 binary, 3 ternary</quote>) is the
-              signalling type used in the rest of the world, including Europe.
-              It is a block coding type which supports a loop length of up to
-              4200 m (~13700 ft).</para>
-            </listitem>
-          </itemizedlist></para>
-      </section>
+    <section>
+      <title>BRI in the United States</title>
 
-      <section>
-        <title>I am in the United States. Why would I use BRI?</title>
+      <para>ISDN never really caught on at the subscriber level in North
+      America. Though there are many opinions why, the most common explanation
+      given is that the size of the existing network made implementing ISDN to
+      the suburbs prohibitively expensive. In North America, average loop
+      lengths are much longer when compared to Europe, where ISDN circuits now
+      make up over 80% of installations.</para>
 
-        <para>ISDN never really caught on at the subscriber level in North
-        America. Though there are many opinions why, the most common
-        explanation given is that the size of the existing network made
-        implementing ISDN to the suburbs prohibitively expensive. In North
-        America, average loop lengths are much longer when compared to Europe,
-        where ISDN circuits now make up over 80% of installations.</para>
+      <para>Still, there are occasions when BRI makes sense, and in most
+      jurisdictions it is a tariffed service, which means that some carrier
+      (usually the incumbent telephone company) must provide it if it is
+      technically feasible. Here are some reasons why you might consider
+      BRI:</para>
 
-        <para>Still, there are occasions when BRI makes sense, and in most
-        jurisdictions it is a tariffed service, which means that some carrier
-        (usually the incumbent telephone company) must provide it if it is
-        technically feasible. Here are some reasons why you might consider
-        BRI:</para>
+      <para><itemizedlist>
+          <listitem>
+            <para>You are faxing and your analog lines are poor
+            quality.</para>
 
-        <para><itemizedlist>
-            <listitem>
-              <para>You are faxing and your analog lines are poor
-              quality.</para>
+            <para>Faxing does not work well over IP (see <xref
+            linkend="chapter-faxserver" />). Analog is an option, but if your
+            analog lines are noisy, you should consider BRI.</para>
+          </listitem>
 
-              <para>Faxing does not work well over IP (see <xref
-              linkend="chapter-faxserver" />). Analog is an option, but if
-              your analog lines are noisy, you should consider BRI.</para>
-            </listitem>
+          <listitem>
+            <para>You need the sound quality and call-signalling features that
+            only ISDN provides, but don't need enough channels to justify
+            PRI.</para>
 
-            <listitem>
-              <para>You need the sound quality and call-signalling features
-              that only ISDN provides, but don't need enough channels to
-              justify PRI.</para>
+            <para>Features such as Explicit Call Transfer, DNIS (Dialed Number
+            Identification Service) and COLP (Connected Line identification
+            Presentation) are ISDN services which can't easily be replicated
+            on analog lines. If you need these but don't need more than 6 - 10
+            channels, BRI is a real option. One thing is beyond dispute: in
+            the circuit-switched, PSTN world, ISDN offers unparalleled sound
+            quality.</para>
+          </listitem>
+        </itemizedlist>Of course, the economics will vary depending on your
+      location and the carrier. Be warned that most carriers which offer BRI
+      don't actively market it, so you may face challenges in getting anyone
+      in the sales department to acknowledge that the service exists.</para>
+    </section>
 
-              <para>Features such as Explicit Call Transfer, DNIS (Dialed
-              Number Identification Service) and COLP (Connected Line
-              identification Presentation) are ISDN services which can't
-              easily be replicated on analog lines. If you need these but
-              don't need more than 6 - 10 channels, BRI is a real option. One
-              thing is beyond dispute: in the circuit-switched, PSTN world,
-              ISDN offers unparalleled sound quality.</para>
-            </listitem>
-          </itemizedlist>Of course, the economics will vary depending on your
-        location and the carrier. Be warned that most carriers which offer BRI
-        don't actively market it, so you may face challenges in getting anyone
-        in the sales department to acknowledge that the service exists.</para>
-      </section>
+    <section id="isdn-multiplex-anschluss">
+      <title>ISDN Primary Rate Interface<indexterm>
+          <primary>ISDN Primary Rate Interface</primary>
+        </indexterm><indexterm>
+          <primary>PRI</primary>
+        </indexterm></title>
 
-      <section id="isdn-multiplex-anschluss">
-        <title>ISDN Primary Rate Interface<indexterm>
-            <primary>ISDN Primary Rate Interface</primary>
-          </indexterm><indexterm>
-            <primary>PRI</primary>
-          </indexterm></title>
+      <para>You can think of the PRI as the bigger, flashier brother of the
+      BRI. In North America, PRI is provided over a T1 (23 B channels, one 64
+      kbps D channel) with two or three pairs (four or six wires); in Europe,
+      the E1 (30 B channels, one 64 kbps D channel). Again, you can only
+      connect ISDN devices to a PRI circuit. Examples include the PRI
+      interface on a PBX, a channel bank (which provides FXS ports for analog
+      telephones), or an ISDN-PRI interface card. The PRI is intended for
+      larger installations.</para>
 
-        <para>You can think of the PRI as the bigger, flashier brother of the
-        BRI. In North America, PRI is provided over a T1 (23 B channels, one
-        64 kbps D channel) with two or three pairs (four or six wires); in
-        Europe, the E1 (30 B channels, one 64 kbps D channel). Again, you can
-        only connect ISDN devices to a PRI circuit. Examples include the PRI
-        interface on a PBX, a channel bank (which provides FXS ports for
-        analog telephones), or an ISDN-PRI interface card. The PRI is intended
-        for larger installations.</para>
+      <para>There is nothing that says a PRI must use all 24 channels. Some
+      carriers provide partial PRI service (usually 10 channels), sometimes at
+      considerable cost savings.</para>
 
-        <para>There is nothing that says a PRI must use all 24 channels. Some
-        carriers provide partial PRI service (usually 10 channels), sometimes
-        at considerable cost savings.</para>
-      </section>
+      <para>PRI always implies ISDN. PRI service is supplied via a T1, but not
+      all T1 circuits are PRI. Non-ISDN T1 circuits (also called "Inband T1")
+      can still be found in North America. In such circuits, call setup and
+      teardown signalling is sent in the channel (CAS, or Channel Associated
+      Signalling) instead of via a separate D channel. This steals some
+      bandwidth from each channel but makes all 24 channels available.</para>
 
-      <section>
-        <title>ISDN PRI versus T1</title>
-
-        <para>PRI always implies ISDN. PRI service is supplied via a T1, but
-        not all T1 circuits are PRI. Non-ISDN T1 circuits (also called "Inband
-        T1") can still be found in North America. In such circuits, call setup
-        and teardown signalling is sent in the channel (CAS, or Channel
-        Associated Signalling) instead of via a separate D channel. This
-        steals some bandwidth from each channel but makes all 24 channels
-        available.</para>
-
-        <para>For voice applications, PRI is on its way to replacing non-PRI
-        T1 connections completely. Its broad support and extremely fast
-        signalling make it the easy choice.</para>
-      </section>
+      <para>For voice applications, PRI is on its way to replacing non-PRI T1
+      connections completely. Its broad support and extremely fast signalling
+      make it the easy choice.</para>
     </section>
   </section>
 
   <section id="welche-isdn-karte">
-    <title>Which ISDN card should I choose?<indexterm>
+    <title>Choosing an ISDN card<indexterm>
         <primary>ISDN cards, recommendation</primary>
       </indexterm></title>
 
-    <para>This is a difficult question and not one that ought to be answered
-    in a printed text, for a few reasons:</para>
+    <para>This is a difficult question, and the answer depends on your
+    specific circumstances and requirements. Here are some things you need to
+    consider:</para>
 
     <itemizedlist>
-      <listitem>
-        <para>There is no way for an author to win this one. If he doesn't
-        answer, the interested reader asks why he bought the book in the first
-        place. If he provides an answer, he's accused of bias in favor of a
-        manufacturer.</para>
-      </listitem>
-
       <listitem>
         <para>A card that's excellent today may be mediocre tomorrow,
         particularly when compared with newer product in the
@@ -237,26 +220,20 @@
       </important></para>
 
     <section id="isdn-empfehlung-privat">
-      <title>Recommendations for residential systems</title>
+      <title>Determining your quality needs</title>
 
       <para>Most private Asterisk users are not hung up on sound quality and
-      availability.<footnote>
-          <para>We say "most"! Spouses can be quite demanding.</para>
-        </footnote> Cost is likely the primary consideration here. If you
+      availability. Cost is likely the primary consideration here. If you
       aren't planning to fax over the card, and you only need two B channels,
       any generic HFC-based BRI card will do. The cards are cheap and widely
       available. You've been warned: installation can be challenging with
       these cards, and you shouldn't expect amazing sound quality. If you can
       live with these limitations, this is a real option.</para>
-    </section>
 
-    <section id="isdn-empfehlung-geschaeft">
-      <title>Recommendations for business systems</title>
-
-      <para>The bar rises substantially here. If you are replacing an older
-      system you must at least match it in quality, unless you like doing
-      battle with users and clients. If you value your career in this
-      business, you'd best steer clear of generic cards.</para>
+      <para>For business systems, the bar rises substantially. If you are
+      replacing an older system you must at least match it in quality, unless
+      you like doing battle with users and clients. If you value your career
+      in this business, you'd best steer clear of generic cards.</para>
 
       <section id="isdn-hardware-echo-cancelation">
         <title>Hardware echo cancellation</title>
@@ -270,12 +247,12 @@
         CPU cycles to achieve it.</para>
 
         <para>As echo cancellation is not easy to do well, these modules are
-        accordingly more expensive. Nevertheless, hardware echo cancellation
-        is not negotiable for any system you intend to connect to the PSTN.
-        Cards providing PRI to internal servers can get away without it, since
-        echo in local trunks is rare, but if you're buying a card anyway,
-        spend the extra money. You never know how you might need to use the
-        card in the future.</para>
+        accordingly more expensive. Nevertheless, in business applications,
+        hardware echo cancellation is not negotiable for any system you intend
+        to connect to the PSTN. Cards providing PRI to internal servers can
+        get away without it, since echo in local trunks is rare, but if you're
+        buying a card anyway, spend the extra money. You never know how you
+        might need to use the card in the future.</para>
 
         <para>Tail length is a performance parameter to consider when
         evaluating hardware echo cancellers. It determines the length of the
@@ -288,7 +265,7 @@
         <title>Server load and interrupts</title>
 
         <para>In the early years of Asterisk, there was no affordable echo
-        cancellation, so Mark Spencer and other wrote software to perform the
+        cancellation, so Mark Spencer and others wrote software to perform the
         cancellation. This necessitated breaking the in- and outbound audio
         streams into 1 ms chunks. For this reason, all the standard ISDN cards
         in use today set interrupts at 1 ms intervals for each B
@@ -341,7 +318,8 @@
         black line or gap in the fax image. In the best case, nothing is
         visible; in the worst case, the transmission ends prematurely.</para>
 
-        <para>Some solutions:<itemizedlist>
+        <para>Here are some things you can do to address faxing
+        problems:<itemizedlist>
             <listitem>
               <para>If you can do without a fax machine, going to software
               faxing on the server is a cost-effective alternative (see an
@@ -368,13 +346,14 @@
     <section id="isdn-hersteller-und-treiber">
       <title>Manufacturers and drivers</title>
 
-      <para>There seem to be as many ISDN card manufacturers as there are
-      grains of sand on a beach. The products described here are a subjective
+      <para>There seem to be as many ISDN card manufacturers as people with an
+      opinion about them. The products described here are a subjective
       selection, but have been chosen because they are used widely. Further
       exploration of the subject could fill another book.<important>
           <para>Hardware and driver information provided here was current at
-          the time of printing. Check the book's <ulink
-          url="???">website</ulink>, where we will post updates.</para>
+          the time of printing. Check the book's website (<ulink
+          url="???">http://www.the-asterisk-book.com</ulink>) where we will
+          post updates.</para>
         </important></para>
 
       <section id="isdn-hersteller-digium">
@@ -382,14 +361,14 @@
             <primary>Digium</primary>
           </indexterm></title>
 
-        <para>As the parent company and home of Asterisk, <ulink
-        url="http://www.digium.com">Digium</ulink> has offered digital
-        interface cards for several years now (the early cards were analog
-        only). The advantage for the Digium cards is obvious: you always have
-        drivers updated for the most current Asterisk release. In the past,
-        these drivers have been middling in quality and there have been
-        problems. With the new DAHDI driver generation, Digium is promising
-        better performance.</para>
+        <para>As the parent company and home of Asterisk, Digium (<ulink
+        url="???">http://www.digium.com</ulink>) has offered digital interface
+        cards for several years now (the early cards were analog only). The
+        advantage for the Digium cards is obvious: you always have drivers
+        updated for the most current Asterisk release. In the past, these
+        drivers have been middling in quality and there have been problems.
+        With the new DAHDI driver generation, Digium is promising better
+        performance.</para>
       </section>
 
       <section id="isdn-hersteller-sangoma">
@@ -397,10 +376,11 @@
             <primary>Sangoma</primary>
           </indexterm></title>
 
-        <para><ulink url="http://www.sangoma.com">Sangoma</ulink> is a popular
-        alternative manufacturer in North America, and was, until recently,
-        purely a hardware company. They make both analog and ISDN interface
-        cards and have a reputation for good technical support.</para>
+        <para>Sangoma (<ulink url="???">http://www.sangoma.com</ulink>) is a
+        popular alternative manufacturer in North America, and was, until
+        recently, purely a hardware company. They make both analog and ISDN
+        interface cards and have a reputation for good technical
+        support.</para>
 
         <para>Open-source purists may take exception to Sangoma's use of a
         binary-only ISDN stack (for BRI). Sangoma's response is that the
@@ -417,13 +397,52 @@
         with mISDN.</para>
       </section>
     </section>
+  </section>
 
-    <section id="isdn-installationsanleitungen">
-      <title>Installation instructions for ISDN cards</title>
+  <section>
+    <title>Media Gateways</title>
 
-      <para>ISDN card and driver installation instructions for Asterisk may be
-      found in <xref
-      linkend="installations-asterisk-cards-isdn-analog" />.</para>
+    <para>Just as you might use an ATA in place of an analog interface card
+    for regular phones, you could use a "media gateway" for ISDN connections.
+    This gateway converts an ISDN connection into one or more SIP accounts and
+    vice-versa. These are usually "black box" solutions, which are configured
+    via a web GUI or over SSH.</para>
+
+    <para>Purely analog media gateways are simply ATAs (Analog Telephone
+    Adapters), see <xref linkend="ata" />.</para>
+
+    <section id="media-gateways-vorteile">
+      <title>Advantages</title>
+
+      <para>One major advantage is that a media gateway is often easier to
+      configure than an interface card. You don't have to open up the server
+      and install the card, either. Configuring Asterisk is simpler, because
+      you only have to configure SIP. Finally, you don't have to run telephone
+      lines of any kind to the server; you install the gateway device in the
+      wire room, connect it to the network patch panel, and put the server
+      anywhere on the network that is practical.</para>
+    </section>
+
+    <section id="media-gateways-nachteile">
+      <title>Disadvantages</title>
+
+      <para>Media gateways are generally sold on price and not on the quality
+      of installed components, so manufacturers are tempted to use lower
+      quality interface cards, which can be problematic (see <xref
+      linkend="which-isdn-card" />). Asterisk works best when using the ISDN
+      clock; the clock signal is very stable, and a stable clock signal is
+      vital, especially for conferencing. A media gateway does not pass this
+      signal over Ethernet; the Asterisk server must rely on the system clock,
+      which will vary in stability. Updating a media gateway is also more
+      difficult, if it's possible at all.</para>
+
+      <para>Whether one should choose an interface card or a media gateway is
+      a regular topic of discussion in the Asterisk community. Both sides make
+      good arguments, and you can run a successful system with either. What is
+      best for you depends on the circumstances. If you need stable clock (you
+      are conferencing or you have existing ISDN cards in your system), you'll
+      need an ISDN card. If you have physical access problems, or you need to
+      maximize the simplicity of the system, go with a media gateway.</para>
     </section>
   </section>
 </chapter>

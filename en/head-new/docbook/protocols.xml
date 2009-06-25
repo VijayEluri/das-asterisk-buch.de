@@ -17,41 +17,44 @@
 
   <title>Protocols</title>
 
-  <section id="protokolle-einleitung">
-    <title>Introduction</title>
-
-    <para>This chapter will cover the techniques by which we actually get
-    voice data from one point to another. The session protocols for this
-    purpose are really a kind of "grammar" that governs this transmission, and
-    are in turn built upon the transport layer protocols that make up the
-    TCP/IP protocol stack: namely TCP and UDP. You should have a fundamental
-    understanding of these protocols when troubleshooting certain problems,
-    which is why we are describing them in some detail here. This
-    understanding is not strictly necessary to implement Asterisk but is
-    nevertheless valuable. As such, this chapter is intended as a reference
-    for the event it is needed.</para>
-  </section>
+  <para>This chapter will cover the techniques by which we actually get voice
+  data from one point to another. The session protocols for this purpose are
+  really a kind of "grammar" that governs this transmission, and are in turn
+  built upon the transport layer protocols that make up the TCP/IP protocol
+  stack: namely TCP and UDP. You should have a fundamental understanding of
+  these protocols when troubleshooting certain problems, which is why we are
+  describing them in some detail here. This understanding is not strictly
+  necessary to implement Asterisk but is nevertheless valuable. As such, this
+  chapter is intended as a reference for the event it is needed.</para>
 
   <section id="netzwerkprotokolle">
     <title>Network protocols</title>
 
-    <para>We recommend you look at the Wikipedia articles describing the
-    transport protocols, which cover them in considerably more depth.<footnote>
-        <para>See <citetitle><ulink
-        url="???">http://en.wikipedia.org/wiki/Transmission_Control_Protocol</ulink></citetitle>
-        and <citetitle><ulink
-        url="???">http://en.wikipedia.org/wiki/User_Datagram_Protocol</ulink></citetitle></para>
-      </footnote></para>
+    <para>TCP is a protocol which ensures that all the information transmitted
+    by the sender arrives at the receiver complete and in the correct order.
+    This reliability is at the cost of relatively higher transmission
+    overhead, which, during times of congestion, is more likely to lead to
+    interruptions or delays in transmission. By contrast, its sister protocol
+    UDP invests almost nothing in assuring that everything is received;
+    instead, it merely sends out every packet as soon it is ready to be
+    delivered without regard to whether it arrives intact or even in the right
+    sequence. TCP ensures a secure, complete transfer of data by calculating a
+    checksum on each packet and comparing the checksums when the packet is
+    received, as well as attaching a sequence number to each packet and asking
+    for receipt confirmation from the destination host. The destination host
+    can ask for a re-transmit if a packet is corrupt or missing. This is how
+    HTTP (World Wide Web) traffic is transmitted.</para>
 
-    <para>For the impatient among you, here is a simple and brief definition:
-    TCP is a protocol which ensures that all the information transmitted by
-    the sender arrives at the receiver complete and in the correct order. This
-    reliability is at the cost of relatively higher transmission overhead,
-    which, during times of congestion, is more likely to lead to interruptions
-    or delays in transmission. By contrast, its sister protocol UDP invests
-    almost nothing in assuring that everything is received; instead, it merely
-    sends out every packet as soon it is ready to be delivered without regard
-    to whether it arrives intact or even in the right sequence.</para>
+    <para>By contrast, streaming data -- as used in video and audio
+    transmission -- doesn't actually need this level of rigor because it is
+    time-sensitive. If a video packet is missed, there is no sense in
+    retransmitting it because by the time it arrives, the video will have
+    played on past the point of the missing data. For this reason, UDP is used
+    for streaming data. There is no delivery guarantee, but the transport
+    overhead is much less than in TCP. As a general guideline, you can define
+    the two protocols this way: TCP is for "when it absolutely has to get
+    there intact, no matter how long it takes" and UDP is for "when it has to
+    get there fast and we don't care if we lose a few packets."</para>
 
     <para>Both protocols are of importance in VoIP applications, because
     connections are established using TCP, whereas the voice data itself is
@@ -93,7 +96,7 @@
       network services.</para>
 
       <section id="tcp-allgemein">
-        <title>General</title>
+        <title>TCP connections</title>
 
         <para>TCP is an end-to-end ("circuit-like"), full duplex (meaning it
         allows the transmission of data in both directions at the same time)
@@ -120,18 +123,15 @@
         the remote endpoint.</para>
 
         <para>Ports are 16 bit numbers, and so range from 0 to 65535. The
-        ports from 0 to 1023 are reserved and assigned by IANA<footnote>
-            <para>Internet Assigned Numbers Authority. See <citetitle><ulink
-            url="???">http://www.iana.org</ulink></citetitle>.</para>
-          </footnote></para>
-
-        <para> for specific applications. For example, web traffic, which uses
-        HTTP, travels over the port reserved for HTTP traffic, port 80. The
-        use of particular ports is not binding; an administrator may operate
-        an FTP server on a port other than 21. For publicly-accessible
-        services, however, client software will expect to find its specific
-        service on the IANA-specified port, and special, private services are
-        usually operated on unassigned ports above 1024.</para>
+        ports from 0 to 1023 are reserved and assigned by Internat Assigned
+        Numbers Authority (IANA) for specific applications. For example, web
+        traffic, which uses HTTP, travels over the port reserved for HTTP
+        traffic, port 80. The use of particular ports is not binding; an
+        administrator may operate an FTP server on a port other than 21. For
+        publicly-accessible services, however, client software will expect to
+        find its specific service on the IANA-specified port, and special,
+        private services are usually operated on unassigned ports above
+        1024.</para>
       </section>
 
       <section id="tcp-verbindungsaufbau">
@@ -151,69 +151,57 @@
         done gracefully, this is sometimes called "teardown.") Data may still
         be transferred by the opposite endpoint while the connection is being
         torn down.</para>
-      </section>
-
-      <section id="tcp-drei-wege-handshake">
-        <title>The Three-Way Handshake</title>
 
         <para>The three-way handshake is the manner by which two TCP endpoints
         establish and maintain a connection so as to minimize data
         loss.</para>
 
-        <section id="tcp-verbindungsaufbau">
-          <title>Connection setup</title>
+        <para>The client intitiating a connection sends the server a TCP SYN
+        (synchronize, identified with the SYN flag bit set to 1) packet with a
+        sequence number <replaceable>x</replaceable>. Sequence numbers are
+        used to set the correct order for packets, ensure that no packets are
+        missing, and check for duplicates when the packet stream is
+        reassembled at the server.</para>
 
-          <para>The client intitiating a connection sends the server a TCP SYN
-          (synchronize, identified with the SYN flag bit set to 1) packet with
-          a sequence number <replaceable>x</replaceable>. Sequence numbers are
-          used to set the correct order for packets, ensure that no packets
-          are missing, and check for duplicates when the packet stream is
-          reassembled at the server.</para>
+        <para>The type of packet (SYN) and the sequence number are set in the
+        TCP header and the sequence number is selected randomly (how this is
+        done depends on the TCP implementation). The server replies with a
+        SYN/ACK (synchronize-acknowledge, identified with both SYN and ACK
+        flags set to 1) packet having a (similarly randomly selected) sequence
+        number <replaceable>y</replaceable>. At the same time it increments
+        the sequence number of the initiating SYN packet by one
+        (<replaceable>x</replaceable> + 1) and places this number in the
+        acknowledgement field of the packet's TCP header.</para>
 
-          <para>The type of packet (SYN) and the sequence number are set in
-          the TCP header and the sequence number is selected randomly (how
-          this is done depends on the TCP implementation). The server replies
-          with a SYN/ACK (synchronize-acknowledge, identified with both SYN
-          and ACK flags set to 1) packet having a (similarly randomly
-          selected) sequence number <replaceable>y</replaceable>. At the same
-          time it increments the sequence number of the initiating SYN packet
-          by one (<replaceable>x</replaceable> + 1) and places this number in
-          the acknowledgement field of the packet's TCP header.</para>
+        <para>Finally, the client completes the handshake by replying to the
+        SYN/ACK with an ACK packet of its own, incrementing the sequence
+        number by one (<replaceable>y</replaceable> + 1). This process is also
+        called "forward acknowledgement". For extra security, the client also
+        wraps the received <replaceable>x</replaceable> + 1 sequence number in
+        this ACK reply. If all goes well, the connection is
+        established.</para>
 
-          <para>Finally, the client completes the handshake by replying to the
-          SYN/ACK with an ACK packet of its own, incrementing the sequence
-          number by one (<replaceable>y</replaceable> + 1). This process is
-          also called "forward acknowledgement". For extra security, the
-          client also wraps the received <replaceable>x</replaceable> + 1
-          sequence number in this ACK reply. If all goes well, the connection
-          is established.</para>
-        </section>
+        <para>Graceful teardown follows a similar process. Instead of packets
+        with SYN flag bits set, the FIN (finish) flag bit is set. This
+        indicates to the receiver that the sender will not be transmitting any
+        further data. This is acknowledged with an ACK packet. The recipient
+        of the initial FIN packet then responds with an ACK packet of its own,
+        which is likewise acknowledged. Though four packets are exchanged,
+        this is still treated as a three-way handshake, since the FIN-ACK
+        combination from the server to the client is considered a "one-way"
+        operation (the FIN and ACK message can also be contained in a single
+        packet).</para>
 
-        <section id="tcp-verbindungsabbau">
-          <title>Connection teardown</title>
-
-          <para>Graceful teardown follows a similar process. Instead of
-          packets with SYN flag bits set, the FIN (finish) flag bit is set.
-          This indicates to the receiver that the sender will not be
-          transmitting any further data. This is acknowledged with an ACK
-          packet. The recipient of the initial FIN packet then responds with
-          an ACK packet of its own, which is likewise acknowledged. Though
-          four packets are exchanged, this is still treated as a three-way
-          handshake, since the FIN-ACK combination from the server to the
-          client is considered a "one-way" operation (the FIN and ACK message
-          can also be contained in a single packet).</para>
-
-          <para>The maximum segment lifetime (MSL) is the maximum time that a
-          TCP segment may exist in the network before it is discarded
-          (normally 2 minutes). After the transmission of the last ACK, the
-          client enters a wait state equal to two MSL periods; during this
-          time all late-arriving segments are discarded. This is to ensure
-          that no late-arriving segments are misinterpreted as the initiation
-          of new connections. This also ensures that the connection is indeed
-          closed gracefully; if the ACK <replaceable>y</replaceable> + 1 goes
-          missing, a wait timer on the server expires and the LAST_ACK segment
-          is retransmitted.</para>
-        </section>
+        <para>The maximum segment lifetime (MSL) is the maximum time that a
+        TCP segment may exist in the network before it is discarded (normally
+        2 minutes). After the transmission of the last ACK, the client enters
+        a wait state equal to two MSL periods; during this time all
+        late-arriving segments are discarded. This is to ensure that no
+        late-arriving segments are misinterpreted as the initiation of new
+        connections. This also ensures that the connection is indeed closed
+        gracefully; if the ACK <replaceable>y</replaceable> + 1 goes missing,
+        a wait timer on the server expires and the LAST_ACK segment is
+        retransmitted.</para>
       </section>
 
       <section id="tcp-header">
@@ -221,17 +209,14 @@
 
         <para>A TCP segment consists of two parts: the header, containing the
         transmission information such as port and sequence number, and the
-        payload, which is the real information we want to send, which usually
-        includes application layer protocol information (such as HTTP or SSH).
-        The values are transmitted in network (big endian) byte order.</para>
+        payload, which is the real information we want to send (see Figure
+        7.1) which usually includes application layer protocol information
+        (such as HTTP or SSH). The values are transmitted in network (big
+        endian) byte order.</para>
 
         <mediaobject>
           <imageobject role="fo">
             <imagedata fileref="images/tcp_header.png" />
-          </imageobject>
-
-          <imageobject role="html">
-            <imagedata fileref="images/tcp_header.html.jpg" />
           </imageobject>
         </mediaobject>
       </section>
@@ -239,48 +224,39 @@
       <section id="tcp-datenuebertragung">
         <title>Data transmission</title>
 
-        <section id="tcp-ip-paket-groesse">
-          <title>TCP/IP packet size</title>
+        <para>A TCP segment is typically no larger than 1500 bytes. It must be
+        small enough to fit in the protocol data unit<footnote>
+            <para>"Protocol Data Unit" is a term used to refer to the unit of
+            transmission corresponding to a given network layer. In the
+            session layer, the PDU is called a segment ("TCP segment"); in the
+            network layer, it is a packet ("IP packet"); in the link layer, it
+            is a frame ("Ethernet frame").</para>
+          </footnote> of the protocol layer immediately beneath it in the
+        stack, in this case, IP. An IP packet may be as large as 64 kilobytes,
+        but because IP is practically always transmitted over Ethernet, most
+        IP packets are smaller than the maximum Ethernet frame size of 1500
+        bytes. Both TCP and IP specify a header of 20 bytes, respectively, so
+        the payload is limited to 1460 bytes. Some connections (particularly
+        some forms of DSL service) use PPP (Point-to-Point Protocol), which
+        requires an additional 8 bytes of header information, meaning that the
+        TCP/IP packet can be a maximum of 1492 bytes, leaving a maximum
+        segment size (or MSS) of 1452 bytes. This corresponds to about 3.2%
+        overhead.</para>
 
-          <para>A TCP segment is typically no larger than 1500 bytes. It must
-          be small enough to fit in the protocol data unit<footnote>
-              <para>"Protocol Data Unit" is a term used to refer to the unit
-              of transmission corresponding to a given network layer. In the
-              session layer, the PDU is called a segment ("TCP segment"); in
-              the network layer, it is a packet ("IP packet"); in the link
-              layer, it is a frame ("Ethernet frame").</para>
-            </footnote> of the protocol layer immediately beneath it in the
-          stack, in this case, IP. An IP packet may be as large as 64
-          kilobytes, but because IP is practically always transmitted over
-          Ethernet, most IP packets are smaller than the maximum Ethernet
-          frame size of 1500 bytes. Both TCP and IP specify a header of 20
-          bytes, respectively, so the payload is limited to 1460 bytes. Some
-          connections (particularly some forms of DSL service) use PPP
-          (Point-to-Point Protocol), which requires an additional 8 bytes of
-          header information, meaning that the TCP/IP packet can be a maximum
-          of 1492 bytes, leaving a maximum segment size (or MSS) of 1452
-          bytes. This corresponds to about 3.2% overhead.</para>
-        </section>
+        <para>The sender and receiver negotiate the maximum segment size
+        before data transmission begins, using the options field in the TCP
+        header. The application wanting to send data (for example, a web
+        server) places a data block of 10 kilobytes in the transmit buffer. To
+        send this 10 kB data block, it is divided into multiple packets, each
+        with its own TCP header, and transmitted as TCP segments, a process
+        called segmentation.</para>
 
-        <section id="tcp-aufteilen-der-daten">
-          <title>Distribution of application data across TCP/IP
-          packets</title>
-
-          <para>The sender and receiver negotiate the maximum segment size
-          before data transmission begins, using the options field in the TCP
-          header. The application wanting to send data (for example, a web
-          server) places a data block of 10 kilobytes in the transmit buffer.
-          To send this 10 kB data block, it is divided into multiple packets,
-          each with its own TCP header, and transmitted as TCP segments, a
-          process called segmentation.</para>
-
-          <para>Segments usually leave in sequential order, though this is not
-          strictly necessary, since the sequence numbering allows the receiver
-          to re-assemble them in the correct order. Received segments are
-          checked for integrity by calculating a checksum. If it is correct,
-          the packet is acknowledged. If it is incorrect, the acknowledgement
-          is withheld and the sender retransmits the packet.</para>
-        </section>
+        <para>Segments usually leave in sequential order, though this is not
+        strictly necessary, since the sequence numbering allows the receiver
+        to re-assemble them in the correct order. Received segments are
+        checked for integrity by calculating a checksum. If it is correct, the
+        packet is acknowledged. If it is incorrect, the acknowledgement is
+        withheld and the sender retransmits the packet.</para>
       </section>
 
       <section id="tcp-datenintegritaet">
@@ -301,7 +277,10 @@
         <para>Of course, the data transfer can be interrupted, corrupted or
         terminated at any time. The connection will expire after a timeout has
         been exceeded. The successful establishment of a connection does not
-        guarantee that a lasting and reliable transfer will follow.</para>
+        guarantee that a lasting and reliable transfer will follow. Network
+        speed and stability may be sufficient for negotiating the connection
+        while being insufficient to sustain it. Network conditions can also
+        change such that they cause a working connection to fail.</para>
       </section>
     </section>
 
@@ -404,7 +383,8 @@
         <para>A VoIP protocol.<note>
             <para>In principle, there are two versions of IAX (1 and 2).
             Today, anyone referring to IAX is almost certainly speaking about
-            IAX2 (in other words, IAX version 2).</para>
+            IAX2 (in other words, IAX version 2). IAX version 1 has been
+            deprecated and is no longer used.</para>
           </note></para>
       </listitem>
 
@@ -488,58 +468,53 @@
   <section id="peers-users-friends">
     <title>Peers, Users and Friends</title>
 
-    <para>The distinction between the Asterisk classifications "peer", "user"
-    and "friend" is not always clear in the Asterisk documentation;
-    consequently there are some incorrect websites. The following table
-    describes the functions of each host type:</para>
+    <para>When you configure IP connections in Asterisk, you will have to
+    specify whether the connected device is a "peer", "user", or "friend". The
+    distinction between the classifications is not always clear in the
+    Asterisk documentation.</para>
 
-    <informaltable>
-      <tgroup cols="3">
-        <tbody>
-          <row>
-            <entry>Asterisk</entry>
+    <para>Simply put, the classifications work like this. Asterisk:</para>
 
-            <entry>&lt;=</entry>
+    <para><itemizedlist>
+        <listitem>
+          <para><emphasis>accepts calls from</emphasis> a user</para>
+        </listitem>
 
-            <entry>User</entry>
-          </row>
+        <listitem>
+          <para><emphasis>makes calls to</emphasis> a peer</para>
+        </listitem>
 
-          <row>
-            <entry>Asterisk</entry>
+        <listitem>
+          <para><emphasis>makes calls to</emphasis> and accepts calls from a
+          friend.</para>
+        </listitem>
+      </itemizedlist></para>
 
-            <entry>=&gt;</entry>
-
-            <entry>Peer</entry>
-          </row>
-
-          <row>
-            <entry>Asterisk</entry>
-
-            <entry>&lt;=&gt;</entry>
-
-            <entry>Friend</entry>
-          </row>
-        </tbody>
-      </tgroup>
-    </informaltable>
-
-    <para>A peer can only be called, a user can only make calls, and a friend
-    can do both.<tip>
-        <para>In practice, <parameter>friend</parameter> is used the most. As
-        such, you needn't memorize this table, but it is always here if you
-        need to refer to it later.</para>
-      </tip></para>
+    <para>In practice, friend is used the most.</para>
   </section>
 
   <section id="iax-vs-sip">
     <title>IAX versus SIP</title>
 
     <para>Every Asterisk administrator is eventually faced with the question
-    of whether to build primarily on SIP or IAX. If IAX is available and
-    possible (that is, the sets support it), then IAX should be used;
-    otherwise, you should use SIP. Mark Spencer, the inventor of Asterisk,
-    wrote an e-mail to the Asterisk users mailing list in 2004 that attempts
-    to address the question:</para>
+    of whether to build primarily on SIP or IAX. Though the dispute over
+    protocol has a religious tone at times, we feel that from a purely
+    technical standpoint, IAX is, in certain important respects, at least
+    slightly superior to SIP. In many installations, IAX will mean many fewer
+    implementation problems than one would expect with SIP. The primary reason
+    for this is the way that SIP handles Network Address Translation (NAT).
+    SIP connections are problematic because they require the opening of an
+    entire range of ports in the firewall to work. The ability of IAX to
+    multiplex conversations over a single connection (IAX trunk) is also more
+    efficient because it reduces overhead. SIP, by contrast, establishes a
+    separate connection for each conversation.</para>
+
+    <para>If IAX is available and possible (that is, the sets support it),
+    then IAX should be used; otherwise, you should use SIP.</para>
+
+    <para>Mark Spencer, the inventor of Asterisk, wrote an e-mail to the
+    Asterisk users mailing list in 2004 that attempts to address the
+    question:</para>
 
     <screen>Date: Mon, 5 Jul 2004 18:59:52 -0500 (CDT)
 From: Mark Spencer &lt;markster@digium.com&gt;
@@ -628,8 +603,9 @@ So here a few questions to elaborate how IAX handles:
 I have got the impression this has all been better arranged in SIP
 </screen>
 
-    <para>Appendix to this e-mail: in the intervening years, IAX has itself
-    become a well-documented and open protocol.</para>
+    <para>In the intervening years, IAX has itself become a well-documented
+    and open protocol. IAX 2 was accepted as a informational (non-standards
+    track) RFC 5456 in February 2009.</para>
   </section>
 
   <xi:include href="sip.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />

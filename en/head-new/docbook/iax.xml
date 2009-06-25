@@ -81,29 +81,25 @@
     will connect two IAX PBX systems. In this way, calls can be routed
     directly between them without need for using the PSTN.</simpara>
 
-    <section id="iax-beispielkonf-aufgabe">
-      <title>Objectives</title>
-
-      <simpara>There are two Asterisk systems, named <code>ast1</code> and
-      <code>ast2</code>, each with two telephones (1000 and 1001). Each system
-      must be able to connect calls to the other via IAX. For this purpose we
-      assign a dialing prefix to each server; <code>0901</code> connects calls
-      to <code>ast1</code> and <code>0902</code> connects calls to
-      <code>ast2</code>. The <code>ast1</code> system has the IP
-      <code>192.168.0.101</code> and <code>ast2</code> has IP<code>
-      192.168.0.102</code>.</simpara>
-    </section>
+    <simpara>There are two Asterisk systems, named <code>ast1</code> and
+    <code>ast2</code>, each with two telephones (1000 and 1001). Each system
+    must be able to connect calls to the other via IAX. For this purpose we
+    assign a dialing prefix to each server; <code>0901</code> connects calls
+    to <code>ast1</code> and <code>0902</code> connects calls to
+    <code>ast2</code>. The <code>ast1</code> system has the IP
+    <code>192.168.0.101</code> and <code>ast2</code> has
+    IP<code>192.168.0.102</code>.</simpara>
 
     <section id="iax-beispielkonf-ast1">
       <title>Configuration of ast1</title>
 
       <para>The <filename>iax.conf</filename> for <code>ast1</code> contains
       the following configuration: <programlisting>[ast2]
-type = friend
-host = 192.168.0.102
-secret = 1234
-context = test-telephones
-permit = 0.0.0.0/0.0.0.0</programlisting>The file
+type=friend
+host=192.168.0.102
+secret=1234
+context=test-telephones
+permit=0.0.0.0/0.0.0.0</programlisting>The file
       <filename>extensions.conf</filename> contains this configuration:
       <programlisting>[via-asterisk2]
 exten =&gt; 09021000,1,Dial(IAX2/ast2/1000)
@@ -118,11 +114,11 @@ exten =&gt; 09021001,1,Dial(IAX2/ast2/1001)
 
       <para>The <filename>iax.conf</filename> for <code>ast2</code> contains
       the following configuration: <programlisting>[ast1]
-type = friend
-host = 192.168.0.101
-secret = 1234
-context = test-telephones
-permit = 0.0.0.0/0.0.0.0</programlisting> The file
+type=friend
+host=192.168.0.101
+secret=1234
+context=test-telephones
+permit=0.0.0.0/0.0.0.0</programlisting>The file
       <filename>extensions.conf</filename> contains this configuration:
       <programlisting>[via-asterisk1]
 exten =&gt; 09011000,1,Dial(IAX2/ast1/1000)
@@ -139,560 +135,458 @@ exten =&gt; 09011001,1,Dial(IAX2/ast1/1001)</programlisting></para>
     linkend="iax-channelkonf" /> in the <code>[general]</code>
     section.</simpara>
 
-    <section id="iax-globalekonf-bandwidth">
-      <title><code>bandwidth</code></title>
+    <itemizedlist>
+      <listitem>
+        <synopsis>bandwidth=[low|medium|high]</synopsis>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <secondary>Parameter</secondary>
+          <secondary>Parameter</secondary>
 
-        <tertiary><code>bandwidth</code></tertiary>
-      </indexterm>
+          <tertiary><code>bandwidth</code></tertiary>
+        </indexterm>
 
-      <indexterm>
-        <primary><code>bandwidth</code></primary>
+        <indexterm>
+          <primary><code>bandwidth</code></primary>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <synopsis>bandwidth = <replaceable>[low|medium|high]</replaceable></synopsis>
+        <simpara>Groups different audio codecs and allows the administrator to
+        quickly tailor configurations for specific situations. This is a
+        simpler alternative to using <code>allow</code> and
+        <code>disallow</code> (<xref
+        linkend="iax-globalekonf-allow" />).</simpara>
 
-      <simpara>Groups different audio codecs and allows the administrator to
-      quickly tailor configurations for specific situations. This is a simpler
-      alternative to using <code>allow</code> and <code>disallow</code> (<xref
-      linkend="iax-globalekonf-allow" />).</simpara>
+        <variablelist termlength="8">
+          <varlistentry>
+            <term><code>high</code></term>
 
-      <variablelist termlength="8">
-        <varlistentry>
-          <term><code>high</code></term>
+            <listitem>
+              <simpara>Allows all codecs: G.723.1, GSM, ulaw (G.711), alaw,
+              G.726, ADPCM, slinear, LPC10, G.729, Speex, iLBC. Should only be
+              used for network connections of 10 Mb/s or higher.</simpara>
+            </listitem>
+          </varlistentry>
 
-          <listitem>
-            <simpara>Allows all codecs: G.723.1, GSM, ulaw (G.711), alaw,
-            G.726, ADPCM, slinear, LPC10, G.729, Speex, iLBC. Should only be
-            used for network connections of 10 Mb/s or higher.</simpara>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term><code>medium</code></term>
 
-        <varlistentry>
-          <term><code>medium</code></term>
+            <listitem>
+              <simpara>Disables slinear, ulaw and alaw.</simpara>
+            </listitem>
+          </varlistentry>
 
-          <listitem>
-            <simpara>Disables slinear, ulaw and alaw.</simpara>
-          </listitem>
-        </varlistentry>
+          <varlistentry>
+            <term><code>low</code></term>
 
-        <varlistentry>
-          <term><code>low</code></term>
+            <listitem>
+              <simpara>In addition, disallows G.726 and ADPCM.</simpara>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </listitem>
 
-          <listitem>
-            <simpara>In addition, disallows G.726 and ADPCM.</simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist>
+      <listitem>
+        <synopsis>allow=[all|<replaceable>name_of_codec</replaceable>]</synopsis>
 
-      <simpara>Example:</simpara>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <programlisting>bandwidth = low
-disallow = lpc10   ; poor quality</programlisting>
-    </section>
+          <secondary>Parameter</secondary>
 
-    <section id="iax-globalekonf-allow">
-      <title><code>allow</code></title>
+          <tertiary><code>allow</code></tertiary>
+        </indexterm>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <indexterm>
+          <primary><code>allow</code></primary>
 
-        <secondary>Parameter</secondary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <tertiary><code>allow</code></tertiary>
-      </indexterm>
+        <simpara>Codecs may be specifically allowed (<code>allow</code>) or
+        disabled (<code>disallow</code>). The default is
+        <code>allow=all</code>. Available codecs include:<code> g723.1</code>,
+        <code>gsm</code>, <code>ulaw</code>, <code>alaw</code>,
+        <code>g726</code>, <code>slinear</code>, <code>plc10</code>,
+        <code>adpcm</code>, <code>g729</code>, <code>speex</code>,
+        <code>ilbc</code>, <code>h261</code>, <code>h263</code> and the
+        placeholder <code>all</code>. See also <code>bandwidth</code> (<xref
+        linkend="iax-globalekonf-bandwidth" />) for a simple alternative. The
+        parameters <code>allow</code> and <code>disallow</code> are the only
+        ones which may be used more than once.</simpara>
 
-      <indexterm>
-        <primary><code>allow</code></primary>
+        <simpara>In this example, only <code>ulaw</code> and <code>gsm</code>
+        are allowed:</simpara>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <programlisting>disallow=all
+allow=ulaw
+allow=gsm</programlisting>
+      </listitem>
 
-      <synopsis>allow = <replaceable>[all|name_of_codec]</replaceable></synopsis>
+      <listitem>
+        <synopsis>disallow=[all|<replaceable>name_of_codec</replaceable>]</synopsis>
 
-      <simpara>Codecs may be specifically allowed (<code>allow</code>) or
-      disabled (<code>disallow</code>). The default is <code>allow=all</code>.
-      Available codecs include:<code> g723.1</code>, <code>gsm</code>,
-      <code>ulaw</code>, <code>alaw</code>, <code>g726</code>,
-      <code>slinear</code>, <code>plc10</code>, <code>adpcm</code>,
-      <code>g729</code>, <code>speex</code>, <code>ilbc</code>,
-      <code>h261</code>, <code>h263</code> and the placeholder
-      <code>all</code>. See also <code>bandwidth</code> (<xref
-      linkend="iax-globalekonf-bandwidth" />) for a simple alternative. The
-      parameters <code>allow</code> and <code>disallow</code> are the only
-      ones which may be used more than once.</simpara>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <simpara>Example:</simpara>
+          <secondary>Parameter</secondary>
 
-      <programlisting>disallow = all
-allow = ulaw
-allow = gsm</programlisting>
-    </section>
+          <tertiary><code>disallow</code></tertiary>
+        </indexterm>
 
-    <section id="iax-globalekonf-disallow">
-      <title><code>disallow</code></title>
+        <indexterm>
+          <primary><code>disallow</code></primary>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <secondary>Parameter</secondary>
+        <simpara>See <code>allow</code> (<xref
+        linkend="iax-globalekonf-allow" />).</simpara>
+      </listitem>
 
-        <tertiary><code>disallow</code></tertiary>
-      </indexterm>
+      <listitem>
+        <synopsis>codecpriority=[caller|host|disabled|reqonly]</synopsis>
 
-      <indexterm>
-        <primary><code>disallow</code></primary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+          <secondary>Parameter</secondary>
 
-      <synopsis>disallow = <replaceable>[all|name_of_codec]</replaceable></synopsis>
+          <tertiary><code>codecpriority</code></tertiary>
+        </indexterm>
 
-      <simpara>See <code>allow</code> (<xref
-      linkend="iax-globalekonf-allow" />).</simpara>
-    </section>
+        <indexterm>
+          <primary><code>codecpriority</code></primary>
 
-    <section id="iax-globalekonf-codecpriority">
-      <title><code>codecpriority</code></title>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <simpara>Sets which party on an incoming call has higher priority in
+        audio processing. Default: <code>host.</code></simpara>
 
-        <secondary>Parameter</secondary>
+        <variablelist termlength="10">
+          <varlistentry>
+            <term><code>caller</code></term>
 
-        <tertiary><code>codecpriority</code></tertiary>
-      </indexterm>
+            <listitem>
+              <simpara>The caller has priority over the host.</simpara>
+            </listitem>
+          </varlistentry>
 
-      <indexterm>
-        <primary><code>codecpriority</code></primary>
+          <varlistentry>
+            <term><code>host</code></term>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+            <listitem>
+              <simpara>The host has priority over the caller.</simpara>
+            </listitem>
+          </varlistentry>
 
-      <synopsis>codecpriority = <replaceable>[caller|host|disabled|reqonly]</replaceable></synopsis>
+          <varlistentry>
+            <term><code>disabled</code></term>
 
-      <simpara>Sets which party on an incoming call has higher priority in
-      audio processing. Default: <code>host.</code></simpara>
+            <listitem>
+              <simpara>Codec preferences are ignored.</simpara>
+            </listitem>
+          </varlistentry>
 
-      <variablelist termlength="10">
-        <varlistentry>
-          <term><code>caller</code></term>
+          <varlistentry>
+            <term><code>reqonly</code></term>
 
-          <listitem>
-            <simpara>The caller has priority over the host.</simpara>
-          </listitem>
-        </varlistentry>
+            <listitem>
+              <simpara>Codec preferences are ignored and the call only
+              accepted if the codec is available.</simpara>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </listitem>
 
-        <varlistentry>
-          <term><code>host</code></term>
+      <listitem>
+        <synopsis>authdebug=[yes|no]</synopsis>
 
-          <listitem>
-            <simpara>The host has priority over the caller.</simpara>
-          </listitem>
-        </varlistentry>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <varlistentry>
-          <term><code>disabled</code></term>
+          <secondary>Parameter</secondary>
 
-          <listitem>
-            <simpara>Codec preferences are ignored.</simpara>
-          </listitem>
-        </varlistentry>
+          <tertiary><code>authdebug</code></tertiary>
+        </indexterm>
 
-        <varlistentry>
-          <term><code>reqonly</code></term>
+        <indexterm>
+          <primary><code>authdebug</code></primary>
 
-          <listitem>
-            <simpara>Codec preferences are ignored and the call only accepted
-            if the codec is available.</simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <simpara>Example:</simpara>
+        <simpara>Simple debug output for IAX authorization is on by default.
+        This can be deactivated with <code>authdebug=no</code>.</simpara>
+      </listitem>
 
-      <simpara><code>codecpriority = caller</code></simpara>
-    </section>
+      <listitem>
+        <synopsis>autokill=[yes|<replaceable>timeout_in_milliseconds</replaceable>]</synopsis>
 
-    <section id="iax-globalekonf-authdebug">
-      <title><code>authdebug</code></title>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+          <secondary>Parameter</secondary>
 
-        <secondary>Parameter</secondary>
+          <tertiary><code>autokill</code></tertiary>
+        </indexterm>
 
-        <tertiary><code>authdebug</code></tertiary>
-      </indexterm>
+        <indexterm>
+          <primary><code>autokill</code></primary>
 
-      <indexterm>
-        <primary><code>authdebug</code></primary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <simpara>If <code>autokill</code> is not set, Asterisk will attempt to
+        reach an unreachable host for a long time. If many such attempts occur
+        in parallel, it can have consequences for overall system performance.
+        When <code>autokill=yes</code>, the connection is terminated after
+        2000 milliseconds; alternatively, the timeout may be
+        specified.</simpara>
+      </listitem>
 
-      <synopsis>authdebug = <replaceable>[yes|no]</replaceable></synopsis>
+      <listitem>
+        <synopsis>amaflags=[default|omit|billing|documentation]</synopsis>
 
-      <simpara>Simple debug output for IAX authorization is on by default.
-      This can be deactivated with <code>authdebug=no</code>.</simpara>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <simpara>Example:</simpara>
+          <secondary>Parameter</secondary>
 
-      <simpara><code>authdebug = no</code></simpara>
-    </section>
+          <tertiary><code>amaflags</code></tertiary>
+        </indexterm>
 
-    <section id="iax-globalekonf-autokill">
-      <title><code>autokill</code></title>
+        <indexterm>
+          <primary><code>amaflags</code></primary>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <secondary>Parameter</secondary>
+        <simpara>AMA is short for "Automatic Message Accounting", which
+        specifies a standard call logging and reporting format (see <xref
+        linkend="glossary-AMA" />) for call detail records (CDR).</simpara>
 
-        <tertiary><code>autokill</code></tertiary>
-      </indexterm>
+        <simpara>When set to <code>omit</code>, no AMA flags are
+        set..</simpara>
+      </listitem>
 
-      <indexterm>
-        <primary><code>autokill</code></primary>
+      <listitem>
+        <synopsis>bindaddr=[<replaceable>ip_address</replaceable>]</synopsis>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <synopsis>autokill = <replaceable>[yes|timeout_in_milliseconds]</replaceable></synopsis>
+          <secondary>Parameter</secondary>
 
-      <simpara>If <code>autokill</code> is not set, Asterisk will attempt to
-      reach an unreachable host for a long time. If many such attempts occur
-      in parallel, it can have consequences for overall system performance.
-      When <code>autokill=yes</code>, the connection is terminated after 2000
-      milliseconds; alternatively, the timeout may be specified.</simpara>
+          <tertiary><code>bindaddr</code></tertiary>
+        </indexterm>
 
-      <simpara>Example:</simpara>
+        <indexterm>
+          <primary><code>bindaddr</code></primary>
 
-      <simpara><code>autokill = 3500</code></simpara>
-    </section>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-    <section id="iax-globalekonf-amaflags">
-      <title><code>amaflags</code></title>
+        <simpara>Sets listener IP address. Default: <code>0.0.0.0</code>
+        (meaning all addresses).</simpara>
+      </listitem>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+      <listitem>
+        <synopsis>bindport=[<replaceable>port_number</replaceable>]</synopsis>
 
-        <secondary>Parameter</secondary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <tertiary><code>amaflags</code></tertiary>
-      </indexterm>
+          <secondary>Parameter</secondary>
 
-      <indexterm>
-        <primary><code>amaflags</code></primary>
+          <tertiary><code>bindport</code></tertiary>
+        </indexterm>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm>
+          <primary><code>bindport</code></primary>
 
-      <synopsis>amaflags = <replaceable>[default|omit|billing|documentation]</replaceable></synopsis>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <simpara>AMA is short for "Automatic Message Accounting", which
-      specifies a standard call logging and reporting format (see <xref
-      linkend="glossary-AMA" />) for call detail records (CDR).</simpara>
+        <simpara>Sets the listening port. The default port for IAX2 is 4569
+        (IAX Version 1: 5036).</simpara>
 
-      <simpara>When set to <code>omit</code>, no AMA flags are set..</simpara>
+        <warning>
+          <simpara>This setting must always appear <emphasis>before</emphasis>
+          <code>bindaddr</code>!</simpara>
+        </warning>
+      </listitem>
 
-      <simpara>Example:</simpara>
+      <listitem>
+        <synopsis>delayreject=[yes|no]</synopsis>
 
-      <simpara><code>amaflags = billing</code></simpara>
-    </section>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-    <section id="iax-globalekonf-bindaddr">
-      <title><code>bindaddr</code></title>
+          <secondary>Parameter</secondary>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+          <tertiary><code>delayreject</code></tertiary>
+        </indexterm>
 
-        <secondary>Parameter</secondary>
+        <indexterm>
+          <primary><code>delayreject</code></primary>
 
-        <tertiary><code>bindaddr</code></tertiary>
-      </indexterm>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <indexterm>
-        <primary><code>bindaddr</code></primary>
+        <simpara>Set this to <code>yes</code> to hinder brute-force password
+        crack attempts. When set <code>yes</code>, the listener waits 1000 ms
+        (or 1 second) before accepting a new attempt. Default:
+        <code>no</code></simpara>
+      </listitem>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+      <listitem>
+        <synopsis>language=[<replaceable>language_abbreviation</replaceable>]</synopsis>
 
-      <synopsis>bindaddr = <replaceable>[ip_address]</replaceable></synopsis>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <simpara>Sets listener IP address. Default: <code>0.0.0.0</code>
-      (meaning all addresses).</simpara>
+          <secondary>Parameter</secondary>
 
-      <simpara>Example:</simpara>
+          <tertiary><code>language</code></tertiary>
+        </indexterm>
 
-      <simpara><code>bindaddr = 0.0.0.0</code></simpara>
-    </section>
+        <indexterm>
+          <primary><code>language</code></primary>
 
-    <section id="iax-globalekonf-bindport">
-      <title><code>bindport</code></title>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <simpara>Sets the language for the corresponding channel. The global
+        default is English. The set language is sent by the channel as a tag
+        and is read by applications such as <code>SayNumber()</code>, in order
+        to decide which audio files to use for playback.</simpara>
 
-        <secondary>Parameter</secondary>
+        <simpara>Language abbreviations are two-letter codes based on ISO
+        3166-1 alpha-2:</simpara>
 
-        <tertiary><code>bindport</code></tertiary>
-      </indexterm>
+        <programlisting>language=es</programlisting>
+      </listitem>
 
-      <indexterm>
-        <primary><code>bindport</code></primary>
+      <listitem>
+        <synopsis>tos=[cs0|cs1|cs2|cs3|cs4|cs5|cs6|cs7|af11|af12|af13|af21|af22|af23|af31|af32|af33|af41|af42|af43|ef]</synopsis>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <synopsis>bindport = <replaceable>[Port-Nummer]</replaceable></synopsis>
+          <secondary>Parameter</secondary>
 
-      <simpara>Sets the listening port. The default port for IAX2 is 4569 (IAX
-      Version 1: 5036).</simpara>
+          <tertiary><code>tos</code></tertiary>
+        </indexterm>
 
-      <important>
-        <simpara>This setting must always appear <emphasis>before</emphasis>
-        <code>bindaddr</code>!</simpara>
-      </important>
+        <indexterm>
+          <primary><code>tos</code></primary>
 
-      <simpara>Example:</simpara>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <simpara><code>bindport = 4569</code></simpara>
-    </section>
+        <simpara>ToS (or "Type of Service"); sets flags in the IP header which
+        are used for prioritizing traffic in network routers and switches.
+        This is so that time-sensitive traffic can be transmitted before other
+        data. The recommended setting for IAX is <code>tos=ef</code>. EF means
+        "Expedited Forwarding"; this seeks reduced latency, reduced loss rate,
+        and low jitter. The default is <code><code>none</code></code> (for
+        backwards compatibility).</simpara>
 
-    <section id="iax-globalekonf-delayreject">
-      <title><code>delayreject</code></title>
+        <simpara>The large number of allowed values and flags will not be
+        described here. If you want to read further, have a look at the
+        specifications for differentiated services in RFC 2474 and the
+        IANA-DSCP registry (http://www.iana.org/assignments/dscp-registry).
+        Asterisk specific details may be found in
+        <filename>doc/ip-tos.txt</filename>.</simpara>
+      </listitem>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+      <listitem>
+        <synopsis>adsi=[yes|no]</synopsis>
 
-        <secondary>Parameter</secondary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <tertiary><code>delayreject</code></tertiary>
-      </indexterm>
+          <secondary>Parameter</secondary>
 
-      <indexterm>
-        <primary><code>delayreject</code></primary>
+          <tertiary><code>adsi</code></tertiary>
+        </indexterm>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm>
+          <primary><code>adsi</code></primary>
 
-      <synopsis>delayreject = <replaceable>[yes|no]</replaceable></synopsis>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <simpara>Set this to <code>yes</code> to hinder brute-force password
-      crack attempts. When set <code>yes</code>, the listener waits 1000 ms
-      (or 1 second) before accepting a new attempt. Default:
-      <code>no</code></simpara>
+        <simpara>ADSI (Analog Display Services Interface) are a suite of data
+        services for analog telephones <footnote>
+            <simpara>Relayed to the set using FSK (Frequency Shift
+            Keying).</simpara>
+          </footnote>with a display, such as the Nortel Vista series
+        phones.</simpara>
 
-      <simpara>Example:</simpara>
+        <simpara>You can activate this service if your sets support
+        it.</simpara>
+      </listitem>
 
-      <simpara><code>delayreject = yes</code></simpara>
-    </section>
+      <listitem>
+        <synopsis>register =&gt; <replaceable>username[:password]@remote-host</replaceable></synopsis>
 
-    <section id="iax-globalekonf-language">
-      <title><code>language</code></title>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+          <secondary>Parameter</secondary>
 
-        <secondary>Parameter</secondary>
+          <tertiary><code>register</code></tertiary>
+        </indexterm>
 
-        <tertiary><code>language</code></tertiary>
-      </indexterm>
+        <indexterm>
+          <primary><code>register</code></primary>
 
-      <indexterm>
-        <primary><code>language</code></primary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <simpara>If our Asterisk server is only reachable via a dynamically
+        assigned IP (assuming no DNS, just an IP address), it must register
+        itself whenever the IP address changes so that the remote system will
+        know where to send calls. This behavior is set with <code>register
+        =&gt;</code>.</simpara>
 
-      <synopsis>language = <replaceable>[en|de|...]</replaceable></synopsis>
+        <simpara>Note that <code>register</code> settings are only used when
+        the remote host has defined your system as a peer and set
+        <code>host=dynamic</code> in its own configuration.</simpara>
 
-      <simpara>Sets the language for the corresponding channel. The global
-      default is English. The set language is sent by the channel as a tag and
-      is read by applications such as <code>SayNumber()</code>, in order to
-      decide which audio files to use for playback.</simpara>
+        <simpara>The basic form of a register setting looks like
+        this:</simpara>
 
-      <simpara>Example:</simpara>
+        <simpara><code>register =&gt;
+        username[:password]@remote-host</code></simpara>
 
-      <simpara><code>language = es</code></simpara>
-    </section>
+        <simpara>You may embed an RSA key name<footnote>
+            <simpara>Asterisk RSA keys may be found in
+            <filename>/var/lib/asterisk/keys/</filename>. You can generate
+            your own using the <command>astkey</command> script
+            provided.</simpara>
+          </footnote> instead of using a password. If you do this, the key
+        name must be in square brackets:<footnote>
+            <simpara>The square brackets are required and should not be
+            interpreted as describing an option, as they do in the rest of the
+            book.</simpara>
+          </footnote></simpara>
 
-    <section id="iax-globalekonf-tos">
-      <title><code>tos</code></title>
+        <simpara><code>register =&gt;
+        username:[<replaceable>rsa-key-name</replaceable>]@<replaceable>remote-host</replaceable></code></simpara>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
-
-        <secondary>Parameter</secondary>
-
-        <tertiary><code>tos</code></tertiary>
-      </indexterm>
-
-      <indexterm>
-        <primary><code>tos</code></primary>
-
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
-
-      <synopsis>tos = <replaceable>[...]</replaceable></synopsis>
-
-      <simpara>ToS (or "Type of Service"); sets flags in the IP header which
-      are used for prioritizing traffic in network routers and switches. This
-      is so that time-sensitive traffic can be transmitted before other data.
-      The recommended setting for IAX is <code>tos=ef</code>. EF means
-      "Expedited Forwarding"; this seeks reduced latency, reduced loss rate,
-      and low jitter. The default is <code><code>none</code></code> (for
-      backwards compatibility).</simpara>
-
-      <simpara>The large number of allowed values and flags will not be
-      described here. If you want to read further, have a look at the
-      specifications for differentiated services in RFC 2474 and the
-      IANA-DSCP<footnote>
-          <simpara><ulink
-          url="http://www.iana.org/assignments/dscp-registry">http://www.iana.org/assignments/dscp-registry</ulink></simpara>
-        </footnote> registry. For convenience, here is an excerpt from the
-      Asterisk doc file <filename>doc/ip-tos.txt</filename> (1.4):</simpara>
-
-      <blockquote>
-        <attribution><filename>doc/ip-tos.txt</filename></attribution>
-
-        <simpara>* IAX2 ------ In iax.conf, there is a "tos" parameter that
-        sets the global default TOS for IAX packets generated by chan_iax2.
-        Since IAX connections combine signalling, audio, and video into one
-        UDP stream, it is not possible to set the TOS separately for the
-        different types of traffic. In iaxprov.conf, there is a "tos"
-        parameter that tells the IAXy what TOS to set on packets it generates.
-        As with the parameter in iax.conf, IAX packets generated by an IAXy
-        cannot have different TOS settings based upon the type of packet.
-        However different IAXy devices can have different TOS settings. The
-        allowable values for any of the tos* parameters are: CS0, CS1, CS2,
-        CS3, CS4, CS5, CS6, CS7, AF11, AF12, AF13, AF21, AF22, AF23, AF31,
-        AF32, AF33, AF41, AF42, AF43 and ef (expedited forwarding), The tos*
-        parameters also take numeric values. The lowdelay, throughput,
-        reliability, mincost, and none values are deprecated because they set
-        the IP TOS using the outdated "IP precedence" model as defined in RFC
-        791 and RFC 1349. They still work in this version of Asterisk, but
-        will be removed in future releases.
-        =========================================== Configuration Parameter
-        Recommended File Setting -------------------------------------------
-        sip.conf tos_sip cs3 sip.conf tos_audio ef sip.conf tos_video af41
-        ------------------------------------------- iax.conf tos ef
-        ------------------------------------------- iaxprov.conf tos ef
-        =========================================== </simpara>
-
-        <simpara>To make truly effective use of "quality of service" (QoS),
-        you must ensure that your network hardware supports it and it is
-        activated on your network. For Cisco network hardware, see the
-        "Enterprise QoS Solution Reference Network Design Guide"<footnote>
-            <simpara><ulink
-            url="http://www.cisco.com/application/pdf/en/us/guest/netsol/ns432/c649/ccmigration_09186a008049b062.pdf">http://www.cisco.com/application/pdf/en/us/guest/netsol/ns432/c649/ccmigration_09186a008049b062.pdf</ulink></simpara>
-          </footnote> , for Linux systems see the "Linux Advanced Routing
-        &amp; Traffic Control HowTo"<footnote>
-            <simpara><ulink
-            url="http://www.lartc.org/">http://www.lartc.org/</ulink></simpara>
-          </footnote>.</simpara>
-      </blockquote>
-
-      <simpara>Example:</simpara>
-
-      <simpara><code>tos = ef</code></simpara>
-    </section>
-
-    <section id="iax-globalekonf-adsi">
-      <title><code>adsi</code></title>
-
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
-
-        <secondary>Parameter</secondary>
-
-        <tertiary><code>adsi</code></tertiary>
-      </indexterm>
-
-      <indexterm>
-        <primary><code>adsi</code></primary>
-
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
-
-      <synopsis>adsi = <replaceable>[yes|no]</replaceable></synopsis>
-
-      <simpara>ADSI (Analog Display Services Interface)<footnote>
-          <simpara>Relayed to the set using FSK (Frequency Shift
-          Keying).</simpara>
-        </footnote> are a suite of data services for analog telephones with a
-      display, such as the Nortel Vista series phones.</simpara>
-
-      <simpara>You can activate this service if your sets support
-      it.</simpara>
-
-      <simpara>Example:</simpara>
-
-      <simpara><code>adsi = yes</code></simpara>
-    </section>
-
-    <section id="iax-channelkonf-register">
-      <title><code>register</code></title>
-
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
-
-        <secondary>Parameter</secondary>
-
-        <tertiary><code>register</code></tertiary>
-      </indexterm>
-
-      <indexterm>
-        <primary><code>register</code></primary>
-
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
-
-      <synopsis>register =&gt; <replaceable>username[:password]@remote-host</replaceable></synopsis>
-
-      <simpara>If our Asterisk server is only reachable via a dynamically
-      assigned IP (assuming no DNS, just an IP address), it must register
-      itself whenever the IP address changes so that the remote system will
-      know where to send calls. This behavior is set with <code>register
-      =&gt;</code>.</simpara>
-
-      <simpara>Note that <code>register</code> settings are only used when the
-      remote host has defined your system as a peer and set
-      <code>host=dynamic</code> in its own configuration.</simpara>
-
-      <simpara>The basic form of a register setting looks like this:</simpara>
-
-      <simpara><code>register =&gt;
-      username[:password]@remote-host</code></simpara>
-
-      <simpara>You may embed an RSA key name<footnote>
-          <simpara>Asterisk-RSA-Schlüssel finden sich normalerweise in
-          <filename>/var/lib/asterisk/keys/</filename>. Sie können mittels des
-          <command>astkey</command>-Skripts eigene Schlüssel
-          generieren.</simpara>
-        </footnote> instead of using a password. If you do this, the key name
-      must be in square brackets:<footnote>
-          <simpara>The square brackets are required and should not be
-          interpreted as describing an option, as they do in the rest of the
-          book :)</simpara>
-        </footnote></simpara>
-
-      <simpara><code>register =&gt;
-      username:[rsa-key-name]@remote-host</code></simpara>
-
-      <simpara>Registration requests are sent over port 4569 by default. This
-      may be overridden by appending the suffix
-      <code>:<replaceable>portnumber</replaceable></code>
-      (<emphasis>e.g.</emphasis> <code>:4444</code>) to the
-      hostname.</simpara>
-    </section>
+        <simpara>Registration requests are sent over port 4569 by default.
+        This may be overridden by appending the suffix
+        <code>:<replaceable>portnumber</replaceable></code>
+        (<emphasis>e.g.</emphasis> <code>:4444</code>) to the
+        hostname.</simpara>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section id="iax-channelkonf">
@@ -701,980 +595,842 @@ allow = gsm</programlisting>
     <simpara>The following parameters may be set for individual channels. Some
     of them may also be used in the <code>[general]</code> section.</simpara>
 
-    <section id="iax-channelkonf-type">
-      <title><code>type</code></title>
+    <itemizedlist>
+      <listitem>
+        <synopsis>type=[user|peer|friend]</synopsis>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <secondary>Parameter</secondary>
+          <secondary>Parameter</secondary>
 
-        <tertiary><code>type</code></tertiary>
-      </indexterm>
+          <tertiary><code>type</code></tertiary>
+        </indexterm>
 
-      <indexterm>
-        <primary><code>type</code></primary>
+        <indexterm>
+          <primary><code>type</code></primary>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <synopsis>type = <replaceable>[user|peer|friend]</replaceable></synopsis>
+        <simpara>Sets whether we are connecting to a <code>user</code>
+        (<emphasis>e.g.</emphasis> a user device, which connects to us) or a
+        <code>peer</code> (<emphasis>e.g.</emphasis> a gateway, another
+        Asterisk PBX, we connect to it). The setting <code>friend</code>
+        implies both.</simpara>
 
-      <simpara>Sets whether we are connecting to a <code>user</code>
-      (<emphasis>e.g.</emphasis> a user device, which connects to us) or a
-      <code>peer</code> (<emphasis>e.g.</emphasis> a gateway, another Asterisk
-      PBX, we connect to it). The setting <code>friend</code> implies
-      both.</simpara>
+        <warning>
+          <simpara>If you have not set IP-based access control for all user
+          entries (<code>type=user</code>) (see <xref
+          linkend="iax-channelkonf-permit" />), you must have a
+          <code>[guest]</code> entry in <filename>iax.conf</filename>
+          containing neither <code>auth</code> nor <code>secret</code>
+          parameters. If you do <emphasis>not</emphasis> do this, you are
+          vulnerable to a random user gaining access to your system through a
+          guessed password.</simpara>
 
-      <simpara>Example:</simpara>
+          <simpara>The configuration might look like this:</simpara>
 
-      <simpara><code>type = peer</code></simpara>
-
-      <warning>
-        <simpara>If you have not set IP-based access control for all user
-        entries (<code>type=user</code>) (see <xref
-        linkend="iax-channelkonf-permit" />), you must have a
-        <code>[guest]</code> entry in <filename>iax.conf</filename> containing
-        neither <code>auth</code> nor <code>secret</code> parameters. If you
-        do <emphasis>not</emphasis> do this, you are vulnerable to a random
-        user gaining access to your system through a guessed
-        password.</simpara>
-
-        <simpara>Example:</simpara>
-
-        <programlisting>[guest]
+          <programlisting>[guest]
 type=user
 callerid="IAX-Guest-User"</programlisting>
-      </warning>
-    </section>
+        </warning>
+      </listitem>
 
-    <section id="iax-channelkonf-accountcode">
-      <title><code>accountcode</code></title>
+      <listitem>
+        <synopsis>accountcode=[<replaceable>account_code</replaceable>]</synopsis>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <secondary>Parameter</secondary>
+          <secondary>Parameter</secondary>
 
-        <tertiary><code>accountcode</code></tertiary>
-      </indexterm>
+          <tertiary><code>accountcode</code></tertiary>
+        </indexterm>
 
-      <indexterm>
-        <primary><code>accountcode</code></primary>
+        <indexterm>
+          <primary><code>accountcode</code></primary>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <synopsis>accountcode = <replaceable>[account_code]</replaceable></synopsis>
+        <simpara>The provided string is used for the base filename of the call
+        accounting files written to
+        <filename>/var/log/asterisk/cdr-csv/</filename>. Use only small
+        letters, numbers, a dash (-) or underscore (_).</simpara>
+      </listitem>
 
-      <simpara>The provided string is used for the base filename of the call
-      accounting files written to
-      <filename>/var/log/asterisk/cdr-csv/</filename>. Use only small letters,
-      numbers, a dash (-) or underscore (_).</simpara>
+      <listitem>
+        <synopsis>bandwidth=[low|medium|high]</synopsis>
 
-      <simpara>Example:</simpara>
+        <indexterm>
+          <primary><filename>iax.conf</filename></primary>
 
-      <simpara><code>accountcode = iax-building-mngr</code></simpara>
-    </section>
+          <secondary>Parameter</secondary>
 
-    <section id="iax-channelkonf-bandwidth">
-      <title><code>bandwidth</code></title>
+          <tertiary><code>bandwidth</code></tertiary>
+        </indexterm>
 
-      <indexterm>
-        <primary><filename>iax.conf</filename></primary>
+        <indexterm>
+          <primary><code>bandwidth</code></primary>
 
-        <secondary>Parameter</secondary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <tertiary><code>bandwidth</code></tertiary>
-      </indexterm>
+        <simpara><code>bandwidth</code> is a parameter which groups audio
+        codecs according to bandwidth requirement (see <xref
+        linkend="iax-globalekonf-bandwidth" />).</simpara>
+      </listitem>
 
-      <indexterm>
-        <primary><code>bandwidth</code></primary>
+      <listitem>
+        <synopsis>allow=[g723|gsm|ulaw|alaw|g726|adpcm|slin|lpc10|g729|speex|ilbc|g726_aal2|all]</synopsis>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm>
+          <primary><filename>iax.conf</filename></primary>
 
-      <synopsis>bandwidth = <replaceable>[low|medium|high]</replaceable></synopsis>
+          <secondary>Parameter</secondary>
 
-      <simpara><code>bandwidth</code> is a parameter which groups audio codecs
-      according to bandwidth requirement (see <xref
-      linkend="iax-globalekonf-bandwidth" />).</simpara>
+          <tertiary><code>allow</code></tertiary>
+        </indexterm>
 
-      <simpara>Example:</simpara>
+        <indexterm>
+          <primary><code>allow</code></primary>
 
-      <simpara><code>bandwidth = low</code></simpara>
-    </section>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-    <section id="iax-channelkonf-allow">
-      <title><code>allow</code></title>
+        <simpara>Codecs may be specifically allowed (<code>allow</code>) or
+        disabled (<code>disallow</code>). The default is
+        <code>allow=all</code>. Available codecs include:<code>g723.1</code>,
+        <code>gsm</code>, <code>ulaw</code>, <code>alaw</code>,
+        <code>g726</code>, <code>slinear</code>, <code>plc10</code>,
+        <code>adpcm</code>, <code>g729</code>, <code>speex</code>,
+        <code>ilbc</code>, <code>h261</code>, <code>h263</code> and the
+        placeholder <code>all</code>. See also <code>bandwidth</code> (<xref
+        linkend="iax-globalekonf-bandwidth" />) for a simple
+        alternative.</simpara>
 
-      <indexterm>
-        <primary><filename>iax.conf</filename></primary>
+        <simpara>Note that if you specify channel-specific codecs, you may
+        need to first disallow codecs that were initially enabled in the
+        <code>[general]</code> section with
+        <code>disallow=all</code>.</simpara>
 
-        <secondary>Parameter</secondary>
+        <simpara>Don't confuse these parameters with <code>permit</code> and
+        <code>deny</code> (see <xref
+        linkend="iax-channelkonf-permit" />).</simpara>
 
-        <tertiary><code>allow</code></tertiary>
-      </indexterm>
+        <programlisting>disallow=all
+allow=ulaw
+allow=gsm</programlisting>
+      </listitem>
 
-      <indexterm>
-        <primary><code>allow</code></primary>
+      <listitem>
+        <synopsis>disallow=[g723|gsm|ulaw|alaw|g726|adpcm|slin|lpc10|g729|speex|ilbc|g726_aal2|all]</synopsis>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm>
+          <primary><filename>iax.conf</filename></primary>
 
-      <synopsis>allow = <replaceable>[all|name_of_codec]</replaceable></synopsis>
+          <secondary>Parameter</secondary>
 
-      <simpara>Codecs may be specifically allowed (<code>allow</code>) or
-      disabled (<code>disallow</code>). The default is <code>allow=all</code>.
-      Available codecs include:<code>g723.1</code>, <code>gsm</code>,
-      <code>ulaw</code>, <code>alaw</code>, <code>g726</code>,
-      <code>slinear</code>, <code>plc10</code>, <code>adpcm</code>,
-      <code>g729</code>, <code>speex</code>, <code>ilbc</code>,
-      <code>h261</code>, <code>h263</code> and the placeholder
-      <code>all</code>. See also <code>bandwidth</code> (<xref
-      linkend="iax-globalekonf-bandwidth" />) for a simple
-      alternative.</simpara>
+          <tertiary><code>disallow</code></tertiary>
+        </indexterm>
 
-      <simpara>Note that if you specify channel-specific codecs, you may need
-      to first disallow codecs that were initially enabled in the
-      <code>[general]</code> section with <code>disallow=all</code>.</simpara>
+        <indexterm>
+          <primary><code>disallow</code></primary>
 
-      <simpara>Don't confuse these parameters with <code>permit</code> and
-      <code>deny</code> (see <xref
-      linkend="iax-channelkonf-permit" />).</simpara>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <simpara>Example:</simpara>
+        <simpara>See <code>allow</code> (<xref
+        linkend="iax-channelkonf-allow" />)</simpara>
+      </listitem>
 
-      <programlisting>disallow = all
-allow = ulaw
-allow = gsm</programlisting>
-    </section>
+      <listitem>
+        <synopsis>codecpriority=[caller|host|disabled|reqonly]</synopsis>
 
-    <section id="iax-channelkonf-disallow">
-      <title><code>disallow</code></title>
+        <indexterm>
+          <primary><filename>iax.conf</filename></primary>
 
-      <indexterm>
-        <primary><filename>iax.conf</filename></primary>
+          <secondary>Parameter</secondary>
 
-        <secondary>Parameter</secondary>
+          <tertiary><code>codecpriority</code></tertiary>
+        </indexterm>
 
-        <tertiary><code>disallow</code></tertiary>
-      </indexterm>
+        <indexterm>
+          <primary><code>codecpriority</code></primary>
 
-      <indexterm>
-        <primary><code>disallow</code></primary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <simpara>Sets which party has priority when processing audio (see
+        <xref linkend="iax-globalekonf-codecpriority" />).</simpara>
+      </listitem>
 
-      <synopsis>disallow = <replaceable>[all|name_of_codec]</replaceable></synopsis>
+      <listitem>
+        <synopsis>amaflags=[default|omit|billing|documentation]</synopsis>
 
-      <simpara>See <code>allow</code> (<xref
-      linkend="iax-channelkonf-allow" />).</simpara>
-    </section>
+        <indexterm>
+          <primary><filename>iax.conf</filename></primary>
 
-    <section id="iax-channelkonf-codecpriority">
-      <title><code>codecpriority</code></title>
+          <secondary>Parameter</secondary>
 
-      <indexterm>
-        <primary><filename>iax.conf</filename></primary>
+          <tertiary><code>amaflags</code></tertiary>
+        </indexterm>
 
-        <secondary>Parameter</secondary>
+        <indexterm>
+          <primary><code>amaflags</code></primary>
 
-        <tertiary><code>codecpriority</code></tertiary>
-      </indexterm>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <indexterm>
-        <primary><code>codecpriority</code></primary>
+        <simpara>AMA is short for "Automatic Message Accounting", a standard
+        format for creating and sending call logs and records (see <xref
+        linkend="iax-globalekonf-amaflags" />).</simpara>
+      </listitem>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+      <listitem>
+        <synopsis>callerid=[<replaceable>name</replaceable>[ &lt;<replaceable>number</replaceable>&gt;]]</synopsis>
 
-      <synopsis>codecpriority = <replaceable>[caller|host|disabled|reqonly]</replaceable></synopsis>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <simpara>Sets which party has priority when processing audio (see <xref
-      linkend="iax-globalekonf-codecpriority" />).</simpara>
+          <secondary>Parameter</secondary>
 
-      <simpara>Example:</simpara>
+          <tertiary><code>callerid</code></tertiary>
+        </indexterm>
 
-      <simpara><code>codecpriority = caller</code></simpara>
-    </section>
+        <indexterm>
+          <primary><code>callerid</code></primary>
 
-    <section id="iax-channelkonf-amaflags">
-      <title><code>amaflags</code></title>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <indexterm>
-        <primary><filename>iax.conf</filename></primary>
+        <simpara>The parameter <code>callerid</code> lets you set the caller
+        ID for a user or peer. Once defined, all calls which come in over this
+        channel will be assigned this caller ID, irrespective of what the
+        remote host has sent. This is recommended unless you have good reason
+        to trust the caller ID information provided by the remote host; in
+        many cases it is a simple matter to falsify caller ID
+        information.</simpara>
 
-        <secondary>Parameter</secondary>
+        <simpara>Here is a properly formatted caller ID line:</simpara>
 
-        <tertiary><code>amaflags</code></tertiary>
-      </indexterm>
+        <simpara><code>callerid="Ron Popeil"
+        &lt;8005556000&gt;</code></simpara>
+      </listitem>
 
-      <indexterm>
-        <primary><code>amaflags</code></primary>
+      <listitem>
+        <synopsis>host=[<replaceable>host</replaceable>|<replaceable>dynamic</replaceable>]</synopsis>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm>
+          <primary><filename>iax.conf</filename></primary>
 
-      <synopsis>amaflags = <replaceable>[default|omit|billing|documentation]</replaceable></synopsis>
+          <secondary>Parameter</secondary>
 
-      <simpara>AMA is short for "Automatic Message Accounting", a standard
-      format for creating and sending call logs and records (see <xref
-      linkend="iax-globalekonf-amaflags" />).</simpara>
+          <tertiary><code>host</code></tertiary>
+        </indexterm>
 
-      <simpara>Example:</simpara>
+        <indexterm>
+          <primary><code>host</code></primary>
 
-      <simpara><code>amaflags = documentation</code></simpara>
-    </section>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-    <section id="iax-channelkonf-callerid">
-      <title><code>callerid</code></title>
+        <simpara>The <replaceable>host</replaceable> is either the hostname or
+        the IP address of the remote system. If the host has a dynamic IP
+        address (that is, one that changes frequently), the setting
+        <code>dynamic</code> is used, preferably in combination with
+        <code>defaultip</code> (<xref
+        linkend="iax-channelkonf-defaultip" />).</simpara>
+      </listitem>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+      <listitem>
+        <synopsis>defaultip=[<replaceable>ip_address</replaceable>]</synopsis>
 
-        <secondary>Parameter</secondary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <tertiary><code>callerid</code></tertiary>
-      </indexterm>
+          <secondary>Parameter</secondary>
 
-      <indexterm>
-        <primary><code>callerid</code></primary>
+          <tertiary><code>defaultip</code></tertiary>
+        </indexterm>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm>
+          <primary><code>defaultip</code></primary>
 
-      <synopsis>callerid = <replaceable>[name[ &lt;number&gt;]]</replaceable></synopsis>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <simpara>The parameter <code>callerid</code> lets you set the caller ID
-      for a user or peer. Once defined, all calls which come in over this
-      channel will be assigned this caller ID, irrespective of what the remote
-      host has sent. This is recommended unless you have good reason to trust
-      the caller ID information provided by the remote host; in many cases it
-      is a simple matter to falsify caller ID information.</simpara>
+        <simpara>The <code>defaultip</code> setting is an extension to
+        <code>host=dynamic</code> (see <xref
+        linkend="iax-channelkonf-host" />). If a dynamic host has not yet
+        registered, Asterisk will attempt to contact the host at the provided
+        IP first.</simpara>
+      </listitem>
 
-      <simpara>Example:</simpara>
+      <listitem>
+        <synopsis>permit=[<replaceable>ip_address</replaceable>[/<replaceable>netmask</replaceable>]</synopsis>
 
-      <simpara><code>callerid = "Ron Popeil" &lt;(800) 555
-      6000&gt;</code></simpara>
-    </section>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-    <section id="iax-channelkonf-host">
-      <title><code>host</code></title>
+          <secondary>Parameter</secondary>
 
-      <indexterm>
-        <primary><filename>iax.conf</filename></primary>
+          <tertiary><code>permit</code></tertiary>
+        </indexterm>
 
-        <secondary>Parameter</secondary>
+        <indexterm>
+          <primary><code>permit</code></primary>
 
-        <tertiary><code>host</code></tertiary>
-      </indexterm>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <indexterm>
-        <primary><code>host</code></primary>
+        <simpara><code>permit</code> and <code>deny</code> allow and limit the
+        IP addresses which are allowed to connect to this channel. As a matter
+        of good practice, this starts with a <code>deny=0.0.0.0/0.0.0.0</code>
+        (block all), and then the trusted IP addresses are explicitly allowed
+        with <code>permit</code> statements. Order is significant, and both
+        <code>deny</code> and <code>permit</code> may appear multiple times.
+        If only a single host is intended, you may omit the netmask (which
+        would be <code>255.255.255.255</code>).</simpara>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <para>This example allows only connections from
+        <code>192.168.0.*</code> (netmask 24 bits, class C):</para>
 
-      <synopsis>host=<replaceable>[host|dynamic]</replaceable></synopsis>
+        <programlisting>deny=0.0.0.0/0.0.0.0                ; deny all
+permit=192.168.0.102/255.255.255.0  ; allow 192.168.0.*
+permit=192.168.5.5                  ; allow 192.168.5.5</programlisting>
 
-      <simpara>The <replaceable>host</replaceable> is either the hostname or
-      the IP address of the remote system. If the host has a dynamic IP
-      address (that is, one that changes frequently), the setting
-      <code>dynamic</code> is used, preferably in combination with
-      <code>defaultip</code> (<xref
-      linkend="iax-channelkonf-defaultip" />).</simpara>
+        <simpara>Here, we allow everyone <emphasis>except</emphasis>
+        <code>192.168.*.*</code>:</simpara>
 
-      <simpara>Examples:</simpara>
+        <para><programlisting>permit=0.0.0.0/0.0.0.0              ; allow all
+deny=192.168.0.0/255.255.0.0        ; deny 192.168.*.*</programlisting></para>
 
-      <simpara><code>host = 192.168.0.201</code></simpara>
+        <simpara>The following example does not make any sense, since it
+        begins by denying <code>192.168.0.0</code> -
+        <code>192.168.0.127</code>, but then allows everyone, which supersedes
+        the initial deny rule. In this case, nothing is denied:</simpara>
 
-      <simpara><code>host = dynamic</code></simpara>
-    </section>
+        <para><programlisting>deny=192.168.0.0/255.255.255.127
+permit=0.0.0.0/0.0.0.0              ; allow all</programlisting></para>
+      </listitem>
 
-    <section id="iax-channelkonf-defaultip">
-      <title><code>defaultip</code></title>
+      <listitem>
+        <synopsis>deny=[<replaceable>ip_address</replaceable>/[<replaceable>netmask</replaceable>]</synopsis>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <secondary>Parameter</secondary>
+          <secondary>Parameter</secondary>
 
-        <tertiary><code>defaultip</code></tertiary>
-      </indexterm>
+          <tertiary><code>deny</code></tertiary>
+        </indexterm>
 
-      <indexterm>
-        <primary><code>defaultip</code></primary>
+        <indexterm>
+          <primary><code>deny</code></primary>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <synopsis>defaultip = <replaceable>[IP-Adresse]</replaceable></synopsis>
+        <simpara>See <code>permit</code> (<xref
+        linkend="iax-channelkonf-permit" />).</simpara>
+      </listitem>
 
-      <simpara>The <code>defaultip</code> setting is an extension to
-      <code>host=dynamic</code> (see <xref linkend="iax-channelkonf-host" />).
-      If a dynamic host has not yet registered, Asterisk will attempt to
-      contact the host at the provided IP first.</simpara>
+      <listitem>
+        <synopsis>auth=[plaintext|md5|rsa]</synopsis>
 
-      <simpara>Example:</simpara>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <simpara><code>defaultip = 192.168.0.201</code></simpara>
-    </section>
+          <secondary>Parameter</secondary>
 
-    <section id="iax-channelkonf-permit">
-      <title><code>permit</code></title>
+          <tertiary><code>auth</code></tertiary>
+        </indexterm>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <indexterm>
+          <primary><code>auth</code></primary>
 
-        <secondary>Parameter</secondary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <tertiary><code>permit</code></tertiary>
-      </indexterm>
+        <simpara>Used to identify the remote peers and users. There are three
+        available methods: <code>plaintext</code>, <code>md5</code> and
+        <code>rsa</code>.</simpara>
 
-      <indexterm>
-        <primary><code>permit</code></primary>
+        <variablelist termlength="11">
+          <varlistentry>
+            <term><code>plaintext</code><indexterm significance="preferred">
+                <primary><filename>iax.conf</filename></primary>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+                <secondary>authentication methods</secondary>
 
-      <synopsis>permit = <replaceable>ip_address[/netmask]</replaceable></synopsis>
+                <tertiary><code>plaintext</code></tertiary>
+              </indexterm><indexterm>
+                <primary><code>plaintext</code></primary>
 
-      <simpara><code>permit</code> and <code>deny</code> allow and limit the
-      IP addresses which are allowed to connect to this channel. As a matter
-      of good practice, this starts with a <code>deny=0.0.0.0/0.0.0.0</code>
-      (block all), and then the trusted IP addresses are explicitly allowed
-      with <code>permit</code> statements. Order is significant, and both
-      <code>deny</code> and <code>permit</code> may appear multiple times. If
-      only a single host is intended, you may omit the netmask (which would be
-      <code>255.255.255.255</code>).</simpara>
+                <see><filename>iax.conf</filename>: Parameter:
+                <code>auth</code></see>
+              </indexterm></term>
 
-      <para>This example allows only connections from <code>192.168.0.*</code>
-      (netmask 24 bits, class C):<programlisting>deny = 0.0.0.0/0.0.0.0                ; deny all
-permit = 192.168.0.102/255.255.255.0  ; allow 192.168.0.*
-permit = 192.168.5.5                  ; allow 192.168.5.5</programlisting></para>
+            <listitem>
+              <simpara>Very insecure, since the password may be sniffed in
+              transit. Not recommended. The password is set with
+              <code>secret</code> (see <xref
+              linkend="iax-channelkonf-secret" />).</simpara>
+            </listitem>
+          </varlistentry>
 
-      <para>Allow everyone <emphasis>except</emphasis>
-      <code>192.168.*.*</code>:<programlisting>permit = 0.0.0.0/0.0.0.0              ; allow all
-deny = 192.168.0.0/255.255.0.0        ; deny 192.168.*.*</programlisting></para>
+          <varlistentry>
+            <term><code>md5</code><indexterm significance="preferred">
+                <primary><filename>iax.conf</filename></primary>
 
-      <para>The following example does not make any sense, since it begins by
-      denying <code>192.168.0.0</code> - <code>192.168.0.127</code>, but then
-      allows everyone, which supersedes the initial deny rule. In this case,
-      nothing is denied:<programlisting>deny = 192.168.0.0/255.255.255.127
-permit = 0.0.0.0/0.0.0.0              ; alle erlauben</programlisting></para>
-    </section>
+                <secondary>authentication methods</secondary>
 
-    <section id="iax-channelkonf-deny">
-      <title><code>deny</code></title>
+                <tertiary><code>md5</code></tertiary>
+              </indexterm><indexterm>
+                <primary><code>md5</code></primary>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+                <see><filename>iax.conf</filename>: Parameter:
+                <code>auth</code></see>
+              </indexterm></term>
 
-        <secondary>Parameter</secondary>
+            <listitem>
+              <simpara>Checks passwords by transmitting an MD5 hash of the
+              password in a challenge/response handshake. The password is set
+              with <code>secret</code> (see <xref
+              linkend="iax-channelkonf-secret" />).</simpara>
+            </listitem>
+          </varlistentry>
 
-        <tertiary><code>deny</code></tertiary>
-      </indexterm>
+          <varlistentry>
+            <term><code>rsa</code><indexterm significance="preferred">
+                <primary><filename>iax.conf</filename></primary>
 
-      <indexterm>
-        <primary><code>deny</code></primary>
+                <secondary>authentication methods</secondary>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+                <tertiary><code>rsa</code></tertiary>
+              </indexterm><indexterm>
+                <primary><code>rsa</code></primary>
 
-      <synopsis>deny = <replaceable>[IP-Adresse]/[Netzmaske]</replaceable></synopsis>
+                <see><filename>iax.conf</filename>: Parameter:
+                <code>auth</code></see>
+              </indexterm></term>
 
-      <simpara>See <code>permit</code> (<xref
-      linkend="iax-channelkonf-permit" />).</simpara>
+            <listitem>
+              <simpara>The most secure process, which uses public and private
+              key pairs. These keys are specified with <code>inkeys</code>
+              (see <xref linkend="iax-channelkonf-inkeys" />) and
+              <code>outkeys</code> (see <xref
+              linkend="iax-channelkonf-outkey" />).</simpara>
+            </listitem>
+          </varlistentry>
+        </variablelist>
 
-      <simpara>Example:</simpara>
+        <simpara>Multiple methods may be separated by commas:</simpara>
 
-      <simpara><code>deny = 0.0.0.0/0.0.0.0</code></simpara>
-    </section>
+        <para><programlisting>auth=rsa,md5</programlisting></para>
 
-    <section id="iax-channelkonf-auth">
-      <title><code>auth</code></title>
+        <simpara>If neither <code>auth</code> nor <code>secret</code> are
+        specified, no authentication is required.</simpara>
+      </listitem>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+      <listitem>
+        <synopsis>secret=[<replaceable>password</replaceable>]</synopsis>
 
-        <secondary>Parameter</secondary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <tertiary><code>auth</code></tertiary>
-      </indexterm>
+          <secondary>Parameter</secondary>
 
-      <indexterm>
-        <primary><code>auth</code></primary>
+          <tertiary><code>secret</code></tertiary>
+        </indexterm>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm>
+          <primary><code>secret</code></primary>
 
-      <synopsis>auth = <replaceable>[plaintext|md5|rsa]</replaceable></synopsis>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <simpara>Used to identify the remote peers and users. There are three
-      available methods: <code>plaintext</code>, <code>md5</code> and
-      <code>rsa</code>.</simpara>
+        <simpara>Sets the passwords for <code>plaintext</code> or
+        <code>md5</code> authentication (see <xref
+        linkend="iax-channelkonf-auth" />).</simpara>
+      </listitem>
 
-      <variablelist termlength="11">
-        <varlistentry>
-          <term><code>plaintext</code><indexterm significance="preferred">
-              <primary><filename>iax.conf</filename></primary>
+      <listitem>
+        <synopsis>inkeys=[<replaceable>rsa-key</replaceable>:<replaceable>rsa-key</replaceable>:<replaceable>...</replaceable>]</synopsis>
 
-              <secondary>Authentifizierungsmethoden</secondary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-              <tertiary><code>plaintext</code></tertiary>
-            </indexterm><indexterm>
-              <primary><code>plaintext</code></primary>
+          <secondary>Parameter</secondary>
 
-              <see><filename>iax.conf</filename>: Parameter:
-              <code>auth</code></see>
-            </indexterm></term>
+          <tertiary><code>inkeys</code></tertiary>
+        </indexterm>
 
-          <listitem>
-            <simpara>Very insecure, since the password may be sniffed in
-            transit. Not recommended. The password is set with
-            <code>secret</code> (see <xref
-            linkend="iax-channelkonf-secret" />).</simpara>
-          </listitem>
-        </varlistentry>
+        <indexterm>
+          <primary><code>inkeys</code></primary>
 
-        <varlistentry>
-          <term><code>md5</code><indexterm significance="preferred">
-              <primary><filename>iax.conf</filename></primary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-              <secondary>Authentifizierungsmethoden</secondary>
+        <simpara>Defines the allowed public keys for <code>rsa</code>
+        authentication (see <xref linkend="iax-channelkonf-auth" />) of a
+        remote system. Multiple keys are separated with a colon
+        (<code>:</code>). Any of the specified keys will be considered
+        acceptable for authentication.</simpara>
 
-              <tertiary><code>md5</code></tertiary>
-            </indexterm><indexterm>
-              <primary><code>md5</code></primary>
+        <simpara>These keys must be specified with pathnames like so:
+        <filename>/var/lib/asterisk/keys/<replaceable>keyname</replaceable>.pub</filename></simpara>
+      </listitem>
 
-              <see><filename>iax.conf</filename>: Parameter:
-              <code>auth</code></see>
-            </indexterm></term>
+      <listitem>
+        <synopsis>outkey=[<replaceable>rsa-key</replaceable>]</synopsis>
 
-          <listitem>
-            <simpara>Checks passwords by transmitting an MD5 hash of the
-            password in a challenge/response handshake. The password is set
-            with <code>secret</code> (see <xref
-            linkend="iax-channelkonf-secret" />).</simpara>
-          </listitem>
-        </varlistentry>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <varlistentry>
-          <term><code>rsa</code><indexterm significance="preferred">
-              <primary><filename>iax.conf</filename></primary>
+          <secondary>Parameter</secondary>
 
-              <secondary>Authentifizierungsmethoden</secondary>
+          <tertiary><code>outkey</code></tertiary>
+        </indexterm>
 
-              <tertiary><code>rsa</code></tertiary>
-            </indexterm><indexterm>
-              <primary><code>rsa</code></primary>
+        <indexterm>
+          <primary><code>outkey</code></primary>
 
-              <see><filename>iax.conf</filename>: Parameter:
-              <code>auth</code></see>
-            </indexterm></term>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-          <listitem>
-            <simpara>The most secure process, which uses public and private
-            key pairs. These keys are specified with <code>inkeys</code> (see
-            <xref linkend="iax-channelkonf-inkeys" />) and
-            <code>outkeys</code> (see <xref
-            linkend="iax-channelkonf-outkey" />).</simpara>
-          </listitem>
-        </varlistentry>
-      </variablelist>
+        <simpara>You may use the <code>outkey</code> to set the private RSA
+        key to be used for authenticating with a peer. For outgoing
+        authentication, only a single key may be specified. The
+        <code>outkey</code> is not distributed; it is a private key and should
+        be 3DES encrypted.</simpara>
 
-      <simpara>Multiple methods may be separated by commas.</simpara>
+        <simpara>These keys must be specified with pathnames like so:
+        <filename>/var/lib/asterisk/keys/<replaceable>keyname</replaceable>.key</filename></simpara>
+      </listitem>
 
-      <para>Example:</para>
+      <listitem>
+        <synopsis>mailbox=[<replaceable>mailbox_name</replaceable>[@<replaceable>mailbox-context</replaceable>]]</synopsis>
 
-      <simpara><code>auth = rsa,md5</code></simpara>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <simpara>If neither <code>auth</code> nor <code>secret</code> are
-      specified, no authentication is required.</simpara>
-    </section>
+          <secondary>Parameter</secondary>
 
-    <section id="iax-channelkonf-secret">
-      <title><code>secret</code></title>
+          <tertiary><code>mailbox</code></tertiary>
+        </indexterm>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <indexterm>
+          <primary><code>mailbox</code></primary>
 
-        <secondary>Parameter</secondary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <tertiary><code>secret</code></tertiary>
-      </indexterm>
+        <simpara>If set, the voicemail module sends an MWI (message waiting
+        indicator) flag to the node at the other end of the channel when there
+        are new messages waiting. If the mailbox is in a voicemail context
+        other than <code>default</code>, you can specify the context with
+        <code><replaceable>mailbox@context</replaceable></code>. To associate
+        multiple mailboxes with a single peer, use <code>mailbox</code>
+        multiple times.</simpara>
+      </listitem>
 
-      <indexterm>
-        <primary><code>secret</code></primary>
+      <listitem>
+        <synopsis>language=[<replaceable>language_abbreviation</replaceable>]</synopsis>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm>
+          <primary><filename>iax.conf</filename></primary>
 
-      <synopsis>secret = <replaceable>[password]</replaceable></synopsis>
+          <secondary>Parameter</secondary>
 
-      <simpara>Sets the passwords for <code>plaintext</code> or
-      <code>md5</code> authentication (see <xref
-      linkend="iax-channelkonf-auth" />).</simpara>
+          <tertiary><code>language</code></tertiary>
+        </indexterm>
 
-      <simpara>Example:</simpara>
+        <indexterm>
+          <primary><code>language</code></primary>
 
-      <simpara><code>secret = mypassword</code></simpara>
-    </section>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-    <section id="iax-channelkonf-inkeys">
-      <title><code>inkeys</code></title>
+        <simpara>Sets the language for the channel. The default language is
+        English. This setting is heeded by the voicemail module and speech
+        applications such as <code>SayNumber()</code>, to determine which
+        sound files to use.</simpara>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <simpara>Language abbreviations are two-letter codes based on ISO
+        3166-1 alpha-2:</simpara>
 
-        <secondary>Parameter</secondary>
+        <programlisting>language=es</programlisting>
+      </listitem>
 
-        <tertiary><code>inkeys</code></tertiary>
-      </indexterm>
+      <listitem>
+        <synopsis>context=[<replaceable>context</replaceable>]</synopsis>
 
-      <indexterm>
-        <primary><code>inkeys</code></primary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+          <secondary>Parameter</secondary>
 
-      <synopsis>inkeys = <replaceable>[rsa-key:rsa-key:...]</replaceable></synopsis>
+          <tertiary><code>context</code></tertiary>
+        </indexterm>
 
-      <simpara>Defines the allowed public keys for <code>rsa</code>
-      authentication (see <xref linkend="iax-channelkonf-auth" />) of a remote
-      system. Multiple keys are separated with a colon (<code>:</code>). Any
-      of the specified keys will be considered acceptable for
-      authentication.</simpara>
+        <indexterm>
+          <primary><code>context</code></primary>
 
-      <simpara>These keys must be specified with pathnames like so:
-      <filename>/var/lib/asterisk/keys/<replaceable>keyname</replaceable>.pub</filename></simpara>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <simpara>Example:</simpara>
+        <simpara>The default context for calls arriving via this
+        peer.</simpara>
+      </listitem>
 
-      <simpara><code>inkeys = server-austin:server-montreal</code></simpara>
-    </section>
+      <listitem>
+        <synopsis>regcontext=[<replaceable>context</replaceable>]</synopsis>
 
-    <section id="iax-channelkonf-outkey">
-      <title><code>outkey</code></title>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+          <secondary>Parameter</secondary>
 
-        <secondary>Parameter</secondary>
+          <tertiary><code>regcontext</code></tertiary>
+        </indexterm>
 
-        <tertiary><code>outkey</code></tertiary>
-      </indexterm>
+        <indexterm>
+          <primary><code>regcontext</code></primary>
 
-      <indexterm>
-        <primary><code>outkey</code></primary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <simpara>When specified, execution begins automatically in this
+        context upon first registration of the peer. If no extension is
+        specified in <code>regexten</code>, the name of the peer is used for
+        the extension. Note that in this case, execution always begins with a
+        <code>NoOp</code> at priority 1. The first priority in your extension,
+        then, should be 2. Multiple contexts may be specified, separated by
+        ampersand (<code>&amp;)</code>.</simpara>
+      </listitem>
 
-      <synopsis>outkey = <replaceable>[rsa-key]</replaceable></synopsis>
+      <listitem>
+        <synopsis>regexten=[<replaceable>extension_number</replaceable>]</synopsis>
 
-      <simpara>You may use the <code>outkey</code> to set the private RSA key
-      to be used for authenticating with a peer. For outgoing authentication,
-      only a single key may be specified. The <code>outkey</code> is not
-      distributed; it is a private key and should be 3DES encrypted.</simpara>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <simpara>These keys must be specified with pathnames like so:
-      <filename>/var/lib/asterisk/keys/<replaceable>keyname</replaceable>.key</filename></simpara>
+          <secondary>Parameter</secondary>
 
-      <simpara>Example:</simpara>
+          <tertiary><code>regexten</code></tertiary>
+        </indexterm>
 
-      <simpara><code>outkey = private-key</code></simpara>
-    </section>
+        <indexterm>
+          <primary><code>regexten</code></primary>
 
-    <section id="iax-channelkonf-mailbox">
-      <title><code>mailbox</code></title>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <simpara>Used in connection with <code>regcontext</code> to specify
+        the extension to be executed in the context. If <code>regexten</code>
+        is not explicitly defined, the name of the connecting peer is
+        used.</simpara>
+      </listitem>
 
-        <secondary>Parameter</secondary>
+      <listitem>
+        <synopsis>jitterbuffer=[yes|no]</synopsis>
 
-        <tertiary><code>mailbox</code></tertiary>
-      </indexterm>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <indexterm>
-        <primary><code>mailbox</code></primary>
+          <secondary>Parameter</secondary>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+          <tertiary><code>jitterbuffer</code></tertiary>
+        </indexterm>
 
-      <synopsis>mailbox = <replaceable>[Mailboxname[@Mailbox-Context]]</replaceable></synopsis>
+        <indexterm>
+          <primary><code>jitterbuffer</code></primary>
 
-      <simpara>If set, the voicemail module sends an MWI (message waiting
-      indicator) flag to the node at the other end of the channel when there
-      are new messages waiting. If the mailbox is in a voicemail context other
-      than <code>default</code>, you can specify the context with
-      <code><replaceable>mailbox@context</replaceable></code>. To associate
-      multiple mailboxes with a single peer, use <code>mailbox</code> multiple
-      times.</simpara>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <simpara>Example:</simpara>
+        <simpara>Turns the jitter buffer on or off (valid for connections in
+        which Asterisk is the endpoint). The jitter buffer balances the
+        latency of incoming packets.</simpara>
 
-      <simpara><code>mailbox = 1000</code></simpara>
-    </section>
+        <simpara>The jitter buffer can have problems if <code>trunk</code> is
+        activated (see <xref linkend="iax-channelkonf-trunk" />).</simpara>
+      </listitem>
 
-    <section id="iax-channelkonf-language">
-      <title><code>language</code></title>
+      <listitem>
+        <synopsis>forcejitterbuffer=[yes|no]</synopsis>
 
-      <indexterm>
-        <primary><filename>iax.conf</filename></primary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <secondary>Parameter</secondary>
+          <secondary>Parameter</secondary>
 
-        <tertiary><code>language</code></tertiary>
-      </indexterm>
+          <tertiary><code>forcejitterbuffer</code></tertiary>
+        </indexterm>
 
-      <indexterm>
-        <primary><code>language</code></primary>
+        <indexterm>
+          <primary><code>forcejitterbuffer</code></primary>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <synopsis>language = <replaceable>[en|de|...]</replaceable></synopsis>
+        <simpara>It is typically the job of the device to implement a jitter
+        buffer.<footnote>
+            <simpara>Jitter refers to variable latency of packets in a data
+            stream. If the variability is too great, it can cause dropouts or
+            artifacts in the resulting audio.</simpara>
+          </footnote> In the event the remote device has a poorly-functioning
+        jitter buffer, you can use Asterisk as a VoIP bridge and use
+        Asterisk's jitter buffer.</simpara>
+      </listitem>
 
-      <simpara>Sets the language for the channel. The default language is
-      English. This setting is heeded by the voicemail module and speech
-      applications such as <code>SayNumber()</code>, to determine which sound
-      files to use.</simpara>
+      <listitem>
+        <synopsis>maxjitterbuffer=[<replaceable>milliseconds</replaceable>]</synopsis>
 
-      <simpara>Example:</simpara>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <simpara><code>language = es</code></simpara>
-    </section>
+          <secondary>Parameter</secondary>
 
-    <section id="iax-channelkonf-context">
-      <title><code>context</code></title>
+          <tertiary><code>maxjitterbuffer</code></tertiary>
+        </indexterm>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+        <indexterm>
+          <primary><code>maxjitterbuffer</code></primary>
 
-        <secondary>Parameter</secondary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <tertiary><code>context</code></tertiary>
-      </indexterm>
+        <simpara>Sets the maximum size of the jitter buffer. As a rule, this
+        shouldn't be set higher than 500, since large jitter buffering can
+        itself lead to audio dropouts.</simpara>
+      </listitem>
 
-      <indexterm>
-        <primary><code>context</code></primary>
+      <listitem>
+        <synopsis>resyncthreshold=[<replaceable>milliseconds</replaceable>]</synopsis>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <synopsis>context = <replaceable>[context]</replaceable></synopsis>
+          <secondary>Parameter</secondary>
 
-      <simpara>The default context for calls arriving via this peer.</simpara>
+          <tertiary><code>resyncthreshold</code></tertiary>
+        </indexterm>
 
-      <simpara>Example:</simpara>
+        <indexterm>
+          <primary><code>resyncthreshold</code></primary>
 
-      <simpara><code>context = default</code></simpara>
-    </section>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-    <section id="iax-channelkonf-regcontext">
-      <title><code>regcontext</code></title>
+        <simpara>If jitter increases dramatically over a small number of
+        frames, Asterisk will resynchronize them under the assumption that the
+        large variation is caused by an error in the timestamps. The
+        resynchronization threshold is the sum of the measured variance and
+        the value of <code>resyncthreshold</code>, given in
+        milliseconds.</simpara>
+      </listitem>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+      <listitem>
+        <synopsis>trunk=[yes|no]</synopsis>
 
-        <secondary>Parameter</secondary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <tertiary><code>regcontext</code></tertiary>
-      </indexterm>
+          <secondary>Parameter</secondary>
 
-      <indexterm>
-        <primary><code>regcontext</code></primary>
+          <tertiary><code>trunk</code></tertiary>
+        </indexterm>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <indexterm>
+          <primary><code>trunk</code></primary>
 
-      <synopsis>regcontext = <replaceable>[context]</replaceable></synopsis>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <simpara>When specified, execution begins automatically in this context
-      upon first registration of the peer. If no extension is specified in
-      <code>regexten</code>, the name of the peer is used for the extension.
-      Note that in this case, execution always begins with a <code>NoOp</code>
-      at priority 1. The first priority in your extension, then, should be 2.
-      Multiple contexts may be specified, separated by ampersand
-      (<code>&amp;)</code>.</simpara>
+        <simpara>When set to <code>yes</code>, Asterisk will stream multiple
+        active calls over a single connection. This can dramatically reduce
+        overhead. The trunk mode works only with suitable hardware (Digium
+        Zaptel) or emulation software for timing purposes.</simpara>
 
-      <simpara>Example:</simpara>
+        <note>
+          <simpara>In Version 1.2.x, the jitter buffer (see <xref
+          linkend="iax-channelkonf-jitterbuffer" />) does not work well when
+          <code>trunk=yes</code>.</simpara>
+        </note>
+      </listitem>
 
-      <simpara><code>regcontext = from-iax</code></simpara>
-    </section>
+      <listitem>
+        <synopsis>trunkfreq=[<replaceable>interval_in_milliseconds</replaceable>]</synopsis>
 
-    <section id="iax-channelkonf-regexten">
-      <title><code>regexten</code></title>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+          <secondary>Parameter</secondary>
 
-        <secondary>Parameter</secondary>
+          <tertiary><code>trunkfreq</code></tertiary>
+        </indexterm>
 
-        <tertiary><code>regexten</code></tertiary>
-      </indexterm>
+        <indexterm>
+          <primary><code>trunkfreq</code></primary>
 
-      <indexterm>
-        <primary><code>regexten</code></primary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+        <simpara>Defines how often Asterisk will send trunk messages. Valid
+        only when <code>trunk=yes</code>.</simpara>
+      </listitem>
 
-      <synopsis>regexten = <replaceable>[number]</replaceable></synopsis>
+      <listitem>
+        <synopsis>qualify=[yes|no|<replaceable>interval_in_milliseconds</replaceable>]</synopsis>
 
-      <simpara>Used in connection with <code>regcontext</code> to specify the
-      extension to be executed in the context. If <code>regexten</code> is not
-      explicitly defined, the name of the connecting peer is used.</simpara>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-      <simpara>Example:</simpara>
+          <secondary>Parameter</secondary>
 
-      <simpara><code>regexten = 3000</code></simpara>
-    </section>
+          <tertiary><code>qualify</code></tertiary>
+        </indexterm>
 
-    <section id="iax-channelkonf-jitterbuffer">
-      <title><code>jitterbuffer</code></title>
+        <indexterm>
+          <primary><code>qualify</code></primary>
 
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-        <secondary>Parameter</secondary>
+        <simpara>When <code>qualify=yes</code>, Asterisk sends messages at set
+        intervals to peers to check if they are available, and, if so,
+        determine the latency. If no reply is received within 2000 ms, the
+        peer is flagged as unavailable. The wait interval can also be
+        specified explicitly. Note that some devices (hard- or softphones) do
+        not handle qualify messages properly.</simpara>
+      </listitem>
 
-        <tertiary><code>jitterbuffer</code></tertiary>
-      </indexterm>
+      <listitem>
+        <synopsis>qualifysmoothing=[yes|no]</synopsis>
 
-      <indexterm>
-        <primary><code>jitterbuffer</code></primary>
+        <indexterm significance="preferred">
+          <primary><filename>iax.conf</filename></primary>
 
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
+          <secondary>Parameter</secondary>
 
-      <synopsis>jitterbuffer = <replaceable>[yes|no]</replaceable></synopsis>
+          <tertiary><code>qualifysmoothing</code></tertiary>
+        </indexterm>
 
-      <simpara>Turns the jitter buffer on or off (valid for connections in
-      which Asterisk is the endpoint). The jitter buffer balances the latency
-      of incoming packets.</simpara>
+        <indexterm>
+          <primary><code>qualifysmoothing</code></primary>
 
-      <simpara>The jitter buffer can have problems if <code>trunk</code> is
-      activated (see <xref linkend="iax-channelkonf-trunk" />).</simpara>
+          <see><filename>iax.conf</filename></see>
+        </indexterm>
 
-      <simpara>Example:</simpara>
-
-      <simpara><code>jitterbuffer = yes</code></simpara>
-    </section>
-
-    <section id="iax-channelkonf-forcejitterbuffer">
-      <title><code>forcejitterbuffer</code></title>
-
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
-
-        <secondary>Parameter</secondary>
-
-        <tertiary><code>forcejitterbuffer</code></tertiary>
-      </indexterm>
-
-      <indexterm>
-        <primary><code>forcejitterbuffer</code></primary>
-
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
-
-      <synopsis>forcejitterbuffer = <replaceable>[yes|no]</replaceable></synopsis>
-
-      <simpara>It is typically the job of the device to implement a jitter
-      buffer<footnote>
-          <simpara>Jitter refers to variable latency of packets in a data
-          stream. If the variability is too great, it can cause dropouts or
-          artifacts in the resulting audio.</simpara>
-        </footnote>. In the event the remote device has a poorly-functioning
-      jitter buffer, you can use Asterisk as a VoIP bridge and use Asterisk's
-      jitter buffer.</simpara>
-
-      <simpara>Example:</simpara>
-
-      <simpara><code>forcejitterbuffer = yes</code></simpara>
-    </section>
-
-    <section id="iax-channelkonf-maxjitterbuffer">
-      <title><code>maxjitterbuffer</code></title>
-
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
-
-        <secondary>Parameter</secondary>
-
-        <tertiary><code>maxjitterbuffer</code></tertiary>
-      </indexterm>
-
-      <indexterm>
-        <primary><code>maxjitterbuffer</code></primary>
-
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
-
-      <synopsis>maxjitterbuffer = <replaceable>[milliseconds]</replaceable></synopsis>
-
-      <simpara>Sets the maximum size of the jitter buffer. As a rule, this
-      shouldn't be set higher than 500, since large jitter buffering can
-      itself lead to audio dropouts.</simpara>
-
-      <simpara>Example:</simpara>
-
-      <simpara><code>maxjitterbuffer = 400</code></simpara>
-    </section>
-
-    <section id="iax-channelkonf-resyncthreshold">
-      <title><code>resyncthreshold</code></title>
-
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
-
-        <secondary>Parameter</secondary>
-
-        <tertiary><code>resyncthreshold</code></tertiary>
-      </indexterm>
-
-      <indexterm>
-        <primary><code>resyncthreshold</code></primary>
-
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
-
-      <synopsis>resyncthreshold=<replaceable>[milliseconds]</replaceable></synopsis>
-
-      <simpara>If jitter increases dramatically over a small number of frames,
-      Asterisk will resynchronize them under the assumption that the large
-      variation is caused by an error in the timestamps. The resynchronization
-      threshold is the sum of the measured variance and the value of
-      <code>resyncthreshold</code>, given in milliseconds.</simpara>
-
-      <simpara>Example:</simpara>
-
-      <simpara><code>resyncthreshold = 800</code></simpara>
-    </section>
-
-    <section id="iax-channelkonf-trunk">
-      <title><code>trunk</code></title>
-
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
-
-        <secondary>Parameter</secondary>
-
-        <tertiary><code>trunk</code></tertiary>
-      </indexterm>
-
-      <indexterm>
-        <primary><code>trunk</code></primary>
-
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
-
-      <synopsis>trunk = <replaceable>[yes|no]</replaceable></synopsis>
-
-      <simpara>When set to <code>yes</code>, Asterisk will stream multiple
-      active calls over a single connection. This can dramatically reduce
-      overhead. The trunk mode works only with suitable hardware (Digium
-      Zaptel) or emulation software for timing purposes.</simpara>
-
-      <simpara>(Note: in Version 1.2.x, the jitter buffer (see <xref
-      linkend="iax-channelkonf-jitterbuffer" />) does not work well when
-      <code>trunk=yes</code>.)</simpara>
-
-      <simpara>Example:</simpara>
-
-      <simpara><code>trunk = yes</code></simpara>
-    </section>
-
-    <section id="iax-channelkonf-trunkfreq">
-      <title><code>trunkfreq</code></title>
-
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
-
-        <secondary>Parameter</secondary>
-
-        <tertiary><code>trunkfreq</code></tertiary>
-      </indexterm>
-
-      <indexterm>
-        <primary><code>trunkfreq</code></primary>
-
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
-
-      <synopsis>trunkfreq = <replaceable>[interval_in_milliseconds]</replaceable></synopsis>
-
-      <simpara>Defines how often Asterisk will send trunk messages. Valid only
-      when <code>trunk=yes</code>.</simpara>
-
-      <simpara>Example:</simpara>
-
-      <simpara><code>trunkfreq = 20</code></simpara>
-    </section>
-
-    <section id="iax-channelkonf-qualify">
-      <title><code>qualify</code></title>
-
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
-
-        <secondary>Parameter</secondary>
-
-        <tertiary><code>qualify</code></tertiary>
-      </indexterm>
-
-      <indexterm>
-        <primary><code>qualify</code></primary>
-
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
-
-      <synopsis>qualify = <replaceable>[yes|no|interval_in_milliseconds]</replaceable></synopsis>
-
-      <simpara>When <code>qualify=yes</code>, Asterisk sends messages at set
-      intervals to peers to check if they are available, and, if so, determine
-      the latency. If no reply is received within 2000 ms, the peer is flagged
-      as unavailable. The wait interval can also be specified explicitly. Note
-      that some devices (hard- or softphones) do not handle qualify messages
-      properly.</simpara>
-
-      <simpara>Example:</simpara>
-
-      <simpara><code>qualify = yes</code></simpara>
-    </section>
-
-    <section id="iax-channelkonf-qualifysmoothing">
-      <title><code>qualifysmoothing</code></title>
-
-      <indexterm significance="preferred">
-        <primary><filename>iax.conf</filename></primary>
-
-        <secondary>Parameter</secondary>
-
-        <tertiary><code>qualifysmoothing</code></tertiary>
-      </indexterm>
-
-      <indexterm>
-        <primary><code>qualifysmoothing</code></primary>
-
-        <see><filename>iax.conf</filename></see>
-      </indexterm>
-
-      <synopsis>qualifysmoothing = <replaceable>[yes|no]</replaceable></synopsis>
-
-      <simpara>When set to <code>yes</code>, the average of the last two
-      replies are used as the input for the availability test. Hosts with
-      unstable connections might otherwise be incorrectly labelled as
-      unavailable.</simpara>
-
-      <simpara>Example:</simpara>
-
-      <simpara><code>qualifysmoothing = yes</code></simpara>
-    </section>
+        <simpara>When set to <code>yes</code>, the average of the last two
+        replies are used as the input for the availability test. Hosts with
+        unstable connections might otherwise be incorrectly labelled as
+        unavailable.</simpara>
+      </listitem>
+    </itemizedlist>
   </section>
 </section>

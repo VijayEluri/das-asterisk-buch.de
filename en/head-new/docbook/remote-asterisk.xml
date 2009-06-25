@@ -31,13 +31,10 @@
     option <parameter>-rx</parameter> followed by the CLI command. Any CLI
     command may be entered from the system shell in this fashion.</para>
 
-    <section id="asterisk-rx-beispiel">
-      <title>Example</title>
-
-      <para>Say you wanted to see the dialplan for extension 23 in the context
-      <parameter>[my-phones]</parameter>; you would do this with
-      <command>asterisk -rx "dialplan show 23@my-phones"</command> entered in
-      the shell:<screen>root@molokai:~&gt;asterisk -rx "dialplan show 23@my-phones"
+    <para>Say you wanted to see the dialplan for extension 23 in the context
+    <parameter>[my-phones]</parameter>; you would do this with
+    <command>asterisk -rx "dialplan show 23@my-phones"</command> entered in
+    the shell:<screen>root@molokai:~&gt;asterisk -rx "dialplan show 23@my-phones"
 [ Context 'my-phones' created by 'pbx_config' ]
   '23' =&gt;           1. Wait(1)                                    [pbx_config]
                     2. Answer()                                   [pbx_config]
@@ -47,7 +44,6 @@
 
 -= 1 extension (5 priorities) in 1 context. =-
 root@molokai:~&gt;</screen></para>
-    </section>
   </section>
 
   <section id="call-file">
@@ -66,48 +62,60 @@ root@molokai:~&gt;</screen></para>
         could lead to Asterisk processing an incomplete file.</para>
       </important></para>
 
-    <para>Let's demonstrate the .call file principle with an example. Assume
-    that we have a SIP phone registered with the number 2000 in Asterisk. In
-    addition, we have the following extension in the dialplan:<programlisting>[call-file-test]
+    <section>
+      <title>Making a call automatically</title>
+
+      <para>Let's demonstrate the .call file principle with an example. Assume
+      that we have a SIP phone registered with the number 2000 in Asterisk. In
+      addition, we have the following extension in the
+      dialplan:<programlisting>[call-file-test]
 exten =&gt; 10,1,Answer()
 exten =&gt; 10,n,Wait(1)
 exten =&gt; 10,n,Playback(hello-world)
 exten =&gt; 10,n,Wait(1)
 exten =&gt; 10,n,Hangup()</programlisting></para>
 
-    <para>We create a call file called <filename>a-test.call</filename> in
-    <filename>/tmp/</filename> with the following content:<programlisting>Channel: SIP/2000
+      <para>We create a call file called <filename>a-test.call</filename> in
+      <filename>/tmp/</filename> with the following content:<programlisting>Channel: SIP/2000
 MaxRetries: 2
 RetryTime: 60
 WaitTime: 30
 Context: call-file-test
 Extension: 10</programlisting></para>
 
-    <para>Now we move this file with <command>mv /tmp/a-test.call
-    /var/spool/asterisk/outgoing/</command><screen>root@molokai:~&gt;mv /tmp/a-test.call /var/spool/asterisk/outgoing/</screen></para>
+      <para>Now we move this file with <command>mv /tmp/a-test.call
+      /var/spool/asterisk/outgoing/</command><screen>root@molokai:~&gt;mv /tmp/a-test.call /var/spool/asterisk/outgoing/</screen></para>
 
-    <para>The following happens:</para>
+      <para>The following happens:</para>
 
-    <itemizedlist>
-      <listitem>
-        <simpara>Asterisk polls the
-        <filename>/var/spool/asterisk/outgoing/</filename> for new call files
-        and processes any it finds.</simpara>
-      </listitem>
+      <itemizedlist>
+        <listitem>
+          <simpara>Asterisk polls the
+          <filename>/var/spool/asterisk/outgoing/</filename> for new call
+          files and processes any it finds.</simpara>
+        </listitem>
 
-      <listitem>
-        <simpara>Asterisk opens a connection to device <code>SIP/2000</code>.
-        If the device is in use or not answered, Asterisk tries two more times
-        (see <parameter>MaxRetries</parameter>).</simpara>
-      </listitem>
+        <listitem>
+          <simpara>Asterisk opens a connection to device
+          <code>SIP/2000</code>. If the device is in use or not answered,
+          Asterisk tries two more times (see
+          <parameter>MaxRetries</parameter>).</simpara>
+        </listitem>
 
-      <listitem>
-        <simpara>If someone answers <code>SIP/2000</code>, Asterisk begins
-        processing extension <code>10</code> in the context
-        <parameter>[call-file-test]</parameter>. In this case, Asterisk plays
-        <filename>hello-world</filename> to the answering party.</simpara>
-      </listitem>
-    </itemizedlist>
+        <listitem>
+          <simpara>If someone answers <code>SIP/2000</code>, Asterisk begins
+          processing extension <code>10</code> in the context
+          <parameter>[call-file-test]</parameter>. In this case, Asterisk
+          plays <filename>hello-world</filename> to the answering
+          party.</simpara>
+        </listitem>
+      </itemizedlist>
+
+      <para>When executing a call file, Asterisk compares the change time with
+      the current time. If the change time is in the future, Asterisk ignores
+      the call file. This is an easy way to implement time-based call
+      files.</para>
+    </section>
 
     <section id="call-file-parameter">
       <title>Parameters</title>
@@ -220,43 +228,34 @@ Extension: 10</programlisting></para>
         </variablelist></para>
     </section>
 
-    <section id="call-file-zukunft">
-      <title>Executing call files in the future</title>
-
-      <para>When executing a call file, Asterisk compares the change time with
-      the current time. If the change time is in the future, Asterisk ignores
-      the call file. This is an easy way to implement time-based call
-      files.</para>
-    </section>
-
     <section id="call-file-weckruf">
       <title>Hotel wake-up call example</title>
 
       <para>A hotel wants to implement a simple wake-up call system. Clients
       must be able to set a wake-up call by dialing *77*, whereupon they hear
       a prompt asking for the date and time of the wake-up
-      call.<programlisting>[hotel-internal]
-exten =&gt; _*77*XXXXXXXXXXXX,1,Answer()
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(year=${EXTEN:4:4})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(month=${EXTEN:8:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(day=${EXTEN:10:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(hours=${EXTEN:12:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Set(minutes=${EXTEN:14:2})
-exten =&gt; _*77*XXXXXXXXXXXX,n,NoOp(Wake-up call scheduled for ${CALLERID(num)} at ${hours}:${minutes} on ${day}.${month}.${year}.)
-exten =&gt; _*77*XXXXXXXXXXXX,n,System(echo -e "Channel: SIP/${CALLERID(num)}\\nContext: wake-up\\nExtension: 23" &gt; /tmp/${UNIQUEID}.call)
-exten =&gt; _*77*XXXXXXXXXXXX,n,System(touch -t ${year}${month}${day}${hours}${minutes} /tmp/${UNIQUEID}.call)
-exten =&gt; _*77*XXXXXXXXXXXX,n,System(mv /tmp/${UNIQUEID}.call /var/spool/asterisk/outgoing/)
-exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(rqsted-wakeup-for)
-exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${hours})
-exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${minutes})
-exten =&gt; _*77*XXXXXXXXXXXX,n,Hangup()
+      call.<programlisting>[ccc][hotel-internal]
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,1,Answer()
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,Set(year=${EXTEN:4:4})
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,Set(month=${EXTEN:8:2})
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,Set(day=${EXTEN:10:2})
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,Set(hours=${EXTEN:12:2})
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,Set(minutes=${EXTEN:14:2})
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,NoOp(Wake-up call scheduled for ${CALLERID(num)} at ${hours}:${minutes} on ${day}.${month}.${year}.)
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,System(echo -e "Channel: SIP/${CALLERID(num)}\\nContext: wake-up\\nExtension: 23" &gt; /tmp/${UNIQUEID}.call)
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,System(touch -t ${year}${month}${day}${hours}${minutes} /tmp/${UNIQUEID}.call)
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,System(mv /tmp/${UNIQUEID}.call /var/spool/asterisk/outgoing/)
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,Playback(rqsted-wakeup-for)
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${hours})
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,SayNumber(${minutes})
+[ccc]exten =&gt; _*77*XXXXXXXXXXXX,n,Hangup()
 
-[wake-up]
-exten =&gt; 23,1,Answer()
-exten =&gt; 23,n,Wait(1)
-exten =&gt; 23,n,Playback(this-is-yr-wakeup-call)
-exten =&gt; 23,n,Wait(1)
-exten =&gt; 23,n,Hangup()</programlisting></para>
+[ccc][wake-up]
+[ccc]exten =&gt; 23,1,Answer()
+[ccc]exten =&gt; 23,n,Wait(1)
+[ccc]exten =&gt; 23,n,Playback(this-is-yr-wakeup-call)
+[ccc]exten =&gt; 23,n,Wait(1)
+[ccc]exten =&gt; 23,n,Hangup()</programlisting></para>
     </section>
   </section>
 
@@ -271,157 +270,187 @@ exten =&gt; 23,n,Hangup()</programlisting></para>
         <primary>Asterisk Manager Interface</primary>
       </indexterm></title>
 
+    <para>The Asterisk Manager Interface is a powerful tool that lets external
+    applications communicate with and control Asterisk.</para>
+
     <para>Activate the Asterisk Manager Interface by setting
     <code>enabled=yes</code> in the <code>[general]</code> section in
     <filename>manager.conf</filename>.<caution>
         <para>Never do this on a publicly accessible server unless you have
         taken steps to protect it with packet filters such as
         <command>iptables</command>, <command>ipfw</command>, an external
-        firewall, or an SSH tunnel!</para>
-      </caution>We add a user entry called <parameter>admin</parameter> at the
-    end of the file:<programlisting>[admin]
+        firewall, or an SSH tunnel. A malicious person could easily use it to
+        take over your phone system.</para>
+      </caution></para>
+
+    <section>
+      <title>Creating an AMI user</title>
+
+      <para>In order to access AMI, we need to create a user account. To do
+      this, we add a user entry called <parameter>admin</parameter> at the end
+      of <filename>manager.conf</filename>:<programlisting>[admin]
 secret = secret5
 deny = 0.0.0.0/0.0.0.0
 permit = 127.0.0.1/255.255.255.255
 read = all,system,call,log,verbose,command,agent,user,config
 write = all,system,call,log,verbose,command,agent,user,config</programlisting>The
-    options following <code>read</code> and <code>write</code> define the
-    allowed command types for this user.<footnote>
-        <simpara>Learn the rights levels needed for commands by entering
-        <command>manager show commands</command> (or <command>show manager
-        commands</command> in Asterisk 1.2) in the CLI.</simpara>
-      </footnote><caution>
-        <para>This generous rights assignment is only for test purposes! The
-        <code>command</code> rights level means the user can stop Asterisk. As
-        of Asterisk 1.4, it is even possible to make dialplan changes through
-        the AMI - which also means it is possible to run shell commands with
-        root privileges using <code>System()</code>!</para>
-      </caution>After restarting Asterisk we can connect to the AMI on port
-    5038 from the system shell using <command>telnet</command><footnote>
-        <simpara>Here we only use <command>telnet</command> as an interface,
-        and not in the traditional, interactive fashion.</simpara>
-      </footnote>:<screen><prompt>$ </prompt>telnet 127.0.0.1 5038
+      options following <code>read</code> and <code>write</code> define the
+      allowed command types for this user.<footnote>
+          <simpara>Learn the rights levels needed for commands by entering
+          <command>manager show commands</command> (or <command>show manager
+          commands</command> in Asterisk 1.2) in the CLI.</simpara>
+        </footnote><caution>
+          <para>This generous rights assignment is only for test purposes! The
+          <code>command</code> rights level means the user can stop Asterisk.
+          As of Asterisk 1.4, it is even possible to make dialplan changes
+          through the AMI - which also means it is possible to run shell
+          commands with root privileges using <code>System()</code>!</para>
+        </caution></para>
+    </section>
+
+    <section>
+      <title>Talking to the AMI</title>
+
+      <para>After restarting Asterisk we can connect to the AMI on port 5038
+      from the system shell using <command>telnet</command>:<footnote>
+          <simpara>Here we only use <command>telnet</command> as an interface,
+          and not in the traditional, interactive fashion.</simpara>
+        </footnote><screen><prompt>$ </prompt>telnet 127.0.0.1 5038
 Trying 127.0.0.1...
 Connected to localhost.
 Escape character is '^]'.
 Asterisk Call Manager/1.0</screen>Now you can enter commands, usually
-    consisting of multiple lines, by hand. For example:<screen>Action: Login
+      consisting of multiple lines, by hand. For example:<screen>Action: Login
 ActionID: 1
 Username: admin
 Secret: secret5
 
 </screen><note>
-        <simpara>All command packets are closed with two carriage
-        returns.</simpara>
-      </note></para>
+          <simpara>All command packets are closed with two carriage
+          returns.</simpara>
+        </note></para>
 
-    <para>Response:<screen>Response: Success
+      <para>After entering the commands and closing them, you'll receive a
+      response:<screen>Response: Success
 ActionID: 1
 Message: Authentication accepted
 </screen></para>
 
-    <simpara>Of course, we are most interested in automating this interaction
-    with scripts.</simpara>
+      <simpara>Of course, we are most interested in automating this
+      interaction with scripts.</simpara>
 
-    <note>
-      <para>The Manager API is not exactly famous for its ability to handle
-      multiple simultaneous connections gracefully (even though this has
-      improved immensely in version 1.4). If you anticipate this kind of load,
-      it is worth considering an AMI proxy such as the "Simple Asterisk
-      Manager Proxy"<footnote>
-          <simpara><ulink
-          url="http://www.popvox.com/simpleproxy.pl">http://www.popvox.com/simpleproxy.pl</ulink></simpara>
-        </footnote> (a Perl script), which can handle many connections and
-      bundles them in a single connection. This is completely transparent to
-      the script accessing the AMI. Of course, for the purposes of playing
-      around, it isn't strictly necessary.</para>
-    </note>
+      <note>
+        <para>The Manager API is not exactly famous for its ability to handle
+        multiple simultaneous connections gracefully (even though this has
+        improved immensely in version 1.4). If you anticipate this kind of
+        load, it is worth considering an AMI proxy such as the "Simple
+        Asterisk Manager Proxy" (<ulink
+        url="http://www.popvox.com/simpleproxy.pl">http://www.popvox.com/simpleproxy.pl</ulink>)
+        a Perl script which can handle many connections and bundles them in a
+        single connection. This is completely transparent to the script
+        accessing the AMI. Of course, for the purposes of playing around, it
+        isn't strictly necessary.</para>
+      </note>
 
-    <simpara>Following a successful authentication, packets can be sent in
-    both directions. The packet type is always determined by the first line.
-    The client sends <code>Action</code> packets, the server answers with
-    <code>Response</code> or can send <code>Event</code> packets. Otherwise
-    the order of the lines in a packet is irrelevant. Lines are terminated
-    with a CR LF<footnote>
-        <simpara>Carriage Return (decimal ASCII 13) and Line Feed (decimal
-        ASCII 10)</simpara>
-      </footnote>combination. The entire packet is terminated with an
-    additional CR LF combination. An AMI client normally sends a randomized
-    but unique <code>ActionID</code> with every <code>Action</code>,<footnote>
-        <simpara>This can be, for example, the name of the script, a timestamp
-        and a sequence number, <emphasis>e.g.</emphasis>
-        <code>testscript.php-1169405408-1.</code></simpara>
-      </footnote> which the server uses in its response for the purpose of
-    managing overlapping packet streams.</simpara>
+      <simpara>Following a successful authentication, packets can be sent in
+      both directions. The packet type is always determined by the first line.
+      The client sends <code>Action</code> packets, the server answers with
+      <code>Response</code> or can send <code>Event</code> packets. Otherwise
+      the order of the lines in a packet is irrelevant. Lines are terminated
+      with a Carriage Return (decimal ASCII 13) and Line Feed (decimal ASCII
+      10) (CR LF) combination. The entire packet is terminated with an
+      additional CR LF combination. An AMI client normally sends a randomized
+      but unique <code>ActionID</code> with every
+      <code>Action</code>,<footnote>
+          <simpara>This can be, for example, the name of the script, a
+          timestamp and a sequence number, <emphasis>e.g.</emphasis>
+          <code>testscript.php-1169405408-1.</code></simpara>
+        </footnote> which the server uses in its response for the purpose of
+      managing overlapping packet streams.</simpara>
 
-    <simpara>The server sends the client <code>Event</code> packets, which can
-    refer to any events; ther are also events that occur as the result of a
-    client-initiated <code>Action</code>. In this case, the server sends
-    <code>Response: Follows</code> followed by the events (which will contain
-    the <code>ActionID</code> of the initiating action) and a closing event
-    (usually <replaceable>actionname</replaceable>Complete).</simpara>
+      <simpara>The server sends the client <code>Event</code> packets, which
+      can refer to any events; ther are also events that occur as the result
+      of a client-initiated <code>Action</code>. In this case, the server
+      sends <code>Response: Follows</code> followed by the events (which will
+      contain the <literal><code>ActionID</code></literal> of the initiating
+      action) and a closing event (usually
+      <literal><replaceable>actionname</replaceable>Complete</literal>).</simpara>
 
-    <simpara>If your client has no need for events, it can turn off these
-    notifications by including <code>Events: off</code> in the authentication
-    packet. Once set, the AMI sends only responses to actions initiated by the
-    client.</simpara>
+      <simpara>If your client has no need for events, it can turn off these
+      notifications by including <code>Events: off</code> in the
+      authentication packet. Once set, the AMI sends only responses to actions
+      initiated by the client.</simpara>
 
-    <para>The list of available commands can be called up in the CLI with
-    <command>manager show commands</command> (or <command>show manager
-    commands</command>), while information about a specific command can be
-    obtained with <command>manager show command
-    <replaceable>command</replaceable></command> (or <command>show manager
-    command <replaceable>command</replaceable></command>):<screen>mos-eisley*CLI&gt; show manager commands
-  Action           Privilege        Synopsis                                               
-  ------           ---------        --------                                               
-  AbsoluteTimeout  call,all         Set Absolute Timeout                                   
-  AgentCallbackLo  agent,all        Sets an agent as logged in by callback                 
-  AgentLogoff      agent,all        Sets an agent as no longer logged in                   
-  Agents           agent,all        Lists agents and their status                          
-  ChangeMonitor    call,all         Change monitoring filename of a channel                
-  Command          command,all      Execute Asterisk CLI Command                           
-  DBGet            system,all       Get DB Entry                                           
-  DBPut            system,all       Put DB Entry                                           
-  Events           &lt;none&gt;           Control Event Flow                                     
-  ExtensionState   call,all         Check Extension Status                                 
-  GetConfig        config,all       Retrieve configuration                                 
-  Getvar           call,all         Gets a Channel Variable                                
-  Hangup           call,all         Hangup Channel                                         
-  IAXnetstats      &lt;none&gt;           Show IAX Netstats                                      
-  IAXpeers         &lt;none&gt;           List IAX Peers                                         
-  ListCommands     &lt;none&gt;           List available manager commands                        
-  Logoff           &lt;none&gt;           Logoff Manager                                         
-  MailboxCount     call,all         Check Mailbox Message Count                            
-  MailboxStatus    call,all         Check Mailbox                                          
-  Monitor          call,all         Monitor a channel                                      
-  Originate        call,all         Originate Call                                         
-  Park             call,all         Park a channel                                         
-  ParkedCalls      &lt;none&gt;           List parked calls                                      
-  PauseMonitor     call,all         Pause monitoring of a channel                          
-  Ping             &lt;none&gt;           Keepalive command                                      
-  PlayDTMF         call,all         Play DTMF signal on a specific channel.                
-  QueueAdd         agent,all        Add interface to queue.                                
-  QueuePause       agent,all        Makes a queue member temporarily unavailable           
-  QueueRemove      agent,all        Remove interface from queue.                           
-  Queues           &lt;none&gt;           Queues                                                 
-  QueueStatus      &lt;none&gt;           Queue Status                                           
-  Redirect         call,all         Redirect (transfer) a call                             
-  SetCDRUserField  call,all         Set the CDR UserField                                  
-  Setvar           call,all         Set Channel Variable                                   
-  SIPpeers         system,all       List SIP peers (text format)                           
-  SIPshowpeer      system,all       Show SIP peer (text format)                            
-  Status           call,all         Lists channel status                                   
-  StopMonitor      call,all         Stop monitoring a channel                              
-  UnpauseMonitor   call,all         Unpause monitoring of a channel                        
-  UpdateConfig     config,all       Update basic configuration                             
-  UserEvent        user,all         Send an arbitrary event                                
-  WaitEvent        &lt;none&gt;           Wait for an event to occur</screen>These
-    commands are almost always a direct translation of dialplan applications,
-    except in the case of <code>Originate</code>, used to initiate an outgoing
-    call, and <code>Command</code>, which executes a command directly on the
-    CLI. Because our test user <code>admin</code> has all the rights levels
-    (see above), he can execute all commands. The following example shows how
-    we learn how a command is used:<screen>mos-eisley*CLI&gt; manager show command Command
+      <simpara>The events that Asterisk sends are, as of this writing,
+      effectively undocumented. You may find a list with sparse details at
+      <ulink
+      url="http://www.voip-info.org/wiki/view/asterisk+manager+events">http://www.voip-info.org/wiki/view/asterisk+manager+events</ulink>.
+      A few additional explanations may be found at <ulink
+      url="http://asterisk-java.sourceforge.net/apidocs/net/sf/asterisk/manager/event/package-frame.html">http://asterisk-java.sourceforge.net/apidocs/net/sf/asterisk/manager/event/package-frame.html</ulink>.<footnote>
+          <simpara>Don't be confused: this is primarily Asterisk-Java
+          documentation.</simpara>
+        </footnote></simpara>
+    </section>
+
+    <section>
+      <title>AMI commands</title>
+
+      <para>The list of available commands can be called up in the CLI with
+      <command>manager show commands</command> (or <command>show manager
+      commands</command>), while information about a specific command can be
+      obtained with <command>manager show command
+      <replaceable>command</replaceable></command> (or <command>show manager
+      command <replaceable>command</replaceable></command>):<screen>mos-eisley*CLI&gt; show manager commands
+[ccc]  Action           Privilege        Synopsis                                               
+[ccc]  ------           ---------        --------                                               
+[ccc]  AbsoluteTimeout  call,all         Set Absolute Timeout                                   
+[ccc]  AgentCallbackLo  agent,all        Sets an agent as logged in by callback                 
+[ccc]  AgentLogoff      agent,all        Sets an agent as no longer logged in                   
+[ccc]  Agents           agent,all        Lists agents and their status                          
+[ccc]  ChangeMonitor    call,all         Change monitoring filename of a channel                
+[ccc]  Command          command,all      Execute Asterisk CLI Command                           
+[ccc]  DBGet            system,all       Get DB Entry                                           
+[ccc]  DBPut            system,all       Put DB Entry                                           
+[ccc]  Events           &lt;none&gt;           Control Event Flow                                     
+[ccc]  ExtensionState   call,all         Check Extension Status                                 
+[ccc]  GetConfig        config,all       Retrieve configuration                                 
+[ccc]  Getvar           call,all         Gets a Channel Variable                                
+[ccc]  Hangup           call,all         Hangup Channel                                         
+[ccc]  IAXnetstats      &lt;none&gt;           Show IAX Netstats                                      
+[ccc]  IAXpeers         &lt;none&gt;           List IAX Peers                                         
+[ccc]  ListCommands     &lt;none&gt;           List available manager commands                        
+[ccc]  Logoff           &lt;none&gt;           Logoff Manager                                         
+[ccc]  MailboxCount     call,all         Check Mailbox Message Count                            
+[ccc]  MailboxStatus    call,all         Check Mailbox                                          
+[ccc]  Monitor          call,all         Monitor a channel                                      
+[ccc]  Originate        call,all         Originate Call                                         
+[ccc]  Park             call,all         Park a channel                                         
+[ccc]  ParkedCalls      &lt;none&gt;           List parked calls                                      
+[ccc]  PauseMonitor     call,all         Pause monitoring of a channel                          
+[ccc]  Ping             &lt;none&gt;           Keepalive command                                      
+[ccc]  PlayDTMF         call,all         Play DTMF signal on a specific channel.                
+[ccc]  QueueAdd         agent,all        Add interface to queue.                                
+[ccc]  QueuePause       agent,all        Makes a queue member temporarily unavailable           
+[ccc]  QueueRemove      agent,all        Remove interface from queue.                           
+[ccc]  Queues           &lt;none&gt;           Queues                                                 
+[ccc]  QueueStatus      &lt;none&gt;           Queue Status                                           
+[ccc]  Redirect         call,all         Redirect (transfer) a call                             
+[ccc]  SetCDRUserField  call,all         Set the CDR UserField                                  
+[ccc]  Setvar           call,all         Set Channel Variable                                   
+[ccc]  SIPpeers         system,all       List SIP peers (text format)                           
+[ccc]  SIPshowpeer      system,all       Show SIP peer (text format)                            
+[ccc]  Status           call,all         Lists channel status                                   
+[ccc]  StopMonitor      call,all         Stop monitoring a channel                              
+[ccc]  UnpauseMonitor   call,all         Unpause monitoring of a channel                        
+[ccc]  UpdateConfig     config,all       Update basic configuration                             
+[ccc]  UserEvent        user,all         Send an arbitrary event                                
+[ccc]  WaitEvent        &lt;none&gt;           Wait for an event to occur</screen>These
+      commands are almost always a direct translation of dialplan
+      applications, except in the case of <code>Originate</code>, used to
+      initiate an outgoing call, and <code>Command</code>, which executes a
+      command directly on the CLI. Because our test user <code>admin</code>
+      has all the rights levels (see above), he can execute all commands. The
+      following example shows how we learn how a command is used:<screen>mos-eisley*CLI&gt; manager show command Command
 Action: Command 
 Synopsis: Execute Asterisk CLI Command
 Privilege: command,a
@@ -429,34 +458,17 @@ Description: Run a CLI command.
 Variables: (Names marked with * are required)
         *Command: Asterisk CLI command to run
         ActionID: Optional Action id for message matching.</screen></para>
-
-    <simpara>The events that Asterisk sends are, as of this writing,
-    effectively undocumented. You may find a list with sparse details at
-    <ulink
-    url="http://www.voip-info.org/wiki/view/asterisk+manager+events">http://www.voip-info.org/wiki/view/asterisk+manager+events</ulink>.
-    A few additional explanations may be found at <ulink
-    url="http://asterisk-java.sourceforge.net/apidocs/net/sf/asterisk/manager/event/package-frame.html">http://asterisk-java.sourceforge.net/apidocs/net/sf/asterisk/manager/event/package-frame.html</ulink>.<footnote>
-        <simpara>Don't be confused: this is primarily Asterisk-Java
-        documentation.</simpara>
-      </footnote></simpara>
+    </section>
 
     <section id="manager-interface-beispiel-expect">
-      <title>Example: Getting the number of voicemail messages with
-      expect</title>
+      <title>Getting the number of voicemail messages with expect</title>
 
       <simpara>Say we wanted to get the number of messages in a given voice
       mailbox via the Manager interface. This is easily done using an
-      <command>expect</command> script.</simpara>
-
-      <sidebar>
-        <simpara><command>expect</command> is an extended Tcl interpreter used
-        for automating interfaces with interactive shell programs.<footnote>
-            <simpara><ulink
-            url="http://expect.nist.gov/">http://expect.nist.gov/</ulink>,
-            <ulink
-            url="http://en.wikipedia.org/wiki/Expect">http://en.wikipedia.org/wiki/Expect</ulink></simpara>
-          </footnote></simpara>
-      </sidebar>
+      <command>expect</command> script. <command>expect</command> is an
+      extended Tcl interpreter used for automating interfaces with interactive
+      shell programs (see expect's homepage at <ulink
+      url="???">http://expect.nist.gov/</ulink>).</simpara>
 
       <para>The following expect script connects to the AMI, logs in, then
       returns the number of new and old messages in the specified
@@ -535,9 +547,11 @@ expect {
 # Log out -- not strictly necessary, but cleaner:
 send "Action: Logoff\n\n"
 </programlisting>We save the script as <filename>vmcount.exp</filename> and
-      set it executable with <command>chmod a+x vmcount.exp</command>.</para>
+      set it executable with <command>chmod a+x vmcount.exp</command>. We run
+      it with the mailbox as an option and see how many messages we
+      have:</para>
 
-      <para>Sample output:<screen>$ ./vmcount.exp 123@default
+      <para><screen>$ ./vmcount.exp 123@default
 Mailbox: 123@default
 Connected.
 Logged in.
@@ -556,47 +570,44 @@ Old messages: 0
 
       <simpara>There are now numerous, more-or-less good APIs for the AMI in a
       variety of programming languages (PHP, Perl, Python, Ruby etc.) which
-      we, because of space and time limitations, can't explore here<footnote>
-          <simpara>Examples with comments may be found at <ulink
-          url="http://www.voip-info.org/wiki/view/Asterisk+manager+Examples">http://www.voip-info.org/wiki/view/Asterisk+manager+Examples</ulink></simpara>
-        </footnote>. If the API for your favorite language doesn't work, we're
-      confident you can figure it out. It's doubtful that anybody without
-      programming experience has read this far :)</simpara>
+      we, because of space and time limitations, can't explore here. Examples
+      with comments may be found at <ulink
+      url="http://www.voip-info.org/wiki/view/Asterisk+manager+Examples">http://www.voip-info.org/wiki/view/Asterisk+manager+Examples</ulink>.
+      If the API for your favorite language doesn't work, we're confident you
+      can figure it out.</simpara>
 
-      <para>In this short example, we test the StarAstAPI<footnote>
-          <simpara>from <ulink
-          url="http://www.starutilities.com/">http://www.starutilities.com/</ulink></simpara>
-        </footnote> in PHP, which assumes a PHP 5<footnote>
-          <simpara>The API is easily ported to PHP 4, though the code is
-          cluttered and poorly formatted. When in doubt, just remedy the parse
-          errors :)</simpara>
-        </footnote> that was compiled with
-      <code>--enable-sockets</code>.<footnote>
-          <para>You can check this from the shell with <command>php
-          -m</command>.</para>
-        </footnote> Unfortunately, the StarAstAPI files still contain the
-      obsolete "short open tags" (<code>&lt;?</code>). If you encounter them,
-      replace them with the correct syntax (<code>&lt;?php</code>). Four demo
-      scripts are included with the API: <filename>sLogin.php</filename>
-      attempts a login<footnote>
-          <simpara>If you have followed the examples above, you will need to
-          adapt the user name and password.</simpara>
-        </footnote>, <filename>sCommand.php</filename> executes
-      <code>reload</code> on the CLI, <filename>sDial.php</filename> tries a
-      connection to SIP/120 and <filename>sEvents.php</filename> receives
-      events. If we connect to Asterisk using <command>asterisk
-      -vvvr</command> and simultaneously run <command>php -q
-      sLogin.php</command> to open a connection to the AMI<footnote>
-          <simpara>The user and password are deliberately incorrect.</simpara>
-        </footnote>, watching the CLI, we see:<screen>mos-eisley*CLI&gt; 
-  == Parsing '/etc/asterisk/manager.conf': Found
-[Jan 26 20:08:09] NOTICE[10352]: manager.c:961 authenticate: 127.0.0.1 tried to authenticate with nonexistent user 'mark'
-  == Connect attempt from '127.0.0.1' unable to authenticate
-mos-eisley*CLI&gt; </screen> This failed because the user did not exist, yet
-      the demo script still reports success:<screen>$  php -q sLogin.php 
+      <para>In this short example, we test the StarAstAPI (from <ulink
+      url="http://www.starutilities.com/">http://www.starutilities.com/</ulink>)
+      in PHP, which assumes a PHP 5 that was compiled with
+      <code>--enable-sockets</code>. You can check this from the shell with
+      <command>php -m</command>.</para>
+
+      <para>(The API is easily ported to PHP 4, though the code is cluttered
+      and poorly formatted.) When in doubt, just remedy the parse
+      errors.</para>
+
+      <para>Unfortunately, the StarAstAPI files still contain the obsolete
+      "short open tags" (<code>&lt;?</code>). If you encounter them, replace
+      them with the correct syntax (<code>&lt;?php</code>). Four demo scripts
+      are included with the API: <filename>sLogin.php</filename> attempts a
+      login, <filename>sCommand.php</filename> executes <code>reload</code> on
+      the CLI, <filename>sDial.php</filename> tries a connection to SIP/120
+      and <filename>sEvents.php</filename> receives events. (If you have
+      followed the examples from voip-info.org, you will need to adapt the
+      user name and password.)</para>
+
+      <para>If we connect to Asterisk using <command>asterisk -vvvr</command>
+      and simultaneously run <command>php -q sLogin.php</command> to open a
+      connection to the AMI using a deliberately incorrect user and password,
+      we will see output like this on the CLI:<screen>[ccc]mos-eisley*CLI&gt; 
+[ccc]  == Parsing '/etc/asterisk/manager.conf': Found
+[ccc][Jan 26 20:08:09] NOTICE[10352]: manager.c:961 authenticate: 127.0.0.1 tried to authenticate with nonexistent user 'mark'
+[ccc]  == Connect attempt from '127.0.0.1' unable to authenticate
+[ccc]mos-eisley*CLI&gt; </screen>This failed because the user did not exist,
+      yet the demo script still reports success:<screen>$  php -q sLogin.php 
 Login Sucessful 
 
-</screen>followed by the response packet:<screen>Response: Error
+</screen>The response packet, however, will show the failure:<screen>Response: Error
 ActionID: 1
 Message: Authentication failed
 </screen>The StarAstAPI is, as you can see, not completely clean, but is
@@ -623,11 +634,10 @@ User_Count: 0
     </section>
 
     <section id="manager-interface-beispiel-php">
-      <title>Example: Getting the number of mailbox messages with PHP</title>
+      <title>Getting the number of mailbox messages with PHP</title>
 
-      <para>Here's how we would accomplish the same objective as <xref
-      linkend="manager-interface-beispiel-expect" /> in PHP using
-      StarAstAPI:<programlisting>#!/usr/bin/php -q
+      <para>Let's retrieve the number of mailbox messages for an account using
+      PHP and StarAstAPI. Here is the PHP script:<programlisting>#!/usr/bin/php -q
 &lt;?php
 # option -q turns off the header output when executing CGI-PHP
 
@@ -682,21 +692,21 @@ echo "\n";
 $ami-&gt;Logoff();
 # Unfortunately, StarAstAPI isn't totally discreet.
 # It does this:
-#echo "Logoff Called from somewhere ...";
+#echo "Logoff called from somewhere ...";
 #socket_close($this-&gt;mSocket);
 
 echo "\n";
 ?&gt;</programlisting>We save this script as <filename>vmcount.php</filename>
-      and make it executable with <command>chmod a+x
-      vmcount.exp</command>.</para>
+      and make it executable with <command>chmod a+x vmcount.exp</command>,
+      then invoke it with the mailbox name as an option:</para>
 
-      <para>Sample output:<screen>$ ./vmcount.php 123@default
+      <para><screen>$ ./vmcount.php 123@default
 Mailbox: 123123123
 
 New messages: 0
 Old messages: 0
 
-Logoff Called from somewhere ...
+Logoff called from somewhere ...
 </screen></para>
     </section>
   </section>
@@ -712,10 +722,8 @@ Logoff Called from somewhere ...
 
     <simpara>As of version 1.4, Asterisk comes packaged with a small web
     server called AJAM, which may be used to access the Asterisk Manager
-    Interface (AMI) via HTTP. The name "AJAM" is derived from "AJAX"<footnote>
-        <simpara><ulink
-        url="http://de.wikipedia.org/wiki/Ajax_(Programmierung)">http://de.wikipedia.org/wiki/Ajax_(Programmierung)</ulink></simpara>
-      </footnote> (Asynchronous JavaScript and XML).</simpara>
+    Interface (AMI) via HTTP. The name "AJAM" is derived from "AJAX"
+    (Asynchronous JavaScript and XML).</simpara>
 
     <para>Set-up assumes the steps from <xref
     linkend="asterisk-manager-api" /> have been carried out, plus some
@@ -739,7 +747,7 @@ prefix=asterisk</programlisting><code>enablestatic</code> need only be
 
     <simpara>Don't forget to restart!</simpara>
 
-    <caution>
+    <warning>
       <para>Our assessment is that it almost never makes sense to serve other
       web applications (that is, those intended strictly for administrator
       access) through the AJAM interface. It is also doubtful that it was
@@ -751,17 +759,16 @@ prefix=asterisk</programlisting><code>enablestatic</code> need only be
       containing only the specific AMI commands it needs to do its job, and to
       restrict the AMI rights for the accessing user as extra
       insurance.</para>
-    </caution>
+    </warning>
 
     <section id="manager-interface-beispiel-ajam">
-      <title>Example: Getting the number of voicemail messages with
-      AJAM</title>
+      <title>Getting the number of voicemail messages with AJAM</title>
 
       <simpara>Again, we are solving the problem addressed in <xref
       linkend="manager-interface-beispiel-expect" /> and <xref
       linkend="manager-interface-beispiel-php" />: we want to find out the
       number of messages in a specified mailbox. The AJAM offers us a few ways
-      to do this:</simpara>
+      to do this.</simpara>
 
       <section id="ajam-format-html">
         <title>HTML<indexterm>
@@ -770,10 +777,10 @@ prefix=asterisk</programlisting><code>enablestatic</code> need only be
             <secondary>HTML</secondary>
           </indexterm></title>
 
-        <para>The AMI waits for queries at<literallayout class="monospaced">http://localhost:8088/asterisk/manager</literallayout>.
-        Packet fields are tacked on the end of the URL. Try these addresses in
-        your web browser:<literallayout class="monospaced">http://localhost:8088/asterisk/manager?action=Login&amp;username=admin&amp;secret=secret5
-http://localhost:8088/asterisk/manager?action=MailboxCount&amp;mailbox=123</literallayout></para>
+        <para>The AMI waits for queries at<literallayout class="monospaced">http://localhost:8088/asterisk/manager</literallayout>Packet
+        fields are tacked on the end of the URL. Try these addresses in your
+        web browser:<literallayout class="monospaced">[ccc]http://localhost:8088/asterisk/manager?action=Login&amp;username=admin&amp;secret=secret5
+[ccc]http://localhost:8088/asterisk/manager?action=MailboxCount&amp;mailbox=123</literallayout></para>
 
         <simpara>The response follows in the form of an HTML page, so it's not
         really suitable for access via a script.</simpara>
@@ -789,9 +796,9 @@ http://localhost:8088/asterisk/manager?action=MailboxCount&amp;mailbox=123</lite
         <para>If we replace <code>manager</code> in the URL with
         <code>rawman</code>, we get plain text output. To log in and get a
         message count from the mailbox, then:<literallayout
-        class="monospaced">http://localhost:8088/asterisk/rawman?action=Login&amp;username=admin&amp;secret=secret5</literallayout><screen>Response: Success
+        class="monospaced">[ccc]http://localhost:8088/asterisk/rawman?action=Login&amp;username=admin&amp;secret=secret5</literallayout><screen>Response: Success
 Message: Authentication accepted
-</screen><literallayout class="monospaced">http://localhost:8088/asterisk/rawman?action=MailboxCount&amp;mailbox=123</literallayout><screen>Response: Success
+</screen><literallayout class="monospaced">[ccc]http://localhost:8088/asterisk/rawman?action=MailboxCount&amp;mailbox=123</literallayout><screen>Response: Success
 Message: Mailbox Message Count
 Mailbox: 123
 NewMessages: 0
@@ -813,14 +820,14 @@ Message: Thanks for all the fish.
         <para>If we want XML instead, we call <code>mxml</code> instead. The
         XML output is presented formatted for better readability. In practice,
         AJAM does not put line breaks inside the XML tags. Either way, a
-        compliant XML parser won't care.<literallayout class="monospaced">http://localhost:8088/asterisk/mxml?action=Login&amp;username=admin&amp;secret=secret5</literallayout><screen>&lt;ajax-response&gt;
+        compliant XML parser won't care.<literallayout class="monospaced">[ccc]http://localhost:8088/asterisk/mxml?action=Login&amp;username=admin&amp;secret=secret5</literallayout><screen>&lt;ajax-response&gt;
     &lt;response type='object' id='unknown'&gt;
         &lt;generic
             response='Success'
             message='Authentication accepted' /&gt;
     &lt;/response&gt;
 &lt;/ajax-response&gt;
-</screen><literallayout class="monospaced">http://localhost:8088/asterisk/mxml?action=MailboxCount&amp;mailbox=123</literallayout><screen>&lt;ajax-response&gt;
+</screen><literallayout class="monospaced">[ccc]http://localhost:8088/asterisk/mxml?action=MailboxCount&amp;mailbox=123</literallayout><screen>&lt;ajax-response&gt;
     &lt;response type='object' id='unknown'&gt;
         &lt;generic
             response='Success'
@@ -844,24 +851,18 @@ Message: Thanks for all the fish.
     <section id="manager-interface-ajam-hinweise">
       <title>AJAX and AJAM considerations</title>
 
-      <section id="ajam-format-json">
-        <title>JSON</title>
-
-        <para>AJAX applications - as the name "Asynchronous JavaScript and
-        XML" might suggest - use XML as the standard format, even though it is
-        often criticized for its bloated structure. There are alternatives,
-        such as JSON<footnote>
-            <simpara><ulink
-            url="http://de.wikipedia.org/wiki/JSON">http://de.wikipedia.org/wiki/JSON</ulink></simpara>
-          </footnote>, for example. JSON (JavaScript Object Notation) is - the
-        name gives it away - well-suited for Javascript applications, because
-        the data structure can be converted into an object natively and with
-        little overhead using <code>eval()</code>. There are countless
-        implementations for PHP, Perl, etc. but a JSON implementation for AJAM
-        does not yet exist. One can, however, convert the plain-text output
-        into JSON on the client side, if that turns out to be easier or if
-        it's easily done using available Javascript libraries. Here's an
-        example to get you thinking:<programlisting>// We assume the received response and
+      <para>AJAX applications - as the name "Asynchronous JavaScript and XML"
+      might suggest - use XML as the standard format, even though it is often
+      criticized for its bloated structure. There are alternatives, such as
+      JSON, for example. JSON (JavaScript Object Notation) is - the name gives
+      it away - well-suited for Javascript applications, because the data
+      structure can be converted into an object natively and with little
+      overhead using <code>eval()</code>. There are countless implementations
+      for PHP, Perl, etc. but a JSON implementation for AJAM does not yet
+      exist. One can, however, convert the plain-text output into JSON on the
+      client side, if that turns out to be easier or if it's easily done using
+      available Javascript libraries. Here's an example to get you
+      thinking:<programlisting>// We assume the received response and
 // simulate it here:
 var responseText = 'Response: Success\n'
 +'Message: Mailbox Message Count\n'
@@ -872,14 +873,12 @@ var responseText = 'Response: Success\n'
 // Escape single quotation marks:
 responseText = responseText.replace( /\'/g, "\\'" );
 // Wrap fields in quotes:
-responseText = responseText.replace( /^([a-z\d]*):\s*(.*)/gmi, "'$1':'$2'," );
+[ccc]responseText = responseText.replace( /^([a-z\d]*):\s*(.*)/gmi, "'$1':'$2'," );
 // Convert to object:
 eval('var packet = {'+ responseText +'}');
 
 // Now you can access the fields as you would with any object:
-alert( packet['NewMessages'] );   // returns "0"
-</programlisting></para>
-      </section>
+alert( packet['NewMessages'] );   // returns "0"</programlisting></para>
 
       <section id="manager-interface-ajam-ping">
         <title>Ping</title>
@@ -893,20 +892,13 @@ alert( packet['NewMessages'] );   // returns "0"
       <section id="manager-interface-ajam-demo">
         <title>AJAM Demo</title>
 
-        <para>A small sample application demonstrating AJAX access may be run
-        at<literallayout class="monospaced">http://localhost:8088/asterisk/static/ajamdemo.html</literallayout>.
-        This uses the highly practical JavaScript library prototype<footnote>
-            <simpara><ulink
-            url="http://prototype.conio.net/">http://prototype.conio.net/</ulink>,
-            also <ulink
-            url="http://www.prototypejs.org/">http://www.prototypejs.org/</ulink>,
-            see <ulink
-            url="http://en.wikipedia.org/wiki/Prototype_Javascript_Framework">http://en.wikipedia.org/wiki/Prototype_Javascript_Framework</ulink>
-            or <ulink
-            url="http://de.wikipedia.org/wiki/Prototype">http://en.wikipedia.org/wiki/Prototype-based_programming</ulink></simpara>
-          </footnote> for AJAX access and displays, using the
-        <code>Status</code> the currently active channels. You can use the
-        AJAM demo as a basis for your own AJAX applications.</para>
+        <para>A small sample application demonstrating AJAM access may be run
+        at<literallayout class="monospaced">http://localhost:8088/asterisk/static/ajamdemo.html</literallayout>This
+        uses the highly practical JavaScript library prototype (<ulink
+        url="http://www.prototypejs.org/">http://www.prototypejs.org/)</ulink>
+        for AJAX access and displays, using the <code>Status</code> the
+        currently active channels. You can use the AJAM demo as a basis for
+        your own AJAX applications.</para>
       </section>
 
       <section id="manager-interface-ajam-apache">
