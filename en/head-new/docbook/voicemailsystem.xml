@@ -543,25 +543,21 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
     <simpara>There are two voicemail applications we can use in the dialplan
     (<filename>extensions.conf</filename>):</simpara>
 
-    <variablelist>
-      <varlistentry>
-        <term><code>VoiceMail()</code></term>
+    <itemizedlist>
+      <listitem>
+        <para><code>VoiceMail()</code></para>
 
-        <listitem>
-          <simpara>This application sends a caller to the voicemail system,
-          where she will be asked to leave a message.</simpara>
-        </listitem>
-      </varlistentry>
+        <para>This application sends a caller to the voicemail system, where
+        she will be asked to leave a message.</para>
+      </listitem>
 
-      <varlistentry>
-        <term><code>VoiceMailMain()</code></term>
+      <listitem>
+        <para><code>VoiceMailMain()</code></para>
 
-        <listitem>
-          <simpara>This application lets recipients check their voice messages
-          and record new voicemail prompts.</simpara>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+        <para>This application lets recipients check their voice messages and
+        record new voicemail prompts.</para>
+      </listitem>
+    </itemizedlist>
 
     <section id="voicemail-applikationen-voicemail">
       <title
@@ -590,81 +586,71 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
 
       <synopsis>VoiceMail(mailbox[@context][,u|b|s])</synopsis>
 
-      <variablelist termlength="10">
-        <varlistentry>
-          <term><code>mailbox</code></term>
+      <itemizedlist>
+        <listitem>
+          <para><code>mailbox</code></para>
 
-          <listitem>
-            <simpara>This is the mailbox number. This does not have to be the
-            same as the extension the caller dialled; nevertheless, this is a
-            sensible practice, particularly in larger installations.</simpara>
-          </listitem>
-        </varlistentry>
+          <para>This is the mailbox number. This does not have to be the same
+          as the extension the caller dialled; nevertheless, this is a
+          sensible practice, particularly in larger installations.</para>
+        </listitem>
 
-        <varlistentry>
-          <term><code>@context</code></term>
+        <listitem>
+          <para><code>@context</code></para>
 
-          <listitem>
-            <simpara>Mailboxes may be implemented in a specific context. If no
-            context is provided, the [default] context is used.</simpara>
+          <para>Mailboxes may be implemented in a specific context. If no
+          context is provided, the [default] context is used.</para>
 
-            <itemizedlist>
+          <itemizedlist>
+            <listitem>
+              <para>If the caller presses "0" while listening to the prompt,
+              the application will jump to extension "o" (the small letter o)
+              in the specified context.</para>
+            </listitem>
+
+            <listitem>
+              <para>If the caller presses "*" while listening to the prompt,
+              the application will jump to extension "a" (the small letter a)
+              in the specified context.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para><code>[u|b|s]</code></para>
+
+          <para><itemizedlist>
               <listitem>
-                <para>If the caller presses "0" while listening to the prompt,
-                the application will jump to extension "o" (the small letter
-                o) in the specified context.</para>
+                <para><literal><code>u</code></literal></para>
+
+                <para>causes the "unavailable" message to be played. The
+                pathname for this message is
+                <filename>/var/lib/asterisk/sounds/vm-isunavail.gsm</filename></para>
+
+                <para><footnote>
+                    <simpara>If you are using a pre-packaged Asterisk, the
+                    path may be different; for example,
+                    <filename>/usr/share/asterisk/sounds/</filename>.</simpara>
+                  </footnote></para>
               </listitem>
 
               <listitem>
-                <para>If the caller presses "*" while listening to the prompt,
-                the application will jump to extension "a" (the small letter
-                a) in the specified context.</para>
+                <para><literal><code>b</code></literal></para>
+
+                <para>causes the "busy" to be played. The pathname for this
+                message
+                is<filename>/var/lib/asterisk/sounds/vm-rec-busy.gsm.</filename></para>
               </listitem>
-            </itemizedlist>
-          </listitem>
-        </varlistentry>
 
-        <varlistentry>
-          <term><code>[u|b|s]</code></term>
+              <listitem>
+                <para><code>s</code></para>
 
-          <listitem>
-            <variablelist termlength="2">
-              <varlistentry>
-                <term><code>u</code></term>
-
-                <listitem>
-                  <simpara>causes the "unavailable" message to be played. The
-                  pathname for this message is
-                  <filename>/var/lib/asterisk/sounds/vm-isunavail.gsm</filename><footnote>
-                      <simpara>If you are using a pre-packaged Asterisk, the
-                      path may be different; for example,
-                      <filename>/usr/share/asterisk/sounds/</filename>.</simpara>
-                    </footnote></simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><code>b</code></term>
-
-                <listitem>
-                  <simpara>causes the "busy" to be played. The pathname for
-                  this message is<filename>
-                  /var/lib/asterisk/sounds/vm-rec-busy.gsm.</filename></simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><code>s</code></term>
-
-                <listitem>
-                  <simpara>suppresses playback of the "unavailable" or "busy"
-                  notifications, plays a beep, and begins recording.</simpara>
-                </listitem>
-              </varlistentry>
-            </variablelist>
-          </listitem>
-        </varlistentry>
-      </variablelist>
+                <para>suppresses playback of the "unavailable" or "busy"
+                notifications, plays a beep, and begins recording.</para>
+              </listitem>
+            </itemizedlist></para>
+        </listitem>
+      </itemizedlist>
 
       <simpara>If there is no mailbox configured in
       <filename>voicemail.conf</filename> for the given number but there is a
@@ -697,62 +683,49 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
 
       <synopsis>VoiceMailMain([mailbox][@context][,s|p|g(#)])</synopsis>
 
-      <variablelist termlength="10">
-        <varlistentry>
-          <term><code>mailbox</code></term>
+      <itemizedlist>
+        <listitem>
+          <para><code>mailbox</code></para>
 
-          <listitem>
-            <simpara>This is the mailbox number. If no mailbox number is
-            provided, Asterisk prompts for it.</simpara>
-          </listitem>
-        </varlistentry>
+          <para>This is the mailbox number. If no mailbox number is provided,
+          Asterisk prompts for it.</para>
+        </listitem>
 
-        <varlistentry>
-          <term><code>@context</code></term>
+        <listitem>
+          <para><code>@context</code></para>
 
-          <listitem>
-            <simpara>specifies the voicemail context (in
-            <filename>voicemail.conf</filename>) for the mailbox.</simpara>
-          </listitem>
-        </varlistentry>
+          <para>specifies the voicemail context (in
+          <filename>voicemail.conf</filename>) for the mailbox.</para>
+        </listitem>
 
-        <varlistentry>
-          <term><code>[s|p|g#]</code></term>
+        <listitem>
+          <para><code>[s|p|g#]</code></para>
 
-          <listitem>
-            <variablelist termlength="1">
-              <varlistentry>
-                <term><code>s</code></term>
+          <para><itemizedlist>
+              <listitem>
+                <para><code>s</code></para>
 
-                <listitem>
-                  <simpara>Disables the password requirement.</simpara>
-                </listitem>
-              </varlistentry>
+                <para>Disables the password requirement.</para>
+              </listitem>
 
-              <varlistentry>
-                <term><code>p</code></term>
+              <listitem>
+                <para><code>p</code></para>
 
-                <listitem>
-                  <simpara>The user is asked for a mailbox number. The number
-                  entered is attached as a suffix to the contents of
-                  [mailbox]; for example, if the user enters 123, [mailbox]123
-                  is called. This lets you easily configure mailbox
-                  groups.</simpara>
-                </listitem>
-              </varlistentry>
+                <para>The user is asked for a mailbox number. The number
+                entered is attached as a suffix to the contents of [mailbox];
+                for example, if the user enters 123, [mailbox]123 is called.
+                This lets you easily configure mailbox groups.</para>
+              </listitem>
 
-              <varlistentry>
-                <term><code>g(#)</code></term>
+              <listitem>
+                <para><code>g(#)</code></para>
 
-                <listitem>
-                  <simpara>Adjusts the gain (in decibels) when recording
-                  voicemail prompts.</simpara>
-                </listitem>
-              </varlistentry>
-            </variablelist>
-          </listitem>
-        </varlistentry>
-      </variablelist>
+                <para>Adjusts the gain (in decibels) when recording voicemail
+                prompts.</para>
+              </listitem>
+            </itemizedlist></para>
+        </listitem>
+      </itemizedlist>
 
       <simpara>A complete description of the voice menus for
       <code>VoiceMailMain()</code> is difficult because they depend on the
@@ -1040,7 +1013,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
 
       <itemizedlist>
         <listitem>
-          <para>attach = [yes|no]</para>
+          <para><code>attach = [yes|no]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1062,7 +1035,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>callback=[<replaceable>context</replaceable>]</para>
+          <para><code>callback=[<replaceable>context</replaceable>]</code></para>
 
           <indexterm>
             <primary><code>callback</code></primary>
@@ -1084,7 +1057,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>charset=[<replaceable>charset</replaceable>]</para>
+          <para><code>charset=[<replaceable>charset</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1107,7 +1080,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>delete=[yes|no]</para>
+          <para><code>delete=[yes|no]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1129,7 +1102,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>directoryintro=[<replaceable>filename</replaceable>]</para>
+          <para><code>directoryintro=[<replaceable>filename</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1152,7 +1125,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>emailsubject=[<replaceable>subject</replaceable>]</para>
+          <para><code>emailsubject=[<replaceable>subject</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1177,7 +1150,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>pbxskip=[yes|no]</para>
+          <para><code>pbxskip=[yes|no]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1200,7 +1173,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>emailbody=[<replaceable>email_text</replaceable>]</para>
+          <para><code>emailbody=[<replaceable>email_text</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1286,7 +1259,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>serveremail=[<replaceable>fromaddress</replaceable>]</para>
+          <para><code>serveremail=[<replaceable>fromaddress</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1309,7 +1282,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>fromstring=[<replaceable>fromname</replaceable>]</para>
+          <para><code>fromstring=[<replaceable>fromname</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1330,7 +1303,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>mailcmd=[<replaceable>mailer</replaceable>]</para>
+          <para><code>mailcmd=[<replaceable>mailer</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1356,7 +1329,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>externnotify=[<replaceable>application</replaceable>]</para>
+          <para><code>externnotify=[<replaceable>application</replaceable>]</code></para>
 
           <indexterm>
             <primary><code>externnotify</code></primary>
@@ -1380,7 +1353,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>externpass=[<replaceable>application</replaceable>]</para>
+          <para><code>externpass=[<replaceable>application</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1404,7 +1377,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>forcegreetings=[yes|no]</para>
+          <para><code>forcegreetings=[yes|no]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1426,7 +1399,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>forcename=[yes|no]</para>
+          <para><code>forcename=[yes|no]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1448,7 +1421,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>format=[gsm|wav|wav49]</para>
+          <para><code>format=[gsm|wav|wav49]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1487,7 +1460,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>searchcontexts=[yes|no]</para>
+          <para><code>searchcontexts=[yes|no]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1509,7 +1482,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>maxmsg=[<replaceable>number_of_messages</replaceable>]</para>
+          <para><code>maxmsg=[<replaceable>number_of_messages</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1537,7 +1510,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>maxmessage=[<replaceable>length_in_seconds</replaceable>]</para>
+          <para><code>maxmessage=[<replaceable>length_in_seconds</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1558,7 +1531,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>minmessage=[<replaceable>length_in_seconds</replaceable>]</para>
+          <para><code>minmessage=[<replaceable>length_in_seconds</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1583,7 +1556,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>maxgreet=[<replaceable>length_in_seconds</replaceable>]</para>
+          <para><code>maxgreet=[<replaceable>length_in_seconds</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1604,7 +1577,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>maxsilence=[<replaceable>length_in_seconds</replaceable>]</para>
+          <para><code>maxsilence=[<replaceable>length_in_seconds</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1625,7 +1598,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>silencethreshold=[<replaceable>threshold</replaceable>]</para>
+          <para><code>silencethreshold=[<replaceable>threshold</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1651,7 +1624,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>maxlogins=[<replaceable>no_of_login_attempts</replaceable>]</para>
+          <para><code>maxlogins=[<replaceable>no_of_login_attempts</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1673,7 +1646,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>skipms=[<replaceable>milliseconds</replaceable>]</para>
+          <para><code>skipms=[<replaceable>milliseconds</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1695,7 +1668,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>usedirectory=[yes|no]</para>
+          <para><code>usedirectory=[yes|no]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1716,7 +1689,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>saycid=[yes|no]</para>
+          <para><code>saycid=[yes|no]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1737,7 +1710,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>cidinternalcontexts=[<replaceable>context,context,...</replaceable>]</para>
+          <para><code>cidinternalcontexts=[<replaceable>context,context,...</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1760,7 +1733,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>pagerfromstring=[<replaceable>sendername</replaceable>]</para>
+          <para><code>pagerfromstring=[<replaceable>sendername</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1781,7 +1754,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>pagersubject=[<replaceable>subject</replaceable>]</para>
+          <para><code>pagersubject=[<replaceable>subject</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1802,7 +1775,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>pagerbody=[<replaceable>body_text</replaceable>]</para>
+          <para><code>pagerbody=[<replaceable>body_text</replaceable>]</code></para>
 
           <indexterm significance="preferred">
             <primary><filename>voicemail.conf</filename></primary>
@@ -1856,7 +1829,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
           linkend="voicemail-voicemail.conf-mailbox" /></simpara>
         </footnote></simpara>
 
-      <synopsis>zonename=timezone | format</synopsis>
+      <synopsis>zonename=<replaceable>timezone</replaceable> | <replaceable>format</replaceable></synopsis>
 
       <itemizedlist>
         <listitem>
@@ -1868,7 +1841,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>timezone</para>
+          <para><code><replaceable>timezone</replaceable></code></para>
 
           <simpara>Time zone information is stored in
           <filename>/usr/share/zoneinfo</filename> for most Linux
@@ -1885,7 +1858,7 @@ exten =&gt; 800,1,VoiceMailMain(803,s)</programlisting>
         </listitem>
 
         <listitem>
-          <para>format</para>
+          <para><replaceable>format</replaceable></para>
 
           <para>Defines the format for time announcements. This is done with
           the following variables:</para>
@@ -2077,432 +2050,422 @@ military=Zulu | 'vm-received' q 'digits/at' H N 'hours' 'phonetic/z_p'</programl
 
       <programlisting>202 =&gt; 1234,Gina Smart,gina@widgets-inc.biz,,attachfmt=wav|delete=yes</programlisting>
 
-      <variablelist termlength="40">
-        <?dbfo list-presentation="blocks"?>
+      <para>Here are the parameters, explained:</para>
 
-        <?dbhtml list-presentation="list"?>
+      <itemizedlist>
+        <listitem>
+          <para><code>mailbox</code></para>
 
-        <varlistentry>
-          <term><code>mailbox</code></term>
-
-          <listitem>
-            <simpara>Mailbox number (digits)</simpara>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term><code>password</code></term>
+          <para>Mailbox number (digits)</para>
+        </listitem>
 
-          <listitem>
-            <simpara>Password for the mailbox (this may be letters or
-            numbers). Generally, numbers are more practical as they are more
-            likely to be enterable from a standard telephone set.</simpara>
-          </listitem>
-        </varlistentry>
+        <listitem>
+          <para><code>password</code></para>
 
-        <varlistentry>
-          <term><code>e-mail</code></term>
-
-          <listitem>
-            <simpara>E-mail address to which to send e-mail
-            notifications.</simpara>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term><code>pager-e-mail</code></term>
-
-          <listitem>
-            <simpara>E-mail address for the pager to which pager notifications
-            should be sent.<footnote>
-                <simpara>Note that such notifications are still, in essence,
-                e-mail notifications. If you want to send SMS notifications,
-                this can be done with a number of external applications which
-                may be invoked through Asterisk.</simpara>
-              </footnote></simpara>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term><code>options</code></term>
-
-          <listitem>
-            <simpara>Multiple options must be separated by the pipe character
-            (|); these options can override global options set in [general].
-            Note that there cannot be any spaces between the parameter name,
-            the=sign, and the value, nor between the options and the pipe
-            character.</simpara>
+          <para>Password for the mailbox (this may be letters or numbers).
+          Generally, numbers are more practical as they are more likely to be
+          enterable from a standard telephone set.</para>
+        </listitem>
 
-            <simpara>The most important options applied here are:</simpara>
-
-            <variablelist termlength="50">
-              <?dbfo list-presentation="blocks"?>
+        <listitem>
+          <para><code>e-mail</code></para>
 
-              <?dbhtml list-presentation="list"?>
-
-              <varlistentry>
-                <term><synopsis>tz=<replaceable>[timezone]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>tz</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>tz</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
+          <para>E-mail address to which to send e-mail notifications.</para>
+        </listitem>
 
-                <listitem>
-                  <simpara>Sets the time zone previously defined in
-                  [zonemessages] (see <xref
-                  linkend="voicemail-voicemail.conf-zonemessages" />).</simpara>
-
-                  <simpara>Example:</simpara>
+        <listitem>
+          <para><code>pager-e-mail</code></para>
 
-                  <simpara><code>tz=alberta</code></simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>attach=<replaceable>[yes|no]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>attach</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>attach</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>If defined, sets whether voice message files are
-                  attached to e-mail notifications.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>attachfmt=<replaceable>[gsm|wav|wav49]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>attachfmt</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>attachfmt</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>If defined, overrides the format= value set in
-                  [general] for message attachments to e-mail
-                  notifications.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>saycid=<replaceable>[yes|no]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>saycid</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>saycid</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>Sets whether the telephone number of the caller is
-                  announced when the message is heard.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>sayduration=<replaceable>[yes|no]</replaceable><indexterm>
-                      <primary><filename>voicemail.conf</filename></primary>
-
-                      <secondary>Parameter</secondary>
-
-                      <tertiary><code>sayduration</code></tertiary>
-                    </indexterm>
-<indexterm>
-                      <primary><code>sayduration</code></primary>
-
-                      <see><code>voicemail.conf</code>: Parameter</see>
-                    </indexterm></synopsis></term>
-
-                <listitem>
-                  <simpara>Sets whether the length of the message will be
-                  announced. The default is <code>yes</code>.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>saydurationm=<replaceable>[length in minutes]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>saydurationm</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>saydurationm</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>Defines the minimum duration for a message to be
-                  before the duration is announced. The default is
-                  <code>0</code>.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>dialout=<replaceable>[context]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>dialout</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>dialout</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>Specifies the context to be used for dialling out
-                  from a message. Calls cannot be made out of voice mail
-                  unless this parameter is set.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>sendvoicemail=<replaceable>[yes|no]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>sendvoicemail</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>sendvoicemail</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>Sets whether a user may send messages to other
-                  voicemail users.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>callback=<replaceable>[context]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>callback</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>callback</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>Specifies the context to be used for dialling out
-                  from a message. If defined, this makes it possible to return
-                  a call to someone who has left a message.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>review=<replaceable>[yes|no]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>review</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>review</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>Sets whether callers leaving a message may listen
-                  to the message before sending it. The default is
-                  <code>no</code>.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>operator=<replaceable>[yes|no]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>operator</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>operator</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>Sets whether callers can connect to the operator
-                  before, during or after recording a message by pressing "0"
-                  (zero). In Asterisk, the operator is always the "o" (small
-                  letter o) extension in the current context. The default is
-                  <code>no</code>.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>envelope=<replaceable>[yes|no]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>envelope</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>envelope</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>Sets whether message envelope information is
-                  announced before the message is heard. Setting this
-                  parameter to no overrides other parameters (for example,
-                  tz). The default is <code>yes.</code></simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>delete=<replaceable>[yes|no]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>delete</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>delete</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>Sets whether messages are deleted after they have
-                  been attached to an e-mail notification. The default is
-                  <code>no</code>.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>nextaftercmd=<replaceable>[yes|no]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>nextaftercmd</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>nextaftercmd</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>Sets whether the system jumps to the next message
-                  after the current message has been saved or deleted. The
-                  default is <code>no</code>.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>forcename=<replaceable>[yes|no]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code></code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>forcename</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>If set to yes, forces a system user to record her
-                  name when accessing the system for the first time. The
-                  default is <code>no</code>.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>forcegreetings=<replaceable>[yes|no]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>forcegreetings</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>forcegreetings</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>If set to yes, forces a system user to record a
-                  personal greeting when accessing the system for the first
-                  time. The default is <code>no</code>.</simpara>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><synopsis>hidefromdir=<replaceable>[yes|no]</replaceable></synopsis>
-                <indexterm>
-                    <primary><filename>voicemail.conf</filename></primary>
-
-                    <secondary>Parameter</secondary>
-
-                    <tertiary><code>hidefromdir</code></tertiary>
-                  </indexterm> <indexterm>
-                    <primary><code>hidefromdir</code></primary>
-
-                    <see><code>voicemail.conf</code>: Parameter</see>
-                  </indexterm></term>
-
-                <listitem>
-                  <simpara>Sets whether the mailbox for this user will be
-                  hidden from the Dial-by-Name directory. The default is
-                  <code>no</code>.</simpara>
-                </listitem>
-              </varlistentry>
-            </variablelist>
-          </listitem>
-        </varlistentry>
-      </variablelist>
+          <para>E-mail address for the pager to which pager notifications
+          should be sent.</para>
+
+          <para><footnote>
+              <simpara>Note that such notifications are still, in essence,
+              e-mail notifications. If you want to send SMS notifications,
+              this can be done with a number of external applications which
+              may be invoked through Asterisk.</simpara>
+            </footnote></para>
+        </listitem>
+
+        <listitem>
+          <para><code>options</code></para>
+
+          <simpara>Multiple options must be separated by the pipe character
+          (|); these options can override global options set in [general].
+          Note that there cannot be any spaces between the parameter name,
+          the=sign, and the value, nor between the options and the pipe
+          character.</simpara>
+
+          <simpara>The most important options applied here are:</simpara>
+
+          <itemizedlist>
+            <listitem>
+              <para><code>tz=<replaceable>[timezone]</replaceable></code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>tz</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>tz</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <simpara>Sets the time zone previously defined in [zonemessages]
+              (see <xref
+              linkend="voicemail-voicemail.conf-zonemessages" />).</simpara>
+
+              <simpara>Example:</simpara>
+
+              <simpara><code>tz=alberta</code></simpara>
+            </listitem>
+
+            <listitem>
+              <para><code>attach=[yes|no]</code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>attach</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>attach</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>If defined, sets whether voice message files are attached
+              to e-mail notifications.</para>
+            </listitem>
+
+            <listitem>
+              <para><synopsis><code>attachfmt=[gsm|wav|wav49]</code></synopsis><indexterm>
+                  <primary><filename>voicemail.conf</filename></primary>
+
+                  <secondary>Parameter</secondary>
+
+                  <tertiary><code>attachfmt</code></tertiary>
+                </indexterm><indexterm>
+                  <primary><code>attachfmt</code></primary>
+
+                  <see><code>voicemail.conf</code>: Parameter</see>
+                </indexterm></para>
+
+              <para>If defined, overrides the format= value set in [general]
+              for message attachments to e-mail notifications.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>saycid=[yes|no]</code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>saycid</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>saycid</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>Sets whether the telephone number of the caller is
+              announced when the message is heard.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>sayduration=[yes|no]</code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>sayduration</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>sayduration</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>Sets whether the length of the message will be announced.
+              The default is <code>yes</code>.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>saydurationm=<replaceable>[length_in_minutes]</replaceable></code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>saydurationm</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>saydurationm</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>Defines the minimum duration for a message to be before
+              the duration is announced. The default is <code>0</code>.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>dialout=<replaceable>[context]</replaceable></code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>dialout</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>dialout</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>Specifies the context to be used for dialling out from a
+              message. Calls cannot be made out of voice mail unless this
+              parameter is set.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>sendvoicemail=[yes|no]</code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>sendvoicemail</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>sendvoicemail</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>Sets whether a user may send messages to other voicemail
+              users.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>callback=<replaceable>[context]</replaceable></code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>callback</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>callback</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>Specifies the context to be used for dialling out from a
+              message. If defined, this makes it possible to return a call to
+              someone who has left a message.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>review=[yes|no]</code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>review</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>review</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>Sets whether callers leaving a message may listen to the
+              message before sending it. The default is
+              <code>no</code>.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>operator=[yes|no]</code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>operator</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>operator</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>Sets whether callers can connect to the operator before,
+              during or after recording a message by pressing "0" (zero). In
+              Asterisk, the operator is always the "o" (small letter o)
+              extension in the current context. The default is
+              <code>no</code>.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>envelope=[yes|no]</code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>envelope</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>envelope</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>Sets whether message envelope information is announced
+              before the message is heard. Setting this parameter to no
+              overrides other parameters (for example, tz). The default is
+              <code>yes.</code></para>
+            </listitem>
+
+            <listitem>
+              <para><synopsis><code>delete=[yes|no]</code></synopsis><indexterm>
+                  <primary><filename>voicemail.conf</filename></primary>
+
+                  <secondary>Parameter</secondary>
+
+                  <tertiary><code>delete</code></tertiary>
+                </indexterm><indexterm>
+                  <primary><code>delete</code></primary>
+
+                  <see><code>voicemail.conf</code>: Parameter</see>
+                </indexterm></para>
+
+              <para>Sets whether messages are deleted after they have been
+              attached to an e-mail notification. The default is
+              <code>no</code>.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>nextaftercmd=[yes|no]</code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>nextaftercmd</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>nextaftercmd</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>Sets whether the system jumps to the next message after
+              the current message has been saved or deleted. The default is
+              <code>no</code>.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>forcename=[yes|no]</code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>forcename</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>If set to yes, forces a system user to record her name
+              when accessing the system for the first time. The default is
+              <code>no</code>.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>forcegreetings=[yes|no]</code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>forcegreetings</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>forcegreetings</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>If set to yes, forces a system user to record a personal
+              greeting when accessing the system for the first time. The
+              default is <code>no</code>.</para>
+            </listitem>
+
+            <listitem>
+              <para><code>hidefromdir=[yes|no]</code></para>
+
+              <indexterm>
+                <primary><filename>voicemail.conf</filename></primary>
+
+                <secondary>Parameter</secondary>
+
+                <tertiary><code>hidefromdir</code></tertiary>
+              </indexterm>
+
+              <indexterm>
+                <primary><code>hidefromdir</code></primary>
+
+                <see><code>voicemail.conf</code>: Parameter</see>
+              </indexterm>
+
+              <para>Sets whether the mailbox for this user will be hidden from
+              the Dial-by-Name directory. The default is
+              <code>no</code>.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
     </section>
   </section>
 
@@ -2551,45 +2514,39 @@ format=gsm
 
     <synopsis>Directory(vm-context[,dial-context[,options]])</synopsis>
 
-    <variablelist termlength="20">
-      <varlistentry>
-        <term><code>vm-context</code></term>
+    <itemizedlist>
+      <listitem>
+        <para><code>vm-context</code></para>
 
-        <listitem>
-          <simpara>The directory is always generated <emphasis>from</emphasis>
-          a specific context (that is, only the entries in this defined
-          context are entered in the directory). In most cases, the
-          <code>default</code> context is sufficient. In a larger enterprise,
-          you may want to separate directories by department; in this case,
-          you will need additional contexts.</simpara>
-        </listitem>
-      </varlistentry>
+        <para>The directory is always generated <emphasis>from</emphasis> a
+        specific context (that is, only the entries in this defined context
+        are entered in the directory). In most cases, the <code>default</code>
+        context is sufficient. In a larger enterprise, you may want to
+        separate directories by department; in this case, you will need
+        additional contexts.</para>
+      </listitem>
 
-      <varlistentry>
-        <term><code>dial-context</code></term>
+      <listitem>
+        <para><code>dial-context</code></para>
 
-        <listitem>
-          <simpara>The directory is used to call <emphasis>to</emphasis> a
-          specific person; <code>dial-context</code> defines which context is
-          used for the call. If undefined, <code>vm-context</code> is used
-          instead.</simpara>
+        <para>The directory is used to call <emphasis>to</emphasis> a specific
+        person; <code>dial-context</code> defines which context is used for
+        the call. If undefined, <code>vm-context</code> is used
+        instead.</para>
 
-          <simpara>If the caller presses "0" (zero), the call will be sent to
-          the "o" (small letter o) extension in this context. If he presses
-          "*" (asterisk, or star), the call will be sent to the "a" (small
-          letter a) context.</simpara>
-        </listitem>
-      </varlistentry>
+        <para>If the caller presses "0" (zero), the call will be sent to the
+        "o" (small letter o) extension in this context. If he presses "*"
+        (asterisk, or star), the call will be sent to the "a" (small letter a)
+        context.</para>
+      </listitem>
 
-      <varlistentry>
-        <term><code>options</code></term>
+      <listitem>
+        <para><code>options</code></para>
 
-        <listitem>
-          <simpara>Option <emphasis>f</emphasis> sets searching by first name
-          rather than last name.</simpara>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+        <para>Option <emphasis>f</emphasis> sets searching by first name
+        rather than last name.</para>
+      </listitem>
+    </itemizedlist>
 
     <simpara>See also <xref linkend="applications-directory" />.</simpara>
   </section>

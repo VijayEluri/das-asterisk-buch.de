@@ -103,7 +103,13 @@
       <para>Values may be called from the database using <code>DB()</code> in
       the form <code>${DB(family/key)}</code>. To print the contents of
       <code>apple</code> in the <code>fruit</code> family on the console, use
-      the following command:<programlisting>exten =&gt; 1234,1,NoOp(fruit/apple has the value ${DB(fruit/apple)})</programlisting></para>
+      the following command:</para>
+
+      <para><programlisting>[ccc]exten =&gt; 1234,1,NoOp(fruit/apple has the value ${DB(fruit/apple)})</programlisting><warning>
+          <para>In all the code examples, everything is written on one line,
+          without breaks, unless otherwise noted. The limited space for text
+          requires that we wrap the lines in the book.</para>
+        </warning></para>
 
       <para>You can also store the value from this database field in a
       variable using <code>Set()</code>:<programlisting>exten =&gt; 1234,1,Set(applequantity=${DB(fruit/apple)})</programlisting></para>
@@ -312,29 +318,29 @@ Database entries removed.</screen><important>
       dialplan (the text wraps in this code example, but remember that every
       extension must be entered on a single line!):</para>
 
-      <programlisting>[ccc][from-internal]
-[ccc]; Call forwarding for a single extension
-[ccc];
-[ccc]; activate
-[ccc]exten =&gt; _44X.,1,Answer()
-[ccc]exten =&gt; _44X.,n,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
-[ccc]exten =&gt; _44X.,n,SayDigits(${EXTEN:2})
+      <programlisting>[from-internal]
+; Call forwarding for a single extension
+;
+; activate
+exten =&gt; _44X.,1,Answer()
+exten =&gt; _44X.,n,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
+exten =&gt; _44X.,n,SayDigits(${EXTEN:2})
 [ccc]exten =&gt; _44X.,n,NoOp(Forwarding for ${CALLERID(num)} to ${EXTEN:2} activated.) 
-[ccc]exten =&gt; _44X.,n,Hangup()
+exten =&gt; _44X.,n,Hangup()
 
-[ccc]; deactivate
-[ccc]exten =&gt; 44,1,Answer()
-[ccc]exten =&gt; 44,n,DBdel(CF/${CALLERID(num)})
-[ccc]exten =&gt; 44,n,Playback(auth-thankyou)
-[ccc]exten =&gt; 44,n,NoOp(Forwarding for ${CALLERID(num)} deactivated.) 
-[ccc]exten =&gt; 44,n,Hangup()
+; deactivate
+exten =&gt; 44,1,Answer()
+exten =&gt; 44,n,DBdel(CF/${CALLERID(num)})
+exten =&gt; 44,n,Playback(auth-thankyou)
+exten =&gt; 44,n,NoOp(Forwarding for ${CALLERID(num)} deactivated.) 
+exten =&gt; 44,n,Hangup()
 
-[ccc][from-external]
-[ccc]exten =&gt; _X.,1,NoOp(Call from ${CALLERID(num)} for ${EXTEN})
-[ccc]exten =&gt; _X.,n,GotoIf($[foo${DB(CF/${EXTEN})} != foo]?normal:forward)
+[from-external]
+exten =&gt; _X.,1,NoOp(Call from ${CALLERID(num)} for ${EXTEN})
+exten =&gt; _X.,n,GotoIf($[foo${DB(CF/${EXTEN})} != foo]?normal:forward)
 [ccc]exten =&gt; _X.,n(normal),Dial(SIP/${EXTEN})
 [ccc]exten =&gt; _X.,n(forward),NoOp(Call for ${EXTEN} is being connected to ${DB(CF/${EXTEN})})
-[ccc]exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})</programlisting>
+exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})</programlisting>
     </section>
 
     <section id="komplexes-callforwarding">
@@ -347,48 +353,48 @@ Database entries removed.</screen><important>
       team-building exercise. This global forwarding is activated via
       extension 55 (followed by the destination number). The global forwarding
       must have a higher priority than the individual forwarding. One way to
-      accomplish this is as shown below:<programlisting>[ccc][from-internal]
-[ccc]; Call forwarding for a single user
-[ccc];
-[ccc]; activate
-[ccc]exten =&gt; _44X.,1,Answer()
-[ccc]exten =&gt; _44X.,n,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
-[ccc]exten =&gt; _44X.,n,SayDigits(${EXTEN:2})
+      accomplish this is as shown below:<programlisting>[from-internal]
+; Call forwarding for a single user
+;
+; activate
+exten =&gt; _44X.,1,Answer()
+exten =&gt; _44X.,n,Set(DB(CF/${CALLERID(num)})=${EXTEN:2})
+exten =&gt; _44X.,n,SayDigits(${EXTEN:2})
 [ccc]exten =&gt; _44X.,n,NoOp(Forwarding for ${CALLERID(num)} to ${EXTEN:2} activated.) 
-[ccc]exten =&gt; _44X.,n,Hangup()
+exten =&gt; _44X.,n,Hangup()
 
-[ccc]; deactivate
-[ccc]exten =&gt; 44,1,Answer()
-[ccc]exten =&gt; 44,n,DBdel(CF/${CALLERID(num)})
-[ccc]exten =&gt; 44,n,Playback(auth-thankyou)
-[ccc]exten =&gt; 44,n,NoOp(Forwarding for ${CALLERID(num)} deactivated.) 
-[ccc]exten =&gt; 44,n,Hangup()
+; deactivate
+exten =&gt; 44,1,Answer()
+exten =&gt; 44,n,DBdel(CF/${CALLERID(num)})
+exten =&gt; 44,n,Playback(auth-thankyou)
+exten =&gt; 44,n,NoOp(Forwarding for ${CALLERID(num)} deactivated.)
+exten =&gt; 44,n,Hangup()
 
-[ccc]; Global forwarding
-[ccc];
-[ccc]; activate
-[ccc]exten =&gt; _55X.,1,Answer()
-[ccc]exten =&gt; _55X.,n,Set(DB(CF/system)=${EXTEN:2})
-[ccc]exten =&gt; _55X.,n,SayDigits(${EXTEN:2})
-[ccc]exten =&gt; _55X.,n,NoOp(System forwarding to ${EXTEN:2} activated.) 
-[ccc]exten =&gt; _55X.,n,Hangup()
+; Global forwarding
+;
+; activate
+exten =&gt; _55X.,1,Answer()
+exten =&gt; _55X.,n,Set(DB(CF/system)=${EXTEN:2})
+exten =&gt; _55X.,n,SayDigits(${EXTEN:2})
+exten =&gt; _55X.,n,NoOp(System forwarding to ${EXTEN:2} activated.)
+exten =&gt; _55X.,n,Hangup()
 
-[ccc]; deactivate
-[ccc]exten =&gt; 55,1,Answer()
-[ccc]exten =&gt; 55,n,DBdel(CF/system)
-[ccc]exten =&gt; 55,n,Playback(auth-thankyou)
-[ccc]exten =&gt; 55,n,NoOp(System forwarding deactivated.) 
-[ccc]exten =&gt; 55,n,Hangup()
+; deactivate
+exten =&gt; 55,1,Answer()
+exten =&gt; 55,n,DBdel(CF/system)
+exten =&gt; 55,n,Playback(auth-thankyou)
+exten =&gt; 55,n,NoOp(System forwarding deactivated.) 
+exten =&gt; 55,n,Hangup()
 
-[ccc][from-external]
-[ccc]exten =&gt; _X.,1,NoOp(Call from ${CALLERID(num)} for ${EXTEN})
+[from-external]
+exten =&gt; _X.,1,NoOp(Call from ${CALLERID(num)} for ${EXTEN})
 [ccc]exten =&gt; _X.,n,GotoIf($[foo${DB(CF/system)} != foo]?cfsystem:secondrule)
 [ccc]exten =&gt; _X.,n(secondrule),GotoIf($[foo${DB(CF/${EXTEN})} != foo]?cfnormal:normal)
-[ccc]exten =&gt; _X.,n(normal),Dial(SIP/${EXTEN})
+exten =&gt; _X.,n(normal),Dial(SIP/${EXTEN})
 [ccc]exten =&gt; _X.,n(cfnormal),NoOp(Call for ${EXTEN} is being connected to ${DB(CF/${EXTEN})})
-[ccc]exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})
+exten =&gt; _X.,n,Dial(local/${DB(CF/${EXTEN})})
 [ccc]exten =&gt; _X.,n(cfsystem),NoOp(Call for ${EXTEN} is being connected to  ${DB(CF/system)})
-[ccc]exten =&gt; _X.,n,Dial(local/${DB(CF/system)})
+exten =&gt; _X.,n,Dial(local/${DB(CF/system)})
 </programlisting></para>
     </section>
   </section>
@@ -422,18 +428,18 @@ Database entries removed.</screen><important>
 exten =&gt; _88XXX.,1,Answer()
 exten =&gt; _88XXX.,2,Set(DB(CallingCard/${EXTEN:2:3})=${EXTEN:5})
 exten =&gt; _88XXX.,3,SayNumber(${EXTEN:5})
-exten =&gt; _88XXX.,4,NoOp(CallingCard for ${EXTEN:2:3} has a new balance of ${EXTEN:5} cents.)
+[ccc]exten =&gt; _88XXX.,4,NoOp(CallingCard for ${EXTEN:2:3} has a new balance of ${EXTEN:5} cents.)
 exten =&gt; _88XXX.,5,Hangup()
 
 [from-internal]
 ; personal calls
 ;
-exten =&gt; _99.,1,GotoIf($[${DB(CallingCard/${CALLERID(num)} &gt; 0]?2:200)
-exten =&gt; _99.,2,Set(DB(CallingCard/${CALLERID(num)})=$[DB(CallingCard/${CALLERID(num)}) - 1])
+[ccc]exten =&gt; _99.,1,GotoIf($[${DB(CallingCard/${CALLERID(num)} &gt; 0]?2:200)
+[ccc]exten =&gt; _99.,2,Set(DB(CallingCard/${CALLERID(num)})=$[DB(CallingCard/${CALLERID(num)}) - 1])
 exten =&gt; _99.,3,Dial(local/${EXTEN:2})
-exten =&gt; _99.,104,Set(DB(CallingCard/${CALLERID(num)})=$[DB(CallingCard/${CALLERID(num)}) + 1])
+[ccc]exten =&gt; _99.,104,Set(DB(CallingCard/${CALLERID(num)})=$[DB(CallingCard/${CALLERID(num)}) + 1])
 
-exten =&gt; _99.,200,NoOp(Calling card account ${CALLERID(num) is empty.)
+[ccc]exten =&gt; _99.,200,NoOp(Calling card account ${CALLERID(num) is empty.)
 exten =&gt; _99.,201,Answer()
 exten =&gt; _99.,202,SayNumber(0)
 exten =&gt; _99.,203,Hangup()

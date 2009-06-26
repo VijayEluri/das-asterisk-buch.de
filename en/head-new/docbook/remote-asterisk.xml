@@ -54,13 +54,14 @@ root@molokai:~&gt;</screen></para>
     <para>Call files are like a shell script for Asterisk. A user or
     application writes a call file into
     <filename>/var/spool/asterisk/outgoing/</filename> where Asterisk
-    processes it immediately.<important>
+    processes it immediately.<tip>
         <para>A <command>mv</command> (move) is an atomic operation (an
         operation which does not take effect until it is 100% complete) and as
-        such is ideally suited for <filename>.call</filename> files. With
-        <command>cp</command> (copy), the file is copied line by line, which
-        could lead to Asterisk processing an incomplete file.</para>
-      </important></para>
+        such is ideally suited for <filename>.call</filename> files (provided
+        it is done on the same partition!). With <command>cp</command> (copy),
+        the file is copied line by line, which could lead to Asterisk
+        processing an incomplete file.</para>
+      </tip></para>
 
     <section>
       <title>Making a call automatically</title>
@@ -120,112 +121,99 @@ Extension: 10</programlisting></para>
     <section id="call-file-parameter">
       <title>Parameters</title>
 
-      <para>These parameters may be used in call files:<variablelist
-          termlength="23">
-          <varlistentry>
-            <term><code>Channel: &lt;channel&gt; </code></term>
+      <para>These parameters may be used in call files:<itemizedlist>
+          <listitem>
+            <para><code>Channel: &lt;<replaceable>channel</replaceable>&gt;
+            </code></para>
 
-            <listitem>
-              <simpara>The channel upon which to initiate the call. Uses the
-              same syntax as the <code>Dial()</code> command (see <xref
-              linkend="applications-dial" />).</simpara>
-            </listitem>
-          </varlistentry>
+            <para>The channel upon which to initiate the call. Uses the same
+            syntax as the <code>Dial()</code> command (see <xref
+            linkend="applications-dial" />).</para>
+          </listitem>
 
-          <varlistentry>
-            <term><code>Callerid: &lt;callerid&gt;</code></term>
+          <listitem>
+            <para><code>Callerid:
+            &lt;<replaceable>callerid</replaceable>&gt;</code></para>
 
-            <listitem>
-              <simpara>The caller ID to be used for the call.</simpara>
-            </listitem>
-          </varlistentry>
+            <para>The caller ID to be used for the call.</para>
+          </listitem>
 
-          <varlistentry>
-            <term><code>WaitTime: &lt;number&gt;</code></term>
+          <listitem>
+            <para><code>WaitTime:
+            &lt;<replaceable>number</replaceable>&gt;</code></para>
 
-            <listitem>
-              <simpara>Number of seconds the system waits for the call to be
-              answered. If not specified, defaults to 45 seconds.</simpara>
-            </listitem>
-          </varlistentry>
+            <para>Number of seconds the system waits for the call to be
+            answered. If not specified, defaults to 45 seconds.</para>
+          </listitem>
 
-          <varlistentry>
-            <term><code>MaxRetries: &lt;number&gt;</code></term>
+          <listitem>
+            <para><code>MaxRetries:
+            &lt;<replaceable>number</replaceable>&gt;</code></para>
 
-            <listitem>
-              <simpara>Maximum number of dial retries (if an attempt fails
-              because the device is busy or not reachable). If not specified,
-              defaults to 0 (only one attempt is made).</simpara>
-            </listitem>
-          </varlistentry>
+            <para>Maximum number of dial retries (if an attempt fails because
+            the device is busy or not reachable). If not specified, defaults
+            to 0 (only one attempt is made).</para>
+          </listitem>
 
-          <varlistentry>
-            <term><code>RetryTime: &lt;number&gt;</code></term>
+          <listitem>
+            <para><code>RetryTime:
+            &lt;<replaceable>number</replaceable>&gt;</code></para>
 
-            <listitem>
-              <simpara>Number of seconds to wait until the next dial attempt.
-              If not specified, defaults to 300 seconds.</simpara>
-            </listitem>
-          </varlistentry>
+            <para>Number of seconds to wait until the next dial attempt. If
+            not specified, defaults to 300 seconds.</para>
+          </listitem>
 
-          <varlistentry>
-            <term><code>Account: &lt;account&gt;</code></term>
+          <listitem>
+            <para><code>Account:
+            &lt;<replaceable>account</replaceable>&gt;</code></para>
 
-            <listitem>
-              <simpara>The account code for the CDR.</simpara>
-            </listitem>
-          </varlistentry>
+            <para>The account code for the CDR.</para>
+          </listitem>
 
-          <varlistentry>
-            <term><code>Context: &lt;context&gt;</code></term>
+          <listitem>
+            <para><code>Context:
+            &lt;<replaceable>context</replaceable>&gt;</code></para>
 
-            <listitem>
-              <simpara>The destination context.</simpara>
-            </listitem>
-          </varlistentry>
+            <para>The destination context.</para>
+          </listitem>
 
-          <varlistentry>
-            <term><code>Extension: &lt;exten&gt;</code></term>
+          <listitem>
+            <para><code>Extension:
+            &lt;<replaceable>exten</replaceable>&gt;</code></para>
 
-            <listitem>
-              <simpara>The destination extension, in which dialplan execution
-              begins if the device is answered.</simpara>
-            </listitem>
-          </varlistentry>
+            <para>The destination extension, in which dialplan execution
+            begins if the device is answered.</para>
+          </listitem>
 
-          <varlistentry>
-            <term><code>Priority: &lt;priority&gt; </code></term>
+          <listitem>
+            <para><code>Priority: &lt;<replaceable>priority</replaceable>&gt;
+            </code></para>
 
-            <listitem>
-              <simpara>The destination priority. If not specified, defaults to
-              1.</simpara>
-            </listitem>
-          </varlistentry>
+            <para>The destination priority. If not specified, defaults to
+            1.</para>
+          </listitem>
 
-          <varlistentry>
-            <term><code>Setvar: &lt;var=value&gt;</code></term>
+          <listitem>
+            <para><code>Setvar:
+            &lt;<replaceable>var</replaceable>=<replaceable>value</replaceable>&gt;</code></para>
 
-            <listitem>
-              <simpara><parameter>Setvar:</parameter> lets you set one or more
-              channel variables.</simpara>
-            </listitem>
-          </varlistentry>
+            <para><parameter>Setvar:</parameter> lets you set one or more
+            channel variables.</para>
+          </listitem>
 
-          <varlistentry>
-            <term><code>Archive: &lt;yes|no&gt;</code></term>
+          <listitem>
+            <para><code>Archive: &lt;yes|no&gt;</code></para>
 
-            <listitem>
-              <simpara>By default, call files are deleted immediately upon
-              execution. If <parameter>Archive: yes</parameter> is set, they
-              are copied into
-              <filename>/var/spool/asterisk/outgoing_done/</filename> instead.
-              Asterisk adds a line to the call file which describes the
-              result:</simpara>
+            <simpara>By default, call files are deleted immediately upon
+            execution. If <parameter>Archive: yes</parameter> is set, they are
+            copied into
+            <filename>/var/spool/asterisk/outgoing_done/</filename> instead.
+            Asterisk adds a line to the call file which describes the
+            result:</simpara>
 
-              <literallayout class="monospaced">Status: &lt;Expired|Completed|Failed&gt;</literallayout>
-            </listitem>
-          </varlistentry>
-        </variablelist></para>
+            <literallayout class="monospaced">Status: &lt;Expired|Completed|Failed&gt;</literallayout>
+          </listitem>
+        </itemizedlist></para>
     </section>
 
     <section id="call-file-weckruf">
@@ -343,13 +331,10 @@ Message: Authentication accepted
         <para>The Manager API is not exactly famous for its ability to handle
         multiple simultaneous connections gracefully (even though this has
         improved immensely in version 1.4). If you anticipate this kind of
-        load, it is worth considering an AMI proxy such as the "Simple
-        Asterisk Manager Proxy" (<ulink
-        url="http://www.popvox.com/simpleproxy.pl">http://www.popvox.com/simpleproxy.pl</ulink>)
-        a Perl script which can handle many connections and bundles them in a
-        single connection. This is completely transparent to the script
-        accessing the AMI. Of course, for the purposes of playing around, it
-        isn't strictly necessary.</para>
+        load, it is worth considering an AMI proxy which can handle many
+        connections and bundles them in a single connection. This is
+        completely transparent to the script accessing the AMI. Of course, for
+        the purposes of playing around, it isn't strictly necessary.</para>
       </note>
 
       <simpara>Following a successful authentication, packets can be sent in
@@ -387,8 +372,7 @@ Message: Authentication accepted
       url="http://www.voip-info.org/wiki/view/asterisk+manager+events">http://www.voip-info.org/wiki/view/asterisk+manager+events</ulink>.
       A few additional explanations may be found at <ulink
       url="http://asterisk-java.sourceforge.net/apidocs/net/sf/asterisk/manager/event/package-frame.html">http://asterisk-java.sourceforge.net/apidocs/net/sf/asterisk/manager/event/package-frame.html</ulink>.<footnote>
-          <simpara>Don't be confused: this is primarily Asterisk-Java
-          documentation.</simpara>
+          <simpara>This is primarily Asterisk-Java documentation.</simpara>
         </footnote></simpara>
     </section>
 

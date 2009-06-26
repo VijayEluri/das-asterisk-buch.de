@@ -42,9 +42,9 @@
     <para>On choosing a Linux distribution or an Asterisk version, opinions
     (as is so often the case in the open source world) diverge. Some stick
     with distribution-specific packages (e.g. .rpm or .deb) and others compile
-    Asterisk from source. For the examples in this book, it is best to install
-    from sources. The reasons are simple: the versions found in distribution
-    packages are almost never current,<footnote>
+    Asterisk from source. For the examples in this book, <emphasis>it is best
+    to install from sources</emphasis>. The reasons are simple: the versions
+    found in distribution packages are almost never current,<footnote>
         <para>You can't really blame the distributors for this. New versions
         of Asterisk come out almost every month. No distributor on Earth could
         match that pace.</para>
@@ -469,10 +469,12 @@ format = wav
 2001 =&gt; 0815,Daisy Duke,daisy.duke@hazzard.com</programlisting>
 
       <para>Now the mailboxes are configured (yes, it really is that easy).
-      The final step is to add a few more lines to
-      <filename>/etc/asterisk/extensions.conf</filename> to attach this
-      voicemail functionality to our telephones. Don't forget to add the
-      <parameter>",20"</parameter> to <command>Dial()</command>.</para>
+      Each entry starts with the access password, then the full name of the
+      user, and finally the user's e-mail address. The final step is to add a
+      few more lines to <filename>/etc/asterisk/extensions.conf</filename> to
+      attach this voicemail functionality to our telephones. Don't forget to
+      add the <parameter>",20"</parameter> to
+      <command>Dial()</command>.</para>
 
       <programlisting>[default] 
 exten =&gt; 1001,1,Answer()
@@ -691,7 +693,7 @@ secret=UHDZJD
 host=my-voip-provider.com
 fromdomain=my-voip-provider.com
 qualify=yes
-insecure=very
+insecure=port,invite
 nat=yes</programlisting>
 
       <para>You must obtain the username (<parameter>17984512232</parameter>
@@ -766,7 +768,7 @@ exten =&gt; 2001,2,VoiceMail(2001,u)
 
 exten =&gt; 2999,1,VoiceMailMain(${CALLERID(num)},s)
 
-exten =&gt; _0[1-9].,1,Dial(SIP/${EXTEN}@ext-sip-account)
+exten =&gt; _X.,1,Dial(SIP/${EXTEN}@ext-sip-account)
 
 [from-voip-provider]
 exten =&gt; 17984512232,1,Dial(SIP/2000)
