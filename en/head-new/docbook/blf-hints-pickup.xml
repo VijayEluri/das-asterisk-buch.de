@@ -1,0 +1,1101 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<chapter id="blf-hints-pickup" lang="de" revision="$Revision: 1854 $">
+  <!--% Copyright (c) 2006 - 2009
+% - Stefan Wintermeyer <stefan.wintermeyer@amooma.de>
+% - Philipp Kempgen <philipp.kempgen@amooma.de>
+% - Stephen Bosch <sbosch@vodacomm.ca>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation;
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de-->
+
+  <chapterinfo>
+    <author>
+      <firstname>Philipp</firstname>
+
+      <surname>Kempgen</surname>
+
+      <email>philipp.kempgen@amooma.de</email>
+    </author>
+
+    <author>
+      <surname>Stephen Bosch</surname>
+
+      <email>sbosch@vodacomm.ca</email>
+    </author>
+  </chapterinfo>
+
+  <title>Busy Lamp Field, Hints, Pickup<indexterm>
+      <primary>BLF</primary>
+    </indexterm><indexterm>
+      <primary>Besetztlampenfeld</primary>
+    </indexterm><indexterm>
+      <primary>Pickup</primary>
+    </indexterm><indexterm>
+      <primary>Hints</primary>
+    </indexterm><indexterm>
+      <primary>LEDs</primary>
+    </indexterm><indexterm>
+      <primary>Heranholen</primary>
+    </indexterm><indexterm>
+      <primary>Rufübernahme</primary>
+    </indexterm></title>
+
+  <para>The Busy Lamp Field, or BLF, is a common feature of many modern
+  telephone systems. The BLF can be colored LED lamps or LCD indicators that
+  allow a user to monitor the status of other users on the system, almost
+  always next to a button which performs an operation on the monitored station
+  depending on the status of the indicator. Though it is most frequently seen
+  at reception switchboards, it can be found on regular desktop sets
+  also.</para>
+
+  <para>The indicator tells the operator the status of the line. A line can
+  have many states:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Ringing</para>
+    </listitem>
+
+    <listitem>
+      <para>Busy or "In use" (this usually also includes active "Do not
+      disturb" states)</para>
+    </listitem>
+
+    <listitem>
+      <para>On hold</para>
+    </listitem>
+
+    <listitem>
+      <para>Available</para>
+    </listitem>
+  </itemizedlist>
+
+  <para>The states can be indicated with LED lights (which may change color or
+  blink, depending on the state) or LCD icons (which change appearance; for
+  example, by providing a "do not enter" sign for a line that is in use). Not
+  all models of telephone provide all the states.</para>
+
+  <para>If the system is so configured, the button can be configured to "pick
+  up" a call when a station is ringing (for some sets, this is done by
+  entering a feature code).</para>
+
+  <para>We will cover the configuration of these features for Asterisk and a
+  selection of SIP phones here.</para>
+
+  <section id="blf-leds">
+    <title>Controlling indicators</title>
+
+    <para>The BLF is implemented through <quote>hints</quote> and
+    subscriptions. A hint tells Asterisk to monitor the state of a SIP
+    channel. SIP devices can subscribe to those hints, and when the state
+    changes, Asterisk sends an event package to the subscribed devices to
+    inform them of the state change.</para>
+
+    <section id="blf-sip.conf">
+      <title>sip.conf</title>
+
+      <para>To make BLF work, some additional entries must be added to the
+      <code>[general]</code> section of <filename>sip.conf</filename>:</para>
+
+      <programlisting>[general]
+allowsubscribe = yes
+notifyringing = yes
+notifyhold = yes
+limitonpeers = yes</programlisting>
+
+      <para>Individual SIP accounts need the entries
+      <code>subscribecontext</code> and <code>call-limit</code>. The first,
+      <code>subscribecontext</code>, tells Asterisk which context to check if
+      this user wants to suscribe to the hint of another user; most often,
+      this is the same as the context for all the other internal users. The
+      second, <code>call-limit</code>, limits the number of simultaneous calls
+      that this user is allowed (when this is greater than zero). This is
+      important because it tells Asterisk how to set the state of the station
+      in question. For example, if the call limit is set to 2, and the station
+      has an active call, Asterisk will treat the station as available. If
+      there are already two active calls, then Asterisk treats the station as
+      busy. A setting of at least 2 is best; lower settings can cause problems
+      with call transfers.</para>
+
+      <para>For call pick-up functions, the additional parameters,
+      <code>callgroup</code> (see <xref linkend="sip-channel-callgroup" />)
+      and <code>pickupgroup</code> (see <xref
+      linkend="sip-channel-pickupgroup" />) are important. For example, a SIP
+      user with <code>pickupgroup=2</code> can only pick up calls from other
+      users in with <code>callgroup=2</code>. This can be used to manage
+      rights; as there are only 64 possible groups, however (0 to 63), this is
+      only works in small to medium environments. For larger installations,
+      all the users are set to the same group and rights are handled through
+      another mechanism (we'll explain how later).</para>
+
+      <programlisting>[21]
+type = friend
+context = internal-users
+secret = 9847825134
+host = dynamic
+mailbox = 2000
+<emphasis role="bold">subscribecontext = internal-users</emphasis>
+<emphasis role="bold">call-limit = 10</emphasis>
+<emphasis role="bold">callgroup = 2</emphasis>
+<emphasis role="bold">pickupgroup = 2</emphasis></programlisting>
+    </section>
+
+    <section id="blf-hints">
+      <title>Hints<indexterm>
+          <primary>Hints</primary>
+        </indexterm></title>
+
+      <para>Asterisk does not know how to correlate dialplan extensions to
+      specific users or devices unless we tell it how. This is done in the
+      dialplan using <emphasis>hints</emphasis>. If you want to think in terms
+      of dialplan priorities, a hint is a special kind of priority that
+      precedes priority 1. The hint for a device must be in the same context
+      as that specified in <filename>sip.conf</filename> using
+      <code>subscribecontext</code>, or the status information will not be
+      relayed. This is to prevent a station from monitoring all the other
+      stations without permission.</para>
+
+      <para>The following examples show how to define hints. Here is a simple
+      example in .conf format:</para>
+
+      <para><programlisting>[internal-users]
+
+exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
+exten =&gt; 21,1,Dial(SIP/${EXTEN},40)
+exten =&gt; 21,n,VoiceMail(${EXTEN},u)
+
+exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
+exten =&gt; 22,1,Dial(SIP/${EXTEN},40)
+exten =&gt; 22,n,VoiceMail(${EXTEN},u)</programlisting>The same is
+      accomplished in AEL like this:</para>
+
+      <para><programlisting>context internal-users {
+  
+  <emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {
+    Dial(SIP/${EXTEN},40);
+    VoiceMail(${EXTEN},u);
+  }
+  <emphasis role="bold">hint(SIP/22)</emphasis> 22 =&gt; {
+    Dial(SIP/${EXTEN},40);
+    VoiceMail(${EXTEN},u);
+  }
+}</programlisting>Let's take a look at the typical example of a group of
+      extensions beginning with a common digit, here in
+      <filename>extensions.conf</filename>:</para>
+
+      <para><programlisting>[internal-users]
+
+exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis>
+exten =&gt; 22,<emphasis role="bold">hint,SIP/22</emphasis>
+
+exten =&gt; _2X,1,Dial(SIP/${EXTEN},40)
+exten =&gt; _2X,n,VoiceMail(${EXTEN},u)</programlisting>In extensions.ael, the
+      same dialplan section would look like this:</para>
+
+      <para><programlisting>context internal-users {
+  
+  <emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {}
+  <emphasis role="bold">hint(SIP/22)</emphasis> 22 =&gt; {}
+  
+  _2X =&gt; {
+    Dial(SIP/${EXTEN},40);
+    VoiceMail(${EXTEN},u);
+  }
+}</programlisting>You may want to try using patterns to reduce the maintenance
+      overhead for your dialplan. Unfortunately, in Asterisk 1.4, this doesn't
+      work.</para>
+
+      <warning>
+        <para>In Asterisk 1.4, hints may not use patterns, so these hints
+        would <emphasis>not</emphasis> be allowed
+        (<filename>extensions.conf</filename>,
+        <filename>extensions.ael</filename> respectively):</para>
+
+        <para><programlisting>exten =&gt; _2X,hint,SIP/${EXTEN}</programlisting><programlisting>hint(SIP/${EXTEN}) _2X =&gt; {<replaceable>...</replaceable>}</programlisting></para>
+
+        <para>As of Asterisk 1.6, you can use patterns in this way, though the
+        early implementations were buggy. Be careful, though: when hints are
+        processed, there is no channel yet, so no channel variables will be
+        available for the hint definition to use (with the exception of
+        <code>${EXTEN}</code>).</para>
+      </warning>
+
+      <para>You can also combine multiple users in a single hint, as in this
+      example:</para>
+
+      <para><programlisting>[internal-users]
+
+exten =&gt; 20,<emphasis role="bold">hint,SIP/21&amp;SIP/22</emphasis>
+
+exten =&gt; 20,1,Dial(SIP/21&amp;SIP/22,40)</programlisting>To accomplish the
+      same thing in extensions.ael, a similar pattern is followed:</para>
+
+      <para><programlisting>context internal-users {
+  
+  <emphasis role="bold">hint(SIP/21&amp;SIP/22)</emphasis> 20 =&gt; {}
+  
+  20 =&gt; {
+    Dial(SIP/21&amp;SIP/22,40);
+  }
+}</programlisting></para>
+
+      <tip>
+        <para>You can also place all your hints in a dedicated context and
+        then <code>include</code> it if you need it in another context.</para>
+      </tip>
+
+      <para>You must reload the dialplan in order to apply hints (<emphasis
+      role="bold"><literal><command>asterisk -rx 'module
+      reload'</command></literal></emphasis>).</para>
+    </section>
+  </section>
+
+  <section id="blf-subscriptions">
+    <title>Subscriptions</title>
+
+    <para>This section provides the technical background for subscriptions for
+    those who are interested. It's not really required for configuration
+    purposes. If you just want to configure your phones, proceed to the next
+    section.</para>
+
+    <para>SIP provides more than one method for subscribing to a station's
+    status. The customary method is described in RFC 4235,
+    <quote><emphasis>Dialog Event Package</emphasis></quote>, which is based
+    on RFC 3265, <quote><emphasis>SIP Event Notification</emphasis></quote>.
+    With this method, a monitoring device sends a separate
+    <literal>SUBSCRIBE</literal> message to the phone system for each station
+    it wants to monitor. The system replies with a <literal>NOTIFY</literal>
+    message whenever the status of subscribed station changes (Asterisk does
+    not yet support <literal>PUBLISH</literal>).</para>
+
+    <para>The main difference between the subscription standards is the XML
+    they use in the body of the notification. The standards supported by
+    Asterisk are described in table 18.1.</para>
+
+    <table align="center" colsep="1" rowsep="1">
+      <title>Table 11.1: Subscription methods supported by Asterisk</title>
+
+      <tgroup cols="3">
+        <colspec align="left" colnum="1" colwidth="2*" />
+
+        <colspec align="left" colnum="2" colwidth="2*" />
+
+        <colspec align="left" colnum="3" colwidth="1*" />
+
+        <thead>
+          <row>
+            <entry>Specification</entry>
+
+            <entry>MIME type</entry>
+
+            <entry>Devices</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry>SIP Dialog Event Package (RFC 4235) (<ulink
+            url="???">http://tools.ietf.org/html/rfc4235</ulink>)</entry>
+
+            <entry><literal>application/dialog-info+xml</literal></entry>
+
+            <entry>Snom, Linksys, Aastra, Polycom, Grandstream,
+            Thomson</entry>
+          </row>
+
+          <row>
+            <entry>Presence Information Data Format (PIDF) (RFC 3863) (<ulink
+            url="???">http://tools.ietf.org/html/rfc3863</ulink>)</entry>
+
+            <entry><literal>application/pidf+xml</literal></entry>
+
+            <entry>CounterPath EyeBeam and others, Cisco</entry>
+          </row>
+
+          <row>
+            <entry>Pre-version of RFC 3863 (see PIDF above), XPIDF, CPIM with
+            Microsoft extensions (<ulink
+            url="???">http://msdn.microsoft.com/en-us/library/cc246193(PROT.10).aspx</ulink>)</entry>
+
+            <entry><literal>application/xpidf+xml</literal></entry>
+
+            <entry>Microsoft RTC/LCS, MSN Messenger, Polycom</entry>
+          </row>
+
+          <row>
+            <entry>Pre-version of RFC 3863 (see PIDF above), XPIDF,
+            CPIM</entry>
+
+            <entry><literal>application/cpim-pidf+xml</literal></entry>
+
+            <entry></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <literal>xpidf+xml</literal> and
+    <literal>cpim-pidf+xml</literal> formats are very similar.</para>
+  </section>
+
+  <section id="blf-telefon-konfiguration-snom">
+    <title>Configuring telephones for BLF</title>
+
+    <para>To actually use BLF, you have to configure BLF on the phone you want
+    to use for monitoring. This will vary for every model of phone you use. We
+    briefly cover two commonly used phones here, to get you started. Be warned
+    that the firmware, and thus the configuration parameters, can change at
+    any time. For the last word, consult the documentation for the phone you
+    are configuring.<note>
+        <para>Central provisioning is the term used for configuration of
+        telephones through configuration files distributed through a central
+        server, whether by TFTP, FTP, HTTP, or some other means. The setup for
+        central provisioning is outside the scope of this chapter. Because
+        central provisioning is a very common way to configure phones and an
+        absolute must for large installations, most manufacturers provide
+        instructions for this in the administration guide (as opposed to the
+        user's guide) for the phone.</para>
+      </note></para>
+
+    <section>
+      <title>BLF on the Aastra 480i</title>
+
+      <para>Aastra telephones, like most IP telephones, can be configured via
+      a web interface or through a configuration file, which the phone loads
+      from a configuration server (nearly always the Asterisk server
+      itself).</para>
+
+      <section>
+        <title>Configuring via a web browser</title>
+
+        <para>Find the IP address for the phone. You can do this on the phone
+        by pressing the Options key and scrolling to Network Setup. (The
+        default password is 22222.)</para>
+
+        <para>Enter the IP address into a web browser on a computer on the
+        same network. When you do this, you'll be prompted for a username and
+        password. By default, the username is admin, and the password is
+        22222. Once you are logged in, click Softkeys and XML in the Operation
+        section of the configuration menu on the left. Figure 20.1 shows the
+        softkeys configuration page.</para>
+
+        <para><screenshot>
+            <screeninfo>Figure 20.1 Aastra 480i Busy Lamp Field web
+            configuration</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="images/aastra/aastra480i_2.small.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>Choose the key you would like to configure and set the
+        type to BLF. The Aastra phones automatically condense softkeys on the
+        idle screen. For example, if you only configure key 5, it will appear
+        as key 1 on your phone.</para>
+
+        <para>The label field sets the display name for the BLF, and the value
+        is the number of the extension you want to monitor. The checkboxes on
+        the right (Idle, Connected, Incoming and Outgoing) set what in which
+        states the key will displayed (this is because the keys can be set to
+        perform a variety of functions and you may not need them in every
+        state). The defaults usually suffice.</para>
+
+        <para>Once you have entered all the BLF settings you want, you have to
+        save the settings before restarting the phone. The Save Settings
+        button is in the lower left-hand corner of the window (it's not
+        visible in the figure above because you have to scroll down to see
+        it). Restart the phone by going to <quote>Operation</quote> on the
+        left, clicking <quote>Reset</quote> and then
+        <quote>Restart</quote>.</para>
+      </section>
+
+      <section>
+        <title>Configuring with a configuration file</title>
+
+        <para>Another way to configure BLF is by provisioning the phone
+        through a central server.</para>
+
+        <para>Aastra phones can be configured globally through the
+        <filename>aastra.cfg</filename> file, or on a per-phone basis through
+        a configuration file with a filename containing the phone's MAC
+        address, as in, for example,
+        <filename>00085D1840D1.cfg</filename>.</para>
+
+        <para>An example BLF configuration for an Aastra 480i would look like
+        this:</para>
+
+        <para><programlisting>softkey1 type: blf
+softkey1 label: "Station 2"
+softkey1 value: 119
+softkey1 line: 2</programlisting></para>
+
+        <para>Note that this is not the entire configuration file. Though you
+        can put these lines wherever you want in the file, it makes sense to
+        keep them together for clarity.</para>
+
+        <para>You need at least three parameters in the configuration file to
+        activate BLF; four are listed here. All the parameters are preceded by
+        softkey<replaceable>N</replaceable>, where
+        <replaceable>N</replaceable> is the number of the softkey:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><code>type</code></para>
+
+            <para>This sets the key type. Aastra sets have highly configurable
+            softkeys. You need to specify what type of function you want the
+            key to perform. In this case, we want the type <code>blf</code>,
+            as in this example:</para>
+
+            <programlisting>softkey1 type: blf</programlisting>
+          </listitem>
+
+          <listitem>
+            <para><code>label</code></para>
+
+            <para>This sets the display name for the softkey. You can set it
+            to whatever you like, but generally this is set to the name of the
+            user whose phone you want to monitor. This is a short field which
+            can only contain up to 9 characters. You must enclose it in
+            quotes:</para>
+
+            <programlisting>softkey1 label: "S. Smart"</programlisting>
+          </listitem>
+
+          <listitem>
+            <para><code>value</code></para>
+
+            <para>Sets the extension you want to monitor, usually by
+            number:</para>
+
+            <programlisting>softkey1 value: 112</programlisting>
+          </listitem>
+
+          <listitem>
+            <para>line</para>
+
+            <para>You can specify a line number for the softkey; softkeys
+            configured in this way will automatically dial the monitored
+            extension when pressed.</para>
+
+            <programlisting>softkey1 line: 2</programlisting>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
+    <section>
+      <title>Polycom Soundpoint IP 501</title>
+
+      <para>You can only configure Busy Lamp Field on the Soundpoint IP 501
+      through central provisioning. On Polycom phones, BLF is called
+      <quote>Buddy Watch</quote>.<warning>
+          <para>The Polycom phones use XML configuration files. You must be
+          extremely careful with spacing and formatting when editing these
+          files. All tags must be closed; typographical errors, extra lines
+          and spaces have been known to cause boot problems.</para>
+        </warning></para>
+
+      <para>The BLF is a phone-specific setting made in the directory file for
+      the phone you want to configure. The filename for the directory file
+      follows the convention
+      <filename><replaceable>mac_address</replaceable>-directory.xml</filename>.
+      For example, <filename>0004f2047ff5-directory.xml</filename> is a valid
+      directory filename. A directory file with presence configured for two
+      extensions might look like this:</para>
+
+      <programlisting>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+&lt;!-- $Revision: 1.2 $  $Date: 2004/12/21 18:28:05 $ --&gt;
+&lt;directory&gt;
+        &lt;item_list&gt;
+                &lt;item&gt;
+                        &lt;ln&gt;Smart&lt;/ln&gt;
+                        &lt;fn&gt;Sally&lt;/fn&gt;
+                        &lt;ct&gt;201&lt;/ct&gt;
+                        &lt;sd&gt;1&lt;/sd&gt;
+                        &lt;rt&gt;3&lt;/rt&gt;
+                        &lt;dc/&gt;
+                        &lt;ad&gt;0&lt;/ad&gt;
+                        &lt;ar&gt;0&lt;/ar&gt;
+                        &lt;bw&gt;1&lt;/bw&gt;
+                        &lt;bb&gt;0&lt;/bb&gt;
+                &lt;/item&gt;
+                &lt;item&gt;
+                        &lt;ln&gt;Duff&lt;/ln&gt;
+                        &lt;fn&gt;Don&lt;/fn&gt;
+                        &lt;ct&gt;202&lt;/ct&gt;
+                        &lt;sd&gt;2&lt;/sd&gt;
+                        &lt;rt&gt;3&lt;/rt&gt;
+                        &lt;dc/&gt;
+                        &lt;ad&gt;0&lt;/ad&gt;
+                        &lt;ar&gt;0&lt;/ar&gt;
+                        &lt;bw&gt;1&lt;/bw&gt;
+                        &lt;bb&gt;0&lt;/bb&gt;
+                &lt;/item&gt;
+        &lt;/item_list&gt;
+&lt;/directory&gt;</programlisting>
+
+      <para>All the fields for a given entry must be enclosed in the
+      <code>&lt;item&gt;&lt;/item&gt;</code> tags. These are the fields you'll
+      need to set:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><code>&lt;ct&gt;<replaceable>extension</replaceable>&lt;/ct&gt;</code></para>
+
+          <para>This sets the extension you want to monitor and is usually a
+          number:</para>
+
+          <programlisting>&lt;ct&gt;201&lt;/ct&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><code>&lt;sd&gt;<replaceable>number</replaceable>&lt;/sd&gt;</code></para>
+
+          <para>This sets the speed dial number for the entry. The Soundpoint
+          IP 501 has 3 line buttons, which can be line appearances, speed dial
+          buttons, or BLF indicators. Line appearances always take priority.
+          For example, if you configure three line appearances, no buttons or
+          fields will remain on the idle screen for BLF (though you can still
+          check the states of monitored extensions by pressing the Buddies
+          softkey). If you have a single line appearance, it will occupy the
+          first button. If you set <code>&lt;sd&gt;</code> to 1, the entry
+          will occupy the next available line button.</para>
+        </listitem>
+
+        <listitem>
+          <para><code>&lt;bw&gt;[0,1]&lt;/bw&gt;</code></para>
+
+          <para>This is the <quote>Buddy Watch</quote> parameter (essentially,
+          another Polycom name for BLF). Allowed values are 0 and 1. If this
+          is set to 1, the extension specified in
+          <code>&lt;ct&gt;&lt;/ct&gt;</code> will be monitored. When this is
+          set, the <quote>Buddy</quote> icon appears next to the button if the
+          line is available; the <quote>Do Not Enter</quote> icon appears when
+          the line is in use for any other reason.</para>
+        </listitem>
+
+        <listitem>
+          <para>&lt;bb&gt;[0,1]&lt;/bb&gt;</para>
+
+          <para>This is the <quote>Buddy Block</quote> parameter. Allowed
+          values are 0 and 1. If this is set to 1, it blocks the extension
+          defined in this entry from monitoring this phone.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Configuring BLF for SIP phones is generally straightforward. The
+      different terminology used by different phone manufacturers can be a
+      source of confusion. Equivalent terms include "presence", "buddy watch",
+      "extension monitoring" and "subscription". As with all the
+      hardware-specific examples, you should consult with the manufacturer's
+      documentation if you are not sure. Things change frequently.</para>
+    </section>
+  </section>
+
+  <section id="blf-test">
+    <title>Testing the hints</title>
+
+    <para>Now we can test to see that things are working.<note>
+        <para>Output in the following examples has been truncated to save
+        space.</para>
+      </note>Enter <literal><command>core show hints</command></literal> in
+    the Asterisk CLI:</para>
+
+    <screen>*CLI&gt; <emphasis role="bold"><command>core show hints</command></emphasis>
+    -= Registered Asterisk Dial Plan Hints =-
+   21         : SIP/21        State:Unavailable     Watchers  0
+   22         : SIP/22        State:Unavailable     Watchers  0
+----------------
+- 2 hints registered</screen>
+
+    <para>We can see that extensions we want to monitor
+    (<literal>SIP/21</literal> and <literal>SIP/22</literal>) have not yet
+    contacted the Asterisk server (<quote><literal>Status:
+    Unavailable</literal></quote>), nor have the monitoring extensions
+    subscribed to the hints for the unavailable extensions
+    (<quote><literal>Watchers 0</literal></quote>). We can confirm this with
+    the additional command, <literal><command>sip show
+    subscriptions</command></literal>:</para>
+
+    <screen>*CLI&gt; <emphasis role="bold"><command>sip show subscriptions</command></emphasis>
+Peer          User   Call ID      Extension   Last state    Type
+0 active SIP subscriptions</screen>
+
+    <para>Once the monitoring extension has contacted the server, we run the
+    command again:</para>
+
+    <screen>*CLI&gt; <emphasis role="bold"><command>sip show subscriptions</command></emphasis>
+Peer          User   Call ID      Extension   Last state    Type
+192.168.0.2   21     815d944554e  22          Unavailable   dialog-info+xml
+1 active SIP subscription</screen>
+
+    <para>Now we can see that extension 21 is monitoring extension
+    <code>22</code>. Once the extension 22 contacts the Asterisk server, we
+    will see this in the CLI:<screen>Extension Changed 22 new state Idle for Notify User 21</screen></para>
+
+    <para>Now we enter <literal><command>core show hints</command></literal>
+    again:</para>
+
+    <screen>*CLI&gt; <emphasis role="bold"><command>core show hints</command></emphasis>
+    -= Registered Asterisk Dial Plan Hints =-
+   21         : SIP/21        State:Idle            Watchers  0
+   22         : SIP/22        State:Idle            Watchers  1
+----------------
+- 2 hints registered</screen>
+
+    <para>In contrast to the first output of this command, we can see that the
+    phones have a defined setting (<quote><literal>Idle</literal></quote>) and
+    at least one phone is monitoring extension 22 (<quote><literal>Watchers
+    1</literal></quote>). Configuration is now complete, and Asterisk will
+    send an event to the monitoring extensions as soon as the monitored
+    extension changes state. How this is manifested will depend on the phone.
+    Some phones have an icon on an LED display, others have LED indicators
+    which blink, change color, or both. Status changes are also reported in
+    the CLI:</para>
+
+    <screen>Extension Changed 22 new state Ringing for Notify User 21
+Extension Changed 22 new state InUse for Notify User 21
+Extension Changed 22 new state Idle for Notify User 21</screen>
+  </section>
+
+  <section id="blf-pickup">
+    <title>Configuring pickup<indexterm>
+        <primary>Pickup</primary>
+      </indexterm></title>
+
+    <para>The <quote>Busy Lamp Field</quote> only tells us the status of a
+    monitored extension, but it doesn't let us do anything about it. If we
+    want to be able to pick up a call intended for another extension, we have
+    to do some additional configuration.</para>
+
+    <para>There are two basic kinds of call pickup. Pick up of calls for a
+    single user is sometimes called <foreignphrase lang="en">directed
+    pickup</foreignphrase>; pick up of calls for a call group is known as
+    <foreignphrase lang="en">group pickup</foreignphrase>. Let's start with
+    the directed pickup, which is simpler.</para>
+
+    <section id="blf-pickup-extensions.conf">
+      <title>extensions.conf for pickup</title>
+
+      <para>We need to add additional entries to
+      <filename>extensions.conf</filename> to make pickup work:</para>
+
+      <programlisting>[internal-users]
+
+; ...
+
+; Pickup
+<emphasis role="bold">exten =&gt; _*8X.,1,Set(nst=${EXTEN:2})
+exten =&gt; _*8X.,n,Verbose(1,${CALLERID(num)} wants to pick up call from ${nst})
+exten =&gt; _*8X.,n,Pickup(${nst}@internal-users)</emphasis></programlisting>
+
+      <para>To accomplish the same thing in
+      <filename>extensions.ael</filename>, we make the following
+      entries:</para>
+
+      <programlisting>context internal-users {
+  
+  // ...
+  
+  // Pickup
+  <emphasis role="bold">_*8X. =&gt; {
+    Set(nst=${EXTEN:2});
+    Verbose(1,${CALLERID(num)} wants to pick up call from ${nst});</emphasis>
+    // An authentication step could be put here
+    <emphasis role="bold">Pickup(${nst}@internal-users);
+  }</emphasis>
+}</programlisting>
+
+      <para>Now we have defined an Asterisk extension that picks up a call to
+      &lt;<replaceable>extension</replaceable>&gt; in the
+      <code>internal-users</code> context if
+      <code>*8</code><replaceable>&lt;extension&gt;</replaceable>
+      (<emphasis>e.g.</emphasis> <code>*821</code>) is dialed, provided that
+      &lt;<replaceable>extension</replaceable>&gt; (<emphasis>e.g.</emphasis>
+      21) is ringing but has not yet been answered. (See also <xref
+      linkend="applications-pickup" />.)<warning>
+          <para>The <code>Pickup()</code> application should not be confused
+          with similar applications packaged with bristuff (such as
+          <code>PickUp()</code>, <code>DPickup()</code>,
+          <code>PickUp2()</code>). You might find these in the form of patches
+          when doing Internet searches on the topic.</para>
+        </warning></para>
+    </section>
+
+    <section id="blf-pickup-telefon">
+      <title>Configuring the phones for pickup<indexterm>
+          <secondary>Pickup</secondary>
+        </indexterm></title>
+
+      <para>Some phones support BLF + directed call pickup. In this
+      configuration, when a monitored phone is ringing, the user can pick up
+      the call simply by pressing the adjacent associated button. We will set
+      this up here. Because Polycom sets do not support BLF + directed call
+      pickup with Asterisk, we provide only the Aastra instructions
+      below.</para>
+
+      <tip>
+        <para>This behavior can be replicated on Polycom phones by having
+        Asterisk do the state detection. In such a scenario, if the device is
+        idle, dialing the extension will ring the extension. If the extension
+        is already ringing, and a phone in the correct context dials it, that
+        phone will pick up the extension. This way, the button adjacent to the
+        "watched buddy" can be used to do call pickup, even though it is
+        simply a speed dial button.</para>
+      </tip>
+
+      <para>Early on, Aastra sets relied on the SIP subscription event package
+      to determine what to dial in order to do call pickup. This meant that,
+      in theory, it was only necessary to enable directed call pickup in the
+      web configuration to make this feature work.</para>
+
+      <para>Unfortunately, Asterisk does not transmit this information by
+      default. To do this, Asterisk must be patched using the patch provided
+      at <ulink
+      url="???">https://issues.asterisk.org/view.php?id=5014</ulink>. This is
+      still an option for you if recompiling and installing Asterisk is not
+      too bothersome; then you need only to activate directed call pickup in
+      the Aastra web configuration. Log into the phone, find <quote>Basic
+      Settings</quote> on the left and click <quote>Preferences</quote>.
+      Scroll to the bottom of the screen and find the <quote>Directed Call
+      Pickup Settings</quote> section. Check the box next to <quote>Directed
+      Call Pickup</quote> to enable it:</para>
+
+      <para><screenshot>
+          <screeninfo>Figure 20.2: Activating directed call pickup on the
+          Aastra 480i</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/aastra/aastra480i_dpickup_8.small.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>Click <quote>Save Settings</quote>, then restart the
+      phone by going to <quote>Operation</quote> on the left, clicking
+      <quote>Reset</quote> and then <quote>Restart</quote>.</para>
+
+      <para>Another way to do this, which does not require patching and
+      recompiling Asterisk, is to tell the Aastra phone what the pickup prefix
+      is. Currently, this can only be done via the Aastra configuration file,
+      not through the web interface. For the purposes of our example, add the
+      following lines to the configuration file (as mentioned before, in the
+      form
+      <filename><replaceable>mac_address</replaceable>.cfg</filename>)</para>
+
+      <programlisting>directed call pickup: 1
+directed call pickup prefix: *8</programlisting>
+
+      <para>Force the phone to restart so that it loads the configuration.
+      Pressing the soft key associated with the BLF indicator of a ringing
+      extension should now pick up the call.</para>
+    </section>
+
+    <section id="blf-group-pickup">
+      <title>Configuring group pickup</title>
+
+      <para>Group pickup is very similar in operation to directed call pickup.
+      One way is to make pickup extensions, such as in this example:</para>
+
+      <programlisting>context internal-users {
+  
+  // Sales
+  hint(SIP/21&amp;SIP/22&amp;SIP/23) 20 =&gt; {
+    Dial(SIP/21&amp;SIP/22&amp;SIP/23,40);
+  }
+  
+  // Pickup calls to sales
+  <emphasis role="bold">_*820 =&gt; {
+    Verbose(1,${CALLERID(num)} wants to pick up call to sales);
+    Pickup(21@internal-users&amp;22@internal-users&amp;23@internal-users);
+  }</emphasis>
+}</programlisting>
+
+      <para>To monitor this extension, you set <code>20</code> as the value in
+      the Softkeys and XML configuration page of the Aastra.</para>
+
+      <para>The <code>PICKUPMARK</code> functionality of the
+      <code>Pickup()</code> application (<xref
+      linkend="applications-pickup" />) provides a bit more
+      flexibility:</para>
+
+      <programlisting>context internal-users {
+  
+  // Sales staff
+  _2X =&gt; {
+    <emphasis role="bold">Set(__PICKUPMARK=sales);</emphasis>
+    Dial(SIP/${EXTEN},40);
+  }
+  hint(SIP/21) 21 =&gt; {}
+  hint(SIP/22) 22 =&gt; {}
+  hint(SIP/23) 23 =&gt; {}
+  
+  // Sales department
+  hint(SIP/21&amp;SIP/22&amp;SIP/23) 20 =&gt; {
+    <emphasis role="bold">Set(__PICKUPMARK=sales);</emphasis>
+    Dial(SIP/21&amp;SIP/22&amp;SIP/23,40);
+  }
+  
+  // Pickup of calls to sales
+  _*820 =&gt; {
+    Verbose(1,${CALLERID(num)} wants to pick up a call to sales);
+    <emphasis role="bold">Pickup(sales@PICKUPMARK);</emphasis>
+  }
+}</programlisting>
+
+      <para>Advanced users who want to avoid using up an extra extension
+      (<code>20</code> in the example above) for the pickup group can try this
+      configuration:</para>
+
+      <programlisting>context internal-users {
+  
+  // Sales staff
+  _2X =&gt; {
+    <emphasis role="bold">Set(__PICKUPMARK=200);</emphasis>
+    // To define which users belong to which pickup group,
+    // you can use an external AGI script
+    Dial(SIP/${EXTEN}<emphasis role="bold">&amp;Local/**${PICKUPMARK}</emphasis>,40);
+  }
+  hint(SIP/21) 21 =&gt; {}
+  hint(SIP/22) 22 =&gt; {}
+  hint(SIP/23) 23 =&gt; {}
+  
+  // Pickup groups
+  _**X. =&gt; {
+    Verbose(1,Pickup group ${EXTEN:2} is ringing);
+  }
+  <emphasis role="bold">hint(SIP/21&amp;SIP/22&amp;SIP/23) **200 =&gt; {}</emphasis>
+  
+  // Directed call pickup
+  _*8X. =&gt; {
+    Set(nst=${EXTEN:2});
+    Verbose(1,${CALLERID(num)} wants to pick up call to ${nst});
+    // You could put an authorization test here
+    Pickup(${nst}@internal-users);
+  }
+  
+  // Group call pickup
+  <emphasis role="bold">_*8**X.</emphasis> =&gt; {
+    Set(pmark=${EXTEN:4});
+    Verbose(1,${CALLERID(num)} wants to pick up call to ${pmark});
+    // You could put an authorization test here
+    <emphasis role="bold">Pickup(${pmark}@PICKUPMARK);</emphasis>
+  }
+}</programlisting>
+
+      <para>On the monitoring extension, you set the monitored extension to
+      <code>**200</code>.</para>
+    </section>
+  </section>
+
+  <section id="blf-device-state">
+    <title>Advanced BLF indicators in Asterisk 1.6</title>
+
+    <subtitle>DEVICE_STATE()<indexterm>
+        <primary>DEVICE_STATE()</primary>
+      </indexterm></subtitle>
+
+    <para>You already know how to monitor the status of SIP users. Here is a
+    quick review for the sake of comparison. In
+    <filename>extensions.conf</filename>, a user hint looks like this:</para>
+
+    <para><programlisting>exten =&gt; 21,<emphasis role="bold">hint,SIP/21</emphasis></programlisting>In
+    <filename>extensions.ael</filename>, the same hint looks like this:</para>
+
+    <para><programlisting><emphasis role="bold">hint(SIP/21)</emphasis> 21 =&gt; {}</programlisting>As
+    of Asterisk 1.6, you can monitor the state of MeetMe conferences using
+    hints. Assume a MeetMe conference room of 885, which you want to tie to
+    Asterisk extension 881. In <filename>extensions.conf</filename>, this
+    would look like this:</para>
+
+    <para><programlisting>exten =&gt; 881,<emphasis role="bold">hint,MeetMe:885</emphasis>
+exten =&gt; 881,1,MeetMe(885)</programlisting>In
+    <filename>extensions.ael</filename>, it would look like this:</para>
+
+    <para><programlisting><emphasis role="bold">hint(MeetMe:885)</emphasis> 881 =&gt; {
+  MeetMe(885);
+}</programlisting></para>
+
+    <para>The hint in the above example ties the status of extension
+    <code>881</code> to the status of MeetMe room <code>885</code>. The
+    numbers are deliberately different, for the sake of clarity; in practice,
+    they are often the same. You can now configure a BLF softkey with the
+    extension <code>881</code>, and it will indicate the status of the
+    conference (that is, active or not).</para>
+
+    <para>Even more interesting, though, is that Asterisk 1.6 lets you tie
+    hints to virtual devices. In <filename>extensions.conf</filename>, this
+    looks like this:</para>
+
+    <para><programlisting>exten =&gt; 99,<emphasis role="bold">hint,Custom:my-status</emphasis></programlisting>In
+    extensions.ael, the same construction looks like this:</para>
+
+    <para><programlisting><emphasis role="bold">hint(Custom:my-status)</emphasis> 99 =&gt; {}</programlisting>The
+    status of such a custom device can be set to anything you like using the
+    <code>DEVICE_STATE()</code> function from elsewhere in the
+    dialplan.<warning>
+        <para>For a time, this function was called <code>DEVSTATE()</code>,
+        which is the same as <code>DEVICE_STATE()</code>. This function is not
+        to be confused with the application <code>DevState()</code> or other
+        applications and functions with similar names, even if they work
+        similarly. You might see these alternates mentioned in list archives
+        and Internet fora.</para>
+      </warning>The function uses this construction:</para>
+
+    <programlisting>Set(DEVICE_STATE(Custom:my-status)=INUSE);</programlisting>
+
+    <para>The status is then transmitted to any phones that have subscribed to
+    the hint. The possible values are:</para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><literal>UNKNOWN</literal></para>
+
+          <para>Unknown; the device cannot be contacted.</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para><itemizedlist>
+        <listitem>
+          <para><literal>UNAVAILABLE</literal></para>
+
+          <para>The device is unavailable.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>NOT_INUSE</literal></para>
+
+          <para>The device is available.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>INUSE</literal></para>
+
+          <para>The device is in a call.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>BUSY</literal></para>
+
+          <para>The device is in a call and will not take additional calls.
+          (The device is busy.)</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>RINGING</literal></para>
+
+          <para>The device is ringing.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>RINGINUSE</literal></para>
+
+          <para>The device is in use, but is also ringing (an additional
+          caller is calling and the device is receiving call waiting
+          notification)</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>ONHOLD</literal></para>
+
+          <para>The device has a call on hold.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>INVALID</literal></para>
+
+          <para>The status is invalid (you might use this is the device status
+          cannot be determined because it doesn't exist; for example, for a
+          dynamic conference room).</para>
+        </listitem>
+      </itemizedlist>How this status is actually manifested on a monitoring
+    extension depends on the device manufacturer. Not all devices distinguish
+    between all the status types.</para>
+
+    <para>The default status is <literal>UNKNOWN</literal>, which would be the
+    case after an Asterisk restart before the status is set.</para>
+
+    <para>Once a phone has subscribed to the status of
+    <code>Custom:my-status</code> at extension 99 in the above example, you
+    can test whether it works by adding these statements to the dialplan
+    (shown here in AEL format):</para>
+
+    <programlisting>hint(Custom:my-status) 99 =&gt; {}
+
+*91 =&gt; {
+  Set(DEVICE_STATE(Custom:my-status)=RINGING);
+}
+*92 =&gt; {
+  Set(DEVICE_STATE(Custom:my-status)=INUSE);
+}
+*93 =&gt; {
+  Set(DEVICE_STATE(Custom:my-status)=NOT_INUSE);
+}
+*94 =&gt; {
+  if ("${DEVICE_STATE(Custom:my-status)}" = "INUSE") {
+    Set(DEVICE_STATE(Custom:my-status)=NOT_INUSE);
+  }
+  else {
+    Set(DEVICE_STATE(Custom:my-status)=INUSE);
+  }
+}</programlisting>
+
+    <para>You can now set the device status by dialing the configured
+    extensions accordingly (again, how each model of phone indicates those
+    states will vary). <code>Most of the extensions are self-explanatory;
+    *94</code> toggles between <literal>INUSE</literal> and
+    <literal>NOT_INUSE</literal>. Once you've figured out the basic operation,
+    there are no limits on what you can do with indicators of this type. For
+    example, you could use it to indicate whether you are logged into a queue,
+    or even if your sprinkler system is currently watering the lawn.</para>
+
+    <para>Of course, this hint will appear in the output of
+    <literal><command>core show hints</command></literal> along with all the
+    other more conventional hints:</para>
+
+    <programlisting>*CLI&gt; <emphasis role="bold"><command>core show hints</command></emphasis> 
+    -= Registered Asterisk Dial Plan Hints =-
+  99@test              : Custom:my-status  State:InUse         Watchers  0
+  21@internal-users  : SIP/21              State:Unavailable   Watchers  0
+  22@internal-users  : SIP/22              State:Unavailable   Watchers  0
+----------------
+- 1 hints registered</programlisting>
+
+    <para>The CLI command <literal><command>devstate list</command></literal>
+    lets you find the status of all your <literal>Custom</literal>
+    hints:</para>
+
+    <programlisting>*CLI&gt; <emphasis role="bold"><command>devstate list</command></emphasis> 
+---------------------------------------------------------------------
+--- Custom Device States --------------------------------------------
+---------------------------------------------------------------------
+---
+--- Name: 'Custom:my-status'  State: 'INUSE'
+---
+---------------------------------------------------------------------
+---------------------------------------------------------------------</programlisting>
+
+    <para>Finally, <command><literal>devstate change
+    </literal><replaceable>device</replaceable>
+    <replaceable>state</replaceable></command> lets you set the status from
+    the CLI:</para>
+
+    <programlisting>*CLI&gt; <emphasis role="bold"><command>devstate change Custom:my-status RINGING</command></emphasis>
+Changing my-status to RINGING
+*CLI&gt; <emphasis role="bold"><command>devstate list</command></emphasis> 
+---------------------------------------------------------------------
+--- Custom Device States -------------------------------------------
+---------------------------------------------------------------------
+---
+--- Name: 'Custom:my-status'  State: 'RINGING'
+---
+---------------------------------------------------------------------
+---------------------------------------------------------------------</programlisting>
+  </section>
+</chapter>
