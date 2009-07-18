@@ -2,7 +2,7 @@
 <!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <section id="beronet-berofix" lang="de" revision="$Revision:473 $">
-  <!--% Copyright (c) 2009 - 2010 by 
+  <!--% Copyright (c) 2009 - 2010 by
 % Stefan Wintermeyer <sw@amooma.de>
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
@@ -303,31 +303,30 @@ lo        Link encap:Local Loopback
           RX packets:9 errors:0 dropped:0 overruns:0 frame:0
           TX packets:9 errors:0 dropped:0 overruns:0 carrier:0
           collisions:0 txqueuelen:0 
-          RX bytes:720 (720.0 b)  TX bytes:720 (720.0 b)
-</screen></para>
+          RX bytes:720 (720.0 b)  TX bytes:720 (720.0 b)</screen></para>
 
       <para>Sie erkennen die beroFix an der MAC-Adresse, diese sollte mit
-      <code>00:50:C2</code> beginnen. In diesem Beispiel ist beroFix
-      eth1.</para>
+      <code>00:50:C2</code> beginnen. In diesem Beispiel ist
+      <literal>eth1</literal> die beroFix.</para>
 
       <para>Um die Netzwerkbrücke manuell einzurichten können sie die
-      bridge-utils verwenden und müssen ein paar Kommandozeilen
-      eingeben:</para>
+      <filename>bridge-utils</filename> verwenden und müssen ein paar
+      Kommandozeilen eingeben:</para>
 
-      <para><screen>debian:~# ifconfig eth0 0.0.0.0 up
-debian:~# ifconfig eth1 0.0.0.0 up
-debian:~# brctl addbr br0
-debian:~# brctl addif br0 eth0
-debian:~# brctl addif br0 eth1
-debian:~# ifconfig br0 10.0.0.3 up 
-</screen></para>
+      <para><screen>debian:~# <emphasis role="bold"><command>ifconfig eth0 0.0.0.0 up</command></emphasis>
+debian:~# <emphasis role="bold"><command>ifconfig eth1 0.0.0.0 up</command></emphasis>
+debian:~# <emphasis role="bold"><command>brctl addbr br0</command></emphasis>
+debian:~# <emphasis role="bold"><command>brctl addif br0 eth0</command></emphasis>
+debian:~# <emphasis role="bold"><command>brctl addif br0 eth1</command></emphasis>
+debian:~# <emphasis role="bold"><command>ifconfig br0 10.0.0.3 up</command></emphasis></screen></para>
 
-      <para>Diese Kommandos entfernen die IP Addressen der Netzwerkkarten,
-      erzeugen eine Brücke <emphasis role="bold">br0</emphasis>, fügen der
-      Brücke die beiden Netzwerkkarten hinzu und geben der Brücke die IP
-      Addresse <emphasis role="bold">10.0.0.3</emphasis></para>
+      <para>Diese Kommandos entfernen die IP-Adressen der Netzwerkkarten,
+      erzeugen eine Brücke <emphasis
+      role="bold"><literal>br0</literal></emphasis>, fügen der Brücke die
+      beiden Netzwerkkarten hinzu und geben der Brücke die IP-Adresse
+      <emphasis role="bold">10.0.0.3</emphasis>.</para>
 
-      <para>Um die Netzwerk Konfiguration für die Brücke persistent
+      <para>Um die Netzwerk-Konfiguration für die Brücke persistent
       einzurichten, erweitern sie die Konfigurationsdatei
       <filename>/etc/network/interfaces</filename> mit einem Texteditor wie
       folgt:</para>
@@ -335,85 +334,88 @@ debian:~# ifconfig br0 10.0.0.3 up
       <para><programlisting>auto lo
 iface lo inet loopback
   
-auto br0
+<emphasis role="bold">auto br0
 iface br0 inet static
-  address 10.0.0.3
-  netmask 255.0.0.0
-  gateway 10.0.0.1
-  bridge_ports eth0 eth1
+	address 10.0.0.3
+	netmask 255.0.0.0
+	gateway 10.0.0.1
+	bridge_ports eth0 eth</emphasis>1
 </programlisting></para>
 
-      <para>Nun können sie mit <command>/etc/init.d/networking
-      restart</command> die Netzwerk Konfiguration aktivieren.</para>
+      <para>Nun können Sie mit <literal><command>/etc/init.d/networking
+      restart</command></literal> die Netzwerk-Konfiguration
+      aktivieren.</para>
 
-      <para><screen>debian:~# /etc/init.d/networking restart
+      <para><screen>debian:~# <emphasis role="bold"><command>/etc/init.d/networking restart</command></emphasis>
      * Reconfiguring network interfaces...                       [ OK ]
 </screen></para>
 
-      <para>Die default IP Addresse von beroFix ist <emphasis
+      <para>Die Default-IP-Addresse der beroFix ist <emphasis
       role="bold">10.0.0.2</emphasis>. Es sollte nun möglich sein die
-      Weboberfläche von berofix zu erreichen, tippen sie dazu einfach in einem
-      browser: <command>http://10.0.0.2</command> ein. Der standard Username
-      ist "admin" und das standard Passwort ebenfalls "admin".</para>
+      Weboberfläche der berofix zu erreichen. Tippen sie dazu einfach in einem
+      Browser die URL <literal>http://10.0.0.2</literal> ein. Der
+      Standard-Benutzername ist <quote>admin</quote> und das Standard-Passwort
+      ebenfalls <quote>admin</quote>.</para>
     </section>
 
-    <section id="beroNet-beroFix-sip-isdn-routing">
-      <title>SIP ISDN und Routing einrichten</title>
+    <section id="beronet-berofix-sip-isdn-routing">
+      <title>SIP, ISDN und Routing einrichten</title>
 
-      <para>beroFix wird vollständig über die Web-Benutzeroberfläche
-      konfiguriert, loggen sie sich dazu bitte mit einem browser auf
-      <command>http://10.0.0.2</command> mit den Benutzerdaten "admin:admin"
-      ein. Sie werden nun eine Weboberfläche mit den folgenden Menupunkten
-      sehen:<itemizedlist>
+      <para>Die beroFix wird vollständig über die Web-Benutzeroberfläche
+      konfiguriert. Loggen Sie sich dazu bitte mit einem Browser auf
+      <literal>http://10.0.0.2</literal> mit den Benutzerdaten
+      <quote>admin</quote>/<quote>admin</quote> ein. Sie werden nun eine
+      Weboberfläche mit den folgenden Menüpunkten sehen:<itemizedlist>
           <listitem>
-            <para><emphasis role="bold">Hardware</emphasis> - zum Einrichten
-            von ISDN Parametern wie TE/NT, PTP und PMP</para>
+            <para><emphasis role="bold">Hardware</emphasis> &#8211; zum
+            Einrichten von ISDN-Parametern wie TE/NT, PtP und PtMP</para>
           </listitem>
 
           <listitem>
-            <para><emphasis role="bold">ISDN</emphasis> - zum Gruppieren von
-            ISDN Ports</para>
+            <para><emphasis role="bold">ISDN</emphasis> &#8211; zum Gruppieren
+            von ISDN-Ports</para>
           </listitem>
 
           <listitem>
-            <para><emphasis role="bold">SIP</emphasis> - zum Verwalten von SIP
-            Servern</para>
+            <para><emphasis role="bold">SIP</emphasis> &#8211; zum Verwalten
+            von SIP-Servern</para>
           </listitem>
 
           <listitem>
-            <para><emphasis role="bold">Dialplan</emphasis> - zum Verwalten
-            des Routings</para>
+            <para><emphasis role="bold">Dialplan</emphasis> &#8211; zum
+            Verwalten des Routings</para>
           </listitem>
         </itemizedlist></para>
 
-      <para>Zunächst sollten sie die ISDN Hardware prüfen und entsprechend
-      ihrem Anschluss konfigurieren. TE und NT wird auf der Karte automatisch
-      umgeschaltet, so dass keine Jumperung oder gekreuzte Kabel nötig sind.
-      Als nächstes sollten sie eine ISDN Gruppe anlegen, vergeben sie einfach
-      als Namen "BRI".</para>
+      <para>Zunächst sollten Sie die ISDN-Hardware prüfen und entsprechend
+      Ihrem Anschluss konfigurieren. TE und NT wird auf der Karte automatisch
+      umgeschaltet, sodass keine Jumperung nötig sind. Als nächstes sollten
+      sie eine ISDN-Gruppe anlegen; vergeben Sie einfach als Namen
+      <quote>BRI</quote>.</para>
 
-      <para>Nun können sie einen SIP Server einrichten, erstellen sie einen
-      neuen Eintrag unter dem Menupunkt "SIP" mit den Werten: Name="berofix",
-      User="berofix", Secret="berofix".</para>
+      <para>Nun können Sie einen SIP-Server einrichten. Erstellen Sie einen
+      neuen Eintrag unter dem Menupunkt <quote>SIP</quote> mit den Werten:
+      Name=<quote>berofix</quote>, User=<quote>berofix</quote>,
+      Secret=<quote>berofix</quote>.</para>
     </section>
 
-    <section id="beroNet-beroFix-asterisk-sip-peer">
-      <title>Asterisk SIP Peer einrichten</title>
+    <section id="beronet-berofix-asterisk-sip-peer">
+      <title>SIP-Peer in Asterisk einrichten</title>
 
-      <para>Unter Asterisk wird beroFix wie ein SIP Gateway angesprochen,
+      <para>Unter Asterisk wird die beroFix wie ein SIP-Gateway angesprochen,
       deshalb muss dort in der <filename>/etc/asterisk/sip.conf</filename> ein
-      sip peer eingerichtet werden, fügen sie dazu in die
+      SIP-Peer eingerichtet werden. Fügen Sie dazu in der
       <filename>sip.conf</filename> die folgenden Zeilen ein:<programlisting>[berofix]
-type=friend
-secret=berofix
-host=10.0.0.2
-allow=all
-context=from-sip</programlisting></para>
+type = friend
+secret = berofix
+host = 10.0.0.2
+allow = all
+context = from-sip</programlisting></para>
 
       <para>Um nun mit einer führenden Null einen Ruf in Richtung ISDN zu
-      senden müssen sie nun chan_sip verwenden, benutzen sie in der
-      <filename>extensions.conf</filename> dazu folgenden
-      Zeilen:<programlisting>exten =&gt; _0X.,1,Dial(SIP/${EXTEN:1}@berofix)</programlisting></para>
+      senden müssen Sie nun <literal>chan_sip</literal> verwenden; benutzen
+      Sie in der <filename>extensions.conf</filename> dazu folgenden
+      Zeile:<programlisting>exten =&gt; _0X.,1,Dial(SIP/${EXTEN:1}@berofix)</programlisting></para>
 
       <para></para>
     </section>
