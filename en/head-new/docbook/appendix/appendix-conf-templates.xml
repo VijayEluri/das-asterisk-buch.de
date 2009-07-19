@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<appendix id="anhang-conf-templates">
+  <title>Configuration templates<indexterm>
+      <primary>config templates</primary>
+    </indexterm><indexterm>
+      <primary>Configuration templates</primary>
+    </indexterm></title>
+
+  <simpara>Configuration files such as <filename>sip.conf</filename>,
+  <filename>iax.conf</filename> <emphasis>etc.</emphasis> can have hundreds of
+  entries; such files are difficult to maintain.</simpara>
+
+  <para>Take a typical <filename>sip.conf</filename>, for
+  example:<programlisting>[201]
+username=201
+secret=1111
+context=default
+type=friend
+qualify=yes
+host=dynamic
+canreinvite=no
+
+[202]
+username=202
+secret=2222
+context=default
+type=friend
+qualify=yes
+host=dynamic
+canreinvite=no
+
+[203]
+username=203
+secret=3333
+context=default
+type=friend
+qualify=yes
+host=dynamic
+canreinvite=no</programlisting></para>
+
+  <para>There is another way. Asterisk offers the little-known support for
+  templates! Using a template, our <filename>sip.conf</filename> would look
+  like this instead:<programlisting>[my-phones](!)       ; This entry is the template
+context=default
+type=friend
+qualify=yes
+host=dynamic
+canreinvite=no
+
+[201](my-phones)     ; Station 201
+username=201
+secret=1111
+
+[202](my-phones)     ; Station 202
+username=202
+secret=2222
+
+[203](my-phones)     ; Station 203
+username=203
+secret=3333</programlisting></para>
+
+  <simpara>This is particularly useful when you have groups or classes of
+  stations with very similar characteristics; that is, in cases where it isn't
+  possible to put all the common parameters in the <code>[general]</code>
+  section. Even in this small and simple example, we've managed to save a few
+  lines and centralize future changes to the "class"
+  <code>my-phones</code>.</simpara>
+
+  <section id="conf-templates-anlegen">
+    <title>Creating templates</title>
+
+    <para>In principle, any section can serve as a template for other entries;
+    using the tag "<code>(!)</code>" tells the parser that this section is to
+    be used <emphasis>exclusively</emphasis> as a template. Note that no
+    spaces are permitted between the square brackets or the parentheses.
+    Templates may also be based on other templates.<programlisting>[my-example-template](!)
+context=default
+type=friend
+qualify=yes
+host=dynamic
+canreinvite=no</programlisting></para>
+  </section>
+
+  <section id="conf-templates-verwenden">
+    <title>Using templates</title>
+
+    <para>Use templates by entering the template name (without spaces!)
+    immediately after the section title. The contents of the template are
+    interpreted first, then the other lines in the section. Sections can
+    inherit multiple templates, <emphasis>e.g.</emphasis>:<programlisting>[201](my-phones,sales)   ; inherits "my-phones" and "sales"
+username=201
+secret=1111</programlisting>Parameters in the template may be overwritten with
+    parameters in the section, if necessary.</para>
+
+    <section id="conf-templates-beispiel">
+      <title>Example</title>
+
+      <para><programlisting>[stations](!)               ; Template "stations"
+type=friend
+qualify=yes
+dtmfmode=rfc2833
+disallow=all
+allow=alaw
+
+[snom](!,stations)          ; Template "snom", inherits "stations"
+dtmfmode=inband
+
+[linksys](!,stations)       ; Template "linksys", inherits "stations"
+qualify=no
+
+[snom1](snom)               ; Station "snom1", inherits "snom"
+username=101
+secret=123
+
+[snom2](snom)               ; Station "snom2", inherits "snom"
+username=102
+secret=123
+
+[linksys1](linksys)         ; Station "linksys1", inherits "linksys"
+username=103
+secret=123</programlisting></para>
+
+      <para>You can find additional examples at <ulink
+      url="http://www.voip-info.org/wiki/index.php?page=Asterisk+config+template">http://www.voip-info.org/wiki/index.php?page=Asterisk+config+template</ulink>.</para>
+    </section>
+  </section>
+</appendix>

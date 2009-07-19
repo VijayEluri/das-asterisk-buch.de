@@ -1,0 +1,1610 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<appendix id="agi-commands" lang="de" revision="$Revision: 1667 $">
+  <!--
+% Copyright (c) 2006 - 2009 by 
+% Philipp Kempgen <philipp.kempgen@amooma.de>
+% Permission is granted to copy, distribute and/or modify this document
+% under the terms of the GNU Free Documentation License, Version 1.2
+% or any later version published by the Free Software Foundation
+% with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+% Texts. A copy of the license is included in the section entitled "GNU
+% Free Documentation License".
+% Asterisk training and consulting is offered at http://www.amooma.de
+-->
+
+  <title>AGI command summary</title>
+
+  <subtitle>Befehle auf der AGI-Schnittstelle (<quote>Asterisk Gateway
+  Interface</quote>)</subtitle>
+
+  <indexterm>
+    <primary>AGI</primary>
+
+    <secondary>Befehle</secondary>
+  </indexterm>
+
+  <para>Die folgenden Steuerungsbefehle ermöglichen es einem AGI-Skript (siehe
+  <xref linkend="kapitel-agi" />), mit Asterisk zu interagieren. Die meisten
+  dieser Befehle sind von Dialplan-Applikationen (siehe <xref
+  linkend="applications" />) oder Funktionen (siehe <xref
+  linkend="functions" />) mit ähnlichen Namen abgeleitet.</para>
+
+  <important>
+    <simpara>Falls Sie Parameter, die nicht am Ende stehen, auslassen wollen,
+    müssen Sie stattdessen <code>""</code> angeben!</simpara>
+  </important>
+
+  <note>
+    <para>Der Hinweis <literal>Runs Dead:
+    <replaceable>Yes|No</replaceable></literal> in der jeweiligen Beschreibung
+    ab Asterisk 1.6 besagt, ob der Befehl auch (mit
+    <literal>DeadAGI()</literal>, siehe <xref
+    linkend="applications-deadagi" />) für einen toten, d. h. einen bereits
+    aufgelegten Anruf (genauer: Kanal) ausgeführt werden kann.</para>
+  </note>
+
+  <section id="agi-command-answer">
+    <title><code>ANSWER</code></title>
+
+    <synopsis>ANSWER</synopsis>
+
+    <para>Funktioniert wie <code>Answer()</code> in der
+    <filename>extensions.conf</filename>. Der Anruf wird
+    entgegengenommen.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/answer-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-asyncagi-break">
+    <title><code>ASYNCAGI BREAK</code></title>
+
+    <synopsis>ASYNCAGI BREAK</synopsis>
+
+    <para>Beendet die asynchrone Ausführung des AGI-Skripts.</para>
+
+    <xi:include href="agi/asyncagi-break-help.xml"
+                xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-channel-status">
+    <title><code>CHANNEL STATUS</code></title>
+
+    <synopsis>CHANNEL STATUS [<replaceable>Kanalname</replaceable>]</synopsis>
+
+    <para>Abfrage des Status eines Kanals. Wenn der
+    <code><parameter>Kanalname</parameter></code> nicht angegeben ist, wird
+    der aktuelle Kanal benutzt.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Der Channel ist nicht aktiv und verfügbar.</entry>
+            </row>
+
+            <row>
+              <entry>1</entry>
+
+              <entry>Der Channel ist nicht aktiv, aber reserviert.</entry>
+            </row>
+
+            <row>
+              <entry>2</entry>
+
+              <entry>Der Channel ist off-hook.</entry>
+            </row>
+
+            <row>
+              <entry>3</entry>
+
+              <entry>DTMF-Eingaben wurden getätigt.</entry>
+            </row>
+
+            <row>
+              <entry>4</entry>
+
+              <entry>Der Channel wird gerade angerufen (es klingelt).</entry>
+            </row>
+
+            <row>
+              <entry>5</entry>
+
+              <entry>Die andere Seite wird gerade angerufen (es
+              klingelt).</entry>
+            </row>
+
+            <row>
+              <entry>6</entry>
+
+              <entry>Die Leitung ist aktiv.</entry>
+            </row>
+
+            <row>
+              <entry>7</entry>
+
+              <entry>Die Leitung ist besetzt.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/channel-status-help.xml"
+                xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-control-stream-file">
+    <title><code>CONTROL STREAM FILE</code></title>
+
+    <synopsis>CONTROL STREAM FILE <replaceable>Datei</replaceable> <replaceable>EscapeZiffern</replaceable> [<replaceable>skipms</replaceable>] [<replaceable>ffchar</replaceable>] [<replaceable>rewchr</replaceable>] [<replaceable>pausechr</replaceable>]</synopsis>
+
+    <para>Spielt die angegebene Audio-Datei (Angabe ohne den Dateinamen) ab.
+    Die Wiedergabe kann mit den angegebenen Zifferntasten gesteuert
+    werden.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler, oder der Kanal wurde getrennt</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Wiedergabe ohne Tastendruck abgeschlossen</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>x</replaceable></entry>
+
+              <entry>numerischer ASCII-Wert der Zifferntaste:
+              <literal><keysym>0</keysym></literal>: 48,
+              <literal><keysym>1</keysym></literal>: 49, ...,
+              <literal><keysym>9</keysym></literal>: 57,
+              <literal><keysym>*</keysym></literal>: 42,
+              <literal><keysym>#</keysym></literal>: 35</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/control-stream-file-help.xml"
+                xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-database-del">
+    <title><code>DATABASE DEL</code></title>
+
+    <synopsis>DATABASE DEL <replaceable>Familie</replaceable> <replaceable>Schlüssel</replaceable></synopsis>
+
+    <para>Löscht den durch <parameter>Familie</parameter> und
+    <parameter>Schlüssel</parameter> definierten Eintrag in der
+    Asterisk-Datenbank.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>1</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/database-del-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-database-deltree">
+    <title><code>DATABASE DELTREE</code></title>
+
+    <synopsis>DATABASE DELTREE <replaceable>Familie</replaceable></synopsis>
+
+    <para>Löscht eine gesamte <parameter>Familie</parameter> aus der
+    Asterisk-Datenbank.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>1</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/database-deltree-help.xml"
+                xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-database-get">
+    <title><code>DATABASE GET</code></title>
+
+    <synopsis>DATABASE GET <replaceable>Familie</replaceable> <replaceable>Schlüssel</replaceable></synopsis>
+
+    <para>Gibt den entsprechenden Eintrag für
+    <parameter>Familie</parameter>/<parameter>Schlüssel</parameter> aus der
+    Asterisk-Datenbank aus.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>1 (<replaceable>Wert</replaceable>)</entry>
+
+              <entry>Erfolgreich mit dem gefundenen Wert</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/database-get-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-database-put">
+    <title><code>DATABASE PUT</code></title>
+
+    <synopsis>DATABASE PUT <replaceable>Familie</replaceable> <replaceable>Schlüssel</replaceable> <replaceable>Wert</replaceable></synopsis>
+
+    <para>Speichert den Wert <parameter>Wert</parameter> in der
+    Asterisk-Datenbank unter
+    <parameter>Familie</parameter>/<parameter>Schlüssel</parameter> ab. Das
+    kann ein Hinzufügen oder ein Update sein.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>1</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/database-put-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-exec">
+    <title><code>EXEC</code></title>
+
+    <synopsis>EXEC <replaceable>Applikation</replaceable> <replaceable>Argumente</replaceable></synopsis>
+
+    <para>Führt eine Dialplan-Applikation aus (siehe <xref
+    linkend="applications" />). Die <parameter>Argumente</parameter> werden
+    dabei der Applikation übergeben. Mehrere Argumente werden durch ein
+    Pipe-Zeichen (<code>|</code>) getrennt.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-2</entry>
+
+              <entry>Fehler. Konnte die Applikation nicht
+              finden/aufrufen.</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>Erfolgreich. Ergebniswert der Applikation.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <para>Beispiel:<programlisting>EXEC Dial Zap/g1/123456</programlisting></para>
+
+    <xi:include href="agi/exec-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-get-data">
+    <title><code>GET DATA</code></title>
+
+    <synopsis>GET DATA <replaceable>Dateiname</replaceable> [<replaceable>Timeout</replaceable>] [<replaceable>maxZiffern</replaceable>]</synopsis>
+
+    <para>Vergleichbar mit der <code>Background()</code>-Applikation in der
+    <filename>extensions.conf</filename>. Spielt die Audiodatei mit dem Namen
+    <parameter>Dateiname</parameter> ab und wartet auf DTMF-Eingaben. Diese
+    werden durch <parameter>maxZiffern</parameter> limitiert. Die maximale
+    Zeit wird durch <parameter>Timeout</parameter> begrenzt.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>DTMF-Eingaben</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/get-data-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-get-full-variable">
+    <title><code>GET FULL VARIABLE</code></title>
+
+    <synopsis>GET FULL VARIABLE <replaceable>Variablenname</replaceable> [<replaceable>Kanalname</replaceable>]</synopsis>
+
+    <para>Gibt den Wert der Variable <parameter>Variablenname</parameter> aus
+    dem Kanal <parameter>Kanalname</parameter> (oder dem aktuellen)
+    aus.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Fehler. Variable existiert nicht.</entry>
+            </row>
+
+            <row>
+              <entry>1 (<replaceable>Wert</replaceable>)</entry>
+
+              <entry>Erfolgreich. Wert der Variablen.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/get-full-variable-help.xml"
+                xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-get-option">
+    <title><code>GET OPTION</code></title>
+
+    <synopsis>GET OPTION <replaceable>Dateiname</replaceable> <replaceable>Escape_Ziffern</replaceable> [<replaceable>Timeout</replaceable>]</synopsis>
+
+    <para>Verhält sich wie <code>STREAM FILE</code>. Bietet aber zusätzlich
+    die Möglichkeit, einen <parameter>Timeout</parameter> in Sekunden
+    anzugeben.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>DTMF-Eingaben</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/get-option-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-get-variable">
+    <title><code>GET VARIABLE</code></title>
+
+    <synopsis>GET VARIABLE <replaceable>Variablenname</replaceable></synopsis>
+
+    <para>Ähnlich wie <code>GET FULL VARIABLE</code>. Allerdings versteht
+    <code>GET VARIABLE</code> keine komplexen oder systemeigenen
+    Variablen.<warning>
+        <simpara>Im Zweifelsfall sollte man <code>GET FULL VARIABLE</code>
+        benutzen.</simpara>
+      </warning></para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Fehler. Kein Channel, oder die Variable existiert
+              nicht.</entry>
+            </row>
+
+            <row>
+              <entry>1 (<replaceable>Wert</replaceable>)</entry>
+
+              <entry>Erfolgreich. Wert der Variablen (in Klammern)</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/get-variable-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-gosub">
+    <title><code>GOSUB</code></title>
+
+    <synopsis>GOSUB <replaceable>Context</replaceable> <replaceable>Extension</replaceable> <replaceable>Priority</replaceable> [<replaceable>Argument</replaceable>]</synopsis>
+
+    <para>Führt die angegebene Dialplan-Subroutine aus.</para>
+
+    <xi:include href="agi/gosub-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-hangup">
+    <title><code>HANGUP</code></title>
+
+    <synopsis>HANGUP [<replaceable>Kanalname</replaceable>]</synopsis>
+
+    <para>Legt den virtuellen Hörer auf dem angegebenen Kanal auf. Wurde kein
+    <parameter>Kanalname</parameter> angegeben, wird der aktuelle Kanal
+    aufgelegt.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler. Der angegebene Kanal existiert nicht.</entry>
+            </row>
+
+            <row>
+              <entry>1</entry>
+
+              <entry>Erfolgreich. Hangup wurde ausgeführt.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/hangup-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-noop">
+    <title><code>NOOP</code></title>
+
+    <synopsis>NOOP [<replaceable>Text</replaceable>]</synopsis>
+
+    <para>Es wird nichts gemacht (<code>NOOP</code> steht für No-Operation).
+    <parameter>Text</parameter> wird auf dem CLI ausgegeben.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Gibt immer 0 zurück.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/noop-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-receive-char">
+    <title><code>RECEIVE CHAR</code></title>
+
+    <synopsis>RECEIVE CHAR <replaceable>Timeout</replaceable></synopsis>
+
+    <para>Wenn ein Channel die Übermittlung von Text unterstützt, dann kann
+    mit <code>RECEIVE CHAR</code> ein einzelnes Zeichen empfangen werden.
+    <parameter>Timeout</parameter> gibt die Wartezeit für den Empfang in
+    Millisekunden an (0 für unendlich).</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="100pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler oder Hangup</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable> (timeout)</entry>
+
+              <entry>Das empfangene Zeichen bei Timeout</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>Das empfangene Zeichen</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/receive-char-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-receive-text">
+    <title><code>RECEIVE TEXT</code></title>
+
+    <synopsis>RECEIVE TEXT <replaceable>Timeout</replaceable></synopsis>
+
+    <para>Wenn ein Channel die Übermittlung von Text unterstützt, dann kann
+    mit <code>RECEIVE CHAR</code> ein solcher Text empfangen werden.
+    <parameter>Timeout</parameter> gibt die Wartezeit für den Empfang in
+    Millisekunden an (0 für unendlich).</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="100pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler oder Hangup</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable> (timeout)</entry>
+
+              <entry>Der empfangene Text bei Timeout</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>Der empfangene Text</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/receive-text-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-record-file">
+    <title><code>RECORD FILE</code></title>
+
+    <synopsis>RECORD FILE <replaceable>Dateiname</replaceable> <replaceable>Format</replaceable> <replaceable>Escape_Ziffern</replaceable> <replaceable>Timeout</replaceable> [<replaceable>Offset</replaceable>] [BEEP] [s=<replaceable>Stille</replaceable>]</synopsis>
+
+    <para>Funktioniert wie ein Rekorder, der alle Audiosignale in der Datei
+    <parameter>Dateiname</parameter> im angegebenen
+    <parameter>Format</parameter> aufzeichnet. Beendet werden kann dies durch
+    einen definierten DTMF-Ton <parameter>Escape_Ziffern</parameter> oder
+    durch einen <parameter>Timeout</parameter> in Millisekunden. (Dabei steht
+    -1 für keinen Timeout.)</para>
+
+    <para><parameter>BEEP</parameter> spielt vor der Aufnahme einen Signalton.
+    <parameter>Stille</parameter> definiert die Anzahl der Stille-Sekunden,
+    bis die Applikation auch ohne Eingabe von DTMF-Tönen einen Timeout
+    ausgibt.</para>
+
+    <para>Mit <parameter>Offset</parameter> wird vor Beginn der Aufnahme so
+    viele Sekunden wie angegeben gewartet.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/record-file-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-say-alpha">
+    <title><code>SAY ALPHA</code></title>
+
+    <synopsis>SAY ALPHA <replaceable>String</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
+
+    <para>Buchstabiert den übergebenen <parameter>String</parameter>. Die
+    Ausgabe kann durch die Eingabe einer Ziffer abgebrochen werden, die in
+    <parameter>Escape_Ziffern</parameter> bestimmt wird.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>ASCII-Wert der Eingabe, die zum Abbruch geführt
+              hat</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/say-alpha-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-say-date">
+    <title><code>SAY DATE</code></title>
+
+    <synopsis>SAY DATE <replaceable>Timestamp</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
+
+    <para>Sagt das übergebene Datum an. <parameter>Timestamp</parameter> ist
+    dabei die Anzahl der Sekunden seit 00:00:00 Uhr am 1. Januar 1970. Die
+    Ausgabe kann durch die Eingabe einer Ziffer abgebrochen werden, die in
+    <code>Escape_Ziffern</code> bestimmt wird.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>ASCII-Wert der Eingabe, die zum Abbruch geführt
+              hat</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/say-date-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-say-datetime">
+    <title><code>SAY DATETIME</code></title>
+
+    <synopsis>SAY DATETIME <replaceable>Timestamp</replaceable> [<replaceable>Escape_Ziffern</replaceable>] [<replaceable>Format</replaceable>] [<replaceable>Zeitzone</replaceable>]</synopsis>
+
+    <para>Sagt das übergebene Datum. <parameter>Timestamp</parameter> ist
+    dabei die Anzahl der Sekunden seit 00:00:00 Uhr am 1. Januar 1970. Das
+    <parameter>Format</parameter> bestimmt die Art der Ausgabe. Folgende Werte
+    sind dabei möglich:<informaltable colsep="none" frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="95pt" />
+
+          <tbody>
+            <row>
+              <entry><code>'<replaceable>dateiname</replaceable>'</code></entry>
+
+              <entry>Eine Sounddatei</entry>
+            </row>
+
+            <row>
+              <entry><code>${<replaceable>VAR</replaceable>}</code></entry>
+
+              <entry>Eine Variable</entry>
+            </row>
+
+            <row>
+              <entry><code>A</code> oder <code>a</code></entry>
+
+              <entry>Tag der Woche (z. B. Montag oder Dienstag)</entry>
+            </row>
+
+            <row>
+              <entry><code>B</code>, <code>b</code> oder
+              <code>h</code></entry>
+
+              <entry>Name des Monats (z. B. Januar)</entry>
+            </row>
+
+            <row>
+              <entry><code>d</code> oder <code>e</code></entry>
+
+              <entry>Ordnungseinheit des Tages im Monat (z. B. erster,
+              zweiter, dritter)</entry>
+            </row>
+
+            <row>
+              <entry><code>Y</code></entry>
+
+              <entry>Jahr</entry>
+            </row>
+
+            <row>
+              <entry><code>I</code> oder <code>i</code></entry>
+
+              <entry>Stunde (im 12-Stunden-System)</entry>
+            </row>
+
+            <row>
+              <entry><code>H</code></entry>
+
+              <entry>Stunde (im 24-Stunden-System). Dabei wird 07 als
+              <quote>Null - Sieben</quote> ausgesprochen!</entry>
+            </row>
+
+            <row>
+              <entry><code>k</code></entry>
+
+              <entry>Stunde (im 24-Stunden-System). Dabei wird 07 nur als
+              <quote>Sieben</quote> ausgesprochen.</entry>
+            </row>
+
+            <row>
+              <entry><code>M</code></entry>
+
+              <entry>Minuten</entry>
+            </row>
+
+            <row>
+              <entry><code>P</code> oder <code>p</code></entry>
+
+              <entry>AM oder PM</entry>
+            </row>
+
+            <row>
+              <entry><code>Q</code></entry>
+
+              <entry><quote>Heute</quote>, <quote>Gestern</quote> oder der
+              Inhalt der Werte <code>ABdY</code></entry>
+            </row>
+
+            <row>
+              <entry><code>q</code></entry>
+
+              <entry><quote> </quote> (für heute), <quote>Gestern</quote>, der
+              Wochentag oder <code>ABdY</code></entry>
+            </row>
+
+            <row>
+              <entry><code>R</code></entry>
+
+              <entry>Zeit inklusive Minuten im 24-Stunden-System</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <para>Die <parameter>Zeitzone</parameter> wird wie in der
+    Konfigurationsdatei <filename>/etc/asterisk/voicemail.conf</filename>
+    angegeben.</para>
+
+    <para>Die Ausgabe kann durch Eingabe einer Ziffer, die in
+    <parameter>Escape_Ziffern</parameter> bestimmt wird, abgebrochen werden.
+    Wenn <parameter>Escape_Ziffern</parameter> oder
+    <parameter>Format</parameter> ausgelassen werden soll, muss stattdessen
+    <code>""</code> angegeben werden.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>ASCII-Wert der Eingabe, die zum Abbruch geführt
+              hat</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/say-datetime-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-say-digits">
+    <title><code>SAY DIGITS</code></title>
+
+    <synopsis>SAY DIGITS <replaceable>Zahl</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
+
+    <para>Sagt die angegebene <parameter>Zahl</parameter> Ziffer für Ziffer an
+    (z. B. wird 123 als <quote>eins, zwei, drei</quote> gesprochen). Die
+    Ausgabe kann durch die Eingabe einer Ziffer abgebrochen werden, die in
+    <code>Escape_Ziffern</code> bestimmt wird.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>ASCII-Wert der Eingabe, die zum Abbruch geführt
+              hat.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/say-digits-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-say-number">
+    <title><code>SAY NUMBER</code></title>
+
+    <synopsis>SAY NUMBER <replaceable>Zahl</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
+
+    <para>Sagt die angegebene <parameter>Zahl</parameter> an (z. B. wird 123
+    als <quote>ein-hundert-drei-und-zwanzig</quote> gesprochen). Die Ausgabe
+    kann durch Eingabe einer Ziffer abgebrochen werden, die in
+    <code>Escape_Ziffern</code> bestimmt wird.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>ASCII-Wert der Eingabe, die zum Abbruch geführt
+              hat</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/say-number-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-say-phonetic">
+    <title><code>SAY PHONETIC</code></title>
+
+    <synopsis>SAY PHONETIC <replaceable>String</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
+
+    <para>Sagt den angegebenen <parameter>String</parameter> im phonetischen
+    NATO-Alphabet an (z. B. wird <code>a</code> als <quote>alpha</quote>
+    gesprochen). Die Ausgabe kann durch die Eingabe einer Ziffer abgebrochen
+    werden, die in <code>Escape_Ziffern</code> bestimmt wird.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>ASCII-Wert der Eingabe, die zum Abbruch geführt
+              hat</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/say-phonetic-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-say-time">
+    <title><code>SAY TIME</code></title>
+
+    <synopsis>SAY TIME <replaceable>Timestamp</replaceable> [<replaceable>Escape_Ziffern</replaceable>]</synopsis>
+
+    <para>Sagt die übergebene Zeit. <parameter>Timestamp</parameter> ist dabei
+    die Anzahl der Sekunden seit 00:00:00 Uhr am 1. Januar 1970. Die Ausgabe
+    kann durch die Eingabe einer Ziffer abgebrochen werden, die in
+    <code>Escape_Ziffern</code> bestimmt wird.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>ASCII-Wert der Eingabe, die zum Abbruch geführt
+              hat</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/say-time-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-send-image">
+    <title><code>SEND IMAGE</code></title>
+
+    <synopsis>SEND IMAGE <replaceable>Dateiname</replaceable></synopsis>
+
+    <para>Sendet das in <parameter>Dateiname</parameter> angegebene Bild auf
+    den aktuellen Kanal. Der Dateiname darf keine Endung (z. B.
+    <code>.gif</code> oder <code>.jpg</code>) enthalten. Diese Funktion wird
+    von den meisten Channels nicht unterstützt.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/send-image-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-send-text">
+    <title><code>SEND TEXT</code></title>
+
+    <synopsis>SEND TEXT "<replaceable>zu sendender Text</replaceable>"</synopsis>
+
+    <para>Sendet den angegebenen Text auf den aktuellen Kanal. Diese Funktion
+    wird von den meisten Channels nicht unterstützt.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/send-text-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-set-autohangup">
+    <title><code>SET AUTOHANGUP</code></title>
+
+    <synopsis>SET AUTOHANGUP <replaceable>Timeout</replaceable></synopsis>
+
+    <para>Stellt ein automatisches Auflegen nach der angegebenen Anzahl von
+    Sekunden ein. Mit dem Wert <code>0</code> kann diese Funktion wieder
+    deaktiviert werden.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich (Wert wurde gesetzt)</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/set-autohangup-help.xml"
+                xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-set-callerid">
+    <title><code>SET CALLERID</code></title>
+
+    <synopsis>SET CALLERID <replaceable>Nummer</replaceable></synopsis>
+
+    <para>Setzt die Caller-ID des aktuellen Kanals.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>1</entry>
+
+              <entry>Erfolgreich (Die Caller-ID wurde gesetzt.)</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/set-callerid-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-set-context">
+    <title><code>SET CONTEXT</code></title>
+
+    <synopsis>SET CONTEXT <replaceable>Contextname</replaceable></synopsis>
+
+    <para>Setzt den Context, der nach dem Ausführen der AGI-Applikation
+    angesprungen wird.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Gibt immer 0 zurück.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <important>
+      <para>Es wird nicht überprüft, ob der Context existiert. Wenn Sie einen
+      ungültigen Context angeben, wird der Anruf nach Beendigung des Skripts
+      aufgelegt.</para>
+    </important>
+
+    <xi:include href="agi/set-context-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-set-extension">
+    <title><code>SET EXTENSION</code></title>
+
+    <synopsis>SET EXTENSION <replaceable>Extension</replaceable></synopsis>
+
+    <para>Setzt die Extension, die nach dem Ausführen der AGI-Applikation
+    angesprungen wird.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Gibt immer 0 zurück.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <important>
+      <para>Es wird nicht überprüft, ob die Extension existiert. Wenn Sie eine
+      ungültige Extension angeben, wird Asterisk nach Beendigung des Skripts
+      bei der <code>i</code>-Extension weitermachen, falls vorhanden.
+      Ansonsten wird der Anruf aufgelegt.</para>
+    </important>
+
+    <xi:include href="agi/set-extension-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-set-music">
+    <title><code>SET MUSIC</code></title>
+
+    <synopsis>SET MUSIC [on [<replaceable>Klasse</replaceable>]|off]</synopsis>
+
+    <para>Aktiviert (<code>on</code>) oder deaktiviert (<code>off</code>) die
+    Warteschleifenmusik. Wenn <parameter>Klasse</parameter> nicht angegeben
+    wurde, wird die Musikklasse <code>default</code> benutzt (siehe
+    Konfigurationsdatei
+    <filename>/etc/asterisk/musiconhold.conf</filename>).</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Gibt immer 0 zurück.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/set-music-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-set-priority">
+    <title><code>SET PRIORITY</code></title>
+
+    <synopsis>SET PRIORITY <replaceable>Priorität</replaceable></synopsis>
+
+    <para>Setzt die Priorität, die nach dem Ausführen der AGI-Applikation
+    angesprungen wird. (Als Priorität kann auch ein Label angegeben
+    werden.)</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Gibt immer 0 zurück.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <important>
+      <para>Es wird nicht überprüft, ob die Priorität existiert. Wenn Sie eine
+      ungültige Priorität angeben, wird der Anruf nach Beendigung des Skriptes
+      aufgelegt.</para>
+    </important>
+
+    <xi:include href="agi/set-priority-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-set-variable">
+    <title><code>SET VARIABLE</code></title>
+
+    <synopsis>SET VARIABLE <replaceable>Variablenname</replaceable> <replaceable>Wert</replaceable></synopsis>
+
+    <para>Setzt die Kanal-Variable <parameter>Variablenname</parameter> auf
+    den Wert <parameter>Wert</parameter>.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>1</entry>
+
+              <entry>Erfolgreich (Variable wurde gesetzt)</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/set-variable-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <!--
+  <section id="agi-command-speech-activate-grammar">
+    <title><code>SPEECH ACTIVATE GRAMMAR</code></title>
+    <xi:include href="agi/speech-activate-grammar-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-speech-create">
+    <title><code>SPEECH CREATE</code></title>
+    <xi:include href="agi/speech-create-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-speech-deactivate-grammar">
+    <title><code>SPEECH DEACTIVATE GRAMMAR</code></title>
+    <xi:include href="agi/speech-deactivate-grammar-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-speech-destroy">
+    <title><code>SPEECH DESTROY</code></title>
+    <xi:include href="agi/speech-destroy-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-speech-load-grammar">
+    <title><code>SPEECH LOAD GRAMMAR</code></title>
+    <xi:include href="agi/speech-load-grammar-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-speech-recognize">
+    <title><code>SPEECH RECOGNIZE</code></title>
+    <xi:include href="agi/speech-recognize-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-speech-set">
+    <title><code>SPEECH SET</code></title>
+    <xi:include href="agi/speech-set-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-speech-unload-grammar">
+    <title><code>SPEECH UNLOAD GRAMMAR</code></title>
+    <xi:include href="agi/speech-unload-grammar-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+  -->
+
+  <section id="agi-command-stream-file">
+    <title><code>STREAM FILE</code></title>
+
+    <synopsis>STREAM FILE <replaceable>Dateiname</replaceable> <replaceable>Escape_Ziffern</replaceable> [<replaceable>Offset</replaceable>]</synopsis>
+
+    <para>Spielt die angegebene Datei <parameter>Dateiname</parameter> ab
+    (dabei darf keine Dateiendung wie <code>.wav</code> oder <code>.gsm</code>
+    angegeben werden). Das Abspielen kann dabei durch die Eingabe einer Ziffer
+    abgebrochen werden, die in <code>Escape_Ziffern</code> definiert wurde.
+    Ist dies nicht erwünscht (soll also kein Abbruch möglich sein), so muss an
+    dieser Stelle <code>""</code> angegeben werden. Mit
+    <parameter>Offset</parameter> kann ein Offset zum Start der Datei bestimmt
+    werden.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Erfolgreich (die Datei wurde komplett abgespielt)</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>ASCII-Wert der Eingabe, die zum Abbruch geführt
+              hat</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <important>
+      <para><code>STREAM FILE</code> funktioniert manchmal nicht korrekt mit
+      anderen Sprachen als Englisch. Stattdessen kann man <code>EXEC Playback
+      <replaceable>Dateiname</replaceable></code> verwenden.</para>
+    </important>
+
+    <xi:include href="agi/stream-file-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-tdd-mode">
+    <title><code>TDD MODE</code></title>
+
+    <synopsis>TDD MODE [on|off]</synopsis>
+
+    <para>Aktiviert (<code>on</code>) oder deaktiviert (<code>off</code>) die
+    Übertragung und den Empfang des TDD-Protokolls (Baudot) für TDD-Geräte
+    (Telecommunications Device für the Deaf, Telekommunikationsgerät für
+    Taubstumme, auch Schreibtelefon genannt) auf dem aktiven Kanal. Bisher
+    wird TDD nur von Zap-Kanälen unterstützt.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Der Channel ist nicht TDD-fähig.</entry>
+            </row>
+
+            <row>
+              <entry>1</entry>
+
+              <entry>Erfolgreich</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/tdd-mode-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-verbose">
+    <title><code>VERBOSE</code></title>
+
+    <synopsis>VERBOSE <replaceable>Meldung</replaceable> <replaceable>Level</replaceable></synopsis>
+
+    <para>Schreibt die <parameter>Meldung</parameter> auf das Command Line
+    Interface (CLI). <parameter>Level</parameter> gibt dabei den Mindestwert
+    des Verbosity-Levels an, damit die Ausgabe angezeigt wird.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>0</entry>
+
+              <entry>Gibt immer 0 zurück.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/verbose-help.xml" xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+
+  <section id="agi-command-wait-for-digit">
+    <title><code>WAIT FOR DIGIT</code></title>
+
+    <synopsis>WAIT FOR DIGIT <replaceable>Timeout</replaceable></synopsis>
+
+    <para>Wartet auf die Eingabe eines DTMF-Tons.
+    <parameter>Timeout</parameter> gibt den Timeout der Applikation in
+    Millisekunden an.</para>
+
+    <para>Ergebniswerte nach Ausführung:<informaltable colsep="none"
+        frame="none" rowsep="none">
+        <tgroup cols="2">
+          <colspec colnum="1" colwidth="70pt" />
+
+          <tbody>
+            <row>
+              <entry>-1</entry>
+
+              <entry>Fehler</entry>
+            </row>
+
+            <row>
+              <entry>0</entry>
+
+              <entry>Timeout</entry>
+            </row>
+
+            <row>
+              <entry><replaceable>Wert</replaceable></entry>
+
+              <entry>ASCII-Wert der Eingabe, die zum Abbruch geführt
+              hat</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable></para>
+
+    <xi:include href="agi/wait-for-digit-help.xml"
+                xpointer="xpointer(/note/*)"
+                xmlns:xi="http://www.w3.org/2001/XInclude" />
+  </section>
+</appendix>
