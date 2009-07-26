@@ -33,17 +33,11 @@
   <title>Busy Lamp Field, Hints, Pickup<indexterm>
       <primary>BLF</primary>
     </indexterm><indexterm>
-      <primary>Besetztlampenfeld</primary>
-    </indexterm><indexterm>
       <primary>Pickup</primary>
     </indexterm><indexterm>
       <primary>Hints</primary>
     </indexterm><indexterm>
-      <primary>LEDs</primary>
-    </indexterm><indexterm>
-      <primary>Heranholen</primary>
-    </indexterm><indexterm>
-      <primary>Rufübernahme</primary>
+      <primary>Indicators</primary>
     </indexterm></title>
 
   <para>The Busy Lamp Field, or BLF, is a common feature of many modern
@@ -112,7 +106,7 @@ limitonpeers = yes</programlisting>
       <para>Individual SIP accounts need the entries
       <code>subscribecontext</code> and <code>call-limit</code>. The first,
       <code>subscribecontext</code>, tells Asterisk which context to check if
-      this user wants to suscribe to the hint of another user; most often,
+      this user wants to subscribe to the hint of another user; most often,
       this is the same as the context for all the other internal users. The
       second, <code>call-limit</code>, limits the number of simultaneous calls
       that this user is allowed (when this is greater than zero). This is
@@ -132,7 +126,7 @@ limitonpeers = yes</programlisting>
       rights; as there are only 64 possible groups, however (0 to 63), this is
       only works in small to medium environments. For larger installations,
       all the users are set to the same group and rights are handled through
-      another mechanism (we'll explain how later).</para>
+      another mechanism (we'll hint at how later).</para>
 
       <programlisting>[21]
 type = friend
@@ -279,7 +273,7 @@ exten =&gt; 20,1,Dial(SIP/21&amp;SIP/22,40)</programlisting>To accomplish the
     Asterisk are described in table 18.1.</para>
 
     <table align="center" colsep="1" rowsep="1">
-      <title>Table 11.1: Subscription methods supported by Asterisk</title>
+      <title>Table 18.1: Subscription methods supported by Asterisk</title>
 
       <tgroup cols="3">
         <colspec align="left" colnum="1" colwidth="2*" />
@@ -382,11 +376,11 @@ exten =&gt; 20,1,Dial(SIP/21&amp;SIP/22,40)</programlisting>To accomplish the
         same network. When you do this, you'll be prompted for a username and
         password. By default, the username is admin, and the password is
         22222. Once you are logged in, click Softkeys and XML in the Operation
-        section of the configuration menu on the left. Figure 20.1 shows the
+        section of the configuration menu on the left. Figure 18.1 shows the
         softkeys configuration page.</para>
 
         <para><screenshot>
-            <screeninfo>Figure 20.1 Aastra 480i Busy Lamp Field web
+            <screeninfo>Figure 18.1 Aastra 480i Busy Lamp Field web
             configuration</screeninfo>
 
             <mediaobject>
@@ -401,7 +395,7 @@ exten =&gt; 20,1,Dial(SIP/21&amp;SIP/22,40)</programlisting>To accomplish the
 
         <para>The label field sets the display name for the BLF, and the value
         is the number of the extension you want to monitor. The checkboxes on
-        the right (Idle, Connected, Incoming and Outgoing) set what in which
+        the right (Idle, Connected, Incoming and Outgoing) determine in which
         states the key will displayed (this is because the keys can be set to
         perform a variety of functions and you may not need them in every
         state). The defaults usually suffice.</para>
@@ -478,7 +472,7 @@ softkey1 line: 2</programlisting></para>
           </listitem>
 
           <listitem>
-            <para>line</para>
+            <para><code>line</code></para>
 
             <para>You can specify a line number for the softkey; softkeys
             configured in this way will automatically dial the monitored
@@ -766,10 +760,10 @@ exten =&gt; _*8X.,n,Pickup(${nst}@internal-users)</emphasis></programlisting>
       Settings</quote> on the left and click <quote>Preferences</quote>.
       Scroll to the bottom of the screen and find the <quote>Directed Call
       Pickup Settings</quote> section. Check the box next to <quote>Directed
-      Call Pickup</quote> to enable it:</para>
+      Call Pickup</quote> to enable it, as shown in Figure 18.2.</para>
 
       <para><screenshot>
-          <screeninfo>Figure 20.2: Activating directed call pickup on the
+          <screeninfo>Figure 18.2: Activating directed call pickup on the
           Aastra 480i</screeninfo>
 
           <mediaobject>
@@ -888,6 +882,11 @@ directed call pickup prefix: *8</programlisting>
     <emphasis role="bold">Pickup(${pmark}@PICKUPMARK);</emphasis>
   }
 }</programlisting>
+
+      <para>We mentioned earlier that that pickup rights could be handled
+      through another mechanism; the comment lines above show where you would
+      perform an authentication test, which could be done either in the
+      dialplan or through an external AGI script.</para>
 
       <para>On the monitoring extension, you set the monitored extension to
       <code>**200</code>.</para>
@@ -1010,7 +1009,7 @@ exten =&gt; 881,1,MeetMe(885)</programlisting>In
         <listitem>
           <para><literal>INVALID</literal></para>
 
-          <para>The status is invalid (you might use this is the device status
+          <para>The status is invalid (you might use this if the device status
           cannot be determined because it doesn't exist; for example, for a
           dynamic conference room).</para>
         </listitem>
@@ -1048,8 +1047,8 @@ exten =&gt; 881,1,MeetMe(885)</programlisting>In
 
     <para>You can now set the device status by dialing the configured
     extensions accordingly (again, how each model of phone indicates those
-    states will vary). <code>Most of the extensions are self-explanatory;
-    *94</code> toggles between <literal>INUSE</literal> and
+    states will vary). Most of the extensions are self-explanatory;
+    <code>*94</code> toggles between <literal>INUSE</literal> and
     <literal>NOT_INUSE</literal>. Once you've figured out the basic operation,
     there are no limits on what you can do with indicators of this type. For
     example, you could use it to indicate whether you are logged into a queue,
