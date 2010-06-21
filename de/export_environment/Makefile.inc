@@ -1,0 +1,9 @@
+ENVDIR := $(dir $(lastword $(MAKEFILE_LIST)))
+DOCBOOKSRCDIR := $(ENVDIR)/../docbook
+PDFDIR := $(ENVDIR)/pdf/build
+HTMLDIR := $(ENVDIR)/html/build
+EPUBDIR := $(ENVDIR)/epub/build
+HTMLSPDIR := $(ENVDIR)/html-single-page/build
+DEPENDDIR := $(ENVDIR)/dependencies
+DOCBOOKNSDIR := $(ENVDIR)/dependencies/docbook-xsl-ns-1.75.2/
+EXPORTDIR := $(ENVDIR)/export
