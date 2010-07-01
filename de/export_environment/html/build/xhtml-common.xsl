@@ -34,15 +34,15 @@
 <xsl:param name="html.longdesc" select="0"/>
 <xsl:param name="html.longdesc.embed" select="1"/>
 
-<xsl:param name="html.stylesheet" select="'./default.css'"/>
+<!--<xsl:param name="html.stylesheet" select="'../default.css'"/>-->
 <xsl:param name="html.stylesheet.type" select="'text/css'"/>
-<xsl:param name="html.stylesheet.print" select="'Common_Content/css/print.css'"/>
+<xsl:param name="html.stylesheet.print" select="'../print.css'"/>
 <xsl:param name="html.cleanup" select="0"/>
 <xsl:param name="html.ext" select="'.html'"/>
 <xsl:output method="xml" indent="yes"/>
 <xsl:param name="highlight.source" select="1"/>
-<xsl:param name="use.extensions" select="1"/>
-<xsl:param name="tablecolumns.extension">1</xsl:param>
+<!--<xsl:param name="use.extensions" select="1"/>-->
+<!--<xsl:param name="tablecolumns.extension">0</xsl:param>-->
 
 <xsl:param name="qanda.in.toc" select="0"/>
 <xsl:param name="segmentedlist.as.table" select="1"/>
@@ -910,10 +910,10 @@ Version: 1.72.0
   </xsl:if>
 </xsl:template>
 
+<!--
 <xsl:template match="title" mode="titlepage.mode">
   <xsl:variable name="id">
     <xsl:choose>
-      <!-- if title is in an *info wrapper, get the grandparent -->
       <xsl:when test="contains(local-name(..), 'info')">
         <xsl:call-template name="object.id">
           <xsl:with-param name="object" select="../.."/>
@@ -927,7 +927,6 @@ Version: 1.72.0
     </xsl:choose>
   </xsl:variable>
   <h1>
-    <!-- some blocks with titles don't have their id's set-->
     <xsl:if test="substring($id,1,2) = 'id'">
 	<xsl:attribute name="id"><xsl:value-of select="$id"/></xsl:attribute>
     </xsl:if>
@@ -944,6 +943,7 @@ Version: 1.72.0
     </xsl:choose>
   </h1>
 </xsl:template>
+-->
 
 <xsl:template match="chapter/title" mode="titlepage.mode" priority="2">
   <xsl:call-template name="component.title">

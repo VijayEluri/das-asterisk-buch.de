@@ -1,27 +1,46 @@
 CURDIR = $(shell pwd)
 include $(CURDIR)/Makefile.inc
-VALIDATE = 1
 
 all: validatedocbook
-	$(MAKE) pdf VALIDATE=0
-	$(MAKE) html VALIDATE=0
-	$(MAKE) htmlsp VALIDATE=0
-	$(MAKE) epub VALIDATE=0
+	$(MAKE) pdf 
+	$(MAKE) html 
+	$(MAKE) htmlsp 
+	$(MAKE) epub 
 
 pdf: $(PDFDIR)/Makefile
-	test "0" = "${VALIDATE}" || java -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration  -jar ${DEPENDDIR}/jing/jing.jar ${DEPENDDIR}/docbookxi.rng ${DOCBOOKSRCDIR}/index.xml 
+ifdef VERSION5
+	test "0" = "${VALIDATE}" || java -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration  -jar ${DEPENDDIR}/jing/jing.jar ${DEPENDDIR}/docbookxi.rng ${DOCBOOKSRCDIR}/${MAINFILE}
+endif
+ifdef VERSION4
+	test "0" = "${VALIDATE}" || xmllint --nonet --noent --xinclude --postvalid --noout ${DOCBOOKSRCDIR}/${MAINFILE}
+endif
 	cd ${PDFDIR} && $(MAKE)
 
 html: $(HTMLDIR)/Makefile
-	test "0" = "${VALIDATE}" || java -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration  -jar ${DEPENDDIR}/jing/jing.jar ${DEPENDDIR}/docbookxi.rng ${DOCBOOKSRCDIR}/index.xml 
+ifdef VERSION5
+	test "0" = "${VALIDATE}" || java -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration  -jar ${DEPENDDIR}/jing/jing.jar ${DEPENDDIR}/docbookxi.rng ${DOCBOOKSRCDIR}/${MAINFILE}
+endif
+ifdef VERSION4
+	test "0" = "${VALIDATE}" || xmllint --nonet --noent --xinclude --postvalid --noout ${DOCBOOKSRCDIR}/${MAINFILE}
+endif
 	cd ${HTMLDIR} && $(MAKE) 
 
 htmlsp: $(HTMLSPDIR)/Makefile
-	test "0" = "${VALIDATE}" || java -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration  -jar ${DEPENDDIR}/jing/jing.jar ${DEPENDDIR}/docbookxi.rng ${DOCBOOKSRCDIR}/index.xml 
+ifdef VERSION5
+	test "0" = "${VALIDATE}" || java -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration  -jar ${DEPENDDIR}/jing/jing.jar ${DEPENDDIR}/docbookxi.rng ${DOCBOOKSRCDIR}/${MAINFILE}
+endif
+ifdef VERSION4
+	test "0" = "${VALIDATE}" || xmllint --nonet --noent --xinclude --postvalid --noout ${DOCBOOKSRCDIR}/${MAINFILE}
+endif
 	cd ${HTMLSPDIR} && $(MAKE) 
 
 epub: $(EPUBDIR)/Makefile
-	test "0" = "${VALIDATE}" || java -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration  -jar ${DEPENDDIR}/jing/jing.jar ${DEPENDDIR}/docbookxi.rng ${DOCBOOKSRCDIR}/index.xml 
+ifdef VERSION5
+	test "0" = "${VALIDATE}" || java -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration  -jar ${DEPENDDIR}/jing/jing.jar ${DEPENDDIR}/docbookxi.rng ${DOCBOOKSRCDIR}/${MAINFILE}
+endif
+ifdef VERSION4
+	test "0" = "${VALIDATE}" || xmllint --nonet --noent --xinclude --postvalid --noout ${DOCBOOKSRCDIR}/${MAINFILE}
+endif
 	cd ${EPUBDIR} && $(MAKE) 
 
 pdfclean: $(PDFDIR)/Makefile
@@ -38,7 +57,12 @@ epubclean: $(EPUBDIR)/Makefile
 
 validatedocbook:
 	@echo "**************** Validating DocBook ****************"
-	java -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration  -jar ${DEPENDDIR}/jing/jing.jar ${DEPENDDIR}/docbookxi.rng ${DOCBOOKSRCDIR}/index.xml
+ifdef VERSION5
+	test "0" = "${VALIDATE}" || java -Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XIncludeParserConfiguration  -jar ${DEPENDDIR}/jing/jing.jar ${DEPENDDIR}/docbookxi.rng ${DOCBOOKSRCDIR}/${MAINFILE}
+endif
+ifdef VERSION4
+	test "0" = "${VALIDATE}" || xmllint --nonet --noent --xinclude --postvalid --noout ${DOCBOOKSRCDIR}/${MAINFILE}
+endif
 	@echo "****************************************************"
 
 .PHONY: all pdf html htmlsp epub

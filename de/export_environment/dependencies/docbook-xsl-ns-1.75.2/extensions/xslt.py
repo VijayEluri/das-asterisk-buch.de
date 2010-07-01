@@ -64,6 +64,10 @@ libxslt.registerExtModuleFunction("adjustColumnWidths",
 styledoc = libxml2.parseFile(xslfile)
 style = libxslt.parseStylesheetDoc(styledoc)
 doc = libxml2.parseFile(xmlfile)
+doc.xincludeProcessFlags(libxml2.XML_PARSE_NOENT | 
+							libxml2.XML_PARSE_DTDLOAD |
+							libxml2.XML_PARSE_DTDATTR |
+							libxml2.XML_PARSE_NOCDATA)
 result = style.applyStylesheet(doc, params)
 
 # Save the result
