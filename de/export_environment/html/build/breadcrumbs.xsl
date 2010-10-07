@@ -48,9 +48,16 @@
 				</xsl:if>
 			</xsl:for-each>
 			<xsl:if test="count($this.node/ancestor::*) = 0">
-				<li class="breadcrumb-text highlight">
+				<li class="breadcrumb-text highlight indexpage">
 					<xsl:apply-templates select="$this.node" mode="title.markup"/>
 				</li>
+				<xsl:for-each select="$this.node/child::*[local-name() != 'bookinfo' and local-name() != 'info' and local-name() != 'articleinfo']">
+					<xsl:call-template name="breadcrumb.href.target">
+						<xsl:with-param name="object" select="."/>
+						<xsl:with-param name="context" select="$this.node"/>
+						<xsl:with-param name="temp-name" select="'indexchild'"/>
+					</xsl:call-template>
+				</xsl:for-each>
 			</xsl:if>
 		</ul>
 	</xsl:template>
@@ -62,12 +69,6 @@
 		<xsl:for-each select="$node/ancestor-or-self::*">
 			<!-- reversing the node set -->
 			<xsl:sort select="position()" data-type="number" order="descending"/>
-			<xsl:variable name="node.is.component">
-				<xsl:call-template name="is.component">
-					<xsl:with-param name="node" select="."/>
-				</xsl:call-template>
-			</xsl:variable>
-			<!--<xsl:if test="$node.is.component != 0 or count(ancestor-or-self::*) = 2">-->
 				<xsl:for-each select="following-sibling::*">	
 					<xsl:call-template name="breadcrumb.href.target">
 						<xsl:with-param name="object" select="."/>
@@ -75,7 +76,6 @@
 						<xsl:with-param name="temp-name" select="$temp-name"/>
 					</xsl:call-template>
 				</xsl:for-each>
-				<!--</xsl:if>-->
 		</xsl:for-each>
 	</xsl:template>
 
@@ -84,13 +84,7 @@
 		<xsl:param name="context" select="."/>
 		<xsl:param name="temp-name" select="'ppc'"/>
 		<xsl:for-each select="$node/preceding-sibling::*">
-			<xsl:variable name="node.is.component">
-				<xsl:call-template name="is.component">
-					<xsl:with-param name="node" select="."/>
-				</xsl:call-template>
-			</xsl:variable>
-			<!--<xsl:if test="($node.is.component != 0 or count(ancestor-or-self::*) = 2) and (local-name(.) != 'info' and local-name(.) != 'bookinfo')">-->
-			<xsl:if test="local-name(.) != 'info' and local-name(.) != 'bookinfo'">
+			<xsl:if test="local-name(.) != 'info' and local-name(.) != 'bookinfo' and local-name() != 'articleinfo'">
 				<xsl:call-template name="breadcrumb.href.target">
 					<xsl:with-param name="object" select="."/>
 					<xsl:with-param name="context" select="$context"/>
@@ -136,7 +130,7 @@
 		<xsl:param name="object" select="."/>
 		<xsl:param name="context" select="."/>
 		<xsl:param name="temp-name" select="'bhf'"/>
-		<xsl:if test="$object/child::*[local-name() = 'title'] or $object/info/child::*[local-name() = 'title'] or local-name($object) = 'partintro' or local-name($object) = 'book'">
+		<xsl:if test="$object/child::*[local-name() = 'title'] or $object/info/child::*[local-name() = 'title'] or local-name($object) = 'set' or local-name($object) = 'partintro' or local-name($object) = 'book' or local-name($object) = 'article' or local-name($object) = 'index'">
 			<li>
 				<xsl:attribute name="class">
 					<xsl:call-template name="breadcrumb-classes">
