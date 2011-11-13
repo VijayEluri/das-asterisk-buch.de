@@ -27,8 +27,8 @@ all:
 	mkdir -p $(EXPORTDIR)/html-single-page
 	#cp $(HTMLDIR)/default.css $(HTMLDIR)/common.css $(EXPORTDIR)/html-single-page
 	cp -R ${DEPENDDIR}/custom-admons-callouts/ $(EXPORTDIR)/html-single-page
-	cp -R ${DOCBOOKSRCDIR}/screenshots $(EXPORTDIR)/html-single-page
-	xsltproc -o $(EXPORTDIR)/html-single-page/index.html --stringparam admon.graphics.path ${DEPENDDIR}/custom-admons-callouts/ --stringparam callout.graphics.path ${DEPENDDIR}/custom-admons-callouts/ --stringparam adincluded 0 --xinclude $(HTMLSPDIR)/html-single.xsl $(DOCBOOKSRCDIR)/index.xml; \
+	cp -R ${DOCBOOKSRCDIR}/${IMAGEDIR} $(EXPORTDIR)/html-single-page
+	xsltproc -o $(EXPORTDIR)/html-single-page/index.html --stringparam admon.graphics.path ${DEPENDDIR}/custom-admons-callouts/ --stringparam callout.graphics.path ${DEPENDDIR}/custom-admons-callouts/ --stringparam adincluded 0 --xinclude $(HTMLSPDIR)/html-single.xsl $(DOCBOOKSRCDIR)/$(MAINFILE); \
 	
 clean:
 	rm -rf $(EXPORTDIR)/html-single-page deps.xsl

@@ -11,7 +11,7 @@ all: document.pdf
 document.pdf: $(EXPORTDIR)/document.fo
 	fop -c font-config.xml -fo $(EXPORTDIR)/document.fo -pdf $(EXPORTDIR)/document.pdf
        
-$(EXPORTDIR)/document.fo: $(DOCBOOKSRCDIR)/index.xml
+$(EXPORTDIR)/document.fo: $(DOCBOOKSRCDIR)/$(MAINFILE)
 	rm -f deps.xsl
 
 	echo "<?xml version='1.0'?>" >> deps.xsl
@@ -29,7 +29,8 @@ $(EXPORTDIR)/document.fo: $(DOCBOOKSRCDIR)/index.xml
 
 	sed 's/.xsl \"/.xsl\"/' deps.xsl  > tmp.xsl; mv tmp.xsl deps.xsl
 
-	xsltproc --stringparam img.src.path $(DOCBOOKSRCDIR)/ --stringparam admon.graphics.path ${DEPENDDIR}/custom-admons-callouts/ --stringparam callout.graphics.path ${DEPENDDIR}/custom-admons-callouts/ -o $(EXPORTDIR)/document.fo --xinclude ${PDFDIR}/rubyonrails-pdf.xsl $(DOCBOOKSRCDIR)/index.xml
+	xsltproc --stringparam img.src.path $(DOCBOOKSRCDIR)/ --stringparam admon.graphics.path ${DEPENDDIR}/custom-admons-callouts/ --stringparam callout.graphics.path ${DEPENDDIR}/custom-admons-callouts/ -o $(EXPORTDIR)/document.fo --xinclude ${PDFDIR}/rubyonrails-pdf.xsl $(DOCBOOKSRCDIR)/$(MAINFILE)
+	#python ${DOCBOOKNSDIR_CLEANED}/extensions/xslt.py $(DOCBOOKSRCDIR)/${MAINFILE} ${PDFDIR}/rubyonrails-pdf.xsl $(EXPORTDIR)/document.fo img.src.path=$(DOCBOOKSRCDIR)/ admon.graphics.path=${DEPENDDIR}/custom-admons-callouts/ callout.graphics.path=${DEPENDDIR}/custom-admons-callouts/
 
 clean:
 	rm -f $(EXPORTDIR)/document.fo $(EXPORTDIR)/document.pdf deps.xsl

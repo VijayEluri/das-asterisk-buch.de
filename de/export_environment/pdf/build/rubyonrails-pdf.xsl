@@ -12,6 +12,7 @@
 <xsl:import href="deps.xsl"/>
 <xsl:output method="xml" indent="no"/>
 <xsl:param name="use.extensions" select="1"/>
+<xsl:param name="tablecolumns.extension" select="0"/>
 <xsl:param name="fop1.extensions" select="1"/>
 <xsl:param name="draft.mode">no</xsl:param>
 <xsl:param name="hyphenate">true</xsl:param>
@@ -625,6 +626,110 @@ mode="hyphenate"/>
      <xsl:apply-templates select="node()|@*" mode="hyphenate"/>
    </xsl:copy>
 </xsl:template>
+
+<xsl:template name="object.id">
+  <xsl:param name="object" select="."/>
+
+  <xsl:variable name="id" select="@id"/>
+  <xsl:variable name="xid" select="@xml:id"/>
+
+  <xsl:variable name="preceding.id"
+        select="count(preceding::*[@id = $id])"/>
+
+  <xsl:variable name="preceding.xid"
+        select="count(preceding::*[@xml:id = $xid])"/>
+
+  <xsl:choose>
+    <xsl:when test="$object/@id and $preceding.id != 0">
+      <xsl:value-of select="concat($object/@id, $preceding.id)"/>
+    </xsl:when>
+    <xsl:when test="$object/@id">
+      <xsl:value-of select="$object/@id"/>
+    </xsl:when>
+    <xsl:when test="$object/@xml:id and $preceding.xid != 0">
+      <xsl:value-of select="concat($object/@id, $preceding.xid)"/>
+    </xsl:when>
+    <xsl:when test="$object/@xml:id">
+      <xsl:value-of select="$object/@xml:id"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="generate-id($object)"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- need ID in term -->
+<xsl:template match="varlistentry/term">
+  <xsl:variable name="id"><xsl:call-template name="object.id"/></xsl:variable>
+  <fo:inline id="{$id}">
+    <xsl:call-template name="simple.xlink">
+      <xsl:with-param name="content">
+        <xsl:apply-templates/>
+      </xsl:with-param>
+    </xsl:call-template>
+  </fo:inline>
+  <xsl:choose>
+    <xsl:when test="not(following-sibling::term)"/> <!-- do nothing -->
+    <xsl:otherwise>
+      <!-- * if we have multiple terms in the same varlistentry, generate -->
+      <!-- * a separator (", " by default) and/or an additional line -->
+      <!-- * break after each one except the last -->
+      <fo:inline><xsl:value-of select="$variablelist.term.separator"/></fo:inline>
+      <xsl:if test="not($variablelist.term.break.after = '0')">
+        <fo:block/>
+      </xsl:if>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- don't include indexterms in xrefs -->
+<xsl:template match="varlistentry/term" mode="xref-to">
+  <xsl:param name="verbose" select="1"/>
+  <!-- to avoid the comma that will be generated if there are several terms -->
+  <!-- added mode -->
+  <xsl:apply-templates mode="xref-to"/>
+</xsl:template>
+
+<!-- do nothing -->
+<xsl:template match="indexterm" mode="xref-to">
+</xsl:template>
+
+<!-- do nothing -->
+<xsl:template match="primary|secondary|tertiary" mode="xref-to">
+</xsl:template>
+
+<!-- need ID in term -->
+<xsl:template match="glossentry/glossterm">
+  <xsl:variable name="id"><xsl:call-template name="object.id"/></xsl:variable>
+  <fo:inline id="{$id}">
+    <xsl:call-template name="simple.xlink">
+      <xsl:with-param name="content">
+        <xsl:apply-templates/>
+      </xsl:with-param>
+    </xsl:call-template>
+  </fo:inline>
+  <xsl:choose>
+    <xsl:when test="not(following-sibling::term)"/> <!-- do nothing -->
+    <xsl:otherwise>
+      <!-- * if we have multiple terms in the same varlistentry, generate -->
+      <!-- * a separator (", " by default) and/or an additional line -->
+      <!-- * break after each one except the last -->
+      <fo:inline><xsl:value-of select="$variablelist.term.separator"/></fo:inline>
+      <xsl:if test="not($variablelist.term.break.after = '0')">
+        <fo:block/>
+      </xsl:if>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- don't include indexterms in xrefs -->
+<xsl:template match="glossentry/glossterm" mode="xref-to">
+  <xsl:param name="verbose" select="1"/>
+  <!-- to avoid the comma that will be generated if there are several terms -->
+  <!-- added mode -->
+  <xsl:apply-templates mode="xref-to"/>
+</xsl:template>
+
 
 
 </xsl:stylesheet>  

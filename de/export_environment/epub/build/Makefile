@@ -22,7 +22,7 @@ all:
 
 	sed 's/.xsl \"/.xsl\"/' deps.xsl  > tmp.xsl; mv tmp.xsl deps.xsl
 	
-	$(DOCBOOKNSDIR_CLEANED)/epub/bin/dbtoepub -d -i $(DEPENDDIR)/custom-admons-callouts/ -c $(EPUBDIR)/epub.css -s $(EPUBDIR)/epub.xsl -o $(EXPORTDIR)/document.epub $(DOCBOOKSRCDIR)/index.xml
+	$(DOCBOOKNSDIR_CLEANED)/epub/bin/dbtoepub -d -i $(DEPENDDIR)/custom-admons-callouts/ -c $(EPUBDIR)/epub.css -s $(EPUBDIR)/epub.xsl -o $(EXPORTDIR)/document.epub $(DOCBOOKSRCDIR)/$(MAINFILE)
 
 validate:
 	java -jar $(EPUBDIR)/epubcheck/epubcheck-1.0.5.jar $(EXPORTDIR)/document.epub
