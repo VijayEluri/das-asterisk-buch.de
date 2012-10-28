@@ -1,4 +1,0 @@
-- Go to the directory which has the docbook sources (the one that has index.xml)
-- cp or ln the build dir to that directory
-- make -f build/Makefile
-- pdf = document.pdf
