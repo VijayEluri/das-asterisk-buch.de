@@ -298,10 +298,10 @@ Version:
 
               <div class="note">
                  <p>A new book about Asterisk 11 is going to be available here in
-                     Q3/2013.</p>
+                     Q1/2013.</p>
               </div>
 
-              <div id="adsense1" class="pull-right">
+              <div id="adsense0" class="pull-right">
                 <script type="text/javascript">
                   <xsl:text disable-output-escaping="yes">
 <![CDATA[<!--]]>
@@ -317,6 +317,22 @@ google_ad_height = 240;
               </div>
 
               <xsl:copy-of select="$content"/>
+
+              <div id="adsense1" class="pull-right">
+                <script type="text/javascript">
+                  <xsl:text disable-output-escaping="yes">
+<![CDATA[<!--]]>
+google_ad_client = "ca-pub-9538764634478220";
+/* the-asterisk-book.com Vertical Banner 2 */
+google_ad_slot = "7190425573";
+google_ad_width = 120;
+google_ad_height = 240;
+<![CDATA[//-->]]>
+                 </xsl:text>
+                </script>
+                <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+              </div>
+
             </div>
 
             <div class="span3">
