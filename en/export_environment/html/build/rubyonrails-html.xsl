@@ -285,7 +285,7 @@ Version:
               <a class="brand" href="index.html">Asterisk 1.4 - 1.6</a>
               <div class="nav-collapse collapse">
                 <p class="navbar-text pull-right">
-                  <a href="http://www.amazon.de/gp/product/3827330335?tag=wwwamoomade-21" class="navbar-link">Buch kaufen</a>
+                    <a href="http://www.amazon.com/Practical-Asterisk-1-4-1-6-Beginner/dp/0321525663?tag=wwwamoomade-21" class="navbar-link">Buy the book.</a>
                 </p>
               </div><!--/.nav-collapse -->
             </div>
@@ -301,10 +301,10 @@ Version:
                   <xsl:text disable-output-escaping="yes">
 <![CDATA[<!--]]>
 google_ad_client = "ca-pub-9538764634478220";
-/* Asterisk 1.4 - 1.6 */
-google_ad_slot = "8900586761";
-google_ad_width = 120;
-google_ad_height = 240;
+/* the-asterisk-book.com Wide Skyscraper */
+google_ad_slot = "8065187140";
+google_ad_width = 160;
+google_ad_height = 600;
 <![CDATA[//-->]]>
                  </xsl:text>
                 </script>
@@ -325,8 +325,8 @@ google_ad_height = 240;
                   <xsl:text disable-output-escaping="yes">
 <![CDATA[<!--]]>
 google_ad_client = "ca-pub-9538764634478220";
-/* Asterisk 1.4-1.6 wide skyscraper */
-google_ad_slot = "9454129820";
+/* the-asterisk-book.com Wide Skyscraper */
+google_ad_slot = "8065187140";
 google_ad_width = 160;
 google_ad_height = 600;
 <![CDATA[//-->]]>
