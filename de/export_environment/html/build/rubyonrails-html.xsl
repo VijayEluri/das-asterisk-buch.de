@@ -297,7 +297,7 @@ Version:
             <div class="span9">
 
               <div class="important">
-                <p>Dies ist Buch aus dem Jahr 2010 für die Asterisk Versionen 1.4 und 1.6. Das Buch zu Asterisk 11 finden Sie unter <a href="/11/">http://das-asterisk-buch.de/11/</a>.</p>
+                <p>Dies ist Buch aus dem Jahr 2010 für die Asterisk Versionen 1.4 und 1.6. Das Buch zu Asterisk 11 finden Sie bald hier.</p>
               </div>
 
               <div id="adsense1" class="pull-right">

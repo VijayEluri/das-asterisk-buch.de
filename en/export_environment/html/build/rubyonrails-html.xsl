@@ -297,7 +297,7 @@ Version:
             <div class="span9">
 
               <div class="note">
-                 <p>A new book about Asterisk 11 should be available here in
+                 <p>A new book about Asterisk 11 is going to be available here in
                      Q3/2013.</p>
               </div>
 
