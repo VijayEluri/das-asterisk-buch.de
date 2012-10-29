@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<chapter id="dialplan-grundlagen" lang="en" revision="$Revision$">
-  <!--% Copyright (c) 2006 - 2008 by
+<chapter id="dialplan-grundlagen" lang="en" revision="$Revision: 472 $">
+  <!--% Copyright (c) 2006 - 2007 by
 % - Stefan Wintermeyer <sw@amooma.de>
 % Permission is granted to copy, distribute and/or modify this document
 % under the terms of the GNU Free Documentation License, Version 1.2
@@ -16,23 +16,15 @@
   <para>The dialplan is the heart of Asterisk, and everything it does begins
   here.</para>
 
-  <para>In Asterisk 1.4, two important files in
-  <filename>/etc/asterisk</filename> make up the dialplan. The first is
-  <filename>extensions.conf</filename>, which uses the original and
-  Digium-recommended priority model; the second is
+  <para>Two important files in <filename>/etc/asterisk</filename> make up the
+  dialplan in 1.4. The first is <filename>extensions.conf</filename>, which
+  uses the original and still recommended priority model; the second is
   <filename>extensions.ael</filename>, which uses the newer Asterisk
   Extensions Language; we'll look at that in more detail in a separate
   chapter. For now, we'll use the traditional priority model, since even in
-  1.4 and 1.6, <filename>extensions.ael</filename> is converted into priority
-  format and added to <filename>extensions.conf</filename> when Asterisk is
-  started.<footnote>
-      <para>The exact definition of "dialplan" is a matter of some debate in
-      the telephony world. In this book, we use the word in its
-      Asterisk-specific sense.</para>
-    </footnote><note>
-      <para>Should you use .conf or .ael? Digium says ".conf is the
-      default."</para>
-    </note></para>
+  1.4, <filename>extensions.ael</filename> is converted into priority format
+  and added to <filename>extensions.conf</filename> when Asterisk is
+  started.</para>
 
   <section id="der-context">
     <title>Context</title>
@@ -44,11 +36,11 @@
     <para>The Asterisk dialplan is divided into sections, and each section is
     called a context. Any dialplan must begin with a <code>[general]</code>
     context where global configuration entries reside, but the subsequent
-    contexts can have any name. Physical devices are bound to the dialplan
-    through contexts. These devices are usually telephones, but can be other
-    types of hardware (for example, SIP or Zap devices). The configuration for
-    every device, be it a softphone, hardphone or outgoing trunk, must specify
-    the default context for that device. Here's an example from <filename>a
+    contexts can have any name. Contexts are the means by which actual
+    physical devices (usually telephones, but not always; for example, SIP or
+    Zap devices) are bound to the dialplan. The configuration for every
+    device, be it a softphone, hardphone or outgoing trunk, must specify the
+    default context for that device. Here's an example from <filename>a
     sip.conf</filename> file: <programlisting>[2000]
 type=friend
 context=internal-phones
@@ -60,25 +52,23 @@ host=dynamic</programlisting>This SIP device called 2000 always initiates
     that number. If no matching extension is present, nothing happens.</para>
 
     <warning>
-      <para>A good understanding of contexts is essential for effective
-      Asterisk programming and administration. If you're not sure, please
-      follow the step-by-step example for a simple PBX system in the chapter
-      <xref linkend="kapitel-installation" />.</para>
-
-      <para>It pays to take the time necessary to become comfortable with the
-      concept.</para>
+      <para>Understanding Asterisk contexts is essential for effective
+      programming and administration of an Asterisk system. It is not always
+      clear to a beginner how important correct use of contexts really is. If
+      you're not sure, please follow the step-by-step example for a simple PBX
+      system in the chapter <xref linkend="kapitel-installation" />.</para>
     </warning>
 
     <section id="context-syntax">
       <title>Syntax</title>
 
       <para>Contexts are defined by a name inside square brackets
-      ("<code>[</code>" and "<code>]</code>"). Ideally, the name should be
-      relevant and help to describe the intended use for the context. This
-      name will also be used to refer to the context elsewhere, be it in other
-      contexts or in other Asterisk configuration files. All lines following a
-      context name are considered part of that context, until the next context
-      name is encountered:<programlisting>[general]
+      ("<code>[</code>" and "<code>]</code>"). Ideally the name is relevant
+      and helps to describe the intended use for the context. This name will
+      also be used to refer to the context elsewhere, be it in other contexts
+      or in other Asterisk configuration files. All lines following a context
+      name are considered part of that context, until the next context name is
+      encountered:<programlisting>[general]
 
 [internal-phones]
 Rules, instructions, etc.
@@ -96,11 +86,9 @@ Rules, instructions, etc.</programlisting></para>
     </indexterm>
 
     <para>Individual entries in <filename>extensions.conf</filename> are
-    called <emphasis>extensions</emphasis>. Individual extensions are executed
-    by Asterisk every time a call is initiated for that extension, but
-    extensions.conf is only read into Asterisk once, at start time. This means
-    that changes are not applied until the dialplan is reloaded or Asterisk
-    restarted.<footnote>
+    called <emphasis>extensions</emphasis>. Extensions are interpreted by
+    Asterisk every time a call is initiated, but extensions.conf is only read
+    into Asterisk at start time.<footnote>
         <para>An exception is the Asterisk RealTime Architecture (ARA). In an
         ARA system, the dialplan is stored in a database
         (<emphasis>e.g.</emphasis> MySQL) and read into Asterisk for each
@@ -140,21 +128,17 @@ Rules, instructions, etc.</programlisting></para>
       <para><programlisting>exten =&gt; <replaceable>Extension</replaceable>,<replaceable>Priority,Application</replaceable>
 </programlisting><emphasis>e.g.</emphasis><programlisting>exten =&gt; 123,1,Answer()
 </programlisting></para>
-
-      <important>
-        <para>The first priority in an extension must always be 1 (one), or
-        Asterisk will never call the extension. Subsequent priorities must be
-        incremented by 1 and not more; Asterisk does not recognize larger
-        increments.</para>
-      </important>
     </section>
 
     <section id="grundlegende-applikationen">
       <title>Fundamental Applications</title>
 
       <para>In order to build the dialplan examples in this chapter, we need
-      the following basic applications (all these are described in greater
-      detail in <xref linkend="applications" />):</para>
+      the following basic applications<footnote>
+          <para>A typical "chicken or egg" problem. One can only understand an
+          application if one understands the dialplan, and vice versa.</para>
+        </footnote>(all these are described in greater detail in <xref
+      linkend="applikationen" />):</para>
 
       <itemizedlist>
         <listitem>
@@ -164,7 +148,7 @@ Rules, instructions, etc.</programlisting></para>
           answers a call. When a channel rings,
           <code><command>Answer()</command></code> tells Asterisk to "lift the
           virtual receiver." (See also <xref
-          linkend="applications-answer" />.)</para>
+          linkend="applikationen-answer" />.)</para>
         </listitem>
 
         <listitem>
@@ -173,7 +157,7 @@ Rules, instructions, etc.</programlisting></para>
           <para><code><command>Hangup()</command></code> is the opposite of
           <code><command>Answer()</command></code>. An active connection is
           terminated, and Asterisk "hangs up" the virtual receiver (see also
-          <xref linkend="applications-hangup" />).</para>
+          <xref linkend="applikationen-hangup" />).</para>
         </listitem>
 
         <listitem>
@@ -184,17 +168,17 @@ Rules, instructions, etc.</programlisting></para>
           <filename>/var/lib/asterisk/sounds/</filename>, but you can also
           specify another source directory. No file extension is specified
           because the directory may contain the same sound in different
-          formats. Asterisk will select the most appropriate format &#8211;
-          more on that later (see also <xref
-          linkend="applications-playback" />).</para>
+          formats. Asterisk will select the most appropriate format -- more on
+          that later (see also <xref
+          linkend="applikationen-playback" />).</para>
         </listitem>
 
         <listitem>
           <para><code><command>Wait(<replaceable>number</replaceable>)</command></code></para>
 
           <para><code><command>Wait()</command></code> defines a pause;
-          <code>number</code> indicates the number of seconds to pause (see
-          also <xref linkend="applications-wait" />).</para>
+          <code>Number</code> indicates the number of seconds to pause (see
+          also <xref linkend="applikationen-wait" />).</para>
         </listitem>
 
         <listitem>
@@ -202,20 +186,20 @@ Rules, instructions, etc.</programlisting></para>
 
           <para>This application does nothing<application>. "NoOp" means
           </application>"no operation." It is useful, however, when you are
-          trying to troubleshoot the dialplan. When
+          trying to troubleshoot a problem with your dialplan. When
           <code><command>NoOp(<replaceable>string</replaceable>)</command></code>
           is executed, Asterisk prints <replaceable>string</replaceable> on
           the CLI, though only if the verbosity level is set to 3 (you can do
           this easily by entering the command <command>set verbose 3</command>
           in the CLI). (See also <xref
-          linkend="applications-noop" />.)</para>
+          linkend="applikationen-noop" />.)</para>
         </listitem>
 
         <listitem>
           <para><command>VoiceMail(<replaceable>mailbox</replaceable>,u)</command></para>
 
           <para>Lets the caller leave a voice message in the mailbox specified
-          (see also <xref linkend="applications-voicemail" />).</para>
+          (see also <xref linkend="applikationen-voicemail" />).</para>
         </listitem>
 
         <listitem>
@@ -223,7 +207,7 @@ Rules, instructions, etc.</programlisting></para>
 
           <para>Provides access to the voicemail system. The mailbox owner
           will use this to retrieve her messages (see also <xref
-          linkend="applications-voicemailmain" />).</para>
+          linkend="applikationen-voicemailmain" />).</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -268,7 +252,7 @@ exten =&gt; 8888,3,Hangup()</programlisting></para>
         </indexterm>
 
         <para>To make it easier to work with priorities, Asterisk versions
-        from 1.2 onward support the <code>n</code> priority. The
+        from 1.2 onward have supported the <code>n</code> priority. The
         <code>n</code> priority is like automatic line numbering; when
         Asterisk is running through the dialplan and encounters an entry with
         priority <code>n</code>, it simply executes it as though it were
@@ -313,7 +297,7 @@ exten =&gt; 1234,n,Hangup()</programlisting></para>
       <primary>Pattern matching</primary>
     </indexterm>
 
-    <para>Using what we know so far, we need to write a separate extension for
+    <para>With what we know so far, we need to write a separate extension for
     each telephone number. As the system expands, this leads to unwieldy and
     error-prone dialplans. Say that, for our example, we need numbers 100 to
     109 to play the "hello world" sound file. Our
@@ -387,7 +371,7 @@ exten =&gt; _10X,3,Hangup()
         </indexterm></title>
 
       <para>Dialplan patterns always begin with the underscore
-      (<code>_</code>) character:<programlisting>exten =&gt; _<emphasis>Pattern,Priority,Application</emphasis></programlisting></para>
+      (<code>_</code>) character:<programlisting>exten =&gt; _<emphasis>Pattern,Priority,Applikation</emphasis></programlisting></para>
 
       <para>An Asterisk dialplan pattern can have the following
       elements:<variablelist termlength="7">
@@ -609,11 +593,11 @@ exten =&gt; _2X,3,Hangup()</programlisting></para>
         <secondary>Pattern matching order</secondary>
       </indexterm>
 
-      <para id="wann-triff-welches-pattern">Pattern matching in your Asterisk
-      dialplan, while very powerful, can be tricky. It is easy to assume that
-      Asterisk runs through the dialplan in a completely sequential manner;
-      while this is generally the case, it does prioritize patterns based on
-      the quality of the match.</para>
+      <para id="wann-triff-welches-pattern">Employing pattern matching in your
+      Asterisk dialplan, while very powerful, can be tricky. It is easy to
+      assume that Asterisk runs through the dialplan in a completely
+      sequential manner; while this is generally the case, it does prioritize
+      patterns based on the quality of the match.</para>
 
       <para>The reason for this is simple: more than one pattern might match a
       dialled number. If two extensions match a dialled number, Asterisk will
@@ -659,10 +643,11 @@ exten =&gt; _1234.,1,NoOp{1234.}</programlisting></para>
             <primary>Pattern _. in Asterisk 1.2</primary>
           </indexterm></title>
 
-        <para>Digium has changed the expected behavior for the "_." pattern in
-        Asterisk 1.2. Though the pattern is the most general and should be
-        therefore assigned the lowest priority, the behavior is opposite the
-        expected behavior.<warning>
+        <para>To be sure that an Asterisk administrator's job doesn't become
+        too easy, Digium has changed the expected behavior for the "_."
+        pattern in Asterisk 1.2. Though the pattern is the most general and
+        should be therefore assigned the lowest priority, the behavior is
+        opposite the expected behavior.<warning>
             <para>In Asterisk 1.2, the extension "<code>_.</code>" always gets
             the highest priority!</para>
           </warning></para>
@@ -721,6 +706,8 @@ exten =&gt; _X.,1,NoOp{Bingo}</programlisting></para>
 
 -= 3 extensions (3 priorities) in 1 context. =-
 *CLI&gt; </screen></para>
+
+        <para></para>
       </section>
     </section>
   </section>
@@ -765,8 +752,8 @@ exten =&gt; 17005551212,1,Dial(SIP/5551212)</programlisting></para>
       before referencing any included contexts. If a matching entry is found,
       that entry is used. If no matching entry is found, Asterisk will look
       for a match in the first included context, then the next, and so on. It
-      is also possible to have nested includes; that is, includes
-      <emphasis>within</emphasis> includes.</para>
+      is also possible to have nested includes; that is, includes within
+      includes.</para>
 
       <para>In case of doubt, you can verify what entry Asterisk is using to
       handle a call by entering <command>dialplan show
@@ -798,7 +785,7 @@ exten =&gt; 17005551212,1,Dial(SIP/5551212)</programlisting></para>
       <para>If we then expand the <code>sales</code> context like
       so:<programlisting>[general]
 
-[sales]
+[verkauf]
 include =&gt; internal
 include =&gt; external
 
@@ -857,11 +844,11 @@ exten =&gt; 17005551212,1,Dial(SIP/5551212)exten =&gt; 03012345678,1,Dial(SIP/03
       <section>
         <title>Example</title>
 
-        <para>A business is open from 9:00 a.m. until 9:00 p.m. Monday to
-        Friday and from 9:00 a.m. to 6:00 p.m. Saturday. The dialplan would
+        <para>A business is open from 9:00 a.m. until 5:00 p.m. Monday to
+        Friday and from 9:00 a.m. to 2:00 p.m. Saturday. The dialplan would
         look like this:<programlisting>; Day
-&#8232;include =&gt; open|09:00-21:00|mon-fri|*|*
-&#8232;include =&gt; open|09:00-18:00|sat|*|*
+&#8232;include =&gt; open|09:00-17:00|mon-fri|*|*
+&#8232;include =&gt; open|09:00-14:00|sat|*|*
 include =&gt; closed
 
 [open]
