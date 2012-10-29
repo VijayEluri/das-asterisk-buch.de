@@ -300,13 +300,13 @@ Version:
                 <p>Dies ist Buch aus dem Jahr 2010 für die Asterisk Versionen 1.4 und 1.6. Das Buch zu Asterisk 11 finden Sie bald hier.</p>
               </div>
 
-              <div id="adsense1" class="pull-right">
+              <div id="adsense0" class="pull-right">
                 <script type="text/javascript">
                   <xsl:text disable-output-escaping="yes">
 <![CDATA[<!--]]>
 google_ad_client = "ca-pub-9538764634478220";
-/* Asterisk 1.4 - 1.6 */
-google_ad_slot = "8900586761";
+/* das-asterisk-buch.de Vertical Banner 0 */
+google_ad_slot = "2142809731";
 google_ad_width = 120;
 google_ad_height = 240;
 <![CDATA[//-->]]>
@@ -316,6 +316,22 @@ google_ad_height = 240;
               </div>
 
               <xsl:copy-of select="$content"/>
+
+              <div id="adsense1" class="pull-right">
+                <script type="text/javascript">
+                  <xsl:text disable-output-escaping="yes">
+<![CDATA[<!--]]>
+google_ad_client = "ca-pub-9538764634478220";
+/* das-asterisk-buch.de Vertical Banner 1 */
+google_ad_slot = "5242330875";
+google_ad_width = 120;
+google_ad_height = 240;
+<![CDATA[//-->]]>
+                 </xsl:text>
+                </script>
+                <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+              </div>
+
             </div>
 
             <div class="span3">
