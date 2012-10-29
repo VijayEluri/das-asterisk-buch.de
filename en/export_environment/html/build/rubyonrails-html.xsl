@@ -306,10 +306,10 @@ Version:
                   <xsl:text disable-output-escaping="yes">
 <![CDATA[<!--]]>
 google_ad_client = "ca-pub-9538764634478220";
-/* the-asterisk-book.com Wide Skyscraper */
-google_ad_slot = "8065187140";
-google_ad_width = 160;
-google_ad_height = 600;
+/* the-asterisk-book.com Vertical Banner */
+google_ad_slot = "4903767356";
+google_ad_width = 120;
+google_ad_height = 240;
 <![CDATA[//-->]]>
                  </xsl:text>
                 </script>
