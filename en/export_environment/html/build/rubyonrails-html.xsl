@@ -296,6 +296,11 @@ Version:
           <div id="row-fluid">
             <div class="span9">
 
+              <div class="note">
+                 <p>A new book about Asterisk 11 should be available here in
+                     Q3/2013.</p>
+              </div>
+
               <div id="adsense1" class="pull-right">
                 <script type="text/javascript">
                   <xsl:text disable-output-escaping="yes">
