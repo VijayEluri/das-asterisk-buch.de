@@ -294,45 +294,25 @@ Version:
         
         <div id="container-fluid">
           <div id="row-fluid">
+            <div class="span12">
+                <script type="text/javascript">
+                  <xsl:text disable-output-escaping="yes">
+<![CDATA[<!--]]>
+
+<script type="text/javascript">
+google_ad_client = "ca-pub-9538764634478220";
+/* the-asterisk-book.com Leaderboard */
+google_ad_slot = "3213089724";
+google_ad_width = 728;
+google_ad_height = 90;
+<![CDATA[//-->]]>
+                 </xsl:text>
+                </script>
+              <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+            </div>
+
             <div class="span9">
-
-              <div class="note">
-                 <p>A new book about Asterisk 11 is going to be available here in
-                     Q1/2013.</p>
-              </div>
-
-              <div id="adsense0" class="pull-right">
-                <script type="text/javascript">
-                  <xsl:text disable-output-escaping="yes">
-<![CDATA[<!--]]>
-google_ad_client = "ca-pub-9538764634478220";
-/* the-asterisk-book.com Vertical Banner */
-google_ad_slot = "4903767356";
-google_ad_width = 120;
-google_ad_height = 240;
-<![CDATA[//-->]]>
-                 </xsl:text>
-                </script>
-                <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-              </div>
-
               <xsl:copy-of select="$content"/>
-
-              <div id="adsense1" class="pull-right">
-                <script type="text/javascript">
-                  <xsl:text disable-output-escaping="yes">
-<![CDATA[<!--]]>
-google_ad_client = "ca-pub-9538764634478220";
-/* the-asterisk-book.com Vertical Banner 2 */
-google_ad_slot = "7190425573";
-google_ad_width = 120;
-google_ad_height = 240;
-<![CDATA[//-->]]>
-                 </xsl:text>
-                </script>
-                <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-              </div>
-
             </div>
 
             <div class="span3">
