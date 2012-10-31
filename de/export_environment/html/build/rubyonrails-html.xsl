@@ -294,26 +294,26 @@ Version:
         
         <div id="container-fluid">
           <div id="row-fluid">
-            <div class="span9">
-
-               <div class="note">
-                  <p>Es bedarf jeden Tag 15 Leser, die auf eine Anzeige klicken, um diese kostenlose Seite am Leben zu halten.</p>
-               </div>
-
-              <div id="adsense0" class="pull-right">
+              <div id="adsense-leaderboard" class="span12">
                 <script type="text/javascript">
                   <xsl:text disable-output-escaping="yes">
 <![CDATA[<!--]]>
 google_ad_client = "ca-pub-9538764634478220";
-/* das-asterisk-buch.de Vertical Banner 0 */
-google_ad_slot = "2142809731";
-google_ad_width = 120;
-google_ad_height = 240;
+/* das-asterisk-buch.de Leaderboard */
+google_ad_slot = "2883909891";
+google_ad_width = 728;
+google_ad_height = 90;
 <![CDATA[//-->]]>
                  </xsl:text>
                 </script>
                 <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
               </div>
+
+            <div class="span9">
+
+               <div class="note">
+                  <p>Es bedarf jeden Tag 15 Leser, die auf eine Anzeige klicken, um diese kostenlose Seite am Leben zu halten.</p>
+               </div>
 
               <xsl:copy-of select="$content"/>
 
