@@ -298,8 +298,6 @@ Version:
                 <script type="text/javascript">
                   <xsl:text disable-output-escaping="yes">
 <![CDATA[<!--]]>
-
-<script type="text/javascript">
 google_ad_client = "ca-pub-9538764634478220";
 /* the-asterisk-book.com Leaderboard */
 google_ad_slot = "3213089724";
