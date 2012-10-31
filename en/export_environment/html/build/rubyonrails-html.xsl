@@ -270,7 +270,7 @@ Version:
     
     <xsl:call-template name="user.preroot"/>
 
-    <html lang="de">    
+    <html lang="en">    
       <xsl:call-template name="html.head">
         <xsl:with-param name="prev" select="$prev"/>
         <xsl:with-param name="next" select="$next"/>
