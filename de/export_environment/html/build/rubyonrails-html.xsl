@@ -294,7 +294,7 @@ Version:
         
         <div id="container-fluid">
           <div id="row-fluid">
-              <div id="adsense-leaderboard" class="span12">
+              <div id="adsense-leaderboard" class="span10">
                 <script type="text/javascript">
                   <xsl:text disable-output-escaping="yes">
 <![CDATA[<!--]]>
@@ -309,11 +309,14 @@ google_ad_height = 90;
                 <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
               </div>
 
-            <div class="span9">
-
+            <div class="span2"
                <div class="note">
                   <p>Es bedarf jeden Tag 15 Leser, die auf eine Anzeige klicken, um diese kostenlose Seite am Leben zu halten.</p>
                </div>
+            </div>
+            <div class="span9">
+
+
 
               <xsl:copy-of select="$content"/>
 
