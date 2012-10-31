@@ -285,7 +285,7 @@ Version:
               <a class="brand" href="index.html">Asterisk 1.4 - 1.6</a>
               <div class="nav-collapse collapse">
                 <p class="navbar-text pull-right">
-                  <a href="http://www.amazon.de/gp/product/3827330335?tag=wwwamoomade-21" class="navbar-link">Buch kaufen</a>
+                  <a href="http://www.amazon.de/gp/product/3827330335?tag=wwwamoomade-21" class="navbar-link">Buch online kaufen</a>
                 </p>
               </div><!--/.nav-collapse -->
             </div>
@@ -296,9 +296,9 @@ Version:
           <div id="row-fluid">
             <div class="span9">
 
-              <div class="important">
-                <p>Dies ist Buch aus dem Jahr 2010 für die Asterisk Versionen 1.4 und 1.6. Das Buch zu Asterisk 11 finden Sie bald hier.</p>
-              </div>
+               <div class="note">
+                  <p>Es bedarf jeden Tag 15 Leser, die auf eine Anzeige klicken, um diese kostenlose Seite am Leben zu halten.</p>
+               </div>
 
               <div id="adsense0" class="pull-right">
                 <script type="text/javascript">
