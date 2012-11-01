@@ -36,7 +36,6 @@
 
 <!--<xsl:param name="html.stylesheet" select="'../default.css'"/>-->
 <xsl:param name="html.stylesheet.type" select="'text/css'"/>
-<xsl:param name="html.stylesheet.print" select="'../print.css'"/>
 <xsl:param name="html.cleanup" select="0"/>
 <xsl:param name="html.ext" select="'.html'"/>
 <xsl:output method="xml" indent="yes"/>
