@@ -284,7 +284,7 @@ Version:
               <a class="brand" href="index.html">Asterisk 1.4 - 1.6</a>
               <div class="nav-collapse collapse">
                 <p class="navbar-text pull-right">
-                  <a href="http://www.amazon.de/gp/product/3827330335?tag=wwwamoomade-21" class="navbar-link">Buch online kaufen</a>
+                  <a href="http://www.amazon.de/gp/product/3827330335?tag=wwwamoomade-21" class="navbar-link">Buch bei Amazon kaufen</a>
                 </p>
               </div><!--/.nav-collapse -->
             </div>
