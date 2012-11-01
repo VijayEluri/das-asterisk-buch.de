@@ -286,7 +286,7 @@ Version:
                 <a class="brand" href="index.html">Asterisk 1.4 - 1.6 von Stefan Wintermeyer</a>
               </span>                
               <span class="visible-phone">
-                <a class="brand" href="index.html">Asterisk 1.4 - 1.6 von S. Wintermeyer</a>
+                <a class="brand" href="index.html">Asterisk 1.4 - 1.6</a>
               </span>                
               <div class="nav-collapse collapse">
                 <p class="navbar-text pull-right">
