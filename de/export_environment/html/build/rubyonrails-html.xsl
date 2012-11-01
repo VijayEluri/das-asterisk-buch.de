@@ -295,6 +295,7 @@ Version:
         <div id="container-fluid">
           <div id="row-fluid">
               <div id="adsense-leaderboard" class="span12">
+                <span class="hidden-phone">
                 <script type="text/javascript">
                   <xsl:text disable-output-escaping="yes">
 <![CDATA[<!--]]>
@@ -307,6 +308,7 @@ google_ad_height = 90;
                  </xsl:text>
                 </script>
                 <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+                </span>
               </div>
 
             <div class="span9">
