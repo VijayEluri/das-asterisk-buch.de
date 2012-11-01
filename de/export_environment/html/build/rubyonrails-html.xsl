@@ -282,7 +282,12 @@ Version:
           <div class="navbar-inner">
             <div class="container-fluid">
 
-              <a class="brand" href="index.html">Asterisk 1.4 - 1.6</a>
+              <span class="hidden-phone">
+                <a class="brand" href="index.html">Asterisk 1.4 - 1.6 von Stefan Wintermeyer</a>
+              </span>                
+              <span class="visible-phone">
+                <a class="brand" href="index.html">Asterisk 1.4 - 1.6 von S. Wintermeyer</a>
+              </span>                
               <div class="nav-collapse collapse">
                 <p class="navbar-text pull-right">
                   <a href="http://www.amazon.de/gp/product/3827330335?tag=wwwamoomade-21" class="navbar-link">Buch online kaufen</a>
