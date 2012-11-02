@@ -281,11 +281,10 @@ Version:
         <div class="navbar navbar-inverse navbar-fixed-top">
           <div class="navbar-inner">
             <div class="container-fluid">
-
               <a class="brand" href="index.html">Asterisk 1.4 - 1.6</a>
               <div class="nav-collapse collapse">
                 <p class="navbar-text pull-right">
-                    <a href="http://www.amazon.com/Practical-Asterisk-1-4-1-6-Beginner/dp/0321525663?tag=wwwamoomade-21" class="navbar-link">Buy the book.</a>
+                  <a href="http://www.amazon.com/Practical-Asterisk-1-4-1-6-Beginner/dp/0321525663?tag=wwwamoomade-21" class="navbar-link">Buy the book at amazon.com</a>
                 </p>
               </div><!--/.nav-collapse -->
             </div>
@@ -294,9 +293,9 @@ Version:
         
         <div id="container-fluid">
           <div id="row-fluid">
-            <div class="span12">
-                <script type="text/javascript">
-                  <xsl:text disable-output-escaping="yes">
+            <div id="adsense-leaderboard" class="span12">
+              <script type="text/javascript">
+                <xsl:text disable-output-escaping="yes">
 <![CDATA[<!--]]>
 google_ad_client = "ca-pub-9538764634478220";
 /* the-asterisk-book.com Leaderboard */
@@ -304,8 +303,8 @@ google_ad_slot = "3213089724";
 google_ad_width = 728;
 google_ad_height = 90;
 <![CDATA[//-->]]>
-                 </xsl:text>
-                </script>
+               </xsl:text>
+              </script>
               <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
             </div>
 
@@ -316,10 +315,10 @@ google_ad_height = 90;
             <div class="span3">
 
               <div class="well sidebar-nav">
-                <xsl:call-template name="breadcrumbs"/>                            
+                <xsl:call-template name="breadcrumbs"/>
               </div>
 
-              <div id="adsense">
+              <div id="adsense-skyscraper">
                 <script type="text/javascript">
                   <xsl:text disable-output-escaping="yes">
 <![CDATA[<!--]]>
