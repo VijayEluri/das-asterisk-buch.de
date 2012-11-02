@@ -309,12 +309,6 @@ google_ad_height = 90;
             </div>
 
             <div class="span9">
-              <span class="hidden-phone">
-                <div class="note">
-                  <p>Es bedarf jeden Tag 15 Leser, die auf eine Anzeige klicken, um diese kostenlose Seite am Leben zu halten.</p>
-                </div>
-              </span>
-
               <xsl:copy-of select="$content"/>
             </div>
 
